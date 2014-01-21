@@ -1,0 +1,20 @@
+.#{$prefix}canvas-container
+  position: absolute
+  top: 0
+  left: 0
+
+  width: 100%
+
+  .#{$prefix}canvas-controls-container
+    position: absolute
+    top: 0
+    left: 0
+
+    display: none
+
+  @import "canvas-controls/generic"
+  @import "canvas-controls/crop"
+  @import "canvas-controls/text"
+
+  canvas
+    position: relative

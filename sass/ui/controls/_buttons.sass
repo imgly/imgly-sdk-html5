@@ -1,0 +1,49 @@
+.#{$prefix}controls-list-with-buttons
+  margin-left: 80px
+
+/*
+ * Back and Done buttons
+ */
+.#{$prefix}controls-button-back, .#{$prefix}controls-button-done
+  width: 80px
+  height: 80px
+
+  cursor: pointer
+
+/*
+ * Back button
+ */
+.#{$prefix}controls-button-back
+  position: absolute
+  left: 0
+  top: 0
+
+  border-right: 1px solid #363636
+  background: url("#{$img-base-path}back.png") no-repeat center center
+
+  /*
+   * Retina support
+   */
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)
+    background: url("#{$img-base-path}back@2x.png") no-repeat center center
+    background-size: contain
+
+/*
+ * Done button
+ */
+.#{$prefix}controls-button-done
+  position: absolute
+  right: 0
+  top: 0
+
+  border-left: 1px solid #363636
+
+  background: url("#{$img-base-path}done.png") no-repeat center center
+
+  /*
+   * Retina support
+   */
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)
+    background: url("#{$img-base-path}done@2x.png") no-repeat center center
+    background-size: contain
+

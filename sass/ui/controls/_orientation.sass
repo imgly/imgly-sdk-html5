@@ -1,0 +1,9 @@
+.#{$prefix}controls-item
+  $items: (rotate-l, rotate-r, flip-v, flip-h)
+
+  @each $item in $items
+    &.#{$prefix}controls-item-#{$item}
+      background-image: url("#{$img-base-path}option-#{$item}.png")
+      @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)
+        background-image: url("#{$img-base-path}option-#{$item}@2x.png")
+        background-size: 50% 50%

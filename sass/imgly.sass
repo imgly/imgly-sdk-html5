@@ -1,0 +1,23 @@
+@import "compass"
+@import "compass/css3/user-interface"
+
+$prefix: "imgly-"
+$border-radius: 5px
+$img-base-path: "/img/imgly/"
+
+.#{$prefix}container
+  +nested-reset()
+
+  text-align: left
+
+  position: relative
+  background: #2B2B2B
+
+  +border-radius($border-radius)
+
+  *
+    +user-select(none)
+    box-sizing: border-box
+
+  @import "ui/canvas"
+  @import "ui/controls"

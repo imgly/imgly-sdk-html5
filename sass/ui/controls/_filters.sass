@@ -1,0 +1,23 @@
+.#{$prefix}controls-item
+  $items: (default, k1, k2, k6, kdynamic, fridge, breeze, orchid, chest, front, fixie, x400, b-w, 1920, lenin, quozi, pola-669, pola, food, glam, celsius, texas, morning, lomo, gobblin, mellow, sunny, 15, semired)
+
+  @each $item in $items
+    .#{$prefix}controls-preview-#{$item}
+      width: 50px
+      height: 50px
+
+      position: absolute
+      top: 50%
+      left: 50%
+
+      margin-left: -25px
+      margin-top: -30px
+
+      background-image: url("#{$img-base-path}filters/#{$item}.png")
+      background-size: contain
+      @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)
+        background-image: url("#{$img-base-path}filters/#{$item}@2x.png")
+        background-size: 50% 50%
+
+  &.#{$prefix}controls-list-item-active
+    background-color: rgba(black, 0.3)

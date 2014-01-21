@@ -1,0 +1,29 @@
+$spotlightPrefix: #{$prefix}canvas-cropping-spotlight
+$boxShadowSize: 1px
+$boxShadowColor: white
+
+.#{$spotlightPrefix}
+  background: rgba(#222, 0.9)
+
+  position: absolute
+  top: 0
+  left: 0
+
+.#{$spotlightPrefix}-lc
+  +box-shadow($boxShadowSize 0 0 0 $boxShadowColor)
+
+.#{$spotlightPrefix}-rc
+  +box-shadow(-$boxShadowSize 0 0 0 $boxShadowColor)
+
+.#{$spotlightPrefix}-tc
+  +box-shadow(0 $boxShadowSize 0 0 $boxShadowColor)
+
+.#{$spotlightPrefix}-bc
+  +box-shadow(0 (-$boxShadowSize) 0 0 $boxShadowColor)
+
+.#{$prefix}canvas-cropping-center
+  position: absolute
+  top: 0
+  left: 0
+
+  cursor: move

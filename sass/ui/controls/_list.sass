@@ -1,0 +1,33 @@
+.#{$prefix}controls-list
+  +clearfix()
+  white-space: nowrap
+  overflow-x: auto
+  height: 80px
+
+  @import "scrollbars"
+
+  /*
+   * Control List Item
+   */
+  .#{$prefix}controls-item, .#{$prefix}controls-item-space
+    width: $controlsHeight / 5
+    height: $controlsHeight
+
+    position: relative
+
+    display: inline-block
+
+  .#{$prefix}controls-item
+    width: $controlsHeight
+
+    border-right: 1px solid #363636
+    &:last-child
+      border: none
+
+    background-repeat: no-repeat
+    background-position: center center
+
+    cursor: pointer
+
+    &:hover
+      +box-shadow(0 -2px 0 0 #9FBDFF inset)

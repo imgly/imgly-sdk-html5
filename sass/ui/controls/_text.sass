@@ -1,0 +1,75 @@
+// List has another button on the right,
+// add some more padding
+.#{$prefix}controls-list-text
+  padding-right: 153px
+
+.#{$prefix}controls-item
+  $items: ("helvetica", "lucida-grande", "times-new-roman")
+
+  @each $item in $items
+    &.#{$prefix}controls-item-#{$item}
+      background-image: url("#{$img-base-path}text/#{$item}.png")
+      @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)
+        background-image: url("#{$img-base-path}text/#{$item}@2x.png")
+        background-size: 50% 50%
+
+.#{$prefix}controls-text-color-dropdown
+  background: #F7F7F7
+
+  width: 167px
+  height: 105px
+
+  position: absolute
+  bottom: $controlsHeight + 10
+  left: 50%
+
+  margin-left: -90px
+
+  border-radius: 4px
+  border: 1px solid black
+  box-shadow: 0 0 0 1px rgba(white, 0.1) inset
+
+  text-align: center
+
+  padding: 6px 0 14px 0
+
+  display: none
+
+  .#{$prefix}controls-text-color
+    cursor: pointer
+
+.#{$prefix}controls-text-color
+  width: 34px
+  height: 34px
+  display: inline-block
+
+  margin: 5px
+
+  border-radius: 3px
+
+  border: 1px solid rgba(black, 0.1)
+
+// Color controls
+.#{$prefix}controls-text-color-button
+  width: 80px
+  height: 80px
+
+  cursor: pointer
+
+  position: absolute
+
+  top: 0
+  right: 73px
+
+  border-left: 1px solid #363636
+
+  > .#{$prefix}controls-text-color
+    margin: 0
+    position: absolute
+
+    top: 50%
+    left: 50%
+
+    margin-top: -17px
+    margin-left: -20px
+
