@@ -4,6 +4,8 @@
   @each $item in $items
     &.#{$prefix}controls-item-#{$item}
       background-image: url("#{$img-base-path}option-focus-#{$item}.png")
-      @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)
-        background-image: url("#{$img-base-path}option-focus-#{$item}@2x.png")
-        background-size: 50% 50%
+
+      @if $retina-support
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)
+          background-image: url("#{$img-base-path}option-focus-#{$item}@2x.png")
+          background-size: 50% 50%

@@ -24,9 +24,10 @@
   /*
    * Retina support
    */
-  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)
-    background: url("#{$img-base-path}back@2x.png") no-repeat center center
-    background-size: contain
+  @if $retina-support
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)
+      background: url("#{$img-base-path}back@2x.png") no-repeat center center
+      background-size: contain
 
 /*
  * Done button
@@ -43,7 +44,8 @@
   /*
    * Retina support
    */
-  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)
-    background: url("#{$img-base-path}done@2x.png") no-repeat center center
-    background-size: contain
+  @if $retina-support
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)
+      background: url("#{$img-base-path}done@2x.png") no-repeat center center
+      background-size: contain
 

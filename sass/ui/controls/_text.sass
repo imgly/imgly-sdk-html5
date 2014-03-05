@@ -9,9 +9,11 @@
   @each $item in $items
     &.#{$prefix}controls-item-#{$item}
       background-image: url("#{$img-base-path}text/#{$item}.png")
-      @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)
-        background-image: url("#{$img-base-path}text/#{$item}@2x.png")
-        background-size: 50% 50%
+
+      @if $retina-support
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)
+          background-image: url("#{$img-base-path}text/#{$item}@2x.png")
+          background-size: 50% 50%
 
 .#{$prefix}controls-text-color-dropdown
   background: #F7F7F7

@@ -68,13 +68,17 @@
 .#{$prefix}controls-slider-plus
   right: -20px
   background-image: url("#{$img-base-path}plus.png")
-  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)
-    background-image: url("#{$img-base-path}plus@2x.png")
-    background-size: contain
+
+  @if $retina-support
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)
+      background-image: url("#{$img-base-path}plus@2x.png")
+      background-size: contain
 
 .#{$prefix}controls-slider-minus
   left: -20px
   background-image: url("#{$img-base-path}minus.png")
-  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)
-    background-image: url("#{$img-base-path}minus@2x.png")
-    background-size: contain
+
+  @if $retina-support
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)
+      background-image: url("#{$img-base-path}minus@2x.png")
+      background-size: contain

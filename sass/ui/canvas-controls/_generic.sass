@@ -3,9 +3,11 @@
   height: 34px
 
   background: url("#{$img-base-path}crosshair.png") no-repeat top left
-  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)
-    background-image: url("#{$img-base-path}crosshair@2x.png")
-    background-size: contain
+
+  @if $retina-support
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)
+      background-image: url("#{$img-base-path}crosshair@2x.png")
+      background-size: contain
 
   position: absolute
   top: 0

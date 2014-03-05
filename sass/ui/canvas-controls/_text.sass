@@ -56,16 +56,20 @@ $textControlsBorderRadius: 3px
 .#{$prefix}canvas-text-size-smaller
   border-top-left-radius: $textControlsBorderRadius
   background: url("#{$img-base-path}minus.png") no-repeat center center
-  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)
-    background-image: url("#{$img-base-path}minus@2x.png")
-    background-size: 50% 50%
+
+  @if $retina-support
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)
+      background-image: url("#{$img-base-path}minus@2x.png")
+      background-size: 50% 50%
 
 .#{$prefix}canvas-text-size-bigger
   border-top-right-radius: $textControlsBorderRadius
   background: url("#{$img-base-path}plus.png") no-repeat center center
-  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)
-    background-image: url("#{$img-base-path}plus@2x.png")
-    background-size: 50% 50%
+
+  @if $retina-support
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)
+      background-image: url("#{$img-base-path}plus@2x.png")
+      background-size: 50% 50%
 
 // Crosshair control
 .#{$prefix}canvas-text-crosshair
