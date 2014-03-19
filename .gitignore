@@ -2,9 +2,6 @@
 .sass-cache
 
 Gemfile.lock
-
-build/*.css
-build/*.js
 node_modules
 
 twistd.pid

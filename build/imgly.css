@@ -1,0 +1,937 @@
+/* line 9, ../sass/imgly.sass */
+.imgly-container {
+  text-align: left;
+  position: relative;
+  background: #2b2b2b;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+}
+/* line 52, ../../../../.rbenv/versions/2.0.0-p353/lib/ruby/gems/2.0.0/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+.imgly-container div, .imgly-container span, .imgly-container applet, .imgly-container object, .imgly-container iframe,
+.imgly-container h1, .imgly-container h2, .imgly-container h3, .imgly-container h4, .imgly-container h5, .imgly-container h6, .imgly-container p, .imgly-container blockquote, .imgly-container pre,
+.imgly-container a, .imgly-container abbr, .imgly-container acronym, .imgly-container address, .imgly-container big, .imgly-container cite, .imgly-container code,
+.imgly-container del, .imgly-container dfn, .imgly-container em, .imgly-container img, .imgly-container ins, .imgly-container kbd, .imgly-container q, .imgly-container s, .imgly-container samp,
+.imgly-container small, .imgly-container strike, .imgly-container strong, .imgly-container sub, .imgly-container sup, .imgly-container tt, .imgly-container var,
+.imgly-container b, .imgly-container u, .imgly-container i, .imgly-container center,
+.imgly-container dl, .imgly-container dt, .imgly-container dd, .imgly-container ol, .imgly-container ul, .imgly-container li,
+.imgly-container fieldset, .imgly-container form, .imgly-container label, .imgly-container legend,
+.imgly-container table, .imgly-container caption, .imgly-container tbody, .imgly-container tfoot, .imgly-container thead, .imgly-container tr, .imgly-container th, .imgly-container td,
+.imgly-container article, .imgly-container aside, .imgly-container canvas, .imgly-container details, .imgly-container embed,
+.imgly-container figure, .imgly-container figcaption, .imgly-container footer, .imgly-container header, .imgly-container hgroup,
+.imgly-container menu, .imgly-container nav, .imgly-container output, .imgly-container ruby, .imgly-container section, .imgly-container summary,
+.imgly-container time, .imgly-container mark, .imgly-container audio, .imgly-container video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  font-size: 100%;
+  vertical-align: baseline;
+}
+/* line 55, ../../../../.rbenv/versions/2.0.0-p353/lib/ruby/gems/2.0.0/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+.imgly-container table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+/* line 57, ../../../../.rbenv/versions/2.0.0-p353/lib/ruby/gems/2.0.0/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+.imgly-container caption, .imgly-container th, .imgly-container td {
+  text-align: left;
+  font-weight: normal;
+  vertical-align: middle;
+}
+/* line 59, ../../../../.rbenv/versions/2.0.0-p353/lib/ruby/gems/2.0.0/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+.imgly-container q, .imgly-container blockquote {
+  quotes: none;
+}
+/* line 103, ../../../../.rbenv/versions/2.0.0-p353/lib/ruby/gems/2.0.0/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+.imgly-container q:before, .imgly-container q:after, .imgly-container blockquote:before, .imgly-container blockquote:after {
+  content: "";
+  content: none;
+}
+/* line 61, ../../../../.rbenv/versions/2.0.0-p353/lib/ruby/gems/2.0.0/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+.imgly-container a img {
+  border: none;
+}
+/* line 19, ../sass/imgly.sass */
+.imgly-container * {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  box-sizing: border-box;
+}
+/* line 1, ../sass/ui/_canvas.sass */
+.imgly-container .imgly-canvas-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+/* line 8, ../sass/ui/_canvas.sass */
+.imgly-container .imgly-canvas-container .imgly-canvas-controls-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: none;
+}
+/* line 1, ../sass/ui/canvas-controls/_generic.sass */
+.imgly-container .imgly-canvas-container .imgly-canvas-crosshair {
+  width: 34px;
+  height: 34px;
+  background: url("/build/assets/crosshair.png") no-repeat top left;
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin-top: -17px;
+  margin-left: -17px;
+  cursor: pointer;
+}
+/* line 21, ../sass/ui/canvas-controls/_generic.sass */
+.imgly-container .imgly-canvas-container .imgly-canvas-knob {
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  right: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin-top: -10px;
+  margin-left: -10px;
+  cursor: pointer;
+}
+/* line 5, ../sass/ui/canvas-controls/_crop.sass */
+.imgly-container .imgly-canvas-container .imgly-canvas-cropping-spotlight {
+  background: rgba(34, 34, 34, 0.9);
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+/* line 12, ../sass/ui/canvas-controls/_crop.sass */
+.imgly-container .imgly-canvas-container .imgly-canvas-cropping-spotlight-lc {
+  -webkit-box-shadow: 1px 0 0 0 white;
+  -moz-box-shadow: 1px 0 0 0 white;
+  box-shadow: 1px 0 0 0 white;
+}
+/* line 15, ../sass/ui/canvas-controls/_crop.sass */
+.imgly-container .imgly-canvas-container .imgly-canvas-cropping-spotlight-rc {
+  -webkit-box-shadow: -1px 0 0 0 white;
+  -moz-box-shadow: -1px 0 0 0 white;
+  box-shadow: -1px 0 0 0 white;
+}
+/* line 18, ../sass/ui/canvas-controls/_crop.sass */
+.imgly-container .imgly-canvas-container .imgly-canvas-cropping-spotlight-tc {
+  -webkit-box-shadow: 0 1px 0 0 white;
+  -moz-box-shadow: 0 1px 0 0 white;
+  box-shadow: 0 1px 0 0 white;
+}
+/* line 21, ../sass/ui/canvas-controls/_crop.sass */
+.imgly-container .imgly-canvas-container .imgly-canvas-cropping-spotlight-bc {
+  -webkit-box-shadow: 0 -1px 0 0 white;
+  -moz-box-shadow: 0 -1px 0 0 white;
+  box-shadow: 0 -1px 0 0 white;
+}
+/* line 24, ../sass/ui/canvas-controls/_crop.sass */
+.imgly-container .imgly-canvas-container .imgly-canvas-cropping-center {
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: move;
+}
+/* line 1, ../sass/ui/canvas-controls/_text.sass */
+.imgly-container .imgly-canvas-container .imgly-canvas-text-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border: 2px solid white;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.5);
+}
+/* line 11, ../sass/ui/canvas-controls/_text.sass */
+.imgly-container .imgly-canvas-container .imgly-canvas-text-input, .imgly-container .imgly-canvas-container .imgly-canvas-text-input-dummy {
+  -webkit-user-select: auto;
+  -moz-user-select: auto;
+  user-select: auto;
+  background: transparent;
+  border: none;
+  padding: 10px;
+  resize: none;
+  white-space: nowrap;
+  overflow: auto;
+}
+/* line 21, ../sass/ui/canvas-controls/_text.sass */
+.imgly-container .imgly-canvas-container .imgly-canvas-text-input-dummy {
+  position: absolute;
+  top: -9999;
+  left: -9999;
+  opacity: 0;
+}
+/* line 32, ../sass/ui/canvas-controls/_text.sass */
+.imgly-container .imgly-canvas-container .imgly-canvas-text-size-container {
+  width: 70px;
+  background: rgba(0, 0, 0, 0.4);
+  position: absolute;
+  top: -17px;
+  left: 0;
+  margin-top: -15px;
+  -moz-border-radius-topleft: 3px;
+  -webkit-border-top-left-radius: 3px;
+  border-top-left-radius: 3px;
+  -moz-border-radius-topright: 3px;
+  -webkit-border-top-right-radius: 3px;
+  border-top-right-radius: 3px;
+}
+/* line 45, ../sass/ui/canvas-controls/_text.sass */
+.imgly-container .imgly-canvas-container .imgly-canvas-text-size-smaller, .imgly-container .imgly-canvas-container .imgly-canvas-text-size-bigger {
+  width: 35px;
+  height: 30px;
+  float: left;
+  cursor: pointer;
+}
+/* line 53, ../sass/ui/canvas-controls/_text.sass */
+.imgly-container .imgly-canvas-container .imgly-canvas-text-size-smaller:hover, .imgly-container .imgly-canvas-container .imgly-canvas-text-size-bigger:hover {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+/* line 56, ../sass/ui/canvas-controls/_text.sass */
+.imgly-container .imgly-canvas-container .imgly-canvas-text-size-smaller {
+  border-top-left-radius: 3px;
+  background: url("/build/assets/minus.png") no-repeat center center;
+}
+/* line 65, ../sass/ui/canvas-controls/_text.sass */
+.imgly-container .imgly-canvas-container .imgly-canvas-text-size-bigger {
+  border-top-right-radius: 3px;
+  background: url("/build/assets/plus.png") no-repeat center center;
+}
+/* line 75, ../sass/ui/canvas-controls/_text.sass */
+.imgly-container .imgly-canvas-container .imgly-canvas-text-crosshair {
+  position: absolute;
+  top: 50%;
+  left: -25px;
+}
+/* line 19, ../sass/ui/_canvas.sass */
+.imgly-container .imgly-canvas-container canvas {
+  position: relative;
+}
+/* line 3, ../sass/ui/_controls.sass */
+.imgly-container .imgly-controls-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  box-sizing: content-box;
+  height: 80px;
+  width: 100%;
+  border-top: 1px solid #363636;
+  /* Back and Done buttons
+   */
+  /* Back button
+   */
+  /* Done button
+   */
+}
+/* line 14, ../sass/ui/_controls.sass */
+.imgly-container .imgly-controls-container .imgly-controls-wrapper {
+  width: 100%;
+  position: absolute;
+  z-index: 10;
+  display: none;
+  text-align: center;
+}
+/* line 23, ../sass/ui/_controls.sass */
+.imgly-container .imgly-controls-container .imgly-controls-caption {
+  font: bold 11px Helvetica;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  width: 80px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.75);
+}
+/* line 32, ../sass/ui/_controls.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item-title {
+  position: absolute;
+  bottom: 10px;
+}
+/* line 1, ../sass/ui/controls/_buttons.sass */
+.imgly-container .imgly-controls-container .imgly-controls-list-with-buttons {
+  margin-left: 80px;
+}
+/* line 7, ../sass/ui/controls/_buttons.sass */
+.imgly-container .imgly-controls-container .imgly-controls-button-back, .imgly-container .imgly-controls-container .imgly-controls-button-done {
+  width: 80px;
+  height: 80px;
+  cursor: pointer;
+}
+/* line 16, ../sass/ui/controls/_buttons.sass */
+.imgly-container .imgly-controls-container .imgly-controls-button-back {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-right: 1px solid #363636;
+  background: url("/build/assets/back.png") no-repeat center center;
+  /* Retina support
+   */
+}
+/* line 35, ../sass/ui/controls/_buttons.sass */
+.imgly-container .imgly-controls-container .imgly-controls-button-done {
+  position: absolute;
+  right: 0;
+  top: 0;
+  border-left: 1px solid #363636;
+  background: url("/build/assets/done.png") no-repeat center center;
+  /* Retina support
+   */
+}
+/* line 1, ../sass/ui/controls/_list.sass */
+.imgly-container .imgly-controls-container .imgly-controls-list {
+  overflow: hidden;
+  *zoom: 1;
+  white-space: nowrap;
+  overflow-x: auto;
+  height: 80px;
+  /* Control List Item
+   */
+}
+/* line 1, ../sass/ui/controls/_scrollbars.sass */
+.imgly-container .imgly-controls-container .imgly-controls-list::-webkit-scrollbar {
+  background: transparent;
+  width: 11px;
+  height: 11px;
+}
+/* line 6, ../sass/ui/controls/_scrollbars.sass */
+.imgly-container .imgly-controls-container .imgly-controls-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+/* line 9, ../sass/ui/controls/_scrollbars.sass */
+.imgly-container .imgly-controls-container .imgly-controls-list::-webkit-scrollbar-thumb {
+  background: #9fbdff;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  width: 5px;
+  margin: 3px;
+  border: 3px solid #2b2b2b;
+}
+/* line 12, ../sass/ui/controls/_list.sass */
+.imgly-container .imgly-controls-container .imgly-controls-list .imgly-controls-item, .imgly-container .imgly-controls-container .imgly-controls-list .imgly-controls-item-space {
+  width: 16px;
+  height: 80px;
+  position: relative;
+  display: inline-block;
+}
+/* line 20, ../sass/ui/controls/_list.sass */
+.imgly-container .imgly-controls-container .imgly-controls-list .imgly-controls-item {
+  width: 80px;
+  border-right: 1px solid #363636;
+  background-repeat: no-repeat;
+  background-position: center center;
+  cursor: pointer;
+}
+/* line 24, ../sass/ui/controls/_list.sass */
+.imgly-container .imgly-controls-container .imgly-controls-list .imgly-controls-item:last-child {
+  border: none;
+}
+/* line 32, ../sass/ui/controls/_list.sass */
+.imgly-container .imgly-controls-container .imgly-controls-list .imgly-controls-item:hover {
+  -webkit-box-shadow: 0 -2px 0 0 #9fbdff inset;
+  -moz-box-shadow: 0 -2px 0 0 #9fbdff inset;
+  box-shadow: 0 -2px 0 0 #9fbdff inset;
+}
+/* line 1, ../sass/ui/controls/_slider.sass */
+.imgly-container .imgly-controls-container .imgly-controls-slider-wrapper, .imgly-container .imgly-controls-container .imgly-controls-slider-bar {
+  height: 12px;
+}
+/* line 4, ../sass/ui/controls/_slider.sass */
+.imgly-container .imgly-controls-container .imgly-controls-slider-wrapper {
+  background: #1a1a1a;
+  border-radius: 6px;
+  display: inline-block;
+  position: relative;
+  margin-top: 33px;
+}
+/* line 14, ../sass/ui/controls/_slider.sass */
+.imgly-container .imgly-controls-container .imgly-controls-slider-bar {
+  background: #a1c0ff;
+  width: 0;
+  position: absolute;
+  left: 50%;
+}
+/* line 21, ../sass/ui/controls/_slider.sass */
+.imgly-container .imgly-controls-container .imgly-controls-slider-dot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 24px;
+  height: 24px;
+  margin-top: -12px;
+  margin-left: -12px;
+  border-radius: 50%;
+  background: #a1c0ff;
+}
+/* line 36, ../sass/ui/controls/_slider.sass */
+.imgly-container .imgly-controls-container .imgly-controls-slider {
+  width: 30px;
+  height: 30px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+  position: absolute;
+  top: 50%;
+  margin-left: -15px;
+  margin-top: -15px;
+  cursor: pointer;
+  z-index: 100;
+}
+/* line 54, ../sass/ui/controls/_slider.sass */
+.imgly-container .imgly-controls-container .imgly-controls-slider-plus, .imgly-container .imgly-controls-container .imgly-controls-slider-minus {
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  top: 50%;
+  margin-top: -8px;
+  background-repeat: no-repeat;
+  background-position: center center;
+  opacity: 0.2;
+}
+/* line 68, ../sass/ui/controls/_slider.sass */
+.imgly-container .imgly-controls-container .imgly-controls-slider-plus {
+  right: -20px;
+  background-image: url("/build/assets/plus.png");
+}
+/* line 77, ../sass/ui/controls/_slider.sass */
+.imgly-container .imgly-controls-container .imgly-controls-slider-minus {
+  left: -20px;
+  background-image: url("/build/assets/minus.png");
+}
+/* line 5, ../sass/ui/controls/_filters.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item .imgly-controls-preview-default {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -30px;
+  background-image: url("/build/assets/filters/default.png");
+  background-size: contain;
+}
+/* line 5, ../sass/ui/controls/_filters.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item .imgly-controls-preview-k1 {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -30px;
+  background-image: url("/build/assets/filters/k1.png");
+  background-size: contain;
+}
+/* line 5, ../sass/ui/controls/_filters.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item .imgly-controls-preview-k2 {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -30px;
+  background-image: url("/build/assets/filters/k2.png");
+  background-size: contain;
+}
+/* line 5, ../sass/ui/controls/_filters.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item .imgly-controls-preview-k6 {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -30px;
+  background-image: url("/build/assets/filters/k6.png");
+  background-size: contain;
+}
+/* line 5, ../sass/ui/controls/_filters.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item .imgly-controls-preview-kdynamic {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -30px;
+  background-image: url("/build/assets/filters/kdynamic.png");
+  background-size: contain;
+}
+/* line 5, ../sass/ui/controls/_filters.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item .imgly-controls-preview-fridge {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -30px;
+  background-image: url("/build/assets/filters/fridge.png");
+  background-size: contain;
+}
+/* line 5, ../sass/ui/controls/_filters.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item .imgly-controls-preview-breeze {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -30px;
+  background-image: url("/build/assets/filters/breeze.png");
+  background-size: contain;
+}
+/* line 5, ../sass/ui/controls/_filters.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item .imgly-controls-preview-orchid {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -30px;
+  background-image: url("/build/assets/filters/orchid.png");
+  background-size: contain;
+}
+/* line 5, ../sass/ui/controls/_filters.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item .imgly-controls-preview-chest {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -30px;
+  background-image: url("/build/assets/filters/chest.png");
+  background-size: contain;
+}
+/* line 5, ../sass/ui/controls/_filters.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item .imgly-controls-preview-front {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -30px;
+  background-image: url("/build/assets/filters/front.png");
+  background-size: contain;
+}
+/* line 5, ../sass/ui/controls/_filters.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item .imgly-controls-preview-fixie {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -30px;
+  background-image: url("/build/assets/filters/fixie.png");
+  background-size: contain;
+}
+/* line 5, ../sass/ui/controls/_filters.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item .imgly-controls-preview-x400 {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -30px;
+  background-image: url("/build/assets/filters/x400.png");
+  background-size: contain;
+}
+/* line 5, ../sass/ui/controls/_filters.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item .imgly-controls-preview-b-w {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -30px;
+  background-image: url("/build/assets/filters/b-w.png");
+  background-size: contain;
+}
+/* line 5, ../sass/ui/controls/_filters.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item .imgly-controls-preview-1920 {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -30px;
+  background-image: url("/build/assets/filters/1920.png");
+  background-size: contain;
+}
+/* line 5, ../sass/ui/controls/_filters.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item .imgly-controls-preview-lenin {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -30px;
+  background-image: url("/build/assets/filters/lenin.png");
+  background-size: contain;
+}
+/* line 5, ../sass/ui/controls/_filters.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item .imgly-controls-preview-quozi {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -30px;
+  background-image: url("/build/assets/filters/quozi.png");
+  background-size: contain;
+}
+/* line 5, ../sass/ui/controls/_filters.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item .imgly-controls-preview-pola-669 {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -30px;
+  background-image: url("/build/assets/filters/pola-669.png");
+  background-size: contain;
+}
+/* line 5, ../sass/ui/controls/_filters.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item .imgly-controls-preview-pola {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -30px;
+  background-image: url("/build/assets/filters/pola.png");
+  background-size: contain;
+}
+/* line 5, ../sass/ui/controls/_filters.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item .imgly-controls-preview-food {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -30px;
+  background-image: url("/build/assets/filters/food.png");
+  background-size: contain;
+}
+/* line 5, ../sass/ui/controls/_filters.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item .imgly-controls-preview-glam {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -30px;
+  background-image: url("/build/assets/filters/glam.png");
+  background-size: contain;
+}
+/* line 5, ../sass/ui/controls/_filters.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item .imgly-controls-preview-celsius {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -30px;
+  background-image: url("/build/assets/filters/celsius.png");
+  background-size: contain;
+}
+/* line 5, ../sass/ui/controls/_filters.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item .imgly-controls-preview-texas {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -30px;
+  background-image: url("/build/assets/filters/texas.png");
+  background-size: contain;
+}
+/* line 5, ../sass/ui/controls/_filters.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item .imgly-controls-preview-morning {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -30px;
+  background-image: url("/build/assets/filters/morning.png");
+  background-size: contain;
+}
+/* line 5, ../sass/ui/controls/_filters.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item .imgly-controls-preview-lomo {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -30px;
+  background-image: url("/build/assets/filters/lomo.png");
+  background-size: contain;
+}
+/* line 5, ../sass/ui/controls/_filters.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item .imgly-controls-preview-gobblin {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -30px;
+  background-image: url("/build/assets/filters/gobblin.png");
+  background-size: contain;
+}
+/* line 5, ../sass/ui/controls/_filters.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item .imgly-controls-preview-mellow {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -30px;
+  background-image: url("/build/assets/filters/mellow.png");
+  background-size: contain;
+}
+/* line 5, ../sass/ui/controls/_filters.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item .imgly-controls-preview-sunny {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -30px;
+  background-image: url("/build/assets/filters/sunny.png");
+  background-size: contain;
+}
+/* line 5, ../sass/ui/controls/_filters.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item .imgly-controls-preview-15 {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -30px;
+  background-image: url("/build/assets/filters/15.png");
+  background-size: contain;
+}
+/* line 5, ../sass/ui/controls/_filters.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item .imgly-controls-preview-semired {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -30px;
+  background-image: url("/build/assets/filters/semired.png");
+  background-size: contain;
+}
+/* line 24, ../sass/ui/controls/_filters.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-list-item-active {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+/* line 5, ../sass/ui/controls/_overview.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-filters {
+  background-image: url("/build/assets/option-filters.png");
+}
+/* line 5, ../sass/ui/controls/_overview.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-orientation {
+  background-image: url("/build/assets/option-orientation.png");
+}
+/* line 5, ../sass/ui/controls/_overview.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-focus {
+  background-image: url("/build/assets/option-focus.png");
+}
+/* line 5, ../sass/ui/controls/_overview.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-crop {
+  background-image: url("/build/assets/option-crop.png");
+}
+/* line 5, ../sass/ui/controls/_overview.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-brightness {
+  background-image: url("/build/assets/option-brightness.png");
+}
+/* line 5, ../sass/ui/controls/_overview.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-contrast {
+  background-image: url("/build/assets/option-contrast.png");
+}
+/* line 5, ../sass/ui/controls/_overview.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-saturation {
+  background-image: url("/build/assets/option-saturation.png");
+}
+/* line 5, ../sass/ui/controls/_overview.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-text {
+  background-image: url("/build/assets/option-text.png");
+}
+/* line 5, ../sass/ui/controls/_overview.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-frames {
+  background-image: url("/build/assets/option-frames.png");
+}
+/* line 5, ../sass/ui/controls/_orientation.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-rotate-l {
+  background-image: url("/build/assets/option-rotate-l.png");
+}
+/* line 5, ../sass/ui/controls/_orientation.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-rotate-r {
+  background-image: url("/build/assets/option-rotate-r.png");
+}
+/* line 5, ../sass/ui/controls/_orientation.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-flip-v {
+  background-image: url("/build/assets/option-flip-v.png");
+}
+/* line 5, ../sass/ui/controls/_orientation.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-flip-h {
+  background-image: url("/build/assets/option-flip-h.png");
+}
+/* line 5, ../sass/ui/controls/_crop.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-custom {
+  background-image: url("/build/assets/option-crop-custom.png");
+}
+/* line 5, ../sass/ui/controls/_crop.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-square {
+  background-image: url("/build/assets/option-crop-square.png");
+}
+/* line 5, ../sass/ui/controls/_crop.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-4-3 {
+  background-image: url("/build/assets/option-crop-4-3.png");
+}
+/* line 5, ../sass/ui/controls/_crop.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-16-9 {
+  background-image: url("/build/assets/option-crop-16-9.png");
+}
+/* line 5, ../sass/ui/controls/_focus.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-radial {
+  background-image: url("/build/assets/option-focus-radial.png");
+}
+/* line 5, ../sass/ui/controls/_focus.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-linear {
+  background-image: url("/build/assets/option-focus-linear.png");
+}
+/* line 3, ../sass/ui/controls/_text.sass */
+.imgly-container .imgly-controls-container .imgly-controls-list-text {
+  padding-right: 153px;
+}
+/* line 10, ../sass/ui/controls/_text.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-helvetica {
+  background-image: url("/build/assets/text/helvetica.png");
+}
+/* line 10, ../sass/ui/controls/_text.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-lucida-grande {
+  background-image: url("/build/assets/text/lucida-grande.png");
+}
+/* line 10, ../sass/ui/controls/_text.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-times-new-roman {
+  background-image: url("/build/assets/text/times-new-roman.png");
+}
+/* line 18, ../sass/ui/controls/_text.sass */
+.imgly-container .imgly-controls-container .imgly-controls-text-color-dropdown {
+  background: #f7f7f7;
+  width: 167px;
+  height: 105px;
+  position: absolute;
+  bottom: 90px;
+  left: 50%;
+  margin-left: -90px;
+  border-radius: 4px;
+  border: 1px solid black;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  text-align: center;
+  padding: 6px 0 14px 0;
+  display: none;
+}
+/* line 40, ../sass/ui/controls/_text.sass */
+.imgly-container .imgly-controls-container .imgly-controls-text-color-dropdown .imgly-controls-text-color {
+  cursor: pointer;
+}
+/* line 43, ../sass/ui/controls/_text.sass */
+.imgly-container .imgly-controls-container .imgly-controls-text-color {
+  width: 34px;
+  height: 34px;
+  display: inline-block;
+  margin: 5px;
+  border-radius: 3px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+/* line 55, ../sass/ui/controls/_text.sass */
+.imgly-container .imgly-controls-container .imgly-controls-text-color-button {
+  width: 80px;
+  height: 80px;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  right: 73px;
+  border-left: 1px solid #363636;
+}
+/* line 68, ../sass/ui/controls/_text.sass */
+.imgly-container .imgly-controls-container .imgly-controls-text-color-button > .imgly-controls-text-color {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -17px;
+  margin-left: -20px;
+}
+/* line 1, ../sass/ui/controls/_frames.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item {
+  position: absolute;
+}
+/* line 6, ../sass/ui/controls/_frames.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item .imgly-controls-frame-preview-black {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -25px;
+  margin-left: -25px;
+  background-image: url("/build/assets/frames/black-preview.png");
+  background-size: contain;
+}
+/* line 6, ../sass/ui/controls/_frames.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item .imgly-controls-frame-preview-blackwood {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -25px;
+  margin-left: -25px;
+  background-image: url("/build/assets/frames/blackwood-preview.png");
+  background-size: contain;
+}
+/* line 6, ../sass/ui/controls/_frames.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item .imgly-controls-frame-preview-dia {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -25px;
+  margin-left: -25px;
+  background-image: url("/build/assets/frames/dia-preview.png");
+  background-size: contain;
+}
