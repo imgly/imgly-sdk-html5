@@ -7,9 +7,9 @@ Auto-Enhance, Crop, Rotate, Focus, Brightness, Contrast, Saturation, and more.
 It also features state-of-the-art photo filters, designed and calibrated with a lot of love.
 A Text editor with an elegant and simple to use interface allows adding text instantly to the picture.
 
+![Example](http://i.imgur.com/wHCoc0o.png)
 
 ### Examples
-![Example](http://i.imgur.com/wHCoc0o.png)
 See the examples folder for implementation examples.
 
 ### License
