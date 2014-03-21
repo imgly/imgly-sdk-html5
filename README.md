@@ -9,6 +9,7 @@ A Text editor with an elegant and simple to use interface allows adding text ins
 
 
 ### Examples
+![Example](http://i.imgur.com/wHCoc0o.png)
 See the examples folder for implementation examples.
 
 ### License
