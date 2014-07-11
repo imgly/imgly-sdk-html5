@@ -15684,7 +15684,7 @@ UIControlsCrop = (function(_super) {
 module.exports = UIControlsCrop;
 
 
-},{"16":16,"15":15,"17":17,"14":14,"__browserify_Buffer":2,"__browserify_process":1}],8:[function(require,module,exports){
+},{"16":15,"15":16,"17":17,"14":14,"__browserify_Buffer":2,"__browserify_process":1}],8:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="18",__dirname="/vendor";var Perf;
 
 Perf = (function() {
@@ -16001,7 +16001,7 @@ EventEmitter.listenerCount = function(emitter, type) {
   return ret;
 };
 
-},{"__browserify_Buffer":2,"__browserify_process":1}],15:[function(require,module,exports){
+},{"__browserify_Buffer":2,"__browserify_process":1}],16:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="20",__dirname="/math";/*
   imglyKit
   Copyright (c) 2013 img.ly
@@ -16173,7 +16173,7 @@ Vector2 = (function() {
 module.exports = Vector2;
 
 
-},{"__browserify_Buffer":2,"__browserify_process":1}],16:[function(require,module,exports){
+},{"__browserify_Buffer":2,"__browserify_process":1}],15:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="21",__dirname="/math";/*
   imglyKit
   Copyright (c) 2013 img.ly
@@ -16741,7 +16741,7 @@ CropOperation = (function(_super) {
 module.exports = CropOperation;
 
 
-},{"30":15,"25":6,"29":21,"__browserify_Buffer":2,"__browserify_process":1}],14:[function(require,module,exports){
+},{"30":16,"25":6,"29":21,"__browserify_Buffer":2,"__browserify_process":1}],14:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="31",__dirname="/ui/controls/base";/*
   imglyKit
   Copyright (c) 2013 img.ly
@@ -16989,8 +16989,39 @@ UIControlsOverview = (function(_super) {
 module.exports = UIControlsOverview;
 
 
-},{"40":27,"42":29,"17":17,"48":35,"44":31,"46":33,"14":14,"39":26,"41":28,"38":7,"35":23,"37":25,"47":34,"36":24,"43":30,"45":32,"__browserify_Buffer":2,"__browserify_process":1}],21:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="49",__dirname="/operations";/*
+},{"40":27,"42":29,"17":17,"48":35,"44":31,"46":33,"14":14,"39":26,"41":28,"38":7,"35":23,"37":25,"47":34,"36":24,"43":30,"45":32,"__browserify_Buffer":2,"__browserify_process":1}],20:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="49",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Filter, Operation, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Operation = require("50");
+
+Filter = (function(_super) {
+  __extends(Filter, _super);
+
+  function Filter() {
+    _ref = Filter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  Filter.preview = null;
+
+  Filter.displayName = null;
+
+  return Filter;
+
+})(Operation);
+
+module.exports = Filter;
+
+
+},{"50":21,"__browserify_Buffer":2,"__browserify_process":1}],21:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="51",__dirname="/operations";/*
   imglyKit
   Copyright (c) 2013 img.ly
 */
@@ -17000,7 +17031,7 @@ var EventEmitter, Operation, Queue,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   __slice = [].slice;
 
-Queue = require("50");
+Queue = require("52");
 
 EventEmitter = require("events").EventEmitter;
 
@@ -17118,38 +17149,7 @@ Operation = (function(_super) {
 module.exports = Operation;
 
 
-},{"50":9,"__browserify_Buffer":2,"__browserify_process":1,"events":11}],20:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="51",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Filter, Operation, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Operation = require("52");
-
-Filter = (function(_super) {
-  __extends(Filter, _super);
-
-  function Filter() {
-    _ref = Filter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  Filter.preview = null;
-
-  Filter.displayName = null;
-
-  return Filter;
-
-})(Operation);
-
-module.exports = Filter;
-
-
-},{"52":21,"__browserify_Buffer":2,"__browserify_process":1}],22:[function(require,module,exports){
+},{"52":9,"__browserify_Buffer":2,"__browserify_process":1,"events":11}],22:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="53",__dirname="/ui/controls/base";/*
   imglyKit
   Copyright (c) 2013 img.ly
@@ -17440,345 +17440,8 @@ SaturationOperation = (function(_super) {
 module.exports = SaturationOperation;
 
 
-},{"55":20,"60":38,"__browserify_Buffer":2,"__browserify_process":1}],33:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="61",__dirname="/operations";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var FontOperation, Operation, Rect, Utils, Vector2,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Operation = require("29");
-
-Utils = require("25");
-
-Vector2 = require("30");
-
-Rect = require("62");
-
-FontOperation = (function(_super) {
-  __extends(FontOperation, _super);
-
-  FontOperation.prototype.renderPreview = false;
-
-  function FontOperation(app, options) {
-    this.app = app;
-    this.options = options != null ? options : {};
-    FontOperation.__super__.constructor.apply(this, arguments);
-    this.options.start = new Vector2(0.2, 0.2);
-    this.options.width = 300;
-    this.options.font = "Helvetica";
-    this.options.text = "Text";
-    this.options.color = "#ffffff";
-    this.options.fontSize = 0.1;
-    this.options.lineHeight = 1.1;
-    this.options.paddingLeft = 0;
-    this.options.paddingTop = 0;
-  }
-
-  /*
-    @param {String} font
-  */
-
-
-  FontOperation.prototype.setFont = function(font) {
-    this.options.font = font;
-    return this.emit("updateOptions", this.options);
-  };
-
-  FontOperation.prototype.apply = function(imageData) {
-    var canvas, context, line, lineHeight, lineNum, lineOffset, paddingVector, scaledFontSize, scaledStart, _i, _len, _ref;
-    scaledFontSize = this.options.fontSize * imageData.height;
-    paddingVector = new Vector2(this.options.paddingLeft, this.options.paddingTop);
-    scaledStart = new Vector2().copy(this.options.start).add(paddingVector).multiplyWithRect(imageData);
-    canvas = Utils.newCanvasFromImageData(imageData);
-    context = canvas.getContext("2d");
-    context.font = "normal " + scaledFontSize + "px " + this.options.font;
-    context.fillStyle = this.options.color;
-    context.textBaseline = "hanging";
-    lineHeight = this.options.lineHeight;
-    _ref = this.options.text.split("\n");
-    for (lineNum = _i = 0, _len = _ref.length; _i < _len; lineNum = ++_i) {
-      line = _ref[lineNum];
-      lineOffset = lineNum * scaledFontSize * lineHeight;
-      context.fillText(line, scaledStart.x, scaledStart.y + this.options.paddingLeft + lineOffset);
-    }
-    return context.getImageData(0, 0, imageData.width, imageData.height);
-  };
-
-  return FontOperation;
-
-})(Operation);
-
-module.exports = FontOperation;
-
-
-},{"62":16,"30":15,"25":6,"29":21,"__browserify_Buffer":2,"__browserify_process":1}],35:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="63",__dirname="/operations";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var FramesOperation, Operation, Queue, Rect, Utils, Vector2,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Operation = require("29");
-
-Utils = require("25");
-
-Queue = require("50");
-
-Vector2 = require("30");
-
-Rect = require("62");
-
-FramesOperation = (function(_super) {
-  __extends(FramesOperation, _super);
-
-  FramesOperation.prototype.renderPreview = true;
-
-  function FramesOperation(app, options) {
-    var _base, _base1;
-    this.app = app;
-    this.options = options != null ? options : {};
-    FramesOperation.__super__.constructor.apply(this, arguments);
-    if ((_base = this.options).frame == null) {
-      _base.frame = "black";
-    }
-    if ((_base1 = this.options).scale == null) {
-      _base1.scale = 0.1;
-    }
-  }
-
-  /*
-    @param {Integer} frame
-    @param {Float} scale
-  */
-
-
-  FramesOperation.prototype.setFrameOptions = function(frame, scale) {
-    this.options.frame = frame;
-    return this.options.scale = scale;
-  };
-
-  /*
-    @param {ImageData} imageData
-    @returns {ImageData}
-  */
-
-
-  FramesOperation.prototype.apply = function(imageData) {
-    var _this = this;
-    return Queue.promise(function(resolve, reject) {
-      var frameImage;
-      frameImage = new Image();
-      frameImage.onload = function() {
-        return resolve(frameImage);
-      };
-      return frameImage.src = _this.app.buildAssetsPath("frames/" + _this.options.frame + ".png");
-    }).then(function(frameImage) {
-      var bottomHeight, canvas, context, frameCanvas, height, i, leftWidth, lowerHeight, maxHeight, originalHeight, originalWidth, repeatCount, rightWidth, scaledMaxHeight, topHeight, upperHeight, width, xRepeatAreaEnd, xRepeatAreaStart, xRepeatMode, yRepeatAreaEnd, yRepeatAreaStart, yRepeatMode, _i, _j, _ref;
-      _ref = _this.analyzeFrameImage(frameImage), xRepeatAreaStart = _ref.xRepeatAreaStart, xRepeatAreaEnd = _ref.xRepeatAreaEnd, xRepeatMode = _ref.xRepeatMode, yRepeatAreaStart = _ref.yRepeatAreaStart, yRepeatAreaEnd = _ref.yRepeatAreaEnd, yRepeatMode = _ref.yRepeatMode, frameCanvas = _ref.frameCanvas;
-      /*
-        Create a canvas and a drawing context out of
-        the image data
-      */
-
-      canvas = Utils.newCanvasFromImageData(imageData);
-      context = canvas.getContext("2d");
-      upperHeight = yRepeatAreaStart;
-      lowerHeight = frameCanvas.height - yRepeatAreaEnd;
-      maxHeight = Math.max(lowerHeight, upperHeight);
-      scaledMaxHeight = imageData.height * _this.options.scale;
-      leftWidth = Math.round(xRepeatAreaStart * (scaledMaxHeight / maxHeight));
-      topHeight = Math.round(scaledMaxHeight * (maxHeight / upperHeight));
-      rightWidth = Math.round((frameCanvas.width - xRepeatAreaEnd) * (scaledMaxHeight / maxHeight));
-      bottomHeight = Math.round(scaledMaxHeight * (maxHeight / lowerHeight));
-      /*
-        Draw corners
-      */
-
-      context.drawImage(frameCanvas, 0, 0, xRepeatAreaStart, yRepeatAreaStart, 0, 0, leftWidth, topHeight);
-      context.drawImage(frameCanvas, xRepeatAreaEnd, 0, frameCanvas.width - xRepeatAreaEnd, yRepeatAreaStart, imageData.width - rightWidth, 0, rightWidth, topHeight);
-      context.drawImage(frameCanvas, 0, yRepeatAreaEnd, xRepeatAreaStart, frameCanvas.height - yRepeatAreaEnd, 0, imageData.height - bottomHeight, leftWidth, bottomHeight);
-      context.drawImage(frameCanvas, xRepeatAreaEnd, yRepeatAreaEnd, frameCanvas.width - xRepeatAreaEnd, frameCanvas.height - yRepeatAreaEnd, imageData.width - rightWidth, imageData.height - bottomHeight, rightWidth, bottomHeight);
-      /*
-        Draw edges
-      */
-
-      if (xRepeatMode === "stretch") {
-        context.drawImage(frameCanvas, xRepeatAreaStart, 0, xRepeatAreaEnd - xRepeatAreaStart, yRepeatAreaStart, leftWidth, 0, imageData.width - leftWidth - rightWidth, topHeight);
-        context.drawImage(frameCanvas, xRepeatAreaStart, yRepeatAreaEnd, xRepeatAreaEnd - xRepeatAreaStart, frameCanvas.height - yRepeatAreaEnd, leftWidth, imageData.height - bottomHeight, imageData.width - leftWidth - rightWidth, bottomHeight);
-      } else if (xRepeatMode === "repeat") {
-        originalWidth = xRepeatAreaEnd - xRepeatAreaStart;
-        originalHeight = yRepeatAreaStart;
-        height = topHeight;
-        width = Math.round(height * (originalWidth / originalHeight));
-        repeatCount = Math.ceil(imageData.width / width);
-        for (i = _i = 0; 0 <= repeatCount ? _i < repeatCount : _i > repeatCount; i = 0 <= repeatCount ? ++_i : --_i) {
-          context.drawImage(frameCanvas, xRepeatAreaStart, 0, xRepeatAreaEnd - xRepeatAreaStart, yRepeatAreaStart, leftWidth + i * width, 0, width, height);
-        }
-        originalHeight = frameCanvas.height - yRepeatAreaEnd;
-        height = bottomHeight;
-        width = Math.round(bottomHeight * (originalWidth / originalHeight));
-        for (i = _j = 0; 0 <= repeatCount ? _j < repeatCount : _j > repeatCount; i = 0 <= repeatCount ? ++_j : --_j) {
-          context.drawImage(frameCanvas, xRepeatAreaStart, yRepeatAreaEnd, xRepeatAreaEnd - xRepeatAreaStart, frameCanvas.height - yRepeatAreaEnd, leftWidth + i * width, imageData.height - bottomHeight, width, height);
-        }
-      }
-      if (yRepeatMode === "stretch") {
-        context.drawImage(frameCanvas, 0, yRepeatAreaStart, xRepeatAreaStart, yRepeatAreaEnd - yRepeatAreaStart, 0, topHeight, leftWidth, imageData.height - topHeight - bottomHeight);
-        context.drawImage(frameCanvas, xRepeatAreaEnd, yRepeatAreaStart, frameCanvas.width - xRepeatAreaEnd, yRepeatAreaEnd - yRepeatAreaStart, imageData.width - rightWidth, topHeight, rightWidth, imageData.height - topHeight - bottomHeight);
-      }
-      return context.getImageData(0, 0, imageData.width, imageData.height);
-    });
-  };
-
-  FramesOperation.prototype.analyzeFrameImage = function(frameImage) {
-    var a, b, canvas, context, frameImageData, g, index, r, x, xRepeatAreaEnd, xRepeatAreaStart, xRepeatMode, y, yRepeatAreaEnd, yRepeatAreaStart, yRepeatMode, _i, _j, _ref, _ref1;
-    frameImageData = Utils.getImageDataForImage(frameImage);
-    xRepeatAreaStart = null;
-    xRepeatAreaEnd = null;
-    xRepeatMode = null;
-    for (x = _i = 0, _ref = frameImageData.width; 0 <= _ref ? _i < _ref : _i > _ref; x = 0 <= _ref ? ++_i : --_i) {
-      index = x * 4;
-      r = frameImageData.data[index];
-      g = frameImageData.data[index + 1];
-      b = frameImageData.data[index + 2];
-      a = frameImageData.data[index + 3];
-      if (r === 255 && g === 255 && b === 255 && a === 255) {
-        if (xRepeatAreaStart == null) {
-          xRepeatAreaStart = x - 1;
-        }
-        xRepeatMode = "stretch";
-      }
-      if (r === 0 && g === 0 && b === 0 && a === 255) {
-        if (xRepeatAreaStart == null) {
-          xRepeatAreaStart = x - 1;
-        }
-        xRepeatMode = "repeat";
-      }
-      if (a !== 255 && (xRepeatAreaStart != null) && (xRepeatAreaEnd == null)) {
-        xRepeatAreaEnd = x - 1;
-      }
-    }
-    yRepeatAreaStart = null;
-    yRepeatAreaEnd = null;
-    yRepeatMode = null;
-    for (y = _j = 0, _ref1 = frameImageData.height; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; y = 0 <= _ref1 ? ++_j : --_j) {
-      index = (frameImageData.width * y) * 4;
-      r = frameImageData.data[index];
-      g = frameImageData.data[index + 1];
-      b = frameImageData.data[index + 2];
-      a = frameImageData.data[index + 3];
-      if (r === 255 && g === 255 && b === 255 && a === 255) {
-        if (yRepeatAreaStart == null) {
-          yRepeatAreaStart = y - 1;
-        }
-        yRepeatMode = "stretch";
-      }
-      if (r === 0 && g === 0 && b === 0 && a === 255) {
-        if (yRepeatAreaStart == null) {
-          yRepeatAreaStart = y - 1;
-        }
-        yRepeatMode = "repeat";
-      }
-      if (a !== 255 && (yRepeatAreaStart != null) && (yRepeatAreaEnd == null)) {
-        yRepeatAreaEnd = y - 1;
-      }
-    }
-    canvas = Utils.newCanvasWithDimensions({
-      width: frameImage.width - 1,
-      height: frameImage.height - 1
-    });
-    context = canvas.getContext("2d");
-    context.putImageData(frameImageData, -1, -1);
-    return {
-      xRepeatAreaStart: xRepeatAreaStart,
-      xRepeatAreaEnd: xRepeatAreaEnd,
-      xRepeatMode: xRepeatMode,
-      yRepeatAreaStart: yRepeatAreaStart,
-      yRepeatAreaEnd: yRepeatAreaEnd,
-      yRepeatMode: yRepeatMode,
-      frameCanvas: canvas
-    };
-  };
-
-  return FramesOperation;
-
-})(Operation);
-
-module.exports = FramesOperation;
-
-
-},{"62":16,"30":15,"25":6,"50":9,"29":21,"__browserify_Buffer":2,"__browserify_process":1}],23:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="64",__dirname="/ui/controls";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var List, UIControlsFilters, Utils, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-List = require("14");
-
-Utils = require("65");
-
-UIControlsFilters = (function(_super) {
-  __extends(UIControlsFilters, _super);
-
-  function UIControlsFilters() {
-    _ref = UIControlsFilters.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  UIControlsFilters.prototype.displayButtons = true;
-
-  UIControlsFilters.prototype.cssClassIdentifier = "filters";
-
-  /*
-    Initializes the container
-  */
-
-
-  UIControlsFilters.prototype.init = function() {
-    var filter, _i, _len, _ref1, _results,
-      _this = this;
-    this.createList();
-    _ref1 = [require("66"), require("67"), require("68"), require("69"), require("70"), require("71"), require("72"), require("73"), require("74"), require("75"), require("76"), require("77"), require("78"), require("79"), require("80"), require("81"), require("82"), require("83"), require("84"), require("85"), require("86"), require("87"), require("88"), require("89"), require("90"), require("91"), require("92"), require("93"), require("94")];
-    _results = [];
-    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-      filter = _ref1[_i];
-      _results.push((function(filter) {
-        var item, preview;
-        item = $("<li>").addClass(imglyKit.classPrefix + "controls-item").appendTo(_this.list);
-        preview = $("<div>").addClass(imglyKit.classPrefix + "controls-preview-" + Utils.dasherize(filter.displayName)).appendTo(item);
-        return item.click(function(e) {
-          var activeClass;
-          _this.reset();
-          activeClass = imglyKit.classPrefix + "controls-list-item-active";
-          item.addClass(activeClass);
-          return _this.emit("select", {
-            operation: filter
-          });
-        });
-      })(filter));
-    }
-    return _results;
-  };
-
-  return UIControlsFilters;
-
-})(List);
-
-module.exports = UIControlsFilters;
-
-
-},{"93":66,"72":45,"78":51,"79":52,"86":59,"74":47,"66":39,"76":49,"84":57,"71":44,"75":48,"85":58,"90":63,"67":40,"68":41,"69":42,"70":43,"80":53,"89":62,"91":64,"88":61,"73":46,"83":56,"82":55,"81":54,"94":67,"92":65,"87":60,"77":50,"65":6,"14":14,"__browserify_Buffer":2,"__browserify_process":1}],24:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="95",__dirname="/ui/controls";/*
+},{"55":20,"60":38,"__browserify_Buffer":2,"__browserify_process":1}],24:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="61",__dirname="/ui/controls";/*
   imglyKit
   Copyright (c) 2013 img.ly
 */
@@ -17807,7 +17470,7 @@ UIControlsOrientation = (function(_super) {
     this.ui = ui;
     this.controls = controls;
     UIControlsOrientation.__super__.constructor.apply(this, arguments);
-    this.operationClass = require("96");
+    this.operationClass = require("62");
     this.listItems = [
       {
         name: "Rotate L",
@@ -17836,8 +17499,72 @@ UIControlsOrientation = (function(_super) {
 module.exports = UIControlsOrientation;
 
 
-},{"96":68,"14":14,"__browserify_Buffer":2,"__browserify_process":1}],25:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="97",__dirname="/ui/controls";/*
+},{"62":39,"14":14,"__browserify_Buffer":2,"__browserify_process":1}],23:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="63",__dirname="/ui/controls";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var List, UIControlsFilters, Utils, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+List = require("14");
+
+Utils = require("64");
+
+UIControlsFilters = (function(_super) {
+  __extends(UIControlsFilters, _super);
+
+  function UIControlsFilters() {
+    _ref = UIControlsFilters.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  UIControlsFilters.prototype.displayButtons = true;
+
+  UIControlsFilters.prototype.cssClassIdentifier = "filters";
+
+  /*
+    Initializes the container
+  */
+
+
+  UIControlsFilters.prototype.init = function() {
+    var filter, _i, _len, _ref1, _results,
+      _this = this;
+    this.createList();
+    _ref1 = [require("65"), require("66"), require("67"), require("68"), require("69"), require("70"), require("71"), require("72"), require("73"), require("74"), require("75"), require("76"), require("77"), require("78"), require("79"), require("80"), require("81"), require("82"), require("83"), require("84"), require("85"), require("86"), require("87"), require("88"), require("89"), require("90"), require("91"), require("92"), require("93")];
+    _results = [];
+    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+      filter = _ref1[_i];
+      _results.push((function(filter) {
+        var item, preview;
+        item = $("<li>").addClass(imglyKit.classPrefix + "controls-item").appendTo(_this.list);
+        preview = $("<div>").addClass(imglyKit.classPrefix + "controls-preview-" + Utils.dasherize(filter.displayName)).appendTo(item);
+        return item.click(function(e) {
+          var activeClass;
+          _this.reset();
+          activeClass = imglyKit.classPrefix + "controls-list-item-active";
+          item.addClass(activeClass);
+          return _this.emit("select", {
+            operation: filter
+          });
+        });
+      })(filter));
+    }
+    return _results;
+  };
+
+  return UIControlsFilters;
+
+})(List);
+
+module.exports = UIControlsFilters;
+
+
+},{"92":67,"71":46,"77":52,"78":53,"85":60,"73":48,"65":40,"75":50,"83":58,"70":45,"74":49,"84":59,"89":64,"66":41,"67":42,"68":43,"69":44,"79":54,"88":63,"90":65,"87":62,"72":47,"82":57,"81":56,"80":55,"93":68,"91":66,"86":61,"76":51,"64":6,"14":14,"__browserify_Buffer":2,"__browserify_process":1}],25:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="94",__dirname="/ui/controls";/*
   imglyKit
   Copyright (c) 2013 img.ly
 */
@@ -17848,13 +17575,13 @@ var List, UIControlsFocus, Utils, Vector2, linearOperation, radialOperation,
 
 List = require("14");
 
-Utils = require("65");
+Utils = require("64");
 
 Vector2 = require("15");
 
-radialOperation = require("98");
+radialOperation = require("95");
 
-linearOperation = require("99");
+linearOperation = require("96");
 
 UIControlsFocus = (function(_super) {
   __extends(UIControlsFocus, _super);
@@ -18173,8 +17900,8 @@ UIControlsFocus = (function(_super) {
 module.exports = UIControlsFocus;
 
 
-},{"15":15,"99":70,"98":69,"65":6,"14":14,"__browserify_Buffer":2,"__browserify_process":1}],26:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="100",__dirname="/ui/controls";/*
+},{"15":16,"96":70,"95":69,"64":6,"14":14,"__browserify_Buffer":2,"__browserify_process":1}],26:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="97",__dirname="/ui/controls";/*
   imglyKit
   Copyright (c) 2013 img.ly
 */
@@ -18183,7 +17910,7 @@ var Slider, UIControlsBrightness, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-Slider = require("101");
+Slider = require("98");
 
 UIControlsBrightness = (function(_super) {
   __extends(UIControlsBrightness, _super);
@@ -18208,8 +17935,8 @@ UIControlsBrightness = (function(_super) {
 module.exports = UIControlsBrightness;
 
 
-},{"101":71,"__browserify_Buffer":2,"__browserify_process":1}],28:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="102",__dirname="/ui/controls";/*
+},{"98":71,"__browserify_Buffer":2,"__browserify_process":1}],28:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="99",__dirname="/ui/controls";/*
   imglyKit
   Copyright (c) 2013 img.ly
 */
@@ -18218,7 +17945,7 @@ var Slider, UIControlsContrast, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-Slider = require("101");
+Slider = require("98");
 
 UIControlsContrast = (function(_super) {
   __extends(UIControlsContrast, _super);
@@ -18243,8 +17970,8 @@ UIControlsContrast = (function(_super) {
 module.exports = UIControlsContrast;
 
 
-},{"101":71,"__browserify_Buffer":2,"__browserify_process":1}],30:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="103",__dirname="/ui/controls";/*
+},{"98":71,"__browserify_Buffer":2,"__browserify_process":1}],30:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="100",__dirname="/ui/controls";/*
   imglyKit
   Copyright (c) 2013 img.ly
 */
@@ -18253,7 +17980,7 @@ var Slider, UIControlsSaturation, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-Slider = require("101");
+Slider = require("98");
 
 UIControlsSaturation = (function(_super) {
   __extends(UIControlsSaturation, _super);
@@ -18278,8 +18005,8 @@ UIControlsSaturation = (function(_super) {
 module.exports = UIControlsSaturation;
 
 
-},{"101":71,"__browserify_Buffer":2,"__browserify_process":1}],32:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="104",__dirname="/ui/controls";/*
+},{"98":71,"__browserify_Buffer":2,"__browserify_process":1}],32:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="101",__dirname="/ui/controls";/*
   imglyKit
   Copyright (c) 2013 img.ly
 */
@@ -18594,7 +18321,280 @@ UIControlsText = (function(_super) {
 module.exports = UIControlsText;
 
 
-},{"16":16,"15":15,"46":33,"14":14,"__browserify_Buffer":2,"__browserify_process":1}],34:[function(require,module,exports){
+},{"16":15,"15":16,"46":33,"14":14,"__browserify_Buffer":2,"__browserify_process":1}],33:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="102",__dirname="/operations";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var FontOperation, Operation, Rect, Utils, Vector2,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Operation = require("29");
+
+Utils = require("25");
+
+Vector2 = require("30");
+
+Rect = require("103");
+
+FontOperation = (function(_super) {
+  __extends(FontOperation, _super);
+
+  FontOperation.prototype.renderPreview = false;
+
+  function FontOperation(app, options) {
+    this.app = app;
+    this.options = options != null ? options : {};
+    FontOperation.__super__.constructor.apply(this, arguments);
+    this.options.start = new Vector2(0.2, 0.2);
+    this.options.width = 300;
+    this.options.font = "Helvetica";
+    this.options.text = "Text";
+    this.options.color = "#ffffff";
+    this.options.fontSize = 0.1;
+    this.options.lineHeight = 1.1;
+    this.options.paddingLeft = 0;
+    this.options.paddingTop = 0;
+  }
+
+  /*
+    @param {String} font
+  */
+
+
+  FontOperation.prototype.setFont = function(font) {
+    this.options.font = font;
+    return this.emit("updateOptions", this.options);
+  };
+
+  FontOperation.prototype.apply = function(imageData) {
+    var canvas, context, line, lineHeight, lineNum, lineOffset, paddingVector, scaledFontSize, scaledStart, _i, _len, _ref;
+    scaledFontSize = this.options.fontSize * imageData.height;
+    paddingVector = new Vector2(this.options.paddingLeft, this.options.paddingTop);
+    scaledStart = new Vector2().copy(this.options.start).add(paddingVector).multiplyWithRect(imageData);
+    canvas = Utils.newCanvasFromImageData(imageData);
+    context = canvas.getContext("2d");
+    context.font = "normal " + scaledFontSize + "px " + this.options.font;
+    context.fillStyle = this.options.color;
+    context.textBaseline = "hanging";
+    lineHeight = this.options.lineHeight;
+    _ref = this.options.text.split("\n");
+    for (lineNum = _i = 0, _len = _ref.length; _i < _len; lineNum = ++_i) {
+      line = _ref[lineNum];
+      lineOffset = lineNum * scaledFontSize * lineHeight;
+      context.fillText(line, scaledStart.x, scaledStart.y + this.options.paddingLeft + lineOffset);
+    }
+    return context.getImageData(0, 0, imageData.width, imageData.height);
+  };
+
+  return FontOperation;
+
+})(Operation);
+
+module.exports = FontOperation;
+
+
+},{"103":15,"30":16,"25":6,"29":21,"__browserify_Buffer":2,"__browserify_process":1}],35:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="104",__dirname="/operations";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var FramesOperation, Operation, Queue, Rect, Utils, Vector2,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Operation = require("29");
+
+Utils = require("25");
+
+Queue = require("52");
+
+Vector2 = require("30");
+
+Rect = require("103");
+
+FramesOperation = (function(_super) {
+  __extends(FramesOperation, _super);
+
+  FramesOperation.prototype.renderPreview = true;
+
+  function FramesOperation(app, options) {
+    var _base, _base1;
+    this.app = app;
+    this.options = options != null ? options : {};
+    FramesOperation.__super__.constructor.apply(this, arguments);
+    if ((_base = this.options).frame == null) {
+      _base.frame = "black";
+    }
+    if ((_base1 = this.options).scale == null) {
+      _base1.scale = 0.1;
+    }
+  }
+
+  /*
+    @param {Integer} frame
+    @param {Float} scale
+  */
+
+
+  FramesOperation.prototype.setFrameOptions = function(frame, scale) {
+    this.options.frame = frame;
+    return this.options.scale = scale;
+  };
+
+  /*
+    @param {ImageData} imageData
+    @returns {ImageData}
+  */
+
+
+  FramesOperation.prototype.apply = function(imageData) {
+    var _this = this;
+    return Queue.promise(function(resolve, reject) {
+      var frameImage;
+      frameImage = new Image();
+      frameImage.onload = function() {
+        return resolve(frameImage);
+      };
+      return frameImage.src = _this.app.buildAssetsPath("frames/" + _this.options.frame + ".png");
+    }).then(function(frameImage) {
+      var bottomHeight, canvas, context, frameCanvas, height, i, leftWidth, lowerHeight, maxHeight, originalHeight, originalWidth, repeatCount, rightWidth, scaledMaxHeight, topHeight, upperHeight, width, xRepeatAreaEnd, xRepeatAreaStart, xRepeatMode, yRepeatAreaEnd, yRepeatAreaStart, yRepeatMode, _i, _j, _ref;
+      _ref = _this.analyzeFrameImage(frameImage), xRepeatAreaStart = _ref.xRepeatAreaStart, xRepeatAreaEnd = _ref.xRepeatAreaEnd, xRepeatMode = _ref.xRepeatMode, yRepeatAreaStart = _ref.yRepeatAreaStart, yRepeatAreaEnd = _ref.yRepeatAreaEnd, yRepeatMode = _ref.yRepeatMode, frameCanvas = _ref.frameCanvas;
+      /*
+        Create a canvas and a drawing context out of
+        the image data
+      */
+
+      canvas = Utils.newCanvasFromImageData(imageData);
+      context = canvas.getContext("2d");
+      upperHeight = yRepeatAreaStart;
+      lowerHeight = frameCanvas.height - yRepeatAreaEnd;
+      maxHeight = Math.max(lowerHeight, upperHeight);
+      scaledMaxHeight = imageData.height * _this.options.scale;
+      leftWidth = Math.round(xRepeatAreaStart * (scaledMaxHeight / maxHeight));
+      topHeight = Math.round(scaledMaxHeight * (maxHeight / upperHeight));
+      rightWidth = Math.round((frameCanvas.width - xRepeatAreaEnd) * (scaledMaxHeight / maxHeight));
+      bottomHeight = Math.round(scaledMaxHeight * (maxHeight / lowerHeight));
+      /*
+        Draw corners
+      */
+
+      context.drawImage(frameCanvas, 0, 0, xRepeatAreaStart, yRepeatAreaStart, 0, 0, leftWidth, topHeight);
+      context.drawImage(frameCanvas, xRepeatAreaEnd, 0, frameCanvas.width - xRepeatAreaEnd, yRepeatAreaStart, imageData.width - rightWidth, 0, rightWidth, topHeight);
+      context.drawImage(frameCanvas, 0, yRepeatAreaEnd, xRepeatAreaStart, frameCanvas.height - yRepeatAreaEnd, 0, imageData.height - bottomHeight, leftWidth, bottomHeight);
+      context.drawImage(frameCanvas, xRepeatAreaEnd, yRepeatAreaEnd, frameCanvas.width - xRepeatAreaEnd, frameCanvas.height - yRepeatAreaEnd, imageData.width - rightWidth, imageData.height - bottomHeight, rightWidth, bottomHeight);
+      /*
+        Draw edges
+      */
+
+      if (xRepeatMode === "stretch") {
+        context.drawImage(frameCanvas, xRepeatAreaStart, 0, xRepeatAreaEnd - xRepeatAreaStart, yRepeatAreaStart, leftWidth, 0, imageData.width - leftWidth - rightWidth, topHeight);
+        context.drawImage(frameCanvas, xRepeatAreaStart, yRepeatAreaEnd, xRepeatAreaEnd - xRepeatAreaStart, frameCanvas.height - yRepeatAreaEnd, leftWidth, imageData.height - bottomHeight, imageData.width - leftWidth - rightWidth, bottomHeight);
+      } else if (xRepeatMode === "repeat") {
+        originalWidth = xRepeatAreaEnd - xRepeatAreaStart;
+        originalHeight = yRepeatAreaStart;
+        height = topHeight;
+        width = Math.round(height * (originalWidth / originalHeight));
+        repeatCount = Math.ceil(imageData.width / width);
+        for (i = _i = 0; 0 <= repeatCount ? _i < repeatCount : _i > repeatCount; i = 0 <= repeatCount ? ++_i : --_i) {
+          context.drawImage(frameCanvas, xRepeatAreaStart, 0, xRepeatAreaEnd - xRepeatAreaStart, yRepeatAreaStart, leftWidth + i * width, 0, width, height);
+        }
+        originalHeight = frameCanvas.height - yRepeatAreaEnd;
+        height = bottomHeight;
+        width = Math.round(bottomHeight * (originalWidth / originalHeight));
+        for (i = _j = 0; 0 <= repeatCount ? _j < repeatCount : _j > repeatCount; i = 0 <= repeatCount ? ++_j : --_j) {
+          context.drawImage(frameCanvas, xRepeatAreaStart, yRepeatAreaEnd, xRepeatAreaEnd - xRepeatAreaStart, frameCanvas.height - yRepeatAreaEnd, leftWidth + i * width, imageData.height - bottomHeight, width, height);
+        }
+      }
+      if (yRepeatMode === "stretch") {
+        context.drawImage(frameCanvas, 0, yRepeatAreaStart, xRepeatAreaStart, yRepeatAreaEnd - yRepeatAreaStart, 0, topHeight, leftWidth, imageData.height - topHeight - bottomHeight);
+        context.drawImage(frameCanvas, xRepeatAreaEnd, yRepeatAreaStart, frameCanvas.width - xRepeatAreaEnd, yRepeatAreaEnd - yRepeatAreaStart, imageData.width - rightWidth, topHeight, rightWidth, imageData.height - topHeight - bottomHeight);
+      }
+      return context.getImageData(0, 0, imageData.width, imageData.height);
+    });
+  };
+
+  FramesOperation.prototype.analyzeFrameImage = function(frameImage) {
+    var a, b, canvas, context, frameImageData, g, index, r, x, xRepeatAreaEnd, xRepeatAreaStart, xRepeatMode, y, yRepeatAreaEnd, yRepeatAreaStart, yRepeatMode, _i, _j, _ref, _ref1;
+    frameImageData = Utils.getImageDataForImage(frameImage);
+    xRepeatAreaStart = null;
+    xRepeatAreaEnd = null;
+    xRepeatMode = null;
+    for (x = _i = 0, _ref = frameImageData.width; 0 <= _ref ? _i < _ref : _i > _ref; x = 0 <= _ref ? ++_i : --_i) {
+      index = x * 4;
+      r = frameImageData.data[index];
+      g = frameImageData.data[index + 1];
+      b = frameImageData.data[index + 2];
+      a = frameImageData.data[index + 3];
+      if (r === 255 && g === 255 && b === 255 && a === 255) {
+        if (xRepeatAreaStart == null) {
+          xRepeatAreaStart = x - 1;
+        }
+        xRepeatMode = "stretch";
+      }
+      if (r === 0 && g === 0 && b === 0 && a === 255) {
+        if (xRepeatAreaStart == null) {
+          xRepeatAreaStart = x - 1;
+        }
+        xRepeatMode = "repeat";
+      }
+      if (a !== 255 && (xRepeatAreaStart != null) && (xRepeatAreaEnd == null)) {
+        xRepeatAreaEnd = x - 1;
+      }
+    }
+    yRepeatAreaStart = null;
+    yRepeatAreaEnd = null;
+    yRepeatMode = null;
+    for (y = _j = 0, _ref1 = frameImageData.height; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; y = 0 <= _ref1 ? ++_j : --_j) {
+      index = (frameImageData.width * y) * 4;
+      r = frameImageData.data[index];
+      g = frameImageData.data[index + 1];
+      b = frameImageData.data[index + 2];
+      a = frameImageData.data[index + 3];
+      if (r === 255 && g === 255 && b === 255 && a === 255) {
+        if (yRepeatAreaStart == null) {
+          yRepeatAreaStart = y - 1;
+        }
+        yRepeatMode = "stretch";
+      }
+      if (r === 0 && g === 0 && b === 0 && a === 255) {
+        if (yRepeatAreaStart == null) {
+          yRepeatAreaStart = y - 1;
+        }
+        yRepeatMode = "repeat";
+      }
+      if (a !== 255 && (yRepeatAreaStart != null) && (yRepeatAreaEnd == null)) {
+        yRepeatAreaEnd = y - 1;
+      }
+    }
+    canvas = Utils.newCanvasWithDimensions({
+      width: frameImage.width - 1,
+      height: frameImage.height - 1
+    });
+    context = canvas.getContext("2d");
+    context.putImageData(frameImageData, -1, -1);
+    return {
+      xRepeatAreaStart: xRepeatAreaStart,
+      xRepeatAreaEnd: xRepeatAreaEnd,
+      xRepeatMode: xRepeatMode,
+      yRepeatAreaStart: yRepeatAreaStart,
+      yRepeatAreaEnd: yRepeatAreaEnd,
+      yRepeatMode: yRepeatMode,
+      frameCanvas: canvas
+    };
+  };
+
+  return FramesOperation;
+
+})(Operation);
+
+module.exports = FramesOperation;
+
+
+},{"103":15,"30":16,"25":6,"52":9,"29":21,"__browserify_Buffer":2,"__browserify_process":1}],34:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="105",__dirname="/ui/controls";/*
   imglyKit
   Copyright (c) 2013 img.ly
@@ -18606,7 +18606,7 @@ var List, Rect, UIControlsFrames, Utils, Vector2, _ref,
 
 List = require("14");
 
-Utils = require("65");
+Utils = require("64");
 
 Vector2 = require("15");
 
@@ -18676,7 +18676,7 @@ UIControlsFrames = (function(_super) {
 module.exports = UIControlsFrames;
 
 
-},{"16":16,"15":15,"48":35,"65":6,"14":14,"__browserify_Buffer":2,"__browserify_process":1}],68:[function(require,module,exports){
+},{"16":15,"15":16,"48":35,"64":6,"14":14,"__browserify_Buffer":2,"__browserify_process":1}],39:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="106",__dirname="/operations";/*
   imglyKit
   Copyright (c) 2013 img.ly
@@ -18831,7 +18831,7 @@ OrientationOperation = (function(_super) {
 module.exports = OrientationOperation;
 
 
-},{"25":6,"29":21,"__browserify_Buffer":2,"__browserify_process":1}],39:[function(require,module,exports){
+},{"25":6,"29":21,"__browserify_Buffer":2,"__browserify_process":1}],40:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="107",__dirname="/operations/filters";/*
   imglyKit
   Copyright (c) 2013 img.ly
@@ -18862,7 +18862,7 @@ DefaultFilter = (function(_super) {
 module.exports = DefaultFilter;
 
 
-},{"108":10,"__browserify_Buffer":2,"__browserify_process":1}],40:[function(require,module,exports){
+},{"108":10,"__browserify_Buffer":2,"__browserify_process":1}],41:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="109",__dirname="/operations/filters";/*
   imglyKit
   Copyright (c) 2013 img.ly
@@ -18903,51 +18903,8 @@ K1Filter = (function(_super) {
 module.exports = K1Filter;
 
 
-},{"110":20,"112":38,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],41:[function(require,module,exports){
+},{"110":20,"112":38,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],43:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="113",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Filter, K2Filter, SoftColorOverlay, ToneCurve, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("110");
-
-ToneCurve = require("111");
-
-SoftColorOverlay = require("114");
-
-K2Filter = (function(_super) {
-  __extends(K2Filter, _super);
-
-  function K2Filter() {
-    _ref = K2Filter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  K2Filter.preview = "k2.png";
-
-  K2Filter.displayName = "K2";
-
-  K2Filter.prototype.apply = (new ToneCurve(K2Filter.app, {
-    rgbControlPoints: [[0, 0], [54 / 255, 33 / 255], [77 / 255, 82 / 255], [94 / 255, 103 / 255], [122 / 255, 126 / 255], [177 / 255, 193 / 255], [229 / 255, 232 / 255], [1, 1]]
-  })).compose(SoftColorOverlay, {
-    r: 40,
-    g: 40,
-    b: 40
-  });
-
-  return K2Filter;
-
-})(Filter);
-
-module.exports = K2Filter;
-
-
-},{"110":20,"114":73,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],42:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="115",__dirname="/operations/filters";/*
   imglyKit
   Copyright (c) 2013 img.ly
 */
@@ -18979,7 +18936,50 @@ K6Filter = (function(_super) {
 module.exports = K6Filter;
 
 
-},{"112":38,"__browserify_Buffer":2,"__browserify_process":1}],43:[function(require,module,exports){
+},{"112":38,"__browserify_Buffer":2,"__browserify_process":1}],42:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="114",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Filter, K2Filter, SoftColorOverlay, ToneCurve, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("110");
+
+ToneCurve = require("111");
+
+SoftColorOverlay = require("115");
+
+K2Filter = (function(_super) {
+  __extends(K2Filter, _super);
+
+  function K2Filter() {
+    _ref = K2Filter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  K2Filter.preview = "k2.png";
+
+  K2Filter.displayName = "K2";
+
+  K2Filter.prototype.apply = (new ToneCurve(K2Filter.app, {
+    rgbControlPoints: [[0, 0], [54 / 255, 33 / 255], [77 / 255, 82 / 255], [94 / 255, 103 / 255], [122 / 255, 126 / 255], [177 / 255, 193 / 255], [229 / 255, 232 / 255], [1, 1]]
+  })).compose(SoftColorOverlay, {
+    r: 40,
+    g: 40,
+    b: 40
+  });
+
+  return K2Filter;
+
+})(Filter);
+
+module.exports = K2Filter;
+
+
+},{"110":20,"115":73,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],44:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="116",__dirname="/operations/filters";/*
   imglyKit
   Copyright (c) 2013 img.ly
@@ -19020,7 +19020,7 @@ KDynamicFilter = (function(_super) {
 module.exports = KDynamicFilter;
 
 
-},{"110":20,"112":38,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],44:[function(require,module,exports){
+},{"110":20,"112":38,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],45:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="117",__dirname="/operations/filters";/*
   imglyKit
   Copyright (c) 2013 img.ly
@@ -19057,7 +19057,7 @@ FridgeFilter = (function(_super) {
 module.exports = FridgeFilter;
 
 
-},{"111":72,"__browserify_Buffer":2,"__browserify_process":1}],45:[function(require,module,exports){
+},{"111":72,"__browserify_Buffer":2,"__browserify_process":1}],46:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="118",__dirname="/operations/filters";/*
   imglyKit
   Copyright (c) 2013 img.ly
@@ -19100,7 +19100,7 @@ BreezeFilter = (function(_super) {
 module.exports = BreezeFilter;
 
 
-},{"110":20,"119":74,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],46:[function(require,module,exports){
+},{"110":20,"119":74,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],47:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="120",__dirname="/operations/filters";/*
   imglyKit
   Copyright (c) 2013 img.ly
@@ -19145,7 +19145,7 @@ OrchidFilter = (function(_super) {
 module.exports = OrchidFilter;
 
 
-},{"110":20,"119":74,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],47:[function(require,module,exports){
+},{"110":20,"119":74,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],48:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="121",__dirname="/operations/filters";/*
   imglyKit
   Copyright (c) 2013 img.ly
@@ -19182,7 +19182,7 @@ ChestFilter = (function(_super) {
 module.exports = ChestFilter;
 
 
-},{"111":72,"__browserify_Buffer":2,"__browserify_process":1}],48:[function(require,module,exports){
+},{"111":72,"__browserify_Buffer":2,"__browserify_process":1}],49:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="122",__dirname="/operations/filters";/*
   imglyKit
   Copyright (c) 2013 img.ly
@@ -19219,7 +19219,7 @@ FrontFilter = (function(_super) {
 module.exports = FrontFilter;
 
 
-},{"111":72,"__browserify_Buffer":2,"__browserify_process":1}],49:[function(require,module,exports){
+},{"111":72,"__browserify_Buffer":2,"__browserify_process":1}],50:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="123",__dirname="/operations/filters";/*
   imglyKit
   Copyright (c) 2013 img.ly
@@ -19256,7 +19256,7 @@ FixieFilter = (function(_super) {
 module.exports = FixieFilter;
 
 
-},{"111":72,"__browserify_Buffer":2,"__browserify_process":1}],50:[function(require,module,exports){
+},{"111":72,"__browserify_Buffer":2,"__browserify_process":1}],51:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="124",__dirname="/operations/filters";/*
   imglyKit
   Copyright (c) 2013 img.ly
@@ -19287,7 +19287,7 @@ X400Filter = (function(_super) {
 module.exports = X400Filter;
 
 
-},{"125":75,"__browserify_Buffer":2,"__browserify_process":1}],51:[function(require,module,exports){
+},{"125":75,"__browserify_Buffer":2,"__browserify_process":1}],52:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="126",__dirname="/operations/filters";/*
   imglyKit
   Copyright (c) 2013 img.ly
@@ -19318,7 +19318,7 @@ BWFilter = (function(_super) {
 module.exports = BWFilter;
 
 
-},{"127":76,"__browserify_Buffer":2,"__browserify_process":1}],52:[function(require,module,exports){
+},{"127":76,"__browserify_Buffer":2,"__browserify_process":1}],53:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="128",__dirname="/operations/filters";/*
   imglyKit
   Copyright (c) 2013 img.ly
@@ -19357,7 +19357,7 @@ BWHardFilter = (function(_super) {
 module.exports = BWHardFilter;
 
 
-},{"110":20,"129":37,"127":76,"__browserify_Buffer":2,"__browserify_process":1}],53:[function(require,module,exports){
+},{"110":20,"129":37,"127":76,"__browserify_Buffer":2,"__browserify_process":1}],54:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="130",__dirname="/operations/filters";/*
   imglyKit
   Copyright (c) 2013 img.ly
@@ -19400,7 +19400,7 @@ LeninFilter = (function(_super) {
 module.exports = LeninFilter;
 
 
-},{"110":20,"119":74,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],54:[function(require,module,exports){
+},{"110":20,"119":74,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],55:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="131",__dirname="/operations/filters";/*
   imglyKit
   Copyright (c) 2013 img.ly
@@ -19443,55 +19443,8 @@ QuoziFilter = (function(_super) {
 module.exports = QuoziFilter;
 
 
-},{"110":20,"119":74,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],55:[function(require,module,exports){
+},{"110":20,"119":74,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],57:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="132",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Contrast, Filter, Pola669Filter, Saturation, ToneCurve, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("110");
-
-ToneCurve = require("111");
-
-Contrast = require("129");
-
-Saturation = require("112");
-
-Pola669Filter = (function(_super) {
-  __extends(Pola669Filter, _super);
-
-  function Pola669Filter() {
-    _ref = Pola669Filter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  Pola669Filter.preview = 'pola669.png';
-
-  Pola669Filter.displayName = 'Pola 669';
-
-  Pola669Filter.prototype.apply = (new ToneCurve(Pola669Filter.app, {
-    redControlPoints: [[0, 0], [56 / 255, 18 / 255], [196 / 255, 209 / 255], [1, 1]],
-    greenControlPoints: [[0, 38 / 255], [71 / 255, 84 / 255], [1, 1]],
-    blueControlPoints: [[0, 0], [131 / 255, 133 / 255], [204 / 255, 211 / 255], [1, 1]]
-  })).compose(Saturation, {
-    saturation: -0.2
-  }).compose(Contrast, {
-    contrast: 0.5
-  });
-
-  return Pola669Filter;
-
-})(Filter);
-
-module.exports = Pola669Filter;
-
-
-},{"110":20,"129":37,"112":38,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],56:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="133",__dirname="/operations/filters";/*
   imglyKit
   Copyright (c) 2013 img.ly
 */
@@ -19537,7 +19490,54 @@ PolaFilter = (function(_super) {
 module.exports = PolaFilter;
 
 
-},{"110":20,"129":37,"112":38,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],57:[function(require,module,exports){
+},{"110":20,"129":37,"112":38,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],56:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="133",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Contrast, Filter, Pola669Filter, Saturation, ToneCurve, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("110");
+
+ToneCurve = require("111");
+
+Contrast = require("129");
+
+Saturation = require("112");
+
+Pola669Filter = (function(_super) {
+  __extends(Pola669Filter, _super);
+
+  function Pola669Filter() {
+    _ref = Pola669Filter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  Pola669Filter.preview = 'pola669.png';
+
+  Pola669Filter.displayName = 'Pola 669';
+
+  Pola669Filter.prototype.apply = (new ToneCurve(Pola669Filter.app, {
+    redControlPoints: [[0, 0], [56 / 255, 18 / 255], [196 / 255, 209 / 255], [1, 1]],
+    greenControlPoints: [[0, 38 / 255], [71 / 255, 84 / 255], [1, 1]],
+    blueControlPoints: [[0, 0], [131 / 255, 133 / 255], [204 / 255, 211 / 255], [1, 1]]
+  })).compose(Saturation, {
+    saturation: -0.2
+  }).compose(Contrast, {
+    contrast: 0.5
+  });
+
+  return Pola669Filter;
+
+})(Filter);
+
+module.exports = Pola669Filter;
+
+
+},{"110":20,"129":37,"112":38,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],58:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="134",__dirname="/operations/filters";/*
   imglyKit
   Copyright (c) 2013 img.ly
@@ -19578,7 +19578,7 @@ FoodFilter = (function(_super) {
 module.exports = FoodFilter;
 
 
-},{"110":20,"129":37,"112":38,"__browserify_Buffer":2,"__browserify_process":1}],58:[function(require,module,exports){
+},{"110":20,"129":37,"112":38,"__browserify_Buffer":2,"__browserify_process":1}],59:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="135",__dirname="/operations/filters";/*
   imglyKit
   Copyright (c) 2013 img.ly
@@ -19623,7 +19623,7 @@ GlamFilter = (function(_super) {
 module.exports = GlamFilter;
 
 
-},{"110":20,"129":37,"127":76,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],59:[function(require,module,exports){
+},{"110":20,"129":37,"127":76,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],60:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="136",__dirname="/operations/filters";/*
   imglyKit
   Copyright (c) 2013 img.ly
@@ -19660,7 +19660,7 @@ CelsiusFilter = (function(_super) {
 module.exports = CelsiusFilter;
 
 
-},{"111":72,"__browserify_Buffer":2,"__browserify_process":1}],60:[function(require,module,exports){
+},{"111":72,"__browserify_Buffer":2,"__browserify_process":1}],61:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="137",__dirname="/operations/filters";/*
   imglyKit
   Copyright (c) 2013 img.ly
@@ -19697,7 +19697,7 @@ TexasFilter = (function(_super) {
 module.exports = TexasFilter;
 
 
-},{"111":72,"__browserify_Buffer":2,"__browserify_process":1}],61:[function(require,module,exports){
+},{"111":72,"__browserify_Buffer":2,"__browserify_process":1}],62:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="138",__dirname="/operations/filters";/*
   imglyKit
   Copyright (c) 2013 img.ly
@@ -19738,7 +19738,7 @@ MorningFilter = (function(_super) {
 module.exports = MorningFilter;
 
 
-},{"110":20,"139":77,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],62:[function(require,module,exports){
+},{"110":20,"139":77,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],63:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="140",__dirname="/operations/filters";/*
   imglyKit
   Copyright (c) 2013 img.ly
@@ -19777,7 +19777,7 @@ LomoFilter = (function(_super) {
 module.exports = LomoFilter;
 
 
-},{"111":72,"__browserify_Buffer":2,"__browserify_process":1}],63:[function(require,module,exports){
+},{"111":72,"__browserify_Buffer":2,"__browserify_process":1}],64:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="141",__dirname="/operations/filters";/*
   imglyKit
   Copyright (c) 2013 img.ly
@@ -19808,7 +19808,7 @@ GobblinFilter = (function(_super) {
 module.exports = GobblinFilter;
 
 
-},{"142":78,"__browserify_Buffer":2,"__browserify_process":1}],64:[function(require,module,exports){
+},{"142":78,"__browserify_Buffer":2,"__browserify_process":1}],65:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="143",__dirname="/operations/filters";/*
   imglyKit
   Copyright (c) 2013 img.ly
@@ -19845,7 +19845,7 @@ MellowFilter = (function(_super) {
 module.exports = MellowFilter;
 
 
-},{"111":72,"__browserify_Buffer":2,"__browserify_process":1}],65:[function(require,module,exports){
+},{"111":72,"__browserify_Buffer":2,"__browserify_process":1}],66:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="144",__dirname="/operations/filters";/*
   imglyKit
   Copyright (c) 2013 img.ly
@@ -19890,55 +19890,8 @@ SunnyFilter = (function(_super) {
 module.exports = SunnyFilter;
 
 
-},{"110":20,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],66:[function(require,module,exports){
+},{"110":20,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],68:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="145",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var A15Filter, Brightness, Contrast, Filter, ToneCurve, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("110");
-
-Contrast = require("129");
-
-Brightness = require("146");
-
-ToneCurve = require("111");
-
-A15Filter = (function(_super) {
-  __extends(A15Filter, _super);
-
-  function A15Filter() {
-    _ref = A15Filter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  A15Filter.preview = '15.png';
-
-  A15Filter.displayName = '15';
-
-  A15Filter.prototype.apply = (new Contrast(A15Filter.app, {
-    contrast: -0.37
-  })).compose(Brightness, {
-    brightness: 0.12
-  }).compose(ToneCurve, {
-    redControlPoints: [[0, 38 / 255], [94 / 255, 94 / 255], [148 / 255, 142 / 255], [175 / 255, 187 / 255], [1, 1]],
-    greenControlPoints: [[0, 0], [77 / 255, 53 / 255], [171 / 255, 190 / 255], [1, 1]],
-    blueControlPoints: [[0, 10 / 255], [48 / 255, 85 / 255], [174 / 255, 228 / 255], [1, 1]]
-  });
-
-  return A15Filter;
-
-})(Filter);
-
-module.exports = A15Filter;
-
-
-},{"110":20,"146":36,"129":37,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],67:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="147",__dirname="/operations/filters";/*
   imglyKit
   Copyright (c) 2013 img.ly
 */
@@ -19978,8 +19931,217 @@ SemiRedFilter = (function(_super) {
 module.exports = SemiRedFilter;
 
 
-},{"110":20,"139":77,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],69:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="148",__dirname="/operations/focus";/*
+},{"110":20,"139":77,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],67:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="146",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var A15Filter, Brightness, Contrast, Filter, ToneCurve, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("110");
+
+Contrast = require("129");
+
+Brightness = require("147");
+
+ToneCurve = require("111");
+
+A15Filter = (function(_super) {
+  __extends(A15Filter, _super);
+
+  function A15Filter() {
+    _ref = A15Filter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  A15Filter.preview = '15.png';
+
+  A15Filter.displayName = '15';
+
+  A15Filter.prototype.apply = (new Contrast(A15Filter.app, {
+    contrast: -0.37
+  })).compose(Brightness, {
+    brightness: 0.12
+  }).compose(ToneCurve, {
+    redControlPoints: [[0, 38 / 255], [94 / 255, 94 / 255], [148 / 255, 142 / 255], [175 / 255, 187 / 255], [1, 1]],
+    greenControlPoints: [[0, 0], [77 / 255, 53 / 255], [171 / 255, 190 / 255], [1, 1]],
+    blueControlPoints: [[0, 10 / 255], [48 / 255, 85 / 255], [174 / 255, 228 / 255], [1, 1]]
+  });
+
+  return A15Filter;
+
+})(Filter);
+
+module.exports = A15Filter;
+
+
+},{"110":20,"147":36,"129":37,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],37:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="148",__dirname="/operations/filters/primitives";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Filter, PrimitiveContrastFilter,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("27");
+
+PrimitiveContrastFilter = (function(_super) {
+  __extends(PrimitiveContrastFilter, _super);
+
+  function PrimitiveContrastFilter(app, options) {
+    this.app = app;
+    if (options == null) {
+      options = {};
+    }
+    PrimitiveContrastFilter.__super__.constructor.apply(this, arguments);
+    this.setContrast(options.contrast);
+  }
+
+  PrimitiveContrastFilter.prototype.apply = function(imageData) {
+    var h, index, w, x, y, _i, _j;
+    w = imageData.width;
+    h = imageData.height;
+    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
+      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
+        index = (w * y + x) * 4;
+        if (this.contrast > 0) {
+          imageData.data[index] = (imageData.data[index] - 128) / (1 - this.contrast) + 128;
+          imageData.data[index + 1] = (imageData.data[index + 1] - 128) / (1 - this.contrast) + 128;
+          imageData.data[index + 2] = (imageData.data[index + 2] - 128) / (1 - this.contrast) + 128;
+          imageData.data[index + 3] = 255;
+        } else {
+          imageData.data[index] = (imageData.data[index] - 128) * (1 + this.contrast) + 128;
+          imageData.data[index + 1] = (imageData.data[index + 1] - 128) * (1 + this.contrast) + 128;
+          imageData.data[index + 2] = (imageData.data[index + 2] - 128) * (1 + this.contrast) + 128;
+          imageData.data[index + 3] = 255;
+        }
+      }
+    }
+    return imageData;
+  };
+
+  PrimitiveContrastFilter.prototype.setContrast = function(contrast) {
+    return this.contrast = typeof contrast === 'number' ? contrast : 1.0;
+  };
+
+  return PrimitiveContrastFilter;
+
+})(Filter);
+
+module.exports = PrimitiveContrastFilter;
+
+
+},{"27":20,"__browserify_Buffer":2,"__browserify_process":1}],36:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="149",__dirname="/operations/filters/primitives";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Filter, PrimitiveBrightnessFilter,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("27");
+
+PrimitiveBrightnessFilter = (function(_super) {
+  __extends(PrimitiveBrightnessFilter, _super);
+
+  function PrimitiveBrightnessFilter(options) {
+    if (options == null) {
+      options = {};
+    }
+    PrimitiveBrightnessFilter.__super__.constructor.apply(this, arguments);
+    this.setBrightness(options.brightness);
+  }
+
+  PrimitiveBrightnessFilter.prototype.apply = function(imageData) {
+    var h, index, w, x, y, _i, _j;
+    w = imageData.width;
+    h = imageData.height;
+    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
+      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
+        index = (w * y + x) * 4;
+        imageData.data[index] = Math.min(imageData.data[index] + this.brightness * 255, 255);
+        imageData.data[index + 1] = Math.min(imageData.data[index + 1] + this.brightness * 255, 255);
+        imageData.data[index + 2] = Math.min(imageData.data[index + 2] + this.brightness * 255, 255);
+        imageData.data[index + 3] = 255;
+      }
+    }
+    return imageData;
+  };
+
+  PrimitiveBrightnessFilter.prototype.setBrightness = function(brightness) {
+    return this.brightness = typeof brightness === 'number' ? brightness : 0.0;
+  };
+
+  return PrimitiveBrightnessFilter;
+
+})(Filter);
+
+module.exports = PrimitiveBrightnessFilter;
+
+
+},{"27":20,"__browserify_Buffer":2,"__browserify_process":1}],38:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="150",__dirname="/operations/filters/primitives";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Filter, PrimitiveSaturationFilter,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("27");
+
+PrimitiveSaturationFilter = (function(_super) {
+  __extends(PrimitiveSaturationFilter, _super);
+
+  function PrimitiveSaturationFilter(app, options) {
+    this.app = app;
+    if (options == null) {
+      options = {};
+    }
+    PrimitiveSaturationFilter.__super__.constructor.apply(this, arguments);
+    if (options.saturation != null) {
+      this.setSaturation(options.saturation);
+    }
+  }
+
+  PrimitiveSaturationFilter.prototype.setSaturation = function(saturation) {
+    return this.saturation = typeof saturation === 'number' ? saturation + 1 : 1;
+  };
+
+  PrimitiveSaturationFilter.prototype.apply = function(imageData) {
+    var h, index, luminance, w, x, y, _i, _j;
+    w = imageData.width;
+    h = imageData.height;
+    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
+      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
+        index = (w * y + x) * 4;
+        luminance = imageData.data[index] * 0.2125 + imageData.data[index + 1] * 0.7154 + imageData.data[index + 2] * 0.0721;
+        imageData.data[index] = luminance * (1 - this.saturation) + (imageData.data[index] * this.saturation);
+        imageData.data[index + 1] = luminance * (1 - this.saturation) + (imageData.data[index + 1] * this.saturation);
+        imageData.data[index + 2] = luminance * (1 - this.saturation) + (imageData.data[index + 2] * this.saturation);
+        imageData.data[index + 3] = 255;
+      }
+    }
+    return imageData;
+  };
+
+  return PrimitiveSaturationFilter;
+
+})(Filter);
+
+module.exports = PrimitiveSaturationFilter;
+
+
+},{"27":20,"__browserify_Buffer":2,"__browserify_process":1}],69:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="151",__dirname="/operations/focus";/*
   imglyKit
   Copyright (c) 2013 img.ly
 */
@@ -20064,8 +20226,8 @@ RadialFocus = (function(_super) {
 module.exports = RadialFocus;
 
 
-},{"15":15,"37":79,"__browserify_Buffer":2,"__browserify_process":1}],70:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="149",__dirname="/operations/focus";/*
+},{"15":16,"37":79,"__browserify_Buffer":2,"__browserify_process":1}],70:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="152",__dirname="/operations/focus";/*
   imglyKit
   Copyright (c) 2013 img.ly
 */
@@ -20154,169 +20316,7 @@ LinearFocus = (function(_super) {
 module.exports = LinearFocus;
 
 
-},{"15":15,"37":79,"__browserify_Buffer":2,"__browserify_process":1}],36:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="150",__dirname="/operations/filters/primitives";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Filter, PrimitiveBrightnessFilter,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("27");
-
-PrimitiveBrightnessFilter = (function(_super) {
-  __extends(PrimitiveBrightnessFilter, _super);
-
-  function PrimitiveBrightnessFilter(options) {
-    if (options == null) {
-      options = {};
-    }
-    PrimitiveBrightnessFilter.__super__.constructor.apply(this, arguments);
-    this.setBrightness(options.brightness);
-  }
-
-  PrimitiveBrightnessFilter.prototype.apply = function(imageData) {
-    var h, index, w, x, y, _i, _j;
-    w = imageData.width;
-    h = imageData.height;
-    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
-      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
-        index = (w * y + x) * 4;
-        imageData.data[index] = Math.min(imageData.data[index] + this.brightness * 255, 255);
-        imageData.data[index + 1] = Math.min(imageData.data[index + 1] + this.brightness * 255, 255);
-        imageData.data[index + 2] = Math.min(imageData.data[index + 2] + this.brightness * 255, 255);
-        imageData.data[index + 3] = 255;
-      }
-    }
-    return imageData;
-  };
-
-  PrimitiveBrightnessFilter.prototype.setBrightness = function(brightness) {
-    return this.brightness = typeof brightness === 'number' ? brightness : 0.0;
-  };
-
-  return PrimitiveBrightnessFilter;
-
-})(Filter);
-
-module.exports = PrimitiveBrightnessFilter;
-
-
-},{"27":20,"__browserify_Buffer":2,"__browserify_process":1}],37:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="151",__dirname="/operations/filters/primitives";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Filter, PrimitiveContrastFilter,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("27");
-
-PrimitiveContrastFilter = (function(_super) {
-  __extends(PrimitiveContrastFilter, _super);
-
-  function PrimitiveContrastFilter(app, options) {
-    this.app = app;
-    if (options == null) {
-      options = {};
-    }
-    PrimitiveContrastFilter.__super__.constructor.apply(this, arguments);
-    this.setContrast(options.contrast);
-  }
-
-  PrimitiveContrastFilter.prototype.apply = function(imageData) {
-    var h, index, w, x, y, _i, _j;
-    w = imageData.width;
-    h = imageData.height;
-    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
-      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
-        index = (w * y + x) * 4;
-        if (this.contrast > 0) {
-          imageData.data[index] = (imageData.data[index] - 128) / (1 - this.contrast) + 128;
-          imageData.data[index + 1] = (imageData.data[index + 1] - 128) / (1 - this.contrast) + 128;
-          imageData.data[index + 2] = (imageData.data[index + 2] - 128) / (1 - this.contrast) + 128;
-          imageData.data[index + 3] = 255;
-        } else {
-          imageData.data[index] = (imageData.data[index] - 128) * (1 + this.contrast) + 128;
-          imageData.data[index + 1] = (imageData.data[index + 1] - 128) * (1 + this.contrast) + 128;
-          imageData.data[index + 2] = (imageData.data[index + 2] - 128) * (1 + this.contrast) + 128;
-          imageData.data[index + 3] = 255;
-        }
-      }
-    }
-    return imageData;
-  };
-
-  PrimitiveContrastFilter.prototype.setContrast = function(contrast) {
-    return this.contrast = typeof contrast === 'number' ? contrast : 1.0;
-  };
-
-  return PrimitiveContrastFilter;
-
-})(Filter);
-
-module.exports = PrimitiveContrastFilter;
-
-
-},{"27":20,"__browserify_Buffer":2,"__browserify_process":1}],38:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="152",__dirname="/operations/filters/primitives";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Filter, PrimitiveSaturationFilter,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("27");
-
-PrimitiveSaturationFilter = (function(_super) {
-  __extends(PrimitiveSaturationFilter, _super);
-
-  function PrimitiveSaturationFilter(app, options) {
-    this.app = app;
-    if (options == null) {
-      options = {};
-    }
-    PrimitiveSaturationFilter.__super__.constructor.apply(this, arguments);
-    if (options.saturation != null) {
-      this.setSaturation(options.saturation);
-    }
-  }
-
-  PrimitiveSaturationFilter.prototype.setSaturation = function(saturation) {
-    return this.saturation = typeof saturation === 'number' ? saturation + 1 : 1;
-  };
-
-  PrimitiveSaturationFilter.prototype.apply = function(imageData) {
-    var h, index, luminance, w, x, y, _i, _j;
-    w = imageData.width;
-    h = imageData.height;
-    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
-      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
-        index = (w * y + x) * 4;
-        luminance = imageData.data[index] * 0.2125 + imageData.data[index + 1] * 0.7154 + imageData.data[index + 2] * 0.0721;
-        imageData.data[index] = luminance * (1 - this.saturation) + (imageData.data[index] * this.saturation);
-        imageData.data[index + 1] = luminance * (1 - this.saturation) + (imageData.data[index + 1] * this.saturation);
-        imageData.data[index + 2] = luminance * (1 - this.saturation) + (imageData.data[index + 2] * this.saturation);
-        imageData.data[index + 3] = 255;
-      }
-    }
-    return imageData;
-  };
-
-  return PrimitiveSaturationFilter;
-
-})(Filter);
-
-module.exports = PrimitiveSaturationFilter;
-
-
-},{"27":20,"__browserify_Buffer":2,"__browserify_process":1}],71:[function(require,module,exports){
+},{"15":16,"37":79,"__browserify_Buffer":2,"__browserify_process":1}],71:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="153",__dirname="/ui/controls/base";/*
   imglyKit
   Copyright (c) 2013 img.ly
@@ -20649,8 +20649,296 @@ PrimitiveToneCurveFilter = (function(_super) {
 module.exports = PrimitiveToneCurveFilter;
 
 
+},{"27":20,"__browserify_Buffer":2,"__browserify_process":1}],73:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="155",__dirname="/operations/filters/primitives";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Filter, PrimitiveSoftColorOverlayFilter, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("27");
+
+PrimitiveSoftColorOverlayFilter = (function(_super) {
+  __extends(PrimitiveSoftColorOverlayFilter, _super);
+
+  function PrimitiveSoftColorOverlayFilter() {
+    _ref = PrimitiveSoftColorOverlayFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  PrimitiveSoftColorOverlayFilter.prototype.apply = function(imageData) {
+    var h, index, w, x, y, _i, _j;
+    w = imageData.width;
+    h = imageData.height;
+    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
+      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
+        index = (w * y + x) * 4;
+        imageData.data[index] = Math.max(this.options.r, imageData.data[index]);
+        imageData.data[index + 1] = Math.max(this.options.g, imageData.data[index + 1]);
+        imageData.data[index + 2] = Math.max(this.options.b, imageData.data[index + 2]);
+        imageData.data[index + 3] = 255;
+      }
+    }
+    return imageData;
+  };
+
+  return PrimitiveSoftColorOverlayFilter;
+
+})(Filter);
+
+module.exports = PrimitiveSoftColorOverlayFilter;
+
+
+},{"27":20,"__browserify_Buffer":2,"__browserify_process":1}],75:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="156",__dirname="/operations/filters/primitives";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Filter, PrimitiveX400Filter, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("27");
+
+PrimitiveX400Filter = (function(_super) {
+  __extends(PrimitiveX400Filter, _super);
+
+  function PrimitiveX400Filter() {
+    _ref = PrimitiveX400Filter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  PrimitiveX400Filter.prototype.apply = function(imageData) {
+    var gray, h, index, w, x, y, _i, _j;
+    w = imageData.width;
+    h = imageData.height;
+    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
+      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
+        index = (w * y + x) * 4;
+        gray = imageData.data[index] / 255 * 0.3 + imageData.data[index + 1] / 255 * 0.3 + imageData.data[index + 2] / 255 * 0.3;
+        gray -= 0.2;
+        gray = Math.max(0.0, Math.min(1.0, gray));
+        gray += 0.15;
+        gray *= 1.4;
+        gray *= 255;
+        imageData.data[index] = gray;
+        imageData.data[index + 1] = gray;
+        imageData.data[index + 2] = gray;
+        imageData.data[index + 3] = 255;
+      }
+    }
+    return imageData;
+  };
+
+  return PrimitiveX400Filter;
+
+})(Filter);
+
+module.exports = PrimitiveX400Filter;
+
+
+},{"27":20,"__browserify_Buffer":2,"__browserify_process":1}],74:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="157",__dirname="/operations/filters/primitives";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Filter, PrimitiveDesaturationFilter,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("27");
+
+PrimitiveDesaturationFilter = (function(_super) {
+  __extends(PrimitiveDesaturationFilter, _super);
+
+  function PrimitiveDesaturationFilter(app, options) {
+    this.app = app;
+    if (options == null) {
+      options = {};
+    }
+    PrimitiveDesaturationFilter.__super__.constructor.apply(this, arguments);
+    if (this.desaturation == null) {
+      this.desaturation = options != null ? options.desaturation : void 0;
+    }
+  }
+
+  PrimitiveDesaturationFilter.prototype.apply = function(imageData) {
+    var h, index, luminance, w, x, y, _i, _j;
+    w = imageData.width;
+    h = imageData.height;
+    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
+      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
+        index = (w * y + x) * 4;
+        luminance = imageData.data[index] * 0.3 + imageData.data[index + 1] * 0.59 + imageData.data[index + 2] * 0.11;
+        imageData.data[index] = luminance * (1 - this.desaturation) + (imageData.data[index] * this.desaturation);
+        imageData.data[index + 1] = luminance * (1 - this.desaturation) + (imageData.data[index + 1] * this.desaturation);
+        imageData.data[index + 2] = luminance * (1 - this.desaturation) + (imageData.data[index + 2] * this.desaturation);
+        imageData.data[index + 3] = 255;
+      }
+    }
+    return imageData;
+  };
+
+  return PrimitiveDesaturationFilter;
+
+})(Filter);
+
+module.exports = PrimitiveDesaturationFilter;
+
+
+},{"27":20,"__browserify_Buffer":2,"__browserify_process":1}],76:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="158",__dirname="/operations/filters/primitives";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Filter, PrimtiveGrayscaleFilter, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("27");
+
+PrimtiveGrayscaleFilter = (function(_super) {
+  __extends(PrimtiveGrayscaleFilter, _super);
+
+  function PrimtiveGrayscaleFilter() {
+    _ref = PrimtiveGrayscaleFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  PrimtiveGrayscaleFilter.prototype.apply = function(imageData) {
+    var h, index, luminance, w, x, y, _i, _j;
+    w = imageData.width;
+    h = imageData.height;
+    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
+      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
+        index = (w * y + x) * 4;
+        luminance = imageData.data[index] * 0.2125 + imageData.data[index + 1] * 0.7154 + imageData.data[index + 2] * 0.0721;
+        imageData.data[index] = luminance;
+        imageData.data[index + 1] = luminance;
+        imageData.data[index + 2] = luminance;
+        imageData.data[index + 3] = 255;
+      }
+    }
+    return imageData;
+  };
+
+  return PrimtiveGrayscaleFilter;
+
+})(Filter);
+
+module.exports = PrimtiveGrayscaleFilter;
+
+
+},{"27":20,"__browserify_Buffer":2,"__browserify_process":1}],77:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="159",__dirname="/operations/filters/primitives";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Filter, PrimitiveGlowFilter,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("27");
+
+PrimitiveGlowFilter = (function(_super) {
+  __extends(PrimitiveGlowFilter, _super);
+
+  function PrimitiveGlowFilter(options) {
+    if (options == null) {
+      options = {};
+    }
+    PrimitiveGlowFilter.__super__.constructor.apply(this, arguments);
+    this.setColorToAdd(options.r, options.g, options.b);
+  }
+
+  PrimitiveGlowFilter.prototype.apply = function(imageData) {
+    var d, h, index, nx, ny, scalarX, scalarY, w, x, x01, y, y01, _i, _j;
+    w = imageData.width;
+    h = imageData.height;
+    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
+      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
+        index = (w * y + x) * 4;
+        x01 = x / w;
+        y01 = y / h;
+        nx = (x01 - 0.5) / 0.75;
+        ny = (y01 - 0.5) / 0.75;
+        scalarX = nx * nx;
+        scalarY = ny * ny;
+        d = 1 - (scalarX + scalarY);
+        d = Math.min(Math.max(d, 0.1), 1.0);
+        imageData.data[index] = imageData.data[index] * (d * this.colorToAdd[0]);
+        imageData.data[index + 1] = imageData.data[index + 1] * (d * this.colorToAdd[1]);
+        imageData.data[index + 2] = imageData.data[index + 2] * (d * this.colorToAdd[2]);
+        imageData.data[index + 3] = 255;
+      }
+    }
+    return imageData;
+  };
+
+  PrimitiveGlowFilter.prototype.setColorToAdd = function(r, g, b) {
+    return this.colorToAdd = [typeof r === 'number' ? r : 1.0, typeof g === 'number' ? g : 1.0, typeof b === 'number' ? b : 1.0];
+  };
+
+  return PrimitiveGlowFilter;
+
+})(Filter);
+
+module.exports = PrimitiveGlowFilter;
+
+
+},{"27":20,"__browserify_Buffer":2,"__browserify_process":1}],78:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="160",__dirname="/operations/filters/primitives";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Filter, PrimitiveGobblinFilter, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("27");
+
+PrimitiveGobblinFilter = (function(_super) {
+  __extends(PrimitiveGobblinFilter, _super);
+
+  function PrimitiveGobblinFilter() {
+    _ref = PrimitiveGobblinFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  PrimitiveGobblinFilter.prototype.apply = function(imageData) {
+    var h, index, w, x, y, _i, _j;
+    w = imageData.width;
+    h = imageData.height;
+    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
+      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
+        index = (w * y + x) * 4;
+        imageData.data[index + 2] = imageData.data[index + 1] * 0.33;
+        imageData.data[index] = imageData.data[index] * 0.6;
+        imageData.data[index + 2] += imageData.data[index] * 0.33;
+        imageData.data[index + 1] = imageData.data[index + 1] * 0.7;
+        imageData.data[index + 3] = 255;
+      }
+    }
+    return imageData;
+  };
+
+  return PrimitiveGobblinFilter;
+
+})(Filter);
+
+module.exports = PrimitiveGobblinFilter;
+
+
 },{"27":20,"__browserify_Buffer":2,"__browserify_process":1}],79:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="155",__dirname="/operations/focus";/*
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="161",__dirname="/operations/focus";/*
   imglyKit
   Copyright (c) 2013 img.ly
 */
@@ -20684,9 +20972,9 @@ mul_table = [512, 512, 456, 512, 328, 456, 335, 512, 405, 328, 271, 456, 388, 33
 
 shg_table = [9, 11, 12, 13, 13, 14, 14, 15, 15, 15, 15, 16, 16, 16, 16, 17, 17, 17, 17, 17, 17, 17, 18, 18, 18, 18, 18, 18, 18, 18, 18, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24];
 
-Operation = require("52");
+Operation = require("50");
 
-Utils = require("65");
+Utils = require("64");
 
 Focus = (function(_super) {
   __extends(Focus, _super);
@@ -20907,293 +21195,5 @@ Focus = (function(_super) {
 module.exports = Focus;
 
 
-},{"65":6,"52":21,"__browserify_Buffer":2,"__browserify_process":1}],73:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="156",__dirname="/operations/filters/primitives";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Filter, PrimitiveSoftColorOverlayFilter, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("27");
-
-PrimitiveSoftColorOverlayFilter = (function(_super) {
-  __extends(PrimitiveSoftColorOverlayFilter, _super);
-
-  function PrimitiveSoftColorOverlayFilter() {
-    _ref = PrimitiveSoftColorOverlayFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  PrimitiveSoftColorOverlayFilter.prototype.apply = function(imageData) {
-    var h, index, w, x, y, _i, _j;
-    w = imageData.width;
-    h = imageData.height;
-    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
-      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
-        index = (w * y + x) * 4;
-        imageData.data[index] = Math.max(this.options.r, imageData.data[index]);
-        imageData.data[index + 1] = Math.max(this.options.g, imageData.data[index + 1]);
-        imageData.data[index + 2] = Math.max(this.options.b, imageData.data[index + 2]);
-        imageData.data[index + 3] = 255;
-      }
-    }
-    return imageData;
-  };
-
-  return PrimitiveSoftColorOverlayFilter;
-
-})(Filter);
-
-module.exports = PrimitiveSoftColorOverlayFilter;
-
-
-},{"27":20,"__browserify_Buffer":2,"__browserify_process":1}],74:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="157",__dirname="/operations/filters/primitives";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Filter, PrimitiveDesaturationFilter,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("27");
-
-PrimitiveDesaturationFilter = (function(_super) {
-  __extends(PrimitiveDesaturationFilter, _super);
-
-  function PrimitiveDesaturationFilter(app, options) {
-    this.app = app;
-    if (options == null) {
-      options = {};
-    }
-    PrimitiveDesaturationFilter.__super__.constructor.apply(this, arguments);
-    if (this.desaturation == null) {
-      this.desaturation = options != null ? options.desaturation : void 0;
-    }
-  }
-
-  PrimitiveDesaturationFilter.prototype.apply = function(imageData) {
-    var h, index, luminance, w, x, y, _i, _j;
-    w = imageData.width;
-    h = imageData.height;
-    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
-      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
-        index = (w * y + x) * 4;
-        luminance = imageData.data[index] * 0.3 + imageData.data[index + 1] * 0.59 + imageData.data[index + 2] * 0.11;
-        imageData.data[index] = luminance * (1 - this.desaturation) + (imageData.data[index] * this.desaturation);
-        imageData.data[index + 1] = luminance * (1 - this.desaturation) + (imageData.data[index + 1] * this.desaturation);
-        imageData.data[index + 2] = luminance * (1 - this.desaturation) + (imageData.data[index + 2] * this.desaturation);
-        imageData.data[index + 3] = 255;
-      }
-    }
-    return imageData;
-  };
-
-  return PrimitiveDesaturationFilter;
-
-})(Filter);
-
-module.exports = PrimitiveDesaturationFilter;
-
-
-},{"27":20,"__browserify_Buffer":2,"__browserify_process":1}],75:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="158",__dirname="/operations/filters/primitives";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Filter, PrimitiveX400Filter, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("27");
-
-PrimitiveX400Filter = (function(_super) {
-  __extends(PrimitiveX400Filter, _super);
-
-  function PrimitiveX400Filter() {
-    _ref = PrimitiveX400Filter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  PrimitiveX400Filter.prototype.apply = function(imageData) {
-    var gray, h, index, w, x, y, _i, _j;
-    w = imageData.width;
-    h = imageData.height;
-    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
-      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
-        index = (w * y + x) * 4;
-        gray = imageData.data[index] / 255 * 0.3 + imageData.data[index + 1] / 255 * 0.3 + imageData.data[index + 2] / 255 * 0.3;
-        gray -= 0.2;
-        gray = Math.max(0.0, Math.min(1.0, gray));
-        gray += 0.15;
-        gray *= 1.4;
-        gray *= 255;
-        imageData.data[index] = gray;
-        imageData.data[index + 1] = gray;
-        imageData.data[index + 2] = gray;
-        imageData.data[index + 3] = 255;
-      }
-    }
-    return imageData;
-  };
-
-  return PrimitiveX400Filter;
-
-})(Filter);
-
-module.exports = PrimitiveX400Filter;
-
-
-},{"27":20,"__browserify_Buffer":2,"__browserify_process":1}],76:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="159",__dirname="/operations/filters/primitives";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Filter, PrimtiveGrayscaleFilter, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("27");
-
-PrimtiveGrayscaleFilter = (function(_super) {
-  __extends(PrimtiveGrayscaleFilter, _super);
-
-  function PrimtiveGrayscaleFilter() {
-    _ref = PrimtiveGrayscaleFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  PrimtiveGrayscaleFilter.prototype.apply = function(imageData) {
-    var h, index, luminance, w, x, y, _i, _j;
-    w = imageData.width;
-    h = imageData.height;
-    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
-      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
-        index = (w * y + x) * 4;
-        luminance = imageData.data[index] * 0.2125 + imageData.data[index + 1] * 0.7154 + imageData.data[index + 2] * 0.0721;
-        imageData.data[index] = luminance;
-        imageData.data[index + 1] = luminance;
-        imageData.data[index + 2] = luminance;
-        imageData.data[index + 3] = 255;
-      }
-    }
-    return imageData;
-  };
-
-  return PrimtiveGrayscaleFilter;
-
-})(Filter);
-
-module.exports = PrimtiveGrayscaleFilter;
-
-
-},{"27":20,"__browserify_Buffer":2,"__browserify_process":1}],77:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="160",__dirname="/operations/filters/primitives";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Filter, PrimitiveGlowFilter,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("27");
-
-PrimitiveGlowFilter = (function(_super) {
-  __extends(PrimitiveGlowFilter, _super);
-
-  function PrimitiveGlowFilter(options) {
-    if (options == null) {
-      options = {};
-    }
-    PrimitiveGlowFilter.__super__.constructor.apply(this, arguments);
-    this.setColorToAdd(options.r, options.g, options.b);
-  }
-
-  PrimitiveGlowFilter.prototype.apply = function(imageData) {
-    var d, h, index, nx, ny, scalarX, scalarY, w, x, x01, y, y01, _i, _j;
-    w = imageData.width;
-    h = imageData.height;
-    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
-      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
-        index = (w * y + x) * 4;
-        x01 = x / w;
-        y01 = y / h;
-        nx = (x01 - 0.5) / 0.75;
-        ny = (y01 - 0.5) / 0.75;
-        scalarX = nx * nx;
-        scalarY = ny * ny;
-        d = 1 - (scalarX + scalarY);
-        d = Math.min(Math.max(d, 0.1), 1.0);
-        imageData.data[index] = imageData.data[index] * (d * this.colorToAdd[0]);
-        imageData.data[index + 1] = imageData.data[index + 1] * (d * this.colorToAdd[1]);
-        imageData.data[index + 2] = imageData.data[index + 2] * (d * this.colorToAdd[2]);
-        imageData.data[index + 3] = 255;
-      }
-    }
-    return imageData;
-  };
-
-  PrimitiveGlowFilter.prototype.setColorToAdd = function(r, g, b) {
-    return this.colorToAdd = [typeof r === 'number' ? r : 1.0, typeof g === 'number' ? g : 1.0, typeof b === 'number' ? b : 1.0];
-  };
-
-  return PrimitiveGlowFilter;
-
-})(Filter);
-
-module.exports = PrimitiveGlowFilter;
-
-
-},{"27":20,"__browserify_Buffer":2,"__browserify_process":1}],78:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="161",__dirname="/operations/filters/primitives";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Filter, PrimitiveGobblinFilter, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("27");
-
-PrimitiveGobblinFilter = (function(_super) {
-  __extends(PrimitiveGobblinFilter, _super);
-
-  function PrimitiveGobblinFilter() {
-    _ref = PrimitiveGobblinFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  PrimitiveGobblinFilter.prototype.apply = function(imageData) {
-    var h, index, w, x, y, _i, _j;
-    w = imageData.width;
-    h = imageData.height;
-    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
-      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
-        index = (w * y + x) * 4;
-        imageData.data[index + 2] = imageData.data[index + 1] * 0.33;
-        imageData.data[index] = imageData.data[index] * 0.6;
-        imageData.data[index + 2] += imageData.data[index] * 0.33;
-        imageData.data[index + 1] = imageData.data[index + 1] * 0.7;
-        imageData.data[index + 3] = 255;
-      }
-    }
-    return imageData;
-  };
-
-  return PrimitiveGobblinFilter;
-
-})(Filter);
-
-module.exports = PrimitiveGobblinFilter;
-
-
-},{"27":20,"__browserify_Buffer":2,"__browserify_process":1}]},{},[3])
+},{"64":6,"50":21,"__browserify_Buffer":2,"__browserify_process":1}]},{},[3])
 ;
