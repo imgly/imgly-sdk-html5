@@ -10568,6 +10568,74 @@ process.chdir = function (dir) {
 };
 
 },{}],2:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/vendor/perf.coffee",__dirname="/vendor";var Perf;
+
+Perf = (function() {
+  function Perf(name, options) {
+    var _base, _base1, _base2;
+    this.name = name;
+    this.options = options != null ? options : {};
+    if ((_base = this.options).good == null) {
+      _base.good = 100;
+    }
+    if ((_base1 = this.options).bad == null) {
+      _base1.bad = 500;
+    }
+    if ((_base2 = this.options).debug == null) {
+      _base2.debug = true;
+    }
+    this.started = false;
+  }
+
+  Perf.prototype.start = function() {
+    if (this.started || !this.options.debug) {
+      return;
+    }
+    this.start = +new Date();
+    return this.started = true;
+  };
+
+  Perf.prototype.stop = function(printLine) {
+    var background, color, duration, end, message;
+    if (!this.started || !this.options.debug) {
+      return;
+    }
+    end = +new Date();
+    duration = end - this.start;
+    if (this.name != null) {
+      message = this.name + ' took';
+    } else {
+      message = 'Code execution time:';
+    }
+    if (typeof window !== "undefined" && window !== null) {
+      if (duration < this.options.good) {
+        background = 'darkgreen';
+        color = 'white';
+      } else if (duration > this.options.good && duration < this.options.bad) {
+        background = 'orange';
+        color = 'black';
+      } else {
+        background = 'darkred';
+        color = 'white';
+      }
+      console.log('%c perf %c ' + message + ' %c ' + duration.toFixed(2) + 'ms ', 'background: #222; color: #bada55', '', 'background: ' + background + '; color: ' + color);
+    } else {
+      console.log('[perf] ' + message + ' ' + duration.toFixed(2) + 'ms');
+    }
+    this.started = false;
+    if (printLine && (typeof window !== "undefined" && window !== null)) {
+      return console.log('%c perf %c -- END --                                                                          ', 'background: #222; color: #bada55', 'background: #222; color: #ffffff');
+    }
+  };
+
+  return Perf;
+
+})();
+
+module.exports = Perf;
+
+
+},{"__browserify_Buffer":3,"__browserify_process":1}],3:[function(require,module,exports){
 require=(function(e,t,n,r){function i(r){if(!n[r]){if(!t[r]){if(e)return e(r);throw new Error("Cannot find module '"+r+"'")}var s=n[r]={exports:{}};t[r][0](function(e){var n=t[r][1][e];return i(n?n:e)},s,s.exports)}return n[r].exports}for(var s=0;s<r.length;s++)i(r[s]);return i})(typeof require!=="undefined"&&require,{1:[function(require,module,exports){
 // UTILITY
 var util = require('util');
@@ -14429,252 +14497,63 @@ SlowBuffer.prototype.writeDoubleBE = Buffer.prototype.writeDoubleBE;
 },{}]},{},[])
 ;;module.exports=require("buffer-browserify")
 
-},{}],3:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="0",__dirname="/";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
+},{}],4:[function(require,module,exports){
+
+},{"__browserify_Buffer":3,"__browserify_process":1}],5:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/vendor/queue.coffee",__dirname="/vendor";/*
+  Common interface for promises.
+
+  Use jQuery's Deferreds when in browser environment,
+  otherwise assume node environment and load kriskowal's q.
 */
 
-var PhotoProcessor, UI, Utils, imglyKit,
-  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+var Queue, provider;
 
-PhotoProcessor = require("1");
+provider = typeof window !== "undefined" ? window.jQuery : require("q");
 
-UI = require("2");
+/*
+  Creates a thenable value from the given value.
 
-Utils = require("3");
+  @param value
+  @returns {Promise}
+*/
 
-window.after = function(t, f) {
-  return setTimeout(f, t);
+
+Queue = function() {
+  return provider.when.apply(provider, arguments);
 };
 
-window.every = function(t, f) {
-  return setInterval(f, t);
-};
+/*
+  Creates a new promise.
 
-imglyKit = (function() {
-  imglyKit.classPrefix = "imgly-";
+  Calls the resolver which takes as arguments three functions `resolve`,
+  `reject` and `progress`.
 
-  imglyKit.canvasContainerPadding = 15;
-
-  /*
-    @param options.container The container we imglyKit will run in
-  */
+  @param {function} resolver
+  @returns {Promise}
+*/
 
 
-  function imglyKit(options) {
-    var _base, _base1;
-    this.options = options != null ? options : {};
-    this.onImageLoaded = __bind(this.onImageLoaded, this);
-    if ((_base = this.options).debug == null) {
-      _base.debug = false;
-    }
-    if ((_base1 = this.options).assetsPath == null) {
-      _base1.assetsPath = "/build/assets";
-    }
-    if (this.options.container == null) {
-      throw new Error("No container given");
-    }
-    this.options.container = $(this.options.container);
-    this.options.container.addClass(imglyKit.classPrefix + "container");
-    this.photoProcessor = new PhotoProcessor(this);
-    this.ui = new UI(this);
+Queue.promise = (function() {
+  if (typeof window !== "undefined") {
+    return function(resolver) {
+      var d;
+      d = provider.Deferred();
+      resolver(d.resolve, d.reject, d.progress);
+      return d;
+    };
+  } else {
+    return function() {
+      return provider.promise.apply(provider, arguments);
+    };
   }
-
-  /*
-    @returns {Boolean} Whether Canvas and Canvastext is supported or not
-  */
-
-
-  imglyKit.prototype.checkSupport = function() {
-    var error;
-    if (Modernizr.canvas && Modernizr.canvastext) {
-      return true;
-    }
-    error = new Error("Canvas and / or Canvas Text drawing not supported");
-    error.name = "NoSupportError";
-    error.description = "No Canvas support";
-    throw error;
-  };
-
-  /*
-    @returns {jQuery.Object} The jQuery object for the app container
-  */
-
-
-  imglyKit.prototype.getContainer = function() {
-    return this.options.container;
-  };
-
-  /*
-    @returns {Integer} The height of the app container
-  */
-
-
-  imglyKit.prototype.getHeight = function() {
-    return this.options.container.height();
-  };
-
-  /*
-    @returns {imglyKit.PhotoProcessor}
-  */
-
-
-  imglyKit.prototype.getPhotoProcessor = function() {
-    return this.photoProcessor;
-  };
-
-  /*
-    @param {String} file path
-    @returns {String} assets file path
-  */
-
-
-  imglyKit.prototype.buildAssetsPath = function(path) {
-    return this.options.assetsPath + "/" + path;
-  };
-
-  /*
-    @param {Image|String} image Data URL or Image object
-  */
-
-
-  imglyKit.prototype.run = function(image) {
-    var dataUrl, error,
-      _this = this;
-    this.image = image;
-    this.checkSupport();
-    if (this.options.ratio != null) {
-      this.options.initialControls = require("4");
-      this.options.forceInitialControls = true;
-      this.options.operationOptionsHook = function(operation) {
-        return operation.setRatio(_this.options.ratio);
-      };
-    }
-    if (!(typeof this.image === "string" || this.image instanceof Image)) {
-      throw new Error("First parameter needs to be a String or an Image");
-    }
-    if (typeof this.image === "string") {
-      if (this.image.slice(0, 10) !== "data:image") {
-        error = new Error("First parameter is a string, but not an image data URL");
-        error.name = "InvalidError";
-        throw error;
-      }
-      dataUrl = this.image;
-      this.image = new Image();
-      this.image.src = dataUrl;
-    }
-    if (this.image.width > 0 && this.image.height > 0) {
-      return this.onImageLoaded();
-    } else {
-      return this.image.onload = this.onImageLoaded;
-    }
-  };
-
-  /*
-    Gets called as soon as the image has been loaded
-    and the image dimensions are available
-  */
-
-
-  imglyKit.prototype.onImageLoaded = function() {
-    /*
-      Set up the user interface
-    */
-
-    var _this = this;
-    if (!this.ui.initialized) {
-      this.ui.init();
-      this.photoProcessor.setCanvas(this.ui.getCanvas());
-      this.ui.on("preview_operation", function(operation) {
-        var _ref;
-        if ((_ref = _this.ui.getCurrentControls()) != null) {
-          _ref.setOperation(operation);
-        }
-        return _this.photoProcessor.setPreviewOperation(operation);
-      });
-      this.ui.on("back", function() {
-        _this.photoProcessor.unsetPreviewOperation();
-        return _this.ui.resetControls();
-      });
-      this.ui.on("done", function() {
-        _this.photoProcessor.acceptPreviewOperation();
-        return _this.ui.resetControls();
-      });
-    } else {
-      this.photoProcessor.reset();
-      this.ui.resetControls();
-    }
-    /*
-      Reset everything
-    */
-
-    this.reset();
-    /*
-      Set source image of the photo processor and tell
-      it to render it
-    */
-
-    this.photoProcessor.setSourceImage(this.image);
-    return this.photoProcessor.renderPreview(function(err) {
-      /*
-        Do we have controls that have to be shown
-        on startup?
-      */
-
-      var controls;
-      if (_this.options.initialControls) {
-        controls = _this.ui.controls;
-        controls.switchToControls(_this.options.initialControls, controls.getCurrentControls(), {
-          backButton: !_this.options.forceInitialControls,
-          showList: !_this.options.forceInitialControls
-        });
-        if (_this.options.operationOptionsHook != null) {
-          return _this.options.operationOptionsHook(controls.getCurrentControls().operation);
-        }
-      }
-    });
-  };
-
-  /*
-    Resets everything
-  */
-
-
-  imglyKit.prototype.reset = function() {
-    return this.photoProcessor.reset();
-  };
-
-  /*
-    Renders the image and returns a data url
-  */
-
-
-  imglyKit.prototype.renderToDataURL = function(format, options, callback) {
-    var _this = this;
-    if (options == null) {
-      options = {};
-    }
-    if (typeof options === "function") {
-      callback = options;
-      options = {};
-    }
-    return this.photoProcessor.renderImage(options, function(err, imageData) {
-      var canvas;
-      canvas = Utils.newCanvasFromImageData(imageData);
-      return callback(null, canvas.toDataURL(format));
-    });
-  };
-
-  return imglyKit;
-
 })();
 
-window.imglyKit = imglyKit;
+module.exports = Queue;
 
 
-},{"1":4,"4":7,"2":5,"3":6,"__browserify_Buffer":2,"__browserify_process":1}],6:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="5",__dirname="/";/*
+},{"__browserify_Buffer":3,"__browserify_process":1,"q":4}],6:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/utils.coffee",__dirname="/";/*
   imglyKit
   Copyright (c) 2013 img.ly
 */
@@ -14921,21 +14800,408 @@ Utils.truncate = function(string, length) {
 module.exports = Utils;
 
 
-},{"__browserify_Buffer":2,"__browserify_process":1}],4:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="6",__dirname="/";/*
+},{"__browserify_Buffer":3,"__browserify_process":1}],7:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/../node_modules/grunt-watchify/node_modules/browserify/node_modules/browser-builtins/builtin/events.js",__dirname="/../node_modules/grunt-watchify/node_modules/browserify/node_modules/browser-builtins/builtin";if (!process.EventEmitter) process.EventEmitter = function () {};
+
+var EventEmitter = exports.EventEmitter = process.EventEmitter;
+var isArray = typeof Array.isArray === 'function'
+    ? Array.isArray
+    : function (xs) {
+        return Object.prototype.toString.call(xs) === '[object Array]'
+    }
+;
+function indexOf (xs, x) {
+    if (xs.indexOf) return xs.indexOf(x);
+    for (var i = 0; i < xs.length; i++) {
+        if (x === xs[i]) return i;
+    }
+    return -1;
+}
+
+// By default EventEmitters will print a warning if more than
+// 10 listeners are added to it. This is a useful default which
+// helps finding memory leaks.
+//
+// Obviously not all Emitters should be limited to 10. This function allows
+// that to be increased. Set to zero for unlimited.
+var defaultMaxListeners = 10;
+EventEmitter.prototype.setMaxListeners = function(n) {
+  if (!this._events) this._events = {};
+  this._events.maxListeners = n;
+};
+
+
+EventEmitter.prototype.emit = function(type) {
+  // If there is no 'error' event listener then throw.
+  if (type === 'error') {
+    if (!this._events || !this._events.error ||
+        (isArray(this._events.error) && !this._events.error.length))
+    {
+      if (arguments[1] instanceof Error) {
+        throw arguments[1]; // Unhandled 'error' event
+      } else {
+        throw new Error("Uncaught, unspecified 'error' event.");
+      }
+      return false;
+    }
+  }
+
+  if (!this._events) return false;
+  var handler = this._events[type];
+  if (!handler) return false;
+
+  if (typeof handler == 'function') {
+    switch (arguments.length) {
+      // fast cases
+      case 1:
+        handler.call(this);
+        break;
+      case 2:
+        handler.call(this, arguments[1]);
+        break;
+      case 3:
+        handler.call(this, arguments[1], arguments[2]);
+        break;
+      // slower
+      default:
+        var args = Array.prototype.slice.call(arguments, 1);
+        handler.apply(this, args);
+    }
+    return true;
+
+  } else if (isArray(handler)) {
+    var args = Array.prototype.slice.call(arguments, 1);
+
+    var listeners = handler.slice();
+    for (var i = 0, l = listeners.length; i < l; i++) {
+      listeners[i].apply(this, args);
+    }
+    return true;
+
+  } else {
+    return false;
+  }
+};
+
+// EventEmitter is defined in src/node_events.cc
+// EventEmitter.prototype.emit() is also defined there.
+EventEmitter.prototype.addListener = function(type, listener) {
+  if ('function' !== typeof listener) {
+    throw new Error('addListener only takes instances of Function');
+  }
+
+  if (!this._events) this._events = {};
+
+  // To avoid recursion in the case that type == "newListeners"! Before
+  // adding it to the listeners, first emit "newListeners".
+  this.emit('newListener', type, listener);
+
+  if (!this._events[type]) {
+    // Optimize the case of one listener. Don't need the extra array object.
+    this._events[type] = listener;
+  } else if (isArray(this._events[type])) {
+
+    // Check for listener leak
+    if (!this._events[type].warned) {
+      var m;
+      if (this._events.maxListeners !== undefined) {
+        m = this._events.maxListeners;
+      } else {
+        m = defaultMaxListeners;
+      }
+
+      if (m && m > 0 && this._events[type].length > m) {
+        this._events[type].warned = true;
+        console.error('(node) warning: possible EventEmitter memory ' +
+                      'leak detected. %d listeners added. ' +
+                      'Use emitter.setMaxListeners() to increase limit.',
+                      this._events[type].length);
+        console.trace();
+      }
+    }
+
+    // If we've already got an array, just append.
+    this._events[type].push(listener);
+  } else {
+    // Adding the second element, need to change to array.
+    this._events[type] = [this._events[type], listener];
+  }
+
+  return this;
+};
+
+EventEmitter.prototype.on = EventEmitter.prototype.addListener;
+
+EventEmitter.prototype.once = function(type, listener) {
+  var self = this;
+  self.on(type, function g() {
+    self.removeListener(type, g);
+    listener.apply(this, arguments);
+  });
+
+  return this;
+};
+
+EventEmitter.prototype.removeListener = function(type, listener) {
+  if ('function' !== typeof listener) {
+    throw new Error('removeListener only takes instances of Function');
+  }
+
+  // does not use listeners(), so no side effect of creating _events[type]
+  if (!this._events || !this._events[type]) return this;
+
+  var list = this._events[type];
+
+  if (isArray(list)) {
+    var i = indexOf(list, listener);
+    if (i < 0) return this;
+    list.splice(i, 1);
+    if (list.length == 0)
+      delete this._events[type];
+  } else if (this._events[type] === listener) {
+    delete this._events[type];
+  }
+
+  return this;
+};
+
+EventEmitter.prototype.removeAllListeners = function(type) {
+  if (arguments.length === 0) {
+    this._events = {};
+    return this;
+  }
+
+  // does not use listeners(), so no side effect of creating _events[type]
+  if (type && this._events && this._events[type]) this._events[type] = null;
+  return this;
+};
+
+EventEmitter.prototype.listeners = function(type) {
+  if (!this._events) this._events = {};
+  if (!this._events[type]) this._events[type] = [];
+  if (!isArray(this._events[type])) {
+    this._events[type] = [this._events[type]];
+  }
+  return this._events[type];
+};
+
+EventEmitter.listenerCount = function(emitter, type) {
+  var ret;
+  if (!emitter._events || !emitter._events[type])
+    ret = 0;
+  else if (typeof emitter._events[type] === 'function')
+    ret = 1;
+  else
+    ret = emitter._events[type].length;
+  return ret;
+};
+
+},{"__browserify_Buffer":3,"__browserify_process":1}],8:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/operation.coffee",__dirname="/operations";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var EventEmitter, Operation, Queue,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  __slice = [].slice;
+
+Queue = require("../vendor/queue.coffee");
+
+EventEmitter = require("events").EventEmitter;
+
+Operation = (function(_super) {
+  var buildComposition;
+
+  __extends(Operation, _super);
+
+  Operation.prototype.renderPreview = true;
+
+  /*
+    @param {imglyKit} app
+    @param {Object} options
+  */
+
+
+  function Operation(app, options) {
+    var apply;
+    this.app = app;
+    this.options = options != null ? options : {};
+    apply = this.apply;
+    this.apply = function(dataOrPromise) {
+      var _this = this;
+      return Queue(dataOrPromise).then(function(imageData) {
+        return apply.call(_this, imageData);
+      });
+    };
+  }
+
+  /*
+    @param {CanvasRenderingContext2d} context
+  */
+
+
+  Operation.prototype.setContext = function(context) {
+    this.context = context;
+  };
+
+  /*
+    @param {Object} options
+  */
+
+
+  Operation.prototype.setOptions = function(options) {
+    var key, val;
+    for (key in options) {
+      val = options[key];
+      this.options[key] = val;
+    }
+    return this.emit("updateOptions", options);
+  };
+
+  /*
+    @param {ImageData} imageData
+    @param {Function} callback
+    @returns {ImageData}
+  */
+
+
+  Operation.prototype.apply = function() {
+    throw Error("Abstract: Filter#apply");
+  };
+
+  buildComposition = function(direction, filter, args) {
+    var composition, self;
+    if (args == null) {
+      args = [];
+    }
+    self = this;
+    if (filter.prototype instanceof Operation) {
+      filter = (function(func, args, ctor) {
+        ctor.prototype = func.prototype;
+        var child = new ctor, result = func.apply(child, args);
+        return Object(result) === result ? result : child;
+      })(filter, [this.app].concat(__slice.call(args)), function(){});
+    }
+    composition = direction === "pre" ? function(imageData) {
+      return self.apply(filter.apply(imageData || this));
+    } : direction === "post" ? function(imageData) {
+      return filter.apply(self.apply(imageData || this));
+    } : void 0;
+    composition.compose = Operation.prototype.compose;
+    composition.precompose = Operation.prototype.precompose;
+    return composition;
+  };
+
+  /*
+    @param {Operation} filter
+    @returns {Function}
+  */
+
+
+  Operation.prototype.compose = function() {
+    var args, filter;
+    filter = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+    return buildComposition.call(this, "post", filter, args);
+  };
+
+  /*
+    @param {Operation} filter
+    @returns {Function}
+  */
+
+
+  Operation.prototype.precompose = function() {
+    var args, filter;
+    filter = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+    return buildComposition.call(this, "pre", filter, args);
+  };
+
+  return Operation;
+
+})(EventEmitter);
+
+module.exports = Operation;
+
+
+},{"../vendor/queue.coffee":5,"__browserify_Buffer":3,"__browserify_process":1,"events":7}],9:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/filter.coffee",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Filter, Operation, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Operation = require("../operation.coffee");
+
+Filter = (function(_super) {
+  __extends(Filter, _super);
+
+  function Filter() {
+    _ref = Filter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  Filter.preview = null;
+
+  Filter.displayName = null;
+
+  return Filter;
+
+})(Operation);
+
+module.exports = Filter;
+
+
+},{"../operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],10:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/identity.coffee",__dirname="/operations/filters/primitives";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Filter, PrimitiveIdentityFilter, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("../filter.coffee");
+
+PrimitiveIdentityFilter = (function(_super) {
+  __extends(PrimitiveIdentityFilter, _super);
+
+  function PrimitiveIdentityFilter() {
+    _ref = PrimitiveIdentityFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  PrimitiveIdentityFilter.prototype.apply = function(imageData) {
+    return imageData;
+  };
+
+  return PrimitiveIdentityFilter;
+
+})(Filter);
+
+module.exports = PrimitiveIdentityFilter;
+
+
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],11:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/photoprocessor.coffee",__dirname="/";/*
   imglyKit
   Copyright (c) 2013 img.ly
 */
 
 var IdentityFilter, Perf, PhotoProcessor, Queue, Utils;
 
-Perf = require("7");
+Perf = require("./vendor/perf.coffee");
 
-Queue = require("8");
+Queue = require("./vendor/queue.coffee");
 
-Utils = require("3");
+Utils = require("./utils.coffee");
 
-IdentityFilter = require("9");
+IdentityFilter = require("./operations/filters/primitives/identity.coffee");
 
 PhotoProcessor = (function() {
   /*
@@ -15140,94 +15406,3513 @@ PhotoProcessor = (function() {
 module.exports = PhotoProcessor;
 
 
-},{"9":10,"3":6,"7":8,"8":9,"__browserify_Buffer":2,"__browserify_process":1}],5:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="10",__dirname="/ui";/*
+},{"./operations/filters/primitives/identity.coffee":10,"./utils.coffee":6,"./vendor/perf.coffee":2,"./vendor/queue.coffee":5,"__browserify_Buffer":3,"__browserify_process":1}],12:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/base/base.coffee",__dirname="/ui/controls/base";/*
   imglyKit
   Copyright (c) 2013 img.ly
 */
 
-var Canvas, Controls, EventEmitter, UI,
+var EventEmitter, UIControlsBase,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-Controls = require("11");
-
-Canvas = require("12");
-
 EventEmitter = require("events").EventEmitter;
 
-UI = (function(_super) {
-  __extends(UI, _super);
+UIControlsBase = (function(_super) {
+  __extends(UIControlsBase, _super);
+
+  UIControlsBase.prototype.allowMultipleClick = true;
 
   /*
     @param {imglyUtil} app
+    @param {imglyUtil.UI} ui
   */
 
 
-  function UI(app) {
+  function UIControlsBase(app, ui, controls) {
+    var _base, _base1;
     this.app = app;
-    this.initialized = false;
+    this.ui = ui;
+    this.controls = controls;
+    this.domCreated = false;
+    if (this.options == null) {
+      this.options = {};
+    }
+    if ((_base = this.options).backButton == null) {
+      _base.backButton = true;
+    }
+    if ((_base1 = this.options).showList == null) {
+      _base1.showList = true;
+    }
   }
 
   /*
-    @returns {imglyKit.UI.Canvas}
+    @param {imglyUtil.Operations.Operation}
   */
 
 
-  UI.prototype.getCanvas = function() {
-    return this.canvas;
+  UIControlsBase.prototype.setOperation = function(operation) {
+    this.operation = operation;
   };
 
   /*
-    @returns imglyKit.UI.Controls.Base
+    @param {Object} options
   */
 
 
-  UI.prototype.getCurrentControls = function() {
-    return this.controls.getCurrentControls();
+  UIControlsBase.prototype.init = function(options) {};
+
+  /*
+    Handle visibility
+  */
+
+
+  UIControlsBase.prototype.show = function(cb) {
+    return this.wrapper.fadeIn("fast", cb);
+  };
+
+  UIControlsBase.prototype.hide = function(cb) {
+    return this.wrapper.fadeOut("fast", cb);
   };
 
   /*
-    Initializes all UI elements
+    Returns to the default view
   */
 
 
-  UI.prototype.init = function() {
-    var _this = this;
-    this.controls = new Controls(this.app, this);
-    this.controls.on("preview_operation", function(operation) {
-      return _this.emit("preview_operation", operation);
-    });
-    this.controls.on("back", function() {
-      return _this.emit("back");
-    });
-    this.controls.on("done", function() {
+  UIControlsBase.prototype.reset = function() {};
+
+  /*
+    Create "Back" and "Done" buttons
+  */
+
+
+  UIControlsBase.prototype.createButtons = function() {
+    var back, done,
+      _this = this;
+    if (this.buttons == null) {
+      this.buttons = {};
+    }
+    /*
+      "Back" Button
+    */
+
+    if (this.options.backButton) {
+      back = $("<div>").addClass(imglyKit.classPrefix + "controls-button-back").appendTo(this.wrapper);
+      back.click(function() {
+        return _this.emit("back");
+      });
+      this.buttons.back = back;
+    }
+    /*
+      "Done" Button
+    */
+
+    done = $("<div>").addClass(imglyKit.classPrefix + "controls-button-done").appendTo(this.wrapper);
+    done.click(function() {
       return _this.emit("done");
     });
-    this.canvas = new Canvas(this.app, this, {
-      height: this.controls.getHeight()
-    });
-    return this.initialized = true;
+    return this.buttons.done = done;
   };
 
-  /*
-    Resets the controls
-  */
-
-
-  UI.prototype.resetControls = function() {
-    return this.controls.reset();
+  UIControlsBase.prototype.remove = function() {
+    return this.wrapper.remove();
   };
 
-  return UI;
+  return UIControlsBase;
 
 })(EventEmitter);
 
-module.exports = UI;
+module.exports = UIControlsBase;
 
 
-},{"12":13,"11":12,"__browserify_Buffer":2,"__browserify_process":1,"events":11}],7:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="13",__dirname="/ui/controls";/*
+},{"__browserify_Buffer":3,"__browserify_process":1,"events":7}],13:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/base/list.coffee",__dirname="/ui/controls/base";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Base, UIControlsBaseList, Utils, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Base = require("./base.coffee");
+
+Utils = require("../../../utils.coffee");
+
+UIControlsBaseList = (function(_super) {
+  __extends(UIControlsBaseList, _super);
+
+  function UIControlsBaseList() {
+    _ref = UIControlsBaseList.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  UIControlsBaseList.prototype.displayButtons = false;
+
+  UIControlsBaseList.prototype.singleOperation = false;
+
+  UIControlsBaseList.prototype.init = function() {
+    var option, _i, _len, _ref1, _results,
+      _this = this;
+    this.createList();
+    if (!this.allowMultipleClick) {
+      this.optionSelected = false;
+    }
+    if (!this.options.showList) {
+      this.list.hide();
+    }
+    /*
+      Add the list elements
+    */
+
+    _ref1 = this.listItems;
+    _results = [];
+    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+      option = _ref1[_i];
+      _results.push((function(option) {
+        var cssClass, item;
+        if (option.name == null) {
+          return $("<li>").addClass(imglyKit.classPrefix + "controls-item-space").appendTo(_this.list);
+        }
+        cssClass = option.cssClass || Utils.dasherize(option.name);
+        item = $("<li>").addClass(imglyKit.classPrefix + "controls-item").addClass(imglyKit.classPrefix + "controls-item-" + cssClass).appendTo(_this.list);
+        item.click(function(e) {
+          if (!_this.allowMultipleClick) {
+            if (_this.optionSelected) {
+              return;
+            }
+            _this.optionSelected = true;
+          }
+          return _this.handleOptionSelect(option, item);
+        });
+        if (option["default"] != null) {
+          return item.click();
+        }
+      })(option));
+    }
+    return _results;
+  };
+
+  /*
+    @param {imglyKit.Operations.Operation}
+  */
+
+
+  UIControlsBaseList.prototype.setOperation = function(operation) {
+    var _this = this;
+    this.operation = operation;
+    this.updateOptions(this.operation.options);
+    return this.operation.on("updateOptions", function(o) {
+      return _this.updateOptions(o);
+    });
+  };
+
+  /*
+    @params {Object} options
+  */
+
+
+  UIControlsBaseList.prototype.updateOptions = function(operationOptions) {
+    this.operationOptions = operationOptions;
+  };
+
+  /*
+    @param {Object} option
+    @param {jQuery.Object} item
+  */
+
+
+  UIControlsBaseList.prototype.handleOptionSelect = function(option, item) {
+    var activeClass;
+    this.setAllItemsInactive();
+    activeClass = imglyKit.classPrefix + "controls-list-item-active";
+    item.addClass(activeClass);
+    if (this.singleOperation) {
+      option.operation = this.operationClass;
+    }
+    if (!this.singleOperation || (this.singleOperation && !this.sentSelected)) {
+      this.emit("select", option);
+      this.sentSelected = true;
+    }
+    if (option.method) {
+      this.operation[option.method].apply(this.operation, option["arguments"]);
+    }
+    if ((this.operation != null) && this.operation.renderPreview) {
+      return this.emit("renderPreview");
+    }
+  };
+
+  /*
+    Create controls DOM tree
+  */
+
+
+  UIControlsBaseList.prototype.createList = function() {
+    this.wrapper = $("<div>").addClass(imglyKit.classPrefix + "controls-wrapper").attr("data-control", this.constructor.name).appendTo(this.controls.getContainer());
+    this.list = $("<ul>").addClass(imglyKit.classPrefix + "controls-list").appendTo(this.wrapper);
+    if (this.cssClassIdentifier != null) {
+      this.list.addClass(imglyKit.classPrefix + "controls-list-" + this.cssClassIdentifier);
+    }
+    if (this.displayButtons) {
+      this.list.addClass(imglyKit.classPrefix + "controls-list-with-buttons");
+      this.list.width(this.controls.getContainer().width() - this.controls.getHeight() * 2);
+      return this.createButtons();
+    }
+  };
+
+  /*
+    Reset active states
+  */
+
+
+  UIControlsBaseList.prototype.reset = function() {
+    if (!this.allowMultipleClick) {
+      this.optionSelected = false;
+    }
+    return this.setAllItemsInactive();
+  };
+
+  /*
+    Sets all list items to inactive state
+  */
+
+
+  UIControlsBaseList.prototype.setAllItemsInactive = function() {
+    var activeClass;
+    activeClass = imglyKit.classPrefix + "controls-list-item-active";
+    return this.list.find("li").removeClass(activeClass);
+  };
+
+  return UIControlsBaseList;
+
+})(Base);
+
+module.exports = UIControlsBaseList;
+
+
+},{"../../../utils.coffee":6,"./base.coffee":12,"__browserify_Buffer":3,"__browserify_process":1}],14:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/default.coffee",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var DefaultFilter, IdentityFilter, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+IdentityFilter = require("./primitives/identity.coffee");
+
+DefaultFilter = (function(_super) {
+  __extends(DefaultFilter, _super);
+
+  function DefaultFilter() {
+    _ref = DefaultFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  DefaultFilter.preview = 'default.png';
+
+  DefaultFilter.displayName = 'Default';
+
+  return DefaultFilter;
+
+})(IdentityFilter);
+
+module.exports = DefaultFilter;
+
+
+},{"./primitives/identity.coffee":10,"__browserify_Buffer":3,"__browserify_process":1}],15:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/tonecurve.coffee",__dirname="/operations/filters/primitives";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Filter, PrimitiveToneCurveFilter,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("../filter.coffee");
+
+PrimitiveToneCurveFilter = (function(_super) {
+  __extends(PrimitiveToneCurveFilter, _super);
+
+  function PrimitiveToneCurveFilter(app, options) {
+    var rgb;
+    this.app = app;
+    if (options == null) {
+      options = {};
+    }
+    PrimitiveToneCurveFilter.__super__.constructor.apply(this, arguments);
+    if (this.rgbControlPoints || (options.rgbControlPoints != null)) {
+      rgb = this.rgbControlPoints || options.rgbControlPoints;
+      if (this.redControlPoints == null) {
+        this.redControlPoints = rgb;
+      }
+      if (this.greenControlPoints == null) {
+        this.greenControlPoints = rgb;
+      }
+      if (this.blueControlPoints == null) {
+        this.blueControlPoints = rgb;
+      }
+    } else {
+      if (this.redControlPoints == null) {
+        this.redControlPoints = options.redControlPoints;
+      }
+      if (this.greenControlPoints == null) {
+        this.greenControlPoints = options.greenControlPoints;
+      }
+      if (this.blueControlPoints == null) {
+        this.blueControlPoints = options.blueControlPoints;
+      }
+    }
+    if (this.redControlPoints && this.greenControlPoints && this.blueControlPoints) {
+      this.updateToneCurveTexture();
+    }
+  }
+
+  PrimitiveToneCurveFilter.prototype.render = function(context, w, h) {
+    return context.putImageData(this.apply(context.getImageData(0, 0, w, h)), 0, 0);
+  };
+
+  PrimitiveToneCurveFilter.prototype.apply = function(imageData) {
+    var h, index, w, x, y, _i, _j;
+    w = imageData.width;
+    h = imageData.height;
+    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
+      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
+        index = (w * y + x) * 4;
+        imageData.data[index] = imageData.data[index] + this.preparedRed[imageData.data[index]];
+        imageData.data[index + 1] = imageData.data[index + 1] + this.preparedGreen[imageData.data[index + 1]];
+        imageData.data[index + 2] = imageData.data[index + 2] + this.preparedBlue[imageData.data[index + 2]];
+        imageData.data[index + 3] = 255;
+      }
+    }
+    return imageData;
+  };
+
+  PrimitiveToneCurveFilter.prototype.updateToneCurveTexture = function() {
+    this.preparedRed = this.getPreparedSplineCurve(this.redControlPoints);
+    this.preparedBlue = this.getPreparedSplineCurve(this.blueControlPoints);
+    return this.preparedGreen = this.getPreparedSplineCurve(this.greenControlPoints);
+  };
+
+  PrimitiveToneCurveFilter.prototype.getPreparedSplineCurve = function(points) {
+    var convertedPoints, distance, firstSplinePoint, i, newPoint, origPoint, point, preparedSplinePoints, sortedPoints, splinePoints, _i, _j, _k, _len, _ref, _ref1;
+    sortedPoints = points.sort(function(a, b) {
+      var x1, x2;
+      x1 = a[0];
+      x2 = b[0];
+      return x1 > x2;
+    });
+    convertedPoints = [];
+    for (_i = 0, _len = points.length; _i < _len; _i++) {
+      point = points[_i];
+      newPoint = [point[0] * 255, point[1] * 255];
+      convertedPoints.push(newPoint);
+    }
+    splinePoints = this.splineCurve(convertedPoints);
+    firstSplinePoint = splinePoints[0];
+    if (firstSplinePoint[0] > 0) {
+      for (i = _j = 0, _ref = firstSplinePoint[0]; 0 <= _ref ? _j < _ref : _j > _ref; i = 0 <= _ref ? ++_j : --_j) {
+        splinePoints.unshift([0, 0]);
+      }
+    }
+    preparedSplinePoints = [];
+    for (i = _k = 0, _ref1 = splinePoints.length; 0 <= _ref1 ? _k < _ref1 : _k > _ref1; i = 0 <= _ref1 ? ++_k : --_k) {
+      newPoint = splinePoints[i];
+      origPoint = [newPoint[0], newPoint[0]];
+      distance = Math.sqrt(Math.pow(origPoint[0] - newPoint[0], 2) + Math.pow(origPoint[1] - newPoint[1], 2));
+      if (origPoint[1] > newPoint[1]) {
+        distance = -distance;
+      }
+      preparedSplinePoints.push(distance);
+    }
+    return preparedSplinePoints;
+  };
+
+  PrimitiveToneCurveFilter.prototype.splineCurve = function(points) {
+    var a, b, cur, h, i, n, next, output, sd, sdA, t, x, y, _i, _j, _k, _ref, _ref1, _ref2;
+    sdA = this.secondDerivative(points);
+    n = sdA.length;
+    sd = [];
+    for (i = _i = 0; 0 <= n ? _i < n : _i > n; i = 0 <= n ? ++_i : --_i) {
+      sd[i] = sdA[i];
+    }
+    output = [];
+    for (i = _j = 0, _ref = n - 1; 0 <= _ref ? _j < _ref : _j > _ref; i = 0 <= _ref ? ++_j : --_j) {
+      cur = points[i];
+      next = points[i + 1];
+      for (x = _k = _ref1 = cur[0], _ref2 = next[0]; _ref1 <= _ref2 ? _k < _ref2 : _k > _ref2; x = _ref1 <= _ref2 ? ++_k : --_k) {
+        t = (x - cur[0]) / (next[0] - cur[0]);
+        a = 1 - t;
+        b = t;
+        h = next[0] - cur[0];
+        y = a * cur[1] + b * next[1] + (h * h / 6) * ((a * a * a - a) * sd[i] + (b * b * b - b) * sd[i + 1]);
+        if (y > 255) {
+          y = 255;
+        } else if (y < 0) {
+          y = 0;
+        }
+        output.push([x, y]);
+      }
+    }
+    if (output.length === 255) {
+      output.push(points.pop());
+    }
+    return output;
+  };
+
+  PrimitiveToneCurveFilter.prototype.secondDerivative = function(points) {
+    var P1, P2, P3, i, k, matrix, n, result, y2, _i, _j, _k, _l, _ref, _ref1;
+    n = points.length;
+    if (n <= 0 || n === 1) {
+      return null;
+    }
+    matrix = [];
+    result = [];
+    matrix[0] = [0, 1, 0];
+    for (i = _i = 1, _ref = n - 1; 1 <= _ref ? _i < _ref : _i > _ref; i = 1 <= _ref ? ++_i : --_i) {
+      P1 = points[i - 1];
+      P2 = points[i];
+      P3 = points[i + 1];
+      if (matrix[i] == null) {
+        matrix[i] = [];
+      }
+      matrix[i][0] = (P2[0] - P1[0]) / 6;
+      matrix[i][1] = (P3[0] - P1[0]) / 3;
+      matrix[i][2] = (P3[0] - P2[0]) / 6;
+      result[i] = (P3[1] - P2[1]) / (P3[0] - P2[0]) - (P2[1] - P1[1]) / (P2[0] - P1[0]);
+    }
+    result[0] = 0;
+    result[n - 1] = 0;
+    matrix[n - 1] = [0, 1, 0];
+    for (i = _j = 1; 1 <= n ? _j < n : _j > n; i = 1 <= n ? ++_j : --_j) {
+      k = matrix[1][0] / matrix[i - 1][1];
+      matrix[i][1] -= k * matrix[i - 1][2];
+      matrix[i][0] = 0;
+      result[i] -= k * result[i - 1];
+    }
+    for (i = _k = _ref1 = n - 2; _ref1 <= 0 ? _k < 0 : _k > 0; i = _ref1 <= 0 ? ++_k : --_k) {
+      k = matrix[i][2] / matrix[i + 1][1];
+      matrix[i][1] -= k * matrix[i + 1][0];
+      matrix[i][2] = 0;
+      result[i] -= k * result[i + 1];
+    }
+    y2 = [];
+    for (i = _l = 0; 0 <= n ? _l < n : _l > n; i = 0 <= n ? ++_l : --_l) {
+      y2[i] = result[i] / matrix[i][1];
+    }
+    return y2;
+  };
+
+  PrimitiveToneCurveFilter.prototype.setRedControlPoints = function(controlPoints) {
+    return this.redControlPoints = controlPoints;
+  };
+
+  PrimitiveToneCurveFilter.prototype.setGreenControlPoints = function(controlPoints) {
+    return this.greenControlPoints = controlPoints;
+  };
+
+  PrimitiveToneCurveFilter.prototype.setBlueControlPoints = function(controlPoints) {
+    return this.blueControlPoints = controlPoints;
+  };
+
+  return PrimitiveToneCurveFilter;
+
+})(Filter);
+
+module.exports = PrimitiveToneCurveFilter;
+
+
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],16:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/saturation.coffee",__dirname="/operations/filters/primitives";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Filter, PrimitiveSaturationFilter,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("../filter.coffee");
+
+PrimitiveSaturationFilter = (function(_super) {
+  __extends(PrimitiveSaturationFilter, _super);
+
+  function PrimitiveSaturationFilter(app, options) {
+    this.app = app;
+    if (options == null) {
+      options = {};
+    }
+    PrimitiveSaturationFilter.__super__.constructor.apply(this, arguments);
+    if (options.saturation != null) {
+      this.setSaturation(options.saturation);
+    }
+  }
+
+  PrimitiveSaturationFilter.prototype.setSaturation = function(saturation) {
+    return this.saturation = typeof saturation === 'number' ? saturation + 1 : 1;
+  };
+
+  PrimitiveSaturationFilter.prototype.apply = function(imageData) {
+    var h, index, luminance, w, x, y, _i, _j;
+    w = imageData.width;
+    h = imageData.height;
+    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
+      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
+        index = (w * y + x) * 4;
+        luminance = imageData.data[index] * 0.2125 + imageData.data[index + 1] * 0.7154 + imageData.data[index + 2] * 0.0721;
+        imageData.data[index] = luminance * (1 - this.saturation) + (imageData.data[index] * this.saturation);
+        imageData.data[index + 1] = luminance * (1 - this.saturation) + (imageData.data[index + 1] * this.saturation);
+        imageData.data[index + 2] = luminance * (1 - this.saturation) + (imageData.data[index + 2] * this.saturation);
+        imageData.data[index + 3] = 255;
+      }
+    }
+    return imageData;
+  };
+
+  return PrimitiveSaturationFilter;
+
+})(Filter);
+
+module.exports = PrimitiveSaturationFilter;
+
+
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],17:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/k1.coffee",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Filter, K1Filter, Saturation, ToneCurve, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("./filter.coffee");
+
+ToneCurve = require("./primitives/tonecurve.coffee");
+
+Saturation = require("./primitives/saturation.coffee");
+
+K1Filter = (function(_super) {
+  __extends(K1Filter, _super);
+
+  function K1Filter() {
+    _ref = K1Filter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  K1Filter.preview = 'k1.png';
+
+  K1Filter.displayName = 'K1';
+
+  K1Filter.prototype.apply = (new ToneCurve(K1Filter.app, {
+    rgbControlPoints: [[0, 0], [53 / 255, 32 / 255], [91 / 255, 80 / 255], [176 / 255, 205 / 255], [1, 1]]
+  })).compose(Saturation, {
+    saturation: 0.9
+  });
+
+  return K1Filter;
+
+})(Filter);
+
+module.exports = K1Filter;
+
+
+},{"./filter.coffee":9,"./primitives/saturation.coffee":16,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],18:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/softcoloroverlay.coffee",__dirname="/operations/filters/primitives";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Filter, PrimitiveSoftColorOverlayFilter, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("../filter.coffee");
+
+PrimitiveSoftColorOverlayFilter = (function(_super) {
+  __extends(PrimitiveSoftColorOverlayFilter, _super);
+
+  function PrimitiveSoftColorOverlayFilter() {
+    _ref = PrimitiveSoftColorOverlayFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  PrimitiveSoftColorOverlayFilter.prototype.apply = function(imageData) {
+    var h, index, w, x, y, _i, _j;
+    w = imageData.width;
+    h = imageData.height;
+    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
+      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
+        index = (w * y + x) * 4;
+        imageData.data[index] = Math.max(this.options.r, imageData.data[index]);
+        imageData.data[index + 1] = Math.max(this.options.g, imageData.data[index + 1]);
+        imageData.data[index + 2] = Math.max(this.options.b, imageData.data[index + 2]);
+        imageData.data[index + 3] = 255;
+      }
+    }
+    return imageData;
+  };
+
+  return PrimitiveSoftColorOverlayFilter;
+
+})(Filter);
+
+module.exports = PrimitiveSoftColorOverlayFilter;
+
+
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],19:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/k2.coffee",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Filter, K2Filter, SoftColorOverlay, ToneCurve, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("./filter.coffee");
+
+ToneCurve = require("./primitives/tonecurve.coffee");
+
+SoftColorOverlay = require("./primitives/softcoloroverlay.coffee");
+
+K2Filter = (function(_super) {
+  __extends(K2Filter, _super);
+
+  function K2Filter() {
+    _ref = K2Filter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  K2Filter.preview = "k2.png";
+
+  K2Filter.displayName = "K2";
+
+  K2Filter.prototype.apply = (new ToneCurve(K2Filter.app, {
+    rgbControlPoints: [[0, 0], [54 / 255, 33 / 255], [77 / 255, 82 / 255], [94 / 255, 103 / 255], [122 / 255, 126 / 255], [177 / 255, 193 / 255], [229 / 255, 232 / 255], [1, 1]]
+  })).compose(SoftColorOverlay, {
+    r: 40,
+    g: 40,
+    b: 40
+  });
+
+  return K2Filter;
+
+})(Filter);
+
+module.exports = K2Filter;
+
+
+},{"./filter.coffee":9,"./primitives/softcoloroverlay.coffee":18,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],20:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/k6.coffee",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var K6Filter, SaturationFilter, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+SaturationFilter = require("./primitives/saturation.coffee");
+
+K6Filter = (function(_super) {
+  __extends(K6Filter, _super);
+
+  function K6Filter() {
+    _ref = K6Filter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  K6Filter.preview = "k6.png";
+
+  K6Filter.displayName = "K6";
+
+  K6Filter.prototype.saturation = 0.5;
+
+  return K6Filter;
+
+})(SaturationFilter);
+
+module.exports = K6Filter;
+
+
+},{"./primitives/saturation.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],21:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/kdynamic.coffee",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Filter, KDynamicFilter, Saturation, ToneCurve, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("./filter.coffee");
+
+ToneCurve = require("./primitives/tonecurve.coffee");
+
+Saturation = require("./primitives/saturation.coffee");
+
+KDynamicFilter = (function(_super) {
+  __extends(KDynamicFilter, _super);
+
+  function KDynamicFilter() {
+    _ref = KDynamicFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  KDynamicFilter.preview = "kdynamic.png";
+
+  KDynamicFilter.displayName = "KDynamic";
+
+  KDynamicFilter.prototype.apply = (new ToneCurve(KDynamicFilter.app, {
+    rgbControlPoints: [[0, 0], [17 / 255, 27 / 255], [46 / 255, 69 / 255], [90 / 255, 112 / 255], [156 / 255, 200 / 255], [203 / 255, 243 / 255], [1, 1]]
+  })).compose(Saturation, {
+    saturation: 0.7
+  });
+
+  return KDynamicFilter;
+
+})(Filter);
+
+module.exports = KDynamicFilter;
+
+
+},{"./filter.coffee":9,"./primitives/saturation.coffee":16,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],22:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/fridge.coffee",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var FridgeFilter, ToneCurve, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+ToneCurve = require("./primitives/tonecurve.coffee");
+
+FridgeFilter = (function(_super) {
+  __extends(FridgeFilter, _super);
+
+  function FridgeFilter() {
+    _ref = FridgeFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  FridgeFilter.preview = "fridge.png";
+
+  FridgeFilter.displayName = "Fridge";
+
+  FridgeFilter.prototype.redControlPoints = [[0, 9 / 255], [21 / 255, 11 / 255], [45 / 255, 24 / 255], [1, 220 / 255]];
+
+  FridgeFilter.prototype.greenControlPoints = [[0, 12 / 255], [21 / 255, 21 / 255], [42 / 255, 42 / 255], [150 / 255, 150 / 255], [170 / 255, 173 / 255], [1, 210 / 255]];
+
+  FridgeFilter.prototype.blueControlPoints = [[0, 28 / 255], [43 / 255, 72 / 255], [128 / 255, 185 / 255], [1, 220 / 255]];
+
+  return FridgeFilter;
+
+})(ToneCurve);
+
+module.exports = FridgeFilter;
+
+
+},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],23:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/desaturation.coffee",__dirname="/operations/filters/primitives";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Filter, PrimitiveDesaturationFilter,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("../filter.coffee");
+
+PrimitiveDesaturationFilter = (function(_super) {
+  __extends(PrimitiveDesaturationFilter, _super);
+
+  function PrimitiveDesaturationFilter(app, options) {
+    this.app = app;
+    if (options == null) {
+      options = {};
+    }
+    PrimitiveDesaturationFilter.__super__.constructor.apply(this, arguments);
+    if (this.desaturation == null) {
+      this.desaturation = options != null ? options.desaturation : void 0;
+    }
+  }
+
+  PrimitiveDesaturationFilter.prototype.apply = function(imageData) {
+    var h, index, luminance, w, x, y, _i, _j;
+    w = imageData.width;
+    h = imageData.height;
+    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
+      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
+        index = (w * y + x) * 4;
+        luminance = imageData.data[index] * 0.3 + imageData.data[index + 1] * 0.59 + imageData.data[index + 2] * 0.11;
+        imageData.data[index] = luminance * (1 - this.desaturation) + (imageData.data[index] * this.desaturation);
+        imageData.data[index + 1] = luminance * (1 - this.desaturation) + (imageData.data[index + 1] * this.desaturation);
+        imageData.data[index + 2] = luminance * (1 - this.desaturation) + (imageData.data[index + 2] * this.desaturation);
+        imageData.data[index + 3] = 255;
+      }
+    }
+    return imageData;
+  };
+
+  return PrimitiveDesaturationFilter;
+
+})(Filter);
+
+module.exports = PrimitiveDesaturationFilter;
+
+
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],24:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/breeze.coffee",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var BreezeFilter, Desaturation, Filter, ToneCurveFilter, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("./filter.coffee");
+
+ToneCurveFilter = require("./primitives/tonecurve.coffee");
+
+Desaturation = require("./primitives/desaturation.coffee");
+
+BreezeFilter = (function(_super) {
+  __extends(BreezeFilter, _super);
+
+  function BreezeFilter() {
+    _ref = BreezeFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  BreezeFilter.preview = "breeze.png";
+
+  BreezeFilter.displayName = "Breeze";
+
+  BreezeFilter.prototype.apply = (new Desaturation(BreezeFilter.app, {
+    desaturation: 0.5
+  })).compose(ToneCurveFilter, {
+    redControlPoints: [[0, 0], [170 / 255, 170 / 255], [212 / 255, 219 / 255], [234 / 255, 242 / 255], [1, 1]],
+    greenControlPoints: [[0, 0], [170 / 255, 168 / 255], [234 / 255, 231 / 255], [1, 1]],
+    blueControlPoints: [[0, 0], [170 / 255, 170 / 255], [212 / 255, 208 / 255], [1, 1]]
+  });
+
+  return BreezeFilter;
+
+})(Filter);
+
+module.exports = BreezeFilter;
+
+
+},{"./filter.coffee":9,"./primitives/desaturation.coffee":23,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],25:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/orchid.coffee",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Desaturation, Filter, OrchidFilter, ToneCurve, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("./filter.coffee");
+
+ToneCurve = require("./primitives/tonecurve.coffee");
+
+Desaturation = require("./primitives/desaturation.coffee");
+
+OrchidFilter = (function(_super) {
+  __extends(OrchidFilter, _super);
+
+  function OrchidFilter() {
+    _ref = OrchidFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  OrchidFilter.preview = "orchid.png";
+
+  OrchidFilter.displayName = "Orchid";
+
+  OrchidFilter.prototype.apply = (new ToneCurve(OrchidFilter.app, {
+    redControlPoints: [[0, 0], [115 / 255, 130 / 255], [195 / 255, 215 / 255], [1, 1]],
+    greenControlPoints: [[0, 0], [148 / 255, 153 / 255], [172 / 255, 215 / 255], [1, 1]],
+    blueControlPoints: [[0, 46 / 255], [58 / 255, 75 / 255], [178 / 255, 205 / 255], [1, 1]]
+  })).compose(ToneCurve, {
+    rgbControlPoints: [[0, 0], [117 / 255, 151 / 255], [189 / 255, 217 / 255], [1, 1]]
+  }).compose(Desaturation, {
+    desaturation: 0.65
+  });
+
+  return OrchidFilter;
+
+})(Filter);
+
+module.exports = OrchidFilter;
+
+
+},{"./filter.coffee":9,"./primitives/desaturation.coffee":23,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],26:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/chest.coffee",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var ChestFilter, ToneCurve, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+ToneCurve = require("./primitives/tonecurve.coffee");
+
+ChestFilter = (function(_super) {
+  __extends(ChestFilter, _super);
+
+  function ChestFilter() {
+    _ref = ChestFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  ChestFilter.preview = 'chest.png';
+
+  ChestFilter.displayName = 'Chest';
+
+  ChestFilter.prototype.redControlPoints = [[0, 0], [44 / 255, 44 / 255], [124 / 255, 143 / 255], [221 / 255, 204 / 255], [1, 1]];
+
+  ChestFilter.prototype.greenControlPoints = [[0, 0], [130 / 255, 127 / 255], [213 / 255, 199 / 255], [1, 1]];
+
+  ChestFilter.prototype.blueControlPoints = [[0, 0], [51 / 255, 52 / 255], [219 / 255, 204 / 255], [1, 1]];
+
+  return ChestFilter;
+
+})(ToneCurve);
+
+module.exports = ChestFilter;
+
+
+},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],27:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/front.coffee",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var FrontFilter, ToneCurve, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+ToneCurve = require("./primitives/tonecurve.coffee");
+
+FrontFilter = (function(_super) {
+  __extends(FrontFilter, _super);
+
+  function FrontFilter() {
+    _ref = FrontFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  FrontFilter.preview = 'front.png';
+
+  FrontFilter.displayName = 'Front';
+
+  FrontFilter.prototype.redControlPoints = [[0, 65 / 255], [28 / 255, 67 / 255], [67 / 255, 113 / 255], [125 / 255, 183 / 255], [187 / 255, 217 / 255], [1, 229 / 255]];
+
+  FrontFilter.prototype.greenControlPoints = [[0, 52 / 255], [42 / 255, 59 / 255], [104 / 255, 134 / 255], [169 / 255, 209 / 255], [1, 240 / 255]];
+
+  FrontFilter.prototype.blueControlPoints = [[0, 52 / 255], [65 / 255, 68 / 255], [93 / 255, 104 / 255], [150 / 255, 153 / 255], [1, 198 / 255]];
+
+  return FrontFilter;
+
+})(ToneCurve);
+
+module.exports = FrontFilter;
+
+
+},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],28:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/fixie.coffee",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var FixieFilter, ToneCurve, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+ToneCurve = require("./primitives/tonecurve.coffee");
+
+FixieFilter = (function(_super) {
+  __extends(FixieFilter, _super);
+
+  function FixieFilter() {
+    _ref = FixieFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  FixieFilter.preview = 'fixie.png';
+
+  FixieFilter.displayName = 'Fixie';
+
+  FixieFilter.prototype.redControlPoints = [[0, 0], [44 / 255, 28 / 255], [63 / 255, 48 / 255], [128 / 255, 132 / 255], [235 / 255, 248 / 255], [1, 1]];
+
+  FixieFilter.prototype.greenControlPoints = [[0, 0], [20 / 255, 10 / 255], [60 / 255, 45 / 255], [190 / 255, 209 / 255], [211 / 255, 231 / 255], [1, 1]];
+
+  FixieFilter.prototype.blueControlPoints = [[0, 31 / 255], [41 / 255, 62 / 255], [150 / 255, 142 / 255], [234 / 255, 212 / 255], [1, 224 / 255]];
+
+  return FixieFilter;
+
+})(ToneCurve);
+
+module.exports = FixieFilter;
+
+
+},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],29:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/x400.coffee",__dirname="/operations/filters/primitives";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Filter, PrimitiveX400Filter, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("../filter.coffee");
+
+PrimitiveX400Filter = (function(_super) {
+  __extends(PrimitiveX400Filter, _super);
+
+  function PrimitiveX400Filter() {
+    _ref = PrimitiveX400Filter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  PrimitiveX400Filter.prototype.apply = function(imageData) {
+    var gray, h, index, w, x, y, _i, _j;
+    w = imageData.width;
+    h = imageData.height;
+    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
+      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
+        index = (w * y + x) * 4;
+        gray = imageData.data[index] / 255 * 0.3 + imageData.data[index + 1] / 255 * 0.3 + imageData.data[index + 2] / 255 * 0.3;
+        gray -= 0.2;
+        gray = Math.max(0.0, Math.min(1.0, gray));
+        gray += 0.15;
+        gray *= 1.4;
+        gray *= 255;
+        imageData.data[index] = gray;
+        imageData.data[index + 1] = gray;
+        imageData.data[index + 2] = gray;
+        imageData.data[index + 3] = 255;
+      }
+    }
+    return imageData;
+  };
+
+  return PrimitiveX400Filter;
+
+})(Filter);
+
+module.exports = PrimitiveX400Filter;
+
+
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],30:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/x400.coffee",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var X400Filter, x400, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+x400 = require("./primitives/x400.coffee");
+
+X400Filter = (function(_super) {
+  __extends(X400Filter, _super);
+
+  function X400Filter() {
+    _ref = X400Filter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  X400Filter.preview = 'x400.png';
+
+  X400Filter.displayName = 'X400';
+
+  return X400Filter;
+
+})(x400);
+
+module.exports = X400Filter;
+
+
+},{"./primitives/x400.coffee":29,"__browserify_Buffer":3,"__browserify_process":1}],31:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/grayscale.coffee",__dirname="/operations/filters/primitives";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Filter, PrimtiveGrayscaleFilter, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("../filter.coffee");
+
+PrimtiveGrayscaleFilter = (function(_super) {
+  __extends(PrimtiveGrayscaleFilter, _super);
+
+  function PrimtiveGrayscaleFilter() {
+    _ref = PrimtiveGrayscaleFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  PrimtiveGrayscaleFilter.prototype.apply = function(imageData) {
+    var h, index, luminance, w, x, y, _i, _j;
+    w = imageData.width;
+    h = imageData.height;
+    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
+      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
+        index = (w * y + x) * 4;
+        luminance = imageData.data[index] * 0.2125 + imageData.data[index + 1] * 0.7154 + imageData.data[index + 2] * 0.0721;
+        imageData.data[index] = luminance;
+        imageData.data[index + 1] = luminance;
+        imageData.data[index + 2] = luminance;
+        imageData.data[index + 3] = 255;
+      }
+    }
+    return imageData;
+  };
+
+  return PrimtiveGrayscaleFilter;
+
+})(Filter);
+
+module.exports = PrimtiveGrayscaleFilter;
+
+
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],32:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/bw.coffee",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var BWFilter, Grayscale, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Grayscale = require("./primitives/grayscale.coffee");
+
+BWFilter = (function(_super) {
+  __extends(BWFilter, _super);
+
+  function BWFilter() {
+    _ref = BWFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  BWFilter.preview = 'bw.png';
+
+  BWFilter.displayName = 'B&W';
+
+  return BWFilter;
+
+})(Grayscale);
+
+module.exports = BWFilter;
+
+
+},{"./primitives/grayscale.coffee":31,"__browserify_Buffer":3,"__browserify_process":1}],33:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/lenin.coffee",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Desaturation, Filter, LeninFilter, ToneCurveFilter, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("./filter.coffee");
+
+ToneCurveFilter = require("./primitives/tonecurve.coffee");
+
+Desaturation = require("./primitives/desaturation.coffee");
+
+LeninFilter = (function(_super) {
+  __extends(LeninFilter, _super);
+
+  function LeninFilter() {
+    _ref = LeninFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  LeninFilter.preview = "lenin.png";
+
+  LeninFilter.displayName = "Lenin";
+
+  LeninFilter.prototype.apply = (new Desaturation(LeninFilter.app, {
+    desaturation: 0.4
+  })).compose(ToneCurveFilter, {
+    redControlPoints: [[0, 20 / 255], [40 / 255, 20 / 255], [106 / 255, 111 / 255], [129 / 255, 153 / 255], [190 / 255, 223 / 255], [1, 1]],
+    greenControlPoints: [[0, 20 / 255], [40 / 255, 20 / 255], [62 / 255, 41 / 255], [106 / 255, 108 / 255], [132 / 255, 159 / 255], [203 / 255, 237 / 255], [1, 1]],
+    blueControlPoints: [[0, 40 / 255], [40 / 255, 40 / 255], [73 / 255, 60 / 255], [133 / 255, 160 / 255], [191 / 255, 297 / 255], [203 / 255, 237 / 255], [237 / 255, 239 / 255], [1, 1]]
+  });
+
+  return LeninFilter;
+
+})(Filter);
+
+module.exports = LeninFilter;
+
+
+},{"./filter.coffee":9,"./primitives/desaturation.coffee":23,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],34:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/contrast.coffee",__dirname="/operations/filters/primitives";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Filter, PrimitiveContrastFilter,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("../filter.coffee");
+
+PrimitiveContrastFilter = (function(_super) {
+  __extends(PrimitiveContrastFilter, _super);
+
+  function PrimitiveContrastFilter(app, options) {
+    this.app = app;
+    if (options == null) {
+      options = {};
+    }
+    PrimitiveContrastFilter.__super__.constructor.apply(this, arguments);
+    this.setContrast(options.contrast);
+  }
+
+  PrimitiveContrastFilter.prototype.apply = function(imageData) {
+    var h, index, w, x, y, _i, _j;
+    w = imageData.width;
+    h = imageData.height;
+    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
+      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
+        index = (w * y + x) * 4;
+        if (this.contrast > 0) {
+          imageData.data[index] = (imageData.data[index] - 128) / (1 - this.contrast) + 128;
+          imageData.data[index + 1] = (imageData.data[index + 1] - 128) / (1 - this.contrast) + 128;
+          imageData.data[index + 2] = (imageData.data[index + 2] - 128) / (1 - this.contrast) + 128;
+          imageData.data[index + 3] = 255;
+        } else {
+          imageData.data[index] = (imageData.data[index] - 128) * (1 + this.contrast) + 128;
+          imageData.data[index + 1] = (imageData.data[index + 1] - 128) * (1 + this.contrast) + 128;
+          imageData.data[index + 2] = (imageData.data[index + 2] - 128) * (1 + this.contrast) + 128;
+          imageData.data[index + 3] = 255;
+        }
+      }
+    }
+    return imageData;
+  };
+
+  PrimitiveContrastFilter.prototype.setContrast = function(contrast) {
+    return this.contrast = typeof contrast === 'number' ? contrast : 1.0;
+  };
+
+  return PrimitiveContrastFilter;
+
+})(Filter);
+
+module.exports = PrimitiveContrastFilter;
+
+
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],35:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/pola669.coffee",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Contrast, Filter, Pola669Filter, Saturation, ToneCurve, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("./filter.coffee");
+
+ToneCurve = require("./primitives/tonecurve.coffee");
+
+Contrast = require("./primitives/contrast.coffee");
+
+Saturation = require("./primitives/saturation.coffee");
+
+Pola669Filter = (function(_super) {
+  __extends(Pola669Filter, _super);
+
+  function Pola669Filter() {
+    _ref = Pola669Filter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  Pola669Filter.preview = 'pola669.png';
+
+  Pola669Filter.displayName = 'Pola 669';
+
+  Pola669Filter.prototype.apply = (new ToneCurve(Pola669Filter.app, {
+    redControlPoints: [[0, 0], [56 / 255, 18 / 255], [196 / 255, 209 / 255], [1, 1]],
+    greenControlPoints: [[0, 38 / 255], [71 / 255, 84 / 255], [1, 1]],
+    blueControlPoints: [[0, 0], [131 / 255, 133 / 255], [204 / 255, 211 / 255], [1, 1]]
+  })).compose(Saturation, {
+    saturation: -0.2
+  }).compose(Contrast, {
+    contrast: 0.5
+  });
+
+  return Pola669Filter;
+
+})(Filter);
+
+module.exports = Pola669Filter;
+
+
+},{"./filter.coffee":9,"./primitives/contrast.coffee":34,"./primitives/saturation.coffee":16,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],36:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/pola.coffee",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Contrast, Filter, PolaFilter, Saturation, ToneCurve, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("./filter.coffee");
+
+ToneCurve = require("./primitives/tonecurve.coffee");
+
+Contrast = require("./primitives/contrast.coffee");
+
+Saturation = require("./primitives/saturation.coffee");
+
+PolaFilter = (function(_super) {
+  __extends(PolaFilter, _super);
+
+  function PolaFilter() {
+    _ref = PolaFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  PolaFilter.preview = 'pola.png';
+
+  PolaFilter.displayName = 'Pola';
+
+  PolaFilter.prototype.apply = (new ToneCurve(PolaFilter.app, {
+    redControlPoints: [[0, 0], [94 / 255, 74 / 255], [181 / 255, 205 / 255], [1, 1]],
+    greenControlPoints: [[0, 0], [34 / 255, 34 / 255], [99 / 255, 76 / 255], [176 / 255, 190 / 255], [1, 1]],
+    blueControlPoints: [[0, 0], [102 / 255, 73 / 255], [227 / 255, 213 / 255], [1, 1]]
+  })).compose(Saturation, {
+    saturation: -0.2
+  }).compose(Contrast, {
+    contrast: 0.5
+  });
+
+  return PolaFilter;
+
+})(Filter);
+
+module.exports = PolaFilter;
+
+
+},{"./filter.coffee":9,"./primitives/contrast.coffee":34,"./primitives/saturation.coffee":16,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],37:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/bwhard.coffee",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var BWHardFilter, Contrast, Filter, Grayscale, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("./filter.coffee");
+
+Grayscale = require("./primitives/grayscale.coffee");
+
+Contrast = require("./primitives/contrast.coffee");
+
+BWHardFilter = (function(_super) {
+  __extends(BWHardFilter, _super);
+
+  function BWHardFilter() {
+    _ref = BWHardFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  BWHardFilter.preview = '1920.png';
+
+  BWHardFilter.displayName = '1920';
+
+  BWHardFilter.prototype.apply = (new Grayscale).compose(Contrast, {
+    contrast: 0.5
+  });
+
+  return BWHardFilter;
+
+})(Filter);
+
+module.exports = BWHardFilter;
+
+
+},{"./filter.coffee":9,"./primitives/contrast.coffee":34,"./primitives/grayscale.coffee":31,"__browserify_Buffer":3,"__browserify_process":1}],38:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/quozi.coffee",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Desaturation, Filter, QuoziFilter, ToneCurveFilter, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("./filter.coffee");
+
+ToneCurveFilter = require("./primitives/tonecurve.coffee");
+
+Desaturation = require("./primitives/desaturation.coffee");
+
+QuoziFilter = (function(_super) {
+  __extends(QuoziFilter, _super);
+
+  function QuoziFilter() {
+    _ref = QuoziFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  QuoziFilter.preview = "breeze.png";
+
+  QuoziFilter.displayName = "Breeze";
+
+  QuoziFilter.prototype.apply = (new Desaturation(QuoziFilter.app, {
+    desaturation: 0.65
+  })).compose(ToneCurveFilter, {
+    redControlPoints: [[0, 50 / 255], [40 / 255, 78 / 255], [118 / 255, 170 / 255], [181 / 255, 211 / 255], [1, 1]],
+    greenControlPoints: [[0, 27 / 255], [28 / 255, 45 / 255], [109 / 255, 157 / 255], [157 / 255, 195 / 255], [179 / 255, 208 / 255], [206 / 255, 212 / 255], [1, 240 / 255]],
+    blueControlPoints: [[0, 50 / 255], [12 / 255, 55 / 255], [46 / 255, 103 / 255], [103 / 255, 162 / 255], [194 / 255, 182 / 255], [241 / 255, 201 / 255], [1, 219 / 255]]
+  });
+
+  return QuoziFilter;
+
+})(Filter);
+
+module.exports = QuoziFilter;
+
+
+},{"./filter.coffee":9,"./primitives/desaturation.coffee":23,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],39:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/food.coffee",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Contrast, Filter, FoodFilter, Saturation, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("./filter.coffee");
+
+Saturation = require("./primitives/saturation.coffee");
+
+Contrast = require("./primitives/contrast.coffee");
+
+FoodFilter = (function(_super) {
+  __extends(FoodFilter, _super);
+
+  function FoodFilter() {
+    _ref = FoodFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  FoodFilter.preview = 'food.png';
+
+  FoodFilter.displayName = 'Food';
+
+  FoodFilter.prototype.apply = (new Saturation(FoodFilter.app, {
+    saturation: 0.35
+  })).compose(Contrast, {
+    contrast: 0.1
+  });
+
+  return FoodFilter;
+
+})(Filter);
+
+module.exports = FoodFilter;
+
+
+},{"./filter.coffee":9,"./primitives/contrast.coffee":34,"./primitives/saturation.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],40:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/glam.coffee",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Contrast, Filter, GlamFilter, Grayscale, ToneCurve, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("./filter.coffee");
+
+Grayscale = require("./primitives/grayscale.coffee");
+
+Contrast = require("./primitives/contrast.coffee");
+
+ToneCurve = require("./primitives/tonecurve.coffee");
+
+GlamFilter = (function(_super) {
+  __extends(GlamFilter, _super);
+
+  function GlamFilter() {
+    _ref = GlamFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  GlamFilter.preview = 'glam.png';
+
+  GlamFilter.displayName = 'Glam';
+
+  GlamFilter.prototype.apply = (new Grayscale).compose(Contrast, {
+    contrast: 0.1
+  }).compose(ToneCurve, {
+    redControlPoints: [[0, 0], [94 / 255, 74 / 255], [181 / 255, 205 / 255], [1, 1]],
+    greenControlPoints: [[0, 0], [0.5, 0.5], [1, 1]],
+    blueControlPoints: [[0, 0], [102 / 255, 73 / 255], [227 / 255, 213 / 255], [1, 1]]
+  });
+
+  return GlamFilter;
+
+})(Filter);
+
+module.exports = GlamFilter;
+
+
+},{"./filter.coffee":9,"./primitives/contrast.coffee":34,"./primitives/grayscale.coffee":31,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],41:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/celsius.coffee",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var CelsiusFilter, ToneCurve, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+ToneCurve = require("./primitives/tonecurve.coffee");
+
+CelsiusFilter = (function(_super) {
+  __extends(CelsiusFilter, _super);
+
+  function CelsiusFilter() {
+    _ref = CelsiusFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  CelsiusFilter.preview = 'celsius.png';
+
+  CelsiusFilter.displayName = 'Celsius';
+
+  CelsiusFilter.prototype.redControlPoints = [[0, 69 / 255], [55 / 255, 110 / 255], [202 / 255, 230 / 255], [1, 1]];
+
+  CelsiusFilter.prototype.greenControlPoints = [[0, 44 / 255], [89 / 255, 93 / 255], [185 / 255, 141 / 255], [1, 189 / 255]];
+
+  CelsiusFilter.prototype.blueControlPoints = [[0, 76 / 255], [39 / 255, 82 / 255], [218 / 255, 138 / 255], [1, 171 / 255]];
+
+  return CelsiusFilter;
+
+})(ToneCurve);
+
+module.exports = CelsiusFilter;
+
+
+},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],42:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/lomo.coffee",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var LomoFilter, ToneCurve, controlPoints, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+ToneCurve = require("./primitives/tonecurve.coffee");
+
+controlPoints = [[0, 0], [87 / 255, 20 / 255], [131 / 255, 156 / 255], [183 / 255, 205 / 255], [1, 183 / 208]];
+
+LomoFilter = (function(_super) {
+  __extends(LomoFilter, _super);
+
+  function LomoFilter() {
+    _ref = LomoFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  LomoFilter.preview = 'lomo.png';
+
+  LomoFilter.displayName = 'Lomo';
+
+  LomoFilter.prototype.redControlPoints = controlPoints;
+
+  LomoFilter.prototype.greenControlPoints = controlPoints;
+
+  LomoFilter.prototype.blueControlPoints = controlPoints;
+
+  return LomoFilter;
+
+})(ToneCurve);
+
+module.exports = LomoFilter;
+
+
+},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],43:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/texas.coffee",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var TexasFilter, ToneCurve, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+ToneCurve = require("./primitives/tonecurve.coffee");
+
+TexasFilter = (function(_super) {
+  __extends(TexasFilter, _super);
+
+  function TexasFilter() {
+    _ref = TexasFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  TexasFilter.preview = 'texas.png';
+
+  TexasFilter.displayName = 'Texas';
+
+  TexasFilter.prototype.redControlPoints = [[0, 72 / 255], [89 / 255, 99 / 255], [176 / 255, 212 / 255], [1, 237 / 255]];
+
+  TexasFilter.prototype.greenControlPoints = [[0, 49 / 255], [1, 192 / 255]];
+
+  TexasFilter.prototype.blueControlPoints = [[0, 72 / 255], [1, 151 / 255]];
+
+  return TexasFilter;
+
+})(ToneCurve);
+
+module.exports = TexasFilter;
+
+
+},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],44:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/glow.coffee",__dirname="/operations/filters/primitives";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Filter, PrimitiveGlowFilter,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("../filter.coffee");
+
+PrimitiveGlowFilter = (function(_super) {
+  __extends(PrimitiveGlowFilter, _super);
+
+  function PrimitiveGlowFilter(options) {
+    if (options == null) {
+      options = {};
+    }
+    PrimitiveGlowFilter.__super__.constructor.apply(this, arguments);
+    this.setColorToAdd(options.r, options.g, options.b);
+  }
+
+  PrimitiveGlowFilter.prototype.apply = function(imageData) {
+    var d, h, index, nx, ny, scalarX, scalarY, w, x, x01, y, y01, _i, _j;
+    w = imageData.width;
+    h = imageData.height;
+    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
+      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
+        index = (w * y + x) * 4;
+        x01 = x / w;
+        y01 = y / h;
+        nx = (x01 - 0.5) / 0.75;
+        ny = (y01 - 0.5) / 0.75;
+        scalarX = nx * nx;
+        scalarY = ny * ny;
+        d = 1 - (scalarX + scalarY);
+        d = Math.min(Math.max(d, 0.1), 1.0);
+        imageData.data[index] = imageData.data[index] * (d * this.colorToAdd[0]);
+        imageData.data[index + 1] = imageData.data[index + 1] * (d * this.colorToAdd[1]);
+        imageData.data[index + 2] = imageData.data[index + 2] * (d * this.colorToAdd[2]);
+        imageData.data[index + 3] = 255;
+      }
+    }
+    return imageData;
+  };
+
+  PrimitiveGlowFilter.prototype.setColorToAdd = function(r, g, b) {
+    return this.colorToAdd = [typeof r === 'number' ? r : 1.0, typeof g === 'number' ? g : 1.0, typeof b === 'number' ? b : 1.0];
+  };
+
+  return PrimitiveGlowFilter;
+
+})(Filter);
+
+module.exports = PrimitiveGlowFilter;
+
+
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],45:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/morning.coffee",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Filter, Glow, MorningFilter, ToneCurve, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("./filter.coffee");
+
+Glow = require("./primitives/glow.coffee");
+
+ToneCurve = require("./primitives/tonecurve.coffee");
+
+MorningFilter = (function(_super) {
+  __extends(MorningFilter, _super);
+
+  function MorningFilter() {
+    _ref = MorningFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  MorningFilter.preview = 'morning.png';
+
+  MorningFilter.displayName = 'Morning';
+
+  MorningFilter.prototype.apply = (new ToneCurve(MorningFilter.app, {
+    redControlPoints: [[0, 40 / 255], [1, 230 / 255]],
+    greenControlPoints: [[0, 10 / 255], [1, 225 / 255]],
+    blueControlPoints: [[0, 20 / 255], [1, 181 / 255]]
+  })).compose(Glow);
+
+  return MorningFilter;
+
+})(Filter);
+
+module.exports = MorningFilter;
+
+
+},{"./filter.coffee":9,"./primitives/glow.coffee":44,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],46:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/gobblin.coffee",__dirname="/operations/filters/primitives";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Filter, PrimitiveGobblinFilter, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("../filter.coffee");
+
+PrimitiveGobblinFilter = (function(_super) {
+  __extends(PrimitiveGobblinFilter, _super);
+
+  function PrimitiveGobblinFilter() {
+    _ref = PrimitiveGobblinFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  PrimitiveGobblinFilter.prototype.apply = function(imageData) {
+    var h, index, w, x, y, _i, _j;
+    w = imageData.width;
+    h = imageData.height;
+    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
+      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
+        index = (w * y + x) * 4;
+        imageData.data[index + 2] = imageData.data[index + 1] * 0.33;
+        imageData.data[index] = imageData.data[index] * 0.6;
+        imageData.data[index + 2] += imageData.data[index] * 0.33;
+        imageData.data[index + 1] = imageData.data[index + 1] * 0.7;
+        imageData.data[index + 3] = 255;
+      }
+    }
+    return imageData;
+  };
+
+  return PrimitiveGobblinFilter;
+
+})(Filter);
+
+module.exports = PrimitiveGobblinFilter;
+
+
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],47:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/gobblin.coffee",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Gobblin, GobblinFilter, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Gobblin = require("./primitives/gobblin.coffee");
+
+GobblinFilter = (function(_super) {
+  __extends(GobblinFilter, _super);
+
+  function GobblinFilter() {
+    _ref = GobblinFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  GobblinFilter.preview = 'gobblin.png';
+
+  GobblinFilter.displayName = 'Gobblin';
+
+  return GobblinFilter;
+
+})(Gobblin);
+
+module.exports = GobblinFilter;
+
+
+},{"./primitives/gobblin.coffee":46,"__browserify_Buffer":3,"__browserify_process":1}],48:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/mellow.coffee",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var MellowFilter, ToneCurve, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+ToneCurve = require("./primitives/tonecurve.coffee");
+
+MellowFilter = (function(_super) {
+  __extends(MellowFilter, _super);
+
+  function MellowFilter() {
+    _ref = MellowFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  MellowFilter.preview = 'mellow.png';
+
+  MellowFilter.displayName = 'Mellow';
+
+  MellowFilter.prototype.redControlPoints = [[0, 0], [41 / 255, 84 / 255], [87 / 255, 134 / 255], [1, 1]];
+
+  MellowFilter.prototype.greenControlPoints = [[0, 0], [1, 216 / 255]];
+
+  MellowFilter.prototype.blueControlPoints = [[0, 0], [1, 131 / 255]];
+
+  return MellowFilter;
+
+})(ToneCurve);
+
+module.exports = MellowFilter;
+
+
+},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],49:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/brightness.coffee",__dirname="/operations/filters/primitives";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Filter, PrimitiveBrightnessFilter,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("../filter.coffee");
+
+PrimitiveBrightnessFilter = (function(_super) {
+  __extends(PrimitiveBrightnessFilter, _super);
+
+  function PrimitiveBrightnessFilter(options) {
+    if (options == null) {
+      options = {};
+    }
+    PrimitiveBrightnessFilter.__super__.constructor.apply(this, arguments);
+    this.setBrightness(options.brightness);
+  }
+
+  PrimitiveBrightnessFilter.prototype.apply = function(imageData) {
+    var h, index, w, x, y, _i, _j;
+    w = imageData.width;
+    h = imageData.height;
+    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
+      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
+        index = (w * y + x) * 4;
+        imageData.data[index] = Math.min(imageData.data[index] + this.brightness * 255, 255);
+        imageData.data[index + 1] = Math.min(imageData.data[index + 1] + this.brightness * 255, 255);
+        imageData.data[index + 2] = Math.min(imageData.data[index + 2] + this.brightness * 255, 255);
+        imageData.data[index + 3] = 255;
+      }
+    }
+    return imageData;
+  };
+
+  PrimitiveBrightnessFilter.prototype.setBrightness = function(brightness) {
+    return this.brightness = typeof brightness === 'number' ? brightness : 0.0;
+  };
+
+  return PrimitiveBrightnessFilter;
+
+})(Filter);
+
+module.exports = PrimitiveBrightnessFilter;
+
+
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],50:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/a15.coffee",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var A15Filter, Brightness, Contrast, Filter, ToneCurve, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("./filter.coffee");
+
+Contrast = require("./primitives/contrast.coffee");
+
+Brightness = require("./primitives/brightness.coffee");
+
+ToneCurve = require("./primitives/tonecurve.coffee");
+
+A15Filter = (function(_super) {
+  __extends(A15Filter, _super);
+
+  function A15Filter() {
+    _ref = A15Filter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  A15Filter.preview = '15.png';
+
+  A15Filter.displayName = '15';
+
+  A15Filter.prototype.apply = (new Contrast(A15Filter.app, {
+    contrast: -0.37
+  })).compose(Brightness, {
+    brightness: 0.12
+  }).compose(ToneCurve, {
+    redControlPoints: [[0, 38 / 255], [94 / 255, 94 / 255], [148 / 255, 142 / 255], [175 / 255, 187 / 255], [1, 1]],
+    greenControlPoints: [[0, 0], [77 / 255, 53 / 255], [171 / 255, 190 / 255], [1, 1]],
+    blueControlPoints: [[0, 10 / 255], [48 / 255, 85 / 255], [174 / 255, 228 / 255], [1, 1]]
+  });
+
+  return A15Filter;
+
+})(Filter);
+
+module.exports = A15Filter;
+
+
+},{"./filter.coffee":9,"./primitives/brightness.coffee":49,"./primitives/contrast.coffee":34,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],51:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/sunny.coffee",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Filter, SunnyFilter, ToneCurve, contrastPoints, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("./filter.coffee");
+
+ToneCurve = require("./primitives/tonecurve.coffee");
+
+contrastPoints = [[0, 0], [55 / 255, 20 / 255], [158 / 255, 191 / 255], [1, 1]];
+
+SunnyFilter = (function(_super) {
+  __extends(SunnyFilter, _super);
+
+  function SunnyFilter() {
+    _ref = SunnyFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  SunnyFilter.preview = 'sunny.png';
+
+  SunnyFilter.displayName = 'Sunny';
+
+  SunnyFilter.prototype.apply = (new ToneCurve(SunnyFilter.app, {
+    redControlPoints: [[0, 0], [62 / 255, 82 / 255], [141 / 255, 154 / 255], [1, 1]],
+    greenControlPoints: [[0, 39 / 255], [56 / 255, 96 / 255], [192 / 255, 176 / 255], [1, 1]],
+    blueControlPoints: [[0, 0], [174 / 255, 99 / 255], [1, 235 / 255]]
+  })).compose(ToneCurve, {
+    redControlPoints: contrastPoints,
+    greenControlPoints: contrastPoints,
+    blueControlPoints: contrastPoints
+  });
+
+  return SunnyFilter;
+
+})(Filter);
+
+module.exports = SunnyFilter;
+
+
+},{"./filter.coffee":9,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],52:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/semired.coffee",__dirname="/operations/filters";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Filter, Glow, SemiRedFilter, ToneCurve, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("./filter.coffee");
+
+Glow = require("./primitives/glow.coffee");
+
+ToneCurve = require("./primitives/tonecurve.coffee");
+
+SemiRedFilter = (function(_super) {
+  __extends(SemiRedFilter, _super);
+
+  function SemiRedFilter() {
+    _ref = SemiRedFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  SemiRedFilter.preview = 'semired.png';
+
+  SemiRedFilter.displayName = 'SemiRed';
+
+  SemiRedFilter.prototype.apply = (new ToneCurve(SemiRedFilter.app, {
+    redControlPoints: [[0, 129 / 255], [75 / 255, 153 / 255], [181 / 255, 227 / 255], [1, 1]],
+    greenControlPoints: [[0, 8 / 255], [111 / 255, 85 / 255], [212 / 255, 158 / 255], [1, 226 / 255]],
+    blueControlPoints: [[0, 5 / 255], [75 / 255, 22 / 255], [193 / 255, 90 / 255], [1, 229 / 255]]
+  })).compose(Glow);
+
+  return SemiRedFilter;
+
+})(Filter);
+
+module.exports = SemiRedFilter;
+
+
+},{"./filter.coffee":9,"./primitives/glow.coffee":44,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],53:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/filters.coffee",__dirname="/ui/controls";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var List, UIControlsFilters, Utils, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+List = require("./base/list.coffee");
+
+Utils = require("../../utils.coffee");
+
+UIControlsFilters = (function(_super) {
+  __extends(UIControlsFilters, _super);
+
+  function UIControlsFilters() {
+    _ref = UIControlsFilters.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  UIControlsFilters.prototype.displayButtons = true;
+
+  UIControlsFilters.prototype.cssClassIdentifier = "filters";
+
+  /*
+    Initializes the container
+  */
+
+
+  UIControlsFilters.prototype.init = function() {
+    var filter, _i, _len, _ref1, _results,
+      _this = this;
+    this.createList();
+    _ref1 = [require("../../operations/filters/default.coffee"), require("../../operations/filters/k1.coffee"), require("../../operations/filters/k2.coffee"), require("../../operations/filters/k6.coffee"), require("../../operations/filters/kdynamic.coffee"), require("../../operations/filters/fridge.coffee"), require("../../operations/filters/breeze.coffee"), require("../../operations/filters/orchid.coffee"), require("../../operations/filters/chest.coffee"), require("../../operations/filters/front.coffee"), require("../../operations/filters/fixie.coffee"), require("../../operations/filters/x400.coffee"), require("../../operations/filters/bw.coffee"), require("../../operations/filters/bwhard.coffee"), require("../../operations/filters/lenin.coffee"), require("../../operations/filters/quozi.coffee"), require("../../operations/filters/pola669.coffee"), require("../../operations/filters/pola.coffee"), require("../../operations/filters/food.coffee"), require("../../operations/filters/glam.coffee"), require("../../operations/filters/celsius.coffee"), require("../../operations/filters/texas.coffee"), require("../../operations/filters/morning.coffee"), require("../../operations/filters/lomo.coffee"), require("../../operations/filters/gobblin.coffee"), require("../../operations/filters/mellow.coffee"), require("../../operations/filters/sunny.coffee"), require("../../operations/filters/a15.coffee"), require("../../operations/filters/semired.coffee")];
+    _results = [];
+    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+      filter = _ref1[_i];
+      _results.push((function(filter) {
+        var item, preview;
+        item = $("<li>").addClass(imglyKit.classPrefix + "controls-item").appendTo(_this.list);
+        preview = $("<div>").addClass(imglyKit.classPrefix + "controls-preview-" + Utils.dasherize(filter.displayName)).appendTo(item);
+        return item.click(function(e) {
+          var activeClass;
+          _this.reset();
+          activeClass = imglyKit.classPrefix + "controls-list-item-active";
+          item.addClass(activeClass);
+          return _this.emit("select", {
+            operation: filter
+          });
+        });
+      })(filter));
+    }
+    return _results;
+  };
+
+  return UIControlsFilters;
+
+})(List);
+
+module.exports = UIControlsFilters;
+
+
+},{"../../operations/filters/a15.coffee":50,"../../operations/filters/breeze.coffee":24,"../../operations/filters/bw.coffee":32,"../../operations/filters/bwhard.coffee":37,"../../operations/filters/celsius.coffee":41,"../../operations/filters/chest.coffee":26,"../../operations/filters/default.coffee":14,"../../operations/filters/fixie.coffee":28,"../../operations/filters/food.coffee":39,"../../operations/filters/fridge.coffee":22,"../../operations/filters/front.coffee":27,"../../operations/filters/glam.coffee":40,"../../operations/filters/gobblin.coffee":47,"../../operations/filters/k1.coffee":17,"../../operations/filters/k2.coffee":19,"../../operations/filters/k6.coffee":20,"../../operations/filters/kdynamic.coffee":21,"../../operations/filters/lenin.coffee":33,"../../operations/filters/lomo.coffee":42,"../../operations/filters/mellow.coffee":48,"../../operations/filters/morning.coffee":45,"../../operations/filters/orchid.coffee":25,"../../operations/filters/pola.coffee":36,"../../operations/filters/pola669.coffee":35,"../../operations/filters/quozi.coffee":38,"../../operations/filters/semired.coffee":52,"../../operations/filters/sunny.coffee":51,"../../operations/filters/texas.coffee":43,"../../operations/filters/x400.coffee":30,"../../utils.coffee":6,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],54:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/orientation.coffee",__dirname="/operations";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Operation, OrientationOperation, Utils,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Operation = require("./operation.coffee");
+
+Utils = require("../utils.coffee");
+
+OrientationOperation = (function(_super) {
+  __extends(OrientationOperation, _super);
+
+  /*
+    @param {imglyKit} app
+    @param {Object} options
+  */
+
+
+  function OrientationOperation(app, options) {
+    var _base, _base1, _base2;
+    this.app = app;
+    this.options = options != null ? options : {};
+    OrientationOperation.__super__.constructor.apply(this, arguments);
+    if ((_base = this.options).rotation == null) {
+      _base.rotation = 0;
+    }
+    if ((_base1 = this.options).flipVertically == null) {
+      _base1.flipVertically = false;
+    }
+    if ((_base2 = this.options).flipHorizontally == null) {
+      _base2.flipHorizontally = false;
+    }
+  }
+
+  OrientationOperation.prototype.flipVertically = function() {
+    return this.options.flipVertically = !this.options.flipVertically;
+  };
+
+  OrientationOperation.prototype.flipHorizontally = function() {
+    return this.options.flipHorizontally = !this.options.flipHorizontally;
+  };
+
+  OrientationOperation.prototype.rotateRight = function() {
+    this.options.rotation += 90;
+    if (this.options.rotation === 360) {
+      this.options.rotation = 0;
+    }
+    if (this.options.flipHorizontally !== this.options.flipVertically) {
+      this.options.flipHorizontally = !this.options.flipHorizontally;
+      return this.options.flipVertically = !this.options.flipVertically;
+    }
+  };
+
+  OrientationOperation.prototype.rotateLeft = function() {
+    this.options.rotation -= 90;
+    if (this.options.rotation === -360) {
+      this.options.rotation = 0;
+    }
+    if (this.options.flipHorizontally !== this.options.flipVertically) {
+      this.options.flipHorizontally = !this.options.flipHorizontally;
+      return this.options.flipVertically = !this.options.flipVertically;
+    }
+  };
+
+  OrientationOperation.prototype.apply = function(imageData) {
+    var canvas, context, flipped, h, rotated, w;
+    if (Math.abs(this.options.rotation) === 90 || Math.abs(this.options.rotation) === 270) {
+      w = imageData.height;
+      h = imageData.width;
+    } else {
+      w = imageData.width;
+      h = imageData.height;
+    }
+    canvas = Utils.newCanvasWithDimensions({
+      width: w,
+      height: h
+    });
+    context = canvas.getContext("2d");
+    rotated = false;
+    flipped = false;
+    if (this.options.rotation !== 0) {
+      imageData = this.rotateImageData(context, imageData);
+      rotated = true;
+    }
+    if (this.options.flipHorizontally || this.options.flipVertically) {
+      imageData = this.flipImageData(context, imageData);
+      flipped = true;
+    }
+    if (rotated || flipped) {
+      return context.getImageData(0, 0, w, h);
+    } else {
+      return imageData;
+    }
+  };
+
+  /*
+    @param {CanvasRenderingContext2d}
+    @param {ImageData}
+    @returns {ImageData}
+  */
+
+
+  OrientationOperation.prototype.flipImageData = function(context, imageData) {
+    var imageDataCanvas, scaleX, scaleY, translateX, translateY;
+    context.save();
+    scaleX = 1;
+    scaleY = 1;
+    translateX = 0;
+    translateY = 0;
+    if (this.options.flipHorizontally) {
+      scaleX = -1;
+      translateX = context.canvas.width;
+    }
+    if (this.options.flipVertically) {
+      scaleY = -1;
+      translateY = context.canvas.height;
+    }
+    context.translate(translateX, translateY);
+    context.scale(scaleX, scaleY);
+    imageDataCanvas = Utils.newCanvasFromImageData(imageData);
+    context.drawImage(imageDataCanvas, 0, 0);
+    context.restore();
+    return context.getImageData(0, 0, context.canvas.width, context.canvas.height);
+  };
+
+  /*
+    @param {CanvasRenderingContext2d}
+    @param {ImageData}
+    @returns {ImageData}
+  */
+
+
+  OrientationOperation.prototype.rotateImageData = function(context, imageData) {
+    var imageDataCanvas;
+    context.save();
+    context.translate(context.canvas.width / 2, context.canvas.height / 2);
+    context.rotate(this.options.rotation * (Math.PI / 180));
+    imageDataCanvas = Utils.newCanvasFromImageData(imageData);
+    context.drawImage(imageDataCanvas, -imageData.width / 2, -imageData.height / 2);
+    context.restore();
+    return context.getImageData(0, 0, context.canvas.width, context.canvas.height);
+  };
+
+  return OrientationOperation;
+
+})(Operation);
+
+module.exports = OrientationOperation;
+
+
+},{"../utils.coffee":6,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],55:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/orientation.coffee",__dirname="/ui/controls";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var List, UIControlsOrientation,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+List = require("./base/list.coffee");
+
+UIControlsOrientation = (function(_super) {
+  __extends(UIControlsOrientation, _super);
+
+  UIControlsOrientation.prototype.displayButtons = true;
+
+  UIControlsOrientation.prototype.singleOperation = true;
+
+  /*
+    @param {imglyUtil} app
+    @param {imglyUtil.UI} ui
+  */
+
+
+  function UIControlsOrientation(app, ui, controls) {
+    this.app = app;
+    this.ui = ui;
+    this.controls = controls;
+    UIControlsOrientation.__super__.constructor.apply(this, arguments);
+    this.operationClass = require("../../operations/orientation.coffee");
+    this.listItems = [
+      {
+        name: "Rotate L",
+        cssClass: "rotate-l",
+        method: "rotateLeft"
+      }, {
+        name: "Rotate R",
+        cssClass: "rotate-r",
+        method: "rotateRight"
+      }, {
+        name: "Flip V",
+        cssClass: "flip-v",
+        method: "flipVertically"
+      }, {
+        name: "Flip H",
+        cssClass: "flip-h",
+        method: "flipHorizontally"
+      }
+    ];
+  }
+
+  return UIControlsOrientation;
+
+})(List);
+
+module.exports = UIControlsOrientation;
+
+
+},{"../../operations/orientation.coffee":54,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],56:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/math/vector2.coffee",__dirname="/math";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Vector2;
+
+Vector2 = (function() {
+  function Vector2(x, y) {
+    this.x = x;
+    this.y = y;
+    if (this.x == null) {
+      this.x = 0;
+    }
+    if (this.y == null) {
+      this.y = 0;
+    }
+  }
+
+  /*
+    @param {Integer} x
+    @param {Integer} y
+  */
+
+
+  Vector2.prototype.set = function(x, y) {
+    this.x = x;
+    this.y = y;
+  };
+
+  /*
+    @returns {Vector2} A clone of this vector
+  */
+
+
+  Vector2.prototype.clone = function() {
+    return new Vector2(this.x, this.y);
+  };
+
+  /*
+    @param {imglyKit.Vector2} The vector we want to copy
+  */
+
+
+  Vector2.prototype.copy = function(other) {
+    this.x = other.x;
+    this.y = other.y;
+    return this;
+  };
+
+  /*
+    @param {Integer|Vector2} Minimum value
+    @param {Integer|Vector2} Maximum value
+  */
+
+
+  Vector2.prototype.clamp = function(minimum, maximum) {
+    if (!(minimum instanceof Vector2)) {
+      minimum = new Vector2(minimum, minimum);
+    }
+    if (!(maximum instanceof Vector2)) {
+      maximum = new Vector2(maximum, maximum);
+    }
+    this.x = Math.max(minimum.x, Math.min(maximum.x, this.x));
+    this.y = Math.max(minimum.y, Math.min(maximum.y, this.y));
+    return this;
+  };
+
+  /*
+    @param {Object|Rect} The object to multiply with. Must have `width` and `height`
+  */
+
+
+  Vector2.prototype.multiplyWithRect = function(multiplier) {
+    this.x *= multiplier.width;
+    this.y *= multiplier.height;
+    return this;
+  };
+
+  /*
+    @param {Integer|Vector2}
+  */
+
+
+  Vector2.prototype.divide = function(divisor) {
+    if (divisor instanceof Vector2) {
+      this.x /= divisor.x;
+      this.y /= divisor.y;
+    } else {
+      this.x /= divisor;
+      this.y /= divisor;
+    }
+    return this;
+  };
+
+  /*
+    @param {Object|Rect} The object to multiply with. Must have `width` and `height`
+  */
+
+
+  Vector2.prototype.divideByRect = function(divisor) {
+    this.x /= divisor.width;
+    this.y /= divisor.height;
+    return this;
+  };
+
+  /*
+    @param {Integer|Vector2}
+  */
+
+
+  Vector2.prototype.substract = function(subtrahend) {
+    if (subtrahend instanceof Vector2) {
+      this.x -= subtrahend.x;
+      this.y -= subtrahend.y;
+    } else {
+      this.x -= subtrahend;
+      this.y -= subtrahend;
+    }
+    return this;
+  };
+
+  /*
+    @param {Rect} The object to substract
+  */
+
+
+  Vector2.prototype.substractRect = function(subtrahend) {
+    this.x -= subtrahend.width;
+    this.y -= subtrahend.height;
+    return this;
+  };
+
+  /*
+    @param {Rect} The object to add
+  */
+
+
+  Vector2.prototype.addRect = function(addend) {
+    this.x += addend.width;
+    this.y += addend.height;
+    return this;
+  };
+
+  /*
+    @param {Integer|Vector2}
+  */
+
+
+  Vector2.prototype.add = function(addend) {
+    if (addend instanceof Vector2) {
+      this.x += addend.x;
+      this.y += addend.y;
+    } else {
+      this.x += addend;
+      this.y += addend;
+    }
+    return this;
+  };
+
+  Vector2.prototype.toString = function() {
+    return "Vector2({ x: " + this.x + ", y: " + this.y + " })";
+  };
+
+  return Vector2;
+
+})();
+
+module.exports = Vector2;
+
+
+},{"__browserify_Buffer":3,"__browserify_process":1}],57:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/focus/focus.coffee",__dirname="/operations/focus";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+/*
+  Helpers for the Stack Blur
+*/
+
+var BlurStack, Focus, Operation, Utils, mul_table, shg_table,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+BlurStack = (function() {
+  function BlurStack() {}
+
+  BlurStack.r = 0;
+
+  BlurStack.g = 0;
+
+  BlurStack.b = 0;
+
+  BlurStack.a = 0;
+
+  BlurStack.next = null;
+
+  return BlurStack;
+
+})();
+
+mul_table = [512, 512, 456, 512, 328, 456, 335, 512, 405, 328, 271, 456, 388, 335, 292, 512, 454, 405, 364, 328, 298, 271, 496, 456, 420, 388, 360, 335, 312, 292, 273, 512, 482, 454, 428, 405, 383, 364, 345, 328, 312, 298, 284, 271, 259, 496, 475, 456, 437, 420, 404, 388, 374, 360, 347, 335, 323, 312, 302, 292, 282, 273, 265, 512, 497, 482, 468, 454, 441, 428, 417, 405, 394, 383, 373, 364, 354, 345, 337, 328, 320, 312, 305, 298, 291, 284, 278, 271, 265, 259, 507, 496, 485, 475, 465, 456, 446, 437, 428, 420, 412, 404, 396, 388, 381, 374, 367, 360, 354, 347, 341, 335, 329, 323, 318, 312, 307, 302, 297, 292, 287, 282, 278, 273, 269, 265, 261, 512, 505, 497, 489, 482, 475, 468, 461, 454, 447, 441, 435, 428, 422, 417, 411, 405, 399, 394, 389, 383, 378, 373, 368, 364, 359, 354, 350, 345, 341, 337, 332, 328, 324, 320, 316, 312, 309, 305, 301, 298, 294, 291, 287, 284, 281, 278, 274, 271, 268, 265, 262, 259, 257, 507, 501, 496, 491, 485, 480, 475, 470, 465, 460, 456, 451, 446, 442, 437, 433, 428, 424, 420, 416, 412, 408, 404, 400, 396, 392, 388, 385, 381, 377, 374, 370, 367, 363, 360, 357, 354, 350, 347, 344, 341, 338, 335, 332, 329, 326, 323, 320, 318, 315, 312, 310, 307, 304, 302, 299, 297, 294, 292, 289, 287, 285, 282, 280, 278, 275, 273, 271, 269, 267, 265, 263, 261, 259];
+
+shg_table = [9, 11, 12, 13, 13, 14, 14, 15, 15, 15, 15, 16, 16, 16, 16, 17, 17, 17, 17, 17, 17, 17, 18, 18, 18, 18, 18, 18, 18, 18, 18, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24];
+
+Operation = require("../operation.coffee");
+
+Utils = require("../../utils.coffee");
+
+Focus = (function(_super) {
+  __extends(Focus, _super);
+
+  Focus.prototype.cache = null;
+
+  Focus.prototype.fingerprint = null;
+
+  /*
+    @param {imglyKit} app
+    @param {CanvasRenderingContext2d} context
+    @param {Object} options
+  */
+
+
+  function Focus(app, options) {
+    var _base;
+    this.app = app;
+    this.options = options != null ? options : {};
+    Focus.__super__.constructor.apply(this, arguments);
+    if ((_base = this.options).radius == null) {
+      _base.radius = 1;
+    }
+  }
+
+  Focus.prototype.apply = function(imageData) {
+    var alpha, fingerprint, index, maskImageData, _i, _ref;
+    fingerprint = Utils.fingerprint(imageData.data);
+    if (fingerprint !== this.fingerprint) {
+      this.cache = this.blur(Utils.cloneImageData(imageData));
+      this.fingerprint = fingerprint;
+    }
+    maskImageData = this.createMaskImageData(imageData);
+    for (index = _i = 0, _ref = imageData.data.length; _i < _ref; index = _i += 4) {
+      alpha = maskImageData.data[index] / 255;
+      imageData.data[index] = alpha * imageData.data[index] + (1 - alpha) * this.cache.data[index];
+      imageData.data[index + 1] = alpha * imageData.data[index + 1] + (1 - alpha) * this.cache.data[index + 1];
+      imageData.data[index + 2] = alpha * imageData.data[index + 2] + (1 - alpha) * this.cache.data[index + 2];
+      imageData.data[index + 3] = 255;
+    }
+    return imageData;
+  };
+
+  /*
+    @param {ImageData} originalImageData
+    @returns {ImageData}
+  */
+
+
+  Focus.prototype.createMaskImageData = function(originalImageData) {
+    var canvas, context;
+    canvas = Utils.newCanvasWithDimensions({
+      width: originalImageData.width,
+      height: originalImageData.height
+    });
+    context = canvas.getContext("2d");
+    this.drawMask(canvas, context);
+    return context.getImageData(0, 0, canvas.width, canvas.height);
+  };
+
+  /*
+    Uses quasimondo's StackBlur algorithm to blur
+    the image
+  
+    @param {ImageData} imageData
+    @returns {ImageData}
+  */
+
+
+  Focus.prototype.blur = function(imageData) {
+    var b_in_sum, b_out_sum, b_sum, div, g_in_sum, g_out_sum, g_sum, height, heightMinus1, i, mul_sum, p, pb, pg, pixels, pr, r_in_sum, r_out_sum, r_sum, radius, radiusPlus1, rbs, shg_sum, stack, stackEnd, stackIn, stackOut, stackStart, sumFactor, w4, width, widthMinus1, x, y, yi, yp, yw, _i, _j, _k, _l, _m, _n, _o, _p, _q;
+    radius = this.options.radius;
+    width = imageData.width;
+    height = imageData.height;
+    pixels = imageData.data;
+    div = radius + radius + 1;
+    w4 = width << 2;
+    widthMinus1 = width - 1;
+    heightMinus1 = height - 1;
+    radiusPlus1 = radius + 1;
+    sumFactor = radiusPlus1 * (radiusPlus1 + 1) / 2;
+    stackStart = new BlurStack();
+    stack = stackStart;
+    for (i = _i = 1; 1 <= div ? _i < div : _i > div; i = 1 <= div ? ++_i : --_i) {
+      stack = stack.next = new BlurStack();
+      if (i === radiusPlus1) {
+        stackEnd = stack;
+      }
+    }
+    stack.next = stackStart;
+    stackIn = null;
+    stackOut = null;
+    yw = yi = 0;
+    mul_sum = mul_table[radius];
+    shg_sum = shg_table[radius];
+    for (y = _j = 0; 0 <= height ? _j < height : _j > height; y = 0 <= height ? ++_j : --_j) {
+      r_in_sum = g_in_sum = b_in_sum = r_sum = g_sum = b_sum = 0;
+      r_out_sum = radiusPlus1 * (pr = pixels[yi]);
+      g_out_sum = radiusPlus1 * (pg = pixels[yi + 1]);
+      b_out_sum = radiusPlus1 * (pb = pixels[yi + 2]);
+      r_sum += sumFactor * pr;
+      g_sum += sumFactor * pg;
+      b_sum += sumFactor * pb;
+      stack = stackStart;
+      for (i = _k = 0; 0 <= radiusPlus1 ? _k < radiusPlus1 : _k > radiusPlus1; i = 0 <= radiusPlus1 ? ++_k : --_k) {
+        stack.r = pr;
+        stack.g = pg;
+        stack.b = pb;
+        stack = stack.next;
+      }
+      for (i = _l = 1; 1 <= radiusPlus1 ? _l < radiusPlus1 : _l > radiusPlus1; i = 1 <= radiusPlus1 ? ++_l : --_l) {
+        p = yi + ((widthMinus1 < i ? widthMinus1 : i) << 2);
+        r_sum += (stack.r = (pr = pixels[p])) * (rbs = radiusPlus1 - i);
+        g_sum += (stack.g = (pg = pixels[p + 1])) * rbs;
+        b_sum += (stack.b = (pb = pixels[p + 2])) * rbs;
+        r_in_sum += pr;
+        g_in_sum += pg;
+        b_in_sum += pb;
+        stack = stack.next;
+      }
+      stackIn = stackStart;
+      stackOut = stackEnd;
+      for (x = _m = 0; 0 <= width ? _m < width : _m > width; x = 0 <= width ? ++_m : --_m) {
+        pixels[yi] = (r_sum * mul_sum) >> shg_sum;
+        pixels[yi + 1] = (g_sum * mul_sum) >> shg_sum;
+        pixels[yi + 2] = (b_sum * mul_sum) >> shg_sum;
+        r_sum -= r_out_sum;
+        g_sum -= g_out_sum;
+        b_sum -= b_out_sum;
+        r_out_sum -= stackIn.r;
+        g_out_sum -= stackIn.g;
+        b_out_sum -= stackIn.b;
+        p = (yw + ((p = x + radius + 1) < widthMinus1 ? p : widthMinus1)) << 2;
+        r_in_sum += (stackIn.r = pixels[p]);
+        g_in_sum += (stackIn.g = pixels[p + 1]);
+        b_in_sum += (stackIn.b = pixels[p + 2]);
+        r_sum += r_in_sum;
+        g_sum += g_in_sum;
+        b_sum += b_in_sum;
+        stackIn = stackIn.next;
+        r_out_sum += (pr = stackOut.r);
+        g_out_sum += (pg = stackOut.g);
+        b_out_sum += (pb = stackOut.b);
+        r_in_sum -= pr;
+        g_in_sum -= pg;
+        b_in_sum -= pb;
+        stackOut = stackOut.next;
+        yi += 4;
+      }
+      yw += width;
+    }
+    for (x = _n = 0; 0 <= width ? _n < width : _n > width; x = 0 <= width ? ++_n : --_n) {
+      g_in_sum = b_in_sum = r_in_sum = g_sum = b_sum = r_sum = 0;
+      yi = x << 2;
+      r_out_sum = radiusPlus1 * (pr = pixels[yi]);
+      g_out_sum = radiusPlus1 * (pg = pixels[yi + 1]);
+      b_out_sum = radiusPlus1 * (pb = pixels[yi + 2]);
+      r_sum += sumFactor * pr;
+      g_sum += sumFactor * pg;
+      b_sum += sumFactor * pb;
+      stack = stackStart;
+      for (i = _o = 0; 0 <= radiusPlus1 ? _o < radiusPlus1 : _o > radiusPlus1; i = 0 <= radiusPlus1 ? ++_o : --_o) {
+        stack.r = pr;
+        stack.g = pg;
+        stack.b = pb;
+        stack = stack.next;
+      }
+      yp = width;
+      for (i = _p = 1; 1 <= radius ? _p <= radius : _p >= radius; i = 1 <= radius ? ++_p : --_p) {
+        yi = (yp + x) << 2;
+        r_sum += (stack.r = (pr = pixels[yi])) * (rbs = radiusPlus1 - i);
+        g_sum += (stack.g = (pg = pixels[yi + 1])) * rbs;
+        b_sum += (stack.b = (pb = pixels[yi + 2])) * rbs;
+        r_in_sum += pr;
+        g_in_sum += pg;
+        b_in_sum += pb;
+        stack = stack.next;
+        if (i < heightMinus1) {
+          yp += width;
+        }
+      }
+      yi = x;
+      stackIn = stackStart;
+      stackOut = stackEnd;
+      for (y = _q = 0; 0 <= height ? _q < height : _q > height; y = 0 <= height ? ++_q : --_q) {
+        p = yi << 2;
+        pixels[p] = (r_sum * mul_sum) >> shg_sum;
+        pixels[p + 1] = (g_sum * mul_sum) >> shg_sum;
+        pixels[p + 2] = (b_sum * mul_sum) >> shg_sum;
+        r_sum -= r_out_sum;
+        g_sum -= g_out_sum;
+        b_sum -= b_out_sum;
+        r_out_sum -= stackIn.r;
+        g_out_sum -= stackIn.g;
+        b_out_sum -= stackIn.b;
+        p = (x + (((p = y + radiusPlus1) < heightMinus1 ? p : heightMinus1) * width)) << 2;
+        r_sum += (r_in_sum += (stackIn.r = pixels[p]));
+        g_sum += (g_in_sum += (stackIn.g = pixels[p + 1]));
+        b_sum += (b_in_sum += (stackIn.b = pixels[p + 2]));
+        stackIn = stackIn.next;
+        r_out_sum += (pr = stackOut.r);
+        g_out_sum += (pg = stackOut.g);
+        b_out_sum += (pb = stackOut.b);
+        r_in_sum -= pr;
+        g_in_sum -= pg;
+        b_in_sum -= pb;
+        stackOut = stackOut.next;
+        yi += width;
+      }
+    }
+    return imageData;
+  };
+
+  return Focus;
+
+})(Operation);
+
+module.exports = Focus;
+
+
+},{"../../utils.coffee":6,"../operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],58:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/focus/radial.coffee",__dirname="/operations/focus";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Focus, RadialFocus, Vector2,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Focus = require("./focus.coffee");
+
+Vector2 = require("../../math/vector2.coffee");
+
+RadialFocus = (function(_super) {
+  __extends(RadialFocus, _super);
+
+  /*
+    @param {imglyKit} app
+    @param {CanvasRenderingContext2d} context
+    @param {Object} options
+  */
+
+
+  function RadialFocus(app, options) {
+    var _base, _base1, _base2;
+    this.app = app;
+    this.options = options != null ? options : {};
+    RadialFocus.__super__.constructor.apply(this, arguments);
+    if ((_base = this.options).radius == null) {
+      _base.radius = 5;
+    }
+    if ((_base1 = this.options).controlPoint1Position == null) {
+      _base1.controlPoint1Position = new Vector2(0.5, 0.4);
+    }
+    if ((_base2 = this.options).controlPoint2Position == null) {
+      _base2.controlPoint2Position = new Vector2(0.5, 0.6);
+    }
+  }
+
+  /*
+    @param {HTMLCanvasElement} canvas
+    @param {CanvasRenderingContext2d} context
+  */
+
+
+  RadialFocus.prototype.drawMask = function(canvas, context) {
+    /*
+      Multiply the control points with the canvas
+      size to get real pixel information
+    */
+
+    var center, controlPoint1, controlPoint2, gradient, halfDiff, innerRadius, outerRadius;
+    controlPoint1 = new Vector2().copy(this.options.controlPoint1Position).multiplyWithRect(canvas);
+    controlPoint2 = new Vector2().copy(this.options.controlPoint2Position).multiplyWithRect(canvas);
+    /*
+      Calculate the difference between the two points
+      and divide it by two
+    */
+
+    halfDiff = new Vector2().copy(controlPoint2).substract(controlPoint1).divide(2);
+    /*
+      The of the circle is the center of the two points
+    */
+
+    center = new Vector2().copy(controlPoint1).add(halfDiff);
+    innerRadius = Math.sqrt(Math.pow(halfDiff.x, 2) + Math.pow(halfDiff.y, 2));
+    outerRadius = innerRadius * 3 / 2;
+    /*
+      Finally draw the gradient
+    */
+
+    gradient = context.createRadialGradient(center.x, center.y, outerRadius, center.x, center.y, innerRadius);
+    gradient.addColorStop(0, '#000000');
+    gradient.addColorStop(1, '#FFFFFF');
+    context.fillStyle = gradient;
+    return context.fillRect(0, 0, canvas.width, canvas.height);
+  };
+
+  return RadialFocus;
+
+})(Focus);
+
+module.exports = RadialFocus;
+
+
+},{"../../math/vector2.coffee":56,"./focus.coffee":57,"__browserify_Buffer":3,"__browserify_process":1}],59:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/focus/linear.coffee",__dirname="/operations/focus";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Focus, LinearFocus, Vector2,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Focus = require("./focus.coffee");
+
+Vector2 = require("../../math/vector2.coffee");
+
+LinearFocus = (function(_super) {
+  __extends(LinearFocus, _super);
+
+  /*
+    @param {imglyKit} app
+    @param {CanvasRenderingContext2d} context
+    @param {Object} options
+  */
+
+
+  function LinearFocus(app, options) {
+    var _base, _base1, _base2;
+    this.app = app;
+    this.options = options != null ? options : {};
+    LinearFocus.__super__.constructor.apply(this, arguments);
+    if ((_base = this.options).radius == null) {
+      _base.radius = 5;
+    }
+    if ((_base1 = this.options).controlPoint1Position == null) {
+      _base1.controlPoint1Position = new Vector2(0.5, 0.4);
+    }
+    if ((_base2 = this.options).controlPoint2Position == null) {
+      _base2.controlPoint2Position = new Vector2(0.5, 0.6);
+    }
+  }
+
+  /*
+    @param {HTMLCanvasElement} canvas
+    @param {CanvasRenderingContext2d} context
+  */
+
+
+  LinearFocus.prototype.drawMask = function(canvas, context) {
+    /*
+      Multiply the control points with the canvas
+      size to get real pixel information
+    */
+
+    var controlPoint1, controlPoint2, end, gradient, halfDiff, start;
+    controlPoint1 = new Vector2().copy(this.options.controlPoint1Position).multiplyWithRect(canvas);
+    controlPoint2 = new Vector2().copy(this.options.controlPoint2Position).multiplyWithRect(canvas);
+    /*
+      Calculate the difference between the two points
+      and divide it by two
+    */
+
+    halfDiff = new Vector2().copy(controlPoint2).substract(controlPoint1).divide(2);
+    /*
+      Calculate start and end of the gradient
+      We want the gradient to start 50% before
+      and 50% after the control points, so that
+      the gradient is outside of our control points
+    */
+
+    start = new Vector2().copy(controlPoint1).substract(halfDiff);
+    end = new Vector2().copy(controlPoint2).add(halfDiff);
+    /*
+      Finally draw the gradient
+    */
+
+    gradient = context.createLinearGradient(start.x, start.y, end.x, end.y);
+    gradient.addColorStop(0, '#000000');
+    gradient.addColorStop(0.25, '#FFFFFF');
+    gradient.addColorStop(0.75, '#FFFFFF');
+    gradient.addColorStop(1, '#000000');
+    context.fillStyle = gradient;
+    return context.fillRect(0, 0, canvas.width, canvas.height);
+  };
+
+  return LinearFocus;
+
+})(Focus);
+
+module.exports = LinearFocus;
+
+
+},{"../../math/vector2.coffee":56,"./focus.coffee":57,"__browserify_Buffer":3,"__browserify_process":1}],60:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/focus.coffee",__dirname="/ui/controls";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var List, UIControlsFocus, Utils, Vector2, linearOperation, radialOperation,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+List = require("./base/list.coffee");
+
+Utils = require("../../utils.coffee");
+
+Vector2 = require("../../math/vector2.coffee");
+
+radialOperation = require("../../operations/focus/radial.coffee");
+
+linearOperation = require("../../operations/focus/linear.coffee");
+
+UIControlsFocus = (function(_super) {
+  __extends(UIControlsFocus, _super);
+
+  UIControlsFocus.prototype.displayButtons = true;
+
+  /*
+    @param {imglyKit} app
+    @param {imglyKit.UI} ui
+    @param {imglyKit.UI.Controls} controls
+  */
+
+
+  function UIControlsFocus(app, ui, controls) {
+    this.app = app;
+    this.ui = ui;
+    this.controls = controls;
+    UIControlsFocus.__super__.constructor.apply(this, arguments);
+    this.listItems = [
+      {
+        name: "Radial",
+        cssClass: "radial",
+        operation: radialOperation,
+        "default": true
+      }, {
+        name: "Linear",
+        cssClass: "linear",
+        operation: linearOperation
+      }
+    ];
+  }
+
+  /*
+    @params {Object} options
+  */
+
+
+  UIControlsFocus.prototype.updateOptions = function(operationOptions) {
+    this.operationOptions = operationOptions;
+    return this.rerenderCanvas();
+  };
+
+  /*
+    We call this every time we change the options, e.g.
+    when the user drags a knob or a crosshair
+  */
+
+
+  UIControlsFocus.prototype.onOptionsUpdated = function() {
+    this.operation.setOptions(this.operationOptions);
+    this.rerenderCanvas();
+    this.repositionControls();
+    return this.emit("renderPreview");
+  };
+
+  /*
+    @param {jQuery.Object} canvasControlsContainer
+  */
+
+
+  UIControlsFocus.prototype.hasCanvasControls = true;
+
+  UIControlsFocus.prototype.setupCanvasControls = function(canvasControlsContainer) {
+    var height, width;
+    this.canvasControlsContainer = canvasControlsContainer;
+    width = this.canvasControlsContainer.width();
+    height = this.canvasControlsContainer.height();
+    this.canvas = $("<canvas>").css({
+      width: width,
+      height: height
+    }).appendTo(this.canvasControlsContainer);
+    this.canvas = this.canvas.get(0);
+    this.canvas.width = $(this.canvas).width();
+    this.canvas.height = $(this.canvas).height();
+    this.context = this.canvas.getContext("2d");
+    if (window.devicePixelRatio > 1) {
+      this.canvas.width *= window.devicePixelRatio;
+      return this.canvas.height *= window.devicePixelRatio;
+    }
+  };
+
+  /*
+    @param {Object} option
+    @param {jQuery.Object} item
+  */
+
+
+  UIControlsFocus.prototype.handleOptionSelect = function(option, item) {
+    UIControlsFocus.__super__.handleOptionSelect.apply(this, arguments);
+    switch (option.operation) {
+      case radialOperation:
+        this.setControlsMode("radial");
+        break;
+      case linearOperation:
+        this.setControlsMode("linear");
+    }
+    return this.onOptionsUpdated();
+  };
+
+  /*
+    @param {String} mode
+  */
+
+
+  UIControlsFocus.prototype.setControlsMode = function(mode) {
+    var i, knob, _i;
+    this.controlsMode = mode;
+    this.canvasControlsContainer.find("div").remove();
+    this.knobs = [];
+    for (i = _i = 0; _i <= 1; i = ++_i) {
+      knob = $("<div>").addClass(imglyKit.classPrefix + "canvas-knob");
+      knob.appendTo(this.canvasControlsContainer);
+      this.knobs.push(knob);
+    }
+    this.crosshair = $("<div>").addClass(imglyKit.classPrefix + "canvas-crosshair");
+    this.crosshair.appendTo(this.canvasControlsContainer);
+    this.handleKnobControl();
+    return this.handleCrosshairControl();
+  };
+
+  /*
+    We call this everytime the user dragged a knob
+    or a crosshair to reposition the controls
+  */
+
+
+  UIControlsFocus.prototype.repositionControls = function() {
+    var canvasSize, controlPoint1, controlPoint2, diff, i, knob, position, _i;
+    canvasSize = {
+      width: this.canvasControlsContainer.width(),
+      height: this.canvasControlsContainer.height()
+    };
+    for (i = _i = 0; _i <= 1; i = ++_i) {
+      knob = this.knobs[i];
+      position = this.operationOptions["controlPoint" + (i + 1) + "Position"];
+      knob.css({
+        left: canvasSize.width * position.x,
+        top: canvasSize.height * position.y
+      });
+    }
+    /*
+      Multiply the control points with the canvas
+      size to get real pixel information
+    */
+
+    controlPoint1 = new Vector2().copy(this.operationOptions.controlPoint1Position).multiplyWithRect(canvasSize);
+    controlPoint2 = new Vector2().copy(this.operationOptions.controlPoint2Position).multiplyWithRect(canvasSize);
+    diff = new Vector2().copy(controlPoint2).substract(controlPoint1).divide(2);
+    return this.crosshair.css({
+      left: controlPoint1.x + diff.x,
+      top: controlPoint1.y + diff.y
+    });
+  };
+
+  /*
+    Handle dragging of the crosshair
+  */
+
+
+  UIControlsFocus.prototype.handleCrosshairControl = function() {
+    var canvasSize,
+      _this = this;
+    canvasSize = new Vector2(this.canvasControlsContainer.width(), this.canvasControlsContainer.height());
+    return this.crosshair.mousedown(function(e) {
+      var lastPos;
+      lastPos = new Vector2(e.clientX, e.clientY);
+      $(document).mousemove(function(e) {
+        var i, knobPositions, newKnobPositions, normalizedDiff, _i, _j;
+        normalizedDiff = new Vector2(e.clientX, e.clientY).substract(lastPos).divide(canvasSize);
+        newKnobPositions = {};
+        knobPositions = {};
+        for (i = _i = 1; _i <= 2; i = ++_i) {
+          knobPositions[i] = _this.operationOptions["controlPoint" + i + "Position"];
+          newKnobPositions[i] = new Vector2().copy(knobPositions[i]).add(normalizedDiff);
+          if (!Utils.withinBoundaries(newKnobPositions[i])) {
+            return;
+          }
+        }
+        for (i = _j = 1; _j <= 2; i = ++_j) {
+          knobPositions[i].copy(newKnobPositions[i]);
+        }
+        lastPos.set(e.clientX, e.clientY);
+        return _this.onOptionsUpdated();
+      });
+      return $(document).mouseup(function(e) {
+        $(document).off("mousemove");
+        return $(document).off("mouseup");
+      });
+    });
+  };
+
+  /*
+    Handle dragging of the knobs
+  */
+
+
+  UIControlsFocus.prototype.handleKnobControl = function() {
+    var canvasSize, index, knob, _i, _len, _ref, _results,
+      _this = this;
+    canvasSize = new Vector2(this.canvasControlsContainer.width(), this.canvasControlsContainer.height());
+    _ref = this.knobs;
+    _results = [];
+    for (index = _i = 0, _len = _ref.length; _i < _len; index = ++_i) {
+      knob = _ref[index];
+      _results.push((function(knob, index) {
+        return knob.mousedown(function(e) {
+          var lastPos;
+          lastPos = new Vector2(e.clientX, e.clientY);
+          $(document).mousemove(function(e) {
+            var currentKnobIndex, currentKnobPosition, newKnobPosition, newOppositeKnobPosition, normalizedDiff, oppositeKnobIndex, oppositeKnobPosition;
+            normalizedDiff = new Vector2(e.clientX, e.clientY).substract(lastPos).divide(canvasSize);
+            currentKnobIndex = index + 1;
+            currentKnobPosition = _this.operationOptions["controlPoint" + currentKnobIndex + "Position"];
+            oppositeKnobIndex = index === 0 ? 2 : 1;
+            oppositeKnobPosition = _this.operationOptions["controlPoint" + oppositeKnobIndex + "Position"];
+            newKnobPosition = new Vector2().copy(currentKnobPosition).add(normalizedDiff);
+            newOppositeKnobPosition = new Vector2().copy(oppositeKnobPosition).substract(normalizedDiff);
+            if (!(Utils.withinBoundaries(newKnobPosition) && Utils.withinBoundaries(newOppositeKnobPosition))) {
+              return;
+            }
+            currentKnobPosition.copy(newKnobPosition);
+            oppositeKnobPosition.copy(newOppositeKnobPosition);
+            _this.onOptionsUpdated();
+            return lastPos.set(e.clientX, e.clientY);
+          });
+          return $(document).mouseup(function() {
+            $(document).off("mouseup");
+            return $(document).off("mousemove");
+          });
+        });
+      })(knob, index));
+    }
+    return _results;
+  };
+
+  /*
+    Re-renders the canvas controls
+  */
+
+
+  UIControlsFocus.prototype.rerenderCanvas = function() {
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    switch (this.controlsMode) {
+      case "radial":
+        return this.drawRadialControl();
+      case "linear":
+        return this.drawLinearControl();
+    }
+  };
+
+  /*
+    Renders the radial indicator for the currently blurred area
+  */
+
+
+  UIControlsFocus.prototype.drawRadialControl = function() {
+    var center, circle, circleProperties, controlPoint1, controlPoint2, halfDiff, radius, _i, _len, _results;
+    controlPoint1 = new Vector2().copy(this.operationOptions.controlPoint1Position).multiplyWithRect(this.canvas);
+    controlPoint2 = new Vector2().copy(this.operationOptions.controlPoint2Position).multiplyWithRect(this.canvas);
+    halfDiff = new Vector2().copy(controlPoint2).substract(controlPoint1).divide(2);
+    radius = Math.sqrt(Math.pow(halfDiff.x, 2) + Math.pow(halfDiff.y, 2));
+    center = new Vector2().copy(controlPoint1).add(halfDiff);
+    circleProperties = [["#FFFFFF", 2 * (window.devicePixelRatio || 1), 0], ["rgba(0, 0, 0, 0.35)", 2 * (window.devicePixelRatio || 1), 2], ["rgba(0, 0, 0, 0.35)", 2 * (window.devicePixelRatio || 1), -1]];
+    _results = [];
+    for (_i = 0, _len = circleProperties.length; _i < _len; _i++) {
+      circle = circleProperties[_i];
+      this.context.beginPath();
+      this.context.arc(center.x, center.y, radius + circle[2], 0, 2 * Math.PI, false);
+      this.context.lineWidth = circle[1];
+      this.context.strokeStyle = circle[0];
+      this.context.stroke();
+      _results.push(this.context.closePath());
+    }
+    return _results;
+  };
+
+  /*
+    Renders the line indicators for the currently blurred area
+  */
+
+
+  UIControlsFocus.prototype.drawLinearControl = function() {
+    var controlPoint, controlPoint1, controlPoint2, controlPoints, diagonal, diff, line, lines, point, _i, _results;
+    controlPoint1 = new Vector2().copy(this.operationOptions.controlPoint1Position).multiplyWithRect(this.canvas);
+    controlPoint2 = new Vector2().copy(this.operationOptions.controlPoint2Position).multiplyWithRect(this.canvas);
+    controlPoints = [controlPoint1, controlPoint2];
+    diff = new Vector2().copy(controlPoint2).substract(controlPoint1);
+    diagonal = Math.sqrt(Math.pow(this.canvas.width, 2) + Math.pow(this.canvas.height, 2));
+    _results = [];
+    for (point = _i = 0; _i <= 1; point = ++_i) {
+      controlPoint = controlPoints[point];
+      lines = [["#FFFFFF", 2 * (window.devicePixelRatio || 1), 0], ["rgba(0, 0, 0, 0.35)", 2 * (window.devicePixelRatio || 1), 2], ["rgba(0, 0, 0, 0.35)", 2 * (window.devicePixelRatio || 1), -1]];
+      _results.push((function() {
+        var _j, _len, _results1;
+        _results1 = [];
+        for (_j = 0, _len = lines.length; _j < _len; _j++) {
+          line = lines[_j];
+          this.context.beginPath();
+          this.context.moveTo(controlPoint.x + diff.y * diagonal + line[2], controlPoint.y - diff.x * diagonal + line[2]);
+          this.context.lineTo(controlPoint.x - diff.y * diagonal + line[2], controlPoint.y + diff.x * diagonal + line[2]);
+          this.context.strokeStyle = line[0];
+          this.context.lineWidth = line[1];
+          this.context.stroke();
+          _results1.push(this.context.closePath());
+        }
+        return _results1;
+      }).call(this));
+    }
+    return _results;
+  };
+
+  return UIControlsFocus;
+
+})(List);
+
+module.exports = UIControlsFocus;
+
+
+},{"../../math/vector2.coffee":56,"../../operations/focus/linear.coffee":59,"../../operations/focus/radial.coffee":58,"../../utils.coffee":6,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],61:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/math/rect.coffee",__dirname="/math";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Rect;
+
+Rect = (function() {
+  function Rect(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    if (this.x == null) {
+      this.x = 0;
+    }
+    if (this.y == null) {
+      this.y = 0;
+    }
+    if (this.width == null) {
+      this.width = 0;
+    }
+    if (this.height == null) {
+      this.height = 0;
+    }
+  }
+
+  /*
+    @param {Integer} x
+    @param {Integer} y
+    @param {Integer} width
+    @param {Integer} height
+  */
+
+
+  Rect.prototype.set = function(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+  };
+
+  /*
+    @param {Integer} x
+    @param {Integer} y
+  */
+
+
+  Rect.prototype.setPosition = function(x, y) {
+    this.x = x;
+    this.y = y;
+  };
+
+  /*
+    @param {Integer} width
+    @param {Integer} height
+  */
+
+
+  Rect.prototype.setDimensions = function(width, height) {
+    this.width = width;
+    this.height = height;
+  };
+
+  /*
+    @param {imglyKit.Rect} The vector we want to copy
+  */
+
+
+  Rect.prototype.copy = function(other) {
+    this.x = other.x;
+    this.y = other.y;
+    this.width = other.width;
+    this.height = other.height;
+    return this;
+  };
+
+  Rect.prototype.toString = function() {
+    return "Rect({ x: " + this.x + ", y: " + this.y + ", width: " + this.width + ", height: " + this.height + " })";
+  };
+
+  return Rect;
+
+})();
+
+module.exports = Rect;
+
+
+},{"__browserify_Buffer":3,"__browserify_process":1}],62:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/crop.coffee",__dirname="/operations";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var CropOperation, Operation, Utils, Vector2,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Operation = require("./operation.coffee");
+
+Utils = require("../utils.coffee");
+
+Vector2 = require("../math/vector2.coffee");
+
+CropOperation = (function(_super) {
+  __extends(CropOperation, _super);
+
+  CropOperation.prototype.renderPreview = false;
+
+  function CropOperation(app, options) {
+    var _base, _base1, _base2;
+    this.app = app;
+    this.options = options != null ? options : {};
+    this.setRatio = __bind(this.setRatio, this);
+    CropOperation.__super__.constructor.apply(this, arguments);
+    if ((_base = this.options).start == null) {
+      _base.start = new Vector2(0.1, 0.1);
+    }
+    if ((_base1 = this.options).end == null) {
+      _base1.end = new Vector2(0.9, 0.9);
+    }
+    if ((_base2 = this.options).ratio == null) {
+      _base2.ratio = 0;
+    }
+  }
+
+  CropOperation.prototype.setRatio = function(ratio) {
+    this.options.ratio = ratio;
+    return this.setSize("custom");
+  };
+
+  CropOperation.prototype.setSize = function(size) {
+    var h, height, w, width, _ref;
+    _ref = this.app.ui.getCanvas().getImageData(), width = _ref.width, height = _ref.height;
+    this.options.size = size;
+    this.options.start.set(0.1, 0.1);
+    this.options.end.set(0.9, 0.9);
+    switch (size) {
+      case "square":
+        this.options.ratio = 1;
+        break;
+      case "4:3":
+        this.options.ratio = 4 / 3;
+        break;
+      case "16:9":
+        this.options.ratio = 16 / 9;
+        break;
+      case "free":
+        this.options.ratio = 0;
+    }
+    if (this.options.ratio) {
+      if (width / height <= this.options.ratio) {
+        this.options.start.x = 0.1;
+        this.options.end.x = 0.9;
+        h = 1 / height * (width / this.options.ratio * 0.8);
+        this.options.start.y = (1 - h) / 2;
+        this.options.end.y = 1 - this.options.start.y;
+      } else {
+        this.options.start.y = 0.1;
+        this.options.end.y = 0.9;
+        w = 1 / width * (this.options.ratio * height * 0.8);
+        this.options.start.x = (1 - w) / 2;
+        this.options.end.x = 1 - this.options.start.x;
+      }
+    }
+    return this.emit("updateOptions", this.options);
+  };
+
+  CropOperation.prototype.setStart = function(x, y) {
+    this.options.start.x = x;
+    return this.options.start.y = y;
+  };
+
+  CropOperation.prototype.setEnd = function(x, y) {
+    this.options.end.x = x;
+    return this.options.end.y = y;
+  };
+
+  CropOperation.prototype.apply = function(imageData) {
+    var canvas, context, h, height, w, width, x, y;
+    width = imageData.width, height = imageData.height;
+    canvas = Utils.newCanvasFromImageData(imageData);
+    context = canvas.getContext("2d");
+    x = width * this.options.start.x;
+    y = height * this.options.start.y;
+    w = width * (this.options.end.x - this.options.start.x);
+    h = height * (this.options.end.y - this.options.start.y);
+    return context.getImageData(x, y, w, h);
+  };
+
+  return CropOperation;
+
+})(Operation);
+
+module.exports = CropOperation;
+
+
+},{"../math/vector2.coffee":56,"../utils.coffee":6,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],63:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/crop.coffee",__dirname="/ui/controls";/*
   imglyKit
   Copyright (c) 2013 img.ly
 */
@@ -15236,11 +18921,11 @@ var List, Rect, UIControlsCrop, Vector2,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-List = require("14");
+List = require("./base/list.coffee");
 
-Vector2 = require("15");
+Vector2 = require("../../math/vector2.coffee");
 
-Rect = require("16");
+Rect = require("../../math/rect.coffee");
 
 UIControlsCrop = (function(_super) {
   __extends(UIControlsCrop, _super);
@@ -15263,7 +18948,7 @@ UIControlsCrop = (function(_super) {
     this.ui = ui;
     this.controls = controls;
     UIControlsCrop.__super__.constructor.apply(this, arguments);
-    this.operationClass = require("17");
+    this.operationClass = require("../../operations/crop.coffee");
     this.listItems = [
       {
         name: "Custom",
@@ -15684,588 +19369,852 @@ UIControlsCrop = (function(_super) {
 module.exports = UIControlsCrop;
 
 
-},{"16":15,"15":16,"17":17,"14":14,"__browserify_Buffer":2,"__browserify_process":1}],8:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="18",__dirname="/vendor";var Perf;
+},{"../../math/rect.coffee":61,"../../math/vector2.coffee":56,"../../operations/crop.coffee":62,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],64:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/base/slider.coffee",__dirname="/ui/controls/base";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
 
-Perf = (function() {
-  function Perf(name, options) {
-    var _base, _base1, _base2;
-    this.name = name;
+var Base, UIControlsBaseSlider, _ref,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Base = require("./base.coffee");
+
+UIControlsBaseSlider = (function(_super) {
+  __extends(UIControlsBaseSlider, _super);
+
+  function UIControlsBaseSlider() {
+    this.onMouseUp = __bind(this.onMouseUp, this);
+    this.onMouseMove = __bind(this.onMouseMove, this);
+    _ref = UIControlsBaseSlider.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  UIControlsBaseSlider.prototype.init = function() {
+    var spaceForPlusAndMinus, width;
+    spaceForPlusAndMinus = 60;
+    width = this.controls.getContainer().width();
+    width -= this.controls.getHeight() * 2;
+    width -= spaceForPlusAndMinus;
+    this.wrapper = $("<div>").addClass(imglyKit.classPrefix + "controls-wrapper").attr("data-control", this.constructor.name).appendTo(this.controls.getContainer());
+    this.sliderWrapper = $("<div>").addClass(imglyKit.classPrefix + "controls-slider-wrapper").width(width).appendTo(this.wrapper);
+    this.sliderCenterDot = $("<div>").addClass(imglyKit.classPrefix + "controls-slider-dot").appendTo(this.sliderWrapper);
+    this.sliderBar = $("<div>").addClass(imglyKit.classPrefix + "controls-slider-bar").appendTo(this.sliderWrapper);
+    this.slider = $("<div>").addClass(imglyKit.classPrefix + "controls-slider").css({
+      left: width / 2
+    }).appendTo(this.sliderWrapper);
+    /*
+      Plus / Minus images
+    */
+
+    $("<div>").addClass(imglyKit.classPrefix + "controls-slider-plus").appendTo(this.sliderWrapper);
+    $("<div>").addClass(imglyKit.classPrefix + "controls-slider-minus").appendTo(this.sliderWrapper);
+    this.handleSliderControl();
+    return this.createButtons();
+  };
+
+  /*
+    Handles slider dragging
+  */
+
+
+  UIControlsBaseSlider.prototype.handleSliderControl = function() {
+    var _this = this;
+    this.sliderWidth = this.sliderWrapper.width();
+    return this.slider.mousedown(function(e) {
+      _this.lastX = e.clientX;
+      _this.currentSliderLeft = parseInt(_this.slider.css("left"));
+      $(document).mousemove(_this.onMouseMove);
+      return $(document).mouseup(_this.onMouseUp);
+    });
+  };
+
+  /*
+    Is called when the slider has been moved
+  
+    @param {Integer} left
+  */
+
+
+  UIControlsBaseSlider.prototype.setSliderLeft = function(left) {
+    var barWidth, normalized;
+    this.slider.css({
+      left: left
+    });
+    if (left < this.sliderWidth / 2) {
+      barWidth = this.sliderWidth / 2 - left;
+      this.sliderBar.css({
+        left: left,
+        width: barWidth
+      });
+    } else {
+      barWidth = left - this.sliderWidth / 2;
+      this.sliderBar.css({
+        left: this.sliderWidth / 2,
+        width: barWidth
+      });
+    }
+    normalized = (left - this.sliderWidth / 2) / this.sliderWidth * 2;
+    this.operation[this.valueSetMethod].apply(this.operation, [normalized]);
+    return this.app.getPhotoProcessor().renderPreview();
+  };
+
+  /*
+    Is called when the slider has been pressed and is being dragged
+  
+    @param {MouseEvent} e
+  */
+
+
+  UIControlsBaseSlider.prototype.onMouseMove = function(e) {
+    var curX, deltaX, sliderLeft;
+    curX = e.clientX;
+    deltaX = curX - this.lastX;
+    sliderLeft = Math.min(Math.max(0, this.currentSliderLeft + deltaX), this.sliderWidth);
+    if (sliderLeft < this.sliderWidth && sliderLeft > 0) {
+      this.lastX = curX;
+      this.currentSliderLeft = sliderLeft;
+    }
+    return this.setSliderLeft(sliderLeft);
+  };
+
+  /*
+    Is called when the slider has been pressed and is being dragged
+  
+    @param {MouseEvent} e
+  */
+
+
+  UIControlsBaseSlider.prototype.onMouseUp = function(e) {
+    $(document).off("mouseup", this.onMouseUp);
+    return $(document).off("mousemove", this.onMouseMove);
+  };
+
+  return UIControlsBaseSlider;
+
+})(Base);
+
+module.exports = UIControlsBaseSlider;
+
+
+},{"./base.coffee":12,"__browserify_Buffer":3,"__browserify_process":1}],65:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/brightness.coffee",__dirname="/ui/controls";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Slider, UIControlsBrightness, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Slider = require("./base/slider.coffee");
+
+UIControlsBrightness = (function(_super) {
+  __extends(UIControlsBrightness, _super);
+
+  function UIControlsBrightness() {
+    _ref = UIControlsBrightness.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  UIControlsBrightness.prototype.name = "Brightness";
+
+  UIControlsBrightness.prototype.cssClass = "brightness";
+
+  UIControlsBrightness.prototype.valueSetMethod = "setBrightness";
+
+  UIControlsBrightness.prototype.displayButtons = true;
+
+  return UIControlsBrightness;
+
+})(Slider);
+
+module.exports = UIControlsBrightness;
+
+
+},{"./base/slider.coffee":64,"__browserify_Buffer":3,"__browserify_process":1}],66:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/brightness.coffee",__dirname="/operations";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Brightness, BrightnessOperation, Filter,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("./filters/filter.coffee");
+
+Brightness = require("./filters/primitives/brightness.coffee");
+
+BrightnessOperation = (function(_super) {
+  __extends(BrightnessOperation, _super);
+
+  /*
+    @param {imglyKit} app
+    @param {Object} options
+  */
+
+
+  function BrightnessOperation(app, options) {
+    var _base;
+    this.app = app;
     this.options = options != null ? options : {};
-    if ((_base = this.options).good == null) {
-      _base.good = 100;
+    BrightnessOperation.__super__.constructor.apply(this, arguments);
+    if ((_base = this.options).amount == null) {
+      _base.amount = 0;
     }
-    if ((_base1 = this.options).bad == null) {
-      _base1.bad = 500;
-    }
-    if ((_base2 = this.options).debug == null) {
-      _base2.debug = true;
-    }
-    this.started = false;
+    this.filter = new Brightness({
+      brightness: this.options.amount
+    });
   }
 
-  Perf.prototype.start = function() {
-    if (this.started || !this.options.debug) {
-      return;
-    }
-    this.start = +new Date();
-    return this.started = true;
+  BrightnessOperation.prototype.apply = function(imageData) {
+    return this.filter.apply(imageData);
   };
 
-  Perf.prototype.stop = function(printLine) {
-    var background, color, duration, end, message;
-    if (!this.started || !this.options.debug) {
-      return;
-    }
-    end = +new Date();
-    duration = end - this.start;
-    if (this.name != null) {
-      message = this.name + ' took';
-    } else {
-      message = 'Code execution time:';
-    }
-    if (typeof window !== "undefined" && window !== null) {
-      if (duration < this.options.good) {
-        background = 'darkgreen';
-        color = 'white';
-      } else if (duration > this.options.good && duration < this.options.bad) {
-        background = 'orange';
-        color = 'black';
-      } else {
-        background = 'darkred';
-        color = 'white';
-      }
-      console.log('%c perf %c ' + message + ' %c ' + duration.toFixed(2) + 'ms ', 'background: #222; color: #bada55', '', 'background: ' + background + '; color: ' + color);
-    } else {
-      console.log('[perf] ' + message + ' ' + duration.toFixed(2) + 'ms');
-    }
-    this.started = false;
-    if (printLine && (typeof window !== "undefined" && window !== null)) {
-      return console.log('%c perf %c -- END --                                                                          ', 'background: #222; color: #bada55', 'background: #222; color: #ffffff');
-    }
+  /*
+    @param {Integer} brightness
+  */
+
+
+  BrightnessOperation.prototype.setBrightness = function(brightness) {
+    this.options.amount = brightness;
+    return this.filter.setBrightness(brightness);
   };
 
-  return Perf;
+  return BrightnessOperation;
 
-})();
+})(Filter);
 
-module.exports = Perf;
-
-
-},{"__browserify_Buffer":2,"__browserify_process":1}],9:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="19",__dirname="/vendor";/*
-  Common interface for promises.
-
-  Use jQuery's Deferreds when in browser environment,
-  otherwise assume node environment and load kriskowal's q.
-*/
-
-var Queue, provider;
-
-provider = typeof window !== "undefined" ? window.jQuery : require("q");
-
-/*
-  Creates a thenable value from the given value.
-
-  @param value
-  @returns {Promise}
-*/
+module.exports = BrightnessOperation;
 
 
-Queue = function() {
-  return provider.when.apply(provider, arguments);
-};
-
-/*
-  Creates a new promise.
-
-  Calls the resolver which takes as arguments three functions `resolve`,
-  `reject` and `progress`.
-
-  @param {function} resolver
-  @returns {Promise}
-*/
-
-
-Queue.promise = (function() {
-  if (typeof window !== "undefined") {
-    return function(resolver) {
-      var d;
-      d = provider.Deferred();
-      resolver(d.resolve, d.reject, d.progress);
-      return d;
-    };
-  } else {
-    return function() {
-      return provider.promise.apply(provider, arguments);
-    };
-  }
-})();
-
-module.exports = Queue;
-
-
-},{"__browserify_Buffer":2,"__browserify_process":1,"q":18}],11:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/../node_modules/grunt-watchify/node_modules/browserify/node_modules/browser-builtins/builtin/events.js",__dirname="/../node_modules/grunt-watchify/node_modules/browserify/node_modules/browser-builtins/builtin";if (!process.EventEmitter) process.EventEmitter = function () {};
-
-var EventEmitter = exports.EventEmitter = process.EventEmitter;
-var isArray = typeof Array.isArray === 'function'
-    ? Array.isArray
-    : function (xs) {
-        return Object.prototype.toString.call(xs) === '[object Array]'
-    }
-;
-function indexOf (xs, x) {
-    if (xs.indexOf) return xs.indexOf(x);
-    for (var i = 0; i < xs.length; i++) {
-        if (x === xs[i]) return i;
-    }
-    return -1;
-}
-
-// By default EventEmitters will print a warning if more than
-// 10 listeners are added to it. This is a useful default which
-// helps finding memory leaks.
-//
-// Obviously not all Emitters should be limited to 10. This function allows
-// that to be increased. Set to zero for unlimited.
-var defaultMaxListeners = 10;
-EventEmitter.prototype.setMaxListeners = function(n) {
-  if (!this._events) this._events = {};
-  this._events.maxListeners = n;
-};
-
-
-EventEmitter.prototype.emit = function(type) {
-  // If there is no 'error' event listener then throw.
-  if (type === 'error') {
-    if (!this._events || !this._events.error ||
-        (isArray(this._events.error) && !this._events.error.length))
-    {
-      if (arguments[1] instanceof Error) {
-        throw arguments[1]; // Unhandled 'error' event
-      } else {
-        throw new Error("Uncaught, unspecified 'error' event.");
-      }
-      return false;
-    }
-  }
-
-  if (!this._events) return false;
-  var handler = this._events[type];
-  if (!handler) return false;
-
-  if (typeof handler == 'function') {
-    switch (arguments.length) {
-      // fast cases
-      case 1:
-        handler.call(this);
-        break;
-      case 2:
-        handler.call(this, arguments[1]);
-        break;
-      case 3:
-        handler.call(this, arguments[1], arguments[2]);
-        break;
-      // slower
-      default:
-        var args = Array.prototype.slice.call(arguments, 1);
-        handler.apply(this, args);
-    }
-    return true;
-
-  } else if (isArray(handler)) {
-    var args = Array.prototype.slice.call(arguments, 1);
-
-    var listeners = handler.slice();
-    for (var i = 0, l = listeners.length; i < l; i++) {
-      listeners[i].apply(this, args);
-    }
-    return true;
-
-  } else {
-    return false;
-  }
-};
-
-// EventEmitter is defined in src/node_events.cc
-// EventEmitter.prototype.emit() is also defined there.
-EventEmitter.prototype.addListener = function(type, listener) {
-  if ('function' !== typeof listener) {
-    throw new Error('addListener only takes instances of Function');
-  }
-
-  if (!this._events) this._events = {};
-
-  // To avoid recursion in the case that type == "newListeners"! Before
-  // adding it to the listeners, first emit "newListeners".
-  this.emit('newListener', type, listener);
-
-  if (!this._events[type]) {
-    // Optimize the case of one listener. Don't need the extra array object.
-    this._events[type] = listener;
-  } else if (isArray(this._events[type])) {
-
-    // Check for listener leak
-    if (!this._events[type].warned) {
-      var m;
-      if (this._events.maxListeners !== undefined) {
-        m = this._events.maxListeners;
-      } else {
-        m = defaultMaxListeners;
-      }
-
-      if (m && m > 0 && this._events[type].length > m) {
-        this._events[type].warned = true;
-        console.error('(node) warning: possible EventEmitter memory ' +
-                      'leak detected. %d listeners added. ' +
-                      'Use emitter.setMaxListeners() to increase limit.',
-                      this._events[type].length);
-        console.trace();
-      }
-    }
-
-    // If we've already got an array, just append.
-    this._events[type].push(listener);
-  } else {
-    // Adding the second element, need to change to array.
-    this._events[type] = [this._events[type], listener];
-  }
-
-  return this;
-};
-
-EventEmitter.prototype.on = EventEmitter.prototype.addListener;
-
-EventEmitter.prototype.once = function(type, listener) {
-  var self = this;
-  self.on(type, function g() {
-    self.removeListener(type, g);
-    listener.apply(this, arguments);
-  });
-
-  return this;
-};
-
-EventEmitter.prototype.removeListener = function(type, listener) {
-  if ('function' !== typeof listener) {
-    throw new Error('removeListener only takes instances of Function');
-  }
-
-  // does not use listeners(), so no side effect of creating _events[type]
-  if (!this._events || !this._events[type]) return this;
-
-  var list = this._events[type];
-
-  if (isArray(list)) {
-    var i = indexOf(list, listener);
-    if (i < 0) return this;
-    list.splice(i, 1);
-    if (list.length == 0)
-      delete this._events[type];
-  } else if (this._events[type] === listener) {
-    delete this._events[type];
-  }
-
-  return this;
-};
-
-EventEmitter.prototype.removeAllListeners = function(type) {
-  if (arguments.length === 0) {
-    this._events = {};
-    return this;
-  }
-
-  // does not use listeners(), so no side effect of creating _events[type]
-  if (type && this._events && this._events[type]) this._events[type] = null;
-  return this;
-};
-
-EventEmitter.prototype.listeners = function(type) {
-  if (!this._events) this._events = {};
-  if (!this._events[type]) this._events[type] = [];
-  if (!isArray(this._events[type])) {
-    this._events[type] = [this._events[type]];
-  }
-  return this._events[type];
-};
-
-EventEmitter.listenerCount = function(emitter, type) {
-  var ret;
-  if (!emitter._events || !emitter._events[type])
-    ret = 0;
-  else if (typeof emitter._events[type] === 'function')
-    ret = 1;
-  else
-    ret = emitter._events[type].length;
-  return ret;
-};
-
-},{"__browserify_Buffer":2,"__browserify_process":1}],16:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="20",__dirname="/math";/*
+},{"./filters/filter.coffee":9,"./filters/primitives/brightness.coffee":49,"__browserify_Buffer":3,"__browserify_process":1}],67:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/contrast.coffee",__dirname="/ui/controls";/*
   imglyKit
   Copyright (c) 2013 img.ly
 */
 
-var Vector2;
+var Slider, UIControlsContrast, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-Vector2 = (function() {
-  function Vector2(x, y) {
-    this.x = x;
-    this.y = y;
-    if (this.x == null) {
-      this.x = 0;
-    }
-    if (this.y == null) {
-      this.y = 0;
-    }
+Slider = require("./base/slider.coffee");
+
+UIControlsContrast = (function(_super) {
+  __extends(UIControlsContrast, _super);
+
+  function UIControlsContrast() {
+    _ref = UIControlsContrast.__super__.constructor.apply(this, arguments);
+    return _ref;
   }
 
-  /*
-    @param {Integer} x
-    @param {Integer} y
-  */
+  UIControlsContrast.prototype.name = "Contrast";
+
+  UIControlsContrast.prototype.cssClass = "contrast";
+
+  UIControlsContrast.prototype.valueSetMethod = "setContrast";
+
+  UIControlsContrast.prototype.displayButtons = true;
+
+  return UIControlsContrast;
+
+})(Slider);
+
+module.exports = UIControlsContrast;
 
 
-  Vector2.prototype.set = function(x, y) {
-    this.x = x;
-    this.y = y;
-  };
-
-  /*
-    @returns {Vector2} A clone of this vector
-  */
-
-
-  Vector2.prototype.clone = function() {
-    return new Vector2(this.x, this.y);
-  };
-
-  /*
-    @param {imglyKit.Vector2} The vector we want to copy
-  */
-
-
-  Vector2.prototype.copy = function(other) {
-    this.x = other.x;
-    this.y = other.y;
-    return this;
-  };
-
-  /*
-    @param {Integer|Vector2} Minimum value
-    @param {Integer|Vector2} Maximum value
-  */
-
-
-  Vector2.prototype.clamp = function(minimum, maximum) {
-    if (!(minimum instanceof Vector2)) {
-      minimum = new Vector2(minimum, minimum);
-    }
-    if (!(maximum instanceof Vector2)) {
-      maximum = new Vector2(maximum, maximum);
-    }
-    this.x = Math.max(minimum.x, Math.min(maximum.x, this.x));
-    this.y = Math.max(minimum.y, Math.min(maximum.y, this.y));
-    return this;
-  };
-
-  /*
-    @param {Object|Rect} The object to multiply with. Must have `width` and `height`
-  */
-
-
-  Vector2.prototype.multiplyWithRect = function(multiplier) {
-    this.x *= multiplier.width;
-    this.y *= multiplier.height;
-    return this;
-  };
-
-  /*
-    @param {Integer|Vector2}
-  */
-
-
-  Vector2.prototype.divide = function(divisor) {
-    if (divisor instanceof Vector2) {
-      this.x /= divisor.x;
-      this.y /= divisor.y;
-    } else {
-      this.x /= divisor;
-      this.y /= divisor;
-    }
-    return this;
-  };
-
-  /*
-    @param {Object|Rect} The object to multiply with. Must have `width` and `height`
-  */
-
-
-  Vector2.prototype.divideByRect = function(divisor) {
-    this.x /= divisor.width;
-    this.y /= divisor.height;
-    return this;
-  };
-
-  /*
-    @param {Integer|Vector2}
-  */
-
-
-  Vector2.prototype.substract = function(subtrahend) {
-    if (subtrahend instanceof Vector2) {
-      this.x -= subtrahend.x;
-      this.y -= subtrahend.y;
-    } else {
-      this.x -= subtrahend;
-      this.y -= subtrahend;
-    }
-    return this;
-  };
-
-  /*
-    @param {Rect} The object to substract
-  */
-
-
-  Vector2.prototype.substractRect = function(subtrahend) {
-    this.x -= subtrahend.width;
-    this.y -= subtrahend.height;
-    return this;
-  };
-
-  /*
-    @param {Rect} The object to add
-  */
-
-
-  Vector2.prototype.addRect = function(addend) {
-    this.x += addend.width;
-    this.y += addend.height;
-    return this;
-  };
-
-  /*
-    @param {Integer|Vector2}
-  */
-
-
-  Vector2.prototype.add = function(addend) {
-    if (addend instanceof Vector2) {
-      this.x += addend.x;
-      this.y += addend.y;
-    } else {
-      this.x += addend;
-      this.y += addend;
-    }
-    return this;
-  };
-
-  Vector2.prototype.toString = function() {
-    return "Vector2({ x: " + this.x + ", y: " + this.y + " })";
-  };
-
-  return Vector2;
-
-})();
-
-module.exports = Vector2;
-
-
-},{"__browserify_Buffer":2,"__browserify_process":1}],15:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="21",__dirname="/math";/*
+},{"./base/slider.coffee":64,"__browserify_Buffer":3,"__browserify_process":1}],68:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/contrast.coffee",__dirname="/operations";/*
   imglyKit
   Copyright (c) 2013 img.ly
 */
 
-var Rect;
+var Contrast, ContrastOperation, Filter,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-Rect = (function() {
-  function Rect(x, y, width, height) {
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
-    if (this.x == null) {
-      this.x = 0;
+Filter = require("./filters/filter.coffee");
+
+Contrast = require("./filters/primitives/contrast.coffee");
+
+ContrastOperation = (function(_super) {
+  __extends(ContrastOperation, _super);
+
+  /*
+    @param {imglyKit} app
+    @param {Object} options
+  */
+
+
+  function ContrastOperation(app, options) {
+    var _base;
+    this.app = app;
+    this.options = options != null ? options : {};
+    ContrastOperation.__super__.constructor.apply(this, arguments);
+    if ((_base = this.options).amount == null) {
+      _base.amount = 0;
     }
-    if (this.y == null) {
-      this.y = 0;
+    this.filter = new Contrast(this.app, {
+      contrast: this.options.amount
+    });
+  }
+
+  ContrastOperation.prototype.apply = function(imageData) {
+    return this.filter.apply(imageData);
+  };
+
+  /*
+    @param {Integer} contrast
+  */
+
+
+  ContrastOperation.prototype.setContrast = function(contrast) {
+    this.options.amount = contrast;
+    return this.filter.setContrast(contrast);
+  };
+
+  return ContrastOperation;
+
+})(Filter);
+
+module.exports = ContrastOperation;
+
+
+},{"./filters/filter.coffee":9,"./filters/primitives/contrast.coffee":34,"__browserify_Buffer":3,"__browserify_process":1}],69:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/saturation.coffee",__dirname="/ui/controls";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Slider, UIControlsSaturation, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Slider = require("./base/slider.coffee");
+
+UIControlsSaturation = (function(_super) {
+  __extends(UIControlsSaturation, _super);
+
+  function UIControlsSaturation() {
+    _ref = UIControlsSaturation.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  UIControlsSaturation.prototype.name = "Saturation";
+
+  UIControlsSaturation.prototype.cssClass = "saturation";
+
+  UIControlsSaturation.prototype.valueSetMethod = "setSaturation";
+
+  UIControlsSaturation.prototype.displayButtons = true;
+
+  return UIControlsSaturation;
+
+})(Slider);
+
+module.exports = UIControlsSaturation;
+
+
+},{"./base/slider.coffee":64,"__browserify_Buffer":3,"__browserify_process":1}],70:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/saturation.coffee",__dirname="/operations";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var Filter, Saturation, SaturationOperation,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("./filters/filter.coffee");
+
+Saturation = require("./filters/primitives/saturation.coffee");
+
+SaturationOperation = (function(_super) {
+  __extends(SaturationOperation, _super);
+
+  /*
+    @param {imglyKit} app
+    @param {Object} options
+  */
+
+
+  function SaturationOperation(app, options) {
+    var _base;
+    this.app = app;
+    this.options = options != null ? options : {};
+    SaturationOperation.__super__.constructor.apply(this, arguments);
+    if ((_base = this.options).amount == null) {
+      _base.amount = 0;
     }
-    if (this.width == null) {
-      this.width = 0;
+    this.filter = new Saturation(this.app, {
+      saturation: this.options.amount
+    });
+  }
+
+  SaturationOperation.prototype.apply = function(imageData) {
+    return this.filter.apply(imageData);
+  };
+
+  /*
+    @param {Integer} saturation
+  */
+
+
+  SaturationOperation.prototype.setSaturation = function(saturation) {
+    this.options.amount = saturation;
+    return this.filter.setSaturation(saturation);
+  };
+
+  return SaturationOperation;
+
+})(Filter);
+
+module.exports = SaturationOperation;
+
+
+},{"./filters/filter.coffee":9,"./filters/primitives/saturation.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],71:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/text.coffee",__dirname="/operations";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var FontOperation, Operation, Rect, Utils, Vector2,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Operation = require("./operation.coffee");
+
+Utils = require("../utils.coffee");
+
+Vector2 = require("../math/vector2.coffee");
+
+Rect = require("../math/rect.coffee");
+
+FontOperation = (function(_super) {
+  __extends(FontOperation, _super);
+
+  FontOperation.prototype.renderPreview = false;
+
+  function FontOperation(app, options) {
+    this.app = app;
+    this.options = options != null ? options : {};
+    FontOperation.__super__.constructor.apply(this, arguments);
+    this.options.start = new Vector2(0.2, 0.2);
+    this.options.width = 300;
+    this.options.font = "Helvetica";
+    this.options.text = "Text";
+    this.options.color = "#ffffff";
+    this.options.fontSize = 0.1;
+    this.options.lineHeight = 1.1;
+    this.options.paddingLeft = 0;
+    this.options.paddingTop = 0;
+  }
+
+  /*
+    @param {String} font
+  */
+
+
+  FontOperation.prototype.setFont = function(font) {
+    this.options.font = font;
+    return this.emit("updateOptions", this.options);
+  };
+
+  FontOperation.prototype.apply = function(imageData) {
+    var canvas, context, line, lineHeight, lineNum, lineOffset, paddingVector, scaledFontSize, scaledStart, _i, _len, _ref;
+    scaledFontSize = this.options.fontSize * imageData.height;
+    paddingVector = new Vector2(this.options.paddingLeft, this.options.paddingTop);
+    scaledStart = new Vector2().copy(this.options.start).add(paddingVector).multiplyWithRect(imageData);
+    canvas = Utils.newCanvasFromImageData(imageData);
+    context = canvas.getContext("2d");
+    context.font = "normal " + scaledFontSize + "px " + this.options.font;
+    context.fillStyle = this.options.color;
+    context.textBaseline = "hanging";
+    lineHeight = this.options.lineHeight;
+    _ref = this.options.text.split("\n");
+    for (lineNum = _i = 0, _len = _ref.length; _i < _len; lineNum = ++_i) {
+      line = _ref[lineNum];
+      lineOffset = lineNum * scaledFontSize * lineHeight;
+      context.fillText(line, scaledStart.x, scaledStart.y + this.options.paddingLeft + lineOffset);
     }
-    if (this.height == null) {
-      this.height = 0;
+    return context.getImageData(0, 0, imageData.width, imageData.height);
+  };
+
+  return FontOperation;
+
+})(Operation);
+
+module.exports = FontOperation;
+
+
+},{"../math/rect.coffee":61,"../math/vector2.coffee":56,"../utils.coffee":6,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],72:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/frames.coffee",__dirname="/operations";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var FramesOperation, Operation, Queue, Rect, Utils, Vector2,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Operation = require("./operation.coffee");
+
+Utils = require("../utils.coffee");
+
+Queue = require("../vendor/queue.coffee");
+
+Vector2 = require("../math/vector2.coffee");
+
+Rect = require("../math/rect.coffee");
+
+FramesOperation = (function(_super) {
+  __extends(FramesOperation, _super);
+
+  FramesOperation.prototype.renderPreview = true;
+
+  function FramesOperation(app, options) {
+    var _base, _base1;
+    this.app = app;
+    this.options = options != null ? options : {};
+    FramesOperation.__super__.constructor.apply(this, arguments);
+    if ((_base = this.options).frame == null) {
+      _base.frame = "black";
+    }
+    if ((_base1 = this.options).scale == null) {
+      _base1.scale = 0.1;
     }
   }
 
   /*
-    @param {Integer} x
-    @param {Integer} y
-    @param {Integer} width
-    @param {Integer} height
+    @param {Integer} frame
+    @param {Float} scale
   */
 
 
-  Rect.prototype.set = function(x, y, width, height) {
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
+  FramesOperation.prototype.setFrameOptions = function(frame, scale) {
+    this.options.frame = frame;
+    return this.options.scale = scale;
   };
 
   /*
-    @param {Integer} x
-    @param {Integer} y
+    @param {ImageData} imageData
+    @returns {ImageData}
   */
 
 
-  Rect.prototype.setPosition = function(x, y) {
-    this.x = x;
-    this.y = y;
+  FramesOperation.prototype.apply = function(imageData) {
+    var _this = this;
+    return Queue.promise(function(resolve, reject) {
+      var frameImage;
+      frameImage = new Image();
+      frameImage.onload = function() {
+        return resolve(frameImage);
+      };
+      return frameImage.src = _this.app.buildAssetsPath("frames/" + _this.options.frame + ".png");
+    }).then(function(frameImage) {
+      var bottomHeight, canvas, context, frameCanvas, height, i, leftWidth, lowerHeight, maxHeight, originalHeight, originalWidth, repeatCount, rightWidth, scaledMaxHeight, topHeight, upperHeight, width, xRepeatAreaEnd, xRepeatAreaStart, xRepeatMode, yRepeatAreaEnd, yRepeatAreaStart, yRepeatMode, _i, _j, _ref;
+      _ref = _this.analyzeFrameImage(frameImage), xRepeatAreaStart = _ref.xRepeatAreaStart, xRepeatAreaEnd = _ref.xRepeatAreaEnd, xRepeatMode = _ref.xRepeatMode, yRepeatAreaStart = _ref.yRepeatAreaStart, yRepeatAreaEnd = _ref.yRepeatAreaEnd, yRepeatMode = _ref.yRepeatMode, frameCanvas = _ref.frameCanvas;
+      /*
+        Create a canvas and a drawing context out of
+        the image data
+      */
+
+      canvas = Utils.newCanvasFromImageData(imageData);
+      context = canvas.getContext("2d");
+      upperHeight = yRepeatAreaStart;
+      lowerHeight = frameCanvas.height - yRepeatAreaEnd;
+      maxHeight = Math.max(lowerHeight, upperHeight);
+      scaledMaxHeight = imageData.height * _this.options.scale;
+      leftWidth = Math.round(xRepeatAreaStart * (scaledMaxHeight / maxHeight));
+      topHeight = Math.round(scaledMaxHeight * (maxHeight / upperHeight));
+      rightWidth = Math.round((frameCanvas.width - xRepeatAreaEnd) * (scaledMaxHeight / maxHeight));
+      bottomHeight = Math.round(scaledMaxHeight * (maxHeight / lowerHeight));
+      /*
+        Draw corners
+      */
+
+      context.drawImage(frameCanvas, 0, 0, xRepeatAreaStart, yRepeatAreaStart, 0, 0, leftWidth, topHeight);
+      context.drawImage(frameCanvas, xRepeatAreaEnd, 0, frameCanvas.width - xRepeatAreaEnd, yRepeatAreaStart, imageData.width - rightWidth, 0, rightWidth, topHeight);
+      context.drawImage(frameCanvas, 0, yRepeatAreaEnd, xRepeatAreaStart, frameCanvas.height - yRepeatAreaEnd, 0, imageData.height - bottomHeight, leftWidth, bottomHeight);
+      context.drawImage(frameCanvas, xRepeatAreaEnd, yRepeatAreaEnd, frameCanvas.width - xRepeatAreaEnd, frameCanvas.height - yRepeatAreaEnd, imageData.width - rightWidth, imageData.height - bottomHeight, rightWidth, bottomHeight);
+      /*
+        Draw edges
+      */
+
+      if (xRepeatMode === "stretch") {
+        context.drawImage(frameCanvas, xRepeatAreaStart, 0, xRepeatAreaEnd - xRepeatAreaStart, yRepeatAreaStart, leftWidth, 0, imageData.width - leftWidth - rightWidth, topHeight);
+        context.drawImage(frameCanvas, xRepeatAreaStart, yRepeatAreaEnd, xRepeatAreaEnd - xRepeatAreaStart, frameCanvas.height - yRepeatAreaEnd, leftWidth, imageData.height - bottomHeight, imageData.width - leftWidth - rightWidth, bottomHeight);
+      } else if (xRepeatMode === "repeat") {
+        originalWidth = xRepeatAreaEnd - xRepeatAreaStart;
+        originalHeight = yRepeatAreaStart;
+        height = topHeight;
+        width = Math.round(height * (originalWidth / originalHeight));
+        repeatCount = Math.ceil(imageData.width / width);
+        for (i = _i = 0; 0 <= repeatCount ? _i < repeatCount : _i > repeatCount; i = 0 <= repeatCount ? ++_i : --_i) {
+          context.drawImage(frameCanvas, xRepeatAreaStart, 0, xRepeatAreaEnd - xRepeatAreaStart, yRepeatAreaStart, leftWidth + i * width, 0, width, height);
+        }
+        originalHeight = frameCanvas.height - yRepeatAreaEnd;
+        height = bottomHeight;
+        width = Math.round(bottomHeight * (originalWidth / originalHeight));
+        for (i = _j = 0; 0 <= repeatCount ? _j < repeatCount : _j > repeatCount; i = 0 <= repeatCount ? ++_j : --_j) {
+          context.drawImage(frameCanvas, xRepeatAreaStart, yRepeatAreaEnd, xRepeatAreaEnd - xRepeatAreaStart, frameCanvas.height - yRepeatAreaEnd, leftWidth + i * width, imageData.height - bottomHeight, width, height);
+        }
+      }
+      if (yRepeatMode === "stretch") {
+        context.drawImage(frameCanvas, 0, yRepeatAreaStart, xRepeatAreaStart, yRepeatAreaEnd - yRepeatAreaStart, 0, topHeight, leftWidth, imageData.height - topHeight - bottomHeight);
+        context.drawImage(frameCanvas, xRepeatAreaEnd, yRepeatAreaStart, frameCanvas.width - xRepeatAreaEnd, yRepeatAreaEnd - yRepeatAreaStart, imageData.width - rightWidth, topHeight, rightWidth, imageData.height - topHeight - bottomHeight);
+      }
+      return context.getImageData(0, 0, imageData.width, imageData.height);
+    });
   };
+
+  FramesOperation.prototype.analyzeFrameImage = function(frameImage) {
+    var a, b, canvas, context, frameImageData, g, index, r, x, xRepeatAreaEnd, xRepeatAreaStart, xRepeatMode, y, yRepeatAreaEnd, yRepeatAreaStart, yRepeatMode, _i, _j, _ref, _ref1;
+    frameImageData = Utils.getImageDataForImage(frameImage);
+    xRepeatAreaStart = null;
+    xRepeatAreaEnd = null;
+    xRepeatMode = null;
+    for (x = _i = 0, _ref = frameImageData.width; 0 <= _ref ? _i < _ref : _i > _ref; x = 0 <= _ref ? ++_i : --_i) {
+      index = x * 4;
+      r = frameImageData.data[index];
+      g = frameImageData.data[index + 1];
+      b = frameImageData.data[index + 2];
+      a = frameImageData.data[index + 3];
+      if (r === 255 && g === 255 && b === 255 && a === 255) {
+        if (xRepeatAreaStart == null) {
+          xRepeatAreaStart = x - 1;
+        }
+        xRepeatMode = "stretch";
+      }
+      if (r === 0 && g === 0 && b === 0 && a === 255) {
+        if (xRepeatAreaStart == null) {
+          xRepeatAreaStart = x - 1;
+        }
+        xRepeatMode = "repeat";
+      }
+      if (a !== 255 && (xRepeatAreaStart != null) && (xRepeatAreaEnd == null)) {
+        xRepeatAreaEnd = x - 1;
+      }
+    }
+    yRepeatAreaStart = null;
+    yRepeatAreaEnd = null;
+    yRepeatMode = null;
+    for (y = _j = 0, _ref1 = frameImageData.height; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; y = 0 <= _ref1 ? ++_j : --_j) {
+      index = (frameImageData.width * y) * 4;
+      r = frameImageData.data[index];
+      g = frameImageData.data[index + 1];
+      b = frameImageData.data[index + 2];
+      a = frameImageData.data[index + 3];
+      if (r === 255 && g === 255 && b === 255 && a === 255) {
+        if (yRepeatAreaStart == null) {
+          yRepeatAreaStart = y - 1;
+        }
+        yRepeatMode = "stretch";
+      }
+      if (r === 0 && g === 0 && b === 0 && a === 255) {
+        if (yRepeatAreaStart == null) {
+          yRepeatAreaStart = y - 1;
+        }
+        yRepeatMode = "repeat";
+      }
+      if (a !== 255 && (yRepeatAreaStart != null) && (yRepeatAreaEnd == null)) {
+        yRepeatAreaEnd = y - 1;
+      }
+    }
+    canvas = Utils.newCanvasWithDimensions({
+      width: frameImage.width - 1,
+      height: frameImage.height - 1
+    });
+    context = canvas.getContext("2d");
+    context.putImageData(frameImageData, -1, -1);
+    return {
+      xRepeatAreaStart: xRepeatAreaStart,
+      xRepeatAreaEnd: xRepeatAreaEnd,
+      xRepeatMode: xRepeatMode,
+      yRepeatAreaStart: yRepeatAreaStart,
+      yRepeatAreaEnd: yRepeatAreaEnd,
+      yRepeatMode: yRepeatMode,
+      frameCanvas: canvas
+    };
+  };
+
+  return FramesOperation;
+
+})(Operation);
+
+module.exports = FramesOperation;
+
+
+},{"../math/rect.coffee":61,"../math/vector2.coffee":56,"../utils.coffee":6,"../vendor/queue.coffee":5,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],73:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/frames.coffee",__dirname="/ui/controls";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var List, Rect, UIControlsFrames, Utils, Vector2, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+List = require("./base/list.coffee");
+
+Utils = require("../../utils.coffee");
+
+Vector2 = require("../../math/vector2.coffee");
+
+Rect = require("../../math/rect.coffee");
+
+UIControlsFrames = (function(_super) {
+  __extends(UIControlsFrames, _super);
+
+  function UIControlsFrames() {
+    _ref = UIControlsFrames.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  UIControlsFrames.prototype.displayButtons = true;
+
+  UIControlsFrames.prototype.singleOperation = true;
+
+  UIControlsFrames.prototype.init = function() {
+    var option, options, _i, _len, _results,
+      _this = this;
+    this.createList();
+    this.operationClass = require("../../operations/frames.coffee");
+    options = [
+      {
+        id: "black",
+        name: "Black",
+        cssClass: "black",
+        method: "setFrameOptions",
+        "arguments": ["black", 0.1],
+        "default": true
+      }, {
+        id: "blackwood",
+        name: "Black Wood",
+        cssClass: "black-wood",
+        method: "setFrameOptions",
+        "arguments": ["blackwood", 0.1]
+      }, {
+        id: "dia",
+        name: "Dia",
+        cssClass: "dia",
+        method: "setFrameOptions",
+        "arguments": ["dia", 0.1]
+      }
+    ];
+    _results = [];
+    for (_i = 0, _len = options.length; _i < _len; _i++) {
+      option = options[_i];
+      _results.push((function(option) {
+        var item, preview;
+        item = $("<li>").addClass(imglyKit.classPrefix + "controls-item").appendTo(_this.list);
+        preview = $("<div>").addClass(imglyKit.classPrefix + "controls-frame-preview-" + Utils.dasherize(option.id)).appendTo(item);
+        item.click(function(e) {
+          return _this.handleOptionSelect(option, item);
+        });
+        if (option["default"] != null) {
+          return item.click();
+        }
+      })(option));
+    }
+    return _results;
+  };
+
+  return UIControlsFrames;
+
+})(List);
+
+module.exports = UIControlsFrames;
+
+
+},{"../../math/rect.coffee":61,"../../math/vector2.coffee":56,"../../operations/frames.coffee":72,"../../utils.coffee":6,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],74:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/overview.coffee",__dirname="/ui/controls";/*
+  imglyKit
+  Copyright (c) 2013 img.ly
+*/
+
+var List, UIControlsOverview,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+List = require("./base/list.coffee");
+
+UIControlsOverview = (function(_super) {
+  __extends(UIControlsOverview, _super);
 
   /*
-    @param {Integer} width
-    @param {Integer} height
+    @param {imglyKit} app
+    @param {imglyKit.UI} ui
+    @param {imglyKit.UI.Controls} controls
   */
 
 
-  Rect.prototype.setDimensions = function(width, height) {
-    this.width = width;
-    this.height = height;
-  };
+  UIControlsOverview.prototype.allowMultipleClick = false;
 
-  /*
-    @param {imglyKit.Rect} The vector we want to copy
-  */
+  function UIControlsOverview(app, ui, controls) {
+    this.app = app;
+    this.ui = ui;
+    this.controls = controls;
+    UIControlsOverview.__super__.constructor.apply(this, arguments);
+    this.listItems = [
+      {
+        name: "Filters",
+        cssClass: "filters",
+        controls: require("./filters.coffee")
+      }, {
+        name: "Orientation",
+        cssClass: "orientation",
+        controls: require("./orientation.coffee")
+      }, {
+        name: "Focus",
+        cssClass: "focus",
+        controls: require("./focus.coffee")
+      }, {
+        name: "Crop",
+        cssClass: "crop",
+        controls: require("./crop.coffee"),
+        operation: require("../../operations/crop.coffee")
+      }, {
+        name: "Brightness",
+        cssClass: "brightness",
+        controls: require("./brightness.coffee"),
+        operation: require("../../operations/brightness.coffee")
+      }, {
+        name: "Contrast",
+        cssClass: "contrast",
+        controls: require("./contrast.coffee"),
+        operation: require("../../operations/contrast.coffee")
+      }, {
+        name: "Saturation",
+        cssClass: "saturation",
+        controls: require("./saturation.coffee"),
+        operation: require("../../operations/saturation.coffee")
+      }, {
+        name: "Text",
+        cssClass: "text",
+        controls: require("./text.coffee"),
+        operation: require("../../operations/text.coffee")
+      }, {
+        name: "Frames",
+        cssClass: "frames",
+        controls: require("./frames.coffee"),
+        operation: require("../../operations/frames.coffee")
+      }
+    ];
+  }
+
+  return UIControlsOverview;
+
+})(List);
+
+module.exports = UIControlsOverview;
 
 
-  Rect.prototype.copy = function(other) {
-    this.x = other.x;
-    this.y = other.y;
-    this.width = other.width;
-    this.height = other.height;
-    return this;
-  };
-
-  Rect.prototype.toString = function() {
-    return "Rect({ x: " + this.x + ", y: " + this.y + ", width: " + this.width + ", height: " + this.height + " })";
-  };
-
-  return Rect;
-
-})();
-
-module.exports = Rect;
-
-
-},{"__browserify_Buffer":2,"__browserify_process":1}],18:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/../node_modules/grunt-watchify/node_modules/browserify/_empty.js",__dirname="/../node_modules/grunt-watchify/node_modules/browserify";
-},{"__browserify_Buffer":2,"__browserify_process":1}],12:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="22",__dirname="/ui";/*
+},{"../../operations/brightness.coffee":66,"../../operations/contrast.coffee":68,"../../operations/crop.coffee":62,"../../operations/frames.coffee":72,"../../operations/saturation.coffee":70,"../../operations/text.coffee":71,"./base/list.coffee":13,"./brightness.coffee":65,"./contrast.coffee":67,"./crop.coffee":63,"./filters.coffee":53,"./focus.coffee":60,"./frames.coffee":73,"./orientation.coffee":55,"./saturation.coffee":69,"./text.coffee":75,"__browserify_Buffer":3,"__browserify_process":1}],76:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls.coffee",__dirname="/ui";/*
   imglyKit
   Copyright (c) 2013 img.ly
 */
@@ -16274,7 +20223,7 @@ var EventEmitter, Overview, UIControls,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-Overview = require("23");
+Overview = require("./controls/overview.coffee");
 
 EventEmitter = require("events").EventEmitter;
 
@@ -16422,15 +20371,15 @@ UIControls = (function(_super) {
 module.exports = UIControls;
 
 
-},{"23":19,"__browserify_Buffer":2,"__browserify_process":1,"events":11}],13:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="24",__dirname="/ui";/*
+},{"./controls/overview.coffee":74,"__browserify_Buffer":3,"__browserify_process":1,"events":7}],77:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/canvas.coffee",__dirname="/ui";/*
   imglyKit
   Copyright (c) 2013 img.ly
 */
 
 var UICanvas, Utils;
 
-Utils = require("25");
+Utils = require("../utils.coffee");
 
 UICanvas = (function() {
   /*
@@ -16600,1413 +20549,338 @@ UICanvas = (function() {
 module.exports = UICanvas;
 
 
-},{"25":6,"__browserify_Buffer":2,"__browserify_process":1}],10:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="26",__dirname="/operations/filters/primitives";/*
+},{"../utils.coffee":6,"__browserify_Buffer":3,"__browserify_process":1}],78:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/ui.coffee",__dirname="/ui";/*
   imglyKit
   Copyright (c) 2013 img.ly
 */
 
-var Filter, PrimitiveIdentityFilter, _ref,
+var Canvas, Controls, EventEmitter, UI,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-Filter = require("27");
+Controls = require("./controls.coffee");
 
-PrimitiveIdentityFilter = (function(_super) {
-  __extends(PrimitiveIdentityFilter, _super);
-
-  function PrimitiveIdentityFilter() {
-    _ref = PrimitiveIdentityFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  PrimitiveIdentityFilter.prototype.apply = function(imageData) {
-    return imageData;
-  };
-
-  return PrimitiveIdentityFilter;
-
-})(Filter);
-
-module.exports = PrimitiveIdentityFilter;
-
-
-},{"27":20,"__browserify_Buffer":2,"__browserify_process":1}],17:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="28",__dirname="/operations";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var CropOperation, Operation, Utils, Vector2,
-  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Operation = require("29");
-
-Utils = require("25");
-
-Vector2 = require("30");
-
-CropOperation = (function(_super) {
-  __extends(CropOperation, _super);
-
-  CropOperation.prototype.renderPreview = false;
-
-  function CropOperation(app, options) {
-    var _base, _base1, _base2;
-    this.app = app;
-    this.options = options != null ? options : {};
-    this.setRatio = __bind(this.setRatio, this);
-    CropOperation.__super__.constructor.apply(this, arguments);
-    if ((_base = this.options).start == null) {
-      _base.start = new Vector2(0.1, 0.1);
-    }
-    if ((_base1 = this.options).end == null) {
-      _base1.end = new Vector2(0.9, 0.9);
-    }
-    if ((_base2 = this.options).ratio == null) {
-      _base2.ratio = 0;
-    }
-  }
-
-  CropOperation.prototype.setRatio = function(ratio) {
-    this.options.ratio = ratio;
-    return this.setSize("custom");
-  };
-
-  CropOperation.prototype.setSize = function(size) {
-    var h, height, w, width, _ref;
-    _ref = this.app.ui.getCanvas().getImageData(), width = _ref.width, height = _ref.height;
-    this.options.size = size;
-    this.options.start.set(0.1, 0.1);
-    this.options.end.set(0.9, 0.9);
-    switch (size) {
-      case "square":
-        this.options.ratio = 1;
-        break;
-      case "4:3":
-        this.options.ratio = 4 / 3;
-        break;
-      case "16:9":
-        this.options.ratio = 16 / 9;
-        break;
-      case "free":
-        this.options.ratio = 0;
-    }
-    if (this.options.ratio) {
-      if (width / height <= this.options.ratio) {
-        this.options.start.x = 0.1;
-        this.options.end.x = 0.9;
-        h = 1 / height * (width / this.options.ratio * 0.8);
-        this.options.start.y = (1 - h) / 2;
-        this.options.end.y = 1 - this.options.start.y;
-      } else {
-        this.options.start.y = 0.1;
-        this.options.end.y = 0.9;
-        w = 1 / width * (this.options.ratio * height * 0.8);
-        this.options.start.x = (1 - w) / 2;
-        this.options.end.x = 1 - this.options.start.x;
-      }
-    }
-    return this.emit("updateOptions", this.options);
-  };
-
-  CropOperation.prototype.setStart = function(x, y) {
-    this.options.start.x = x;
-    return this.options.start.y = y;
-  };
-
-  CropOperation.prototype.setEnd = function(x, y) {
-    this.options.end.x = x;
-    return this.options.end.y = y;
-  };
-
-  CropOperation.prototype.apply = function(imageData) {
-    var canvas, context, h, height, w, width, x, y;
-    width = imageData.width, height = imageData.height;
-    canvas = Utils.newCanvasFromImageData(imageData);
-    context = canvas.getContext("2d");
-    x = width * this.options.start.x;
-    y = height * this.options.start.y;
-    w = width * (this.options.end.x - this.options.start.x);
-    h = height * (this.options.end.y - this.options.start.y);
-    return context.getImageData(x, y, w, h);
-  };
-
-  return CropOperation;
-
-})(Operation);
-
-module.exports = CropOperation;
-
-
-},{"30":16,"25":6,"29":21,"__browserify_Buffer":2,"__browserify_process":1}],14:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="31",__dirname="/ui/controls/base";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Base, UIControlsBaseList, Utils, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Base = require("32");
-
-Utils = require("33");
-
-UIControlsBaseList = (function(_super) {
-  __extends(UIControlsBaseList, _super);
-
-  function UIControlsBaseList() {
-    _ref = UIControlsBaseList.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  UIControlsBaseList.prototype.displayButtons = false;
-
-  UIControlsBaseList.prototype.singleOperation = false;
-
-  UIControlsBaseList.prototype.init = function() {
-    var option, _i, _len, _ref1, _results,
-      _this = this;
-    this.createList();
-    if (!this.allowMultipleClick) {
-      this.optionSelected = false;
-    }
-    if (!this.options.showList) {
-      this.list.hide();
-    }
-    /*
-      Add the list elements
-    */
-
-    _ref1 = this.listItems;
-    _results = [];
-    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-      option = _ref1[_i];
-      _results.push((function(option) {
-        var cssClass, item;
-        if (option.name == null) {
-          return $("<li>").addClass(imglyKit.classPrefix + "controls-item-space").appendTo(_this.list);
-        }
-        cssClass = option.cssClass || Utils.dasherize(option.name);
-        item = $("<li>").addClass(imglyKit.classPrefix + "controls-item").addClass(imglyKit.classPrefix + "controls-item-" + cssClass).appendTo(_this.list);
-        item.click(function(e) {
-          if (!_this.allowMultipleClick) {
-            if (_this.optionSelected) {
-              return;
-            }
-            _this.optionSelected = true;
-          }
-          return _this.handleOptionSelect(option, item);
-        });
-        if (option["default"] != null) {
-          return item.click();
-        }
-      })(option));
-    }
-    return _results;
-  };
-
-  /*
-    @param {imglyKit.Operations.Operation}
-  */
-
-
-  UIControlsBaseList.prototype.setOperation = function(operation) {
-    var _this = this;
-    this.operation = operation;
-    this.updateOptions(this.operation.options);
-    return this.operation.on("updateOptions", function(o) {
-      return _this.updateOptions(o);
-    });
-  };
-
-  /*
-    @params {Object} options
-  */
-
-
-  UIControlsBaseList.prototype.updateOptions = function(operationOptions) {
-    this.operationOptions = operationOptions;
-  };
-
-  /*
-    @param {Object} option
-    @param {jQuery.Object} item
-  */
-
-
-  UIControlsBaseList.prototype.handleOptionSelect = function(option, item) {
-    var activeClass;
-    this.setAllItemsInactive();
-    activeClass = imglyKit.classPrefix + "controls-list-item-active";
-    item.addClass(activeClass);
-    if (this.singleOperation) {
-      option.operation = this.operationClass;
-    }
-    if (!this.singleOperation || (this.singleOperation && !this.sentSelected)) {
-      this.emit("select", option);
-      this.sentSelected = true;
-    }
-    if (option.method) {
-      this.operation[option.method].apply(this.operation, option["arguments"]);
-    }
-    if ((this.operation != null) && this.operation.renderPreview) {
-      return this.emit("renderPreview");
-    }
-  };
-
-  /*
-    Create controls DOM tree
-  */
-
-
-  UIControlsBaseList.prototype.createList = function() {
-    this.wrapper = $("<div>").addClass(imglyKit.classPrefix + "controls-wrapper").attr("data-control", this.constructor.name).appendTo(this.controls.getContainer());
-    this.list = $("<ul>").addClass(imglyKit.classPrefix + "controls-list").appendTo(this.wrapper);
-    if (this.cssClassIdentifier != null) {
-      this.list.addClass(imglyKit.classPrefix + "controls-list-" + this.cssClassIdentifier);
-    }
-    if (this.displayButtons) {
-      this.list.addClass(imglyKit.classPrefix + "controls-list-with-buttons");
-      this.list.width(this.controls.getContainer().width() - this.controls.getHeight() * 2);
-      return this.createButtons();
-    }
-  };
-
-  /*
-    Reset active states
-  */
-
-
-  UIControlsBaseList.prototype.reset = function() {
-    if (!this.allowMultipleClick) {
-      this.optionSelected = false;
-    }
-    return this.setAllItemsInactive();
-  };
-
-  /*
-    Sets all list items to inactive state
-  */
-
-
-  UIControlsBaseList.prototype.setAllItemsInactive = function() {
-    var activeClass;
-    activeClass = imglyKit.classPrefix + "controls-list-item-active";
-    return this.list.find("li").removeClass(activeClass);
-  };
-
-  return UIControlsBaseList;
-
-})(Base);
-
-module.exports = UIControlsBaseList;
-
-
-},{"33":6,"32":22,"__browserify_Buffer":2,"__browserify_process":1}],19:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="34",__dirname="/ui/controls";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var List, UIControlsOverview,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-List = require("14");
-
-UIControlsOverview = (function(_super) {
-  __extends(UIControlsOverview, _super);
-
-  /*
-    @param {imglyKit} app
-    @param {imglyKit.UI} ui
-    @param {imglyKit.UI.Controls} controls
-  */
-
-
-  UIControlsOverview.prototype.allowMultipleClick = false;
-
-  function UIControlsOverview(app, ui, controls) {
-    this.app = app;
-    this.ui = ui;
-    this.controls = controls;
-    UIControlsOverview.__super__.constructor.apply(this, arguments);
-    this.listItems = [
-      {
-        name: "Filters",
-        cssClass: "filters",
-        controls: require("35")
-      }, {
-        name: "Orientation",
-        cssClass: "orientation",
-        controls: require("36")
-      }, {
-        name: "Focus",
-        cssClass: "focus",
-        controls: require("37")
-      }, {
-        name: "Crop",
-        cssClass: "crop",
-        controls: require("38"),
-        operation: require("17")
-      }, {
-        name: "Brightness",
-        cssClass: "brightness",
-        controls: require("39"),
-        operation: require("40")
-      }, {
-        name: "Contrast",
-        cssClass: "contrast",
-        controls: require("41"),
-        operation: require("42")
-      }, {
-        name: "Saturation",
-        cssClass: "saturation",
-        controls: require("43"),
-        operation: require("44")
-      }, {
-        name: "Text",
-        cssClass: "text",
-        controls: require("45"),
-        operation: require("46")
-      }, {
-        name: "Frames",
-        cssClass: "frames",
-        controls: require("47"),
-        operation: require("48")
-      }
-    ];
-  }
-
-  return UIControlsOverview;
-
-})(List);
-
-module.exports = UIControlsOverview;
-
-
-},{"40":27,"42":29,"17":17,"48":35,"44":31,"46":33,"14":14,"39":26,"41":28,"38":7,"35":23,"37":25,"47":34,"36":24,"43":30,"45":32,"__browserify_Buffer":2,"__browserify_process":1}],20:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="49",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Filter, Operation, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Operation = require("50");
-
-Filter = (function(_super) {
-  __extends(Filter, _super);
-
-  function Filter() {
-    _ref = Filter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  Filter.preview = null;
-
-  Filter.displayName = null;
-
-  return Filter;
-
-})(Operation);
-
-module.exports = Filter;
-
-
-},{"50":21,"__browserify_Buffer":2,"__browserify_process":1}],21:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="51",__dirname="/operations";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var EventEmitter, Operation, Queue,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  __slice = [].slice;
-
-Queue = require("52");
+Canvas = require("./canvas.coffee");
 
 EventEmitter = require("events").EventEmitter;
 
-Operation = (function(_super) {
-  var buildComposition;
-
-  __extends(Operation, _super);
-
-  Operation.prototype.renderPreview = true;
-
-  /*
-    @param {imglyKit} app
-    @param {Object} options
-  */
-
-
-  function Operation(app, options) {
-    var apply;
-    this.app = app;
-    this.options = options != null ? options : {};
-    apply = this.apply;
-    this.apply = function(dataOrPromise) {
-      var _this = this;
-      return Queue(dataOrPromise).then(function(imageData) {
-        return apply.call(_this, imageData);
-      });
-    };
-  }
-
-  /*
-    @param {CanvasRenderingContext2d} context
-  */
-
-
-  Operation.prototype.setContext = function(context) {
-    this.context = context;
-  };
-
-  /*
-    @param {Object} options
-  */
-
-
-  Operation.prototype.setOptions = function(options) {
-    var key, val;
-    for (key in options) {
-      val = options[key];
-      this.options[key] = val;
-    }
-    return this.emit("updateOptions", options);
-  };
-
-  /*
-    @param {ImageData} imageData
-    @param {Function} callback
-    @returns {ImageData}
-  */
-
-
-  Operation.prototype.apply = function() {
-    throw Error("Abstract: Filter#apply");
-  };
-
-  buildComposition = function(direction, filter, args) {
-    var composition, self;
-    if (args == null) {
-      args = [];
-    }
-    self = this;
-    if (filter.prototype instanceof Operation) {
-      filter = (function(func, args, ctor) {
-        ctor.prototype = func.prototype;
-        var child = new ctor, result = func.apply(child, args);
-        return Object(result) === result ? result : child;
-      })(filter, [this.app].concat(__slice.call(args)), function(){});
-    }
-    composition = direction === "pre" ? function(imageData) {
-      return self.apply(filter.apply(imageData || this));
-    } : direction === "post" ? function(imageData) {
-      return filter.apply(self.apply(imageData || this));
-    } : void 0;
-    composition.compose = Operation.prototype.compose;
-    composition.precompose = Operation.prototype.precompose;
-    return composition;
-  };
-
-  /*
-    @param {Operation} filter
-    @returns {Function}
-  */
-
-
-  Operation.prototype.compose = function() {
-    var args, filter;
-    filter = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-    return buildComposition.call(this, "post", filter, args);
-  };
-
-  /*
-    @param {Operation} filter
-    @returns {Function}
-  */
-
-
-  Operation.prototype.precompose = function() {
-    var args, filter;
-    filter = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-    return buildComposition.call(this, "pre", filter, args);
-  };
-
-  return Operation;
-
-})(EventEmitter);
-
-module.exports = Operation;
-
-
-},{"52":9,"__browserify_Buffer":2,"__browserify_process":1,"events":11}],22:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="53",__dirname="/ui/controls/base";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var EventEmitter, UIControlsBase,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-EventEmitter = require("events").EventEmitter;
-
-UIControlsBase = (function(_super) {
-  __extends(UIControlsBase, _super);
-
-  UIControlsBase.prototype.allowMultipleClick = true;
+UI = (function(_super) {
+  __extends(UI, _super);
 
   /*
     @param {imglyUtil} app
-    @param {imglyUtil.UI} ui
   */
 
 
-  function UIControlsBase(app, ui, controls) {
-    var _base, _base1;
+  function UI(app) {
     this.app = app;
-    this.ui = ui;
-    this.controls = controls;
-    this.domCreated = false;
-    if (this.options == null) {
-      this.options = {};
-    }
-    if ((_base = this.options).backButton == null) {
-      _base.backButton = true;
-    }
-    if ((_base1 = this.options).showList == null) {
-      _base1.showList = true;
-    }
+    this.initialized = false;
   }
 
   /*
-    @param {imglyUtil.Operations.Operation}
+    @returns {imglyKit.UI.Canvas}
   */
 
 
-  UIControlsBase.prototype.setOperation = function(operation) {
-    this.operation = operation;
+  UI.prototype.getCanvas = function() {
+    return this.canvas;
   };
 
   /*
-    @param {Object} options
+    @returns imglyKit.UI.Controls.Base
   */
 
 
-  UIControlsBase.prototype.init = function(options) {};
-
-  /*
-    Handle visibility
-  */
-
-
-  UIControlsBase.prototype.show = function(cb) {
-    return this.wrapper.fadeIn("fast", cb);
-  };
-
-  UIControlsBase.prototype.hide = function(cb) {
-    return this.wrapper.fadeOut("fast", cb);
+  UI.prototype.getCurrentControls = function() {
+    return this.controls.getCurrentControls();
   };
 
   /*
-    Returns to the default view
+    Initializes all UI elements
   */
 
 
-  UIControlsBase.prototype.reset = function() {};
-
-  /*
-    Create "Back" and "Done" buttons
-  */
-
-
-  UIControlsBase.prototype.createButtons = function() {
-    var back, done,
-      _this = this;
-    if (this.buttons == null) {
-      this.buttons = {};
-    }
-    /*
-      "Back" Button
-    */
-
-    if (this.options.backButton) {
-      back = $("<div>").addClass(imglyKit.classPrefix + "controls-button-back").appendTo(this.wrapper);
-      back.click(function() {
-        return _this.emit("back");
-      });
-      this.buttons.back = back;
-    }
-    /*
-      "Done" Button
-    */
-
-    done = $("<div>").addClass(imglyKit.classPrefix + "controls-button-done").appendTo(this.wrapper);
-    done.click(function() {
+  UI.prototype.init = function() {
+    var _this = this;
+    this.controls = new Controls(this.app, this);
+    this.controls.on("preview_operation", function(operation) {
+      return _this.emit("preview_operation", operation);
+    });
+    this.controls.on("back", function() {
+      return _this.emit("back");
+    });
+    this.controls.on("done", function() {
       return _this.emit("done");
     });
-    return this.buttons.done = done;
+    this.canvas = new Canvas(this.app, this, {
+      height: this.controls.getHeight()
+    });
+    return this.initialized = true;
   };
 
-  UIControlsBase.prototype.remove = function() {
-    return this.wrapper.remove();
+  /*
+    Resets the controls
+  */
+
+
+  UI.prototype.resetControls = function() {
+    return this.controls.reset();
   };
 
-  return UIControlsBase;
+  return UI;
 
 })(EventEmitter);
 
-module.exports = UIControlsBase;
+module.exports = UI;
 
 
-},{"__browserify_Buffer":2,"__browserify_process":1,"events":11}],27:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="54",__dirname="/operations";/*
+},{"./canvas.coffee":77,"./controls.coffee":76,"__browserify_Buffer":3,"__browserify_process":1,"events":7}],79:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/imgly.coffee",__dirname="/";/*
   imglyKit
   Copyright (c) 2013 img.ly
 */
 
-var Brightness, BrightnessOperation, Filter,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+var PhotoProcessor, UI, Utils, imglyKit,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-Filter = require("55");
+PhotoProcessor = require("./photoprocessor.coffee");
 
-Brightness = require("56");
+UI = require("./ui/ui.coffee");
 
-BrightnessOperation = (function(_super) {
-  __extends(BrightnessOperation, _super);
+Utils = require("./utils.coffee");
+
+window.after = function(t, f) {
+  return setTimeout(f, t);
+};
+
+window.every = function(t, f) {
+  return setInterval(f, t);
+};
+
+imglyKit = (function() {
+  imglyKit.classPrefix = "imgly-";
+
+  imglyKit.canvasContainerPadding = 15;
 
   /*
-    @param {imglyKit} app
-    @param {Object} options
+    @param options.container The container we imglyKit will run in
   */
 
 
-  function BrightnessOperation(app, options) {
-    var _base;
-    this.app = app;
+  function imglyKit(options) {
+    var _base, _base1;
     this.options = options != null ? options : {};
-    BrightnessOperation.__super__.constructor.apply(this, arguments);
-    if ((_base = this.options).amount == null) {
-      _base.amount = 0;
+    this.onImageLoaded = __bind(this.onImageLoaded, this);
+    if ((_base = this.options).debug == null) {
+      _base.debug = false;
     }
-    this.filter = new Brightness({
-      brightness: this.options.amount
-    });
-  }
-
-  BrightnessOperation.prototype.apply = function(imageData) {
-    return this.filter.apply(imageData);
-  };
-
-  /*
-    @param {Integer} brightness
-  */
-
-
-  BrightnessOperation.prototype.setBrightness = function(brightness) {
-    this.options.amount = brightness;
-    return this.filter.setBrightness(brightness);
-  };
-
-  return BrightnessOperation;
-
-})(Filter);
-
-module.exports = BrightnessOperation;
-
-
-},{"55":20,"56":36,"__browserify_Buffer":2,"__browserify_process":1}],29:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="57",__dirname="/operations";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Contrast, ContrastOperation, Filter,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("55");
-
-Contrast = require("58");
-
-ContrastOperation = (function(_super) {
-  __extends(ContrastOperation, _super);
-
-  /*
-    @param {imglyKit} app
-    @param {Object} options
-  */
-
-
-  function ContrastOperation(app, options) {
-    var _base;
-    this.app = app;
-    this.options = options != null ? options : {};
-    ContrastOperation.__super__.constructor.apply(this, arguments);
-    if ((_base = this.options).amount == null) {
-      _base.amount = 0;
+    if ((_base1 = this.options).assetsPath == null) {
+      _base1.assetsPath = "/build/assets";
     }
-    this.filter = new Contrast(this.app, {
-      contrast: this.options.amount
-    });
-  }
-
-  ContrastOperation.prototype.apply = function(imageData) {
-    return this.filter.apply(imageData);
-  };
-
-  /*
-    @param {Integer} contrast
-  */
-
-
-  ContrastOperation.prototype.setContrast = function(contrast) {
-    this.options.amount = contrast;
-    return this.filter.setContrast(contrast);
-  };
-
-  return ContrastOperation;
-
-})(Filter);
-
-module.exports = ContrastOperation;
-
-
-},{"55":20,"58":37,"__browserify_Buffer":2,"__browserify_process":1}],31:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="59",__dirname="/operations";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Filter, Saturation, SaturationOperation,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("55");
-
-Saturation = require("60");
-
-SaturationOperation = (function(_super) {
-  __extends(SaturationOperation, _super);
-
-  /*
-    @param {imglyKit} app
-    @param {Object} options
-  */
-
-
-  function SaturationOperation(app, options) {
-    var _base;
-    this.app = app;
-    this.options = options != null ? options : {};
-    SaturationOperation.__super__.constructor.apply(this, arguments);
-    if ((_base = this.options).amount == null) {
-      _base.amount = 0;
+    if (this.options.container == null) {
+      throw new Error("No container given");
     }
-    this.filter = new Saturation(this.app, {
-      saturation: this.options.amount
-    });
+    this.options.container = $(this.options.container);
+    this.options.container.addClass(imglyKit.classPrefix + "container");
+    this.photoProcessor = new PhotoProcessor(this);
+    this.ui = new UI(this);
   }
 
-  SaturationOperation.prototype.apply = function(imageData) {
-    return this.filter.apply(imageData);
+  /*
+    @returns {Boolean} Whether Canvas and Canvastext is supported or not
+  */
+
+
+  imglyKit.prototype.checkSupport = function() {
+    var error;
+    if (Modernizr.canvas && Modernizr.canvastext) {
+      return true;
+    }
+    error = new Error("Canvas and / or Canvas Text drawing not supported");
+    error.name = "NoSupportError";
+    error.description = "No Canvas support";
+    throw error;
   };
 
   /*
-    @param {Integer} saturation
+    @returns {jQuery.Object} The jQuery object for the app container
   */
 
 
-  SaturationOperation.prototype.setSaturation = function(saturation) {
-    this.options.amount = saturation;
-    return this.filter.setSaturation(saturation);
+  imglyKit.prototype.getContainer = function() {
+    return this.options.container;
   };
 
-  return SaturationOperation;
-
-})(Filter);
-
-module.exports = SaturationOperation;
-
-
-},{"55":20,"60":38,"__browserify_Buffer":2,"__browserify_process":1}],24:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="61",__dirname="/ui/controls";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var List, UIControlsOrientation,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-List = require("14");
-
-UIControlsOrientation = (function(_super) {
-  __extends(UIControlsOrientation, _super);
-
-  UIControlsOrientation.prototype.displayButtons = true;
-
-  UIControlsOrientation.prototype.singleOperation = true;
-
   /*
-    @param {imglyUtil} app
-    @param {imglyUtil.UI} ui
+    @returns {Integer} The height of the app container
   */
 
 
-  function UIControlsOrientation(app, ui, controls) {
-    this.app = app;
-    this.ui = ui;
-    this.controls = controls;
-    UIControlsOrientation.__super__.constructor.apply(this, arguments);
-    this.operationClass = require("62");
-    this.listItems = [
-      {
-        name: "Rotate L",
-        cssClass: "rotate-l",
-        method: "rotateLeft"
-      }, {
-        name: "Rotate R",
-        cssClass: "rotate-r",
-        method: "rotateRight"
-      }, {
-        name: "Flip V",
-        cssClass: "flip-v",
-        method: "flipVertically"
-      }, {
-        name: "Flip H",
-        cssClass: "flip-h",
-        method: "flipHorizontally"
-      }
-    ];
-  }
-
-  return UIControlsOrientation;
-
-})(List);
-
-module.exports = UIControlsOrientation;
-
-
-},{"62":39,"14":14,"__browserify_Buffer":2,"__browserify_process":1}],23:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="63",__dirname="/ui/controls";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var List, UIControlsFilters, Utils, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-List = require("14");
-
-Utils = require("64");
-
-UIControlsFilters = (function(_super) {
-  __extends(UIControlsFilters, _super);
-
-  function UIControlsFilters() {
-    _ref = UIControlsFilters.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  UIControlsFilters.prototype.displayButtons = true;
-
-  UIControlsFilters.prototype.cssClassIdentifier = "filters";
+  imglyKit.prototype.getHeight = function() {
+    return this.options.container.height();
+  };
 
   /*
-    Initializes the container
+    @returns {imglyKit.PhotoProcessor}
   */
 
 
-  UIControlsFilters.prototype.init = function() {
-    var filter, _i, _len, _ref1, _results,
+  imglyKit.prototype.getPhotoProcessor = function() {
+    return this.photoProcessor;
+  };
+
+  /*
+    @param {String} file path
+    @returns {String} assets file path
+  */
+
+
+  imglyKit.prototype.buildAssetsPath = function(path) {
+    return this.options.assetsPath + "/" + path;
+  };
+
+  /*
+    @param {Image|String} image Data URL or Image object
+  */
+
+
+  imglyKit.prototype.run = function(image) {
+    var dataUrl, error,
       _this = this;
-    this.createList();
-    _ref1 = [require("65"), require("66"), require("67"), require("68"), require("69"), require("70"), require("71"), require("72"), require("73"), require("74"), require("75"), require("76"), require("77"), require("78"), require("79"), require("80"), require("81"), require("82"), require("83"), require("84"), require("85"), require("86"), require("87"), require("88"), require("89"), require("90"), require("91"), require("92"), require("93")];
-    _results = [];
-    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-      filter = _ref1[_i];
-      _results.push((function(filter) {
-        var item, preview;
-        item = $("<li>").addClass(imglyKit.classPrefix + "controls-item").appendTo(_this.list);
-        preview = $("<div>").addClass(imglyKit.classPrefix + "controls-preview-" + Utils.dasherize(filter.displayName)).appendTo(item);
-        return item.click(function(e) {
-          var activeClass;
-          _this.reset();
-          activeClass = imglyKit.classPrefix + "controls-list-item-active";
-          item.addClass(activeClass);
-          return _this.emit("select", {
-            operation: filter
-          });
-        });
-      })(filter));
+    this.image = image;
+    this.checkSupport();
+    if (this.options.ratio != null) {
+      this.options.initialControls = require("./ui/controls/crop.coffee");
+      this.options.forceInitialControls = true;
+      this.options.operationOptionsHook = function(operation) {
+        return operation.setRatio(_this.options.ratio);
+      };
     }
-    return _results;
-  };
-
-  return UIControlsFilters;
-
-})(List);
-
-module.exports = UIControlsFilters;
-
-
-},{"92":67,"71":46,"77":52,"78":53,"85":60,"73":48,"65":40,"75":50,"83":58,"70":45,"74":49,"84":59,"89":64,"66":41,"67":42,"68":43,"69":44,"79":54,"88":63,"90":65,"87":62,"72":47,"82":57,"81":56,"80":55,"93":68,"91":66,"86":61,"76":51,"64":6,"14":14,"__browserify_Buffer":2,"__browserify_process":1}],25:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="94",__dirname="/ui/controls";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var List, UIControlsFocus, Utils, Vector2, linearOperation, radialOperation,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-List = require("14");
-
-Utils = require("64");
-
-Vector2 = require("15");
-
-radialOperation = require("95");
-
-linearOperation = require("96");
-
-UIControlsFocus = (function(_super) {
-  __extends(UIControlsFocus, _super);
-
-  UIControlsFocus.prototype.displayButtons = true;
-
-  /*
-    @param {imglyKit} app
-    @param {imglyKit.UI} ui
-    @param {imglyKit.UI.Controls} controls
-  */
-
-
-  function UIControlsFocus(app, ui, controls) {
-    this.app = app;
-    this.ui = ui;
-    this.controls = controls;
-    UIControlsFocus.__super__.constructor.apply(this, arguments);
-    this.listItems = [
-      {
-        name: "Radial",
-        cssClass: "radial",
-        operation: radialOperation,
-        "default": true
-      }, {
-        name: "Linear",
-        cssClass: "linear",
-        operation: linearOperation
+    if (!(typeof this.image === "string" || this.image instanceof Image)) {
+      throw new Error("First parameter needs to be a String or an Image");
+    }
+    if (typeof this.image === "string") {
+      if (this.image.slice(0, 10) !== "data:image") {
+        error = new Error("First parameter is a string, but not an image data URL");
+        error.name = "InvalidError";
+        throw error;
       }
-    ];
-  }
-
-  /*
-    @params {Object} options
-  */
-
-
-  UIControlsFocus.prototype.updateOptions = function(operationOptions) {
-    this.operationOptions = operationOptions;
-    return this.rerenderCanvas();
-  };
-
-  /*
-    We call this every time we change the options, e.g.
-    when the user drags a knob or a crosshair
-  */
-
-
-  UIControlsFocus.prototype.onOptionsUpdated = function() {
-    this.operation.setOptions(this.operationOptions);
-    this.rerenderCanvas();
-    this.repositionControls();
-    return this.emit("renderPreview");
-  };
-
-  /*
-    @param {jQuery.Object} canvasControlsContainer
-  */
-
-
-  UIControlsFocus.prototype.hasCanvasControls = true;
-
-  UIControlsFocus.prototype.setupCanvasControls = function(canvasControlsContainer) {
-    var height, width;
-    this.canvasControlsContainer = canvasControlsContainer;
-    width = this.canvasControlsContainer.width();
-    height = this.canvasControlsContainer.height();
-    this.canvas = $("<canvas>").css({
-      width: width,
-      height: height
-    }).appendTo(this.canvasControlsContainer);
-    this.canvas = this.canvas.get(0);
-    this.canvas.width = $(this.canvas).width();
-    this.canvas.height = $(this.canvas).height();
-    this.context = this.canvas.getContext("2d");
-    if (window.devicePixelRatio > 1) {
-      this.canvas.width *= window.devicePixelRatio;
-      return this.canvas.height *= window.devicePixelRatio;
+      dataUrl = this.image;
+      this.image = new Image();
+      this.image.src = dataUrl;
+    }
+    if (this.image.width > 0 && this.image.height > 0) {
+      return this.onImageLoaded();
+    } else {
+      return this.image.onload = this.onImageLoaded;
     }
   };
 
   /*
-    @param {Object} option
-    @param {jQuery.Object} item
+    Gets called as soon as the image has been loaded
+    and the image dimensions are available
   */
 
 
-  UIControlsFocus.prototype.handleOptionSelect = function(option, item) {
-    UIControlsFocus.__super__.handleOptionSelect.apply(this, arguments);
-    switch (option.operation) {
-      case radialOperation:
-        this.setControlsMode("radial");
-        break;
-      case linearOperation:
-        this.setControlsMode("linear");
-    }
-    return this.onOptionsUpdated();
-  };
-
-  /*
-    @param {String} mode
-  */
-
-
-  UIControlsFocus.prototype.setControlsMode = function(mode) {
-    var i, knob, _i;
-    this.controlsMode = mode;
-    this.canvasControlsContainer.find("div").remove();
-    this.knobs = [];
-    for (i = _i = 0; _i <= 1; i = ++_i) {
-      knob = $("<div>").addClass(imglyKit.classPrefix + "canvas-knob");
-      knob.appendTo(this.canvasControlsContainer);
-      this.knobs.push(knob);
-    }
-    this.crosshair = $("<div>").addClass(imglyKit.classPrefix + "canvas-crosshair");
-    this.crosshair.appendTo(this.canvasControlsContainer);
-    this.handleKnobControl();
-    return this.handleCrosshairControl();
-  };
-
-  /*
-    We call this everytime the user dragged a knob
-    or a crosshair to reposition the controls
-  */
-
-
-  UIControlsFocus.prototype.repositionControls = function() {
-    var canvasSize, controlPoint1, controlPoint2, diff, i, knob, position, _i;
-    canvasSize = {
-      width: this.canvasControlsContainer.width(),
-      height: this.canvasControlsContainer.height()
-    };
-    for (i = _i = 0; _i <= 1; i = ++_i) {
-      knob = this.knobs[i];
-      position = this.operationOptions["controlPoint" + (i + 1) + "Position"];
-      knob.css({
-        left: canvasSize.width * position.x,
-        top: canvasSize.height * position.y
-      });
-    }
+  imglyKit.prototype.onImageLoaded = function() {
     /*
-      Multiply the control points with the canvas
-      size to get real pixel information
+      Set up the user interface
     */
 
-    controlPoint1 = new Vector2().copy(this.operationOptions.controlPoint1Position).multiplyWithRect(canvasSize);
-    controlPoint2 = new Vector2().copy(this.operationOptions.controlPoint2Position).multiplyWithRect(canvasSize);
-    diff = new Vector2().copy(controlPoint2).substract(controlPoint1).divide(2);
-    return this.crosshair.css({
-      left: controlPoint1.x + diff.x,
-      top: controlPoint1.y + diff.y
-    });
-  };
-
-  /*
-    Handle dragging of the crosshair
-  */
-
-
-  UIControlsFocus.prototype.handleCrosshairControl = function() {
-    var canvasSize,
-      _this = this;
-    canvasSize = new Vector2(this.canvasControlsContainer.width(), this.canvasControlsContainer.height());
-    return this.crosshair.mousedown(function(e) {
-      var lastPos;
-      lastPos = new Vector2(e.clientX, e.clientY);
-      $(document).mousemove(function(e) {
-        var i, knobPositions, newKnobPositions, normalizedDiff, _i, _j;
-        normalizedDiff = new Vector2(e.clientX, e.clientY).substract(lastPos).divide(canvasSize);
-        newKnobPositions = {};
-        knobPositions = {};
-        for (i = _i = 1; _i <= 2; i = ++_i) {
-          knobPositions[i] = _this.operationOptions["controlPoint" + i + "Position"];
-          newKnobPositions[i] = new Vector2().copy(knobPositions[i]).add(normalizedDiff);
-          if (!Utils.withinBoundaries(newKnobPositions[i])) {
-            return;
-          }
+    var _this = this;
+    if (!this.ui.initialized) {
+      this.ui.init();
+      this.photoProcessor.setCanvas(this.ui.getCanvas());
+      this.ui.on("preview_operation", function(operation) {
+        var _ref;
+        if ((_ref = _this.ui.getCurrentControls()) != null) {
+          _ref.setOperation(operation);
         }
-        for (i = _j = 1; _j <= 2; i = ++_j) {
-          knobPositions[i].copy(newKnobPositions[i]);
-        }
-        lastPos.set(e.clientX, e.clientY);
-        return _this.onOptionsUpdated();
+        return _this.photoProcessor.setPreviewOperation(operation);
       });
-      return $(document).mouseup(function(e) {
-        $(document).off("mousemove");
-        return $(document).off("mouseup");
+      this.ui.on("back", function() {
+        _this.photoProcessor.unsetPreviewOperation();
+        return _this.ui.resetControls();
       });
-    });
-  };
+      this.ui.on("done", function() {
+        _this.photoProcessor.acceptPreviewOperation();
+        return _this.ui.resetControls();
+      });
+    } else {
+      this.photoProcessor.reset();
+      this.ui.resetControls();
+    }
+    /*
+      Reset everything
+    */
 
-  /*
-    Handle dragging of the knobs
-  */
+    this.reset();
+    /*
+      Set source image of the photo processor and tell
+      it to render it
+    */
 
+    this.photoProcessor.setSourceImage(this.image);
+    return this.photoProcessor.renderPreview(function(err) {
+      /*
+        Do we have controls that have to be shown
+        on startup?
+      */
 
-  UIControlsFocus.prototype.handleKnobControl = function() {
-    var canvasSize, index, knob, _i, _len, _ref, _results,
-      _this = this;
-    canvasSize = new Vector2(this.canvasControlsContainer.width(), this.canvasControlsContainer.height());
-    _ref = this.knobs;
-    _results = [];
-    for (index = _i = 0, _len = _ref.length; _i < _len; index = ++_i) {
-      knob = _ref[index];
-      _results.push((function(knob, index) {
-        return knob.mousedown(function(e) {
-          var lastPos;
-          lastPos = new Vector2(e.clientX, e.clientY);
-          $(document).mousemove(function(e) {
-            var currentKnobIndex, currentKnobPosition, newKnobPosition, newOppositeKnobPosition, normalizedDiff, oppositeKnobIndex, oppositeKnobPosition;
-            normalizedDiff = new Vector2(e.clientX, e.clientY).substract(lastPos).divide(canvasSize);
-            currentKnobIndex = index + 1;
-            currentKnobPosition = _this.operationOptions["controlPoint" + currentKnobIndex + "Position"];
-            oppositeKnobIndex = index === 0 ? 2 : 1;
-            oppositeKnobPosition = _this.operationOptions["controlPoint" + oppositeKnobIndex + "Position"];
-            newKnobPosition = new Vector2().copy(currentKnobPosition).add(normalizedDiff);
-            newOppositeKnobPosition = new Vector2().copy(oppositeKnobPosition).substract(normalizedDiff);
-            if (!(Utils.withinBoundaries(newKnobPosition) && Utils.withinBoundaries(newOppositeKnobPosition))) {
-              return;
-            }
-            currentKnobPosition.copy(newKnobPosition);
-            oppositeKnobPosition.copy(newOppositeKnobPosition);
-            _this.onOptionsUpdated();
-            return lastPos.set(e.clientX, e.clientY);
-          });
-          return $(document).mouseup(function() {
-            $(document).off("mouseup");
-            return $(document).off("mousemove");
-          });
+      var controls;
+      if (_this.options.initialControls) {
+        controls = _this.ui.controls;
+        controls.switchToControls(_this.options.initialControls, controls.getCurrentControls(), {
+          backButton: !_this.options.forceInitialControls,
+          showList: !_this.options.forceInitialControls
         });
-      })(knob, index));
-    }
-    return _results;
-  };
-
-  /*
-    Re-renders the canvas controls
-  */
-
-
-  UIControlsFocus.prototype.rerenderCanvas = function() {
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    switch (this.controlsMode) {
-      case "radial":
-        return this.drawRadialControl();
-      case "linear":
-        return this.drawLinearControl();
-    }
-  };
-
-  /*
-    Renders the radial indicator for the currently blurred area
-  */
-
-
-  UIControlsFocus.prototype.drawRadialControl = function() {
-    var center, circle, circleProperties, controlPoint1, controlPoint2, halfDiff, radius, _i, _len, _results;
-    controlPoint1 = new Vector2().copy(this.operationOptions.controlPoint1Position).multiplyWithRect(this.canvas);
-    controlPoint2 = new Vector2().copy(this.operationOptions.controlPoint2Position).multiplyWithRect(this.canvas);
-    halfDiff = new Vector2().copy(controlPoint2).substract(controlPoint1).divide(2);
-    radius = Math.sqrt(Math.pow(halfDiff.x, 2) + Math.pow(halfDiff.y, 2));
-    center = new Vector2().copy(controlPoint1).add(halfDiff);
-    circleProperties = [["#FFFFFF", 2 * (window.devicePixelRatio || 1), 0], ["rgba(0, 0, 0, 0.35)", 2 * (window.devicePixelRatio || 1), 2], ["rgba(0, 0, 0, 0.35)", 2 * (window.devicePixelRatio || 1), -1]];
-    _results = [];
-    for (_i = 0, _len = circleProperties.length; _i < _len; _i++) {
-      circle = circleProperties[_i];
-      this.context.beginPath();
-      this.context.arc(center.x, center.y, radius + circle[2], 0, 2 * Math.PI, false);
-      this.context.lineWidth = circle[1];
-      this.context.strokeStyle = circle[0];
-      this.context.stroke();
-      _results.push(this.context.closePath());
-    }
-    return _results;
-  };
-
-  /*
-    Renders the line indicators for the currently blurred area
-  */
-
-
-  UIControlsFocus.prototype.drawLinearControl = function() {
-    var controlPoint, controlPoint1, controlPoint2, controlPoints, diagonal, diff, line, lines, point, _i, _results;
-    controlPoint1 = new Vector2().copy(this.operationOptions.controlPoint1Position).multiplyWithRect(this.canvas);
-    controlPoint2 = new Vector2().copy(this.operationOptions.controlPoint2Position).multiplyWithRect(this.canvas);
-    controlPoints = [controlPoint1, controlPoint2];
-    diff = new Vector2().copy(controlPoint2).substract(controlPoint1);
-    diagonal = Math.sqrt(Math.pow(this.canvas.width, 2) + Math.pow(this.canvas.height, 2));
-    _results = [];
-    for (point = _i = 0; _i <= 1; point = ++_i) {
-      controlPoint = controlPoints[point];
-      lines = [["#FFFFFF", 2 * (window.devicePixelRatio || 1), 0], ["rgba(0, 0, 0, 0.35)", 2 * (window.devicePixelRatio || 1), 2], ["rgba(0, 0, 0, 0.35)", 2 * (window.devicePixelRatio || 1), -1]];
-      _results.push((function() {
-        var _j, _len, _results1;
-        _results1 = [];
-        for (_j = 0, _len = lines.length; _j < _len; _j++) {
-          line = lines[_j];
-          this.context.beginPath();
-          this.context.moveTo(controlPoint.x + diff.y * diagonal + line[2], controlPoint.y - diff.x * diagonal + line[2]);
-          this.context.lineTo(controlPoint.x - diff.y * diagonal + line[2], controlPoint.y + diff.x * diagonal + line[2]);
-          this.context.strokeStyle = line[0];
-          this.context.lineWidth = line[1];
-          this.context.stroke();
-          _results1.push(this.context.closePath());
+        if (_this.options.operationOptionsHook != null) {
+          return _this.options.operationOptionsHook(controls.getCurrentControls().operation);
         }
-        return _results1;
-      }).call(this));
-    }
-    return _results;
+      }
+    });
   };
 
-  return UIControlsFocus;
-
-})(List);
-
-module.exports = UIControlsFocus;
+  /*
+    Resets everything
+  */
 
 
-},{"15":16,"96":70,"95":69,"64":6,"14":14,"__browserify_Buffer":2,"__browserify_process":1}],26:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="97",__dirname="/ui/controls";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
+  imglyKit.prototype.reset = function() {
+    return this.photoProcessor.reset();
+  };
 
-var Slider, UIControlsBrightness, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Slider = require("98");
-
-UIControlsBrightness = (function(_super) {
-  __extends(UIControlsBrightness, _super);
-
-  function UIControlsBrightness() {
-    _ref = UIControlsBrightness.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  UIControlsBrightness.prototype.name = "Brightness";
-
-  UIControlsBrightness.prototype.cssClass = "brightness";
-
-  UIControlsBrightness.prototype.valueSetMethod = "setBrightness";
-
-  UIControlsBrightness.prototype.displayButtons = true;
-
-  return UIControlsBrightness;
-
-})(Slider);
-
-module.exports = UIControlsBrightness;
+  /*
+    Renders the image and returns a data url
+  */
 
 
-},{"98":71,"__browserify_Buffer":2,"__browserify_process":1}],28:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="99",__dirname="/ui/controls";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
+  imglyKit.prototype.renderToDataURL = function(format, options, callback) {
+    var _this = this;
+    if (options == null) {
+      options = {};
+    }
+    if (typeof options === "function") {
+      callback = options;
+      options = {};
+    }
+    return this.photoProcessor.renderImage(options, function(err, imageData) {
+      var canvas;
+      canvas = Utils.newCanvasFromImageData(imageData);
+      return callback(null, canvas.toDataURL(format));
+    });
+  };
 
-var Slider, UIControlsContrast, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+  return imglyKit;
 
-Slider = require("98");
+})();
 
-UIControlsContrast = (function(_super) {
-  __extends(UIControlsContrast, _super);
-
-  function UIControlsContrast() {
-    _ref = UIControlsContrast.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  UIControlsContrast.prototype.name = "Contrast";
-
-  UIControlsContrast.prototype.cssClass = "contrast";
-
-  UIControlsContrast.prototype.valueSetMethod = "setContrast";
-
-  UIControlsContrast.prototype.displayButtons = true;
-
-  return UIControlsContrast;
-
-})(Slider);
-
-module.exports = UIControlsContrast;
+window.imglyKit = imglyKit;
 
 
-},{"98":71,"__browserify_Buffer":2,"__browserify_process":1}],30:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="100",__dirname="/ui/controls";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Slider, UIControlsSaturation, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Slider = require("98");
-
-UIControlsSaturation = (function(_super) {
-  __extends(UIControlsSaturation, _super);
-
-  function UIControlsSaturation() {
-    _ref = UIControlsSaturation.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  UIControlsSaturation.prototype.name = "Saturation";
-
-  UIControlsSaturation.prototype.cssClass = "saturation";
-
-  UIControlsSaturation.prototype.valueSetMethod = "setSaturation";
-
-  UIControlsSaturation.prototype.displayButtons = true;
-
-  return UIControlsSaturation;
-
-})(Slider);
-
-module.exports = UIControlsSaturation;
-
-
-},{"98":71,"__browserify_Buffer":2,"__browserify_process":1}],32:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="101",__dirname="/ui/controls";/*
+},{"./photoprocessor.coffee":11,"./ui/controls/crop.coffee":63,"./ui/ui.coffee":78,"./utils.coffee":6,"__browserify_Buffer":3,"__browserify_process":1}],75:[function(require,module,exports){
+/*
   imglyKit
   Copyright (c) 2013 img.ly
 */
@@ -18016,11 +20890,11 @@ var List, Rect, UIControlsText, Vector2,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-List = require("14");
+List = require("./base/list.coffee");
 
-Vector2 = require("15");
+Vector2 = require("../../math/vector2.coffee");
 
-Rect = require("16");
+Rect = require("../../math/rect.coffee");
 
 UIControlsText = (function(_super) {
   __extends(UIControlsText, _super);
@@ -18040,6 +20914,7 @@ UIControlsText = (function(_super) {
 
 
   function UIControlsText(app, ui, controls) {
+    var additionalFont, _i, _len, _ref;
     this.app = app;
     this.ui = ui;
     this.controls = controls;
@@ -18049,7 +20924,7 @@ UIControlsText = (function(_super) {
     UIControlsText.__super__.constructor.apply(this, arguments);
     this.initialized = false;
     this.fontResizePerClick = 3;
-    this.operationClass = require("46");
+    this.operationClass = require("../../operations/text.coffee");
     this.listItems = [
       {
         name: "Helvetica",
@@ -18069,6 +20944,18 @@ UIControlsText = (function(_super) {
         "arguments": ["Times New Roman"]
       }
     ];
+    if (this.app.options.additionalFonts != null) {
+      _ref = this.app.options.additionalFonts;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        additionalFont = _ref[_i];
+        this.listItems.push({
+          name: additionalFont.name,
+          method: "setFont",
+          cssClass: additionalFont.cssClass,
+          "arguments": [additionalFont.name]
+        });
+      }
+    }
   }
 
   /*
@@ -18321,2879 +21208,5 @@ UIControlsText = (function(_super) {
 module.exports = UIControlsText;
 
 
-},{"16":15,"15":16,"46":33,"14":14,"__browserify_Buffer":2,"__browserify_process":1}],33:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="102",__dirname="/operations";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var FontOperation, Operation, Rect, Utils, Vector2,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Operation = require("29");
-
-Utils = require("25");
-
-Vector2 = require("30");
-
-Rect = require("103");
-
-FontOperation = (function(_super) {
-  __extends(FontOperation, _super);
-
-  FontOperation.prototype.renderPreview = false;
-
-  function FontOperation(app, options) {
-    this.app = app;
-    this.options = options != null ? options : {};
-    FontOperation.__super__.constructor.apply(this, arguments);
-    this.options.start = new Vector2(0.2, 0.2);
-    this.options.width = 300;
-    this.options.font = "Helvetica";
-    this.options.text = "Text";
-    this.options.color = "#ffffff";
-    this.options.fontSize = 0.1;
-    this.options.lineHeight = 1.1;
-    this.options.paddingLeft = 0;
-    this.options.paddingTop = 0;
-  }
-
-  /*
-    @param {String} font
-  */
-
-
-  FontOperation.prototype.setFont = function(font) {
-    this.options.font = font;
-    return this.emit("updateOptions", this.options);
-  };
-
-  FontOperation.prototype.apply = function(imageData) {
-    var canvas, context, line, lineHeight, lineNum, lineOffset, paddingVector, scaledFontSize, scaledStart, _i, _len, _ref;
-    scaledFontSize = this.options.fontSize * imageData.height;
-    paddingVector = new Vector2(this.options.paddingLeft, this.options.paddingTop);
-    scaledStart = new Vector2().copy(this.options.start).add(paddingVector).multiplyWithRect(imageData);
-    canvas = Utils.newCanvasFromImageData(imageData);
-    context = canvas.getContext("2d");
-    context.font = "normal " + scaledFontSize + "px " + this.options.font;
-    context.fillStyle = this.options.color;
-    context.textBaseline = "hanging";
-    lineHeight = this.options.lineHeight;
-    _ref = this.options.text.split("\n");
-    for (lineNum = _i = 0, _len = _ref.length; _i < _len; lineNum = ++_i) {
-      line = _ref[lineNum];
-      lineOffset = lineNum * scaledFontSize * lineHeight;
-      context.fillText(line, scaledStart.x, scaledStart.y + this.options.paddingLeft + lineOffset);
-    }
-    return context.getImageData(0, 0, imageData.width, imageData.height);
-  };
-
-  return FontOperation;
-
-})(Operation);
-
-module.exports = FontOperation;
-
-
-},{"103":15,"30":16,"25":6,"29":21,"__browserify_Buffer":2,"__browserify_process":1}],35:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="104",__dirname="/operations";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var FramesOperation, Operation, Queue, Rect, Utils, Vector2,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Operation = require("29");
-
-Utils = require("25");
-
-Queue = require("52");
-
-Vector2 = require("30");
-
-Rect = require("103");
-
-FramesOperation = (function(_super) {
-  __extends(FramesOperation, _super);
-
-  FramesOperation.prototype.renderPreview = true;
-
-  function FramesOperation(app, options) {
-    var _base, _base1;
-    this.app = app;
-    this.options = options != null ? options : {};
-    FramesOperation.__super__.constructor.apply(this, arguments);
-    if ((_base = this.options).frame == null) {
-      _base.frame = "black";
-    }
-    if ((_base1 = this.options).scale == null) {
-      _base1.scale = 0.1;
-    }
-  }
-
-  /*
-    @param {Integer} frame
-    @param {Float} scale
-  */
-
-
-  FramesOperation.prototype.setFrameOptions = function(frame, scale) {
-    this.options.frame = frame;
-    return this.options.scale = scale;
-  };
-
-  /*
-    @param {ImageData} imageData
-    @returns {ImageData}
-  */
-
-
-  FramesOperation.prototype.apply = function(imageData) {
-    var _this = this;
-    return Queue.promise(function(resolve, reject) {
-      var frameImage;
-      frameImage = new Image();
-      frameImage.onload = function() {
-        return resolve(frameImage);
-      };
-      return frameImage.src = _this.app.buildAssetsPath("frames/" + _this.options.frame + ".png");
-    }).then(function(frameImage) {
-      var bottomHeight, canvas, context, frameCanvas, height, i, leftWidth, lowerHeight, maxHeight, originalHeight, originalWidth, repeatCount, rightWidth, scaledMaxHeight, topHeight, upperHeight, width, xRepeatAreaEnd, xRepeatAreaStart, xRepeatMode, yRepeatAreaEnd, yRepeatAreaStart, yRepeatMode, _i, _j, _ref;
-      _ref = _this.analyzeFrameImage(frameImage), xRepeatAreaStart = _ref.xRepeatAreaStart, xRepeatAreaEnd = _ref.xRepeatAreaEnd, xRepeatMode = _ref.xRepeatMode, yRepeatAreaStart = _ref.yRepeatAreaStart, yRepeatAreaEnd = _ref.yRepeatAreaEnd, yRepeatMode = _ref.yRepeatMode, frameCanvas = _ref.frameCanvas;
-      /*
-        Create a canvas and a drawing context out of
-        the image data
-      */
-
-      canvas = Utils.newCanvasFromImageData(imageData);
-      context = canvas.getContext("2d");
-      upperHeight = yRepeatAreaStart;
-      lowerHeight = frameCanvas.height - yRepeatAreaEnd;
-      maxHeight = Math.max(lowerHeight, upperHeight);
-      scaledMaxHeight = imageData.height * _this.options.scale;
-      leftWidth = Math.round(xRepeatAreaStart * (scaledMaxHeight / maxHeight));
-      topHeight = Math.round(scaledMaxHeight * (maxHeight / upperHeight));
-      rightWidth = Math.round((frameCanvas.width - xRepeatAreaEnd) * (scaledMaxHeight / maxHeight));
-      bottomHeight = Math.round(scaledMaxHeight * (maxHeight / lowerHeight));
-      /*
-        Draw corners
-      */
-
-      context.drawImage(frameCanvas, 0, 0, xRepeatAreaStart, yRepeatAreaStart, 0, 0, leftWidth, topHeight);
-      context.drawImage(frameCanvas, xRepeatAreaEnd, 0, frameCanvas.width - xRepeatAreaEnd, yRepeatAreaStart, imageData.width - rightWidth, 0, rightWidth, topHeight);
-      context.drawImage(frameCanvas, 0, yRepeatAreaEnd, xRepeatAreaStart, frameCanvas.height - yRepeatAreaEnd, 0, imageData.height - bottomHeight, leftWidth, bottomHeight);
-      context.drawImage(frameCanvas, xRepeatAreaEnd, yRepeatAreaEnd, frameCanvas.width - xRepeatAreaEnd, frameCanvas.height - yRepeatAreaEnd, imageData.width - rightWidth, imageData.height - bottomHeight, rightWidth, bottomHeight);
-      /*
-        Draw edges
-      */
-
-      if (xRepeatMode === "stretch") {
-        context.drawImage(frameCanvas, xRepeatAreaStart, 0, xRepeatAreaEnd - xRepeatAreaStart, yRepeatAreaStart, leftWidth, 0, imageData.width - leftWidth - rightWidth, topHeight);
-        context.drawImage(frameCanvas, xRepeatAreaStart, yRepeatAreaEnd, xRepeatAreaEnd - xRepeatAreaStart, frameCanvas.height - yRepeatAreaEnd, leftWidth, imageData.height - bottomHeight, imageData.width - leftWidth - rightWidth, bottomHeight);
-      } else if (xRepeatMode === "repeat") {
-        originalWidth = xRepeatAreaEnd - xRepeatAreaStart;
-        originalHeight = yRepeatAreaStart;
-        height = topHeight;
-        width = Math.round(height * (originalWidth / originalHeight));
-        repeatCount = Math.ceil(imageData.width / width);
-        for (i = _i = 0; 0 <= repeatCount ? _i < repeatCount : _i > repeatCount; i = 0 <= repeatCount ? ++_i : --_i) {
-          context.drawImage(frameCanvas, xRepeatAreaStart, 0, xRepeatAreaEnd - xRepeatAreaStart, yRepeatAreaStart, leftWidth + i * width, 0, width, height);
-        }
-        originalHeight = frameCanvas.height - yRepeatAreaEnd;
-        height = bottomHeight;
-        width = Math.round(bottomHeight * (originalWidth / originalHeight));
-        for (i = _j = 0; 0 <= repeatCount ? _j < repeatCount : _j > repeatCount; i = 0 <= repeatCount ? ++_j : --_j) {
-          context.drawImage(frameCanvas, xRepeatAreaStart, yRepeatAreaEnd, xRepeatAreaEnd - xRepeatAreaStart, frameCanvas.height - yRepeatAreaEnd, leftWidth + i * width, imageData.height - bottomHeight, width, height);
-        }
-      }
-      if (yRepeatMode === "stretch") {
-        context.drawImage(frameCanvas, 0, yRepeatAreaStart, xRepeatAreaStart, yRepeatAreaEnd - yRepeatAreaStart, 0, topHeight, leftWidth, imageData.height - topHeight - bottomHeight);
-        context.drawImage(frameCanvas, xRepeatAreaEnd, yRepeatAreaStart, frameCanvas.width - xRepeatAreaEnd, yRepeatAreaEnd - yRepeatAreaStart, imageData.width - rightWidth, topHeight, rightWidth, imageData.height - topHeight - bottomHeight);
-      }
-      return context.getImageData(0, 0, imageData.width, imageData.height);
-    });
-  };
-
-  FramesOperation.prototype.analyzeFrameImage = function(frameImage) {
-    var a, b, canvas, context, frameImageData, g, index, r, x, xRepeatAreaEnd, xRepeatAreaStart, xRepeatMode, y, yRepeatAreaEnd, yRepeatAreaStart, yRepeatMode, _i, _j, _ref, _ref1;
-    frameImageData = Utils.getImageDataForImage(frameImage);
-    xRepeatAreaStart = null;
-    xRepeatAreaEnd = null;
-    xRepeatMode = null;
-    for (x = _i = 0, _ref = frameImageData.width; 0 <= _ref ? _i < _ref : _i > _ref; x = 0 <= _ref ? ++_i : --_i) {
-      index = x * 4;
-      r = frameImageData.data[index];
-      g = frameImageData.data[index + 1];
-      b = frameImageData.data[index + 2];
-      a = frameImageData.data[index + 3];
-      if (r === 255 && g === 255 && b === 255 && a === 255) {
-        if (xRepeatAreaStart == null) {
-          xRepeatAreaStart = x - 1;
-        }
-        xRepeatMode = "stretch";
-      }
-      if (r === 0 && g === 0 && b === 0 && a === 255) {
-        if (xRepeatAreaStart == null) {
-          xRepeatAreaStart = x - 1;
-        }
-        xRepeatMode = "repeat";
-      }
-      if (a !== 255 && (xRepeatAreaStart != null) && (xRepeatAreaEnd == null)) {
-        xRepeatAreaEnd = x - 1;
-      }
-    }
-    yRepeatAreaStart = null;
-    yRepeatAreaEnd = null;
-    yRepeatMode = null;
-    for (y = _j = 0, _ref1 = frameImageData.height; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; y = 0 <= _ref1 ? ++_j : --_j) {
-      index = (frameImageData.width * y) * 4;
-      r = frameImageData.data[index];
-      g = frameImageData.data[index + 1];
-      b = frameImageData.data[index + 2];
-      a = frameImageData.data[index + 3];
-      if (r === 255 && g === 255 && b === 255 && a === 255) {
-        if (yRepeatAreaStart == null) {
-          yRepeatAreaStart = y - 1;
-        }
-        yRepeatMode = "stretch";
-      }
-      if (r === 0 && g === 0 && b === 0 && a === 255) {
-        if (yRepeatAreaStart == null) {
-          yRepeatAreaStart = y - 1;
-        }
-        yRepeatMode = "repeat";
-      }
-      if (a !== 255 && (yRepeatAreaStart != null) && (yRepeatAreaEnd == null)) {
-        yRepeatAreaEnd = y - 1;
-      }
-    }
-    canvas = Utils.newCanvasWithDimensions({
-      width: frameImage.width - 1,
-      height: frameImage.height - 1
-    });
-    context = canvas.getContext("2d");
-    context.putImageData(frameImageData, -1, -1);
-    return {
-      xRepeatAreaStart: xRepeatAreaStart,
-      xRepeatAreaEnd: xRepeatAreaEnd,
-      xRepeatMode: xRepeatMode,
-      yRepeatAreaStart: yRepeatAreaStart,
-      yRepeatAreaEnd: yRepeatAreaEnd,
-      yRepeatMode: yRepeatMode,
-      frameCanvas: canvas
-    };
-  };
-
-  return FramesOperation;
-
-})(Operation);
-
-module.exports = FramesOperation;
-
-
-},{"103":15,"30":16,"25":6,"52":9,"29":21,"__browserify_Buffer":2,"__browserify_process":1}],34:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="105",__dirname="/ui/controls";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var List, Rect, UIControlsFrames, Utils, Vector2, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-List = require("14");
-
-Utils = require("64");
-
-Vector2 = require("15");
-
-Rect = require("16");
-
-UIControlsFrames = (function(_super) {
-  __extends(UIControlsFrames, _super);
-
-  function UIControlsFrames() {
-    _ref = UIControlsFrames.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  UIControlsFrames.prototype.displayButtons = true;
-
-  UIControlsFrames.prototype.singleOperation = true;
-
-  UIControlsFrames.prototype.init = function() {
-    var option, options, _i, _len, _results,
-      _this = this;
-    this.createList();
-    this.operationClass = require("48");
-    options = [
-      {
-        id: "black",
-        name: "Black",
-        cssClass: "black",
-        method: "setFrameOptions",
-        "arguments": ["black", 0.1],
-        "default": true
-      }, {
-        id: "blackwood",
-        name: "Black Wood",
-        cssClass: "black-wood",
-        method: "setFrameOptions",
-        "arguments": ["blackwood", 0.1]
-      }, {
-        id: "dia",
-        name: "Dia",
-        cssClass: "dia",
-        method: "setFrameOptions",
-        "arguments": ["dia", 0.1]
-      }
-    ];
-    _results = [];
-    for (_i = 0, _len = options.length; _i < _len; _i++) {
-      option = options[_i];
-      _results.push((function(option) {
-        var item, preview;
-        item = $("<li>").addClass(imglyKit.classPrefix + "controls-item").appendTo(_this.list);
-        preview = $("<div>").addClass(imglyKit.classPrefix + "controls-frame-preview-" + Utils.dasherize(option.id)).appendTo(item);
-        item.click(function(e) {
-          return _this.handleOptionSelect(option, item);
-        });
-        if (option["default"] != null) {
-          return item.click();
-        }
-      })(option));
-    }
-    return _results;
-  };
-
-  return UIControlsFrames;
-
-})(List);
-
-module.exports = UIControlsFrames;
-
-
-},{"16":15,"15":16,"48":35,"64":6,"14":14,"__browserify_Buffer":2,"__browserify_process":1}],39:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="106",__dirname="/operations";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Operation, OrientationOperation, Utils,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Operation = require("29");
-
-Utils = require("25");
-
-OrientationOperation = (function(_super) {
-  __extends(OrientationOperation, _super);
-
-  /*
-    @param {imglyKit} app
-    @param {Object} options
-  */
-
-
-  function OrientationOperation(app, options) {
-    var _base, _base1, _base2;
-    this.app = app;
-    this.options = options != null ? options : {};
-    OrientationOperation.__super__.constructor.apply(this, arguments);
-    if ((_base = this.options).rotation == null) {
-      _base.rotation = 0;
-    }
-    if ((_base1 = this.options).flipVertically == null) {
-      _base1.flipVertically = false;
-    }
-    if ((_base2 = this.options).flipHorizontally == null) {
-      _base2.flipHorizontally = false;
-    }
-  }
-
-  OrientationOperation.prototype.flipVertically = function() {
-    return this.options.flipVertically = !this.options.flipVertically;
-  };
-
-  OrientationOperation.prototype.flipHorizontally = function() {
-    return this.options.flipHorizontally = !this.options.flipHorizontally;
-  };
-
-  OrientationOperation.prototype.rotateRight = function() {
-    this.options.rotation += 90;
-    if (this.options.rotation === 360) {
-      this.options.rotation = 0;
-    }
-    if (this.options.flipHorizontally !== this.options.flipVertically) {
-      this.options.flipHorizontally = !this.options.flipHorizontally;
-      return this.options.flipVertically = !this.options.flipVertically;
-    }
-  };
-
-  OrientationOperation.prototype.rotateLeft = function() {
-    this.options.rotation -= 90;
-    if (this.options.rotation === -360) {
-      this.options.rotation = 0;
-    }
-    if (this.options.flipHorizontally !== this.options.flipVertically) {
-      this.options.flipHorizontally = !this.options.flipHorizontally;
-      return this.options.flipVertically = !this.options.flipVertically;
-    }
-  };
-
-  OrientationOperation.prototype.apply = function(imageData) {
-    var canvas, context, flipped, h, rotated, w;
-    if (Math.abs(this.options.rotation) === 90 || Math.abs(this.options.rotation) === 270) {
-      w = imageData.height;
-      h = imageData.width;
-    } else {
-      w = imageData.width;
-      h = imageData.height;
-    }
-    canvas = Utils.newCanvasWithDimensions({
-      width: w,
-      height: h
-    });
-    context = canvas.getContext("2d");
-    rotated = false;
-    flipped = false;
-    if (this.options.rotation !== 0) {
-      imageData = this.rotateImageData(context, imageData);
-      rotated = true;
-    }
-    if (this.options.flipHorizontally || this.options.flipVertically) {
-      imageData = this.flipImageData(context, imageData);
-      flipped = true;
-    }
-    if (rotated || flipped) {
-      return context.getImageData(0, 0, w, h);
-    } else {
-      return imageData;
-    }
-  };
-
-  /*
-    @param {CanvasRenderingContext2d}
-    @param {ImageData}
-    @returns {ImageData}
-  */
-
-
-  OrientationOperation.prototype.flipImageData = function(context, imageData) {
-    var imageDataCanvas, scaleX, scaleY, translateX, translateY;
-    context.save();
-    scaleX = 1;
-    scaleY = 1;
-    translateX = 0;
-    translateY = 0;
-    if (this.options.flipHorizontally) {
-      scaleX = -1;
-      translateX = context.canvas.width;
-    }
-    if (this.options.flipVertically) {
-      scaleY = -1;
-      translateY = context.canvas.height;
-    }
-    context.translate(translateX, translateY);
-    context.scale(scaleX, scaleY);
-    imageDataCanvas = Utils.newCanvasFromImageData(imageData);
-    context.drawImage(imageDataCanvas, 0, 0);
-    context.restore();
-    return context.getImageData(0, 0, context.canvas.width, context.canvas.height);
-  };
-
-  /*
-    @param {CanvasRenderingContext2d}
-    @param {ImageData}
-    @returns {ImageData}
-  */
-
-
-  OrientationOperation.prototype.rotateImageData = function(context, imageData) {
-    var imageDataCanvas;
-    context.save();
-    context.translate(context.canvas.width / 2, context.canvas.height / 2);
-    context.rotate(this.options.rotation * (Math.PI / 180));
-    imageDataCanvas = Utils.newCanvasFromImageData(imageData);
-    context.drawImage(imageDataCanvas, -imageData.width / 2, -imageData.height / 2);
-    context.restore();
-    return context.getImageData(0, 0, context.canvas.width, context.canvas.height);
-  };
-
-  return OrientationOperation;
-
-})(Operation);
-
-module.exports = OrientationOperation;
-
-
-},{"25":6,"29":21,"__browserify_Buffer":2,"__browserify_process":1}],40:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="107",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var DefaultFilter, IdentityFilter, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-IdentityFilter = require("108");
-
-DefaultFilter = (function(_super) {
-  __extends(DefaultFilter, _super);
-
-  function DefaultFilter() {
-    _ref = DefaultFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  DefaultFilter.preview = 'default.png';
-
-  DefaultFilter.displayName = 'Default';
-
-  return DefaultFilter;
-
-})(IdentityFilter);
-
-module.exports = DefaultFilter;
-
-
-},{"108":10,"__browserify_Buffer":2,"__browserify_process":1}],41:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="109",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Filter, K1Filter, Saturation, ToneCurve, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("110");
-
-ToneCurve = require("111");
-
-Saturation = require("112");
-
-K1Filter = (function(_super) {
-  __extends(K1Filter, _super);
-
-  function K1Filter() {
-    _ref = K1Filter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  K1Filter.preview = 'k1.png';
-
-  K1Filter.displayName = 'K1';
-
-  K1Filter.prototype.apply = (new ToneCurve(K1Filter.app, {
-    rgbControlPoints: [[0, 0], [53 / 255, 32 / 255], [91 / 255, 80 / 255], [176 / 255, 205 / 255], [1, 1]]
-  })).compose(Saturation, {
-    saturation: 0.9
-  });
-
-  return K1Filter;
-
-})(Filter);
-
-module.exports = K1Filter;
-
-
-},{"110":20,"112":38,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],43:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="113",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var K6Filter, SaturationFilter, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-SaturationFilter = require("112");
-
-K6Filter = (function(_super) {
-  __extends(K6Filter, _super);
-
-  function K6Filter() {
-    _ref = K6Filter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  K6Filter.preview = "k6.png";
-
-  K6Filter.displayName = "K6";
-
-  K6Filter.prototype.saturation = 0.5;
-
-  return K6Filter;
-
-})(SaturationFilter);
-
-module.exports = K6Filter;
-
-
-},{"112":38,"__browserify_Buffer":2,"__browserify_process":1}],42:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="114",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Filter, K2Filter, SoftColorOverlay, ToneCurve, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("110");
-
-ToneCurve = require("111");
-
-SoftColorOverlay = require("115");
-
-K2Filter = (function(_super) {
-  __extends(K2Filter, _super);
-
-  function K2Filter() {
-    _ref = K2Filter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  K2Filter.preview = "k2.png";
-
-  K2Filter.displayName = "K2";
-
-  K2Filter.prototype.apply = (new ToneCurve(K2Filter.app, {
-    rgbControlPoints: [[0, 0], [54 / 255, 33 / 255], [77 / 255, 82 / 255], [94 / 255, 103 / 255], [122 / 255, 126 / 255], [177 / 255, 193 / 255], [229 / 255, 232 / 255], [1, 1]]
-  })).compose(SoftColorOverlay, {
-    r: 40,
-    g: 40,
-    b: 40
-  });
-
-  return K2Filter;
-
-})(Filter);
-
-module.exports = K2Filter;
-
-
-},{"110":20,"115":73,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],44:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="116",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Filter, KDynamicFilter, Saturation, ToneCurve, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("110");
-
-ToneCurve = require("111");
-
-Saturation = require("112");
-
-KDynamicFilter = (function(_super) {
-  __extends(KDynamicFilter, _super);
-
-  function KDynamicFilter() {
-    _ref = KDynamicFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  KDynamicFilter.preview = "kdynamic.png";
-
-  KDynamicFilter.displayName = "KDynamic";
-
-  KDynamicFilter.prototype.apply = (new ToneCurve(KDynamicFilter.app, {
-    rgbControlPoints: [[0, 0], [17 / 255, 27 / 255], [46 / 255, 69 / 255], [90 / 255, 112 / 255], [156 / 255, 200 / 255], [203 / 255, 243 / 255], [1, 1]]
-  })).compose(Saturation, {
-    saturation: 0.7
-  });
-
-  return KDynamicFilter;
-
-})(Filter);
-
-module.exports = KDynamicFilter;
-
-
-},{"110":20,"112":38,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],45:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="117",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var FridgeFilter, ToneCurve, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-ToneCurve = require("111");
-
-FridgeFilter = (function(_super) {
-  __extends(FridgeFilter, _super);
-
-  function FridgeFilter() {
-    _ref = FridgeFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  FridgeFilter.preview = "fridge.png";
-
-  FridgeFilter.displayName = "Fridge";
-
-  FridgeFilter.prototype.redControlPoints = [[0, 9 / 255], [21 / 255, 11 / 255], [45 / 255, 24 / 255], [1, 220 / 255]];
-
-  FridgeFilter.prototype.greenControlPoints = [[0, 12 / 255], [21 / 255, 21 / 255], [42 / 255, 42 / 255], [150 / 255, 150 / 255], [170 / 255, 173 / 255], [1, 210 / 255]];
-
-  FridgeFilter.prototype.blueControlPoints = [[0, 28 / 255], [43 / 255, 72 / 255], [128 / 255, 185 / 255], [1, 220 / 255]];
-
-  return FridgeFilter;
-
-})(ToneCurve);
-
-module.exports = FridgeFilter;
-
-
-},{"111":72,"__browserify_Buffer":2,"__browserify_process":1}],46:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="118",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var BreezeFilter, Desaturation, Filter, ToneCurveFilter, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("110");
-
-ToneCurveFilter = require("111");
-
-Desaturation = require("119");
-
-BreezeFilter = (function(_super) {
-  __extends(BreezeFilter, _super);
-
-  function BreezeFilter() {
-    _ref = BreezeFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  BreezeFilter.preview = "breeze.png";
-
-  BreezeFilter.displayName = "Breeze";
-
-  BreezeFilter.prototype.apply = (new Desaturation(BreezeFilter.app, {
-    desaturation: 0.5
-  })).compose(ToneCurveFilter, {
-    redControlPoints: [[0, 0], [170 / 255, 170 / 255], [212 / 255, 219 / 255], [234 / 255, 242 / 255], [1, 1]],
-    greenControlPoints: [[0, 0], [170 / 255, 168 / 255], [234 / 255, 231 / 255], [1, 1]],
-    blueControlPoints: [[0, 0], [170 / 255, 170 / 255], [212 / 255, 208 / 255], [1, 1]]
-  });
-
-  return BreezeFilter;
-
-})(Filter);
-
-module.exports = BreezeFilter;
-
-
-},{"110":20,"119":74,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],47:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="120",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Desaturation, Filter, OrchidFilter, ToneCurve, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("110");
-
-ToneCurve = require("111");
-
-Desaturation = require("119");
-
-OrchidFilter = (function(_super) {
-  __extends(OrchidFilter, _super);
-
-  function OrchidFilter() {
-    _ref = OrchidFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  OrchidFilter.preview = "orchid.png";
-
-  OrchidFilter.displayName = "Orchid";
-
-  OrchidFilter.prototype.apply = (new ToneCurve(OrchidFilter.app, {
-    redControlPoints: [[0, 0], [115 / 255, 130 / 255], [195 / 255, 215 / 255], [1, 1]],
-    greenControlPoints: [[0, 0], [148 / 255, 153 / 255], [172 / 255, 215 / 255], [1, 1]],
-    blueControlPoints: [[0, 46 / 255], [58 / 255, 75 / 255], [178 / 255, 205 / 255], [1, 1]]
-  })).compose(ToneCurve, {
-    rgbControlPoints: [[0, 0], [117 / 255, 151 / 255], [189 / 255, 217 / 255], [1, 1]]
-  }).compose(Desaturation, {
-    desaturation: 0.65
-  });
-
-  return OrchidFilter;
-
-})(Filter);
-
-module.exports = OrchidFilter;
-
-
-},{"110":20,"119":74,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],48:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="121",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var ChestFilter, ToneCurve, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-ToneCurve = require("111");
-
-ChestFilter = (function(_super) {
-  __extends(ChestFilter, _super);
-
-  function ChestFilter() {
-    _ref = ChestFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  ChestFilter.preview = 'chest.png';
-
-  ChestFilter.displayName = 'Chest';
-
-  ChestFilter.prototype.redControlPoints = [[0, 0], [44 / 255, 44 / 255], [124 / 255, 143 / 255], [221 / 255, 204 / 255], [1, 1]];
-
-  ChestFilter.prototype.greenControlPoints = [[0, 0], [130 / 255, 127 / 255], [213 / 255, 199 / 255], [1, 1]];
-
-  ChestFilter.prototype.blueControlPoints = [[0, 0], [51 / 255, 52 / 255], [219 / 255, 204 / 255], [1, 1]];
-
-  return ChestFilter;
-
-})(ToneCurve);
-
-module.exports = ChestFilter;
-
-
-},{"111":72,"__browserify_Buffer":2,"__browserify_process":1}],49:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="122",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var FrontFilter, ToneCurve, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-ToneCurve = require("111");
-
-FrontFilter = (function(_super) {
-  __extends(FrontFilter, _super);
-
-  function FrontFilter() {
-    _ref = FrontFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  FrontFilter.preview = 'front.png';
-
-  FrontFilter.displayName = 'Front';
-
-  FrontFilter.prototype.redControlPoints = [[0, 65 / 255], [28 / 255, 67 / 255], [67 / 255, 113 / 255], [125 / 255, 183 / 255], [187 / 255, 217 / 255], [1, 229 / 255]];
-
-  FrontFilter.prototype.greenControlPoints = [[0, 52 / 255], [42 / 255, 59 / 255], [104 / 255, 134 / 255], [169 / 255, 209 / 255], [1, 240 / 255]];
-
-  FrontFilter.prototype.blueControlPoints = [[0, 52 / 255], [65 / 255, 68 / 255], [93 / 255, 104 / 255], [150 / 255, 153 / 255], [1, 198 / 255]];
-
-  return FrontFilter;
-
-})(ToneCurve);
-
-module.exports = FrontFilter;
-
-
-},{"111":72,"__browserify_Buffer":2,"__browserify_process":1}],50:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="123",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var FixieFilter, ToneCurve, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-ToneCurve = require("111");
-
-FixieFilter = (function(_super) {
-  __extends(FixieFilter, _super);
-
-  function FixieFilter() {
-    _ref = FixieFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  FixieFilter.preview = 'fixie.png';
-
-  FixieFilter.displayName = 'Fixie';
-
-  FixieFilter.prototype.redControlPoints = [[0, 0], [44 / 255, 28 / 255], [63 / 255, 48 / 255], [128 / 255, 132 / 255], [235 / 255, 248 / 255], [1, 1]];
-
-  FixieFilter.prototype.greenControlPoints = [[0, 0], [20 / 255, 10 / 255], [60 / 255, 45 / 255], [190 / 255, 209 / 255], [211 / 255, 231 / 255], [1, 1]];
-
-  FixieFilter.prototype.blueControlPoints = [[0, 31 / 255], [41 / 255, 62 / 255], [150 / 255, 142 / 255], [234 / 255, 212 / 255], [1, 224 / 255]];
-
-  return FixieFilter;
-
-})(ToneCurve);
-
-module.exports = FixieFilter;
-
-
-},{"111":72,"__browserify_Buffer":2,"__browserify_process":1}],51:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="124",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var X400Filter, x400, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-x400 = require("125");
-
-X400Filter = (function(_super) {
-  __extends(X400Filter, _super);
-
-  function X400Filter() {
-    _ref = X400Filter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  X400Filter.preview = 'x400.png';
-
-  X400Filter.displayName = 'X400';
-
-  return X400Filter;
-
-})(x400);
-
-module.exports = X400Filter;
-
-
-},{"125":75,"__browserify_Buffer":2,"__browserify_process":1}],52:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="126",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var BWFilter, Grayscale, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Grayscale = require("127");
-
-BWFilter = (function(_super) {
-  __extends(BWFilter, _super);
-
-  function BWFilter() {
-    _ref = BWFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  BWFilter.preview = 'bw.png';
-
-  BWFilter.displayName = 'B&W';
-
-  return BWFilter;
-
-})(Grayscale);
-
-module.exports = BWFilter;
-
-
-},{"127":76,"__browserify_Buffer":2,"__browserify_process":1}],53:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="128",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var BWHardFilter, Contrast, Filter, Grayscale, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("110");
-
-Grayscale = require("127");
-
-Contrast = require("129");
-
-BWHardFilter = (function(_super) {
-  __extends(BWHardFilter, _super);
-
-  function BWHardFilter() {
-    _ref = BWHardFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  BWHardFilter.preview = '1920.png';
-
-  BWHardFilter.displayName = '1920';
-
-  BWHardFilter.prototype.apply = (new Grayscale).compose(Contrast, {
-    contrast: 0.5
-  });
-
-  return BWHardFilter;
-
-})(Filter);
-
-module.exports = BWHardFilter;
-
-
-},{"110":20,"129":37,"127":76,"__browserify_Buffer":2,"__browserify_process":1}],54:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="130",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Desaturation, Filter, LeninFilter, ToneCurveFilter, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("110");
-
-ToneCurveFilter = require("111");
-
-Desaturation = require("119");
-
-LeninFilter = (function(_super) {
-  __extends(LeninFilter, _super);
-
-  function LeninFilter() {
-    _ref = LeninFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  LeninFilter.preview = "lenin.png";
-
-  LeninFilter.displayName = "Lenin";
-
-  LeninFilter.prototype.apply = (new Desaturation(LeninFilter.app, {
-    desaturation: 0.4
-  })).compose(ToneCurveFilter, {
-    redControlPoints: [[0, 20 / 255], [40 / 255, 20 / 255], [106 / 255, 111 / 255], [129 / 255, 153 / 255], [190 / 255, 223 / 255], [1, 1]],
-    greenControlPoints: [[0, 20 / 255], [40 / 255, 20 / 255], [62 / 255, 41 / 255], [106 / 255, 108 / 255], [132 / 255, 159 / 255], [203 / 255, 237 / 255], [1, 1]],
-    blueControlPoints: [[0, 40 / 255], [40 / 255, 40 / 255], [73 / 255, 60 / 255], [133 / 255, 160 / 255], [191 / 255, 297 / 255], [203 / 255, 237 / 255], [237 / 255, 239 / 255], [1, 1]]
-  });
-
-  return LeninFilter;
-
-})(Filter);
-
-module.exports = LeninFilter;
-
-
-},{"110":20,"119":74,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],55:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="131",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Desaturation, Filter, QuoziFilter, ToneCurveFilter, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("110");
-
-ToneCurveFilter = require("111");
-
-Desaturation = require("119");
-
-QuoziFilter = (function(_super) {
-  __extends(QuoziFilter, _super);
-
-  function QuoziFilter() {
-    _ref = QuoziFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  QuoziFilter.preview = "breeze.png";
-
-  QuoziFilter.displayName = "Breeze";
-
-  QuoziFilter.prototype.apply = (new Desaturation(QuoziFilter.app, {
-    desaturation: 0.65
-  })).compose(ToneCurveFilter, {
-    redControlPoints: [[0, 50 / 255], [40 / 255, 78 / 255], [118 / 255, 170 / 255], [181 / 255, 211 / 255], [1, 1]],
-    greenControlPoints: [[0, 27 / 255], [28 / 255, 45 / 255], [109 / 255, 157 / 255], [157 / 255, 195 / 255], [179 / 255, 208 / 255], [206 / 255, 212 / 255], [1, 240 / 255]],
-    blueControlPoints: [[0, 50 / 255], [12 / 255, 55 / 255], [46 / 255, 103 / 255], [103 / 255, 162 / 255], [194 / 255, 182 / 255], [241 / 255, 201 / 255], [1, 219 / 255]]
-  });
-
-  return QuoziFilter;
-
-})(Filter);
-
-module.exports = QuoziFilter;
-
-
-},{"110":20,"119":74,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],57:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="132",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Contrast, Filter, PolaFilter, Saturation, ToneCurve, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("110");
-
-ToneCurve = require("111");
-
-Contrast = require("129");
-
-Saturation = require("112");
-
-PolaFilter = (function(_super) {
-  __extends(PolaFilter, _super);
-
-  function PolaFilter() {
-    _ref = PolaFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  PolaFilter.preview = 'pola.png';
-
-  PolaFilter.displayName = 'Pola';
-
-  PolaFilter.prototype.apply = (new ToneCurve(PolaFilter.app, {
-    redControlPoints: [[0, 0], [94 / 255, 74 / 255], [181 / 255, 205 / 255], [1, 1]],
-    greenControlPoints: [[0, 0], [34 / 255, 34 / 255], [99 / 255, 76 / 255], [176 / 255, 190 / 255], [1, 1]],
-    blueControlPoints: [[0, 0], [102 / 255, 73 / 255], [227 / 255, 213 / 255], [1, 1]]
-  })).compose(Saturation, {
-    saturation: -0.2
-  }).compose(Contrast, {
-    contrast: 0.5
-  });
-
-  return PolaFilter;
-
-})(Filter);
-
-module.exports = PolaFilter;
-
-
-},{"110":20,"129":37,"112":38,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],56:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="133",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Contrast, Filter, Pola669Filter, Saturation, ToneCurve, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("110");
-
-ToneCurve = require("111");
-
-Contrast = require("129");
-
-Saturation = require("112");
-
-Pola669Filter = (function(_super) {
-  __extends(Pola669Filter, _super);
-
-  function Pola669Filter() {
-    _ref = Pola669Filter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  Pola669Filter.preview = 'pola669.png';
-
-  Pola669Filter.displayName = 'Pola 669';
-
-  Pola669Filter.prototype.apply = (new ToneCurve(Pola669Filter.app, {
-    redControlPoints: [[0, 0], [56 / 255, 18 / 255], [196 / 255, 209 / 255], [1, 1]],
-    greenControlPoints: [[0, 38 / 255], [71 / 255, 84 / 255], [1, 1]],
-    blueControlPoints: [[0, 0], [131 / 255, 133 / 255], [204 / 255, 211 / 255], [1, 1]]
-  })).compose(Saturation, {
-    saturation: -0.2
-  }).compose(Contrast, {
-    contrast: 0.5
-  });
-
-  return Pola669Filter;
-
-})(Filter);
-
-module.exports = Pola669Filter;
-
-
-},{"110":20,"129":37,"112":38,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],58:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="134",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Contrast, Filter, FoodFilter, Saturation, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("110");
-
-Saturation = require("112");
-
-Contrast = require("129");
-
-FoodFilter = (function(_super) {
-  __extends(FoodFilter, _super);
-
-  function FoodFilter() {
-    _ref = FoodFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  FoodFilter.preview = 'food.png';
-
-  FoodFilter.displayName = 'Food';
-
-  FoodFilter.prototype.apply = (new Saturation(FoodFilter.app, {
-    saturation: 0.35
-  })).compose(Contrast, {
-    contrast: 0.1
-  });
-
-  return FoodFilter;
-
-})(Filter);
-
-module.exports = FoodFilter;
-
-
-},{"110":20,"129":37,"112":38,"__browserify_Buffer":2,"__browserify_process":1}],59:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="135",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Contrast, Filter, GlamFilter, Grayscale, ToneCurve, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("110");
-
-Grayscale = require("127");
-
-Contrast = require("129");
-
-ToneCurve = require("111");
-
-GlamFilter = (function(_super) {
-  __extends(GlamFilter, _super);
-
-  function GlamFilter() {
-    _ref = GlamFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  GlamFilter.preview = 'glam.png';
-
-  GlamFilter.displayName = 'Glam';
-
-  GlamFilter.prototype.apply = (new Grayscale).compose(Contrast, {
-    contrast: 0.1
-  }).compose(ToneCurve, {
-    redControlPoints: [[0, 0], [94 / 255, 74 / 255], [181 / 255, 205 / 255], [1, 1]],
-    greenControlPoints: [[0, 0], [0.5, 0.5], [1, 1]],
-    blueControlPoints: [[0, 0], [102 / 255, 73 / 255], [227 / 255, 213 / 255], [1, 1]]
-  });
-
-  return GlamFilter;
-
-})(Filter);
-
-module.exports = GlamFilter;
-
-
-},{"110":20,"129":37,"127":76,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],60:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="136",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var CelsiusFilter, ToneCurve, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-ToneCurve = require("111");
-
-CelsiusFilter = (function(_super) {
-  __extends(CelsiusFilter, _super);
-
-  function CelsiusFilter() {
-    _ref = CelsiusFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  CelsiusFilter.preview = 'celsius.png';
-
-  CelsiusFilter.displayName = 'Celsius';
-
-  CelsiusFilter.prototype.redControlPoints = [[0, 69 / 255], [55 / 255, 110 / 255], [202 / 255, 230 / 255], [1, 1]];
-
-  CelsiusFilter.prototype.greenControlPoints = [[0, 44 / 255], [89 / 255, 93 / 255], [185 / 255, 141 / 255], [1, 189 / 255]];
-
-  CelsiusFilter.prototype.blueControlPoints = [[0, 76 / 255], [39 / 255, 82 / 255], [218 / 255, 138 / 255], [1, 171 / 255]];
-
-  return CelsiusFilter;
-
-})(ToneCurve);
-
-module.exports = CelsiusFilter;
-
-
-},{"111":72,"__browserify_Buffer":2,"__browserify_process":1}],61:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="137",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var TexasFilter, ToneCurve, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-ToneCurve = require("111");
-
-TexasFilter = (function(_super) {
-  __extends(TexasFilter, _super);
-
-  function TexasFilter() {
-    _ref = TexasFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  TexasFilter.preview = 'texas.png';
-
-  TexasFilter.displayName = 'Texas';
-
-  TexasFilter.prototype.redControlPoints = [[0, 72 / 255], [89 / 255, 99 / 255], [176 / 255, 212 / 255], [1, 237 / 255]];
-
-  TexasFilter.prototype.greenControlPoints = [[0, 49 / 255], [1, 192 / 255]];
-
-  TexasFilter.prototype.blueControlPoints = [[0, 72 / 255], [1, 151 / 255]];
-
-  return TexasFilter;
-
-})(ToneCurve);
-
-module.exports = TexasFilter;
-
-
-},{"111":72,"__browserify_Buffer":2,"__browserify_process":1}],62:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="138",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Filter, Glow, MorningFilter, ToneCurve, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("110");
-
-Glow = require("139");
-
-ToneCurve = require("111");
-
-MorningFilter = (function(_super) {
-  __extends(MorningFilter, _super);
-
-  function MorningFilter() {
-    _ref = MorningFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  MorningFilter.preview = 'morning.png';
-
-  MorningFilter.displayName = 'Morning';
-
-  MorningFilter.prototype.apply = (new ToneCurve(MorningFilter.app, {
-    redControlPoints: [[0, 40 / 255], [1, 230 / 255]],
-    greenControlPoints: [[0, 10 / 255], [1, 225 / 255]],
-    blueControlPoints: [[0, 20 / 255], [1, 181 / 255]]
-  })).compose(Glow);
-
-  return MorningFilter;
-
-})(Filter);
-
-module.exports = MorningFilter;
-
-
-},{"110":20,"139":77,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],63:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="140",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var LomoFilter, ToneCurve, controlPoints, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-ToneCurve = require("111");
-
-controlPoints = [[0, 0], [87 / 255, 20 / 255], [131 / 255, 156 / 255], [183 / 255, 205 / 255], [1, 183 / 208]];
-
-LomoFilter = (function(_super) {
-  __extends(LomoFilter, _super);
-
-  function LomoFilter() {
-    _ref = LomoFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  LomoFilter.preview = 'lomo.png';
-
-  LomoFilter.displayName = 'Lomo';
-
-  LomoFilter.prototype.redControlPoints = controlPoints;
-
-  LomoFilter.prototype.greenControlPoints = controlPoints;
-
-  LomoFilter.prototype.blueControlPoints = controlPoints;
-
-  return LomoFilter;
-
-})(ToneCurve);
-
-module.exports = LomoFilter;
-
-
-},{"111":72,"__browserify_Buffer":2,"__browserify_process":1}],64:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="141",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Gobblin, GobblinFilter, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Gobblin = require("142");
-
-GobblinFilter = (function(_super) {
-  __extends(GobblinFilter, _super);
-
-  function GobblinFilter() {
-    _ref = GobblinFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  GobblinFilter.preview = 'gobblin.png';
-
-  GobblinFilter.displayName = 'Gobblin';
-
-  return GobblinFilter;
-
-})(Gobblin);
-
-module.exports = GobblinFilter;
-
-
-},{"142":78,"__browserify_Buffer":2,"__browserify_process":1}],65:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="143",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var MellowFilter, ToneCurve, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-ToneCurve = require("111");
-
-MellowFilter = (function(_super) {
-  __extends(MellowFilter, _super);
-
-  function MellowFilter() {
-    _ref = MellowFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  MellowFilter.preview = 'mellow.png';
-
-  MellowFilter.displayName = 'Mellow';
-
-  MellowFilter.prototype.redControlPoints = [[0, 0], [41 / 255, 84 / 255], [87 / 255, 134 / 255], [1, 1]];
-
-  MellowFilter.prototype.greenControlPoints = [[0, 0], [1, 216 / 255]];
-
-  MellowFilter.prototype.blueControlPoints = [[0, 0], [1, 131 / 255]];
-
-  return MellowFilter;
-
-})(ToneCurve);
-
-module.exports = MellowFilter;
-
-
-},{"111":72,"__browserify_Buffer":2,"__browserify_process":1}],66:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="144",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Filter, SunnyFilter, ToneCurve, contrastPoints, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("110");
-
-ToneCurve = require("111");
-
-contrastPoints = [[0, 0], [55 / 255, 20 / 255], [158 / 255, 191 / 255], [1, 1]];
-
-SunnyFilter = (function(_super) {
-  __extends(SunnyFilter, _super);
-
-  function SunnyFilter() {
-    _ref = SunnyFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  SunnyFilter.preview = 'sunny.png';
-
-  SunnyFilter.displayName = 'Sunny';
-
-  SunnyFilter.prototype.apply = (new ToneCurve(SunnyFilter.app, {
-    redControlPoints: [[0, 0], [62 / 255, 82 / 255], [141 / 255, 154 / 255], [1, 1]],
-    greenControlPoints: [[0, 39 / 255], [56 / 255, 96 / 255], [192 / 255, 176 / 255], [1, 1]],
-    blueControlPoints: [[0, 0], [174 / 255, 99 / 255], [1, 235 / 255]]
-  })).compose(ToneCurve, {
-    redControlPoints: contrastPoints,
-    greenControlPoints: contrastPoints,
-    blueControlPoints: contrastPoints
-  });
-
-  return SunnyFilter;
-
-})(Filter);
-
-module.exports = SunnyFilter;
-
-
-},{"110":20,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],68:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="145",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Filter, Glow, SemiRedFilter, ToneCurve, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("110");
-
-Glow = require("139");
-
-ToneCurve = require("111");
-
-SemiRedFilter = (function(_super) {
-  __extends(SemiRedFilter, _super);
-
-  function SemiRedFilter() {
-    _ref = SemiRedFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  SemiRedFilter.preview = 'semired.png';
-
-  SemiRedFilter.displayName = 'SemiRed';
-
-  SemiRedFilter.prototype.apply = (new ToneCurve(SemiRedFilter.app, {
-    redControlPoints: [[0, 129 / 255], [75 / 255, 153 / 255], [181 / 255, 227 / 255], [1, 1]],
-    greenControlPoints: [[0, 8 / 255], [111 / 255, 85 / 255], [212 / 255, 158 / 255], [1, 226 / 255]],
-    blueControlPoints: [[0, 5 / 255], [75 / 255, 22 / 255], [193 / 255, 90 / 255], [1, 229 / 255]]
-  })).compose(Glow);
-
-  return SemiRedFilter;
-
-})(Filter);
-
-module.exports = SemiRedFilter;
-
-
-},{"110":20,"139":77,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],67:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="146",__dirname="/operations/filters";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var A15Filter, Brightness, Contrast, Filter, ToneCurve, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("110");
-
-Contrast = require("129");
-
-Brightness = require("147");
-
-ToneCurve = require("111");
-
-A15Filter = (function(_super) {
-  __extends(A15Filter, _super);
-
-  function A15Filter() {
-    _ref = A15Filter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  A15Filter.preview = '15.png';
-
-  A15Filter.displayName = '15';
-
-  A15Filter.prototype.apply = (new Contrast(A15Filter.app, {
-    contrast: -0.37
-  })).compose(Brightness, {
-    brightness: 0.12
-  }).compose(ToneCurve, {
-    redControlPoints: [[0, 38 / 255], [94 / 255, 94 / 255], [148 / 255, 142 / 255], [175 / 255, 187 / 255], [1, 1]],
-    greenControlPoints: [[0, 0], [77 / 255, 53 / 255], [171 / 255, 190 / 255], [1, 1]],
-    blueControlPoints: [[0, 10 / 255], [48 / 255, 85 / 255], [174 / 255, 228 / 255], [1, 1]]
-  });
-
-  return A15Filter;
-
-})(Filter);
-
-module.exports = A15Filter;
-
-
-},{"110":20,"147":36,"129":37,"111":72,"__browserify_Buffer":2,"__browserify_process":1}],37:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="148",__dirname="/operations/filters/primitives";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Filter, PrimitiveContrastFilter,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("27");
-
-PrimitiveContrastFilter = (function(_super) {
-  __extends(PrimitiveContrastFilter, _super);
-
-  function PrimitiveContrastFilter(app, options) {
-    this.app = app;
-    if (options == null) {
-      options = {};
-    }
-    PrimitiveContrastFilter.__super__.constructor.apply(this, arguments);
-    this.setContrast(options.contrast);
-  }
-
-  PrimitiveContrastFilter.prototype.apply = function(imageData) {
-    var h, index, w, x, y, _i, _j;
-    w = imageData.width;
-    h = imageData.height;
-    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
-      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
-        index = (w * y + x) * 4;
-        if (this.contrast > 0) {
-          imageData.data[index] = (imageData.data[index] - 128) / (1 - this.contrast) + 128;
-          imageData.data[index + 1] = (imageData.data[index + 1] - 128) / (1 - this.contrast) + 128;
-          imageData.data[index + 2] = (imageData.data[index + 2] - 128) / (1 - this.contrast) + 128;
-          imageData.data[index + 3] = 255;
-        } else {
-          imageData.data[index] = (imageData.data[index] - 128) * (1 + this.contrast) + 128;
-          imageData.data[index + 1] = (imageData.data[index + 1] - 128) * (1 + this.contrast) + 128;
-          imageData.data[index + 2] = (imageData.data[index + 2] - 128) * (1 + this.contrast) + 128;
-          imageData.data[index + 3] = 255;
-        }
-      }
-    }
-    return imageData;
-  };
-
-  PrimitiveContrastFilter.prototype.setContrast = function(contrast) {
-    return this.contrast = typeof contrast === 'number' ? contrast : 1.0;
-  };
-
-  return PrimitiveContrastFilter;
-
-})(Filter);
-
-module.exports = PrimitiveContrastFilter;
-
-
-},{"27":20,"__browserify_Buffer":2,"__browserify_process":1}],36:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="149",__dirname="/operations/filters/primitives";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Filter, PrimitiveBrightnessFilter,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("27");
-
-PrimitiveBrightnessFilter = (function(_super) {
-  __extends(PrimitiveBrightnessFilter, _super);
-
-  function PrimitiveBrightnessFilter(options) {
-    if (options == null) {
-      options = {};
-    }
-    PrimitiveBrightnessFilter.__super__.constructor.apply(this, arguments);
-    this.setBrightness(options.brightness);
-  }
-
-  PrimitiveBrightnessFilter.prototype.apply = function(imageData) {
-    var h, index, w, x, y, _i, _j;
-    w = imageData.width;
-    h = imageData.height;
-    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
-      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
-        index = (w * y + x) * 4;
-        imageData.data[index] = Math.min(imageData.data[index] + this.brightness * 255, 255);
-        imageData.data[index + 1] = Math.min(imageData.data[index + 1] + this.brightness * 255, 255);
-        imageData.data[index + 2] = Math.min(imageData.data[index + 2] + this.brightness * 255, 255);
-        imageData.data[index + 3] = 255;
-      }
-    }
-    return imageData;
-  };
-
-  PrimitiveBrightnessFilter.prototype.setBrightness = function(brightness) {
-    return this.brightness = typeof brightness === 'number' ? brightness : 0.0;
-  };
-
-  return PrimitiveBrightnessFilter;
-
-})(Filter);
-
-module.exports = PrimitiveBrightnessFilter;
-
-
-},{"27":20,"__browserify_Buffer":2,"__browserify_process":1}],38:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="150",__dirname="/operations/filters/primitives";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Filter, PrimitiveSaturationFilter,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("27");
-
-PrimitiveSaturationFilter = (function(_super) {
-  __extends(PrimitiveSaturationFilter, _super);
-
-  function PrimitiveSaturationFilter(app, options) {
-    this.app = app;
-    if (options == null) {
-      options = {};
-    }
-    PrimitiveSaturationFilter.__super__.constructor.apply(this, arguments);
-    if (options.saturation != null) {
-      this.setSaturation(options.saturation);
-    }
-  }
-
-  PrimitiveSaturationFilter.prototype.setSaturation = function(saturation) {
-    return this.saturation = typeof saturation === 'number' ? saturation + 1 : 1;
-  };
-
-  PrimitiveSaturationFilter.prototype.apply = function(imageData) {
-    var h, index, luminance, w, x, y, _i, _j;
-    w = imageData.width;
-    h = imageData.height;
-    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
-      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
-        index = (w * y + x) * 4;
-        luminance = imageData.data[index] * 0.2125 + imageData.data[index + 1] * 0.7154 + imageData.data[index + 2] * 0.0721;
-        imageData.data[index] = luminance * (1 - this.saturation) + (imageData.data[index] * this.saturation);
-        imageData.data[index + 1] = luminance * (1 - this.saturation) + (imageData.data[index + 1] * this.saturation);
-        imageData.data[index + 2] = luminance * (1 - this.saturation) + (imageData.data[index + 2] * this.saturation);
-        imageData.data[index + 3] = 255;
-      }
-    }
-    return imageData;
-  };
-
-  return PrimitiveSaturationFilter;
-
-})(Filter);
-
-module.exports = PrimitiveSaturationFilter;
-
-
-},{"27":20,"__browserify_Buffer":2,"__browserify_process":1}],69:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="151",__dirname="/operations/focus";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Focus, RadialFocus, Vector2,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Focus = require("37");
-
-Vector2 = require("15");
-
-RadialFocus = (function(_super) {
-  __extends(RadialFocus, _super);
-
-  /*
-    @param {imglyKit} app
-    @param {CanvasRenderingContext2d} context
-    @param {Object} options
-  */
-
-
-  function RadialFocus(app, options) {
-    var _base, _base1, _base2;
-    this.app = app;
-    this.options = options != null ? options : {};
-    RadialFocus.__super__.constructor.apply(this, arguments);
-    if ((_base = this.options).radius == null) {
-      _base.radius = 5;
-    }
-    if ((_base1 = this.options).controlPoint1Position == null) {
-      _base1.controlPoint1Position = new Vector2(0.5, 0.4);
-    }
-    if ((_base2 = this.options).controlPoint2Position == null) {
-      _base2.controlPoint2Position = new Vector2(0.5, 0.6);
-    }
-  }
-
-  /*
-    @param {HTMLCanvasElement} canvas
-    @param {CanvasRenderingContext2d} context
-  */
-
-
-  RadialFocus.prototype.drawMask = function(canvas, context) {
-    /*
-      Multiply the control points with the canvas
-      size to get real pixel information
-    */
-
-    var center, controlPoint1, controlPoint2, gradient, halfDiff, innerRadius, outerRadius;
-    controlPoint1 = new Vector2().copy(this.options.controlPoint1Position).multiplyWithRect(canvas);
-    controlPoint2 = new Vector2().copy(this.options.controlPoint2Position).multiplyWithRect(canvas);
-    /*
-      Calculate the difference between the two points
-      and divide it by two
-    */
-
-    halfDiff = new Vector2().copy(controlPoint2).substract(controlPoint1).divide(2);
-    /*
-      The of the circle is the center of the two points
-    */
-
-    center = new Vector2().copy(controlPoint1).add(halfDiff);
-    innerRadius = Math.sqrt(Math.pow(halfDiff.x, 2) + Math.pow(halfDiff.y, 2));
-    outerRadius = innerRadius * 3 / 2;
-    /*
-      Finally draw the gradient
-    */
-
-    gradient = context.createRadialGradient(center.x, center.y, outerRadius, center.x, center.y, innerRadius);
-    gradient.addColorStop(0, '#000000');
-    gradient.addColorStop(1, '#FFFFFF');
-    context.fillStyle = gradient;
-    return context.fillRect(0, 0, canvas.width, canvas.height);
-  };
-
-  return RadialFocus;
-
-})(Focus);
-
-module.exports = RadialFocus;
-
-
-},{"15":16,"37":79,"__browserify_Buffer":2,"__browserify_process":1}],70:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="152",__dirname="/operations/focus";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Focus, LinearFocus, Vector2,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Focus = require("37");
-
-Vector2 = require("15");
-
-LinearFocus = (function(_super) {
-  __extends(LinearFocus, _super);
-
-  /*
-    @param {imglyKit} app
-    @param {CanvasRenderingContext2d} context
-    @param {Object} options
-  */
-
-
-  function LinearFocus(app, options) {
-    var _base, _base1, _base2;
-    this.app = app;
-    this.options = options != null ? options : {};
-    LinearFocus.__super__.constructor.apply(this, arguments);
-    if ((_base = this.options).radius == null) {
-      _base.radius = 5;
-    }
-    if ((_base1 = this.options).controlPoint1Position == null) {
-      _base1.controlPoint1Position = new Vector2(0.5, 0.4);
-    }
-    if ((_base2 = this.options).controlPoint2Position == null) {
-      _base2.controlPoint2Position = new Vector2(0.5, 0.6);
-    }
-  }
-
-  /*
-    @param {HTMLCanvasElement} canvas
-    @param {CanvasRenderingContext2d} context
-  */
-
-
-  LinearFocus.prototype.drawMask = function(canvas, context) {
-    /*
-      Multiply the control points with the canvas
-      size to get real pixel information
-    */
-
-    var controlPoint1, controlPoint2, end, gradient, halfDiff, start;
-    controlPoint1 = new Vector2().copy(this.options.controlPoint1Position).multiplyWithRect(canvas);
-    controlPoint2 = new Vector2().copy(this.options.controlPoint2Position).multiplyWithRect(canvas);
-    /*
-      Calculate the difference between the two points
-      and divide it by two
-    */
-
-    halfDiff = new Vector2().copy(controlPoint2).substract(controlPoint1).divide(2);
-    /*
-      Calculate start and end of the gradient
-      We want the gradient to start 50% before
-      and 50% after the control points, so that
-      the gradient is outside of our control points
-    */
-
-    start = new Vector2().copy(controlPoint1).substract(halfDiff);
-    end = new Vector2().copy(controlPoint2).add(halfDiff);
-    /*
-      Finally draw the gradient
-    */
-
-    gradient = context.createLinearGradient(start.x, start.y, end.x, end.y);
-    gradient.addColorStop(0, '#000000');
-    gradient.addColorStop(0.25, '#FFFFFF');
-    gradient.addColorStop(0.75, '#FFFFFF');
-    gradient.addColorStop(1, '#000000');
-    context.fillStyle = gradient;
-    return context.fillRect(0, 0, canvas.width, canvas.height);
-  };
-
-  return LinearFocus;
-
-})(Focus);
-
-module.exports = LinearFocus;
-
-
-},{"15":16,"37":79,"__browserify_Buffer":2,"__browserify_process":1}],71:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="153",__dirname="/ui/controls/base";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Base, UIControlsBaseSlider, _ref,
-  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Base = require("32");
-
-UIControlsBaseSlider = (function(_super) {
-  __extends(UIControlsBaseSlider, _super);
-
-  function UIControlsBaseSlider() {
-    this.onMouseUp = __bind(this.onMouseUp, this);
-    this.onMouseMove = __bind(this.onMouseMove, this);
-    _ref = UIControlsBaseSlider.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  UIControlsBaseSlider.prototype.init = function() {
-    var spaceForPlusAndMinus, width;
-    spaceForPlusAndMinus = 60;
-    width = this.controls.getContainer().width();
-    width -= this.controls.getHeight() * 2;
-    width -= spaceForPlusAndMinus;
-    this.wrapper = $("<div>").addClass(imglyKit.classPrefix + "controls-wrapper").attr("data-control", this.constructor.name).appendTo(this.controls.getContainer());
-    this.sliderWrapper = $("<div>").addClass(imglyKit.classPrefix + "controls-slider-wrapper").width(width).appendTo(this.wrapper);
-    this.sliderCenterDot = $("<div>").addClass(imglyKit.classPrefix + "controls-slider-dot").appendTo(this.sliderWrapper);
-    this.sliderBar = $("<div>").addClass(imglyKit.classPrefix + "controls-slider-bar").appendTo(this.sliderWrapper);
-    this.slider = $("<div>").addClass(imglyKit.classPrefix + "controls-slider").css({
-      left: width / 2
-    }).appendTo(this.sliderWrapper);
-    /*
-      Plus / Minus images
-    */
-
-    $("<div>").addClass(imglyKit.classPrefix + "controls-slider-plus").appendTo(this.sliderWrapper);
-    $("<div>").addClass(imglyKit.classPrefix + "controls-slider-minus").appendTo(this.sliderWrapper);
-    this.handleSliderControl();
-    return this.createButtons();
-  };
-
-  /*
-    Handles slider dragging
-  */
-
-
-  UIControlsBaseSlider.prototype.handleSliderControl = function() {
-    var _this = this;
-    this.sliderWidth = this.sliderWrapper.width();
-    return this.slider.mousedown(function(e) {
-      _this.lastX = e.clientX;
-      _this.currentSliderLeft = parseInt(_this.slider.css("left"));
-      $(document).mousemove(_this.onMouseMove);
-      return $(document).mouseup(_this.onMouseUp);
-    });
-  };
-
-  /*
-    Is called when the slider has been moved
-  
-    @param {Integer} left
-  */
-
-
-  UIControlsBaseSlider.prototype.setSliderLeft = function(left) {
-    var barWidth, normalized;
-    this.slider.css({
-      left: left
-    });
-    if (left < this.sliderWidth / 2) {
-      barWidth = this.sliderWidth / 2 - left;
-      this.sliderBar.css({
-        left: left,
-        width: barWidth
-      });
-    } else {
-      barWidth = left - this.sliderWidth / 2;
-      this.sliderBar.css({
-        left: this.sliderWidth / 2,
-        width: barWidth
-      });
-    }
-    normalized = (left - this.sliderWidth / 2) / this.sliderWidth * 2;
-    this.operation[this.valueSetMethod].apply(this.operation, [normalized]);
-    return this.app.getPhotoProcessor().renderPreview();
-  };
-
-  /*
-    Is called when the slider has been pressed and is being dragged
-  
-    @param {MouseEvent} e
-  */
-
-
-  UIControlsBaseSlider.prototype.onMouseMove = function(e) {
-    var curX, deltaX, sliderLeft;
-    curX = e.clientX;
-    deltaX = curX - this.lastX;
-    sliderLeft = Math.min(Math.max(0, this.currentSliderLeft + deltaX), this.sliderWidth);
-    if (sliderLeft < this.sliderWidth && sliderLeft > 0) {
-      this.lastX = curX;
-      this.currentSliderLeft = sliderLeft;
-    }
-    return this.setSliderLeft(sliderLeft);
-  };
-
-  /*
-    Is called when the slider has been pressed and is being dragged
-  
-    @param {MouseEvent} e
-  */
-
-
-  UIControlsBaseSlider.prototype.onMouseUp = function(e) {
-    $(document).off("mouseup", this.onMouseUp);
-    return $(document).off("mousemove", this.onMouseMove);
-  };
-
-  return UIControlsBaseSlider;
-
-})(Base);
-
-module.exports = UIControlsBaseSlider;
-
-
-},{"32":22,"__browserify_Buffer":2,"__browserify_process":1}],72:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="154",__dirname="/operations/filters/primitives";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Filter, PrimitiveToneCurveFilter,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("27");
-
-PrimitiveToneCurveFilter = (function(_super) {
-  __extends(PrimitiveToneCurveFilter, _super);
-
-  function PrimitiveToneCurveFilter(app, options) {
-    var rgb;
-    this.app = app;
-    if (options == null) {
-      options = {};
-    }
-    PrimitiveToneCurveFilter.__super__.constructor.apply(this, arguments);
-    if (this.rgbControlPoints || (options.rgbControlPoints != null)) {
-      rgb = this.rgbControlPoints || options.rgbControlPoints;
-      if (this.redControlPoints == null) {
-        this.redControlPoints = rgb;
-      }
-      if (this.greenControlPoints == null) {
-        this.greenControlPoints = rgb;
-      }
-      if (this.blueControlPoints == null) {
-        this.blueControlPoints = rgb;
-      }
-    } else {
-      if (this.redControlPoints == null) {
-        this.redControlPoints = options.redControlPoints;
-      }
-      if (this.greenControlPoints == null) {
-        this.greenControlPoints = options.greenControlPoints;
-      }
-      if (this.blueControlPoints == null) {
-        this.blueControlPoints = options.blueControlPoints;
-      }
-    }
-    if (this.redControlPoints && this.greenControlPoints && this.blueControlPoints) {
-      this.updateToneCurveTexture();
-    }
-  }
-
-  PrimitiveToneCurveFilter.prototype.render = function(context, w, h) {
-    return context.putImageData(this.apply(context.getImageData(0, 0, w, h)), 0, 0);
-  };
-
-  PrimitiveToneCurveFilter.prototype.apply = function(imageData) {
-    var h, index, w, x, y, _i, _j;
-    w = imageData.width;
-    h = imageData.height;
-    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
-      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
-        index = (w * y + x) * 4;
-        imageData.data[index] = imageData.data[index] + this.preparedRed[imageData.data[index]];
-        imageData.data[index + 1] = imageData.data[index + 1] + this.preparedGreen[imageData.data[index + 1]];
-        imageData.data[index + 2] = imageData.data[index + 2] + this.preparedBlue[imageData.data[index + 2]];
-        imageData.data[index + 3] = 255;
-      }
-    }
-    return imageData;
-  };
-
-  PrimitiveToneCurveFilter.prototype.updateToneCurveTexture = function() {
-    this.preparedRed = this.getPreparedSplineCurve(this.redControlPoints);
-    this.preparedBlue = this.getPreparedSplineCurve(this.blueControlPoints);
-    return this.preparedGreen = this.getPreparedSplineCurve(this.greenControlPoints);
-  };
-
-  PrimitiveToneCurveFilter.prototype.getPreparedSplineCurve = function(points) {
-    var convertedPoints, distance, firstSplinePoint, i, newPoint, origPoint, point, preparedSplinePoints, sortedPoints, splinePoints, _i, _j, _k, _len, _ref, _ref1;
-    sortedPoints = points.sort(function(a, b) {
-      var x1, x2;
-      x1 = a[0];
-      x2 = b[0];
-      return x1 > x2;
-    });
-    convertedPoints = [];
-    for (_i = 0, _len = points.length; _i < _len; _i++) {
-      point = points[_i];
-      newPoint = [point[0] * 255, point[1] * 255];
-      convertedPoints.push(newPoint);
-    }
-    splinePoints = this.splineCurve(convertedPoints);
-    firstSplinePoint = splinePoints[0];
-    if (firstSplinePoint[0] > 0) {
-      for (i = _j = 0, _ref = firstSplinePoint[0]; 0 <= _ref ? _j < _ref : _j > _ref; i = 0 <= _ref ? ++_j : --_j) {
-        splinePoints.unshift([0, 0]);
-      }
-    }
-    preparedSplinePoints = [];
-    for (i = _k = 0, _ref1 = splinePoints.length; 0 <= _ref1 ? _k < _ref1 : _k > _ref1; i = 0 <= _ref1 ? ++_k : --_k) {
-      newPoint = splinePoints[i];
-      origPoint = [newPoint[0], newPoint[0]];
-      distance = Math.sqrt(Math.pow(origPoint[0] - newPoint[0], 2) + Math.pow(origPoint[1] - newPoint[1], 2));
-      if (origPoint[1] > newPoint[1]) {
-        distance = -distance;
-      }
-      preparedSplinePoints.push(distance);
-    }
-    return preparedSplinePoints;
-  };
-
-  PrimitiveToneCurveFilter.prototype.splineCurve = function(points) {
-    var a, b, cur, h, i, n, next, output, sd, sdA, t, x, y, _i, _j, _k, _ref, _ref1, _ref2;
-    sdA = this.secondDerivative(points);
-    n = sdA.length;
-    sd = [];
-    for (i = _i = 0; 0 <= n ? _i < n : _i > n; i = 0 <= n ? ++_i : --_i) {
-      sd[i] = sdA[i];
-    }
-    output = [];
-    for (i = _j = 0, _ref = n - 1; 0 <= _ref ? _j < _ref : _j > _ref; i = 0 <= _ref ? ++_j : --_j) {
-      cur = points[i];
-      next = points[i + 1];
-      for (x = _k = _ref1 = cur[0], _ref2 = next[0]; _ref1 <= _ref2 ? _k < _ref2 : _k > _ref2; x = _ref1 <= _ref2 ? ++_k : --_k) {
-        t = (x - cur[0]) / (next[0] - cur[0]);
-        a = 1 - t;
-        b = t;
-        h = next[0] - cur[0];
-        y = a * cur[1] + b * next[1] + (h * h / 6) * ((a * a * a - a) * sd[i] + (b * b * b - b) * sd[i + 1]);
-        if (y > 255) {
-          y = 255;
-        } else if (y < 0) {
-          y = 0;
-        }
-        output.push([x, y]);
-      }
-    }
-    if (output.length === 255) {
-      output.push(points.pop());
-    }
-    return output;
-  };
-
-  PrimitiveToneCurveFilter.prototype.secondDerivative = function(points) {
-    var P1, P2, P3, i, k, matrix, n, result, y2, _i, _j, _k, _l, _ref, _ref1;
-    n = points.length;
-    if (n <= 0 || n === 1) {
-      return null;
-    }
-    matrix = [];
-    result = [];
-    matrix[0] = [0, 1, 0];
-    for (i = _i = 1, _ref = n - 1; 1 <= _ref ? _i < _ref : _i > _ref; i = 1 <= _ref ? ++_i : --_i) {
-      P1 = points[i - 1];
-      P2 = points[i];
-      P3 = points[i + 1];
-      if (matrix[i] == null) {
-        matrix[i] = [];
-      }
-      matrix[i][0] = (P2[0] - P1[0]) / 6;
-      matrix[i][1] = (P3[0] - P1[0]) / 3;
-      matrix[i][2] = (P3[0] - P2[0]) / 6;
-      result[i] = (P3[1] - P2[1]) / (P3[0] - P2[0]) - (P2[1] - P1[1]) / (P2[0] - P1[0]);
-    }
-    result[0] = 0;
-    result[n - 1] = 0;
-    matrix[n - 1] = [0, 1, 0];
-    for (i = _j = 1; 1 <= n ? _j < n : _j > n; i = 1 <= n ? ++_j : --_j) {
-      k = matrix[1][0] / matrix[i - 1][1];
-      matrix[i][1] -= k * matrix[i - 1][2];
-      matrix[i][0] = 0;
-      result[i] -= k * result[i - 1];
-    }
-    for (i = _k = _ref1 = n - 2; _ref1 <= 0 ? _k < 0 : _k > 0; i = _ref1 <= 0 ? ++_k : --_k) {
-      k = matrix[i][2] / matrix[i + 1][1];
-      matrix[i][1] -= k * matrix[i + 1][0];
-      matrix[i][2] = 0;
-      result[i] -= k * result[i + 1];
-    }
-    y2 = [];
-    for (i = _l = 0; 0 <= n ? _l < n : _l > n; i = 0 <= n ? ++_l : --_l) {
-      y2[i] = result[i] / matrix[i][1];
-    }
-    return y2;
-  };
-
-  PrimitiveToneCurveFilter.prototype.setRedControlPoints = function(controlPoints) {
-    return this.redControlPoints = controlPoints;
-  };
-
-  PrimitiveToneCurveFilter.prototype.setGreenControlPoints = function(controlPoints) {
-    return this.greenControlPoints = controlPoints;
-  };
-
-  PrimitiveToneCurveFilter.prototype.setBlueControlPoints = function(controlPoints) {
-    return this.blueControlPoints = controlPoints;
-  };
-
-  return PrimitiveToneCurveFilter;
-
-})(Filter);
-
-module.exports = PrimitiveToneCurveFilter;
-
-
-},{"27":20,"__browserify_Buffer":2,"__browserify_process":1}],73:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="155",__dirname="/operations/filters/primitives";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Filter, PrimitiveSoftColorOverlayFilter, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("27");
-
-PrimitiveSoftColorOverlayFilter = (function(_super) {
-  __extends(PrimitiveSoftColorOverlayFilter, _super);
-
-  function PrimitiveSoftColorOverlayFilter() {
-    _ref = PrimitiveSoftColorOverlayFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  PrimitiveSoftColorOverlayFilter.prototype.apply = function(imageData) {
-    var h, index, w, x, y, _i, _j;
-    w = imageData.width;
-    h = imageData.height;
-    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
-      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
-        index = (w * y + x) * 4;
-        imageData.data[index] = Math.max(this.options.r, imageData.data[index]);
-        imageData.data[index + 1] = Math.max(this.options.g, imageData.data[index + 1]);
-        imageData.data[index + 2] = Math.max(this.options.b, imageData.data[index + 2]);
-        imageData.data[index + 3] = 255;
-      }
-    }
-    return imageData;
-  };
-
-  return PrimitiveSoftColorOverlayFilter;
-
-})(Filter);
-
-module.exports = PrimitiveSoftColorOverlayFilter;
-
-
-},{"27":20,"__browserify_Buffer":2,"__browserify_process":1}],75:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="156",__dirname="/operations/filters/primitives";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Filter, PrimitiveX400Filter, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("27");
-
-PrimitiveX400Filter = (function(_super) {
-  __extends(PrimitiveX400Filter, _super);
-
-  function PrimitiveX400Filter() {
-    _ref = PrimitiveX400Filter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  PrimitiveX400Filter.prototype.apply = function(imageData) {
-    var gray, h, index, w, x, y, _i, _j;
-    w = imageData.width;
-    h = imageData.height;
-    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
-      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
-        index = (w * y + x) * 4;
-        gray = imageData.data[index] / 255 * 0.3 + imageData.data[index + 1] / 255 * 0.3 + imageData.data[index + 2] / 255 * 0.3;
-        gray -= 0.2;
-        gray = Math.max(0.0, Math.min(1.0, gray));
-        gray += 0.15;
-        gray *= 1.4;
-        gray *= 255;
-        imageData.data[index] = gray;
-        imageData.data[index + 1] = gray;
-        imageData.data[index + 2] = gray;
-        imageData.data[index + 3] = 255;
-      }
-    }
-    return imageData;
-  };
-
-  return PrimitiveX400Filter;
-
-})(Filter);
-
-module.exports = PrimitiveX400Filter;
-
-
-},{"27":20,"__browserify_Buffer":2,"__browserify_process":1}],74:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="157",__dirname="/operations/filters/primitives";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Filter, PrimitiveDesaturationFilter,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("27");
-
-PrimitiveDesaturationFilter = (function(_super) {
-  __extends(PrimitiveDesaturationFilter, _super);
-
-  function PrimitiveDesaturationFilter(app, options) {
-    this.app = app;
-    if (options == null) {
-      options = {};
-    }
-    PrimitiveDesaturationFilter.__super__.constructor.apply(this, arguments);
-    if (this.desaturation == null) {
-      this.desaturation = options != null ? options.desaturation : void 0;
-    }
-  }
-
-  PrimitiveDesaturationFilter.prototype.apply = function(imageData) {
-    var h, index, luminance, w, x, y, _i, _j;
-    w = imageData.width;
-    h = imageData.height;
-    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
-      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
-        index = (w * y + x) * 4;
-        luminance = imageData.data[index] * 0.3 + imageData.data[index + 1] * 0.59 + imageData.data[index + 2] * 0.11;
-        imageData.data[index] = luminance * (1 - this.desaturation) + (imageData.data[index] * this.desaturation);
-        imageData.data[index + 1] = luminance * (1 - this.desaturation) + (imageData.data[index + 1] * this.desaturation);
-        imageData.data[index + 2] = luminance * (1 - this.desaturation) + (imageData.data[index + 2] * this.desaturation);
-        imageData.data[index + 3] = 255;
-      }
-    }
-    return imageData;
-  };
-
-  return PrimitiveDesaturationFilter;
-
-})(Filter);
-
-module.exports = PrimitiveDesaturationFilter;
-
-
-},{"27":20,"__browserify_Buffer":2,"__browserify_process":1}],76:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="158",__dirname="/operations/filters/primitives";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Filter, PrimtiveGrayscaleFilter, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("27");
-
-PrimtiveGrayscaleFilter = (function(_super) {
-  __extends(PrimtiveGrayscaleFilter, _super);
-
-  function PrimtiveGrayscaleFilter() {
-    _ref = PrimtiveGrayscaleFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  PrimtiveGrayscaleFilter.prototype.apply = function(imageData) {
-    var h, index, luminance, w, x, y, _i, _j;
-    w = imageData.width;
-    h = imageData.height;
-    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
-      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
-        index = (w * y + x) * 4;
-        luminance = imageData.data[index] * 0.2125 + imageData.data[index + 1] * 0.7154 + imageData.data[index + 2] * 0.0721;
-        imageData.data[index] = luminance;
-        imageData.data[index + 1] = luminance;
-        imageData.data[index + 2] = luminance;
-        imageData.data[index + 3] = 255;
-      }
-    }
-    return imageData;
-  };
-
-  return PrimtiveGrayscaleFilter;
-
-})(Filter);
-
-module.exports = PrimtiveGrayscaleFilter;
-
-
-},{"27":20,"__browserify_Buffer":2,"__browserify_process":1}],77:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="159",__dirname="/operations/filters/primitives";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Filter, PrimitiveGlowFilter,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("27");
-
-PrimitiveGlowFilter = (function(_super) {
-  __extends(PrimitiveGlowFilter, _super);
-
-  function PrimitiveGlowFilter(options) {
-    if (options == null) {
-      options = {};
-    }
-    PrimitiveGlowFilter.__super__.constructor.apply(this, arguments);
-    this.setColorToAdd(options.r, options.g, options.b);
-  }
-
-  PrimitiveGlowFilter.prototype.apply = function(imageData) {
-    var d, h, index, nx, ny, scalarX, scalarY, w, x, x01, y, y01, _i, _j;
-    w = imageData.width;
-    h = imageData.height;
-    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
-      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
-        index = (w * y + x) * 4;
-        x01 = x / w;
-        y01 = y / h;
-        nx = (x01 - 0.5) / 0.75;
-        ny = (y01 - 0.5) / 0.75;
-        scalarX = nx * nx;
-        scalarY = ny * ny;
-        d = 1 - (scalarX + scalarY);
-        d = Math.min(Math.max(d, 0.1), 1.0);
-        imageData.data[index] = imageData.data[index] * (d * this.colorToAdd[0]);
-        imageData.data[index + 1] = imageData.data[index + 1] * (d * this.colorToAdd[1]);
-        imageData.data[index + 2] = imageData.data[index + 2] * (d * this.colorToAdd[2]);
-        imageData.data[index + 3] = 255;
-      }
-    }
-    return imageData;
-  };
-
-  PrimitiveGlowFilter.prototype.setColorToAdd = function(r, g, b) {
-    return this.colorToAdd = [typeof r === 'number' ? r : 1.0, typeof g === 'number' ? g : 1.0, typeof b === 'number' ? b : 1.0];
-  };
-
-  return PrimitiveGlowFilter;
-
-})(Filter);
-
-module.exports = PrimitiveGlowFilter;
-
-
-},{"27":20,"__browserify_Buffer":2,"__browserify_process":1}],78:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="160",__dirname="/operations/filters/primitives";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-var Filter, PrimitiveGobblinFilter, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("27");
-
-PrimitiveGobblinFilter = (function(_super) {
-  __extends(PrimitiveGobblinFilter, _super);
-
-  function PrimitiveGobblinFilter() {
-    _ref = PrimitiveGobblinFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  PrimitiveGobblinFilter.prototype.apply = function(imageData) {
-    var h, index, w, x, y, _i, _j;
-    w = imageData.width;
-    h = imageData.height;
-    for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
-      for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
-        index = (w * y + x) * 4;
-        imageData.data[index + 2] = imageData.data[index + 1] * 0.33;
-        imageData.data[index] = imageData.data[index] * 0.6;
-        imageData.data[index + 2] += imageData.data[index] * 0.33;
-        imageData.data[index + 1] = imageData.data[index + 1] * 0.7;
-        imageData.data[index + 3] = 255;
-      }
-    }
-    return imageData;
-  };
-
-  return PrimitiveGobblinFilter;
-
-})(Filter);
-
-module.exports = PrimitiveGobblinFilter;
-
-
-},{"27":20,"__browserify_Buffer":2,"__browserify_process":1}],79:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="161",__dirname="/operations/focus";/*
-  imglyKit
-  Copyright (c) 2013 img.ly
-*/
-
-/*
-  Helpers for the Stack Blur
-*/
-
-var BlurStack, Focus, Operation, Utils, mul_table, shg_table,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-BlurStack = (function() {
-  function BlurStack() {}
-
-  BlurStack.r = 0;
-
-  BlurStack.g = 0;
-
-  BlurStack.b = 0;
-
-  BlurStack.a = 0;
-
-  BlurStack.next = null;
-
-  return BlurStack;
-
-})();
-
-mul_table = [512, 512, 456, 512, 328, 456, 335, 512, 405, 328, 271, 456, 388, 335, 292, 512, 454, 405, 364, 328, 298, 271, 496, 456, 420, 388, 360, 335, 312, 292, 273, 512, 482, 454, 428, 405, 383, 364, 345, 328, 312, 298, 284, 271, 259, 496, 475, 456, 437, 420, 404, 388, 374, 360, 347, 335, 323, 312, 302, 292, 282, 273, 265, 512, 497, 482, 468, 454, 441, 428, 417, 405, 394, 383, 373, 364, 354, 345, 337, 328, 320, 312, 305, 298, 291, 284, 278, 271, 265, 259, 507, 496, 485, 475, 465, 456, 446, 437, 428, 420, 412, 404, 396, 388, 381, 374, 367, 360, 354, 347, 341, 335, 329, 323, 318, 312, 307, 302, 297, 292, 287, 282, 278, 273, 269, 265, 261, 512, 505, 497, 489, 482, 475, 468, 461, 454, 447, 441, 435, 428, 422, 417, 411, 405, 399, 394, 389, 383, 378, 373, 368, 364, 359, 354, 350, 345, 341, 337, 332, 328, 324, 320, 316, 312, 309, 305, 301, 298, 294, 291, 287, 284, 281, 278, 274, 271, 268, 265, 262, 259, 257, 507, 501, 496, 491, 485, 480, 475, 470, 465, 460, 456, 451, 446, 442, 437, 433, 428, 424, 420, 416, 412, 408, 404, 400, 396, 392, 388, 385, 381, 377, 374, 370, 367, 363, 360, 357, 354, 350, 347, 344, 341, 338, 335, 332, 329, 326, 323, 320, 318, 315, 312, 310, 307, 304, 302, 299, 297, 294, 292, 289, 287, 285, 282, 280, 278, 275, 273, 271, 269, 267, 265, 263, 261, 259];
-
-shg_table = [9, 11, 12, 13, 13, 14, 14, 15, 15, 15, 15, 16, 16, 16, 16, 17, 17, 17, 17, 17, 17, 17, 18, 18, 18, 18, 18, 18, 18, 18, 18, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24];
-
-Operation = require("50");
-
-Utils = require("64");
-
-Focus = (function(_super) {
-  __extends(Focus, _super);
-
-  Focus.prototype.cache = null;
-
-  Focus.prototype.fingerprint = null;
-
-  /*
-    @param {imglyKit} app
-    @param {CanvasRenderingContext2d} context
-    @param {Object} options
-  */
-
-
-  function Focus(app, options) {
-    var _base;
-    this.app = app;
-    this.options = options != null ? options : {};
-    Focus.__super__.constructor.apply(this, arguments);
-    if ((_base = this.options).radius == null) {
-      _base.radius = 1;
-    }
-  }
-
-  Focus.prototype.apply = function(imageData) {
-    var alpha, fingerprint, index, maskImageData, _i, _ref;
-    fingerprint = Utils.fingerprint(imageData.data);
-    if (fingerprint !== this.fingerprint) {
-      this.cache = this.blur(Utils.cloneImageData(imageData));
-      this.fingerprint = fingerprint;
-    }
-    maskImageData = this.createMaskImageData(imageData);
-    for (index = _i = 0, _ref = imageData.data.length; _i < _ref; index = _i += 4) {
-      alpha = maskImageData.data[index] / 255;
-      imageData.data[index] = alpha * imageData.data[index] + (1 - alpha) * this.cache.data[index];
-      imageData.data[index + 1] = alpha * imageData.data[index + 1] + (1 - alpha) * this.cache.data[index + 1];
-      imageData.data[index + 2] = alpha * imageData.data[index + 2] + (1 - alpha) * this.cache.data[index + 2];
-      imageData.data[index + 3] = 255;
-    }
-    return imageData;
-  };
-
-  /*
-    @param {ImageData} originalImageData
-    @returns {ImageData}
-  */
-
-
-  Focus.prototype.createMaskImageData = function(originalImageData) {
-    var canvas, context;
-    canvas = Utils.newCanvasWithDimensions({
-      width: originalImageData.width,
-      height: originalImageData.height
-    });
-    context = canvas.getContext("2d");
-    this.drawMask(canvas, context);
-    return context.getImageData(0, 0, canvas.width, canvas.height);
-  };
-
-  /*
-    Uses quasimondo's StackBlur algorithm to blur
-    the image
-  
-    @param {ImageData} imageData
-    @returns {ImageData}
-  */
-
-
-  Focus.prototype.blur = function(imageData) {
-    var b_in_sum, b_out_sum, b_sum, div, g_in_sum, g_out_sum, g_sum, height, heightMinus1, i, mul_sum, p, pb, pg, pixels, pr, r_in_sum, r_out_sum, r_sum, radius, radiusPlus1, rbs, shg_sum, stack, stackEnd, stackIn, stackOut, stackStart, sumFactor, w4, width, widthMinus1, x, y, yi, yp, yw, _i, _j, _k, _l, _m, _n, _o, _p, _q;
-    radius = this.options.radius;
-    width = imageData.width;
-    height = imageData.height;
-    pixels = imageData.data;
-    div = radius + radius + 1;
-    w4 = width << 2;
-    widthMinus1 = width - 1;
-    heightMinus1 = height - 1;
-    radiusPlus1 = radius + 1;
-    sumFactor = radiusPlus1 * (radiusPlus1 + 1) / 2;
-    stackStart = new BlurStack();
-    stack = stackStart;
-    for (i = _i = 1; 1 <= div ? _i < div : _i > div; i = 1 <= div ? ++_i : --_i) {
-      stack = stack.next = new BlurStack();
-      if (i === radiusPlus1) {
-        stackEnd = stack;
-      }
-    }
-    stack.next = stackStart;
-    stackIn = null;
-    stackOut = null;
-    yw = yi = 0;
-    mul_sum = mul_table[radius];
-    shg_sum = shg_table[radius];
-    for (y = _j = 0; 0 <= height ? _j < height : _j > height; y = 0 <= height ? ++_j : --_j) {
-      r_in_sum = g_in_sum = b_in_sum = r_sum = g_sum = b_sum = 0;
-      r_out_sum = radiusPlus1 * (pr = pixels[yi]);
-      g_out_sum = radiusPlus1 * (pg = pixels[yi + 1]);
-      b_out_sum = radiusPlus1 * (pb = pixels[yi + 2]);
-      r_sum += sumFactor * pr;
-      g_sum += sumFactor * pg;
-      b_sum += sumFactor * pb;
-      stack = stackStart;
-      for (i = _k = 0; 0 <= radiusPlus1 ? _k < radiusPlus1 : _k > radiusPlus1; i = 0 <= radiusPlus1 ? ++_k : --_k) {
-        stack.r = pr;
-        stack.g = pg;
-        stack.b = pb;
-        stack = stack.next;
-      }
-      for (i = _l = 1; 1 <= radiusPlus1 ? _l < radiusPlus1 : _l > radiusPlus1; i = 1 <= radiusPlus1 ? ++_l : --_l) {
-        p = yi + ((widthMinus1 < i ? widthMinus1 : i) << 2);
-        r_sum += (stack.r = (pr = pixels[p])) * (rbs = radiusPlus1 - i);
-        g_sum += (stack.g = (pg = pixels[p + 1])) * rbs;
-        b_sum += (stack.b = (pb = pixels[p + 2])) * rbs;
-        r_in_sum += pr;
-        g_in_sum += pg;
-        b_in_sum += pb;
-        stack = stack.next;
-      }
-      stackIn = stackStart;
-      stackOut = stackEnd;
-      for (x = _m = 0; 0 <= width ? _m < width : _m > width; x = 0 <= width ? ++_m : --_m) {
-        pixels[yi] = (r_sum * mul_sum) >> shg_sum;
-        pixels[yi + 1] = (g_sum * mul_sum) >> shg_sum;
-        pixels[yi + 2] = (b_sum * mul_sum) >> shg_sum;
-        r_sum -= r_out_sum;
-        g_sum -= g_out_sum;
-        b_sum -= b_out_sum;
-        r_out_sum -= stackIn.r;
-        g_out_sum -= stackIn.g;
-        b_out_sum -= stackIn.b;
-        p = (yw + ((p = x + radius + 1) < widthMinus1 ? p : widthMinus1)) << 2;
-        r_in_sum += (stackIn.r = pixels[p]);
-        g_in_sum += (stackIn.g = pixels[p + 1]);
-        b_in_sum += (stackIn.b = pixels[p + 2]);
-        r_sum += r_in_sum;
-        g_sum += g_in_sum;
-        b_sum += b_in_sum;
-        stackIn = stackIn.next;
-        r_out_sum += (pr = stackOut.r);
-        g_out_sum += (pg = stackOut.g);
-        b_out_sum += (pb = stackOut.b);
-        r_in_sum -= pr;
-        g_in_sum -= pg;
-        b_in_sum -= pb;
-        stackOut = stackOut.next;
-        yi += 4;
-      }
-      yw += width;
-    }
-    for (x = _n = 0; 0 <= width ? _n < width : _n > width; x = 0 <= width ? ++_n : --_n) {
-      g_in_sum = b_in_sum = r_in_sum = g_sum = b_sum = r_sum = 0;
-      yi = x << 2;
-      r_out_sum = radiusPlus1 * (pr = pixels[yi]);
-      g_out_sum = radiusPlus1 * (pg = pixels[yi + 1]);
-      b_out_sum = radiusPlus1 * (pb = pixels[yi + 2]);
-      r_sum += sumFactor * pr;
-      g_sum += sumFactor * pg;
-      b_sum += sumFactor * pb;
-      stack = stackStart;
-      for (i = _o = 0; 0 <= radiusPlus1 ? _o < radiusPlus1 : _o > radiusPlus1; i = 0 <= radiusPlus1 ? ++_o : --_o) {
-        stack.r = pr;
-        stack.g = pg;
-        stack.b = pb;
-        stack = stack.next;
-      }
-      yp = width;
-      for (i = _p = 1; 1 <= radius ? _p <= radius : _p >= radius; i = 1 <= radius ? ++_p : --_p) {
-        yi = (yp + x) << 2;
-        r_sum += (stack.r = (pr = pixels[yi])) * (rbs = radiusPlus1 - i);
-        g_sum += (stack.g = (pg = pixels[yi + 1])) * rbs;
-        b_sum += (stack.b = (pb = pixels[yi + 2])) * rbs;
-        r_in_sum += pr;
-        g_in_sum += pg;
-        b_in_sum += pb;
-        stack = stack.next;
-        if (i < heightMinus1) {
-          yp += width;
-        }
-      }
-      yi = x;
-      stackIn = stackStart;
-      stackOut = stackEnd;
-      for (y = _q = 0; 0 <= height ? _q < height : _q > height; y = 0 <= height ? ++_q : --_q) {
-        p = yi << 2;
-        pixels[p] = (r_sum * mul_sum) >> shg_sum;
-        pixels[p + 1] = (g_sum * mul_sum) >> shg_sum;
-        pixels[p + 2] = (b_sum * mul_sum) >> shg_sum;
-        r_sum -= r_out_sum;
-        g_sum -= g_out_sum;
-        b_sum -= b_out_sum;
-        r_out_sum -= stackIn.r;
-        g_out_sum -= stackIn.g;
-        b_out_sum -= stackIn.b;
-        p = (x + (((p = y + radiusPlus1) < heightMinus1 ? p : heightMinus1) * width)) << 2;
-        r_sum += (r_in_sum += (stackIn.r = pixels[p]));
-        g_sum += (g_in_sum += (stackIn.g = pixels[p + 1]));
-        b_sum += (b_in_sum += (stackIn.b = pixels[p + 2]));
-        stackIn = stackIn.next;
-        r_out_sum += (pr = stackOut.r);
-        g_out_sum += (pg = stackOut.g);
-        b_out_sum += (pb = stackOut.b);
-        r_in_sum -= pr;
-        g_in_sum -= pg;
-        b_in_sum -= pb;
-        stackOut = stackOut.next;
-        yi += width;
-      }
-    }
-    return imageData;
-  };
-
-  return Focus;
-
-})(Operation);
-
-module.exports = Focus;
-
-
-},{"64":6,"50":21,"__browserify_Buffer":2,"__browserify_process":1}]},{},[3])
+},{"../../math/rect.coffee":61,"../../math/vector2.coffee":56,"../../operations/text.coffee":71,"./base/list.coffee":13}]},{},[79])
 ;
