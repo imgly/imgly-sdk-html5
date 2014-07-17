@@ -14,6 +14,14 @@ class ImglyKit
   @canvasContainerPadding: 15
   ###
     @param options.container The container we ImglyKit will run in
+    @param options.additionalFonts Array with objects like to specify additional fonts [{
+          name: "Lobster",
+          cssClass: "lobster"
+        },
+        {
+          name: "Titillium Web",
+          cssClass: "titillium-web"
+        }]
   ###
   constructor: (@options = {}) ->
     @options.debug ?= false
