@@ -13,7 +13,7 @@ A Text editor with an elegant and simple to use interface allows adding text ins
 See the examples folder for implementation examples.
 
 ### License
-Please see [LICENSE](https://github.com/imgly/imgly-sdk-html5/blob/master/LICENSE) for licensing details.
+Please see [LICENSE](https://github.com/imgly/imgly-sdk-html5/blob/master/LICENSE.md) for licensing details.
 
 ### Authors and Contributors
 Made 2013-2014 by @9elements: Sascha Gehlich ([@saschagehlich](https://github.com/saschagehlich)), Johannes Emerich ([@knuton](https://github.com/knuton)), Carsten Przyluczky ([@K4stor](https://github.com/K4stor)), Sebastian Deutsch ([@sebastiandeutsch](https://github.com/sebastiandeutsch))
