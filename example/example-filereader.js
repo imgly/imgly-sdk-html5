@@ -2,7 +2,7 @@
  * ImglyKit
  * integration example
  *
- * Copyright (c) 2013 img.ly
+ * Copyright (c) 2013-2014 img.ly
  */
 
 $(function () {

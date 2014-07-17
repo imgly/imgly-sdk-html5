@@ -1,6 +1,6 @@
 ###
   ImglyKit
-  Copyright (c) 2013 img.ly
+  Copyright (c) 2013-2014 img.ly
 ###
 Slider = require "./base/slider.coffee"
 class UIControlsSaturation extends Slider

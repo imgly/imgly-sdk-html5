@@ -1,6 +1,6 @@
 ###
   ImglyKit
-  Copyright (c) 2013 img.ly
+  Copyright (c) 2013-2014 img.ly
 ###
 Focus   = require "./focus.coffee"
 Vector2 = require "../../math/vector2.coffee"

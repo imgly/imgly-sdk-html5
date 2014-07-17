@@ -1,6 +1,6 @@
 ###
   ImglyKit
-  Copyright (c) 2013 img.ly
+  Copyright (c) 2013-2014 img.ly
 ###
 Filter     = require "./filters/filter.coffee"
 Saturation = require "./filters/primitives/saturation.coffee"
