@@ -1,5 +1,5 @@
 ###
-  imglyKit
+  ImglyKit
   Copyright (c) 2013 img.ly
 ###
 List    = require "./base/list.coffee"
@@ -60,11 +60,11 @@ class UIControlsText extends List
       Color control
     ###
     @colorControl = $("<div>")
-      .addClass(imglyKit.classPrefix + "controls-text-color-button " + imglyKit.classPrefix + "controls-button-right")
+      .addClass(ImglyKit.classPrefix + "controls-text-color-button " + ImglyKit.classPrefix + "controls-button-right")
       .appendTo @wrapper
 
     @colorSelect = $("<div>")
-      .addClass(imglyKit.classPrefix + "controls-text-color")
+      .addClass(ImglyKit.classPrefix + "controls-text-color")
       .appendTo @colorControl
 
     @handleColorsControl()
@@ -80,14 +80,14 @@ class UIControlsText extends List
     ]
 
     colorsDropdown = $("<div>")
-      .addClass(imglyKit.classPrefix + "controls-text-color-dropdown")
+      .addClass(ImglyKit.classPrefix + "controls-text-color-dropdown")
       .appendTo(@colorControl)
 
 
     for color in availableColors
       ((color) =>
         colorDiv = $("<div>")
-          .addClass(imglyKit.classPrefix + "controls-text-color")
+          .addClass(ImglyKit.classPrefix + "controls-text-color")
           .css(backgroundColor: color)
           .appendTo(colorsDropdown)
 
@@ -113,20 +113,20 @@ class UIControlsText extends List
   ###
   setupCanvasControls: (@canvasControlsContainer) ->
     @textContainer = $("<div>")
-      .addClass(imglyKit.classPrefix + "canvas-text-container")
+      .addClass(ImglyKit.classPrefix + "canvas-text-container")
       .appendTo @canvasControlsContainer
 
     #
     # Size buttons
     #
     @fontsizeButtonsContainer = $("<div>")
-      .addClass(imglyKit.classPrefix + "canvas-text-size-container")
+      .addClass(ImglyKit.classPrefix + "canvas-text-size-container")
       .appendTo @textContainer
 
     for control in ["Smaller", "Bigger"]
       @["fontsize#{control}Button"] = $("<div>")
         .addClass(
-          imglyKit.classPrefix + "canvas-text-size-" + control.toLowerCase()
+          ImglyKit.classPrefix + "canvas-text-size-" + control.toLowerCase()
         )
         .appendTo @fontsizeButtonsContainer
 
@@ -136,19 +136,19 @@ class UIControlsText extends List
     # Crosshair / anchor control
     #
     @crosshair = $("<div>")
-      .addClass(imglyKit.classPrefix + "canvas-crosshair " + imglyKit.classPrefix + "canvas-text-crosshair")
+      .addClass(ImglyKit.classPrefix + "canvas-crosshair " + ImglyKit.classPrefix + "canvas-text-crosshair")
       .appendTo @textContainer
 
     @handleCrosshair()
 
     @textInput = $("<textarea>")
-      .addClass(imglyKit.classPrefix + "canvas-text-input")
+      .addClass(ImglyKit.classPrefix + "canvas-text-input")
       .appendTo(@textContainer)
       .attr(placeholder: "Text")
       .focus()
 
     @textInputDummy = $("<div>")
-      .addClass(imglyKit.classPrefix + "canvas-text-input-dummy")
+      .addClass(ImglyKit.classPrefix + "canvas-text-input-dummy")
       .appendTo @canvasControlsContainer
 
     @textInput.keyup (e) =>

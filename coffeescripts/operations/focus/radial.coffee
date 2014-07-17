@@ -1,12 +1,12 @@
 ###
-  imglyKit
+  ImglyKit
   Copyright (c) 2013 img.ly
 ###
 Focus   = require "./focus.coffee"
 Vector2 = require "../../math/vector2.coffee"
 class RadialFocus extends Focus
   ###
-    @param {imglyKit} app
+    @param {ImglyKit} app
     @param {CanvasRenderingContext2d} context
     @param {Object} options
   ###

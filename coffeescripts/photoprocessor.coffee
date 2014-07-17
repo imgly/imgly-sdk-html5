@@ -1,5 +1,5 @@
 ###
-  imglyKit
+  ImglyKit
   Copyright (c) 2013 img.ly
 ###
 Perf           = require "./vendor/perf.coffee"
@@ -23,7 +23,7 @@ class PhotoProcessor
   setSourceImage: (@sourceImage) -> return
 
   ###
-    @params {imglyKit.Operations.Operation} operation
+    @params {ImglyKit.Operations.Operation} operation
   ###
   setPreviewOperation: (operation) ->
     operation.setContext @canvas.getContext()
@@ -67,8 +67,8 @@ class PhotoProcessor
           width: @sourceImage.width
           height: @sourceImage.height
         container:
-          width: width - imglyKit.canvasContainerPadding * 2
-          height: height - imglyKit.canvasContainerPadding * 2
+          width: width - ImglyKit.canvasContainerPadding * 2
+          height: height - ImglyKit.canvasContainerPadding * 2
 
       dimensions = Utils.calculateCanvasSize options
       imageData = Utils.getResizedImageDataForImage @sourceImage, dimensions, smooth: true

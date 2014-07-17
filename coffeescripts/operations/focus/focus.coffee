@@ -1,5 +1,5 @@
 ###
-  imglyKit
+  ImglyKit
   Copyright (c) 2013 img.ly
 ###
 
@@ -57,7 +57,7 @@ class Focus extends Operation
   fingerprint: null
 
   ###
-    @param {imglyKit} app
+    @param {ImglyKit} app
     @param {CanvasRenderingContext2d} context
     @param {Object} options
   ###

@@ -1,5 +1,5 @@
 ###
-  imglyKit
+  ImglyKit
   Copyright (c) 2013 img.ly
 ###
 Slider = require "./base/slider.coffee"

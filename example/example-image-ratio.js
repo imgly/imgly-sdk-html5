@@ -1,5 +1,5 @@
 /**
- * imglyKit
+ * ImglyKit
  * integration example using XHR image loading,
  * restricted to a ratio of 4 / 3
  *
@@ -15,9 +15,9 @@ $(function () {
   image.src = "example.jpg";
   image.onload = function () {
 
-    // Initialize imglyKit and run it
+    // Initialize ImglyKit and run it
     // with the image
-    imgly = new imglyKit({
+    imgly = new ImglyKit({
       container: "#container",
       ratio: 1 / 1
     });

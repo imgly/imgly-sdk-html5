@@ -1,5 +1,5 @@
 ###
-  imglyKit
+  ImglyKit
   Copyright (c) 2013 img.ly
 ###
 Overview     = require "./controls/overview.coffee"
@@ -24,7 +24,7 @@ class UIControls extends EventEmitter
   getContainer: -> @controlsContainer
 
   ###
-    @returns {imglyKit.UI.Controls.Base}
+    @returns {ImglyKit.UI.Controls.Base}
   ###
   getCurrentControls: -> @currentControls
 
@@ -34,7 +34,7 @@ class UIControls extends EventEmitter
   init: ->
     # Create controls container
     @controlsContainer = $("<div>")
-      .addClass(imglyKit.classPrefix + "controls-container")
+      .addClass(ImglyKit.classPrefix + "controls-container")
       .appendTo @container
 
     @initOverview()

@@ -1,5 +1,5 @@
 /**
- * imglyKit
+ * ImglyKit
  * integration example
  *
  * Copyright (c) 2013 img.ly
@@ -8,7 +8,7 @@
 $(function () {
   var fileInput = document.getElementById("file")
     , renderButton = $("#renderButton")
-    , imgly = new imglyKit({
+    , imgly = new ImglyKit({
         container: "#container"
       });
 
@@ -24,14 +24,14 @@ $(function () {
     }
 
     // Use FileReader to turn the selected
-    // file into a data url. imglyKit needs
+    // file into a data url. ImglyKit needs
     // a data url or an image
     var reader = new FileReader();
     reader.onload = (function(file) {
       return function (e) {
         data = e.target.result;
 
-        // Run imglyKit with the selected file
+        // Run ImglyKit with the selected file
         try {
           imgly.run(data);
         } catch (e) {

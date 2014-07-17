@@ -1,5 +1,5 @@
 ###
-  imglyKit
+  ImglyKit
   Copyright (c) 2013 img.ly
 ###
 List            = require "./base/list.coffee"
@@ -12,9 +12,9 @@ linearOperation = require "../../operations/focus/linear.coffee"
 class UIControlsFocus extends List
   displayButtons: true
   ###
-    @param {imglyKit} app
-    @param {imglyKit.UI} ui
-    @param {imglyKit.UI.Controls} controls
+    @param {ImglyKit} app
+    @param {ImglyKit.UI} ui
+    @param {ImglyKit.UI.Controls} controls
   ###
   constructor: (@app, @ui, @controls) ->
     super
@@ -96,12 +96,12 @@ class UIControlsFocus extends List
 
     @knobs = []
     for i in [0..1]
-      knob = $("<div>").addClass(imglyKit.classPrefix + "canvas-knob")
+      knob = $("<div>").addClass(ImglyKit.classPrefix + "canvas-knob")
       knob.appendTo @canvasControlsContainer
 
       @knobs.push knob
 
-    @crosshair = $("<div>").addClass(imglyKit.classPrefix + "canvas-crosshair")
+    @crosshair = $("<div>").addClass(ImglyKit.classPrefix + "canvas-crosshair")
     @crosshair.appendTo @canvasControlsContainer
 
     @handleKnobControl()

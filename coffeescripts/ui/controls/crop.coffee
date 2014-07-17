@@ -1,5 +1,5 @@
 ###
-  imglyKit
+  ImglyKit
   Copyright (c) 2013 img.ly
 ###
 List    = require "./base/list.coffee"
@@ -10,9 +10,9 @@ class UIControlsCrop extends List
   minimumCropSize: 50
   singleOperation: true
   ###
-    @param {imglyKit} app
-    @param {imglyKit.UI} ui
-    @param {imglyKit.UI.Controls} controls
+    @param {ImglyKit} app
+    @param {ImglyKit.UI} ui
+    @param {ImglyKit.UI.Controls} controls
   ###
   constructor: (@app, @ui, @controls) ->
     super
@@ -70,8 +70,8 @@ class UIControlsCrop extends List
       "lc",       "rc",
       "bl", "bc", "br"]
         div = $("<div>")
-          .addClass(imglyKit.classPrefix + "canvas-cropping-spotlight")
-          .addClass(imglyKit.classPrefix + "canvas-cropping-spotlight-" + position)
+          .addClass(ImglyKit.classPrefix + "canvas-cropping-spotlight")
+          .addClass(ImglyKit.classPrefix + "canvas-cropping-spotlight-" + position)
           .appendTo @canvasControlsContainer
 
         @spotlightDivs[position] = div
@@ -80,7 +80,7 @@ class UIControlsCrop extends List
       Create the center div (cropped area)
     ###
     @centerDiv = $("<div>")
-      .addClass(imglyKit.classPrefix + "canvas-cropping-center")
+      .addClass(ImglyKit.classPrefix + "canvas-cropping-center")
       .appendTo @canvasControlsContainer
 
     ###
@@ -89,7 +89,7 @@ class UIControlsCrop extends List
     @knobs = {}
     for position in ["tl", "tr", "bl", "br"]
       div = $("<div>")
-        .addClass(imglyKit.classPrefix + "canvas-knob")
+        .addClass(ImglyKit.classPrefix + "canvas-knob")
         .appendTo @canvasControlsContainer
 
       @knobs[position] = div

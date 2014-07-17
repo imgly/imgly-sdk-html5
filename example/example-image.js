@@ -1,5 +1,5 @@
 /**
- * imglyKit
+ * ImglyKit
  * integration example using XHR image loading
  *
  * Copyright (c) 2013 img.ly
@@ -14,9 +14,9 @@ $(function () {
   image.src = "img-1.jpg";
   image.onload = function () {
 
-    // Initialize imglyKit and run it
+    // Initialize ImglyKit and run it
     // with the image
-    imgly = new imglyKit({
+    imgly = new ImglyKit({
       container: "#container"
     });
 

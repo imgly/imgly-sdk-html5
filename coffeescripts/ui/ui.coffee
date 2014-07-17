@@ -1,5 +1,5 @@
 ###
-  imglyKit
+  ImglyKit
   Copyright (c) 2013 img.ly
 ###
 Controls     = require "./controls.coffee"
@@ -14,12 +14,12 @@ class UI extends EventEmitter
     @initialized = false
 
   ###
-    @returns {imglyKit.UI.Canvas}
+    @returns {ImglyKit.UI.Canvas}
   ###
   getCanvas: -> @canvas
 
   ###
-    @returns imglyKit.UI.Controls.Base
+    @returns ImglyKit.UI.Controls.Base
   ###
   getCurrentControls: -> @controls.getCurrentControls()
 

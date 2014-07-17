@@ -1,5 +1,5 @@
 ###
-  imglyKit
+  ImglyKit
   Copyright (c) 2013 img.ly
 ###
 EventEmitter = require("events").EventEmitter
@@ -48,7 +48,7 @@ class UIControlsBase extends EventEmitter
     ###
     if @options.backButton
       back = $("<div>")
-        .addClass(imglyKit.classPrefix + "controls-button-back")
+        .addClass(ImglyKit.classPrefix + "controls-button-back")
         .appendTo @wrapper
 
       back.click =>
@@ -60,7 +60,7 @@ class UIControlsBase extends EventEmitter
       "Done" Button
     ###
     done = $("<div>")
-      .addClass(imglyKit.classPrefix + "controls-button-done")
+      .addClass(ImglyKit.classPrefix + "controls-button-done")
       .appendTo @wrapper
 
     done.click =>

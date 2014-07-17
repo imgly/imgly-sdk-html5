@@ -1,12 +1,12 @@
 ###
-  imglyKit
+  ImglyKit
   Copyright (c) 2013 img.ly
 ###
 Operation = require "./operation.coffee"
 Utils     = require "../utils.coffee"
 class OrientationOperation extends Operation
   ###
-    @param {imglyKit} app
+    @param {ImglyKit} app
     @param {Object} options
   ###
   constructor: (@app, @options={}) ->

@@ -1,5 +1,5 @@
 ###
-  imglyKit
+  ImglyKit
   Copyright (c) 2013 img.ly
 ###
 Utils = require "../utils.coffee"
@@ -33,20 +33,20 @@ class UICanvas
   init: ->
     # Create canvas container
     @canvasContainer = $("<div>")
-      .addClass(imglyKit.classPrefix + "canvas-container")
+      .addClass(ImglyKit.classPrefix + "canvas-container")
       .css
         height: @app.getHeight() - @options.height
       .appendTo @container
 
     # Create canvas
     @canvas = $("<canvas>")
-      .addClass(imglyKit.classPrefix + "canvas")
+      .addClass(ImglyKit.classPrefix + "canvas")
       .appendTo @canvasContainer
     @canvasDom = @canvas.get(0)
 
     # Controls container for cropping etc.
     @controlsContainer = $("<div>")
-      .addClass(imglyKit.classPrefix + "canvas-controls-container")
+      .addClass(ImglyKit.classPrefix + "canvas-controls-container")
       .appendTo @canvasContainer
 
     # Get drawing context
@@ -90,8 +90,8 @@ class UICanvas
         width: image.width
         height: image.height
       container:
-        width: @canvasContainer.width() - imglyKit.canvasContainerPadding * 2
-        height: @canvasContainer.height() - imglyKit.canvasContainerPadding * 2
+        width: @canvasContainer.width() - ImglyKit.canvasContainerPadding * 2
+        height: @canvasContainer.height() - ImglyKit.canvasContainerPadding * 2
 
     # Find out how big the canvas should be
     return Utils.calculateCanvasSize options
@@ -113,8 +113,8 @@ class UICanvas
         width: obj.width
         height: obj.height
       container:
-        width: @canvasContainer.width() - imglyKit.canvasContainerPadding * 2
-        height: @canvasContainer.height() - imglyKit.canvasContainerPadding * 2
+        width: @canvasContainer.width() - ImglyKit.canvasContainerPadding * 2
+        height: @canvasContainer.height() - ImglyKit.canvasContainerPadding * 2
 
     # Find out how big the canvas should be
     newCanvasSize = Utils.calculateCanvasSize options

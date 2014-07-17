@@ -1,5 +1,5 @@
 ###
-  imglyKit
+  ImglyKit
   Copyright (c) 2013 img.ly
 ###
 ToneCurve  = require "./primitives/tonecurve.coffee"

@@ -1,5 +1,5 @@
 ###
-  imglyKit
+  ImglyKit
   Copyright (c) 2013 img.ly
 ###
 Base  = require "./base.coffee"
@@ -22,7 +22,7 @@ class UIControlsBaseList extends Base
         # If no name is given, display a space
         unless option.name?
           return $("<li>")
-            .addClass(imglyKit.classPrefix + "controls-item-space")
+            .addClass(ImglyKit.classPrefix + "controls-item-space")
             .appendTo @list
 
         # If the `cssClass` property is present, use it. Otherwise, generate
@@ -30,8 +30,8 @@ class UIControlsBaseList extends Base
         cssClass = option.cssClass or Utils.dasherize(option.name)
 
         item = $("<li>")
-          .addClass(imglyKit.classPrefix + "controls-item")
-          .addClass(imglyKit.classPrefix + "controls-item-" + cssClass)
+          .addClass(ImglyKit.classPrefix + "controls-item")
+          .addClass(ImglyKit.classPrefix + "controls-item-" + cssClass)
           .appendTo @list
 
         item.click (e) =>
@@ -46,7 +46,7 @@ class UIControlsBaseList extends Base
       )(option)
 
   ###
-    @param {imglyKit.Operations.Operation}
+    @param {ImglyKit.Operations.Operation}
   ###
   setOperation: (@operation) ->
     @updateOptions @operation.options
@@ -64,7 +64,7 @@ class UIControlsBaseList extends Base
   handleOptionSelect: (option, item) ->
     @setAllItemsInactive()
 
-    activeClass = imglyKit.classPrefix + "controls-list-item-active"
+    activeClass = ImglyKit.classPrefix + "controls-list-item-active"
     item.addClass activeClass
 
     if @singleOperation
@@ -85,19 +85,19 @@ class UIControlsBaseList extends Base
   ###
   createList: ->
     @wrapper = $("<div>")
-      .addClass(imglyKit.classPrefix + "controls-wrapper")
+      .addClass(ImglyKit.classPrefix + "controls-wrapper")
       .attr("data-control", @constructor.name)
       .appendTo @controls.getContainer()
 
     @list = $("<ul>")
-      .addClass(imglyKit.classPrefix + "controls-list")
+      .addClass(ImglyKit.classPrefix + "controls-list")
       .appendTo @wrapper
 
     if @cssClassIdentifier?
-      @list.addClass(imglyKit.classPrefix + "controls-list-" + @cssClassIdentifier)
+      @list.addClass(ImglyKit.classPrefix + "controls-list-" + @cssClassIdentifier)
 
     if @displayButtons
-      @list.addClass(imglyKit.classPrefix + "controls-list-with-buttons")
+      @list.addClass(ImglyKit.classPrefix + "controls-list-with-buttons")
       @list.width(@controls.getContainer().width() - @controls.getHeight() * 2)
 
       @createButtons()
@@ -115,7 +115,7 @@ class UIControlsBaseList extends Base
     Sets all list items to inactive state
   ###
   setAllItemsInactive: ->
-    activeClass = imglyKit.classPrefix + "controls-list-item-active"
+    activeClass = ImglyKit.classPrefix + "controls-list-item-active"
     @list.find("li").removeClass activeClass
 
 

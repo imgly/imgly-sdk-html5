@@ -1,5 +1,5 @@
 ###
-  imglyKit
+  ImglyKit
   Copyright (c) 2013 img.ly
 ###
 
@@ -31,7 +31,7 @@ class Rect
   setDimensions: (@width, @height) -> return
 
   ###
-    @param {imglyKit.Rect} The vector we want to copy
+    @param {ImglyKit.Rect} The vector we want to copy
   ###
   copy: (other) ->
     @x = other.x

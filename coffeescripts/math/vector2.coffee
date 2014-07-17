@@ -1,5 +1,5 @@
 ###
-  imglyKit
+  ImglyKit
   Copyright (c) 2013 img.ly
 ###
 
@@ -20,7 +20,7 @@ class Vector2
   clone: -> return new Vector2(@x, @y)
 
   ###
-    @param {imglyKit.Vector2} The vector we want to copy
+    @param {ImglyKit.Vector2} The vector we want to copy
   ###
   copy: (other) ->
     @x = other.x

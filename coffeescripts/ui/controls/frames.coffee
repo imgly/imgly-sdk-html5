@@ -1,5 +1,5 @@
 ###
-  imglyKit
+  ImglyKit
   Copyright (c) 2013 img.ly
 ###
 List    = require "./base/list.coffee"
@@ -47,11 +47,11 @@ class UIControlsFrames extends List
     for option in options
       ((option) =>
         item = $("<li>")
-          .addClass(imglyKit.classPrefix + "controls-item")
+          .addClass(ImglyKit.classPrefix + "controls-item")
           .appendTo @list
 
         preview = $("<div>")
-          .addClass(imglyKit.classPrefix + "controls-frame-preview-" + Utils.dasherize(option.id))
+          .addClass(ImglyKit.classPrefix + "controls-frame-preview-" + Utils.dasherize(option.id))
           .appendTo item
 
         item.click (e) =>

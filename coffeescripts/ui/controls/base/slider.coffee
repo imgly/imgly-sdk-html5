@@ -1,5 +1,5 @@
 ###
-  imglyKit
+  ImglyKit
   Copyright (c) 2013 img.ly
 ###
 Base = require "./base.coffee"
@@ -13,25 +13,25 @@ class UIControlsBaseSlider extends Base
 
     # Create the slider DOM tree
     @wrapper = $("<div>")
-      .addClass(imglyKit.classPrefix + "controls-wrapper")
+      .addClass(ImglyKit.classPrefix + "controls-wrapper")
       .attr("data-control", @constructor.name)
       .appendTo @controls.getContainer()
 
     @sliderWrapper = $("<div>")
-      .addClass(imglyKit.classPrefix + "controls-slider-wrapper")
+      .addClass(ImglyKit.classPrefix + "controls-slider-wrapper")
       .width(width)
       .appendTo @wrapper
 
     @sliderCenterDot = $("<div>")
-      .addClass(imglyKit.classPrefix + "controls-slider-dot")
+      .addClass(ImglyKit.classPrefix + "controls-slider-dot")
       .appendTo @sliderWrapper
 
     @sliderBar = $("<div>")
-      .addClass(imglyKit.classPrefix + "controls-slider-bar")
+      .addClass(ImglyKit.classPrefix + "controls-slider-bar")
       .appendTo @sliderWrapper
 
     @slider = $("<div>")
-      .addClass(imglyKit.classPrefix + "controls-slider")
+      .addClass(ImglyKit.classPrefix + "controls-slider")
       .css(left: width / 2)
       .appendTo @sliderWrapper
 
@@ -39,11 +39,11 @@ class UIControlsBaseSlider extends Base
       Plus / Minus images
     ###
     $("<div>")
-      .addClass(imglyKit.classPrefix + "controls-slider-plus")
+      .addClass(ImglyKit.classPrefix + "controls-slider-plus")
       .appendTo @sliderWrapper
 
     $("<div>")
-      .addClass(imglyKit.classPrefix + "controls-slider-minus")
+      .addClass(ImglyKit.classPrefix + "controls-slider-minus")
       .appendTo @sliderWrapper
 
     @handleSliderControl()

@@ -1,5 +1,5 @@
 /**
- * imglyKit
+ * ImglyKit
  * integration example using XHR image loading
  *
  * Copyright (c) 2013 img.ly
@@ -14,10 +14,10 @@ $(function () {
   image.src = "img-1.jpg";
   image.onload = function () {
 
-    // Initialize imglyKit and run it with the image.
+    // Initialize ImglyKit and run it with the image.
     // Don't forget to add button images in the CSS section
     // named: .imgly-controls-item-lobster and .imgly-controls-item-titillium-web
-    imgly = new imglyKit({
+    imgly = new ImglyKit({
       container: "#container",
       additionalFonts: [
         {

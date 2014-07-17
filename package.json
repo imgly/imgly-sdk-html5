@@ -1,5 +1,5 @@
 {
-  "name": "imglyKit",
+  "name": "ImglyKit",
   "version": "0.0.1",
   "description": "img.ly filters sdk for the web",
   "devDependencies": {

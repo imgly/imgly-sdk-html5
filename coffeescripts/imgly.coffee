@@ -1,5 +1,5 @@
 ###
-  imglyKit
+  ImglyKit
   Copyright (c) 2013 img.ly
 ###
 PhotoProcessor = require "./photoprocessor.coffee"
@@ -9,11 +9,11 @@ Utils          = require "./utils.coffee"
 window.after = (t, f) -> setTimeout f, t
 window.every = (t, f) -> setInterval f, t
 
-class imglyKit
+class ImglyKit
   @classPrefix: "imgly-"
   @canvasContainerPadding: 15
   ###
-    @param options.container The container we imglyKit will run in
+    @param options.container The container we ImglyKit will run in
   ###
   constructor: (@options = {}) ->
     @options.debug ?= false
@@ -23,7 +23,7 @@ class imglyKit
     # Might be a selector string, use
     # jQuery to resolve it
     @options.container = $(@options.container)
-    @options.container.addClass imglyKit.classPrefix + "container"
+    @options.container.addClass ImglyKit.classPrefix + "container"
 
     # Set everything up
     @photoProcessor = new PhotoProcessor this
@@ -52,7 +52,7 @@ class imglyKit
   getHeight: -> @options.container.height()
 
   ###
-    @returns {imglyKit.PhotoProcessor}
+    @returns {ImglyKit.PhotoProcessor}
   ###
   getPhotoProcessor: -> @photoProcessor
 
@@ -165,4 +165,4 @@ class imglyKit
       canvas = Utils.newCanvasFromImageData imageData
       callback null, canvas.toDataURL(format)
 
-window.imglyKit = imglyKit
+window.ImglyKit = ImglyKit

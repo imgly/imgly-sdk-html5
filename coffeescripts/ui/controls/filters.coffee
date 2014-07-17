@@ -1,5 +1,5 @@
 ###
-  imglyKit
+  ImglyKit
   Copyright (c) 2013 img.ly
 ###
 List  = require "./base/list.coffee"
@@ -46,16 +46,16 @@ class UIControlsFilters extends List
     ]
       ((filter) =>
         item = $("<li>")
-          .addClass(imglyKit.classPrefix + "controls-item")
+          .addClass(ImglyKit.classPrefix + "controls-item")
           .appendTo @list
 
         preview = $("<div>")
-          .addClass(imglyKit.classPrefix + "controls-preview-" + Utils.dasherize(filter.displayName))
+          .addClass(ImglyKit.classPrefix + "controls-preview-" + Utils.dasherize(filter.displayName))
           .appendTo item
 
         item.click (e) =>
           @reset()
-          activeClass = imglyKit.classPrefix + "controls-list-item-active"
+          activeClass = ImglyKit.classPrefix + "controls-list-item-active"
           item.addClass activeClass
 
           @emit "select", operation: filter

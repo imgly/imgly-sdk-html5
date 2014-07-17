@@ -1,13 +1,13 @@
 ###
-  imglyKit
+  ImglyKit
   Copyright (c) 2013 img.ly
 ###
 List = require "./base/list.coffee"
 class UIControlsOverview extends List
   ###
-    @param {imglyKit} app
-    @param {imglyKit.UI} ui
-    @param {imglyKit.UI.Controls} controls
+    @param {ImglyKit} app
+    @param {ImglyKit.UI} ui
+    @param {ImglyKit.UI.Controls} controls
   ###
   allowMultipleClick: false
   constructor: (@app, @ui, @controls) ->

@@ -1,5 +1,5 @@
 ###
-  imglyKit
+  ImglyKit
   Copyright (c) 2013 img.ly
 ###
 Queue        = require "../vendor/queue.coffee"
@@ -7,7 +7,7 @@ EventEmitter = require("events").EventEmitter
 class Operation extends EventEmitter
   renderPreview: true
   ###
-    @param {imglyKit} app
+    @param {ImglyKit} app
     @param {Object} options
   ###
   constructor: (@app, @options = {}) ->

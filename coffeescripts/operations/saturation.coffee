@@ -1,12 +1,12 @@
 ###
-  imglyKit
+  ImglyKit
   Copyright (c) 2013 img.ly
 ###
 Filter     = require "./filters/filter.coffee"
 Saturation = require "./filters/primitives/saturation.coffee"
 class SaturationOperation extends Filter
   ###
-    @param {imglyKit} app
+    @param {ImglyKit} app
     @param {Object} options
   ###
   constructor: (@app, @options={}) ->
