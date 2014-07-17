@@ -42,6 +42,14 @@ class UIControlsText extends List
       }
     ]
 
+    if @app.options.additionalFonts?
+      for additionalFont in @app.options.additionalFonts
+        @listItems.push
+          name: additionalFont.name
+          method: "setFont"
+          cssClass: additionalFont.cssClass
+          arguments: [additionalFont.name]
+
   ###
     Create controls DOM tree
   ###
