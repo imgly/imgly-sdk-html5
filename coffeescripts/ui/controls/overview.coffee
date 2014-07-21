@@ -18,6 +18,10 @@ class UIControlsOverview extends List
         cssClass: "filters"
         controls: require "./filters.coffee"
       }, {
+        name: "Stickers"
+        cssClass: "stickers"
+        controls: require "./stickers_control.coffee"
+      }, {
         name: "Orientation"
         cssClass: "orientation"
         controls: require "./orientation.coffee"
