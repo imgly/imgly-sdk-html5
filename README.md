@@ -10,7 +10,7 @@ A Text editor with an elegant and simple to use interface allows adding text ins
 ![Example](http://i.imgur.com/xR5VSKQ.gif)
 
 ### Examples
-See the examples folder for implementation examples.
+See the examples folder for implementation examples or play with the [demo on our website](http://sdk.img.ly/).
 
 ### License
 Please see [LICENSE](https://github.com/imgly/imgly-sdk-html5/blob/master/LICENSE.md) for licensing details.
