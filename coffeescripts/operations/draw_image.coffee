@@ -17,9 +17,7 @@ module.exports = class DrawImageOperation extends Operation
     @options.stickerImageWidth = 100
     @options.stickerImageHeight = 100
 
-    @options.stickerImageXPosition = 20
-    @options.stickerImageYPosition = 20
-
+    @options.stickerPosition = new Vector2(20, 20)
 
   ###
     @param {String} sticker
@@ -36,9 +34,9 @@ module.exports = class DrawImageOperation extends Operation
     #   .add(paddingVector)
     #   .multiplyWithRect(imageData)
 
-    console.log("huhu")
-    console.log(@options)
-
+    #console.log(@options)
+    console.log "apply"
+    
     Queue.promise((resolve, reject) =>
       # DRAW IMAGE HERE
       stickerImage = new Image()
@@ -49,6 +47,8 @@ module.exports = class DrawImageOperation extends Operation
       canvas  = Utils.newCanvasFromImageData imageData
       context = canvas.getContext "2d"
 
+      #console.log @options
+      
       # Draw sticker image
       context.drawImage(
         # Image to be used
@@ -62,9 +62,9 @@ module.exports = class DrawImageOperation extends Operation
         # The height of the clipped image
         @options.stickerImageHeight,
         # The x coord. where to place image on target canvas
-        @options.stickerImageXPosition,
+        @options.stickerPosition.x,
         # The y coord. where to place image on target canvas
-        @options.stickerImageYPosition,
+        @options.stickerPosition.y,
         # The width of the image to use (stretch)
         @options.stickerImageWidth,
         # The height of the image to use (stretch)

@@ -31,6 +31,9 @@ class Operation extends EventEmitter
     @emit "updateOptions", options
 
   ###
+    This applies this operation to the image in the editor. However, it is not
+    responsible for storing the result in any way. It receives imageData and
+    returns a modified version. 
     @param {ImageData} imageData
     @param {Function} callback
     @returns {ImageData}

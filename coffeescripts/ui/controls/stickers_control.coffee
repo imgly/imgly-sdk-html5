@@ -113,21 +113,25 @@ class UIControlsStickers extends List
           .add(mousePositionDifference)
           .clamp(minContainerPosition, maxContainerPosition)
 
-        # move the dom object
-        console.log(currentContainerPosition.x)
-        console.log(currentContainerPosition.y)
-
+        # Move the DOM object
         @stickerContainer.css
           left: currentContainerPosition.x
           top:  currentContainerPosition.y
 
-        # Update the operation options
-        @operationOptions.start = new Vector2()
+        # Set the sticker position in the operation options, so the operation
+        # knows where to place the image.
+        @operationOptions.stickerPosition = new Vector2()
           .copy(currentContainerPosition)
-          .divideByRect(canvasRect)
+
+        # move the dom object
+        #console.log(@operationOptions)
+        #console.log(@operationOptions.stickerPosition.x)
+        #console.log(@operationOptions.stickerPosition.y)
+
+        # Update the operation options
         @operation.setOptions @operationOptions
         @updateCanvasControls()
-
+    
       $(document).mouseup =>
         $(document).off "mousemove"
         $(document).off "mouseup"

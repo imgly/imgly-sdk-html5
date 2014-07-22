@@ -45,3 +45,8 @@ The option displayButtons will add a back and apply button.
 
 Operation are the heart of manipulating the canvas object. If you want to create a custom operation you have to implement it
 in the operations folder and the require it by your custom control.
+
+Settings from the UI control, for example the position and size, can be passed
+via the @operationOptions variable (which is being set by @operation.setOptions).
+
+
