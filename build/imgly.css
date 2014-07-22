@@ -149,6 +149,13 @@
   background: rgba(0, 0, 0, 0.5);
 }
 /* line 11, ../sass/ui/canvas-controls/_text.sass */
+.imgly-container .imgly-canvas-container .imgly-canvas-sticker-container {
+  border: 1px dotted white;
+  border-radius: 3px;
+  background: none;
+  box-shadow: 0px 0px 30px 0px white;
+}
+/* line 18, ../sass/ui/canvas-controls/_text.sass */
 .imgly-container .imgly-canvas-container .imgly-canvas-text-input, .imgly-container .imgly-canvas-container .imgly-canvas-text-input-dummy {
   -webkit-user-select: auto;
   -moz-user-select: auto;
@@ -160,14 +167,14 @@
   white-space: nowrap;
   overflow: auto;
 }
-/* line 21, ../sass/ui/canvas-controls/_text.sass */
+/* line 28, ../sass/ui/canvas-controls/_text.sass */
 .imgly-container .imgly-canvas-container .imgly-canvas-text-input-dummy {
   position: absolute;
   top: -9999;
   left: -9999;
   opacity: 0;
 }
-/* line 32, ../sass/ui/canvas-controls/_text.sass */
+/* line 39, ../sass/ui/canvas-controls/_text.sass */
 .imgly-container .imgly-canvas-container .imgly-canvas-text-size-container {
   width: 70px;
   background: rgba(0, 0, 0, 0.4);
@@ -182,28 +189,28 @@
   -webkit-border-top-right-radius: 3px;
   border-top-right-radius: 3px;
 }
-/* line 45, ../sass/ui/canvas-controls/_text.sass */
+/* line 52, ../sass/ui/canvas-controls/_text.sass */
 .imgly-container .imgly-canvas-container .imgly-canvas-text-size-smaller, .imgly-container .imgly-canvas-container .imgly-canvas-text-size-bigger {
   width: 35px;
   height: 30px;
   float: left;
   cursor: pointer;
 }
-/* line 53, ../sass/ui/canvas-controls/_text.sass */
+/* line 60, ../sass/ui/canvas-controls/_text.sass */
 .imgly-container .imgly-canvas-container .imgly-canvas-text-size-smaller:hover, .imgly-container .imgly-canvas-container .imgly-canvas-text-size-bigger:hover {
   background-color: rgba(0, 0, 0, 0.4);
 }
-/* line 56, ../sass/ui/canvas-controls/_text.sass */
+/* line 63, ../sass/ui/canvas-controls/_text.sass */
 .imgly-container .imgly-canvas-container .imgly-canvas-text-size-smaller {
   border-top-left-radius: 3px;
   background: url("assets/minus.png") no-repeat center center;
 }
-/* line 65, ../sass/ui/canvas-controls/_text.sass */
+/* line 72, ../sass/ui/canvas-controls/_text.sass */
 .imgly-container .imgly-canvas-container .imgly-canvas-text-size-bigger {
   border-top-right-radius: 3px;
   background: url("assets/plus.png") no-repeat center center;
 }
-/* line 75, ../sass/ui/canvas-controls/_text.sass */
+/* line 82, ../sass/ui/canvas-controls/_text.sass */
 .imgly-container .imgly-canvas-container .imgly-canvas-text-crosshair, .imgly-container .imgly-canvas-container .imgly-canvas-sticker-crosshair {
   position: absolute;
   top: 50%;

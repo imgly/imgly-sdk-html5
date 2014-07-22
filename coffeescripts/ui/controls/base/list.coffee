@@ -62,6 +62,7 @@ class UIControlsBaseList extends Base
     @param {jQuery.Object} item
   ###
   handleOptionSelect: (option, item) ->
+    console.log "handleOptionSelect"
     @setAllItemsInactive()
 
     activeClass = ImglyKit.classPrefix + "controls-list-item-active"
@@ -74,6 +75,7 @@ class UIControlsBaseList extends Base
       @emit "select", option
       @sentSelected = true
 
+    console.log option.method
     if option.method
       @operation[option.method].apply @operation, option.arguments
 

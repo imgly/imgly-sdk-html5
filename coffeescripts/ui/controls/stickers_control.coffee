@@ -117,19 +117,19 @@ class UIControlsStickers extends List
         @stickerContainer.css
           left: currentContainerPosition.x
           top:  currentContainerPosition.y
-
+          width: @operationOptions.stickerImageWidth
+          height: @operationOptions.stickerImageHeight
+        
+        console.log @stickerContainer
+        
         # Set the sticker position in the operation options, so the operation
         # knows where to place the image.
         @operationOptions.stickerPosition = new Vector2()
           .copy(currentContainerPosition)
 
-        # move the dom object
-        #console.log(@operationOptions)
-        #console.log(@operationOptions.stickerPosition.x)
-        #console.log(@operationOptions.stickerPosition.y)
-
         # Update the operation options
         @operation.setOptions @operationOptions
+        @emit "renderPreview"
         @updateCanvasControls()
     
       $(document).mouseup =>

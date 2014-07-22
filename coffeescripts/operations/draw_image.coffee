@@ -18,7 +18,6 @@ module.exports = class DrawImageOperation extends Operation
     @options.stickerImageHeight = 100
 
     @options.stickerPosition = new Vector2(20, 20)
-
   ###
     @param {String} sticker
   ###

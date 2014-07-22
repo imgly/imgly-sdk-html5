@@ -91,7 +91,6 @@ class UIControlsText extends List
           .css(backgroundColor: color)
           .appendTo(colorsDropdown)
 
-
         colorDiv.click =>
           @operationOptions.color = color
           @operation.setOptions @operationOptions
