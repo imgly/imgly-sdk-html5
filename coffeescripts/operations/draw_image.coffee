@@ -11,7 +11,7 @@ Rect      = require "../math/rect.coffee"
 module.exports = class DrawImageOperation extends Operation
   constructor: (@app, @options={}) ->
     super
-    @options.scale ?= 1
+    @options.scale = 1.0 # 100% scale
     @options.sticker = "stickers/heart-icon.png"
 
     @options.stickerImageWidth = 100
@@ -34,7 +34,7 @@ module.exports = class DrawImageOperation extends Operation
     #   .multiplyWithRect(imageData)
 
     #console.log(@options)
-    console.log "apply"
+    #console.log "apply"
     
     Queue.promise((resolve, reject) =>
       # DRAW IMAGE HERE
@@ -57,18 +57,19 @@ module.exports = class DrawImageOperation extends Operation
         # The y coordinate where to start clipping
         0,
         # The width of the clipped image
-        @options.stickerImageWidth,
+        stickerImage.width,
         # The height of the clipped image
-        @options.stickerImageHeight,
+        stickerImage.height,
         # The x coord. where to place image on target canvas
         @options.stickerPosition.x,
         # The y coord. where to place image on target canvas
         @options.stickerPosition.y,
         # The width of the image to use (stretch)
-        @options.stickerImageWidth,
+        stickerImage.width * @options.scale,
         # The height of the image to use (stretch)
-        @options.stickerImageHeight
+        stickerImage.height * @options.scale
       )
 
+      #console.log "scale: " + @options.scale
       # Return the new image data
       context.getImageData 0, 0, imageData.width, imageData.height

@@ -49,4 +49,5 @@ in the operations folder and the require it by your custom control.
 Settings from the UI control, for example the position and size, can be passed
 via the @operationOptions variable (which is being set by @operation.setOptions).
 
+What does renderPreview: true really do in class Operation? It allows previews to be rendered, but that is a bit confusing.
 

@@ -19,9 +19,9 @@ class UIControlsStickers extends List
   ###
   constructor: (@app, @ui, @controls) ->
     super
-
     @operationClass = require "../../operations/draw_image.coffee"
-
+    @stickerImageScaleStep = 0.025 # 2.5% image scale step = minimum size
+    @maximumImageSize = 2.0 # 200% Maximum image scale
     @listItems = [
       {
         name: "Heart"
@@ -67,7 +67,7 @@ class UIControlsStickers extends List
         )
         .appendTo @stickerSizeButtonsContainer
 
-      @["stickerSize#{control}Button"].on "click", @["onStickersize#{control}Click"]
+      @["stickerSize#{control}Button"].on "click", @["onStickerSize#{control}Click"]
 
     #
     # Crosshair / anchor control
@@ -77,6 +77,28 @@ class UIControlsStickers extends List
       .appendTo @stickerContainer
 
     @handleCrosshair()
+    
+  ###
+    Gets called as soon as the user clicks the button
+    to increase font size
+  ###
+  onStickerSizeBiggerClick: (e) =>
+    @operationOptions.scale += @stickerImageScaleStep
+    @operationOptions.scale = @maximumImageSize if @operationOptions.scale > @maximumImageSize
+    @operation.setOptions @operationOptions
+    @emit "renderPreview"
+    @updateCanvasControls()
+
+  ###
+    Gets called as soon as the user clicks the button
+    to reduce font size
+  ###
+  onStickerSizeSmallerClick: (e) =>
+    @operationOptions.scale -= @stickerImageScaleStep
+    @operationOptions.scale = @stickerImageScaleStep if @operationOptions .scale < @stickerImageScaleStep
+    @operation.setOptions @operationOptions
+    @emit "renderPreview"
+    @updateCanvasControls()
 
   ###
     Move the text input around by dragging the crosshair
@@ -120,7 +142,7 @@ class UIControlsStickers extends List
           width: @operationOptions.stickerImageWidth
           height: @operationOptions.stickerImageHeight
         
-        console.log @stickerContainer
+        #console.log @stickerContainer
         
         # Set the sticker position in the operation options, so the operation
         # knows where to place the image.

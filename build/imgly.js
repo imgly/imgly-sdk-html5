@@ -54,71 +54,251 @@ process.chdir = function (dir) {
 };
 
 },{}],2:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/vendor/perf.coffee",__dirname="/vendor";var Perf;
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/utils.coffee",__dirname="/";/*
+  ImglyKit
+  Copyright (c) 2013-2014 img.ly
+*/
 
-Perf = (function() {
-  function Perf(name, options) {
-    var _base, _base1, _base2;
-    this.name = name;
-    this.options = options != null ? options : {};
-    if ((_base = this.options).good == null) {
-      _base.good = 100;
-    }
-    if ((_base1 = this.options).bad == null) {
-      _base1.bad = 500;
-    }
-    if ((_base2 = this.options).debug == null) {
-      _base2.debug = true;
-    }
-    this.started = false;
+var Utils;
+
+Utils = {};
+
+Utils.sharedCanvas = document.createElement("canvas");
+
+if (Modernizr.canvas) {
+  Utils.sharedContext = Utils.sharedCanvas.getContext("2d");
+}
+
+/*
+  @param options Options
+  @param options.image Dimensions (width, height) of the image
+  @param options.container Dimensions (width, height) of the container
+  @returns {Object} An object containing the final canvas dimensions (width, height)
+*/
+
+
+Utils.calculateCanvasSize = function(options) {
+  var result, scale;
+  scale = Math.min(options.container.width / options.image.width, options.container.height / options.image.height);
+  result = {
+    width: options.image.width * scale,
+    height: options.image.height * scale
+  };
+  return result;
+};
+
+/*
+  Creates a number as a fingerprint for an array of numbers.
+
+  Based on http://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript-jquery.
+
+  @param {Array} data
+  @returns {Number}
+*/
+
+
+Utils.fingerprint = function(data) {
+  var hash, point, _i, _len;
+  hash = 0;
+  if (!data.length) {
+    return hash;
   }
+  for (_i = 0, _len = data.length; _i < _len; _i++) {
+    point = data[_i];
+    hash = ((hash << 5) - hash) + point;
+    hash |= 0;
+  }
+  return hash;
+};
 
-  Perf.prototype.start = function() {
-    if (this.started || !this.options.debug) {
-      return;
-    }
-    this.start = +new Date();
-    return this.started = true;
-  };
+/*
+  @param {Image} image
+  @returns {ImageData}
+*/
 
-  Perf.prototype.stop = function(printLine) {
-    var background, color, duration, end, message;
-    if (!this.started || !this.options.debug) {
-      return;
-    }
-    end = +new Date();
-    duration = end - this.start;
-    if (this.name != null) {
-      message = this.name + ' took';
-    } else {
-      message = 'Code execution time:';
-    }
-    if (typeof window !== "undefined" && window !== null) {
-      if (duration < this.options.good) {
-        background = 'darkgreen';
-        color = 'white';
-      } else if (duration > this.options.good && duration < this.options.bad) {
-        background = 'orange';
-        color = 'black';
-      } else {
-        background = 'darkred';
-        color = 'white';
+
+Utils.getImageDataForImage = function(image) {
+  var canvas, context;
+  canvas = document.createElement("canvas");
+  canvas.width = image.width;
+  canvas.height = image.height;
+  context = canvas.getContext("2d");
+  context.drawImage(image, 0, 0);
+  return context.getImageData(0, 0, image.width, image.height);
+};
+
+/*
+  @param {Image} image
+  @param {CanvasRenderingContext2d} context
+*/
+
+
+Utils.resizeImageSmooth = function(image, context) {
+  var destHeight, destImageData, destPixels, destWidth, i, resized, resizedBuffer, resizedBufferLength, sourceImageData, sourcePixels, _i;
+  sourceImageData = Utils.getImageDataForImage(image);
+  destImageData = context.getImageData(0, 0, context.canvas.width, context.canvas.height);
+  sourcePixels = sourceImageData.data;
+  destPixels = destImageData.data;
+  destWidth = context.canvas.width;
+  destHeight = context.canvas.height;
+  resized = new Resize(image.width, image.height, destWidth, destHeight, true, true, false);
+  resizedBuffer = resized.resize(sourcePixels);
+  resizedBufferLength = resizedBuffer.length;
+  for (i = _i = 0; 0 <= resizedBufferLength ? _i < resizedBufferLength : _i > resizedBufferLength; i = 0 <= resizedBufferLength ? ++_i : --_i) {
+    destPixels[i] = resizedBuffer[i] & 0xFF;
+  }
+  return context.putImageData(destImageData, 0, 0);
+};
+
+/*
+  @param {Image} image
+  @param {} dimensions
+  @returns {ImageData}
+*/
+
+
+Utils.getResizedImageDataForImage = function(image, dimensions, options) {
+  var canvas, context;
+  if (options == null) {
+    options = {};
+  }
+  if (options.smooth == null) {
+    options.smooth = false;
+  }
+  canvas = document.createElement("canvas");
+  canvas.width = dimensions.width;
+  canvas.height = dimensions.height;
+  context = canvas.getContext("2d");
+  if (!options.smooth) {
+    context.drawImage(image, 0, 0, image.width, image.height, 0, 0, canvas.width, canvas.height);
+  } else {
+    Utils.resizeImageSmooth(image, context);
+  }
+  return context.getImageData(0, 0, canvas.width, canvas.height);
+};
+
+/*
+  @param {ImageData} imageData
+  @returns {ImageData}
+*/
+
+
+Utils.cloneImageData = function(imageData) {
+  var i, newImageData, _i, _ref;
+  newImageData = this.sharedContext.createImageData(imageData.width, imageData.height);
+  for (i = _i = 0, _ref = imageData.data.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+    newImageData.data[i] = imageData.data[i];
+  }
+  return newImageData;
+};
+
+/*
+  @param {Object} dimensions
+  @param {Integer} dimensions.width
+  @param {Integer} dimensions.height
+  @returns {HTMLCanvasElement}
+*/
+
+
+Utils.newCanvasWithDimensions = function(dimensions) {
+  var canvas;
+  canvas = document.createElement("canvas");
+  canvas.width = dimensions.width;
+  canvas.height = dimensions.height;
+  return canvas;
+};
+
+/*
+  @param {imageData} imageData
+  @returns {HTMLCanvasElement}
+*/
+
+
+Utils.newCanvasFromImageData = function(imageData) {
+  var canvas, context;
+  canvas = document.createElement("canvas");
+  canvas.width = imageData.width;
+  canvas.height = imageData.height;
+  context = canvas.getContext("2d");
+  context.putImageData(imageData, 0, 0);
+  return canvas;
+};
+
+/*
+  @param {String} str Input String
+  @returns {String} Output Stirng
+*/
+
+
+Utils.dasherize = function(str) {
+  return str.toLowerCase().replace(/[^\w\s-]/g, ' ').replace(/[-_\s]+/g, '-');
+};
+
+/*
+  @param {Integer} number
+  @param {Integer} min
+  @param {Integer} max
+  @returns {Integer}
+*/
+
+
+Utils.clamp = function(number, min, max) {
+  return Math.min(Math.max(number, min), max);
+};
+
+/*
+  @param {Integer} number
+  @param {Integer} min
+  @param {Integer} max
+  @returns {Integer}
+*/
+
+
+Utils.within = function(number, min, max) {
+  return (min < number && number < max);
+};
+
+/*
+  @param {Object} x/y coordinates
+  @param [Object] minimum and maximum x/y coordinates
+  @returns {Boolean}
+*/
+
+
+Utils.withinBoundaries = function(coords, boundaries) {
+  if (boundaries == null) {
+    boundaries = {
+      x: {
+        min: 0,
+        max: 1
+      },
+      y: {
+        min: 0,
+        max: 1
       }
-      console.log('%c perf %c ' + message + ' %c ' + duration.toFixed(2) + 'ms ', 'background: #222; color: #bada55', '', 'background: ' + background + '; color: ' + color);
-    } else {
-      console.log('[perf] ' + message + ' ' + duration.toFixed(2) + 'ms');
-    }
-    this.started = false;
-    if (printLine && (typeof window !== "undefined" && window !== null)) {
-      return console.log('%c perf %c -- END --                                                                          ', 'background: #222; color: #bada55', 'background: #222; color: #ffffff');
-    }
-  };
+    };
+  }
+  return !(coords.x < boundaries.x.min || coords.x > boundaries.x.max || coords.y < boundaries.y.min || coords.y > boundaries.y.max);
+};
 
-  return Perf;
+/*
+  @param {String} string
+  @returns {String}
+*/
 
-})();
 
-module.exports = Perf;
+Utils.truncate = function(string, length) {
+  if (length == null) {
+    length = 10;
+  }
+  if (string.length > length) {
+    return string.substr(0, length - 3) + "...";
+  } else {
+    return string;
+  }
+};
+
+module.exports = Utils;
 
 
 },{"__browserify_Buffer":3,"__browserify_process":1}],3:[function(require,module,exports){
@@ -3984,8 +4164,76 @@ SlowBuffer.prototype.writeDoubleBE = Buffer.prototype.writeDoubleBE;
 ;;module.exports=require("buffer-browserify")
 
 },{}],4:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/vendor/perf.coffee",__dirname="/vendor";var Perf;
+
+Perf = (function() {
+  function Perf(name, options) {
+    var _base, _base1, _base2;
+    this.name = name;
+    this.options = options != null ? options : {};
+    if ((_base = this.options).good == null) {
+      _base.good = 100;
+    }
+    if ((_base1 = this.options).bad == null) {
+      _base1.bad = 500;
+    }
+    if ((_base2 = this.options).debug == null) {
+      _base2.debug = true;
+    }
+    this.started = false;
+  }
+
+  Perf.prototype.start = function() {
+    if (this.started || !this.options.debug) {
+      return;
+    }
+    this.start = +new Date();
+    return this.started = true;
+  };
+
+  Perf.prototype.stop = function(printLine) {
+    var background, color, duration, end, message;
+    if (!this.started || !this.options.debug) {
+      return;
+    }
+    end = +new Date();
+    duration = end - this.start;
+    if (this.name != null) {
+      message = this.name + ' took';
+    } else {
+      message = 'Code execution time:';
+    }
+    if (typeof window !== "undefined" && window !== null) {
+      if (duration < this.options.good) {
+        background = 'darkgreen';
+        color = 'white';
+      } else if (duration > this.options.good && duration < this.options.bad) {
+        background = 'orange';
+        color = 'black';
+      } else {
+        background = 'darkred';
+        color = 'white';
+      }
+      console.log('%c perf %c ' + message + ' %c ' + duration.toFixed(2) + 'ms ', 'background: #222; color: #bada55', '', 'background: ' + background + '; color: ' + color);
+    } else {
+      console.log('[perf] ' + message + ' ' + duration.toFixed(2) + 'ms');
+    }
+    this.started = false;
+    if (printLine && (typeof window !== "undefined" && window !== null)) {
+      return console.log('%c perf %c -- END --                                                                          ', 'background: #222; color: #bada55', 'background: #222; color: #ffffff');
+    }
+  };
+
+  return Perf;
+
+})();
+
+module.exports = Perf;
+
 
 },{"__browserify_Buffer":3,"__browserify_process":1}],5:[function(require,module,exports){
+
+},{"__browserify_Buffer":3,"__browserify_process":1}],6:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/vendor/queue.coffee",__dirname="/vendor";/*
   Common interface for promises.
 
@@ -4038,7 +4286,7 @@ Queue.promise = (function() {
 module.exports = Queue;
 
 
-},{"__browserify_Buffer":3,"__browserify_process":1,"q":4}],6:[function(require,module,exports){
+},{"__browserify_Buffer":3,"__browserify_process":1,"q":5}],7:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/../node_modules/grunt-watchify/node_modules/browserify/node_modules/browser-builtins/builtin/events.js",__dirname="/../node_modules/grunt-watchify/node_modules/browserify/node_modules/browser-builtins/builtin";if (!process.EventEmitter) process.EventEmitter = function () {};
 
 var EventEmitter = exports.EventEmitter = process.EventEmitter;
@@ -4234,8 +4482,8 @@ EventEmitter.listenerCount = function(emitter, type) {
   return ret;
 };
 
-},{"__browserify_Buffer":3,"__browserify_process":1}],7:[function(require,module,exports){
-/*
+},{"__browserify_Buffer":3,"__browserify_process":1}],8:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/operation.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
 */
@@ -4366,7 +4614,7 @@ Operation = (function(_super) {
 module.exports = Operation;
 
 
-},{"../vendor/queue.coffee":5,"events":6}],8:[function(require,module,exports){
+},{"../vendor/queue.coffee":6,"__browserify_Buffer":3,"__browserify_process":1,"events":7}],9:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/filter.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -4397,7 +4645,7 @@ Filter = (function(_super) {
 module.exports = Filter;
 
 
-},{"../operation.coffee":7,"__browserify_Buffer":3,"__browserify_process":1}],9:[function(require,module,exports){
+},{"../operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],10:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/identity.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -4428,255 +4676,7 @@ PrimitiveIdentityFilter = (function(_super) {
 module.exports = PrimitiveIdentityFilter;
 
 
-},{"../filter.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],10:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/utils.coffee",__dirname="/";/*
-  ImglyKit
-  Copyright (c) 2013-2014 img.ly
-*/
-
-var Utils;
-
-Utils = {};
-
-Utils.sharedCanvas = document.createElement("canvas");
-
-if (Modernizr.canvas) {
-  Utils.sharedContext = Utils.sharedCanvas.getContext("2d");
-}
-
-/*
-  @param options Options
-  @param options.image Dimensions (width, height) of the image
-  @param options.container Dimensions (width, height) of the container
-  @returns {Object} An object containing the final canvas dimensions (width, height)
-*/
-
-
-Utils.calculateCanvasSize = function(options) {
-  var result, scale;
-  scale = Math.min(options.container.width / options.image.width, options.container.height / options.image.height);
-  result = {
-    width: options.image.width * scale,
-    height: options.image.height * scale
-  };
-  return result;
-};
-
-/*
-  Creates a number as a fingerprint for an array of numbers.
-
-  Based on http://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript-jquery.
-
-  @param {Array} data
-  @returns {Number}
-*/
-
-
-Utils.fingerprint = function(data) {
-  var hash, point, _i, _len;
-  hash = 0;
-  if (!data.length) {
-    return hash;
-  }
-  for (_i = 0, _len = data.length; _i < _len; _i++) {
-    point = data[_i];
-    hash = ((hash << 5) - hash) + point;
-    hash |= 0;
-  }
-  return hash;
-};
-
-/*
-  @param {Image} image
-  @returns {ImageData}
-*/
-
-
-Utils.getImageDataForImage = function(image) {
-  var canvas, context;
-  canvas = document.createElement("canvas");
-  canvas.width = image.width;
-  canvas.height = image.height;
-  context = canvas.getContext("2d");
-  context.drawImage(image, 0, 0);
-  return context.getImageData(0, 0, image.width, image.height);
-};
-
-/*
-  @param {Image} image
-  @param {CanvasRenderingContext2d} context
-*/
-
-
-Utils.resizeImageSmooth = function(image, context) {
-  var destHeight, destImageData, destPixels, destWidth, i, resized, resizedBuffer, resizedBufferLength, sourceImageData, sourcePixels, _i;
-  sourceImageData = Utils.getImageDataForImage(image);
-  destImageData = context.getImageData(0, 0, context.canvas.width, context.canvas.height);
-  sourcePixels = sourceImageData.data;
-  destPixels = destImageData.data;
-  destWidth = context.canvas.width;
-  destHeight = context.canvas.height;
-  resized = new Resize(image.width, image.height, destWidth, destHeight, true, true, false);
-  resizedBuffer = resized.resize(sourcePixels);
-  resizedBufferLength = resizedBuffer.length;
-  for (i = _i = 0; 0 <= resizedBufferLength ? _i < resizedBufferLength : _i > resizedBufferLength; i = 0 <= resizedBufferLength ? ++_i : --_i) {
-    destPixels[i] = resizedBuffer[i] & 0xFF;
-  }
-  return context.putImageData(destImageData, 0, 0);
-};
-
-/*
-  @param {Image} image
-  @param {} dimensions
-  @returns {ImageData}
-*/
-
-
-Utils.getResizedImageDataForImage = function(image, dimensions, options) {
-  var canvas, context;
-  if (options == null) {
-    options = {};
-  }
-  if (options.smooth == null) {
-    options.smooth = false;
-  }
-  canvas = document.createElement("canvas");
-  canvas.width = dimensions.width;
-  canvas.height = dimensions.height;
-  context = canvas.getContext("2d");
-  if (!options.smooth) {
-    context.drawImage(image, 0, 0, image.width, image.height, 0, 0, canvas.width, canvas.height);
-  } else {
-    Utils.resizeImageSmooth(image, context);
-  }
-  return context.getImageData(0, 0, canvas.width, canvas.height);
-};
-
-/*
-  @param {ImageData} imageData
-  @returns {ImageData}
-*/
-
-
-Utils.cloneImageData = function(imageData) {
-  var i, newImageData, _i, _ref;
-  newImageData = this.sharedContext.createImageData(imageData.width, imageData.height);
-  for (i = _i = 0, _ref = imageData.data.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-    newImageData.data[i] = imageData.data[i];
-  }
-  return newImageData;
-};
-
-/*
-  @param {Object} dimensions
-  @param {Integer} dimensions.width
-  @param {Integer} dimensions.height
-  @returns {HTMLCanvasElement}
-*/
-
-
-Utils.newCanvasWithDimensions = function(dimensions) {
-  var canvas;
-  canvas = document.createElement("canvas");
-  canvas.width = dimensions.width;
-  canvas.height = dimensions.height;
-  return canvas;
-};
-
-/*
-  @param {imageData} imageData
-  @returns {HTMLCanvasElement}
-*/
-
-
-Utils.newCanvasFromImageData = function(imageData) {
-  var canvas, context;
-  canvas = document.createElement("canvas");
-  canvas.width = imageData.width;
-  canvas.height = imageData.height;
-  context = canvas.getContext("2d");
-  context.putImageData(imageData, 0, 0);
-  return canvas;
-};
-
-/*
-  @param {String} str Input String
-  @returns {String} Output Stirng
-*/
-
-
-Utils.dasherize = function(str) {
-  return str.toLowerCase().replace(/[^\w\s-]/g, ' ').replace(/[-_\s]+/g, '-');
-};
-
-/*
-  @param {Integer} number
-  @param {Integer} min
-  @param {Integer} max
-  @returns {Integer}
-*/
-
-
-Utils.clamp = function(number, min, max) {
-  return Math.min(Math.max(number, min), max);
-};
-
-/*
-  @param {Integer} number
-  @param {Integer} min
-  @param {Integer} max
-  @returns {Integer}
-*/
-
-
-Utils.within = function(number, min, max) {
-  return (min < number && number < max);
-};
-
-/*
-  @param {Object} x/y coordinates
-  @param [Object] minimum and maximum x/y coordinates
-  @returns {Boolean}
-*/
-
-
-Utils.withinBoundaries = function(coords, boundaries) {
-  if (boundaries == null) {
-    boundaries = {
-      x: {
-        min: 0,
-        max: 1
-      },
-      y: {
-        min: 0,
-        max: 1
-      }
-    };
-  }
-  return !(coords.x < boundaries.x.min || coords.x > boundaries.x.max || coords.y < boundaries.y.min || coords.y > boundaries.y.max);
-};
-
-/*
-  @param {String} string
-  @returns {String}
-*/
-
-
-Utils.truncate = function(string, length) {
-  if (length == null) {
-    length = 10;
-  }
-  if (string.length > length) {
-    return string.substr(0, length - 3) + "...";
-  } else {
-    return string;
-  }
-};
-
-module.exports = Utils;
-
-
-},{"__browserify_Buffer":3,"__browserify_process":1}],11:[function(require,module,exports){
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],11:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/photoprocessor.coffee",__dirname="/";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -4895,7 +4895,185 @@ PhotoProcessor = (function() {
 module.exports = PhotoProcessor;
 
 
-},{"./operations/filters/primitives/identity.coffee":9,"./utils.coffee":10,"./vendor/perf.coffee":2,"./vendor/queue.coffee":5,"__browserify_Buffer":3,"__browserify_process":1}],12:[function(require,module,exports){
+},{"./operations/filters/primitives/identity.coffee":10,"./utils.coffee":2,"./vendor/perf.coffee":4,"./vendor/queue.coffee":6,"__browserify_Buffer":3,"__browserify_process":1}],12:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/canvas.coffee",__dirname="/ui";/*
+  ImglyKit
+  Copyright (c) 2013-2014 img.ly
+*/
+
+var UICanvas, Utils;
+
+Utils = require("../utils.coffee");
+
+UICanvas = (function() {
+  /*
+    @param {imglyUtil} app
+    @param {imglyUtil.UI} ui
+    @param {Integer} options.height Height of the controls
+  
+    @todo Get controls height from elsewhere. The options hash
+          is probably not a good place for that.
+  */
+
+  function UICanvas(app, ui, options) {
+    this.app = app;
+    this.ui = ui;
+    this.options = options;
+    this.container = this.app.getContainer();
+    this.init();
+  }
+
+  /*
+    @returns {CanvasRenderingContext2d}
+  */
+
+
+  UICanvas.prototype.getContext = function() {
+    return this.context;
+  };
+
+  /*
+    @returns {ImageData}
+  */
+
+
+  UICanvas.prototype.getImageData = function() {
+    return this.context.getImageData(0, 0, this.canvasDom.width, this.canvasDom.height);
+  };
+
+  /*
+    Initializes the container, creates
+    the canvas object
+  */
+
+
+  UICanvas.prototype.init = function() {
+    this.canvasContainer = $("<div>").addClass(ImglyKit.classPrefix + "canvas-container").css({
+      height: this.app.getHeight() - this.options.height
+    }).appendTo(this.container);
+    this.canvas = $("<canvas>").addClass(ImglyKit.classPrefix + "canvas").appendTo(this.canvasContainer);
+    this.canvasDom = this.canvas.get(0);
+    this.controlsContainer = $("<div>").addClass(ImglyKit.classPrefix + "canvas-controls-container").appendTo(this.canvasContainer);
+    return this.context = this.canvasDom.getContext("2d");
+  };
+
+  /*
+    Resizes the canvas and renders the given imageData
+  
+    @param {ImageData} imageData
+  */
+
+
+  UICanvas.prototype.renderImageData = function(imageData) {
+    var imageDataCanvas;
+    this.resizeAndPositionCanvasToMatch(imageData);
+    imageDataCanvas = Utils.newCanvasFromImageData(imageData);
+    this.context.clearRect(0, 0, this.canvasDom.width, this.canvasDom.height);
+    return this.context.drawImage(imageDataCanvas, 0, 0, imageData.width, imageData.height, 0, 0, this.canvasDom.width, this.canvasDom.height);
+  };
+
+  /*
+    Resizes the canvas and renders the given image
+  
+    @param {Image} image
+  */
+
+
+  UICanvas.prototype.renderImage = function(image) {
+    this.resizeAndPositionCanvasToMatch(image);
+    this.context.clearRect(0, 0, this.canvasDom.width, this.canvasDom.height);
+    return this.context.drawImage(image, 0, 0, image.width, image.height, 0, 0, this.canvasDom.width, this.canvasDom.height);
+  };
+
+  /*
+    Takes an image and returns the new dimensions
+    so that it fits into the UI
+  
+    @param {Image} image
+    @returns {Object} dimensions
+    @returns {Integer} dimensions.width
+    @returns {Integer} dimensions.height
+  */
+
+
+  UICanvas.prototype.getDimensionsForImage = function(image) {
+    var options;
+    options = {
+      image: {
+        width: image.width,
+        height: image.height
+      },
+      container: {
+        width: this.canvasContainer.width() - ImglyKit.canvasContainerPadding * 2,
+        height: this.canvasContainer.height() - ImglyKit.canvasContainerPadding * 2
+      }
+    };
+    return Utils.calculateCanvasSize(options);
+  };
+
+  /*
+    @returns {jQuery.Object}
+  */
+
+
+  UICanvas.prototype.getControlsContainer = function() {
+    return this.controlsContainer;
+  };
+
+  /*
+    @param {Mixed} object
+    @param {Integer} object.height
+    @param {Integer} object.width
+  */
+
+
+  UICanvas.prototype.resizeAndPositionCanvasToMatch = function(obj) {
+    var newCanvasSize, options;
+    options = {
+      image: {
+        width: obj.width,
+        height: obj.height
+      },
+      container: {
+        width: this.canvasContainer.width() - ImglyKit.canvasContainerPadding * 2,
+        height: this.canvasContainer.height() - ImglyKit.canvasContainerPadding * 2
+      }
+    };
+    newCanvasSize = Utils.calculateCanvasSize(options);
+    this.canvas.css({
+      width: newCanvasSize.width,
+      height: newCanvasSize.height,
+      top: Math.round((this.canvasContainer.height() - newCanvasSize.height) / 2),
+      left: Math.round((this.canvasContainer.width() - newCanvasSize.width) / 2)
+    });
+    this.controlsContainer.css({
+      width: newCanvasSize.width,
+      height: newCanvasSize.height,
+      top: this.canvas.position().top,
+      left: this.canvas.position().left
+    });
+    this.canvasDom.width = newCanvasSize.width * (window.devicePixelRatio || 1);
+    return this.canvasDom.height = newCanvasSize.height * (window.devicePixelRatio || 1);
+  };
+
+  /*
+    Clears the context
+  */
+
+
+  UICanvas.prototype.reset = function() {
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    return this.controlsContainer.html("");
+  };
+
+  return UICanvas;
+
+})();
+
+module.exports = UICanvas;
+
+
+},{"../utils.coffee":2,"__browserify_Buffer":3,"__browserify_process":1}],13:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/base/base.coffee",__dirname="/ui/controls/base";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -5015,8 +5193,8 @@ UIControlsBase = (function(_super) {
 module.exports = UIControlsBase;
 
 
-},{"__browserify_Buffer":3,"__browserify_process":1,"events":6}],13:[function(require,module,exports){
-/*
+},{"__browserify_Buffer":3,"__browserify_process":1,"events":7}],14:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/base/list.coffee",__dirname="/ui/controls/base";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
 */
@@ -5182,7 +5360,7 @@ UIControlsBaseList = (function(_super) {
 module.exports = UIControlsBaseList;
 
 
-},{"../../../utils.coffee":10,"./base.coffee":12}],14:[function(require,module,exports){
+},{"../../../utils.coffee":2,"./base.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],15:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/default.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -5213,7 +5391,7 @@ DefaultFilter = (function(_super) {
 module.exports = DefaultFilter;
 
 
-},{"./primitives/identity.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],15:[function(require,module,exports){
+},{"./primitives/identity.coffee":10,"__browserify_Buffer":3,"__browserify_process":1}],16:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/tonecurve.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -5416,7 +5594,7 @@ PrimitiveToneCurveFilter = (function(_super) {
 module.exports = PrimitiveToneCurveFilter;
 
 
-},{"../filter.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],16:[function(require,module,exports){
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],17:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/saturation.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -5470,7 +5648,7 @@ PrimitiveSaturationFilter = (function(_super) {
 module.exports = PrimitiveSaturationFilter;
 
 
-},{"../filter.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],17:[function(require,module,exports){
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],18:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/k1.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -5511,7 +5689,7 @@ K1Filter = (function(_super) {
 module.exports = K1Filter;
 
 
-},{"./filter.coffee":8,"./primitives/saturation.coffee":16,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],18:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/saturation.coffee":17,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],19:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/softcoloroverlay.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -5554,7 +5732,7 @@ PrimitiveSoftColorOverlayFilter = (function(_super) {
 module.exports = PrimitiveSoftColorOverlayFilter;
 
 
-},{"../filter.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],19:[function(require,module,exports){
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],20:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/k2.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -5597,7 +5775,40 @@ K2Filter = (function(_super) {
 module.exports = K2Filter;
 
 
-},{"./filter.coffee":8,"./primitives/softcoloroverlay.coffee":18,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],20:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/softcoloroverlay.coffee":19,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],21:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/k6.coffee",__dirname="/operations/filters";/*
+  ImglyKit
+  Copyright (c) 2013-2014 img.ly
+*/
+
+var K6Filter, SaturationFilter, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+SaturationFilter = require("./primitives/saturation.coffee");
+
+K6Filter = (function(_super) {
+  __extends(K6Filter, _super);
+
+  function K6Filter() {
+    _ref = K6Filter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  K6Filter.preview = "k6.png";
+
+  K6Filter.displayName = "K6";
+
+  K6Filter.prototype.saturation = 0.5;
+
+  return K6Filter;
+
+})(SaturationFilter);
+
+module.exports = K6Filter;
+
+
+},{"./primitives/saturation.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],22:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/kdynamic.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -5638,7 +5849,7 @@ KDynamicFilter = (function(_super) {
 module.exports = KDynamicFilter;
 
 
-},{"./filter.coffee":8,"./primitives/saturation.coffee":16,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],21:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/saturation.coffee":17,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],23:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/fridge.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -5675,40 +5886,7 @@ FridgeFilter = (function(_super) {
 module.exports = FridgeFilter;
 
 
-},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],22:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/k6.coffee",__dirname="/operations/filters";/*
-  ImglyKit
-  Copyright (c) 2013-2014 img.ly
-*/
-
-var K6Filter, SaturationFilter, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-SaturationFilter = require("./primitives/saturation.coffee");
-
-K6Filter = (function(_super) {
-  __extends(K6Filter, _super);
-
-  function K6Filter() {
-    _ref = K6Filter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  K6Filter.preview = "k6.png";
-
-  K6Filter.displayName = "K6";
-
-  K6Filter.prototype.saturation = 0.5;
-
-  return K6Filter;
-
-})(SaturationFilter);
-
-module.exports = K6Filter;
-
-
-},{"./primitives/saturation.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],23:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],24:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/desaturation.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -5758,7 +5936,7 @@ PrimitiveDesaturationFilter = (function(_super) {
 module.exports = PrimitiveDesaturationFilter;
 
 
-},{"../filter.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],24:[function(require,module,exports){
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],25:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/breeze.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -5801,7 +5979,7 @@ BreezeFilter = (function(_super) {
 module.exports = BreezeFilter;
 
 
-},{"./filter.coffee":8,"./primitives/desaturation.coffee":23,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],25:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/desaturation.coffee":24,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],26:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/orchid.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -5846,7 +6024,7 @@ OrchidFilter = (function(_super) {
 module.exports = OrchidFilter;
 
 
-},{"./filter.coffee":8,"./primitives/desaturation.coffee":23,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],26:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/desaturation.coffee":24,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],27:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/chest.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -5883,7 +6061,7 @@ ChestFilter = (function(_super) {
 module.exports = ChestFilter;
 
 
-},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],27:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],28:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/front.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -5920,7 +6098,7 @@ FrontFilter = (function(_super) {
 module.exports = FrontFilter;
 
 
-},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],28:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],29:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/fixie.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -5957,7 +6135,7 @@ FixieFilter = (function(_super) {
 module.exports = FixieFilter;
 
 
-},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],29:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],30:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/x400.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -6006,7 +6184,7 @@ PrimitiveX400Filter = (function(_super) {
 module.exports = PrimitiveX400Filter;
 
 
-},{"../filter.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],30:[function(require,module,exports){
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],31:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/x400.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -6037,7 +6215,7 @@ X400Filter = (function(_super) {
 module.exports = X400Filter;
 
 
-},{"./primitives/x400.coffee":29,"__browserify_Buffer":3,"__browserify_process":1}],31:[function(require,module,exports){
+},{"./primitives/x400.coffee":30,"__browserify_Buffer":3,"__browserify_process":1}],32:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/grayscale.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -6081,7 +6259,7 @@ PrimtiveGrayscaleFilter = (function(_super) {
 module.exports = PrimtiveGrayscaleFilter;
 
 
-},{"../filter.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],32:[function(require,module,exports){
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],33:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/bw.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -6112,7 +6290,7 @@ BWFilter = (function(_super) {
 module.exports = BWFilter;
 
 
-},{"./primitives/grayscale.coffee":31,"__browserify_Buffer":3,"__browserify_process":1}],33:[function(require,module,exports){
+},{"./primitives/grayscale.coffee":32,"__browserify_Buffer":3,"__browserify_process":1}],34:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/contrast.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -6170,7 +6348,7 @@ PrimitiveContrastFilter = (function(_super) {
 module.exports = PrimitiveContrastFilter;
 
 
-},{"../filter.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],34:[function(require,module,exports){
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],35:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/bwhard.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -6209,7 +6387,7 @@ BWHardFilter = (function(_super) {
 module.exports = BWHardFilter;
 
 
-},{"./filter.coffee":8,"./primitives/contrast.coffee":33,"./primitives/grayscale.coffee":31,"__browserify_Buffer":3,"__browserify_process":1}],35:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/contrast.coffee":34,"./primitives/grayscale.coffee":32,"__browserify_Buffer":3,"__browserify_process":1}],36:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/lenin.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -6252,7 +6430,7 @@ LeninFilter = (function(_super) {
 module.exports = LeninFilter;
 
 
-},{"./filter.coffee":8,"./primitives/desaturation.coffee":23,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],36:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/desaturation.coffee":24,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],37:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/quozi.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -6295,7 +6473,7 @@ QuoziFilter = (function(_super) {
 module.exports = QuoziFilter;
 
 
-},{"./filter.coffee":8,"./primitives/desaturation.coffee":23,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],37:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/desaturation.coffee":24,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],38:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/pola669.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -6342,7 +6520,7 @@ Pola669Filter = (function(_super) {
 module.exports = Pola669Filter;
 
 
-},{"./filter.coffee":8,"./primitives/contrast.coffee":33,"./primitives/saturation.coffee":16,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],38:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/contrast.coffee":34,"./primitives/saturation.coffee":17,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],39:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/pola.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -6389,7 +6567,7 @@ PolaFilter = (function(_super) {
 module.exports = PolaFilter;
 
 
-},{"./filter.coffee":8,"./primitives/contrast.coffee":33,"./primitives/saturation.coffee":16,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],39:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/contrast.coffee":34,"./primitives/saturation.coffee":17,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],40:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/food.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -6430,7 +6608,7 @@ FoodFilter = (function(_super) {
 module.exports = FoodFilter;
 
 
-},{"./filter.coffee":8,"./primitives/contrast.coffee":33,"./primitives/saturation.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],40:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/contrast.coffee":34,"./primitives/saturation.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],41:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/glam.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -6475,7 +6653,7 @@ GlamFilter = (function(_super) {
 module.exports = GlamFilter;
 
 
-},{"./filter.coffee":8,"./primitives/contrast.coffee":33,"./primitives/grayscale.coffee":31,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],41:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/contrast.coffee":34,"./primitives/grayscale.coffee":32,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],42:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/celsius.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -6512,7 +6690,44 @@ CelsiusFilter = (function(_super) {
 module.exports = CelsiusFilter;
 
 
-},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],42:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],43:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/texas.coffee",__dirname="/operations/filters";/*
+  ImglyKit
+  Copyright (c) 2013-2014 img.ly
+*/
+
+var TexasFilter, ToneCurve, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+ToneCurve = require("./primitives/tonecurve.coffee");
+
+TexasFilter = (function(_super) {
+  __extends(TexasFilter, _super);
+
+  function TexasFilter() {
+    _ref = TexasFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  TexasFilter.preview = 'texas.png';
+
+  TexasFilter.displayName = 'Texas';
+
+  TexasFilter.prototype.redControlPoints = [[0, 72 / 255], [89 / 255, 99 / 255], [176 / 255, 212 / 255], [1, 237 / 255]];
+
+  TexasFilter.prototype.greenControlPoints = [[0, 49 / 255], [1, 192 / 255]];
+
+  TexasFilter.prototype.blueControlPoints = [[0, 72 / 255], [1, 151 / 255]];
+
+  return TexasFilter;
+
+})(ToneCurve);
+
+module.exports = TexasFilter;
+
+
+},{"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],44:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/glow.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -6570,7 +6785,7 @@ PrimitiveGlowFilter = (function(_super) {
 module.exports = PrimitiveGlowFilter;
 
 
-},{"../filter.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],43:[function(require,module,exports){
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],45:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/morning.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -6611,7 +6826,7 @@ MorningFilter = (function(_super) {
 module.exports = MorningFilter;
 
 
-},{"./filter.coffee":8,"./primitives/glow.coffee":42,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],44:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/glow.coffee":44,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],46:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/lomo.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -6650,44 +6865,7 @@ LomoFilter = (function(_super) {
 module.exports = LomoFilter;
 
 
-},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],45:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/texas.coffee",__dirname="/operations/filters";/*
-  ImglyKit
-  Copyright (c) 2013-2014 img.ly
-*/
-
-var TexasFilter, ToneCurve, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-ToneCurve = require("./primitives/tonecurve.coffee");
-
-TexasFilter = (function(_super) {
-  __extends(TexasFilter, _super);
-
-  function TexasFilter() {
-    _ref = TexasFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  TexasFilter.preview = 'texas.png';
-
-  TexasFilter.displayName = 'Texas';
-
-  TexasFilter.prototype.redControlPoints = [[0, 72 / 255], [89 / 255, 99 / 255], [176 / 255, 212 / 255], [1, 237 / 255]];
-
-  TexasFilter.prototype.greenControlPoints = [[0, 49 / 255], [1, 192 / 255]];
-
-  TexasFilter.prototype.blueControlPoints = [[0, 72 / 255], [1, 151 / 255]];
-
-  return TexasFilter;
-
-})(ToneCurve);
-
-module.exports = TexasFilter;
-
-
-},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],46:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],47:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/gobblin.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -6731,7 +6909,7 @@ PrimitiveGobblinFilter = (function(_super) {
 module.exports = PrimitiveGobblinFilter;
 
 
-},{"../filter.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],47:[function(require,module,exports){
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],48:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/gobblin.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -6762,7 +6940,7 @@ GobblinFilter = (function(_super) {
 module.exports = GobblinFilter;
 
 
-},{"./primitives/gobblin.coffee":46,"__browserify_Buffer":3,"__browserify_process":1}],48:[function(require,module,exports){
+},{"./primitives/gobblin.coffee":47,"__browserify_Buffer":3,"__browserify_process":1}],49:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/mellow.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -6799,7 +6977,7 @@ MellowFilter = (function(_super) {
 module.exports = MellowFilter;
 
 
-},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],49:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],50:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/sunny.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -6844,7 +7022,7 @@ SunnyFilter = (function(_super) {
 module.exports = SunnyFilter;
 
 
-},{"./filter.coffee":8,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],50:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],51:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/brightness.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -6894,7 +7072,7 @@ PrimitiveBrightnessFilter = (function(_super) {
 module.exports = PrimitiveBrightnessFilter;
 
 
-},{"../filter.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],51:[function(require,module,exports){
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],52:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/a15.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -6941,7 +7119,7 @@ A15Filter = (function(_super) {
 module.exports = A15Filter;
 
 
-},{"./filter.coffee":8,"./primitives/brightness.coffee":50,"./primitives/contrast.coffee":33,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],52:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/brightness.coffee":51,"./primitives/contrast.coffee":34,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],53:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/semired.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -6982,7 +7160,7 @@ SemiRedFilter = (function(_super) {
 module.exports = SemiRedFilter;
 
 
-},{"./filter.coffee":8,"./primitives/glow.coffee":42,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],53:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/glow.coffee":44,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],54:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/filters.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -7046,221 +7224,7 @@ UIControlsFilters = (function(_super) {
 module.exports = UIControlsFilters;
 
 
-},{"../../operations/filters/a15.coffee":51,"../../operations/filters/breeze.coffee":24,"../../operations/filters/bw.coffee":32,"../../operations/filters/bwhard.coffee":34,"../../operations/filters/celsius.coffee":41,"../../operations/filters/chest.coffee":26,"../../operations/filters/default.coffee":14,"../../operations/filters/fixie.coffee":28,"../../operations/filters/food.coffee":39,"../../operations/filters/fridge.coffee":21,"../../operations/filters/front.coffee":27,"../../operations/filters/glam.coffee":40,"../../operations/filters/gobblin.coffee":47,"../../operations/filters/k1.coffee":17,"../../operations/filters/k2.coffee":19,"../../operations/filters/k6.coffee":22,"../../operations/filters/kdynamic.coffee":20,"../../operations/filters/lenin.coffee":35,"../../operations/filters/lomo.coffee":44,"../../operations/filters/mellow.coffee":48,"../../operations/filters/morning.coffee":43,"../../operations/filters/orchid.coffee":25,"../../operations/filters/pola.coffee":38,"../../operations/filters/pola669.coffee":37,"../../operations/filters/quozi.coffee":36,"../../operations/filters/semired.coffee":52,"../../operations/filters/sunny.coffee":49,"../../operations/filters/texas.coffee":45,"../../operations/filters/x400.coffee":30,"../../utils.coffee":10,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],54:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/orientation.coffee",__dirname="/operations";/*
-  ImglyKit
-  Copyright (c) 2013-2014 img.ly
-*/
-
-var Operation, OrientationOperation, Utils,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Operation = require("./operation.coffee");
-
-Utils = require("../utils.coffee");
-
-OrientationOperation = (function(_super) {
-  __extends(OrientationOperation, _super);
-
-  /*
-    @param {ImglyKit} app
-    @param {Object} options
-  */
-
-
-  function OrientationOperation(app, options) {
-    var _base, _base1, _base2;
-    this.app = app;
-    this.options = options != null ? options : {};
-    OrientationOperation.__super__.constructor.apply(this, arguments);
-    if ((_base = this.options).rotation == null) {
-      _base.rotation = 0;
-    }
-    if ((_base1 = this.options).flipVertically == null) {
-      _base1.flipVertically = false;
-    }
-    if ((_base2 = this.options).flipHorizontally == null) {
-      _base2.flipHorizontally = false;
-    }
-  }
-
-  OrientationOperation.prototype.flipVertically = function() {
-    return this.options.flipVertically = !this.options.flipVertically;
-  };
-
-  OrientationOperation.prototype.flipHorizontally = function() {
-    return this.options.flipHorizontally = !this.options.flipHorizontally;
-  };
-
-  OrientationOperation.prototype.rotateRight = function() {
-    this.options.rotation += 90;
-    if (this.options.rotation === 360) {
-      this.options.rotation = 0;
-    }
-    if (this.options.flipHorizontally !== this.options.flipVertically) {
-      this.options.flipHorizontally = !this.options.flipHorizontally;
-      return this.options.flipVertically = !this.options.flipVertically;
-    }
-  };
-
-  OrientationOperation.prototype.rotateLeft = function() {
-    this.options.rotation -= 90;
-    if (this.options.rotation === -360) {
-      this.options.rotation = 0;
-    }
-    if (this.options.flipHorizontally !== this.options.flipVertically) {
-      this.options.flipHorizontally = !this.options.flipHorizontally;
-      return this.options.flipVertically = !this.options.flipVertically;
-    }
-  };
-
-  OrientationOperation.prototype.apply = function(imageData) {
-    var canvas, context, flipped, h, rotated, w;
-    if (Math.abs(this.options.rotation) === 90 || Math.abs(this.options.rotation) === 270) {
-      w = imageData.height;
-      h = imageData.width;
-    } else {
-      w = imageData.width;
-      h = imageData.height;
-    }
-    canvas = Utils.newCanvasWithDimensions({
-      width: w,
-      height: h
-    });
-    context = canvas.getContext("2d");
-    rotated = false;
-    flipped = false;
-    if (this.options.rotation !== 0) {
-      imageData = this.rotateImageData(context, imageData);
-      rotated = true;
-    }
-    if (this.options.flipHorizontally || this.options.flipVertically) {
-      imageData = this.flipImageData(context, imageData);
-      flipped = true;
-    }
-    if (rotated || flipped) {
-      return context.getImageData(0, 0, w, h);
-    } else {
-      return imageData;
-    }
-  };
-
-  /*
-    @param {CanvasRenderingContext2d}
-    @param {ImageData}
-    @returns {ImageData}
-  */
-
-
-  OrientationOperation.prototype.flipImageData = function(context, imageData) {
-    var imageDataCanvas, scaleX, scaleY, translateX, translateY;
-    context.save();
-    scaleX = 1;
-    scaleY = 1;
-    translateX = 0;
-    translateY = 0;
-    if (this.options.flipHorizontally) {
-      scaleX = -1;
-      translateX = context.canvas.width;
-    }
-    if (this.options.flipVertically) {
-      scaleY = -1;
-      translateY = context.canvas.height;
-    }
-    context.translate(translateX, translateY);
-    context.scale(scaleX, scaleY);
-    imageDataCanvas = Utils.newCanvasFromImageData(imageData);
-    context.drawImage(imageDataCanvas, 0, 0);
-    context.restore();
-    return context.getImageData(0, 0, context.canvas.width, context.canvas.height);
-  };
-
-  /*
-    @param {CanvasRenderingContext2d}
-    @param {ImageData}
-    @returns {ImageData}
-  */
-
-
-  OrientationOperation.prototype.rotateImageData = function(context, imageData) {
-    var imageDataCanvas;
-    context.save();
-    context.translate(context.canvas.width / 2, context.canvas.height / 2);
-    context.rotate(this.options.rotation * (Math.PI / 180));
-    imageDataCanvas = Utils.newCanvasFromImageData(imageData);
-    context.drawImage(imageDataCanvas, -imageData.width / 2, -imageData.height / 2);
-    context.restore();
-    return context.getImageData(0, 0, context.canvas.width, context.canvas.height);
-  };
-
-  return OrientationOperation;
-
-})(Operation);
-
-module.exports = OrientationOperation;
-
-
-},{"../utils.coffee":10,"./operation.coffee":7,"__browserify_Buffer":3,"__browserify_process":1}],55:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/orientation.coffee",__dirname="/ui/controls";/*
-  ImglyKit
-  Copyright (c) 2013-2014 img.ly
-*/
-
-var List, UIControlsOrientation,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-List = require("./base/list.coffee");
-
-UIControlsOrientation = (function(_super) {
-  __extends(UIControlsOrientation, _super);
-
-  UIControlsOrientation.prototype.displayButtons = true;
-
-  UIControlsOrientation.prototype.singleOperation = true;
-
-  /*
-    @param {imglyUtil} app
-    @param {imglyUtil.UI} ui
-  */
-
-
-  function UIControlsOrientation(app, ui, controls) {
-    this.app = app;
-    this.ui = ui;
-    this.controls = controls;
-    UIControlsOrientation.__super__.constructor.apply(this, arguments);
-    this.operationClass = require("../../operations/orientation.coffee");
-    this.listItems = [
-      {
-        name: "Rotate L",
-        cssClass: "rotate-l",
-        method: "rotateLeft"
-      }, {
-        name: "Rotate R",
-        cssClass: "rotate-r",
-        method: "rotateRight"
-      }, {
-        name: "Flip V",
-        cssClass: "flip-v",
-        method: "flipVertically"
-      }, {
-        name: "Flip H",
-        cssClass: "flip-h",
-        method: "flipHorizontally"
-      }
-    ];
-  }
-
-  return UIControlsOrientation;
-
-})(List);
-
-module.exports = UIControlsOrientation;
-
-
-},{"../../operations/orientation.coffee":54,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],56:[function(require,module,exports){
+},{"../../operations/filters/a15.coffee":52,"../../operations/filters/breeze.coffee":25,"../../operations/filters/bw.coffee":33,"../../operations/filters/bwhard.coffee":35,"../../operations/filters/celsius.coffee":42,"../../operations/filters/chest.coffee":27,"../../operations/filters/default.coffee":15,"../../operations/filters/fixie.coffee":29,"../../operations/filters/food.coffee":40,"../../operations/filters/fridge.coffee":23,"../../operations/filters/front.coffee":28,"../../operations/filters/glam.coffee":41,"../../operations/filters/gobblin.coffee":48,"../../operations/filters/k1.coffee":18,"../../operations/filters/k2.coffee":20,"../../operations/filters/k6.coffee":21,"../../operations/filters/kdynamic.coffee":22,"../../operations/filters/lenin.coffee":36,"../../operations/filters/lomo.coffee":46,"../../operations/filters/mellow.coffee":49,"../../operations/filters/morning.coffee":45,"../../operations/filters/orchid.coffee":26,"../../operations/filters/pola.coffee":39,"../../operations/filters/pola669.coffee":38,"../../operations/filters/quozi.coffee":37,"../../operations/filters/semired.coffee":53,"../../operations/filters/sunny.coffee":50,"../../operations/filters/texas.coffee":43,"../../operations/filters/x400.coffee":31,"../../utils.coffee":2,"./base/list.coffee":14,"__browserify_Buffer":3,"__browserify_process":1}],55:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/math/vector2.coffee",__dirname="/math";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -7432,7 +7396,7 @@ Vector2 = (function() {
 module.exports = Vector2;
 
 
-},{"__browserify_Buffer":3,"__browserify_process":1}],57:[function(require,module,exports){
+},{"__browserify_Buffer":3,"__browserify_process":1}],56:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/focus/focus.coffee",__dirname="/operations/focus";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -7690,7 +7654,7 @@ Focus = (function(_super) {
 module.exports = Focus;
 
 
-},{"../../utils.coffee":10,"../operation.coffee":7,"__browserify_Buffer":3,"__browserify_process":1}],58:[function(require,module,exports){
+},{"../../utils.coffee":2,"../operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],57:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/focus/radial.coffee",__dirname="/operations/focus";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -7776,7 +7740,7 @@ RadialFocus = (function(_super) {
 module.exports = RadialFocus;
 
 
-},{"../../math/vector2.coffee":56,"./focus.coffee":57,"__browserify_Buffer":3,"__browserify_process":1}],59:[function(require,module,exports){
+},{"../../math/vector2.coffee":55,"./focus.coffee":56,"__browserify_Buffer":3,"__browserify_process":1}],58:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/focus/linear.coffee",__dirname="/operations/focus";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -7866,7 +7830,7 @@ LinearFocus = (function(_super) {
 module.exports = LinearFocus;
 
 
-},{"../../math/vector2.coffee":56,"./focus.coffee":57,"__browserify_Buffer":3,"__browserify_process":1}],60:[function(require,module,exports){
+},{"../../math/vector2.coffee":55,"./focus.coffee":56,"__browserify_Buffer":3,"__browserify_process":1}],59:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/focus.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -8203,96 +8167,7 @@ UIControlsFocus = (function(_super) {
 module.exports = UIControlsFocus;
 
 
-},{"../../math/vector2.coffee":56,"../../operations/focus/linear.coffee":59,"../../operations/focus/radial.coffee":58,"../../utils.coffee":10,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],61:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/math/rect.coffee",__dirname="/math";/*
-  ImglyKit
-  Copyright (c) 2013-2014 img.ly
-*/
-
-var Rect;
-
-Rect = (function() {
-  function Rect(x, y, width, height) {
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
-    if (this.x == null) {
-      this.x = 0;
-    }
-    if (this.y == null) {
-      this.y = 0;
-    }
-    if (this.width == null) {
-      this.width = 0;
-    }
-    if (this.height == null) {
-      this.height = 0;
-    }
-  }
-
-  /*
-    @param {Integer} x
-    @param {Integer} y
-    @param {Integer} width
-    @param {Integer} height
-  */
-
-
-  Rect.prototype.set = function(x, y, width, height) {
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
-  };
-
-  /*
-    @param {Integer} x
-    @param {Integer} y
-  */
-
-
-  Rect.prototype.setPosition = function(x, y) {
-    this.x = x;
-    this.y = y;
-  };
-
-  /*
-    @param {Integer} width
-    @param {Integer} height
-  */
-
-
-  Rect.prototype.setDimensions = function(width, height) {
-    this.width = width;
-    this.height = height;
-  };
-
-  /*
-    @param {ImglyKit.Rect} The vector we want to copy
-  */
-
-
-  Rect.prototype.copy = function(other) {
-    this.x = other.x;
-    this.y = other.y;
-    this.width = other.width;
-    this.height = other.height;
-    return this;
-  };
-
-  Rect.prototype.toString = function() {
-    return "Rect({ x: " + this.x + ", y: " + this.y + ", width: " + this.width + ", height: " + this.height + " })";
-  };
-
-  return Rect;
-
-})();
-
-module.exports = Rect;
-
-
-},{"__browserify_Buffer":3,"__browserify_process":1}],62:[function(require,module,exports){
+},{"../../math/vector2.coffee":55,"../../operations/focus/linear.coffee":58,"../../operations/focus/radial.coffee":57,"../../utils.coffee":2,"./base/list.coffee":14,"__browserify_Buffer":3,"__browserify_process":1}],60:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/crop.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -8402,7 +8277,96 @@ CropOperation = (function(_super) {
 module.exports = CropOperation;
 
 
-},{"../math/vector2.coffee":56,"../utils.coffee":10,"./operation.coffee":7,"__browserify_Buffer":3,"__browserify_process":1}],63:[function(require,module,exports){
+},{"../math/vector2.coffee":55,"../utils.coffee":2,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],61:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/math/rect.coffee",__dirname="/math";/*
+  ImglyKit
+  Copyright (c) 2013-2014 img.ly
+*/
+
+var Rect;
+
+Rect = (function() {
+  function Rect(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    if (this.x == null) {
+      this.x = 0;
+    }
+    if (this.y == null) {
+      this.y = 0;
+    }
+    if (this.width == null) {
+      this.width = 0;
+    }
+    if (this.height == null) {
+      this.height = 0;
+    }
+  }
+
+  /*
+    @param {Integer} x
+    @param {Integer} y
+    @param {Integer} width
+    @param {Integer} height
+  */
+
+
+  Rect.prototype.set = function(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+  };
+
+  /*
+    @param {Integer} x
+    @param {Integer} y
+  */
+
+
+  Rect.prototype.setPosition = function(x, y) {
+    this.x = x;
+    this.y = y;
+  };
+
+  /*
+    @param {Integer} width
+    @param {Integer} height
+  */
+
+
+  Rect.prototype.setDimensions = function(width, height) {
+    this.width = width;
+    this.height = height;
+  };
+
+  /*
+    @param {ImglyKit.Rect} The vector we want to copy
+  */
+
+
+  Rect.prototype.copy = function(other) {
+    this.x = other.x;
+    this.y = other.y;
+    this.width = other.width;
+    this.height = other.height;
+    return this;
+  };
+
+  Rect.prototype.toString = function() {
+    return "Rect({ x: " + this.x + ", y: " + this.y + ", width: " + this.width + ", height: " + this.height + " })";
+  };
+
+  return Rect;
+
+})();
+
+module.exports = Rect;
+
+
+},{"__browserify_Buffer":3,"__browserify_process":1}],62:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/crop.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -8860,7 +8824,221 @@ UIControlsCrop = (function(_super) {
 module.exports = UIControlsCrop;
 
 
-},{"../../math/rect.coffee":61,"../../math/vector2.coffee":56,"../../operations/crop.coffee":62,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],64:[function(require,module,exports){
+},{"../../math/rect.coffee":61,"../../math/vector2.coffee":55,"../../operations/crop.coffee":60,"./base/list.coffee":14,"__browserify_Buffer":3,"__browserify_process":1}],63:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/orientation.coffee",__dirname="/operations";/*
+  ImglyKit
+  Copyright (c) 2013-2014 img.ly
+*/
+
+var Operation, OrientationOperation, Utils,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Operation = require("./operation.coffee");
+
+Utils = require("../utils.coffee");
+
+OrientationOperation = (function(_super) {
+  __extends(OrientationOperation, _super);
+
+  /*
+    @param {ImglyKit} app
+    @param {Object} options
+  */
+
+
+  function OrientationOperation(app, options) {
+    var _base, _base1, _base2;
+    this.app = app;
+    this.options = options != null ? options : {};
+    OrientationOperation.__super__.constructor.apply(this, arguments);
+    if ((_base = this.options).rotation == null) {
+      _base.rotation = 0;
+    }
+    if ((_base1 = this.options).flipVertically == null) {
+      _base1.flipVertically = false;
+    }
+    if ((_base2 = this.options).flipHorizontally == null) {
+      _base2.flipHorizontally = false;
+    }
+  }
+
+  OrientationOperation.prototype.flipVertically = function() {
+    return this.options.flipVertically = !this.options.flipVertically;
+  };
+
+  OrientationOperation.prototype.flipHorizontally = function() {
+    return this.options.flipHorizontally = !this.options.flipHorizontally;
+  };
+
+  OrientationOperation.prototype.rotateRight = function() {
+    this.options.rotation += 90;
+    if (this.options.rotation === 360) {
+      this.options.rotation = 0;
+    }
+    if (this.options.flipHorizontally !== this.options.flipVertically) {
+      this.options.flipHorizontally = !this.options.flipHorizontally;
+      return this.options.flipVertically = !this.options.flipVertically;
+    }
+  };
+
+  OrientationOperation.prototype.rotateLeft = function() {
+    this.options.rotation -= 90;
+    if (this.options.rotation === -360) {
+      this.options.rotation = 0;
+    }
+    if (this.options.flipHorizontally !== this.options.flipVertically) {
+      this.options.flipHorizontally = !this.options.flipHorizontally;
+      return this.options.flipVertically = !this.options.flipVertically;
+    }
+  };
+
+  OrientationOperation.prototype.apply = function(imageData) {
+    var canvas, context, flipped, h, rotated, w;
+    if (Math.abs(this.options.rotation) === 90 || Math.abs(this.options.rotation) === 270) {
+      w = imageData.height;
+      h = imageData.width;
+    } else {
+      w = imageData.width;
+      h = imageData.height;
+    }
+    canvas = Utils.newCanvasWithDimensions({
+      width: w,
+      height: h
+    });
+    context = canvas.getContext("2d");
+    rotated = false;
+    flipped = false;
+    if (this.options.rotation !== 0) {
+      imageData = this.rotateImageData(context, imageData);
+      rotated = true;
+    }
+    if (this.options.flipHorizontally || this.options.flipVertically) {
+      imageData = this.flipImageData(context, imageData);
+      flipped = true;
+    }
+    if (rotated || flipped) {
+      return context.getImageData(0, 0, w, h);
+    } else {
+      return imageData;
+    }
+  };
+
+  /*
+    @param {CanvasRenderingContext2d}
+    @param {ImageData}
+    @returns {ImageData}
+  */
+
+
+  OrientationOperation.prototype.flipImageData = function(context, imageData) {
+    var imageDataCanvas, scaleX, scaleY, translateX, translateY;
+    context.save();
+    scaleX = 1;
+    scaleY = 1;
+    translateX = 0;
+    translateY = 0;
+    if (this.options.flipHorizontally) {
+      scaleX = -1;
+      translateX = context.canvas.width;
+    }
+    if (this.options.flipVertically) {
+      scaleY = -1;
+      translateY = context.canvas.height;
+    }
+    context.translate(translateX, translateY);
+    context.scale(scaleX, scaleY);
+    imageDataCanvas = Utils.newCanvasFromImageData(imageData);
+    context.drawImage(imageDataCanvas, 0, 0);
+    context.restore();
+    return context.getImageData(0, 0, context.canvas.width, context.canvas.height);
+  };
+
+  /*
+    @param {CanvasRenderingContext2d}
+    @param {ImageData}
+    @returns {ImageData}
+  */
+
+
+  OrientationOperation.prototype.rotateImageData = function(context, imageData) {
+    var imageDataCanvas;
+    context.save();
+    context.translate(context.canvas.width / 2, context.canvas.height / 2);
+    context.rotate(this.options.rotation * (Math.PI / 180));
+    imageDataCanvas = Utils.newCanvasFromImageData(imageData);
+    context.drawImage(imageDataCanvas, -imageData.width / 2, -imageData.height / 2);
+    context.restore();
+    return context.getImageData(0, 0, context.canvas.width, context.canvas.height);
+  };
+
+  return OrientationOperation;
+
+})(Operation);
+
+module.exports = OrientationOperation;
+
+
+},{"../utils.coffee":2,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],64:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/orientation.coffee",__dirname="/ui/controls";/*
+  ImglyKit
+  Copyright (c) 2013-2014 img.ly
+*/
+
+var List, UIControlsOrientation,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+List = require("./base/list.coffee");
+
+UIControlsOrientation = (function(_super) {
+  __extends(UIControlsOrientation, _super);
+
+  UIControlsOrientation.prototype.displayButtons = true;
+
+  UIControlsOrientation.prototype.singleOperation = true;
+
+  /*
+    @param {imglyUtil} app
+    @param {imglyUtil.UI} ui
+  */
+
+
+  function UIControlsOrientation(app, ui, controls) {
+    this.app = app;
+    this.ui = ui;
+    this.controls = controls;
+    UIControlsOrientation.__super__.constructor.apply(this, arguments);
+    this.operationClass = require("../../operations/orientation.coffee");
+    this.listItems = [
+      {
+        name: "Rotate L",
+        cssClass: "rotate-l",
+        method: "rotateLeft"
+      }, {
+        name: "Rotate R",
+        cssClass: "rotate-r",
+        method: "rotateRight"
+      }, {
+        name: "Flip V",
+        cssClass: "flip-v",
+        method: "flipVertically"
+      }, {
+        name: "Flip H",
+        cssClass: "flip-h",
+        method: "flipHorizontally"
+      }
+    ];
+  }
+
+  return UIControlsOrientation;
+
+})(List);
+
+module.exports = UIControlsOrientation;
+
+
+},{"../../operations/orientation.coffee":63,"./base/list.coffee":14,"__browserify_Buffer":3,"__browserify_process":1}],65:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/base/slider.coffee",__dirname="/ui/controls/base";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -8990,7 +9168,7 @@ UIControlsBaseSlider = (function(_super) {
 module.exports = UIControlsBaseSlider;
 
 
-},{"./base.coffee":12,"__browserify_Buffer":3,"__browserify_process":1}],65:[function(require,module,exports){
+},{"./base.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],66:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/brightness.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -9025,7 +9203,7 @@ UIControlsBrightness = (function(_super) {
 module.exports = UIControlsBrightness;
 
 
-},{"./base/slider.coffee":64,"__browserify_Buffer":3,"__browserify_process":1}],66:[function(require,module,exports){
+},{"./base/slider.coffee":65,"__browserify_Buffer":3,"__browserify_process":1}],67:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/brightness.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -9082,7 +9260,7 @@ BrightnessOperation = (function(_super) {
 module.exports = BrightnessOperation;
 
 
-},{"./filters/filter.coffee":8,"./filters/primitives/brightness.coffee":50,"__browserify_Buffer":3,"__browserify_process":1}],67:[function(require,module,exports){
+},{"./filters/filter.coffee":9,"./filters/primitives/brightness.coffee":51,"__browserify_Buffer":3,"__browserify_process":1}],68:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/contrast.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -9117,7 +9295,7 @@ UIControlsContrast = (function(_super) {
 module.exports = UIControlsContrast;
 
 
-},{"./base/slider.coffee":64,"__browserify_Buffer":3,"__browserify_process":1}],68:[function(require,module,exports){
+},{"./base/slider.coffee":65,"__browserify_Buffer":3,"__browserify_process":1}],69:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/contrast.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -9174,7 +9352,7 @@ ContrastOperation = (function(_super) {
 module.exports = ContrastOperation;
 
 
-},{"./filters/filter.coffee":8,"./filters/primitives/contrast.coffee":33,"__browserify_Buffer":3,"__browserify_process":1}],69:[function(require,module,exports){
+},{"./filters/filter.coffee":9,"./filters/primitives/contrast.coffee":34,"__browserify_Buffer":3,"__browserify_process":1}],70:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/saturation.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -9209,7 +9387,7 @@ UIControlsSaturation = (function(_super) {
 module.exports = UIControlsSaturation;
 
 
-},{"./base/slider.coffee":64,"__browserify_Buffer":3,"__browserify_process":1}],70:[function(require,module,exports){
+},{"./base/slider.coffee":65,"__browserify_Buffer":3,"__browserify_process":1}],71:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/saturation.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -9266,8 +9444,83 @@ SaturationOperation = (function(_super) {
 module.exports = SaturationOperation;
 
 
-},{"./filters/filter.coffee":8,"./filters/primitives/saturation.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],71:[function(require,module,exports){
-/*
+},{"./filters/filter.coffee":9,"./filters/primitives/saturation.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],72:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/text.coffee",__dirname="/operations";/*
+  ImglyKit
+  Copyright (c) 2013-2014 img.ly
+*/
+
+var FontOperation, Operation, Rect, Utils, Vector2,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Operation = require("./operation.coffee");
+
+Utils = require("../utils.coffee");
+
+Vector2 = require("../math/vector2.coffee");
+
+Rect = require("../math/rect.coffee");
+
+FontOperation = (function(_super) {
+  __extends(FontOperation, _super);
+
+  FontOperation.prototype.renderPreview = false;
+
+  function FontOperation(app, options) {
+    this.app = app;
+    this.options = options != null ? options : {};
+    FontOperation.__super__.constructor.apply(this, arguments);
+    this.options.start = new Vector2(0.2, 0.2);
+    this.options.width = 300;
+    this.options.font = "Helvetica";
+    this.options.text = "Text";
+    this.options.color = "#ffffff";
+    this.options.fontSize = 0.1;
+    this.options.lineHeight = 1.1;
+    this.options.paddingLeft = 0;
+    this.options.paddingTop = 0;
+  }
+
+  /*
+    @param {String} font
+  */
+
+
+  FontOperation.prototype.setFont = function(font) {
+    this.options.font = font;
+    return this.emit("updateOptions", this.options);
+  };
+
+  FontOperation.prototype.apply = function(imageData) {
+    var canvas, context, line, lineHeight, lineNum, lineOffset, paddingVector, scaledFontSize, scaledStart, _i, _len, _ref;
+    scaledFontSize = this.options.fontSize * imageData.height;
+    paddingVector = new Vector2(this.options.paddingLeft, this.options.paddingTop);
+    scaledStart = new Vector2().copy(this.options.start).add(paddingVector).multiplyWithRect(imageData);
+    canvas = Utils.newCanvasFromImageData(imageData);
+    context = canvas.getContext("2d");
+    context.font = "normal " + scaledFontSize + "px " + this.options.font;
+    context.fillStyle = this.options.color;
+    context.textBaseline = "hanging";
+    lineHeight = this.options.lineHeight;
+    _ref = this.options.text.split("\n");
+    for (lineNum = _i = 0, _len = _ref.length; _i < _len; lineNum = ++_i) {
+      line = _ref[lineNum];
+      lineOffset = lineNum * scaledFontSize * lineHeight;
+      context.fillText(line, scaledStart.x, scaledStart.y + this.options.paddingLeft + lineOffset);
+    }
+    return context.getImageData(0, 0, imageData.width, imageData.height);
+  };
+
+  return FontOperation;
+
+})(Operation);
+
+module.exports = FontOperation;
+
+
+},{"../math/rect.coffee":61,"../math/vector2.coffee":55,"../utils.coffee":2,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],73:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/text.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
 */
@@ -9595,82 +9848,7 @@ UIControlsText = (function(_super) {
 module.exports = UIControlsText;
 
 
-},{"../../math/rect.coffee":61,"../../math/vector2.coffee":56,"../../operations/text.coffee":72,"./base/list.coffee":13}],72:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/text.coffee",__dirname="/operations";/*
-  ImglyKit
-  Copyright (c) 2013-2014 img.ly
-*/
-
-var FontOperation, Operation, Rect, Utils, Vector2,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Operation = require("./operation.coffee");
-
-Utils = require("../utils.coffee");
-
-Vector2 = require("../math/vector2.coffee");
-
-Rect = require("../math/rect.coffee");
-
-FontOperation = (function(_super) {
-  __extends(FontOperation, _super);
-
-  FontOperation.prototype.renderPreview = false;
-
-  function FontOperation(app, options) {
-    this.app = app;
-    this.options = options != null ? options : {};
-    FontOperation.__super__.constructor.apply(this, arguments);
-    this.options.start = new Vector2(0.2, 0.2);
-    this.options.width = 300;
-    this.options.font = "Helvetica";
-    this.options.text = "Text";
-    this.options.color = "#ffffff";
-    this.options.fontSize = 0.1;
-    this.options.lineHeight = 1.1;
-    this.options.paddingLeft = 0;
-    this.options.paddingTop = 0;
-  }
-
-  /*
-    @param {String} font
-  */
-
-
-  FontOperation.prototype.setFont = function(font) {
-    this.options.font = font;
-    return this.emit("updateOptions", this.options);
-  };
-
-  FontOperation.prototype.apply = function(imageData) {
-    var canvas, context, line, lineHeight, lineNum, lineOffset, paddingVector, scaledFontSize, scaledStart, _i, _len, _ref;
-    scaledFontSize = this.options.fontSize * imageData.height;
-    paddingVector = new Vector2(this.options.paddingLeft, this.options.paddingTop);
-    scaledStart = new Vector2().copy(this.options.start).add(paddingVector).multiplyWithRect(imageData);
-    canvas = Utils.newCanvasFromImageData(imageData);
-    context = canvas.getContext("2d");
-    context.font = "normal " + scaledFontSize + "px " + this.options.font;
-    context.fillStyle = this.options.color;
-    context.textBaseline = "hanging";
-    lineHeight = this.options.lineHeight;
-    _ref = this.options.text.split("\n");
-    for (lineNum = _i = 0, _len = _ref.length; _i < _len; lineNum = ++_i) {
-      line = _ref[lineNum];
-      lineOffset = lineNum * scaledFontSize * lineHeight;
-      context.fillText(line, scaledStart.x, scaledStart.y + this.options.paddingLeft + lineOffset);
-    }
-    return context.getImageData(0, 0, imageData.width, imageData.height);
-  };
-
-  return FontOperation;
-
-})(Operation);
-
-module.exports = FontOperation;
-
-
-},{"../math/rect.coffee":61,"../math/vector2.coffee":56,"../utils.coffee":10,"./operation.coffee":7,"__browserify_Buffer":3,"__browserify_process":1}],73:[function(require,module,exports){
+},{"../../math/rect.coffee":61,"../../math/vector2.coffee":55,"../../operations/text.coffee":72,"./base/list.coffee":14,"__browserify_Buffer":3,"__browserify_process":1}],74:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/frames.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -9868,7 +10046,7 @@ FramesOperation = (function(_super) {
 module.exports = FramesOperation;
 
 
-},{"../math/rect.coffee":61,"../math/vector2.coffee":56,"../utils.coffee":10,"../vendor/queue.coffee":5,"./operation.coffee":7,"__browserify_Buffer":3,"__browserify_process":1}],74:[function(require,module,exports){
+},{"../math/rect.coffee":61,"../math/vector2.coffee":55,"../utils.coffee":2,"../vendor/queue.coffee":6,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],75:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/frames.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -9950,7 +10128,7 @@ UIControlsFrames = (function(_super) {
 module.exports = UIControlsFrames;
 
 
-},{"../../math/rect.coffee":61,"../../math/vector2.coffee":56,"../../operations/frames.coffee":73,"../../utils.coffee":10,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],75:[function(require,module,exports){
+},{"../../math/rect.coffee":61,"../../math/vector2.coffee":55,"../../operations/frames.coffee":74,"../../utils.coffee":2,"./base/list.coffee":14,"__browserify_Buffer":3,"__browserify_process":1}],76:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/overview.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -10037,7 +10215,7 @@ UIControlsOverview = (function(_super) {
 module.exports = UIControlsOverview;
 
 
-},{"../../operations/brightness.coffee":66,"../../operations/contrast.coffee":68,"../../operations/crop.coffee":62,"../../operations/frames.coffee":73,"../../operations/saturation.coffee":70,"../../operations/text.coffee":72,"./base/list.coffee":13,"./brightness.coffee":65,"./contrast.coffee":67,"./crop.coffee":63,"./filters.coffee":53,"./focus.coffee":60,"./frames.coffee":74,"./orientation.coffee":55,"./saturation.coffee":69,"./stickers_control.coffee":76,"./text.coffee":71,"__browserify_Buffer":3,"__browserify_process":1}],77:[function(require,module,exports){
+},{"../../operations/brightness.coffee":67,"../../operations/contrast.coffee":69,"../../operations/crop.coffee":60,"../../operations/frames.coffee":74,"../../operations/saturation.coffee":71,"../../operations/text.coffee":72,"./base/list.coffee":14,"./brightness.coffee":66,"./contrast.coffee":68,"./crop.coffee":62,"./filters.coffee":54,"./focus.coffee":59,"./frames.coffee":75,"./orientation.coffee":64,"./saturation.coffee":70,"./stickers_control.coffee":77,"./text.coffee":73,"__browserify_Buffer":3,"__browserify_process":1}],78:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls.coffee",__dirname="/ui";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -10195,185 +10373,7 @@ UIControls = (function(_super) {
 module.exports = UIControls;
 
 
-},{"./controls/overview.coffee":75,"__browserify_Buffer":3,"__browserify_process":1,"events":6}],78:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/canvas.coffee",__dirname="/ui";/*
-  ImglyKit
-  Copyright (c) 2013-2014 img.ly
-*/
-
-var UICanvas, Utils;
-
-Utils = require("../utils.coffee");
-
-UICanvas = (function() {
-  /*
-    @param {imglyUtil} app
-    @param {imglyUtil.UI} ui
-    @param {Integer} options.height Height of the controls
-  
-    @todo Get controls height from elsewhere. The options hash
-          is probably not a good place for that.
-  */
-
-  function UICanvas(app, ui, options) {
-    this.app = app;
-    this.ui = ui;
-    this.options = options;
-    this.container = this.app.getContainer();
-    this.init();
-  }
-
-  /*
-    @returns {CanvasRenderingContext2d}
-  */
-
-
-  UICanvas.prototype.getContext = function() {
-    return this.context;
-  };
-
-  /*
-    @returns {ImageData}
-  */
-
-
-  UICanvas.prototype.getImageData = function() {
-    return this.context.getImageData(0, 0, this.canvasDom.width, this.canvasDom.height);
-  };
-
-  /*
-    Initializes the container, creates
-    the canvas object
-  */
-
-
-  UICanvas.prototype.init = function() {
-    this.canvasContainer = $("<div>").addClass(ImglyKit.classPrefix + "canvas-container").css({
-      height: this.app.getHeight() - this.options.height
-    }).appendTo(this.container);
-    this.canvas = $("<canvas>").addClass(ImglyKit.classPrefix + "canvas").appendTo(this.canvasContainer);
-    this.canvasDom = this.canvas.get(0);
-    this.controlsContainer = $("<div>").addClass(ImglyKit.classPrefix + "canvas-controls-container").appendTo(this.canvasContainer);
-    return this.context = this.canvasDom.getContext("2d");
-  };
-
-  /*
-    Resizes the canvas and renders the given imageData
-  
-    @param {ImageData} imageData
-  */
-
-
-  UICanvas.prototype.renderImageData = function(imageData) {
-    var imageDataCanvas;
-    this.resizeAndPositionCanvasToMatch(imageData);
-    imageDataCanvas = Utils.newCanvasFromImageData(imageData);
-    this.context.clearRect(0, 0, this.canvasDom.width, this.canvasDom.height);
-    return this.context.drawImage(imageDataCanvas, 0, 0, imageData.width, imageData.height, 0, 0, this.canvasDom.width, this.canvasDom.height);
-  };
-
-  /*
-    Resizes the canvas and renders the given image
-  
-    @param {Image} image
-  */
-
-
-  UICanvas.prototype.renderImage = function(image) {
-    this.resizeAndPositionCanvasToMatch(image);
-    this.context.clearRect(0, 0, this.canvasDom.width, this.canvasDom.height);
-    return this.context.drawImage(image, 0, 0, image.width, image.height, 0, 0, this.canvasDom.width, this.canvasDom.height);
-  };
-
-  /*
-    Takes an image and returns the new dimensions
-    so that it fits into the UI
-  
-    @param {Image} image
-    @returns {Object} dimensions
-    @returns {Integer} dimensions.width
-    @returns {Integer} dimensions.height
-  */
-
-
-  UICanvas.prototype.getDimensionsForImage = function(image) {
-    var options;
-    options = {
-      image: {
-        width: image.width,
-        height: image.height
-      },
-      container: {
-        width: this.canvasContainer.width() - ImglyKit.canvasContainerPadding * 2,
-        height: this.canvasContainer.height() - ImglyKit.canvasContainerPadding * 2
-      }
-    };
-    return Utils.calculateCanvasSize(options);
-  };
-
-  /*
-    @returns {jQuery.Object}
-  */
-
-
-  UICanvas.prototype.getControlsContainer = function() {
-    return this.controlsContainer;
-  };
-
-  /*
-    @param {Mixed} object
-    @param {Integer} object.height
-    @param {Integer} object.width
-  */
-
-
-  UICanvas.prototype.resizeAndPositionCanvasToMatch = function(obj) {
-    var newCanvasSize, options;
-    options = {
-      image: {
-        width: obj.width,
-        height: obj.height
-      },
-      container: {
-        width: this.canvasContainer.width() - ImglyKit.canvasContainerPadding * 2,
-        height: this.canvasContainer.height() - ImglyKit.canvasContainerPadding * 2
-      }
-    };
-    newCanvasSize = Utils.calculateCanvasSize(options);
-    this.canvas.css({
-      width: newCanvasSize.width,
-      height: newCanvasSize.height,
-      top: Math.round((this.canvasContainer.height() - newCanvasSize.height) / 2),
-      left: Math.round((this.canvasContainer.width() - newCanvasSize.width) / 2)
-    });
-    this.controlsContainer.css({
-      width: newCanvasSize.width,
-      height: newCanvasSize.height,
-      top: this.canvas.position().top,
-      left: this.canvas.position().left
-    });
-    this.canvasDom.width = newCanvasSize.width * (window.devicePixelRatio || 1);
-    return this.canvasDom.height = newCanvasSize.height * (window.devicePixelRatio || 1);
-  };
-
-  /*
-    Clears the context
-  */
-
-
-  UICanvas.prototype.reset = function() {
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    return this.controlsContainer.html("");
-  };
-
-  return UICanvas;
-
-})();
-
-module.exports = UICanvas;
-
-
-},{"../utils.coffee":10,"__browserify_Buffer":3,"__browserify_process":1}],79:[function(require,module,exports){
+},{"./controls/overview.coffee":76,"__browserify_Buffer":3,"__browserify_process":1,"events":7}],79:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/ui.coffee",__dirname="/ui";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -10459,7 +10459,7 @@ UI = (function(_super) {
 module.exports = UI;
 
 
-},{"./canvas.coffee":78,"./controls.coffee":77,"__browserify_Buffer":3,"__browserify_process":1,"events":6}],80:[function(require,module,exports){
+},{"./canvas.coffee":12,"./controls.coffee":78,"__browserify_Buffer":3,"__browserify_process":1,"events":7}],80:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/imgly.coffee",__dirname="/";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -10711,13 +10711,14 @@ ImglyKit = (function() {
 window.ImglyKit = ImglyKit;
 
 
-},{"./photoprocessor.coffee":11,"./ui/controls/crop.coffee":63,"./ui/ui.coffee":79,"./utils.coffee":10,"__browserify_Buffer":3,"__browserify_process":1}],76:[function(require,module,exports){
+},{"./photoprocessor.coffee":11,"./ui/controls/crop.coffee":62,"./ui/ui.coffee":79,"./utils.coffee":2,"__browserify_Buffer":3,"__browserify_process":1}],77:[function(require,module,exports){
 /*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
 */
 
 var List, Rect, UIControlsStickers, Vector2,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -10748,8 +10749,12 @@ UIControlsStickers = (function(_super) {
     this.app = app;
     this.ui = ui;
     this.controls = controls;
+    this.onStickerSizeSmallerClick = __bind(this.onStickerSizeSmallerClick, this);
+    this.onStickerSizeBiggerClick = __bind(this.onStickerSizeBiggerClick, this);
     UIControlsStickers.__super__.constructor.apply(this, arguments);
     this.operationClass = require("../../operations/draw_image.coffee");
+    this.stickerImageScaleStep = 0.025;
+    this.maximumImageSize = 2.0;
     this.listItems = [
       {
         name: "Heart",
@@ -10791,10 +10796,42 @@ UIControlsStickers = (function(_super) {
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       control = _ref[_i];
       this["stickerSize" + control + "Button"] = $("<div>").addClass(ImglyKit.classPrefix + "canvas-sticker-size-" + control.toLowerCase()).appendTo(this.stickerSizeButtonsContainer);
-      this["stickerSize" + control + "Button"].on("click", this["onStickersize" + control + "Click"]);
+      this["stickerSize" + control + "Button"].on("click", this["onStickerSize" + control + "Click"]);
     }
     this.crosshair = $("<div>").addClass(ImglyKit.classPrefix + "canvas-crosshair " + ImglyKit.classPrefix + "canvas-sticker-crosshair").appendTo(this.stickerContainer);
     return this.handleCrosshair();
+  };
+
+  /*
+    Gets called as soon as the user clicks the button
+    to increase font size
+  */
+
+
+  UIControlsStickers.prototype.onStickerSizeBiggerClick = function(e) {
+    this.operationOptions.scale += this.stickerImageScaleStep;
+    if (this.operationOptions.scale > this.maximumImageSize) {
+      this.operationOptions.scale = this.maximumImageSize;
+    }
+    this.operation.setOptions(this.operationOptions);
+    this.emit("renderPreview");
+    return this.updateCanvasControls();
+  };
+
+  /*
+    Gets called as soon as the user clicks the button
+    to reduce font size
+  */
+
+
+  UIControlsStickers.prototype.onStickerSizeSmallerClick = function(e) {
+    this.operationOptions.scale -= this.stickerImageScaleStep;
+    if (this.operationOptions.scale < this.stickerImageScaleStep) {
+      this.operationOptions.scale = this.stickerImageScaleStep;
+    }
+    this.operation.setOptions(this.operationOptions);
+    this.emit("renderPreview");
+    return this.updateCanvasControls();
   };
 
   /*
@@ -10827,7 +10864,6 @@ UIControlsStickers = (function(_super) {
           width: _this.operationOptions.stickerImageWidth,
           height: _this.operationOptions.stickerImageHeight
         });
-        console.log(_this.stickerContainer);
         _this.operationOptions.stickerPosition = new Vector2().copy(currentContainerPosition);
         _this.operation.setOptions(_this.operationOptions);
         _this.emit("renderPreview");
@@ -10847,7 +10883,7 @@ UIControlsStickers = (function(_super) {
 module.exports = UIControlsStickers;
 
 
-},{"../../math/rect.coffee":61,"../../math/vector2.coffee":56,"../../operations/draw_image.coffee":81,"./base/list.coffee":13}],81:[function(require,module,exports){
+},{"../../math/rect.coffee":61,"../../math/vector2.coffee":55,"../../operations/draw_image.coffee":81,"./base/list.coffee":14}],81:[function(require,module,exports){
 /*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -10871,13 +10907,10 @@ module.exports = DrawImageOperation = (function(_super) {
   __extends(DrawImageOperation, _super);
 
   function DrawImageOperation(app, options) {
-    var _base;
     this.app = app;
     this.options = options != null ? options : {};
     DrawImageOperation.__super__.constructor.apply(this, arguments);
-    if ((_base = this.options).scale == null) {
-      _base.scale = 1;
-    }
+    this.options.scale = 1.0;
     this.options.sticker = "stickers/heart-icon.png";
     this.options.stickerImageWidth = 100;
     this.options.stickerImageHeight = 100;
@@ -10895,7 +10928,6 @@ module.exports = DrawImageOperation = (function(_super) {
 
   DrawImageOperation.prototype.apply = function(imageData) {
     var _this = this;
-    console.log("apply");
     return Queue.promise(function(resolve, reject) {
       var stickerImage;
       stickerImage = new Image();
@@ -10907,7 +10939,7 @@ module.exports = DrawImageOperation = (function(_super) {
       var canvas, context;
       canvas = Utils.newCanvasFromImageData(imageData);
       context = canvas.getContext("2d");
-      context.drawImage(stickerImage, 0, 0, _this.options.stickerImageWidth, _this.options.stickerImageHeight, _this.options.stickerPosition.x, _this.options.stickerPosition.y, _this.options.stickerImageWidth, _this.options.stickerImageHeight);
+      context.drawImage(stickerImage, 0, 0, stickerImage.width, stickerImage.height, _this.options.stickerPosition.x, _this.options.stickerPosition.y, stickerImage.width * _this.options.scale, stickerImage.height * _this.options.scale);
       return context.getImageData(0, 0, imageData.width, imageData.height);
     });
   };
@@ -10917,5 +10949,5 @@ module.exports = DrawImageOperation = (function(_super) {
 })(Operation);
 
 
-},{"../math/rect.coffee":61,"../math/vector2.coffee":56,"../utils.coffee":10,"../vendor/queue.coffee":5,"./operation.coffee":7}]},{},[80])
+},{"../math/rect.coffee":61,"../math/vector2.coffee":55,"../utils.coffee":2,"../vendor/queue.coffee":6,"./operation.coffee":8}]},{},[80])
 ;

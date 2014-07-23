@@ -9,11 +9,10 @@
   background: rgba(black, 0.5)
 
 .#{$prefix}canvas-sticker-container
-  border: 1px dotted white
+  border: none
   border-radius: 3px
 
   background: none
-  box-shadow: 0px 0px 30px 0px white
   
 .#{$prefix}canvas-text-input, .#{$prefix}canvas-text-input-dummy
   +user-select(auto)
@@ -36,7 +35,7 @@
 $textControlsHeight: 30px
 $textControlsWidth:  70px
 $textControlsBorderRadius: 3px
-.#{$prefix}canvas-text-size-container
+.#{$prefix}canvas-text-size-container, .#{$prefix}canvas-sticker-size-container
   width: $textControlsWidth
 
   background: rgba(black, 0.4)
@@ -49,7 +48,7 @@ $textControlsBorderRadius: 3px
 
   +border-top-radius($textControlsBorderRadius)
 
-.#{$prefix}canvas-text-size-smaller, .#{$prefix}canvas-text-size-bigger
+.#{$prefix}canvas-text-size-smaller, .#{$prefix}canvas-text-size-bigger, .#{$prefix}canvas-sticker-size-smaller, .#{$prefix}canvas-sticker-size-bigger
   width: $textControlsWidth / 2
   height: $textControlsHeight
 
@@ -60,7 +59,7 @@ $textControlsBorderRadius: 3px
   &:hover
     background-color: rgba(black, 0.4)
 
-.#{$prefix}canvas-text-size-smaller
+.#{$prefix}canvas-text-size-smaller, .#{$prefix}canvas-sticker-size-smaller
   border-top-left-radius: $textControlsBorderRadius
   background: url("#{$img-base-path}minus.png") no-repeat center center
 
@@ -69,7 +68,7 @@ $textControlsBorderRadius: 3px
       background-image: url("#{$img-base-path}minus@2x.png")
       background-size: 50% 50%
 
-.#{$prefix}canvas-text-size-bigger
+.#{$prefix}canvas-text-size-bigger, .#{$prefix}canvas-sticker-size-bigger
   border-top-right-radius: $textControlsBorderRadius
   background: url("#{$img-base-path}plus.png") no-repeat center center
 
