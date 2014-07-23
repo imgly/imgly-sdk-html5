@@ -28,6 +28,7 @@ class UIControlsStickers extends List
         cssClass: "sticker-heart"
         method: "useSticker"
         arguments: ["stickers/sticker-heart.png"]
+        pixmap: "stickers/sticker-heart.png"
         default: true
       },
       {
@@ -35,6 +36,14 @@ class UIControlsStickers extends List
         cssClass: "sticker-nyanCat"
         method: "useSticker"
         arguments: ["stickers/sticker-nyanCat.png"]
+        pixmap: "stickers/sticker-nyanCat.png"
+      },
+      {
+        name: "NyanCat"
+        cssClass: "sticker-nyanCat"
+        method: "useSticker"
+        arguments: ["stickers/sticker-nyanCat.png"]
+        pixmap: "stickers/sticker-nyanCat.png"
       }
     ]
 

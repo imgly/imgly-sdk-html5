@@ -33,6 +33,10 @@ class UIControlsBaseList extends Base
           .addClass(ImglyKit.classPrefix + "controls-item")
           .addClass(ImglyKit.classPrefix + "controls-item-" + cssClass)
           .appendTo @list
+          
+        console.log("KKKKK:" + option.pixmap)
+        if option.pixmap?
+          item.attr "style", "background-image: url('#{@app.buildAssetsPath(option.pixmap)}'); background-size: 42px;"
 
         item.click (e) =>
           unless @allowMultipleClick

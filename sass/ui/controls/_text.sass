@@ -15,22 +15,6 @@
           background-image: url("#{$img-base-path}text/#{$item}@2x.png")
           background-size: 50% 50%
 
-
-// Sticker controls
-.#{$prefix}controls-item
-  $items: ("sticker-heart", "sticker-nyanCat")
-  
-  @each $item in $items
-    &.#{$prefix}controls-item-#{$item}
-      background-image: url("#{$img-base-path}stickers/#{$item}.png")
-      background-size: 42px
-      
-      @if $retina-support
-        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)
-          background-image: url("#{$img-base-path}stickers/#{$item}@2x.png")
-          
-// ------------
-
 .#{$prefix}controls-text-color-dropdown
   background: #F7F7F7
 
