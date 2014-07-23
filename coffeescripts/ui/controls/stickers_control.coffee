@@ -20,7 +20,7 @@ class UIControlsStickers extends List
   constructor: (@app, @ui, @controls) ->
     super
     @operationClass = require "../../operations/draw_image.coffee"
-    @stickerImageScaleStep = 0.025 # 2.5% image scale step = minimum size
+    @stickerImageScaleStep = 0.05 # 5% image scale step = minimum size
     @maximumImageSize = 2.0 # 200% Maximum image scale
     @listItems = [
       {
@@ -44,6 +44,13 @@ class UIControlsStickers extends List
   updateCanvasControls: ->
     canvasWidth  = @canvasControlsContainer.width()
     canvasHeight = @canvasControlsContainer.height()
+
+#    console.log @stickerContainer
+#    @stickerContainer.css
+#      left: @operationOptions.stickerPosition.x
+#      top: @operationOptions.stickerPosition.y
+
+    #@autoResizeTextInput()
 
   ###
     @param {jQuery.Object} canvasControlsContainer
@@ -77,7 +84,7 @@ class UIControlsStickers extends List
       .appendTo @stickerContainer
 
     @handleCrosshair()
-    
+
   ###
     Gets called as soon as the user clicks the button
     to increase font size

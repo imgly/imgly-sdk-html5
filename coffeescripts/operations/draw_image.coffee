@@ -17,12 +17,13 @@ module.exports = class DrawImageOperation extends Operation
     @options.stickerImageWidth = 100
     @options.stickerImageHeight = 100
 
-    @options.stickerPosition = new Vector2(20, 20)
+    @options.stickerPosition = new Vector2(100, 100)
   ###
     @param {String} sticker
   ###
   useSticker: (sticker) ->
     @options.sticker = sticker
+    @emit "updateOptions", @options
 
   apply: (imageData) ->
     # Scale our options
@@ -33,8 +34,6 @@ module.exports = class DrawImageOperation extends Operation
     #   .add(paddingVector)
     #   .multiplyWithRect(imageData)
 
-    #console.log(@options)
-    #console.log "apply"
     
     Queue.promise((resolve, reject) =>
       # DRAW IMAGE HERE
@@ -42,24 +41,25 @@ module.exports = class DrawImageOperation extends Operation
       stickerImage.onload = -> resolve stickerImage
       stickerImage.src = @app.buildAssetsPath(@options.sticker)
     ).then (stickerImage) =>
+      @options.stickerImageWidth = stickerImage.width * @options.scale
+      @options.stickerImageHeight = stickerImage.height * @options.scale
+    
       # Create a new context out of the image data
       canvas  = Utils.newCanvasFromImageData imageData
       context = canvas.getContext "2d"
 
-      #console.log @options
-      
       # Draw sticker image
       context.drawImage(
         # Image to be used
         stickerImage,
         # The x coordinate where to start clipping
-        0,
+        #0,
         # The y coordinate where to start clipping
-        0,
+        #0,
         # The width of the clipped image
-        stickerImage.width,
+        #stickerImage.width,
         # The height of the clipped image
-        stickerImage.height,
+        #stickerImage.height,
         # The x coord. where to place image on target canvas
         @options.stickerPosition.x,
         # The y coord. where to place image on target canvas

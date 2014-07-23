@@ -150,7 +150,7 @@
 }
 /* line 11, ../sass/ui/canvas-controls/_text.sass */
 .imgly-container .imgly-canvas-container .imgly-canvas-sticker-container {
-  border: none;
+  border: 1px solid red;
   border-radius: 3px;
   background: none;
 }

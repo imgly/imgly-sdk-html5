@@ -15999,7 +15999,7 @@ UIControlsStickers = (function(_super) {
     this.onStickerSizeBiggerClick = __bind(this.onStickerSizeBiggerClick, this);
     UIControlsStickers.__super__.constructor.apply(this, arguments);
     this.operationClass = require("../../operations/draw_image.coffee");
-    this.stickerImageScaleStep = 0.025;
+    this.stickerImageScaleStep = 0.05;
     this.maximumImageSize = 2.0;
     this.listItems = [
       {
@@ -21428,7 +21428,7 @@ module.exports = DrawImageOperation = (function(_super) {
     this.options.sticker = "stickers/sticker-heart.png";
     this.options.stickerImageWidth = 100;
     this.options.stickerImageHeight = 100;
-    this.options.stickerPosition = new Vector2(20, 20);
+    this.options.stickerPosition = new Vector2(100, 100);
   }
 
   /*
@@ -21437,7 +21437,8 @@ module.exports = DrawImageOperation = (function(_super) {
 
 
   DrawImageOperation.prototype.useSticker = function(sticker) {
-    return this.options.sticker = sticker;
+    this.options.sticker = sticker;
+    return this.emit("updateOptions", this.options);
   };
 
   DrawImageOperation.prototype.apply = function(imageData) {
@@ -21451,9 +21452,11 @@ module.exports = DrawImageOperation = (function(_super) {
       return stickerImage.src = _this.app.buildAssetsPath(_this.options.sticker);
     }).then(function(stickerImage) {
       var canvas, context;
+      _this.options.stickerImageWidth = stickerImage.width * _this.options.scale;
+      _this.options.stickerImageHeight = stickerImage.height * _this.options.scale;
       canvas = Utils.newCanvasFromImageData(imageData);
       context = canvas.getContext("2d");
-      context.drawImage(stickerImage, 0, 0, stickerImage.width, stickerImage.height, _this.options.stickerPosition.x, _this.options.stickerPosition.y, stickerImage.width * _this.options.scale, stickerImage.height * _this.options.scale);
+      context.drawImage(stickerImage, _this.options.stickerPosition.x, _this.options.stickerPosition.y, stickerImage.width * _this.options.scale, stickerImage.height * _this.options.scale);
       return context.getImageData(0, 0, imageData.width, imageData.height);
     });
   };
