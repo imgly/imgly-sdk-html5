@@ -51,3 +51,6 @@ via the @operationOptions variable (which is being set by @operation.setOptions)
 
 What does renderPreview: true really do in class Operation? It allows previews to be rendered, but that is a bit confusing.
 
+# Adding new stickers
+Sticker files have follow the naming convention stickers/sticker-{name}.png. In order to add new stickers, the stickerContainer list has to be extended both in coffeescript and in sass.
+

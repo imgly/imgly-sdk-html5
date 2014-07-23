@@ -857,7 +857,17 @@
 .imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-times-new-roman {
   background-image: url("assets/text/times-new-roman.png");
 }
-/* line 18, ../sass/ui/controls/_text.sass */
+/* line 24, ../sass/ui/controls/_text.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-sticker-heart {
+  background-image: url("assets/stickers/sticker-heart.png");
+  background-size: 42px;
+}
+/* line 24, ../sass/ui/controls/_text.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-sticker-nyanCat {
+  background-image: url("assets/stickers/sticker-nyanCat.png");
+  background-size: 42px;
+}
+/* line 34, ../sass/ui/controls/_text.sass */
 .imgly-container .imgly-controls-container .imgly-controls-text-color-dropdown {
   background: #f7f7f7;
   width: 167px;
@@ -873,11 +883,11 @@
   padding: 6px 0 14px 0;
   display: none;
 }
-/* line 40, ../sass/ui/controls/_text.sass */
+/* line 56, ../sass/ui/controls/_text.sass */
 .imgly-container .imgly-controls-container .imgly-controls-text-color-dropdown .imgly-controls-text-color {
   cursor: pointer;
 }
-/* line 43, ../sass/ui/controls/_text.sass */
+/* line 59, ../sass/ui/controls/_text.sass */
 .imgly-container .imgly-controls-container .imgly-controls-text-color {
   width: 34px;
   height: 34px;
@@ -886,7 +896,7 @@
   border-radius: 3px;
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
-/* line 55, ../sass/ui/controls/_text.sass */
+/* line 71, ../sass/ui/controls/_text.sass */
 .imgly-container .imgly-controls-container .imgly-controls-text-color-button {
   width: 80px;
   height: 80px;
@@ -896,7 +906,7 @@
   right: 73px;
   border-left: 1px solid #363636;
 }
-/* line 68, ../sass/ui/controls/_text.sass */
+/* line 84, ../sass/ui/controls/_text.sass */
 .imgly-container .imgly-controls-container .imgly-controls-text-color-button > .imgly-controls-text-color {
   margin: 0;
   position: absolute;

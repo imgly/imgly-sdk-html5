@@ -12,7 +12,7 @@ module.exports = class DrawImageOperation extends Operation
   constructor: (@app, @options={}) ->
     super
     @options.scale = 1.0 # 100% scale
-    @options.sticker = "stickers/heart-icon.png"
+    @options.sticker = "stickers/sticker-heart.png"
 
     @options.stickerImageWidth = 100
     @options.stickerImageHeight = 100

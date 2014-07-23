@@ -25,16 +25,16 @@ class UIControlsStickers extends List
     @listItems = [
       {
         name: "Heart"
-        cssClass: "sticker"
+        cssClass: "sticker-heart"
         method: "useSticker"
-        arguments: ["stickers/heart-icon.png"]
+        arguments: ["stickers/sticker-heart.png"]
         default: true
       },
       {
         name: "NyanCat"
-        cssClass: "nyanCat"
+        cssClass: "sticker-nyanCat"
         method: "useSticker"
-        arguments: ["stickers/nyan-cat.png"]
+        arguments: ["stickers/sticker-nyanCat.png"]
       }
     ]
 
