@@ -16022,11 +16022,7 @@ UIControlsStickers = (function(_super) {
   */
 
 
-  UIControlsStickers.prototype.updateCanvasControls = function() {
-    var canvasHeight, canvasWidth;
-    canvasWidth = this.canvasControlsContainer.width();
-    return canvasHeight = this.canvasControlsContainer.height();
-  };
+  UIControlsStickers.prototype.updateCanvasControls = function() {};
 
   /*
     @param {jQuery.Object} canvasControlsContainer
@@ -21428,7 +21424,6 @@ module.exports = DrawImageOperation = (function(_super) {
     this.options.sticker = "stickers/sticker-heart.png";
     this.options.stickerImageWidth = 100;
     this.options.stickerImageHeight = 100;
-    this.options.stickerPosition = new Vector2(100, 100);
   }
 
   /*
@@ -21456,6 +21451,9 @@ module.exports = DrawImageOperation = (function(_super) {
       _this.options.stickerImageHeight = stickerImage.height * _this.options.scale;
       canvas = Utils.newCanvasFromImageData(imageData);
       context = canvas.getContext("2d");
+      if (_this.options.stickerPosition == null) {
+        _this.options.stickerPosition = new Vector2(canvas.width / 2, canvas.height / 2);
+      }
       context.drawImage(stickerImage, _this.options.stickerPosition.x, _this.options.stickerPosition.y, stickerImage.width * _this.options.scale, stickerImage.height * _this.options.scale);
       return context.getImageData(0, 0, imageData.width, imageData.height);
     });

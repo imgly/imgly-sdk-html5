@@ -150,7 +150,7 @@
 }
 /* line 11, ../sass/ui/canvas-controls/_text.sass */
 .imgly-container .imgly-canvas-container .imgly-canvas-sticker-container {
-  border: 1px solid red;
+  border: 0px solid red;
   border-radius: 3px;
   background: none;
 }
@@ -212,7 +212,7 @@
 /* line 81, ../sass/ui/canvas-controls/_text.sass */
 .imgly-container .imgly-canvas-container .imgly-canvas-text-crosshair, .imgly-container .imgly-canvas-container .imgly-canvas-sticker-crosshair {
   position: absolute;
-  top: 50%;
+  top: 0px;
   left: -25px;
 }
 /* line 19, ../sass/ui/_canvas.sass */

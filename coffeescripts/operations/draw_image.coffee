@@ -17,7 +17,6 @@ module.exports = class DrawImageOperation extends Operation
     @options.stickerImageWidth = 100
     @options.stickerImageHeight = 100
 
-    @options.stickerPosition = new Vector2(100, 100)
   ###
     @param {String} sticker
   ###
@@ -47,6 +46,10 @@ module.exports = class DrawImageOperation extends Operation
       # Create a new context out of the image data
       canvas  = Utils.newCanvasFromImageData imageData
       context = canvas.getContext "2d"
+
+      # This is assuming the initial position is at the center of the target image
+      unless @options.stickerPosition?
+        @options.stickerPosition = new Vector2(canvas.width / 2, canvas.height / 2)
 
       # Draw sticker image
       context.drawImage(

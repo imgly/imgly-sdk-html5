@@ -42,8 +42,9 @@ class UIControlsStickers extends List
     Update input position
   ###
   updateCanvasControls: ->
-    canvasWidth  = @canvasControlsContainer.width()
-    canvasHeight = @canvasControlsContainer.height()
+    return
+#    canvasWidth  = @canvasControlsContainer.width()
+#    canvasHeight = @canvasControlsContainer.height()
 
 #    console.log @stickerContainer
 #    @stickerContainer.css
