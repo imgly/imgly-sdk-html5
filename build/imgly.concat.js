@@ -10568,6 +10568,72 @@ process.chdir = function (dir) {
 };
 
 },{}],2:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/vendor/perf.coffee",__dirname="/vendor";var Perf;
+
+Perf = (function() {
+  function Perf(name, options) {
+    var _base, _base1, _base2;
+    this.name = name;
+    this.options = options != null ? options : {};
+    if ((_base = this.options).good == null) {
+      _base.good = 100;
+    }
+    if ((_base1 = this.options).bad == null) {
+      _base1.bad = 500;
+    }
+    if ((_base2 = this.options).debug == null) {
+      _base2.debug = true;
+    }
+    this.started = false;
+  }
+
+  Perf.prototype.start = function() {
+    if (this.started || !this.options.debug) {
+      return;
+    }
+    this.start = +new Date();
+    return this.started = true;
+  };
+
+  Perf.prototype.stop = function(printLine) {
+    var background, color, duration, end, message;
+    if (!this.started || !this.options.debug) {
+      return;
+    }
+    end = +new Date();
+    duration = end - this.start;
+    if (this.name != null) {
+      message = this.name + ' took';
+    } else {
+      message = 'Code execution time:';
+    }
+    if (typeof window !== "undefined" && window !== null) {
+      if (duration < this.options.good) {
+        background = 'darkgreen';
+        color = 'white';
+      } else if (duration > this.options.good && duration < this.options.bad) {
+        background = 'orange';
+        color = 'black';
+      } else {
+        background = 'darkred';
+        color = 'white';
+      }
+      console.log('%c perf %c ' + message + ' %c ' + duration.toFixed(2) + 'ms ', 'background: #222; color: #bada55', '', 'background: ' + background + '; color: ' + color);
+    } else {
+      console.log('[perf] ' + message + ' ' + duration.toFixed(2) + 'ms');
+    }
+    this.started = false;
+    if (printLine && (typeof window !== "undefined" && window !== null)) {
+      return console.log('%c perf %c -- END --                                                                          ', 'background: #222; color: #bada55', 'background: #222; color: #ffffff');
+    }
+  };
+
+  return Perf;
+
+})();
+
+module.exports = Perf;
+
 
 },{"__browserify_Buffer":3,"__browserify_process":1}],3:[function(require,module,exports){
 require=(function(e,t,n,r){function i(r){if(!n[r]){if(!t[r]){if(e)return e(r);throw new Error("Cannot find module '"+r+"'")}var s=n[r]={exports:{}};t[r][0](function(e){var n=t[r][1][e];return i(n?n:e)},s,s.exports)}return n[r].exports}for(var s=0;s<r.length;s++)i(r[s]);return i})(typeof require!=="undefined"&&require,{1:[function(require,module,exports){
@@ -14432,6 +14498,204 @@ SlowBuffer.prototype.writeDoubleBE = Buffer.prototype.writeDoubleBE;
 ;;module.exports=require("buffer-browserify")
 
 },{}],4:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/../node_modules/grunt-watchify/node_modules/browserify/node_modules/browser-builtins/builtin/events.js",__dirname="/../node_modules/grunt-watchify/node_modules/browserify/node_modules/browser-builtins/builtin";if (!process.EventEmitter) process.EventEmitter = function () {};
+
+var EventEmitter = exports.EventEmitter = process.EventEmitter;
+var isArray = typeof Array.isArray === 'function'
+    ? Array.isArray
+    : function (xs) {
+        return Object.prototype.toString.call(xs) === '[object Array]'
+    }
+;
+function indexOf (xs, x) {
+    if (xs.indexOf) return xs.indexOf(x);
+    for (var i = 0; i < xs.length; i++) {
+        if (x === xs[i]) return i;
+    }
+    return -1;
+}
+
+// By default EventEmitters will print a warning if more than
+// 10 listeners are added to it. This is a useful default which
+// helps finding memory leaks.
+//
+// Obviously not all Emitters should be limited to 10. This function allows
+// that to be increased. Set to zero for unlimited.
+var defaultMaxListeners = 10;
+EventEmitter.prototype.setMaxListeners = function(n) {
+  if (!this._events) this._events = {};
+  this._events.maxListeners = n;
+};
+
+
+EventEmitter.prototype.emit = function(type) {
+  // If there is no 'error' event listener then throw.
+  if (type === 'error') {
+    if (!this._events || !this._events.error ||
+        (isArray(this._events.error) && !this._events.error.length))
+    {
+      if (arguments[1] instanceof Error) {
+        throw arguments[1]; // Unhandled 'error' event
+      } else {
+        throw new Error("Uncaught, unspecified 'error' event.");
+      }
+      return false;
+    }
+  }
+
+  if (!this._events) return false;
+  var handler = this._events[type];
+  if (!handler) return false;
+
+  if (typeof handler == 'function') {
+    switch (arguments.length) {
+      // fast cases
+      case 1:
+        handler.call(this);
+        break;
+      case 2:
+        handler.call(this, arguments[1]);
+        break;
+      case 3:
+        handler.call(this, arguments[1], arguments[2]);
+        break;
+      // slower
+      default:
+        var args = Array.prototype.slice.call(arguments, 1);
+        handler.apply(this, args);
+    }
+    return true;
+
+  } else if (isArray(handler)) {
+    var args = Array.prototype.slice.call(arguments, 1);
+
+    var listeners = handler.slice();
+    for (var i = 0, l = listeners.length; i < l; i++) {
+      listeners[i].apply(this, args);
+    }
+    return true;
+
+  } else {
+    return false;
+  }
+};
+
+// EventEmitter is defined in src/node_events.cc
+// EventEmitter.prototype.emit() is also defined there.
+EventEmitter.prototype.addListener = function(type, listener) {
+  if ('function' !== typeof listener) {
+    throw new Error('addListener only takes instances of Function');
+  }
+
+  if (!this._events) this._events = {};
+
+  // To avoid recursion in the case that type == "newListeners"! Before
+  // adding it to the listeners, first emit "newListeners".
+  this.emit('newListener', type, listener);
+
+  if (!this._events[type]) {
+    // Optimize the case of one listener. Don't need the extra array object.
+    this._events[type] = listener;
+  } else if (isArray(this._events[type])) {
+
+    // Check for listener leak
+    if (!this._events[type].warned) {
+      var m;
+      if (this._events.maxListeners !== undefined) {
+        m = this._events.maxListeners;
+      } else {
+        m = defaultMaxListeners;
+      }
+
+      if (m && m > 0 && this._events[type].length > m) {
+        this._events[type].warned = true;
+        console.error('(node) warning: possible EventEmitter memory ' +
+                      'leak detected. %d listeners added. ' +
+                      'Use emitter.setMaxListeners() to increase limit.',
+                      this._events[type].length);
+        console.trace();
+      }
+    }
+
+    // If we've already got an array, just append.
+    this._events[type].push(listener);
+  } else {
+    // Adding the second element, need to change to array.
+    this._events[type] = [this._events[type], listener];
+  }
+
+  return this;
+};
+
+EventEmitter.prototype.on = EventEmitter.prototype.addListener;
+
+EventEmitter.prototype.once = function(type, listener) {
+  var self = this;
+  self.on(type, function g() {
+    self.removeListener(type, g);
+    listener.apply(this, arguments);
+  });
+
+  return this;
+};
+
+EventEmitter.prototype.removeListener = function(type, listener) {
+  if ('function' !== typeof listener) {
+    throw new Error('removeListener only takes instances of Function');
+  }
+
+  // does not use listeners(), so no side effect of creating _events[type]
+  if (!this._events || !this._events[type]) return this;
+
+  var list = this._events[type];
+
+  if (isArray(list)) {
+    var i = indexOf(list, listener);
+    if (i < 0) return this;
+    list.splice(i, 1);
+    if (list.length == 0)
+      delete this._events[type];
+  } else if (this._events[type] === listener) {
+    delete this._events[type];
+  }
+
+  return this;
+};
+
+EventEmitter.prototype.removeAllListeners = function(type) {
+  if (arguments.length === 0) {
+    this._events = {};
+    return this;
+  }
+
+  // does not use listeners(), so no side effect of creating _events[type]
+  if (type && this._events && this._events[type]) this._events[type] = null;
+  return this;
+};
+
+EventEmitter.prototype.listeners = function(type) {
+  if (!this._events) this._events = {};
+  if (!this._events[type]) this._events[type] = [];
+  if (!isArray(this._events[type])) {
+    this._events[type] = [this._events[type]];
+  }
+  return this._events[type];
+};
+
+EventEmitter.listenerCount = function(emitter, type) {
+  var ret;
+  if (!emitter._events || !emitter._events[type])
+    ret = 0;
+  else if (typeof emitter._events[type] === 'function')
+    ret = 1;
+  else
+    ret = emitter._events[type].length;
+  return ret;
+};
+
+},{"__browserify_Buffer":3,"__browserify_process":1}],5:[function(require,module,exports){
+
+},{"__browserify_Buffer":3,"__browserify_process":1}],6:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/vendor/queue.coffee",__dirname="/vendor";/*
   Common interface for promises.
 
@@ -14484,7 +14748,201 @@ Queue.promise = (function() {
 module.exports = Queue;
 
 
-},{"__browserify_Buffer":3,"__browserify_process":1,"q":2}],5:[function(require,module,exports){
+},{"__browserify_Buffer":3,"__browserify_process":1,"q":5}],7:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/operation.coffee",__dirname="/operations";/*
+  ImglyKit
+  Copyright (c) 2013-2014 img.ly
+*/
+
+var EventEmitter, Operation, Queue,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  __slice = [].slice;
+
+Queue = require("../vendor/queue.coffee");
+
+EventEmitter = require("events").EventEmitter;
+
+Operation = (function(_super) {
+  var buildComposition;
+
+  __extends(Operation, _super);
+
+  Operation.prototype.renderPreview = true;
+
+  /*
+    @param {ImglyKit} app
+    @param {Object} options
+  */
+
+
+  function Operation(app, options) {
+    var apply;
+    this.app = app;
+    this.options = options != null ? options : {};
+    apply = this.apply;
+    this.apply = function(dataOrPromise) {
+      var _this = this;
+      return Queue(dataOrPromise).then(function(imageData) {
+        return apply.call(_this, imageData);
+      });
+    };
+  }
+
+  /*
+    @param {CanvasRenderingContext2d} context
+  */
+
+
+  Operation.prototype.setContext = function(context) {
+    this.context = context;
+  };
+
+  /*
+    @param {Object} options
+  */
+
+
+  Operation.prototype.setOptions = function(options) {
+    var key, val;
+    for (key in options) {
+      val = options[key];
+      this.options[key] = val;
+    }
+    return this.emit("updateOptions", options);
+  };
+
+  /*
+    This applies this operation to the image in the editor. However, it is not
+    responsible for storing the result in any way. It receives imageData and
+    returns a modified version. 
+    @param {ImageData} imageData
+    @param {Function} callback
+    @returns {ImageData}
+  */
+
+
+  Operation.prototype.apply = function() {
+    throw Error("Abstract: Filter#apply");
+  };
+
+  buildComposition = function(direction, filter, args) {
+    var composition, self;
+    if (args == null) {
+      args = [];
+    }
+    self = this;
+    if (filter.prototype instanceof Operation) {
+      filter = (function(func, args, ctor) {
+        ctor.prototype = func.prototype;
+        var child = new ctor, result = func.apply(child, args);
+        return Object(result) === result ? result : child;
+      })(filter, [this.app].concat(__slice.call(args)), function(){});
+    }
+    composition = direction === "pre" ? function(imageData) {
+      return self.apply(filter.apply(imageData || this));
+    } : direction === "post" ? function(imageData) {
+      return filter.apply(self.apply(imageData || this));
+    } : void 0;
+    composition.compose = Operation.prototype.compose;
+    composition.precompose = Operation.prototype.precompose;
+    return composition;
+  };
+
+  /*
+    @param {Operation} filter
+    @returns {Function}
+  */
+
+
+  Operation.prototype.compose = function() {
+    var args, filter;
+    filter = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+    return buildComposition.call(this, "post", filter, args);
+  };
+
+  /*
+    @param {Operation} filter
+    @returns {Function}
+  */
+
+
+  Operation.prototype.precompose = function() {
+    var args, filter;
+    filter = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+    return buildComposition.call(this, "pre", filter, args);
+  };
+
+  return Operation;
+
+})(EventEmitter);
+
+module.exports = Operation;
+
+
+},{"../vendor/queue.coffee":6,"__browserify_Buffer":3,"__browserify_process":1,"events":4}],8:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/filter.coffee",__dirname="/operations/filters";/*
+  ImglyKit
+  Copyright (c) 2013-2014 img.ly
+*/
+
+var Filter, Operation, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Operation = require("../operation.coffee");
+
+Filter = (function(_super) {
+  __extends(Filter, _super);
+
+  function Filter() {
+    _ref = Filter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  Filter.preview = null;
+
+  Filter.displayName = null;
+
+  return Filter;
+
+})(Operation);
+
+module.exports = Filter;
+
+
+},{"../operation.coffee":7,"__browserify_Buffer":3,"__browserify_process":1}],9:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/identity.coffee",__dirname="/operations/filters/primitives";/*
+  ImglyKit
+  Copyright (c) 2013-2014 img.ly
+*/
+
+var Filter, PrimitiveIdentityFilter, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("../filter.coffee");
+
+PrimitiveIdentityFilter = (function(_super) {
+  __extends(PrimitiveIdentityFilter, _super);
+
+  function PrimitiveIdentityFilter() {
+    _ref = PrimitiveIdentityFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  PrimitiveIdentityFilter.prototype.apply = function(imageData) {
+    return imageData;
+  };
+
+  return PrimitiveIdentityFilter;
+
+})(Filter);
+
+module.exports = PrimitiveIdentityFilter;
+
+
+},{"../filter.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],10:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/utils.coffee",__dirname="/";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -14732,465 +15190,7 @@ Utils.truncate = function(string, length) {
 module.exports = Utils;
 
 
-},{"__browserify_Buffer":3,"__browserify_process":1}],6:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/vendor/perf.coffee",__dirname="/vendor";var Perf;
-
-Perf = (function() {
-  function Perf(name, options) {
-    var _base, _base1, _base2;
-    this.name = name;
-    this.options = options != null ? options : {};
-    if ((_base = this.options).good == null) {
-      _base.good = 100;
-    }
-    if ((_base1 = this.options).bad == null) {
-      _base1.bad = 500;
-    }
-    if ((_base2 = this.options).debug == null) {
-      _base2.debug = true;
-    }
-    this.started = false;
-  }
-
-  Perf.prototype.start = function() {
-    if (this.started || !this.options.debug) {
-      return;
-    }
-    this.start = +new Date();
-    return this.started = true;
-  };
-
-  Perf.prototype.stop = function(printLine) {
-    var background, color, duration, end, message;
-    if (!this.started || !this.options.debug) {
-      return;
-    }
-    end = +new Date();
-    duration = end - this.start;
-    if (this.name != null) {
-      message = this.name + ' took';
-    } else {
-      message = 'Code execution time:';
-    }
-    if (typeof window !== "undefined" && window !== null) {
-      if (duration < this.options.good) {
-        background = 'darkgreen';
-        color = 'white';
-      } else if (duration > this.options.good && duration < this.options.bad) {
-        background = 'orange';
-        color = 'black';
-      } else {
-        background = 'darkred';
-        color = 'white';
-      }
-      console.log('%c perf %c ' + message + ' %c ' + duration.toFixed(2) + 'ms ', 'background: #222; color: #bada55', '', 'background: ' + background + '; color: ' + color);
-    } else {
-      console.log('[perf] ' + message + ' ' + duration.toFixed(2) + 'ms');
-    }
-    this.started = false;
-    if (printLine && (typeof window !== "undefined" && window !== null)) {
-      return console.log('%c perf %c -- END --                                                                          ', 'background: #222; color: #bada55', 'background: #222; color: #ffffff');
-    }
-  };
-
-  return Perf;
-
-})();
-
-module.exports = Perf;
-
-
-},{"__browserify_Buffer":3,"__browserify_process":1}],7:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/../node_modules/grunt-watchify/node_modules/browserify/node_modules/browser-builtins/builtin/events.js",__dirname="/../node_modules/grunt-watchify/node_modules/browserify/node_modules/browser-builtins/builtin";if (!process.EventEmitter) process.EventEmitter = function () {};
-
-var EventEmitter = exports.EventEmitter = process.EventEmitter;
-var isArray = typeof Array.isArray === 'function'
-    ? Array.isArray
-    : function (xs) {
-        return Object.prototype.toString.call(xs) === '[object Array]'
-    }
-;
-function indexOf (xs, x) {
-    if (xs.indexOf) return xs.indexOf(x);
-    for (var i = 0; i < xs.length; i++) {
-        if (x === xs[i]) return i;
-    }
-    return -1;
-}
-
-// By default EventEmitters will print a warning if more than
-// 10 listeners are added to it. This is a useful default which
-// helps finding memory leaks.
-//
-// Obviously not all Emitters should be limited to 10. This function allows
-// that to be increased. Set to zero for unlimited.
-var defaultMaxListeners = 10;
-EventEmitter.prototype.setMaxListeners = function(n) {
-  if (!this._events) this._events = {};
-  this._events.maxListeners = n;
-};
-
-
-EventEmitter.prototype.emit = function(type) {
-  // If there is no 'error' event listener then throw.
-  if (type === 'error') {
-    if (!this._events || !this._events.error ||
-        (isArray(this._events.error) && !this._events.error.length))
-    {
-      if (arguments[1] instanceof Error) {
-        throw arguments[1]; // Unhandled 'error' event
-      } else {
-        throw new Error("Uncaught, unspecified 'error' event.");
-      }
-      return false;
-    }
-  }
-
-  if (!this._events) return false;
-  var handler = this._events[type];
-  if (!handler) return false;
-
-  if (typeof handler == 'function') {
-    switch (arguments.length) {
-      // fast cases
-      case 1:
-        handler.call(this);
-        break;
-      case 2:
-        handler.call(this, arguments[1]);
-        break;
-      case 3:
-        handler.call(this, arguments[1], arguments[2]);
-        break;
-      // slower
-      default:
-        var args = Array.prototype.slice.call(arguments, 1);
-        handler.apply(this, args);
-    }
-    return true;
-
-  } else if (isArray(handler)) {
-    var args = Array.prototype.slice.call(arguments, 1);
-
-    var listeners = handler.slice();
-    for (var i = 0, l = listeners.length; i < l; i++) {
-      listeners[i].apply(this, args);
-    }
-    return true;
-
-  } else {
-    return false;
-  }
-};
-
-// EventEmitter is defined in src/node_events.cc
-// EventEmitter.prototype.emit() is also defined there.
-EventEmitter.prototype.addListener = function(type, listener) {
-  if ('function' !== typeof listener) {
-    throw new Error('addListener only takes instances of Function');
-  }
-
-  if (!this._events) this._events = {};
-
-  // To avoid recursion in the case that type == "newListeners"! Before
-  // adding it to the listeners, first emit "newListeners".
-  this.emit('newListener', type, listener);
-
-  if (!this._events[type]) {
-    // Optimize the case of one listener. Don't need the extra array object.
-    this._events[type] = listener;
-  } else if (isArray(this._events[type])) {
-
-    // Check for listener leak
-    if (!this._events[type].warned) {
-      var m;
-      if (this._events.maxListeners !== undefined) {
-        m = this._events.maxListeners;
-      } else {
-        m = defaultMaxListeners;
-      }
-
-      if (m && m > 0 && this._events[type].length > m) {
-        this._events[type].warned = true;
-        console.error('(node) warning: possible EventEmitter memory ' +
-                      'leak detected. %d listeners added. ' +
-                      'Use emitter.setMaxListeners() to increase limit.',
-                      this._events[type].length);
-        console.trace();
-      }
-    }
-
-    // If we've already got an array, just append.
-    this._events[type].push(listener);
-  } else {
-    // Adding the second element, need to change to array.
-    this._events[type] = [this._events[type], listener];
-  }
-
-  return this;
-};
-
-EventEmitter.prototype.on = EventEmitter.prototype.addListener;
-
-EventEmitter.prototype.once = function(type, listener) {
-  var self = this;
-  self.on(type, function g() {
-    self.removeListener(type, g);
-    listener.apply(this, arguments);
-  });
-
-  return this;
-};
-
-EventEmitter.prototype.removeListener = function(type, listener) {
-  if ('function' !== typeof listener) {
-    throw new Error('removeListener only takes instances of Function');
-  }
-
-  // does not use listeners(), so no side effect of creating _events[type]
-  if (!this._events || !this._events[type]) return this;
-
-  var list = this._events[type];
-
-  if (isArray(list)) {
-    var i = indexOf(list, listener);
-    if (i < 0) return this;
-    list.splice(i, 1);
-    if (list.length == 0)
-      delete this._events[type];
-  } else if (this._events[type] === listener) {
-    delete this._events[type];
-  }
-
-  return this;
-};
-
-EventEmitter.prototype.removeAllListeners = function(type) {
-  if (arguments.length === 0) {
-    this._events = {};
-    return this;
-  }
-
-  // does not use listeners(), so no side effect of creating _events[type]
-  if (type && this._events && this._events[type]) this._events[type] = null;
-  return this;
-};
-
-EventEmitter.prototype.listeners = function(type) {
-  if (!this._events) this._events = {};
-  if (!this._events[type]) this._events[type] = [];
-  if (!isArray(this._events[type])) {
-    this._events[type] = [this._events[type]];
-  }
-  return this._events[type];
-};
-
-EventEmitter.listenerCount = function(emitter, type) {
-  var ret;
-  if (!emitter._events || !emitter._events[type])
-    ret = 0;
-  else if (typeof emitter._events[type] === 'function')
-    ret = 1;
-  else
-    ret = emitter._events[type].length;
-  return ret;
-};
-
-},{"__browserify_Buffer":3,"__browserify_process":1}],8:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/operation.coffee",__dirname="/operations";/*
-  ImglyKit
-  Copyright (c) 2013-2014 img.ly
-*/
-
-var EventEmitter, Operation, Queue,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  __slice = [].slice;
-
-Queue = require("../vendor/queue.coffee");
-
-EventEmitter = require("events").EventEmitter;
-
-Operation = (function(_super) {
-  var buildComposition;
-
-  __extends(Operation, _super);
-
-  Operation.prototype.renderPreview = true;
-
-  /*
-    @param {ImglyKit} app
-    @param {Object} options
-  */
-
-
-  function Operation(app, options) {
-    var apply;
-    this.app = app;
-    this.options = options != null ? options : {};
-    apply = this.apply;
-    this.apply = function(dataOrPromise) {
-      var _this = this;
-      return Queue(dataOrPromise).then(function(imageData) {
-        return apply.call(_this, imageData);
-      });
-    };
-  }
-
-  /*
-    @param {CanvasRenderingContext2d} context
-  */
-
-
-  Operation.prototype.setContext = function(context) {
-    this.context = context;
-  };
-
-  /*
-    @param {Object} options
-  */
-
-
-  Operation.prototype.setOptions = function(options) {
-    var key, val;
-    for (key in options) {
-      val = options[key];
-      this.options[key] = val;
-    }
-    return this.emit("updateOptions", options);
-  };
-
-  /*
-    This applies this operation to the image in the editor. However, it is not
-    responsible for storing the result in any way. It receives imageData and
-    returns a modified version. 
-    @param {ImageData} imageData
-    @param {Function} callback
-    @returns {ImageData}
-  */
-
-
-  Operation.prototype.apply = function() {
-    throw Error("Abstract: Filter#apply");
-  };
-
-  buildComposition = function(direction, filter, args) {
-    var composition, self;
-    if (args == null) {
-      args = [];
-    }
-    self = this;
-    if (filter.prototype instanceof Operation) {
-      filter = (function(func, args, ctor) {
-        ctor.prototype = func.prototype;
-        var child = new ctor, result = func.apply(child, args);
-        return Object(result) === result ? result : child;
-      })(filter, [this.app].concat(__slice.call(args)), function(){});
-    }
-    composition = direction === "pre" ? function(imageData) {
-      return self.apply(filter.apply(imageData || this));
-    } : direction === "post" ? function(imageData) {
-      return filter.apply(self.apply(imageData || this));
-    } : void 0;
-    composition.compose = Operation.prototype.compose;
-    composition.precompose = Operation.prototype.precompose;
-    return composition;
-  };
-
-  /*
-    @param {Operation} filter
-    @returns {Function}
-  */
-
-
-  Operation.prototype.compose = function() {
-    var args, filter;
-    filter = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-    return buildComposition.call(this, "post", filter, args);
-  };
-
-  /*
-    @param {Operation} filter
-    @returns {Function}
-  */
-
-
-  Operation.prototype.precompose = function() {
-    var args, filter;
-    filter = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-    return buildComposition.call(this, "pre", filter, args);
-  };
-
-  return Operation;
-
-})(EventEmitter);
-
-module.exports = Operation;
-
-
-},{"../vendor/queue.coffee":4,"__browserify_Buffer":3,"__browserify_process":1,"events":7}],9:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/filter.coffee",__dirname="/operations/filters";/*
-  ImglyKit
-  Copyright (c) 2013-2014 img.ly
-*/
-
-var Filter, Operation, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Operation = require("../operation.coffee");
-
-Filter = (function(_super) {
-  __extends(Filter, _super);
-
-  function Filter() {
-    _ref = Filter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  Filter.preview = null;
-
-  Filter.displayName = null;
-
-  return Filter;
-
-})(Operation);
-
-module.exports = Filter;
-
-
-},{"../operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],10:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/identity.coffee",__dirname="/operations/filters/primitives";/*
-  ImglyKit
-  Copyright (c) 2013-2014 img.ly
-*/
-
-var Filter, PrimitiveIdentityFilter, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("../filter.coffee");
-
-PrimitiveIdentityFilter = (function(_super) {
-  __extends(PrimitiveIdentityFilter, _super);
-
-  function PrimitiveIdentityFilter() {
-    _ref = PrimitiveIdentityFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  PrimitiveIdentityFilter.prototype.apply = function(imageData) {
-    return imageData;
-  };
-
-  return PrimitiveIdentityFilter;
-
-})(Filter);
-
-module.exports = PrimitiveIdentityFilter;
-
-
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],11:[function(require,module,exports){
+},{"__browserify_Buffer":3,"__browserify_process":1}],11:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/photoprocessor.coffee",__dirname="/";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -15409,7 +15409,185 @@ PhotoProcessor = (function() {
 module.exports = PhotoProcessor;
 
 
-},{"./operations/filters/primitives/identity.coffee":10,"./utils.coffee":5,"./vendor/perf.coffee":6,"./vendor/queue.coffee":4,"__browserify_Buffer":3,"__browserify_process":1}],12:[function(require,module,exports){
+},{"./operations/filters/primitives/identity.coffee":9,"./utils.coffee":10,"./vendor/perf.coffee":2,"./vendor/queue.coffee":6,"__browserify_Buffer":3,"__browserify_process":1}],12:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/canvas.coffee",__dirname="/ui";/*
+  ImglyKit
+  Copyright (c) 2013-2014 img.ly
+*/
+
+var UICanvas, Utils;
+
+Utils = require("../utils.coffee");
+
+UICanvas = (function() {
+  /*
+    @param {imglyUtil} app
+    @param {imglyUtil.UI} ui
+    @param {Integer} options.height Height of the controls
+  
+    @todo Get controls height from elsewhere. The options hash
+          is probably not a good place for that.
+  */
+
+  function UICanvas(app, ui, options) {
+    this.app = app;
+    this.ui = ui;
+    this.options = options;
+    this.container = this.app.getContainer();
+    this.init();
+  }
+
+  /*
+    @returns {CanvasRenderingContext2d}
+  */
+
+
+  UICanvas.prototype.getContext = function() {
+    return this.context;
+  };
+
+  /*
+    @returns {ImageData}
+  */
+
+
+  UICanvas.prototype.getImageData = function() {
+    return this.context.getImageData(0, 0, this.canvasDom.width, this.canvasDom.height);
+  };
+
+  /*
+    Initializes the container, creates
+    the canvas object
+  */
+
+
+  UICanvas.prototype.init = function() {
+    this.canvasContainer = $("<div>").addClass(ImglyKit.classPrefix + "canvas-container").css({
+      height: this.app.getHeight() - this.options.height
+    }).appendTo(this.container);
+    this.canvas = $("<canvas>").addClass(ImglyKit.classPrefix + "canvas").appendTo(this.canvasContainer);
+    this.canvasDom = this.canvas.get(0);
+    this.controlsContainer = $("<div>").addClass(ImglyKit.classPrefix + "canvas-controls-container").appendTo(this.canvasContainer);
+    return this.context = this.canvasDom.getContext("2d");
+  };
+
+  /*
+    Resizes the canvas and renders the given imageData
+  
+    @param {ImageData} imageData
+  */
+
+
+  UICanvas.prototype.renderImageData = function(imageData) {
+    var imageDataCanvas;
+    this.resizeAndPositionCanvasToMatch(imageData);
+    imageDataCanvas = Utils.newCanvasFromImageData(imageData);
+    this.context.clearRect(0, 0, this.canvasDom.width, this.canvasDom.height);
+    return this.context.drawImage(imageDataCanvas, 0, 0, imageData.width, imageData.height, 0, 0, this.canvasDom.width, this.canvasDom.height);
+  };
+
+  /*
+    Resizes the canvas and renders the given image
+  
+    @param {Image} image
+  */
+
+
+  UICanvas.prototype.renderImage = function(image) {
+    this.resizeAndPositionCanvasToMatch(image);
+    this.context.clearRect(0, 0, this.canvasDom.width, this.canvasDom.height);
+    return this.context.drawImage(image, 0, 0, image.width, image.height, 0, 0, this.canvasDom.width, this.canvasDom.height);
+  };
+
+  /*
+    Takes an image and returns the new dimensions
+    so that it fits into the UI
+  
+    @param {Image} image
+    @returns {Object} dimensions
+    @returns {Integer} dimensions.width
+    @returns {Integer} dimensions.height
+  */
+
+
+  UICanvas.prototype.getDimensionsForImage = function(image) {
+    var options;
+    options = {
+      image: {
+        width: image.width,
+        height: image.height
+      },
+      container: {
+        width: this.canvasContainer.width() - ImglyKit.canvasContainerPadding * 2,
+        height: this.canvasContainer.height() - ImglyKit.canvasContainerPadding * 2
+      }
+    };
+    return Utils.calculateCanvasSize(options);
+  };
+
+  /*
+    @returns {jQuery.Object}
+  */
+
+
+  UICanvas.prototype.getControlsContainer = function() {
+    return this.controlsContainer;
+  };
+
+  /*
+    @param {Mixed} object
+    @param {Integer} object.height
+    @param {Integer} object.width
+  */
+
+
+  UICanvas.prototype.resizeAndPositionCanvasToMatch = function(obj) {
+    var newCanvasSize, options;
+    options = {
+      image: {
+        width: obj.width,
+        height: obj.height
+      },
+      container: {
+        width: this.canvasContainer.width() - ImglyKit.canvasContainerPadding * 2,
+        height: this.canvasContainer.height() - ImglyKit.canvasContainerPadding * 2
+      }
+    };
+    newCanvasSize = Utils.calculateCanvasSize(options);
+    this.canvas.css({
+      width: newCanvasSize.width,
+      height: newCanvasSize.height,
+      top: Math.round((this.canvasContainer.height() - newCanvasSize.height) / 2),
+      left: Math.round((this.canvasContainer.width() - newCanvasSize.width) / 2)
+    });
+    this.controlsContainer.css({
+      width: newCanvasSize.width,
+      height: newCanvasSize.height,
+      top: this.canvas.position().top,
+      left: this.canvas.position().left
+    });
+    this.canvasDom.width = newCanvasSize.width * (window.devicePixelRatio || 1);
+    return this.canvasDom.height = newCanvasSize.height * (window.devicePixelRatio || 1);
+  };
+
+  /*
+    Clears the context
+  */
+
+
+  UICanvas.prototype.reset = function() {
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    return this.controlsContainer.html("");
+  };
+
+  return UICanvas;
+
+})();
+
+module.exports = UICanvas;
+
+
+},{"../utils.coffee":10,"__browserify_Buffer":3,"__browserify_process":1}],13:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/base/base.coffee",__dirname="/ui/controls/base";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -15529,7 +15707,7 @@ UIControlsBase = (function(_super) {
 module.exports = UIControlsBase;
 
 
-},{"__browserify_Buffer":3,"__browserify_process":1,"events":7}],13:[function(require,module,exports){
+},{"__browserify_Buffer":3,"__browserify_process":1,"events":4}],14:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/base/list.coffee",__dirname="/ui/controls/base";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -15697,38 +15875,7 @@ UIControlsBaseList = (function(_super) {
 module.exports = UIControlsBaseList;
 
 
-},{"../../../utils.coffee":5,"./base.coffee":12,"__browserify_Buffer":3,"__browserify_process":1}],14:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/default.coffee",__dirname="/operations/filters";/*
-  ImglyKit
-  Copyright (c) 2013-2014 img.ly
-*/
-
-var DefaultFilter, IdentityFilter, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-IdentityFilter = require("./primitives/identity.coffee");
-
-DefaultFilter = (function(_super) {
-  __extends(DefaultFilter, _super);
-
-  function DefaultFilter() {
-    _ref = DefaultFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  DefaultFilter.preview = 'default.png';
-
-  DefaultFilter.displayName = 'Default';
-
-  return DefaultFilter;
-
-})(IdentityFilter);
-
-module.exports = DefaultFilter;
-
-
-},{"./primitives/identity.coffee":10,"__browserify_Buffer":3,"__browserify_process":1}],15:[function(require,module,exports){
+},{"../../../utils.coffee":10,"./base.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],15:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/saturation.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -15782,7 +15929,7 @@ PrimitiveSaturationFilter = (function(_super) {
 module.exports = PrimitiveSaturationFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],16:[function(require,module,exports){
+},{"../filter.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],16:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/tonecurve.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -15985,7 +16132,7 @@ PrimitiveToneCurveFilter = (function(_super) {
 module.exports = PrimitiveToneCurveFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],17:[function(require,module,exports){
+},{"../filter.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],17:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/k1.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16026,7 +16173,38 @@ K1Filter = (function(_super) {
 module.exports = K1Filter;
 
 
-},{"./filter.coffee":9,"./primitives/saturation.coffee":15,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],18:[function(require,module,exports){
+},{"./filter.coffee":8,"./primitives/saturation.coffee":15,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],18:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/default.coffee",__dirname="/operations/filters";/*
+  ImglyKit
+  Copyright (c) 2013-2014 img.ly
+*/
+
+var DefaultFilter, IdentityFilter, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+IdentityFilter = require("./primitives/identity.coffee");
+
+DefaultFilter = (function(_super) {
+  __extends(DefaultFilter, _super);
+
+  function DefaultFilter() {
+    _ref = DefaultFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  DefaultFilter.preview = 'default.png';
+
+  DefaultFilter.displayName = 'Default';
+
+  return DefaultFilter;
+
+})(IdentityFilter);
+
+module.exports = DefaultFilter;
+
+
+},{"./primitives/identity.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],19:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/softcoloroverlay.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16069,7 +16247,7 @@ PrimitiveSoftColorOverlayFilter = (function(_super) {
 module.exports = PrimitiveSoftColorOverlayFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],19:[function(require,module,exports){
+},{"../filter.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],20:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/k2.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16112,7 +16290,7 @@ K2Filter = (function(_super) {
 module.exports = K2Filter;
 
 
-},{"./filter.coffee":9,"./primitives/softcoloroverlay.coffee":18,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],20:[function(require,module,exports){
+},{"./filter.coffee":8,"./primitives/softcoloroverlay.coffee":19,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],21:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/k6.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16145,7 +16323,7 @@ K6Filter = (function(_super) {
 module.exports = K6Filter;
 
 
-},{"./primitives/saturation.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],21:[function(require,module,exports){
+},{"./primitives/saturation.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],22:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/kdynamic.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16186,7 +16364,7 @@ KDynamicFilter = (function(_super) {
 module.exports = KDynamicFilter;
 
 
-},{"./filter.coffee":9,"./primitives/saturation.coffee":15,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],22:[function(require,module,exports){
+},{"./filter.coffee":8,"./primitives/saturation.coffee":15,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],23:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/fridge.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16223,7 +16401,7 @@ FridgeFilter = (function(_super) {
 module.exports = FridgeFilter;
 
 
-},{"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],23:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],24:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/desaturation.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16273,7 +16451,7 @@ PrimitiveDesaturationFilter = (function(_super) {
 module.exports = PrimitiveDesaturationFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],24:[function(require,module,exports){
+},{"../filter.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],25:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/breeze.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16316,44 +16494,7 @@ BreezeFilter = (function(_super) {
 module.exports = BreezeFilter;
 
 
-},{"./filter.coffee":9,"./primitives/desaturation.coffee":23,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],25:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/chest.coffee",__dirname="/operations/filters";/*
-  ImglyKit
-  Copyright (c) 2013-2014 img.ly
-*/
-
-var ChestFilter, ToneCurve, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-ToneCurve = require("./primitives/tonecurve.coffee");
-
-ChestFilter = (function(_super) {
-  __extends(ChestFilter, _super);
-
-  function ChestFilter() {
-    _ref = ChestFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  ChestFilter.preview = 'chest.png';
-
-  ChestFilter.displayName = 'Chest';
-
-  ChestFilter.prototype.redControlPoints = [[0, 0], [44 / 255, 44 / 255], [124 / 255, 143 / 255], [221 / 255, 204 / 255], [1, 1]];
-
-  ChestFilter.prototype.greenControlPoints = [[0, 0], [130 / 255, 127 / 255], [213 / 255, 199 / 255], [1, 1]];
-
-  ChestFilter.prototype.blueControlPoints = [[0, 0], [51 / 255, 52 / 255], [219 / 255, 204 / 255], [1, 1]];
-
-  return ChestFilter;
-
-})(ToneCurve);
-
-module.exports = ChestFilter;
-
-
-},{"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],26:[function(require,module,exports){
+},{"./filter.coffee":8,"./primitives/desaturation.coffee":24,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],26:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/orchid.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16398,7 +16539,44 @@ OrchidFilter = (function(_super) {
 module.exports = OrchidFilter;
 
 
-},{"./filter.coffee":9,"./primitives/desaturation.coffee":23,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],27:[function(require,module,exports){
+},{"./filter.coffee":8,"./primitives/desaturation.coffee":24,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],27:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/chest.coffee",__dirname="/operations/filters";/*
+  ImglyKit
+  Copyright (c) 2013-2014 img.ly
+*/
+
+var ChestFilter, ToneCurve, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+ToneCurve = require("./primitives/tonecurve.coffee");
+
+ChestFilter = (function(_super) {
+  __extends(ChestFilter, _super);
+
+  function ChestFilter() {
+    _ref = ChestFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  ChestFilter.preview = 'chest.png';
+
+  ChestFilter.displayName = 'Chest';
+
+  ChestFilter.prototype.redControlPoints = [[0, 0], [44 / 255, 44 / 255], [124 / 255, 143 / 255], [221 / 255, 204 / 255], [1, 1]];
+
+  ChestFilter.prototype.greenControlPoints = [[0, 0], [130 / 255, 127 / 255], [213 / 255, 199 / 255], [1, 1]];
+
+  ChestFilter.prototype.blueControlPoints = [[0, 0], [51 / 255, 52 / 255], [219 / 255, 204 / 255], [1, 1]];
+
+  return ChestFilter;
+
+})(ToneCurve);
+
+module.exports = ChestFilter;
+
+
+},{"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],28:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/front.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16435,7 +16613,7 @@ FrontFilter = (function(_super) {
 module.exports = FrontFilter;
 
 
-},{"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],28:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],29:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/fixie.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16472,7 +16650,7 @@ FixieFilter = (function(_super) {
 module.exports = FixieFilter;
 
 
-},{"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],29:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],30:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/x400.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16521,7 +16699,7 @@ PrimitiveX400Filter = (function(_super) {
 module.exports = PrimitiveX400Filter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],30:[function(require,module,exports){
+},{"../filter.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],31:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/x400.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16552,7 +16730,7 @@ X400Filter = (function(_super) {
 module.exports = X400Filter;
 
 
-},{"./primitives/x400.coffee":29,"__browserify_Buffer":3,"__browserify_process":1}],31:[function(require,module,exports){
+},{"./primitives/x400.coffee":30,"__browserify_Buffer":3,"__browserify_process":1}],32:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/grayscale.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16596,7 +16774,7 @@ PrimtiveGrayscaleFilter = (function(_super) {
 module.exports = PrimtiveGrayscaleFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],32:[function(require,module,exports){
+},{"../filter.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],33:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/bw.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16627,7 +16805,7 @@ BWFilter = (function(_super) {
 module.exports = BWFilter;
 
 
-},{"./primitives/grayscale.coffee":31,"__browserify_Buffer":3,"__browserify_process":1}],33:[function(require,module,exports){
+},{"./primitives/grayscale.coffee":32,"__browserify_Buffer":3,"__browserify_process":1}],34:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/contrast.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16685,7 +16863,7 @@ PrimitiveContrastFilter = (function(_super) {
 module.exports = PrimitiveContrastFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],34:[function(require,module,exports){
+},{"../filter.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],35:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/bwhard.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16724,7 +16902,7 @@ BWHardFilter = (function(_super) {
 module.exports = BWHardFilter;
 
 
-},{"./filter.coffee":9,"./primitives/contrast.coffee":33,"./primitives/grayscale.coffee":31,"__browserify_Buffer":3,"__browserify_process":1}],35:[function(require,module,exports){
+},{"./filter.coffee":8,"./primitives/contrast.coffee":34,"./primitives/grayscale.coffee":32,"__browserify_Buffer":3,"__browserify_process":1}],36:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/lenin.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16767,50 +16945,7 @@ LeninFilter = (function(_super) {
 module.exports = LeninFilter;
 
 
-},{"./filter.coffee":9,"./primitives/desaturation.coffee":23,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],36:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/quozi.coffee",__dirname="/operations/filters";/*
-  ImglyKit
-  Copyright (c) 2013-2014 img.ly
-*/
-
-var Desaturation, Filter, QuoziFilter, ToneCurveFilter, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("./filter.coffee");
-
-ToneCurveFilter = require("./primitives/tonecurve.coffee");
-
-Desaturation = require("./primitives/desaturation.coffee");
-
-QuoziFilter = (function(_super) {
-  __extends(QuoziFilter, _super);
-
-  function QuoziFilter() {
-    _ref = QuoziFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  QuoziFilter.preview = "breeze.png";
-
-  QuoziFilter.displayName = "Breeze";
-
-  QuoziFilter.prototype.apply = (new Desaturation(QuoziFilter.app, {
-    desaturation: 0.65
-  })).compose(ToneCurveFilter, {
-    redControlPoints: [[0, 50 / 255], [40 / 255, 78 / 255], [118 / 255, 170 / 255], [181 / 255, 211 / 255], [1, 1]],
-    greenControlPoints: [[0, 27 / 255], [28 / 255, 45 / 255], [109 / 255, 157 / 255], [157 / 255, 195 / 255], [179 / 255, 208 / 255], [206 / 255, 212 / 255], [1, 240 / 255]],
-    blueControlPoints: [[0, 50 / 255], [12 / 255, 55 / 255], [46 / 255, 103 / 255], [103 / 255, 162 / 255], [194 / 255, 182 / 255], [241 / 255, 201 / 255], [1, 219 / 255]]
-  });
-
-  return QuoziFilter;
-
-})(Filter);
-
-module.exports = QuoziFilter;
-
-
-},{"./filter.coffee":9,"./primitives/desaturation.coffee":23,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],37:[function(require,module,exports){
+},{"./filter.coffee":8,"./primitives/desaturation.coffee":24,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],37:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/pola669.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16857,7 +16992,50 @@ Pola669Filter = (function(_super) {
 module.exports = Pola669Filter;
 
 
-},{"./filter.coffee":9,"./primitives/contrast.coffee":33,"./primitives/saturation.coffee":15,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],38:[function(require,module,exports){
+},{"./filter.coffee":8,"./primitives/contrast.coffee":34,"./primitives/saturation.coffee":15,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],38:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/quozi.coffee",__dirname="/operations/filters";/*
+  ImglyKit
+  Copyright (c) 2013-2014 img.ly
+*/
+
+var Desaturation, Filter, QuoziFilter, ToneCurveFilter, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("./filter.coffee");
+
+ToneCurveFilter = require("./primitives/tonecurve.coffee");
+
+Desaturation = require("./primitives/desaturation.coffee");
+
+QuoziFilter = (function(_super) {
+  __extends(QuoziFilter, _super);
+
+  function QuoziFilter() {
+    _ref = QuoziFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  QuoziFilter.preview = "breeze.png";
+
+  QuoziFilter.displayName = "Breeze";
+
+  QuoziFilter.prototype.apply = (new Desaturation(QuoziFilter.app, {
+    desaturation: 0.65
+  })).compose(ToneCurveFilter, {
+    redControlPoints: [[0, 50 / 255], [40 / 255, 78 / 255], [118 / 255, 170 / 255], [181 / 255, 211 / 255], [1, 1]],
+    greenControlPoints: [[0, 27 / 255], [28 / 255, 45 / 255], [109 / 255, 157 / 255], [157 / 255, 195 / 255], [179 / 255, 208 / 255], [206 / 255, 212 / 255], [1, 240 / 255]],
+    blueControlPoints: [[0, 50 / 255], [12 / 255, 55 / 255], [46 / 255, 103 / 255], [103 / 255, 162 / 255], [194 / 255, 182 / 255], [241 / 255, 201 / 255], [1, 219 / 255]]
+  });
+
+  return QuoziFilter;
+
+})(Filter);
+
+module.exports = QuoziFilter;
+
+
+},{"./filter.coffee":8,"./primitives/desaturation.coffee":24,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],39:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/pola.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16904,7 +17082,7 @@ PolaFilter = (function(_super) {
 module.exports = PolaFilter;
 
 
-},{"./filter.coffee":9,"./primitives/contrast.coffee":33,"./primitives/saturation.coffee":15,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],39:[function(require,module,exports){
+},{"./filter.coffee":8,"./primitives/contrast.coffee":34,"./primitives/saturation.coffee":15,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],40:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/food.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16945,7 +17123,7 @@ FoodFilter = (function(_super) {
 module.exports = FoodFilter;
 
 
-},{"./filter.coffee":9,"./primitives/contrast.coffee":33,"./primitives/saturation.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],40:[function(require,module,exports){
+},{"./filter.coffee":8,"./primitives/contrast.coffee":34,"./primitives/saturation.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],41:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/glam.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16990,7 +17168,7 @@ GlamFilter = (function(_super) {
 module.exports = GlamFilter;
 
 
-},{"./filter.coffee":9,"./primitives/contrast.coffee":33,"./primitives/grayscale.coffee":31,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],41:[function(require,module,exports){
+},{"./filter.coffee":8,"./primitives/contrast.coffee":34,"./primitives/grayscale.coffee":32,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],42:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/celsius.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17027,7 +17205,7 @@ CelsiusFilter = (function(_super) {
 module.exports = CelsiusFilter;
 
 
-},{"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],42:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],43:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/texas.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17064,7 +17242,7 @@ TexasFilter = (function(_super) {
 module.exports = TexasFilter;
 
 
-},{"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],43:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],44:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/glow.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17122,7 +17300,7 @@ PrimitiveGlowFilter = (function(_super) {
 module.exports = PrimitiveGlowFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],44:[function(require,module,exports){
+},{"../filter.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],45:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/morning.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17163,7 +17341,7 @@ MorningFilter = (function(_super) {
 module.exports = MorningFilter;
 
 
-},{"./filter.coffee":9,"./primitives/glow.coffee":43,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],45:[function(require,module,exports){
+},{"./filter.coffee":8,"./primitives/glow.coffee":44,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],46:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/lomo.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17202,7 +17380,7 @@ LomoFilter = (function(_super) {
 module.exports = LomoFilter;
 
 
-},{"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],46:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],47:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/gobblin.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17246,7 +17424,7 @@ PrimitiveGobblinFilter = (function(_super) {
 module.exports = PrimitiveGobblinFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],47:[function(require,module,exports){
+},{"../filter.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],48:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/gobblin.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17277,44 +17455,7 @@ GobblinFilter = (function(_super) {
 module.exports = GobblinFilter;
 
 
-},{"./primitives/gobblin.coffee":46,"__browserify_Buffer":3,"__browserify_process":1}],48:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/mellow.coffee",__dirname="/operations/filters";/*
-  ImglyKit
-  Copyright (c) 2013-2014 img.ly
-*/
-
-var MellowFilter, ToneCurve, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-ToneCurve = require("./primitives/tonecurve.coffee");
-
-MellowFilter = (function(_super) {
-  __extends(MellowFilter, _super);
-
-  function MellowFilter() {
-    _ref = MellowFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  MellowFilter.preview = 'mellow.png';
-
-  MellowFilter.displayName = 'Mellow';
-
-  MellowFilter.prototype.redControlPoints = [[0, 0], [41 / 255, 84 / 255], [87 / 255, 134 / 255], [1, 1]];
-
-  MellowFilter.prototype.greenControlPoints = [[0, 0], [1, 216 / 255]];
-
-  MellowFilter.prototype.blueControlPoints = [[0, 0], [1, 131 / 255]];
-
-  return MellowFilter;
-
-})(ToneCurve);
-
-module.exports = MellowFilter;
-
-
-},{"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],49:[function(require,module,exports){
+},{"./primitives/gobblin.coffee":47,"__browserify_Buffer":3,"__browserify_process":1}],49:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/sunny.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17359,7 +17500,7 @@ SunnyFilter = (function(_super) {
 module.exports = SunnyFilter;
 
 
-},{"./filter.coffee":9,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],50:[function(require,module,exports){
+},{"./filter.coffee":8,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],50:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/brightness.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17409,7 +17550,7 @@ PrimitiveBrightnessFilter = (function(_super) {
 module.exports = PrimitiveBrightnessFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],51:[function(require,module,exports){
+},{"../filter.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],51:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/a15.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17456,7 +17597,44 @@ A15Filter = (function(_super) {
 module.exports = A15Filter;
 
 
-},{"./filter.coffee":9,"./primitives/brightness.coffee":50,"./primitives/contrast.coffee":33,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],52:[function(require,module,exports){
+},{"./filter.coffee":8,"./primitives/brightness.coffee":50,"./primitives/contrast.coffee":34,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],52:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/mellow.coffee",__dirname="/operations/filters";/*
+  ImglyKit
+  Copyright (c) 2013-2014 img.ly
+*/
+
+var MellowFilter, ToneCurve, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+ToneCurve = require("./primitives/tonecurve.coffee");
+
+MellowFilter = (function(_super) {
+  __extends(MellowFilter, _super);
+
+  function MellowFilter() {
+    _ref = MellowFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  MellowFilter.preview = 'mellow.png';
+
+  MellowFilter.displayName = 'Mellow';
+
+  MellowFilter.prototype.redControlPoints = [[0, 0], [41 / 255, 84 / 255], [87 / 255, 134 / 255], [1, 1]];
+
+  MellowFilter.prototype.greenControlPoints = [[0, 0], [1, 216 / 255]];
+
+  MellowFilter.prototype.blueControlPoints = [[0, 0], [1, 131 / 255]];
+
+  return MellowFilter;
+
+})(ToneCurve);
+
+module.exports = MellowFilter;
+
+
+},{"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],53:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/semired.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17497,7 +17675,7 @@ SemiRedFilter = (function(_super) {
 module.exports = SemiRedFilter;
 
 
-},{"./filter.coffee":9,"./primitives/glow.coffee":43,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],53:[function(require,module,exports){
+},{"./filter.coffee":8,"./primitives/glow.coffee":44,"./primitives/tonecurve.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],54:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/filters.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17561,7 +17739,7 @@ UIControlsFilters = (function(_super) {
 module.exports = UIControlsFilters;
 
 
-},{"../../operations/filters/a15.coffee":51,"../../operations/filters/breeze.coffee":24,"../../operations/filters/bw.coffee":32,"../../operations/filters/bwhard.coffee":34,"../../operations/filters/celsius.coffee":41,"../../operations/filters/chest.coffee":25,"../../operations/filters/default.coffee":14,"../../operations/filters/fixie.coffee":28,"../../operations/filters/food.coffee":39,"../../operations/filters/fridge.coffee":22,"../../operations/filters/front.coffee":27,"../../operations/filters/glam.coffee":40,"../../operations/filters/gobblin.coffee":47,"../../operations/filters/k1.coffee":17,"../../operations/filters/k2.coffee":19,"../../operations/filters/k6.coffee":20,"../../operations/filters/kdynamic.coffee":21,"../../operations/filters/lenin.coffee":35,"../../operations/filters/lomo.coffee":45,"../../operations/filters/mellow.coffee":48,"../../operations/filters/morning.coffee":44,"../../operations/filters/orchid.coffee":26,"../../operations/filters/pola.coffee":38,"../../operations/filters/pola669.coffee":37,"../../operations/filters/quozi.coffee":36,"../../operations/filters/semired.coffee":52,"../../operations/filters/sunny.coffee":49,"../../operations/filters/texas.coffee":42,"../../operations/filters/x400.coffee":30,"../../utils.coffee":5,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],54:[function(require,module,exports){
+},{"../../operations/filters/a15.coffee":51,"../../operations/filters/breeze.coffee":25,"../../operations/filters/bw.coffee":33,"../../operations/filters/bwhard.coffee":35,"../../operations/filters/celsius.coffee":42,"../../operations/filters/chest.coffee":27,"../../operations/filters/default.coffee":18,"../../operations/filters/fixie.coffee":29,"../../operations/filters/food.coffee":40,"../../operations/filters/fridge.coffee":23,"../../operations/filters/front.coffee":28,"../../operations/filters/glam.coffee":41,"../../operations/filters/gobblin.coffee":48,"../../operations/filters/k1.coffee":17,"../../operations/filters/k2.coffee":20,"../../operations/filters/k6.coffee":21,"../../operations/filters/kdynamic.coffee":22,"../../operations/filters/lenin.coffee":36,"../../operations/filters/lomo.coffee":46,"../../operations/filters/mellow.coffee":52,"../../operations/filters/morning.coffee":45,"../../operations/filters/orchid.coffee":26,"../../operations/filters/pola.coffee":39,"../../operations/filters/pola669.coffee":37,"../../operations/filters/quozi.coffee":38,"../../operations/filters/semired.coffee":53,"../../operations/filters/sunny.coffee":49,"../../operations/filters/texas.coffee":43,"../../operations/filters/x400.coffee":31,"../../utils.coffee":10,"./base/list.coffee":14,"__browserify_Buffer":3,"__browserify_process":1}],55:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/orientation.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17716,7 +17894,7 @@ OrientationOperation = (function(_super) {
 module.exports = OrientationOperation;
 
 
-},{"../utils.coffee":5,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],55:[function(require,module,exports){
+},{"../utils.coffee":10,"./operation.coffee":7,"__browserify_Buffer":3,"__browserify_process":1}],56:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/orientation.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17775,7 +17953,7 @@ UIControlsOrientation = (function(_super) {
 module.exports = UIControlsOrientation;
 
 
-},{"../../operations/orientation.coffee":54,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],56:[function(require,module,exports){
+},{"../../operations/orientation.coffee":55,"./base/list.coffee":14,"__browserify_Buffer":3,"__browserify_process":1}],57:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/math/vector2.coffee",__dirname="/math";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17947,7 +18125,7 @@ Vector2 = (function() {
 module.exports = Vector2;
 
 
-},{"__browserify_Buffer":3,"__browserify_process":1}],57:[function(require,module,exports){
+},{"__browserify_Buffer":3,"__browserify_process":1}],58:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/focus/focus.coffee",__dirname="/operations/focus";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -18205,7 +18383,7 @@ Focus = (function(_super) {
 module.exports = Focus;
 
 
-},{"../../utils.coffee":5,"../operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],58:[function(require,module,exports){
+},{"../../utils.coffee":10,"../operation.coffee":7,"__browserify_Buffer":3,"__browserify_process":1}],59:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/focus/radial.coffee",__dirname="/operations/focus";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -18291,7 +18469,7 @@ RadialFocus = (function(_super) {
 module.exports = RadialFocus;
 
 
-},{"../../math/vector2.coffee":56,"./focus.coffee":57,"__browserify_Buffer":3,"__browserify_process":1}],59:[function(require,module,exports){
+},{"../../math/vector2.coffee":57,"./focus.coffee":58,"__browserify_Buffer":3,"__browserify_process":1}],60:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/focus/linear.coffee",__dirname="/operations/focus";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -18381,7 +18559,7 @@ LinearFocus = (function(_super) {
 module.exports = LinearFocus;
 
 
-},{"../../math/vector2.coffee":56,"./focus.coffee":57,"__browserify_Buffer":3,"__browserify_process":1}],60:[function(require,module,exports){
+},{"../../math/vector2.coffee":57,"./focus.coffee":58,"__browserify_Buffer":3,"__browserify_process":1}],61:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/focus.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -18718,7 +18896,7 @@ UIControlsFocus = (function(_super) {
 module.exports = UIControlsFocus;
 
 
-},{"../../math/vector2.coffee":56,"../../operations/focus/linear.coffee":59,"../../operations/focus/radial.coffee":58,"../../utils.coffee":5,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],61:[function(require,module,exports){
+},{"../../math/vector2.coffee":57,"../../operations/focus/linear.coffee":60,"../../operations/focus/radial.coffee":59,"../../utils.coffee":10,"./base/list.coffee":14,"__browserify_Buffer":3,"__browserify_process":1}],62:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/math/rect.coffee",__dirname="/math";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -18807,7 +18985,7 @@ Rect = (function() {
 module.exports = Rect;
 
 
-},{"__browserify_Buffer":3,"__browserify_process":1}],62:[function(require,module,exports){
+},{"__browserify_Buffer":3,"__browserify_process":1}],63:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/crop.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -18917,7 +19095,7 @@ CropOperation = (function(_super) {
 module.exports = CropOperation;
 
 
-},{"../math/vector2.coffee":56,"../utils.coffee":5,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],63:[function(require,module,exports){
+},{"../math/vector2.coffee":57,"../utils.coffee":10,"./operation.coffee":7,"__browserify_Buffer":3,"__browserify_process":1}],64:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/crop.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -19375,7 +19553,7 @@ UIControlsCrop = (function(_super) {
 module.exports = UIControlsCrop;
 
 
-},{"../../math/rect.coffee":61,"../../math/vector2.coffee":56,"../../operations/crop.coffee":62,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],64:[function(require,module,exports){
+},{"../../math/rect.coffee":62,"../../math/vector2.coffee":57,"../../operations/crop.coffee":63,"./base/list.coffee":14,"__browserify_Buffer":3,"__browserify_process":1}],65:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/base/slider.coffee",__dirname="/ui/controls/base";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -19505,7 +19683,7 @@ UIControlsBaseSlider = (function(_super) {
 module.exports = UIControlsBaseSlider;
 
 
-},{"./base.coffee":12,"__browserify_Buffer":3,"__browserify_process":1}],65:[function(require,module,exports){
+},{"./base.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],66:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/brightness.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -19540,7 +19718,7 @@ UIControlsBrightness = (function(_super) {
 module.exports = UIControlsBrightness;
 
 
-},{"./base/slider.coffee":64,"__browserify_Buffer":3,"__browserify_process":1}],66:[function(require,module,exports){
+},{"./base/slider.coffee":65,"__browserify_Buffer":3,"__browserify_process":1}],67:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/brightness.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -19597,7 +19775,7 @@ BrightnessOperation = (function(_super) {
 module.exports = BrightnessOperation;
 
 
-},{"./filters/filter.coffee":9,"./filters/primitives/brightness.coffee":50,"__browserify_Buffer":3,"__browserify_process":1}],67:[function(require,module,exports){
+},{"./filters/filter.coffee":8,"./filters/primitives/brightness.coffee":50,"__browserify_Buffer":3,"__browserify_process":1}],68:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/contrast.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -19632,7 +19810,7 @@ UIControlsContrast = (function(_super) {
 module.exports = UIControlsContrast;
 
 
-},{"./base/slider.coffee":64,"__browserify_Buffer":3,"__browserify_process":1}],68:[function(require,module,exports){
+},{"./base/slider.coffee":65,"__browserify_Buffer":3,"__browserify_process":1}],69:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/contrast.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -19689,7 +19867,7 @@ ContrastOperation = (function(_super) {
 module.exports = ContrastOperation;
 
 
-},{"./filters/filter.coffee":9,"./filters/primitives/contrast.coffee":33,"__browserify_Buffer":3,"__browserify_process":1}],69:[function(require,module,exports){
+},{"./filters/filter.coffee":8,"./filters/primitives/contrast.coffee":34,"__browserify_Buffer":3,"__browserify_process":1}],70:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/saturation.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -19724,7 +19902,7 @@ UIControlsSaturation = (function(_super) {
 module.exports = UIControlsSaturation;
 
 
-},{"./base/slider.coffee":64,"__browserify_Buffer":3,"__browserify_process":1}],70:[function(require,module,exports){
+},{"./base/slider.coffee":65,"__browserify_Buffer":3,"__browserify_process":1}],71:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/saturation.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -19781,7 +19959,7 @@ SaturationOperation = (function(_super) {
 module.exports = SaturationOperation;
 
 
-},{"./filters/filter.coffee":9,"./filters/primitives/saturation.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],71:[function(require,module,exports){
+},{"./filters/filter.coffee":8,"./filters/primitives/saturation.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],72:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/text.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -19856,7 +20034,7 @@ FontOperation = (function(_super) {
 module.exports = FontOperation;
 
 
-},{"../math/rect.coffee":61,"../math/vector2.coffee":56,"../utils.coffee":5,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],72:[function(require,module,exports){
+},{"../math/rect.coffee":62,"../math/vector2.coffee":57,"../utils.coffee":10,"./operation.coffee":7,"__browserify_Buffer":3,"__browserify_process":1}],73:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/text.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20185,7 +20363,7 @@ UIControlsText = (function(_super) {
 module.exports = UIControlsText;
 
 
-},{"../../math/rect.coffee":61,"../../math/vector2.coffee":56,"../../operations/text.coffee":71,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],73:[function(require,module,exports){
+},{"../../math/rect.coffee":62,"../../math/vector2.coffee":57,"../../operations/text.coffee":72,"./base/list.coffee":14,"__browserify_Buffer":3,"__browserify_process":1}],74:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/frames.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20383,7 +20561,7 @@ FramesOperation = (function(_super) {
 module.exports = FramesOperation;
 
 
-},{"../math/rect.coffee":61,"../math/vector2.coffee":56,"../utils.coffee":5,"../vendor/queue.coffee":4,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],74:[function(require,module,exports){
+},{"../math/rect.coffee":62,"../math/vector2.coffee":57,"../utils.coffee":10,"../vendor/queue.coffee":6,"./operation.coffee":7,"__browserify_Buffer":3,"__browserify_process":1}],75:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/frames.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20465,7 +20643,7 @@ UIControlsFrames = (function(_super) {
 module.exports = UIControlsFrames;
 
 
-},{"../../math/rect.coffee":61,"../../math/vector2.coffee":56,"../../operations/frames.coffee":73,"../../utils.coffee":5,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],75:[function(require,module,exports){
+},{"../../math/rect.coffee":62,"../../math/vector2.coffee":57,"../../operations/frames.coffee":74,"../../utils.coffee":10,"./base/list.coffee":14,"__browserify_Buffer":3,"__browserify_process":1}],76:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/overview.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20552,7 +20730,7 @@ UIControlsOverview = (function(_super) {
 module.exports = UIControlsOverview;
 
 
-},{"../../operations/brightness.coffee":66,"../../operations/contrast.coffee":68,"../../operations/crop.coffee":62,"../../operations/frames.coffee":73,"../../operations/saturation.coffee":70,"../../operations/text.coffee":71,"./base/list.coffee":13,"./brightness.coffee":65,"./contrast.coffee":67,"./crop.coffee":63,"./filters.coffee":53,"./focus.coffee":60,"./frames.coffee":74,"./orientation.coffee":55,"./saturation.coffee":69,"./stickers_control.coffee":76,"./text.coffee":72,"__browserify_Buffer":3,"__browserify_process":1}],77:[function(require,module,exports){
+},{"../../operations/brightness.coffee":67,"../../operations/contrast.coffee":69,"../../operations/crop.coffee":63,"../../operations/frames.coffee":74,"../../operations/saturation.coffee":71,"../../operations/text.coffee":72,"./base/list.coffee":14,"./brightness.coffee":66,"./contrast.coffee":68,"./crop.coffee":64,"./filters.coffee":54,"./focus.coffee":61,"./frames.coffee":75,"./orientation.coffee":56,"./saturation.coffee":70,"./stickers_control.coffee":77,"./text.coffee":73,"__browserify_Buffer":3,"__browserify_process":1}],78:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls.coffee",__dirname="/ui";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20710,185 +20888,7 @@ UIControls = (function(_super) {
 module.exports = UIControls;
 
 
-},{"./controls/overview.coffee":75,"__browserify_Buffer":3,"__browserify_process":1,"events":7}],78:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/canvas.coffee",__dirname="/ui";/*
-  ImglyKit
-  Copyright (c) 2013-2014 img.ly
-*/
-
-var UICanvas, Utils;
-
-Utils = require("../utils.coffee");
-
-UICanvas = (function() {
-  /*
-    @param {imglyUtil} app
-    @param {imglyUtil.UI} ui
-    @param {Integer} options.height Height of the controls
-  
-    @todo Get controls height from elsewhere. The options hash
-          is probably not a good place for that.
-  */
-
-  function UICanvas(app, ui, options) {
-    this.app = app;
-    this.ui = ui;
-    this.options = options;
-    this.container = this.app.getContainer();
-    this.init();
-  }
-
-  /*
-    @returns {CanvasRenderingContext2d}
-  */
-
-
-  UICanvas.prototype.getContext = function() {
-    return this.context;
-  };
-
-  /*
-    @returns {ImageData}
-  */
-
-
-  UICanvas.prototype.getImageData = function() {
-    return this.context.getImageData(0, 0, this.canvasDom.width, this.canvasDom.height);
-  };
-
-  /*
-    Initializes the container, creates
-    the canvas object
-  */
-
-
-  UICanvas.prototype.init = function() {
-    this.canvasContainer = $("<div>").addClass(ImglyKit.classPrefix + "canvas-container").css({
-      height: this.app.getHeight() - this.options.height
-    }).appendTo(this.container);
-    this.canvas = $("<canvas>").addClass(ImglyKit.classPrefix + "canvas").appendTo(this.canvasContainer);
-    this.canvasDom = this.canvas.get(0);
-    this.controlsContainer = $("<div>").addClass(ImglyKit.classPrefix + "canvas-controls-container").appendTo(this.canvasContainer);
-    return this.context = this.canvasDom.getContext("2d");
-  };
-
-  /*
-    Resizes the canvas and renders the given imageData
-  
-    @param {ImageData} imageData
-  */
-
-
-  UICanvas.prototype.renderImageData = function(imageData) {
-    var imageDataCanvas;
-    this.resizeAndPositionCanvasToMatch(imageData);
-    imageDataCanvas = Utils.newCanvasFromImageData(imageData);
-    this.context.clearRect(0, 0, this.canvasDom.width, this.canvasDom.height);
-    return this.context.drawImage(imageDataCanvas, 0, 0, imageData.width, imageData.height, 0, 0, this.canvasDom.width, this.canvasDom.height);
-  };
-
-  /*
-    Resizes the canvas and renders the given image
-  
-    @param {Image} image
-  */
-
-
-  UICanvas.prototype.renderImage = function(image) {
-    this.resizeAndPositionCanvasToMatch(image);
-    this.context.clearRect(0, 0, this.canvasDom.width, this.canvasDom.height);
-    return this.context.drawImage(image, 0, 0, image.width, image.height, 0, 0, this.canvasDom.width, this.canvasDom.height);
-  };
-
-  /*
-    Takes an image and returns the new dimensions
-    so that it fits into the UI
-  
-    @param {Image} image
-    @returns {Object} dimensions
-    @returns {Integer} dimensions.width
-    @returns {Integer} dimensions.height
-  */
-
-
-  UICanvas.prototype.getDimensionsForImage = function(image) {
-    var options;
-    options = {
-      image: {
-        width: image.width,
-        height: image.height
-      },
-      container: {
-        width: this.canvasContainer.width() - ImglyKit.canvasContainerPadding * 2,
-        height: this.canvasContainer.height() - ImglyKit.canvasContainerPadding * 2
-      }
-    };
-    return Utils.calculateCanvasSize(options);
-  };
-
-  /*
-    @returns {jQuery.Object}
-  */
-
-
-  UICanvas.prototype.getControlsContainer = function() {
-    return this.controlsContainer;
-  };
-
-  /*
-    @param {Mixed} object
-    @param {Integer} object.height
-    @param {Integer} object.width
-  */
-
-
-  UICanvas.prototype.resizeAndPositionCanvasToMatch = function(obj) {
-    var newCanvasSize, options;
-    options = {
-      image: {
-        width: obj.width,
-        height: obj.height
-      },
-      container: {
-        width: this.canvasContainer.width() - ImglyKit.canvasContainerPadding * 2,
-        height: this.canvasContainer.height() - ImglyKit.canvasContainerPadding * 2
-      }
-    };
-    newCanvasSize = Utils.calculateCanvasSize(options);
-    this.canvas.css({
-      width: newCanvasSize.width,
-      height: newCanvasSize.height,
-      top: Math.round((this.canvasContainer.height() - newCanvasSize.height) / 2),
-      left: Math.round((this.canvasContainer.width() - newCanvasSize.width) / 2)
-    });
-    this.controlsContainer.css({
-      width: newCanvasSize.width,
-      height: newCanvasSize.height,
-      top: this.canvas.position().top,
-      left: this.canvas.position().left
-    });
-    this.canvasDom.width = newCanvasSize.width * (window.devicePixelRatio || 1);
-    return this.canvasDom.height = newCanvasSize.height * (window.devicePixelRatio || 1);
-  };
-
-  /*
-    Clears the context
-  */
-
-
-  UICanvas.prototype.reset = function() {
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    return this.controlsContainer.html("");
-  };
-
-  return UICanvas;
-
-})();
-
-module.exports = UICanvas;
-
-
-},{"../utils.coffee":5,"__browserify_Buffer":3,"__browserify_process":1}],79:[function(require,module,exports){
+},{"./controls/overview.coffee":76,"__browserify_Buffer":3,"__browserify_process":1,"events":4}],79:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/ui.coffee",__dirname="/ui";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20974,7 +20974,7 @@ UI = (function(_super) {
 module.exports = UI;
 
 
-},{"./canvas.coffee":78,"./controls.coffee":77,"__browserify_Buffer":3,"__browserify_process":1,"events":7}],80:[function(require,module,exports){
+},{"./canvas.coffee":12,"./controls.coffee":78,"__browserify_Buffer":3,"__browserify_process":1,"events":4}],80:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/imgly.coffee",__dirname="/";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -21226,7 +21226,80 @@ ImglyKit = (function() {
 window.ImglyKit = ImglyKit;
 
 
-},{"./photoprocessor.coffee":11,"./ui/controls/crop.coffee":63,"./ui/ui.coffee":79,"./utils.coffee":5,"__browserify_Buffer":3,"__browserify_process":1}],76:[function(require,module,exports){
+},{"./photoprocessor.coffee":11,"./ui/controls/crop.coffee":64,"./ui/ui.coffee":79,"./utils.coffee":10,"__browserify_Buffer":3,"__browserify_process":1}],81:[function(require,module,exports){
+/*
+  ImglyKit
+  Copyright (c) 2013-2014 img.ly
+*/
+
+var DrawImageOperation, Operation, Queue, Rect, Utils, Vector2,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Operation = require("./operation.coffee");
+
+Utils = require("../utils.coffee");
+
+Queue = require("../vendor/queue.coffee");
+
+Vector2 = require("../math/vector2.coffee");
+
+Rect = require("../math/rect.coffee");
+
+module.exports = DrawImageOperation = (function(_super) {
+  __extends(DrawImageOperation, _super);
+
+  function DrawImageOperation(app, options) {
+    this.app = app;
+    this.options = options != null ? options : {};
+    DrawImageOperation.__super__.constructor.apply(this, arguments);
+    this.options.resizeButtonOffset = 20;
+    this.options.scale = this.options.resizeButtonOffset + 100;
+    this.options.sticker = "stickers/sticker-heart.png";
+    this.options.stickerImageWidth = 100;
+    this.options.stickerImageHeight = 100;
+  }
+
+  /*
+    @param {String} sticker
+  */
+
+
+  DrawImageOperation.prototype.useSticker = function(sticker) {
+    this.options.sticker = sticker;
+    return this.emit("updateOptions", this.options);
+  };
+
+  DrawImageOperation.prototype.apply = function(imageData) {
+    var _this = this;
+    return Queue.promise(function(resolve, reject) {
+      var stickerImage;
+      stickerImage = new Image();
+      stickerImage.onload = function() {
+        return resolve(stickerImage);
+      };
+      return stickerImage.src = _this.app.buildAssetsPath(_this.options.sticker);
+    }).then(function(stickerImage) {
+      var canvas, context, ratio;
+      ratio = stickerImage.height / stickerImage.width;
+      _this.options.stickerImageWidth = _this.options.scale - _this.options.resizeButtonOffset;
+      _this.options.stickerImageHeight = (_this.options.scale - _this.options.resizeButtonOffset) * ratio;
+      canvas = Utils.newCanvasFromImageData(imageData);
+      context = canvas.getContext("2d");
+      if (_this.options.stickerPosition == null) {
+        _this.options.stickerPosition = new Vector2(canvas.width / 2, canvas.height / 2);
+      }
+      context.drawImage(stickerImage, _this.options.stickerPosition.x, _this.options.stickerPosition.y, _this.options.stickerImageWidth, _this.options.stickerImageHeight);
+      return context.getImageData(0, 0, imageData.width, imageData.height);
+    });
+  };
+
+  return DrawImageOperation;
+
+})(Operation);
+
+
+},{"../math/rect.coffee":62,"../math/vector2.coffee":57,"../utils.coffee":10,"../vendor/queue.coffee":6,"./operation.coffee":7}],77:[function(require,module,exports){
 /*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -21301,14 +21374,14 @@ UIControlsStickers = (function(_super) {
     this.stickerContainer = $("<div>").addClass(ImglyKit.classPrefix + "canvas-sticker-container").appendTo(this.canvasControlsContainer);
     this.crosshair = $("<div>").addClass(ImglyKit.classPrefix + "canvas-crosshair " + ImglyKit.classPrefix + "canvas-sticker-crosshair").appendTo(this.stickerContainer);
     this.resizeKnob = $("<div>").addClass(ImglyKit.classPrefix + "canvas-knob").css({
-      left: 100
+      left: 120
     }).appendTo(this.stickerContainer);
     this.handleCrosshair();
     return this.handleResizeKnob();
   };
 
   /*
-    Move the text input around by dragging the crosshair
+    Move the sticker around by dragging the crosshair
   */
 
 
@@ -21316,9 +21389,9 @@ UIControlsStickers = (function(_super) {
     var canvasRect, maxContainerPosition, minContainerPosition, minimumHeight, minimumWidth,
       _this = this;
     canvasRect = new Rect(0, 0, this.canvasControlsContainer.width(), this.canvasControlsContainer.height());
-    minimumWidth = 50;
-    minimumHeight = 50;
-    minContainerPosition = new Vector2(0, 0);
+    minimumWidth = 0;
+    minimumHeight = 0;
+    minContainerPosition = new Vector2(0, -20);
     maxContainerPosition = new Vector2(canvasRect.width - minimumWidth, canvasRect.height - minimumHeight);
     return this.crosshair.mousedown(function(e) {
       var currentContainerPosition, currentMousePosition, initialContainerPosition, initialMousePosition;
@@ -21340,6 +21413,9 @@ UIControlsStickers = (function(_super) {
         _this.resizeKnob.css({
           left: _this.operationOptions.scale
         });
+        if (_this.stickerContainer.position().left + _this.operationOptions.scale > _this.canvasControlsContainer.width() + 20) {
+          _this.operationOptions.scale = _this.canvasControlsContainer.width() - _this.stickerContainer.position().left + 20;
+        }
         _this.operationOptions.stickerPosition = new Vector2().copy(currentContainerPosition);
         _this.operation.setOptions(_this.operationOptions);
         return _this.emit("renderPreview");
@@ -21360,7 +21436,7 @@ UIControlsStickers = (function(_super) {
     var canvasRect, maxContainerPosition, minContainerPosition,
       _this = this;
     canvasRect = new Rect(0, 0, this.canvasControlsContainer.width(), this.canvasControlsContainer.height());
-    minContainerPosition = new Vector2(0, 0);
+    minContainerPosition = new Vector2(20, 0);
     maxContainerPosition = new Vector2(canvasRect.width, canvasRect.height);
     return this.resizeKnob.mousedown(function(e) {
       var initialContainerPosition, initialKnobPosition, initialMousePosition;
@@ -21372,10 +21448,11 @@ UIControlsStickers = (function(_super) {
         return $(document).off("mousemove");
       });
       return $(document).mousemove(function(e) {
-        var currentKnobPosition, currentMousePosition, mousePositionDifference;
+        var ajdustedMaxContainerPosition, currentKnobPosition, currentMousePosition, mousePositionDifference;
         currentMousePosition = new Vector2(e.clientX, e.clientY);
         mousePositionDifference = new Vector2().copy(currentMousePosition).substract(initialMousePosition);
-        currentKnobPosition = new Vector2().copy(initialKnobPosition).add(mousePositionDifference).clamp(minContainerPosition, maxContainerPosition);
+        ajdustedMaxContainerPosition = new Vector2().copy(maxContainerPosition).substract(new Vector2(_this.stickerContainer.position().left - 20, 0));
+        currentKnobPosition = new Vector2().copy(initialKnobPosition).add(mousePositionDifference).clamp(minContainerPosition, ajdustedMaxContainerPosition);
         _this.resizeKnob.css({
           left: currentKnobPosition.x
         });
@@ -21393,77 +21470,5 @@ UIControlsStickers = (function(_super) {
 module.exports = UIControlsStickers;
 
 
-},{"../../math/rect.coffee":61,"../../math/vector2.coffee":56,"../../operations/draw_image.coffee":81,"./base/list.coffee":13}],81:[function(require,module,exports){
-/*
-  ImglyKit
-  Copyright (c) 2013-2014 img.ly
-*/
-
-var DrawImageOperation, Operation, Queue, Rect, Utils, Vector2,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Operation = require("./operation.coffee");
-
-Utils = require("../utils.coffee");
-
-Queue = require("../vendor/queue.coffee");
-
-Vector2 = require("../math/vector2.coffee");
-
-Rect = require("../math/rect.coffee");
-
-module.exports = DrawImageOperation = (function(_super) {
-  __extends(DrawImageOperation, _super);
-
-  function DrawImageOperation(app, options) {
-    this.app = app;
-    this.options = options != null ? options : {};
-    DrawImageOperation.__super__.constructor.apply(this, arguments);
-    this.options.scale = 100;
-    this.options.sticker = "stickers/sticker-heart.png";
-    this.options.stickerImageWidth = 100;
-    this.options.stickerImageHeight = 100;
-  }
-
-  /*
-    @param {String} sticker
-  */
-
-
-  DrawImageOperation.prototype.useSticker = function(sticker) {
-    this.options.sticker = sticker;
-    return this.emit("updateOptions", this.options);
-  };
-
-  DrawImageOperation.prototype.apply = function(imageData) {
-    var _this = this;
-    return Queue.promise(function(resolve, reject) {
-      var stickerImage;
-      stickerImage = new Image();
-      stickerImage.onload = function() {
-        return resolve(stickerImage);
-      };
-      return stickerImage.src = _this.app.buildAssetsPath(_this.options.sticker);
-    }).then(function(stickerImage) {
-      var canvas, context, ratio;
-      ratio = stickerImage.height / stickerImage.width;
-      _this.options.stickerImageWidth = _this.options.scale;
-      _this.options.stickerImageHeight = _this.options.scale * ratio;
-      canvas = Utils.newCanvasFromImageData(imageData);
-      context = canvas.getContext("2d");
-      if (_this.options.stickerPosition == null) {
-        _this.options.stickerPosition = new Vector2(canvas.width / 2, canvas.height / 2);
-      }
-      context.drawImage(stickerImage, _this.options.stickerPosition.x, _this.options.stickerPosition.y, _this.options.stickerImageWidth, _this.options.stickerImageHeight);
-      return context.getImageData(0, 0, imageData.width, imageData.height);
-    });
-  };
-
-  return DrawImageOperation;
-
-})(Operation);
-
-
-},{"../math/rect.coffee":61,"../math/vector2.coffee":56,"../utils.coffee":5,"../vendor/queue.coffee":4,"./operation.coffee":8}]},{},[80])
+},{"../../math/rect.coffee":62,"../../math/vector2.coffee":57,"../../operations/draw_image.coffee":81,"./base/list.coffee":14}]},{},[80])
 ;

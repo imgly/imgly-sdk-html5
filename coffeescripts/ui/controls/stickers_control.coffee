@@ -63,22 +63,22 @@ class UIControlsStickers extends List
     @resizeKnob = $("<div>")
       .addClass(ImglyKit.classPrefix + "canvas-knob")
       .css
-        left: 100
+        left: 120
       .appendTo @stickerContainer
 
     @handleCrosshair()
     @handleResizeKnob()
 
   ###
-    Move the text input around by dragging the crosshair
+    Move the sticker around by dragging the crosshair
   ###
   handleCrosshair: ->
     canvasRect = new Rect(0, 0, @canvasControlsContainer.width(), @canvasControlsContainer.height())
 
-    minimumWidth  = 50
-    minimumHeight = 50
+    minimumWidth  = 0
+    minimumHeight = 0
 
-    minContainerPosition = new Vector2(0, 0)
+    minContainerPosition = new Vector2(0, -20)
     maxContainerPosition = new Vector2(canvasRect.width - minimumWidth, canvasRect.height - minimumHeight)
 
     @crosshair.mousedown (e) =>
@@ -111,9 +111,20 @@ class UIControlsStickers extends List
           width: @operationOptions.stickerImageWidth
           height: @operationOptions.stickerImageHeight
           
+        # Since the resize knob resides relative to the anchor, we have to move
+        # it, too
         @resizeKnob.css
           left: @operationOptions.scale
 
+        # Refactor: Resize button offset should be ready from operationOptions.resizeButtonOffset
+        # When moving the anchor so that the resize knob would have been pushed off the right boundary,
+        # set down the scale
+        if @stickerContainer.position().left + @operationOptions.scale > @canvasControlsContainer.width() + 20
+          @operationOptions.scale = @canvasControlsContainer.width() - @stickerContainer.position().left + 20
+          
+        # When moving the anchor, we could get over the right boundary, to make
+        # sure that this does not happen
+        
         # Set the sticker position in the operation options, so the operation
         # knows where to place the image.
         @operationOptions.stickerPosition = new Vector2()
@@ -132,7 +143,8 @@ class UIControlsStickers extends List
   ###
   handleResizeKnob: ->
     canvasRect = new Rect(0, 0, @canvasControlsContainer.width(), @canvasControlsContainer.height())
-    minContainerPosition = new Vector2(0, 0)
+    # Refactor: Resize button offset should be ready from operationOptions.resizeButtonOffset
+    minContainerPosition = new Vector2(20, 0)
     maxContainerPosition = new Vector2(canvasRect.width, canvasRect.height)
 
     @resizeKnob.mousedown (e) =>
@@ -151,10 +163,16 @@ class UIControlsStickers extends List
           .copy(currentMousePosition)
           .substract(initialMousePosition)
 
+        # Do not let the user drag the knob over the right boundary of image
+        # Refactor: Resize button offset should be ready from operationOptions.resizeButtonOffset
+        ajdustedMaxContainerPosition = new Vector2()
+          .copy(maxContainerPosition)
+          .substract(new Vector2 @stickerContainer.position().left - 20, 0)
+
         currentKnobPosition = new Vector2()
           .copy(initialKnobPosition)
           .add(mousePositionDifference)
-          .clamp(minContainerPosition, maxContainerPosition)
+          .clamp(minContainerPosition, ajdustedMaxContainerPosition)
           
         @resizeKnob.css
           left: currentKnobPosition.x

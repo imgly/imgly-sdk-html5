@@ -9,7 +9,7 @@
   -o-border-radius: 5px;
   border-radius: 5px;
 }
-/* line 52, ../../../.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0/gems/compass-0.12.7/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 52, ../../../../.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0/gems/compass-0.12.7/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 .imgly-container div, .imgly-container span, .imgly-container applet, .imgly-container object, .imgly-container iframe,
 .imgly-container h1, .imgly-container h2, .imgly-container h3, .imgly-container h4, .imgly-container h5, .imgly-container h6, .imgly-container p, .imgly-container blockquote, .imgly-container pre,
 .imgly-container a, .imgly-container abbr, .imgly-container acronym, .imgly-container address, .imgly-container big, .imgly-container cite, .imgly-container code,
@@ -30,27 +30,27 @@
   font-size: 100%;
   vertical-align: baseline;
 }
-/* line 55, ../../../.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0/gems/compass-0.12.7/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 55, ../../../../.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0/gems/compass-0.12.7/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 .imgly-container table {
   border-collapse: collapse;
   border-spacing: 0;
 }
-/* line 57, ../../../.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0/gems/compass-0.12.7/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 57, ../../../../.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0/gems/compass-0.12.7/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 .imgly-container caption, .imgly-container th, .imgly-container td {
   text-align: left;
   font-weight: normal;
   vertical-align: middle;
 }
-/* line 59, ../../../.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0/gems/compass-0.12.7/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 59, ../../../../.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0/gems/compass-0.12.7/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 .imgly-container q, .imgly-container blockquote {
   quotes: none;
 }
-/* line 103, ../../../.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0/gems/compass-0.12.7/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 103, ../../../../.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0/gems/compass-0.12.7/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 .imgly-container q:before, .imgly-container q:after, .imgly-container blockquote:before, .imgly-container blockquote:after {
   content: "";
   content: none;
 }
-/* line 61, ../../../.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0/gems/compass-0.12.7/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 61, ../../../../.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0/gems/compass-0.12.7/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 .imgly-container a img {
   border: none;
 }
@@ -91,8 +91,12 @@
 .imgly-container .imgly-canvas-container .imgly-canvas-knob {
   width: 20px;
   height: 20px;
-  background: white;
+  background: rgba(255, 255, 255, 0.8);
+  border: 2px solid rgba(99, 99, 99, 0.5);
   border-radius: 50%;
+  -moz-background-clip: content;
+  -webkit-background-clip: content;
+  background-clip: content-box;
   right: 0;
   position: absolute;
   top: 0;

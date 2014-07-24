@@ -11,7 +11,8 @@ Rect      = require "../math/rect.coffee"
 module.exports = class DrawImageOperation extends Operation
   constructor: (@app, @options={}) ->
     super
-    @options.scale = 100
+    @options.resizeButtonOffset = 20
+    @options.scale = @options.resizeButtonOffset + 100
     @options.sticker = "stickers/sticker-heart.png"
 
     @options.stickerImageWidth = 100
@@ -32,8 +33,8 @@ module.exports = class DrawImageOperation extends Operation
       stickerImage.src = @app.buildAssetsPath(@options.sticker)
     ).then (stickerImage) =>
       ratio = stickerImage.height / stickerImage.width
-      @options.stickerImageWidth = @options.scale
-      @options.stickerImageHeight = @options.scale * ratio
+      @options.stickerImageWidth = (@options.scale - @options.resizeButtonOffset)
+      @options.stickerImageHeight = (@options.scale - @options.resizeButtonOffset) * ratio
 
       # Create a new context out of the image data
       canvas  = Utils.newCanvasFromImageData imageData
