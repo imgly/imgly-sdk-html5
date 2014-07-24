@@ -55,7 +55,7 @@ class UIControlsStickers extends List
 #    canvasWidth  = @canvasControlsContainer.width()
 #    canvasHeight = @canvasControlsContainer.height()
 
-#    console.log @stickerContainer
+
 #    @stickerContainer.css
 #      left: @operationOptions.stickerPosition.x
 #      top: @operationOptions.stickerPosition.y
@@ -65,6 +65,7 @@ class UIControlsStickers extends List
   ###
     @param {jQuery.Object} canvasControlsContainer
   ###
+  hasCanvasControls: true
   setupCanvasControls: (@canvasControlsContainer) ->
     @stickerContainer = $("<div>")
       .addClass(ImglyKit.classPrefix + "canvas-sticker-container")
@@ -92,6 +93,7 @@ class UIControlsStickers extends List
     @crosshair = $("<div>")
       .addClass(ImglyKit.classPrefix + "canvas-crosshair " + ImglyKit.classPrefix + "canvas-sticker-crosshair")
       .appendTo @stickerContainer
+      
 
     @handleCrosshair()
 
@@ -158,9 +160,7 @@ class UIControlsStickers extends List
           top:  currentContainerPosition.y
           width: @operationOptions.stickerImageWidth
           height: @operationOptions.stickerImageHeight
-        
-        #console.log @stickerContainer
-        
+
         # Set the sticker position in the operation options, so the operation
         # knows where to place the image.
         @operationOptions.stickerPosition = new Vector2()

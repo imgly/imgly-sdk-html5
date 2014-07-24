@@ -16,6 +16,12 @@ module.exports = class DrawImageOperation extends Operation
 
     @options.stickerImageWidth = 100
     @options.stickerImageHeight = 100
+    
+    @options.radius       ?= 5
+
+    # Ellipse options
+    @options.controlPoint1Position ?= new Vector2(0.5, 0.4)
+    @options.controlPoint2Position ?= new Vector2(0.5, 0.6)
 
   ###
     @param {String} sticker
@@ -73,6 +79,5 @@ module.exports = class DrawImageOperation extends Operation
         stickerImage.height * @options.scale
       )
 
-      #console.log "scale: " + @options.scale
       # Return the new image data
       context.getImageData 0, 0, imageData.width, imageData.height
