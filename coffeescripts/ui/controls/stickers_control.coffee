@@ -20,8 +20,6 @@ class UIControlsStickers extends List
   constructor: (@app, @ui, @controls) ->
     super
     @operationClass = require "../../operations/draw_image.coffee"
-    @stickerImageScaleStep = 0.05 # 5% image scale step = minimum size
-    @maximumImageSize = 2.0 # 200% Maximum image scale
     @listItems = [
       {
         name: "Heart"
@@ -48,21 +46,6 @@ class UIControlsStickers extends List
     ]
 
   ###
-    Update input position
-  ###
-  updateCanvasControls: ->
-    return
-#    canvasWidth  = @canvasControlsContainer.width()
-#    canvasHeight = @canvasControlsContainer.height()
-
-
-#    @stickerContainer.css
-#      left: @operationOptions.stickerPosition.x
-#      top: @operationOptions.stickerPosition.y
-
-    #@autoResizeTextInput()
-
-  ###
     @param {jQuery.Object} canvasControlsContainer
   ###
   hasCanvasControls: true
@@ -71,53 +54,20 @@ class UIControlsStickers extends List
       .addClass(ImglyKit.classPrefix + "canvas-sticker-container")
       .appendTo @canvasControlsContainer
 
-    #
-    # Size buttons
-    #
-    @stickerSizeButtonsContainer = $("<div>")
-      .addClass(ImglyKit.classPrefix + "canvas-sticker-size-container")
-      .appendTo @stickerContainer
-
-    for control in ["Smaller", "Bigger"]
-      @["stickerSize#{control}Button"] = $("<div>")
-        .addClass(
-          ImglyKit.classPrefix + "canvas-sticker-size-" + control.toLowerCase()
-        )
-        .appendTo @stickerSizeButtonsContainer
-
-      @["stickerSize#{control}Button"].on "click", @["onStickerSize#{control}Click"]
-
-    #
     # Crosshair / anchor control
-    #
     @crosshair = $("<div>")
       .addClass(ImglyKit.classPrefix + "canvas-crosshair " + ImglyKit.classPrefix + "canvas-sticker-crosshair")
       .appendTo @stickerContainer
-      
+
+    # Resize knob control
+    @resizeKnob = $("<div>")
+      .addClass(ImglyKit.classPrefix + "canvas-knob")
+      .css
+        left: 100
+      .appendTo @stickerContainer
 
     @handleCrosshair()
-
-  ###
-    Gets called as soon as the user clicks the button
-    to increase font size
-  ###
-  onStickerSizeBiggerClick: (e) =>
-    @operationOptions.scale += @stickerImageScaleStep
-    @operationOptions.scale = @maximumImageSize if @operationOptions.scale > @maximumImageSize
-    @operation.setOptions @operationOptions
-    @emit "renderPreview"
-    @updateCanvasControls()
-
-  ###
-    Gets called as soon as the user clicks the button
-    to reduce font size
-  ###
-  onStickerSizeSmallerClick: (e) =>
-    @operationOptions.scale -= @stickerImageScaleStep
-    @operationOptions.scale = @stickerImageScaleStep if @operationOptions .scale < @stickerImageScaleStep
-    @operation.setOptions @operationOptions
-    @emit "renderPreview"
-    @updateCanvasControls()
+    @handleResizeKnob()
 
   ###
     Move the text input around by dragging the crosshair
@@ -160,6 +110,9 @@ class UIControlsStickers extends List
           top:  currentContainerPosition.y
           width: @operationOptions.stickerImageWidth
           height: @operationOptions.stickerImageHeight
+          
+        @resizeKnob.css
+          left: @operationOptions.scale
 
         # Set the sticker position in the operation options, so the operation
         # knows where to place the image.
@@ -169,10 +122,45 @@ class UIControlsStickers extends List
         # Update the operation options
         @operation.setOptions @operationOptions
         @emit "renderPreview"
-        @updateCanvasControls()
     
       $(document).mouseup =>
         $(document).off "mousemove"
         $(document).off "mouseup"
+
+  ###
+    Handles the dragging of resize knob
+  ###
+  handleResizeKnob: ->
+    canvasRect = new Rect(0, 0, @canvasControlsContainer.width(), @canvasControlsContainer.height())
+    minContainerPosition = new Vector2(0, 0)
+    maxContainerPosition = new Vector2(canvasRect.width, canvasRect.height)
+
+    @resizeKnob.mousedown (e) =>
+      initialMousePosition  = new Vector2 e.clientX, e.clientY
+      initialKnobPosition = new Vector2(@resizeKnob.position().left, @resizeKnob.position().top)
+      initialContainerPosition = new Vector2(@stickerContainer.position().left, @stickerContainer.position().top)
+      
+      $(document).mouseup (e) =>
+        $(document).off "mouseup"
+        $(document).off "mousemove"
+
+      $(document).mousemove (e) =>
+        currentMousePosition = new Vector2 e.clientX, e.clientY
+
+        mousePositionDifference = new Vector2()
+          .copy(currentMousePosition)
+          .substract(initialMousePosition)
+
+        currentKnobPosition = new Vector2()
+          .copy(initialKnobPosition)
+          .add(mousePositionDifference)
+          .clamp(minContainerPosition, maxContainerPosition)
+          
+        @resizeKnob.css
+          left: currentKnobPosition.x
+
+        @operationOptions.scale = @resizeKnob.position().left
+        @operation.setOptions @operationOptions
+        @emit "renderPreview"
 
 module.exports = UIControlsStickers

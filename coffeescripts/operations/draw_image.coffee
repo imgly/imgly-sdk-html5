@@ -11,17 +11,11 @@ Rect      = require "../math/rect.coffee"
 module.exports = class DrawImageOperation extends Operation
   constructor: (@app, @options={}) ->
     super
-    @options.scale = 1.0 # 100% scale
+    @options.scale = 100
     @options.sticker = "stickers/sticker-heart.png"
 
     @options.stickerImageWidth = 100
     @options.stickerImageHeight = 100
-    
-    @options.radius       ?= 5
-
-    # Ellipse options
-    @options.controlPoint1Position ?= new Vector2(0.5, 0.4)
-    @options.controlPoint2Position ?= new Vector2(0.5, 0.6)
 
   ###
     @param {String} sticker
@@ -31,24 +25,16 @@ module.exports = class DrawImageOperation extends Operation
     @emit "updateOptions", @options
 
   apply: (imageData) ->
-    # Scale our options
-    # scaledFontSize = @options.fontSize * imageData.height
-    # paddingVector  = new Vector2(@options.paddingLeft, @options.paddingTop)
-    # scaledStart    = new Vector2()
-    #   .copy(@options.start)
-    #   .add(paddingVector)
-    #   .multiplyWithRect(imageData)
-
-    
     Queue.promise((resolve, reject) =>
       # DRAW IMAGE HERE
       stickerImage = new Image()
       stickerImage.onload = -> resolve stickerImage
       stickerImage.src = @app.buildAssetsPath(@options.sticker)
     ).then (stickerImage) =>
-      @options.stickerImageWidth = stickerImage.width * @options.scale
-      @options.stickerImageHeight = stickerImage.height * @options.scale
-    
+      ratio = stickerImage.height / stickerImage.width
+      @options.stickerImageWidth = @options.scale
+      @options.stickerImageHeight = @options.scale * ratio
+
       # Create a new context out of the image data
       canvas  = Utils.newCanvasFromImageData imageData
       context = canvas.getContext "2d"
@@ -74,9 +60,9 @@ module.exports = class DrawImageOperation extends Operation
         # The y coord. where to place image on target canvas
         @options.stickerPosition.y,
         # The width of the image to use (stretch)
-        stickerImage.width * @options.scale,
+        @options.stickerImageWidth,
         # The height of the image to use (stretch)
-        stickerImage.height * @options.scale
+        @options.stickerImageHeight
       )
 
       # Return the new image data
