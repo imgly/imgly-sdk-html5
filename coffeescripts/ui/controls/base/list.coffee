@@ -37,6 +37,9 @@ class UIControlsBaseList extends Base
         if option.pixmap?
           item.attr "style", "background-image: url('#{@app.buildAssetsPath(option.pixmap)}'); background-size: 42px;"
 
+        if option.tooltip?
+          item.attr "title", option.tooltip
+          
         item.click (e) =>
           unless @allowMultipleClick
             return if @optionSelected

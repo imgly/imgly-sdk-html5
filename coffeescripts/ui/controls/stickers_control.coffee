@@ -27,6 +27,7 @@ class UIControlsStickers extends List
         method: "useSticker"
         arguments: ["stickers/sticker-heart.png"]
         pixmap: "stickers/sticker-heart.png"
+        tooltip: "Heart"
         default: true
       },
       {
@@ -35,6 +36,7 @@ class UIControlsStickers extends List
         method: "useSticker"
         arguments: ["stickers/sticker-nyanCat.png"]
         pixmap: "stickers/sticker-nyanCat.png"
+        tooltip: "Nyancat"
       },
       {
         name: "NyanCat"

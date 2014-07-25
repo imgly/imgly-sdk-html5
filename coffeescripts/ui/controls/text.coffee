@@ -26,6 +26,7 @@ class UIControlsText extends List
         method: "setFont"
         cssClass: "helvetica"
         arguments: ["Helvetica"]
+        tooltip: "Helvetica"
         default: true
       },
       {
@@ -33,12 +34,14 @@ class UIControlsText extends List
         method: "setFont"
         cssClass: "lucida-grande"
         arguments: ["Lucida Grande"]
+        tooltip: "Lucida Grande"
       },
       {
         name: "Times New Roman"
         method: "setFont"
         cssClass: "times-new-roman"
         arguments: ["Times New Roman"]
+        tooltip: "Times New Roman"
       }
     ]
 

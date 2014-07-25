@@ -18,21 +18,25 @@ class UIControlsOrientation extends List
         name: "Rotate L"
         cssClass: "rotate-l"
         method: "rotateLeft"
+        tooltip: "Rotate left"
       },
       {
         name: "Rotate R"
         cssClass: "rotate-r"
         method: "rotateRight"
+        tooltip: "Rotate right"
       },
       {
         name: "Flip V"
         cssClass: "flip-v"
         method: "flipVertically"
+        tooltip: "Flip vertically"
       },
       {
         name: "Flip H"
         cssClass: "flip-h"
         method: "flipHorizontally"
+        tooltip: "Flip horizontally"
       }
     ]
 

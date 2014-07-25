@@ -23,12 +23,14 @@ class UIControlsFocus extends List
         name: "Radial"
         cssClass: "radial"
         operation: radialOperation
+        tooltip: "Radial blur"
         default: true
       },
       {
         name: "Linear"
         cssClass: "linear"
         operation: linearOperation
+        tooltip: "Linear blur"
       }
     ]
 

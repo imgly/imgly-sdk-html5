@@ -22,6 +22,7 @@ class UIControlsFrames extends List
         arguments: [
           "black", 0.1
         ]
+        tooltip: "Black"
         default: true
       },
       {
@@ -32,6 +33,7 @@ class UIControlsFrames extends List
         arguments: [
           "blackwood", 0.1
         ]
+        tooltip: "Black wood"
       },
       {
         id: "dia"
@@ -41,6 +43,7 @@ class UIControlsFrames extends List
         arguments: [
           "dia", 0.1
         ]
+        tooltip: "Dia"
       }
     ]
 
@@ -53,6 +56,9 @@ class UIControlsFrames extends List
         preview = $("<div>")
           .addClass(ImglyKit.classPrefix + "controls-frame-preview-" + Utils.dasherize(option.id))
           .appendTo item
+          
+        if option.tooltip?
+          preview.attr "title", option.tooltip
 
         item.click (e) =>
           @handleOptionSelect option, item

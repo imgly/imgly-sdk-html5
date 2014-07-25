@@ -23,6 +23,7 @@ class UIControlsCrop extends List
         cssClass: "custom"
         method: "setSize"
         arguments: ["free"]
+        tooltip: "Freeform crop"
         default: true
         options:
           size: "free"
@@ -32,6 +33,7 @@ class UIControlsCrop extends List
         cssClass: "square"
         method: "setSize"
         arguments: ["square"]
+        tooltip: "Squared crop"
         options:
           size: "square"
       },
@@ -40,6 +42,7 @@ class UIControlsCrop extends List
         cssClass: "4-3"
         method: "setSize"
         arguments: ["4:3"]
+        tooltip: "4:3 crop"
         options:
           size: "4:3"
       },
@@ -48,6 +51,7 @@ class UIControlsCrop extends List
         cssClass: "16-9"
         method: "setSize"
         arguments: ["16:9"]
+        tooltip: "16:9 crop"
         options:
           size: "16:9"
       }
