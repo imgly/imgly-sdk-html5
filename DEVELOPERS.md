@@ -104,6 +104,3 @@ And for fonts in operations/text.coffee:
     @options.color = "#ffffff"
 ```
 
-If you have any further questions, you can drop me a mail at
-
-jacob.dawid@9elements.com
