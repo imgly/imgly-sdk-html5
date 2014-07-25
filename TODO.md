@@ -1,6 +1,6 @@
 # TODOS
 
-- API to enable or disable certain controls
+- API to enable or disable certain controlsg
 - Polish configuration object
 
 ## Refactoring

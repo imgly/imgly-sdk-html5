@@ -22,28 +22,141 @@ class UIControlsStickers extends List
     @operationClass = require "../../operations/draw_image.coffee"
     @listItems = [
       {
+        name: "Nerd glasses"
+        cssClass: "sticker-glasses-nerd"
+        method: "useSticker"
+        arguments: ["stickers/sticker-glasses-nerd.png"]
+        pixmap: "stickers/sticker-glasses-nerd.png"
+        tooltip: "Nerd glasses"
+        default: true
+      },
+      {
+        name: "Normal glasses"
+        cssClass: "sticker-glasses-normal"
+        method: "useSticker"
+        arguments: ["stickers/sticker-glasses-normal.png"]
+        pixmap: "stickers/sticker-glasses-normal.png"
+        tooltip: "Normal glasses"
+      },
+      {
+        name: "Green shutter glasses"
+        cssClass: "sticker-glasses-shutter-green"
+        method: "useSticker"
+        arguments: ["stickers/sticker-glasses-shutter-green.png"]
+        pixmap: "stickers/sticker-glasses-shutter-green.png"
+        tooltip: "Green shutter glasses"
+      },
+      {
+        name: "Yellow shutter glasses"
+        cssClass: "sticker-glasses-shutter-yellow"
+        method: "useSticker"
+        arguments: ["stickers/sticker-glasses-shutter-yellow.png"]
+        pixmap: "stickers/sticker-glasses-shutter-yellow.png"
+        tooltip: "Yellow shutter glasses"
+      },
+      {
+        name: "Sunglasses"
+        cssClass: "sticker-glasses-sun"
+        method: "useSticker"
+        arguments: ["stickers/sticker-glasses-sun.png"]
+        pixmap: "stickers/sticker-glasses-sun.png"
+        tooltip: "Sunglasses"
+      },
+      {
+        name: "Cap"
+        cssClass: "sticker-hat-cap"
+        method: "useSticker"
+        arguments: ["stickers/sticker-hat-cap.png"]
+        pixmap: "stickers/sticker-hat-cap.png"
+        tooltip: "Cap"
+      },
+      {
+        name: "Party hat"
+        cssClass: "sticker-hat-party"
+        method: "useSticker"
+        arguments: ["stickers/sticker-hat-party.png"]
+        pixmap: "stickers/sticker-hat-party.png"
+        tooltip: "Party hat"
+      },
+      {
+        name: "Sheriff's' hat"
+        cssClass: "sticker-hat-sheriff"
+        method: "useSticker"
+        arguments: ["stickers/sticker-hat-sheriff.png"]
+        pixmap: "stickers/sticker-hat-sheriff.png"
+        tooltip: "Sheriff's hat'"
+      },
+      {
+        name: "Cylinder"
+        cssClass: "sticker-hat-cylinder"
+        method: "useSticker"
+        arguments: ["stickers/sticker-hat-cylinder.png"]
+        pixmap: "stickers/sticker-hat-cylinder.png"
+        tooltip: "Cylinder"
+      },
+      {
         name: "Heart"
         cssClass: "sticker-heart"
         method: "useSticker"
         arguments: ["stickers/sticker-heart.png"]
         pixmap: "stickers/sticker-heart.png"
         tooltip: "Heart"
-        default: true
       },
       {
-        name: "NyanCat"
-        cssClass: "sticker-nyanCat"
+        name: "Mustache 1"
+        cssClass: "sticker-mustache1"
         method: "useSticker"
-        arguments: ["stickers/sticker-nyanCat.png"]
-        pixmap: "stickers/sticker-nyanCat.png"
-        tooltip: "Nyancat"
+        arguments: ["stickers/sticker-mustache1.png"]
+        pixmap: "stickers/sticker-mustache1.png"
+        tooltip: "Mustache 1"
       },
       {
-        name: "NyanCat"
-        cssClass: "sticker-nyanCat"
+        name: "Mustache 2"
+        cssClass: "sticker-mustache2"
         method: "useSticker"
-        arguments: ["stickers/sticker-nyanCat.png"]
-        pixmap: "stickers/sticker-nyanCat.png"
+        arguments: ["stickers/sticker-mustache2.png"]
+        pixmap: "stickers/sticker-mustache2.png"
+        tooltip: "Mustache 2"
+      },
+      {
+        name: "Mustache 3"
+        cssClass: "sticker-mustache3"
+        method: "useSticker"
+        arguments: ["stickers/sticker-mustache3.png"]
+        pixmap: "stickers/sticker-mustache3.png"
+        tooltip: "Mustache 3"
+      },
+      {
+        name: "Long mustache"
+        cssClass: "sticker-mustache-long"
+        method: "useSticker"
+        arguments: ["stickers/sticker-mustache-long.png"]
+        pixmap: "stickers/sticker-mustache-long.png"
+        tooltip: "Long mustache"
+      },
+      {
+        name: "Pipe"
+        cssClass: "sticker-pipe"
+        method: "useSticker"
+        arguments: ["stickers/sticker-pipe.png"]
+        pixmap: "stickers/sticker-pipe.png"
+        tooltip: "Pipe"
+      },
+      {
+        name: "Snowflake"
+        cssClass: "sticker-snowflake"
+        method: "useSticker"
+        arguments: ["stickers/sticker-snowflake.png"]
+        pixmap: "stickers/sticker-snowflake.png"
+        tooltip: "Snowflake"
+      },
+      {
+        name: "Star"
+        cssClass: "sticker-star"
+        method: "useSticker"
+        arguments: ["stickers/sticker-star.png"]
+        pixmap: "stickers/sticker-star.png"
+        tooltip: "Star"
       }
     ]
 
