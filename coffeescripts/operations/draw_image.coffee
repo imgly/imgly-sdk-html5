@@ -13,7 +13,7 @@ module.exports = class DrawImageOperation extends Operation
     super
     @options.resizeButtonOffset = 20
     @options.scale = @options.resizeButtonOffset + 100
-    @options.sticker = "stickers/sticker-heart.png"
+    @options.sticker = "stickers/sticker-glasses-nerd.png"
 
     @options.stickerImageWidth = 100
     @options.stickerImageHeight = 100
