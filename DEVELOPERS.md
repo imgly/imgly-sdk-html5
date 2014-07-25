@@ -7,24 +7,24 @@ img.ly SDK editor.
 Stripped down to the bare minimum you need to know: You can invoke the Img.ly
 SDK by creating an ImglyKit object while passing it the target container:
 
-´´´
+```
     // Initialize ImglyKit and run it
     // with the image
     imgly = new ImglyKit({
       container: "#container"
     });
-´´´
+```
 
 Once you have done this, you can start editing images by passing them Image
 objects with run():
 
-´´´
+```
   image = new Image()
   image.src = "imgage.jpg";
   image.onload = function () {
     imgly.run(image);
   }
-´´´
+```
 
 That's basically it. Everything else is optional.
 
@@ -45,7 +45,7 @@ In short, here is a quick explanation of what each property does:
 * tooltip: A tooltip that will appear when the user hovers over an item.
 * default: When set to true, this item will be triggered right from the start.
 
-´´´
+```
     @listItems = [
       {
         name: "Nerd glasses"
@@ -65,10 +65,10 @@ In short, here is a quick explanation of what each property does:
         tooltip: "Normal glasses"
       },
       [...]
-´´´
+```
 
 In the exact same way, this works for fonts:
-´´´
+```
     @listItems = [
       {
         name: "Helvetica"
@@ -86,23 +86,23 @@ In the exact same way, this works for fonts:
         tooltip: "Lucida Grande"
       },
       [...]
-´´´
+```
 
 On a side note, there is currently a bug that will be fixed soon within upcoming
 refactoring actions. In addition to specifying the default action with the
 default: true flag, you have to load the image directly in the corresponding
 operation, in this case operations/draw_image.coffee in the constructor:
 
-´´´
+```
     @options.sticker = "stickers/sticker-heart.png" # <- Set this to the default
-´´´
+```
 
 And for fonts in operations/text.coffee:
-´´´
+```
     @options.font  = "Helvetica"
     @options.text  = "Text"
     @options.color = "#ffffff"
-´´´
+```
 
 If you have any further questions, you can drop me a mail at
 
