@@ -21390,12 +21390,13 @@ UIControlsText = (function(_super) {
       showButtons: false,
       localStorageKey: "imgly.palette",
       move: function(color) {
-        var colorHexString;
-        colorHexString = color.toHexString();
+        var colorComponents, rgbaString;
+        colorComponents = color.toRgb();
+        rgbaString = "rgba(" + colorComponents.r + "," + colorComponents.g + "," + colorComponents.b + "," + colorComponents.a + ")";
         _this.colorSelect.css({
-          backgroundColor: colorHexString
+          backgroundColor: rgbaString
         });
-        _this.operationOptions.color = colorHexString;
+        _this.operationOptions.color = rgbaString;
         return _this.operation.setOptions(_this.operationOptions);
       }
     });

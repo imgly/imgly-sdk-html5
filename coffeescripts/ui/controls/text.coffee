@@ -87,9 +87,10 @@ class UIControlsText extends List
       showButtons: false
       localStorageKey: "imgly.palette" 
       move: (color) =>
-        colorHexString = color.toHexString()
-        @colorSelect.css(backgroundColor: colorHexString)
-        @operationOptions.color = colorHexString
+        colorComponents = color.toRgb()
+        rgbaString = "rgba(" + colorComponents.r + "," + colorComponents.g + ","  + colorComponents.b + "," + colorComponents.a + ")"
+        @colorSelect.css(backgroundColor: rgbaString)
+        @operationOptions.color = rgbaString
         @operation.setOptions @operationOptions
     )    
     @colorSelect.css(backgroundColor: defaultForegroundColor)
