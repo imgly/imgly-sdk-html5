@@ -1,0 +1,46 @@
+$controlsHeight: 80px
+
+.#{$prefix}controls-container
+  position: absolute
+  bottom: 0
+  left: 0
+  box-sizing: content-box
+
+  height: $controlsHeight
+  width: 100%
+
+  border-top: 1px solid #363636
+
+  .#{$prefix}controls-wrapper
+    width: 100%
+
+    position: absolute
+    z-index: 10
+
+    display: none
+    text-align: center
+
+  .#{$prefix}controls-caption
+    font: bold 11px Helvetica
+    color: rgba(#FFF, .7)
+    text-align: center
+
+    width: $controlsHeight
+
+    +text-shadow(0 1px 1px rgba(#000, .75))
+
+  .#{$prefix}controls-item-title
+    position: absolute
+    bottom: 10px
+
+  @import "controls/buttons"
+  @import "controls/list"
+  @import "controls/slider"
+
+  @import "controls/filters"
+  @import "controls/overview"
+  @import "controls/orientation"
+  @import "controls/crop"
+  @import "controls/focus"
+  @import "controls/text"
+  @import "controls/frames"

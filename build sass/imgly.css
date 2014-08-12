@@ -1,5 +1,4 @@
-@import url(colorpicker.css);
-/* line 10, ../sass/imgly.sass */
+/* line 9, ../sass/imgly.sass */
 .imgly-container {
   text-align: left;
   position: relative;
@@ -55,7 +54,7 @@
 .imgly-container a img {
   border: none;
 }
-/* line 20, ../sass/imgly.sass */
+/* line 19, ../sass/imgly.sass */
 .imgly-container * {
   -webkit-user-select: none;
   -moz-user-select: none;

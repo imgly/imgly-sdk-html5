@@ -53,8 +53,8 @@ module.exports = function(grunt) {
         }
       },
       styles: {
-        files: ['**/*.sass'],
-        tasks: ['compass:dev'],
+        files: ['**/*.*ss'],
+        tasks: ['compass:dev', 'concat'],
         options: {
           livereload: true
         }
