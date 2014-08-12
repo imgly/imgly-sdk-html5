@@ -15412,164 +15412,6 @@ module.exports = PhotoProcessor;
 
 
 },{"./operations/filters/primitives/identity.coffee":10,"./utils.coffee":6,"./vendor/perf.coffee":2,"./vendor/queue.coffee":5,"__browserify_Buffer":3,"__browserify_process":1}],12:[function(require,module,exports){
-/*
-  ImglyKit
-  Copyright (c) 2013-2014 img.ly
-*/
-
-var EventEmitter, Overview, UIControls,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Overview = require("./controls/overview.coffee");
-
-EventEmitter = require("events").EventEmitter;
-
-UIControls = (function(_super) {
-  __extends(UIControls, _super);
-
-  /*
-    @param {imglyUtil} app
-    @param {imglyUtil.UI} ui
-  */
-
-
-  function UIControls(app, ui) {
-    this.app = app;
-    this.ui = ui;
-    this.container = this.app.getContainer();
-    this.init();
-  }
-
-  /*
-    @returns {Integer} Height of the controls container
-  */
-
-
-  UIControls.prototype.getHeight = function() {
-    return this.controlsContainer.height();
-  };
-
-  /*
-    @returns {jQuery.Object} The controls container
-  */
-
-
-  UIControls.prototype.getContainer = function() {
-    return this.controlsContainer;
-  };
-
-  /*
-    @returns {ImglyKit.UI.Controls.Base}
-  */
-
-
-  UIControls.prototype.getCurrentControls = function() {
-    return this.currentControls;
-  };
-
-  /*
-    Initializes the container
-  */
-
-
-  UIControls.prototype.init = function() {
-    this.controlsContainer = $("<div>").addClass(ImglyKit.classPrefix + "controls-container").appendTo(this.container);
-    return this.initOverview();
-  };
-
-  /*
-    Initialize the overview
-  */
-
-
-  UIControls.prototype.initOverview = function() {
-    this.currentControls = this.overview = new Overview(this.app, this.ui, this);
-    this.attachEvents(this.currentControls);
-    this.overview.init();
-    if (this.app.options.initialControls == null) {
-      return this.overview.show();
-    }
-  };
-
-  /*
-    Attach select events
-  */
-
-
-  UIControls.prototype.attachEvents = function(controls) {
-    var _this = this;
-    controls.on("select", function(option) {
-      if (option.controls != null) {
-        _this.switchToControls(option.controls, controls);
-      }
-      if (option.operation != null) {
-        return _this.emit("preview_operation", new option.operation(_this.app, option.options));
-      }
-    });
-    controls.on("back", function() {
-      return _this.emit("back");
-    });
-    controls.on("done", function() {
-      return _this.emit("done");
-    });
-    return controls.on("renderPreview", function() {
-      return _this.app.getPhotoProcessor().renderPreview();
-    });
-  };
-
-  /*
-    Switch to another controls instance
-  */
-
-
-  UIControls.prototype.switchToControls = function(controlsClass, oldControls, options) {
-    var canvasControlsContainer, key, value,
-      _this = this;
-    if (options == null) {
-      options = {};
-    }
-    this.currentControls = new controlsClass(this.app, this.ui, this);
-    for (key in options) {
-      value = options[key];
-      this.currentControls.options[key] = value;
-    }
-    this.attachEvents(this.currentControls);
-    if (this.currentControls.hasCanvasControls) {
-      canvasControlsContainer = this.ui.getCanvas().getControlsContainer();
-      this.currentControls.setupCanvasControls(canvasControlsContainer);
-      canvasControlsContainer.fadeIn("slow");
-    }
-    this.currentControls.init();
-    return oldControls.hide(function() {
-      return _this.currentControls.show();
-    });
-  };
-
-  /*
-    Returns to the default view
-  */
-
-
-  UIControls.prototype.reset = function() {
-    var _ref,
-      _this = this;
-    this.overview.reset();
-    this.ui.getCanvas().getControlsContainer().hide().html("");
-    return (_ref = this.currentControls) != null ? _ref.hide(function() {
-      _this.currentControls.remove();
-      return _this.overview.show();
-    }) : void 0;
-  };
-
-  return UIControls;
-
-})(EventEmitter);
-
-module.exports = UIControls;
-
-
-},{"./controls/overview.coffee":13,"events":7}],14:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/base/base.coffee",__dirname="/ui/controls/base";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -15689,7 +15531,7 @@ UIControlsBase = (function(_super) {
 module.exports = UIControlsBase;
 
 
-},{"__browserify_Buffer":3,"__browserify_process":1,"events":7}],15:[function(require,module,exports){
+},{"__browserify_Buffer":3,"__browserify_process":1,"events":7}],13:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/base/list.coffee",__dirname="/ui/controls/base";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -15860,7 +15702,7 @@ UIControlsBaseList = (function(_super) {
 module.exports = UIControlsBaseList;
 
 
-},{"../../../utils.coffee":6,"./base.coffee":14,"__browserify_Buffer":3,"__browserify_process":1}],16:[function(require,module,exports){
+},{"../../../utils.coffee":6,"./base.coffee":12,"__browserify_Buffer":3,"__browserify_process":1}],14:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/default.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -15891,7 +15733,7 @@ DefaultFilter = (function(_super) {
 module.exports = DefaultFilter;
 
 
-},{"./primitives/identity.coffee":10,"__browserify_Buffer":3,"__browserify_process":1}],17:[function(require,module,exports){
+},{"./primitives/identity.coffee":10,"__browserify_Buffer":3,"__browserify_process":1}],15:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/tonecurve.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16094,7 +15936,7 @@ PrimitiveToneCurveFilter = (function(_super) {
 module.exports = PrimitiveToneCurveFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],18:[function(require,module,exports){
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],16:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/saturation.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16148,7 +15990,7 @@ PrimitiveSaturationFilter = (function(_super) {
 module.exports = PrimitiveSaturationFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],19:[function(require,module,exports){
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],17:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/k1.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16189,7 +16031,7 @@ K1Filter = (function(_super) {
 module.exports = K1Filter;
 
 
-},{"./filter.coffee":9,"./primitives/saturation.coffee":18,"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],20:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/saturation.coffee":16,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],18:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/softcoloroverlay.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16232,7 +16074,7 @@ PrimitiveSoftColorOverlayFilter = (function(_super) {
 module.exports = PrimitiveSoftColorOverlayFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],21:[function(require,module,exports){
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],19:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/k2.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16275,7 +16117,7 @@ K2Filter = (function(_super) {
 module.exports = K2Filter;
 
 
-},{"./filter.coffee":9,"./primitives/softcoloroverlay.coffee":20,"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],22:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/softcoloroverlay.coffee":18,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],20:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/k6.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16308,7 +16150,7 @@ K6Filter = (function(_super) {
 module.exports = K6Filter;
 
 
-},{"./primitives/saturation.coffee":18,"__browserify_Buffer":3,"__browserify_process":1}],23:[function(require,module,exports){
+},{"./primitives/saturation.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],21:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/kdynamic.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16349,7 +16191,7 @@ KDynamicFilter = (function(_super) {
 module.exports = KDynamicFilter;
 
 
-},{"./filter.coffee":9,"./primitives/saturation.coffee":18,"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],24:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/saturation.coffee":16,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],22:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/fridge.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16386,7 +16228,7 @@ FridgeFilter = (function(_super) {
 module.exports = FridgeFilter;
 
 
-},{"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],25:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],23:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/desaturation.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16436,7 +16278,7 @@ PrimitiveDesaturationFilter = (function(_super) {
 module.exports = PrimitiveDesaturationFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],26:[function(require,module,exports){
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],24:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/breeze.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16479,7 +16321,7 @@ BreezeFilter = (function(_super) {
 module.exports = BreezeFilter;
 
 
-},{"./filter.coffee":9,"./primitives/desaturation.coffee":25,"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],27:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/desaturation.coffee":23,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],25:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/orchid.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16524,7 +16366,7 @@ OrchidFilter = (function(_super) {
 module.exports = OrchidFilter;
 
 
-},{"./filter.coffee":9,"./primitives/desaturation.coffee":25,"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],28:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/desaturation.coffee":23,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],26:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/chest.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16561,7 +16403,7 @@ ChestFilter = (function(_super) {
 module.exports = ChestFilter;
 
 
-},{"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],29:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],27:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/front.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16598,7 +16440,7 @@ FrontFilter = (function(_super) {
 module.exports = FrontFilter;
 
 
-},{"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],30:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],28:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/fixie.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16635,7 +16477,7 @@ FixieFilter = (function(_super) {
 module.exports = FixieFilter;
 
 
-},{"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],31:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],29:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/x400.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16684,7 +16526,7 @@ PrimitiveX400Filter = (function(_super) {
 module.exports = PrimitiveX400Filter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],32:[function(require,module,exports){
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],30:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/x400.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16715,7 +16557,7 @@ X400Filter = (function(_super) {
 module.exports = X400Filter;
 
 
-},{"./primitives/x400.coffee":31,"__browserify_Buffer":3,"__browserify_process":1}],33:[function(require,module,exports){
+},{"./primitives/x400.coffee":29,"__browserify_Buffer":3,"__browserify_process":1}],31:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/grayscale.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16759,7 +16601,7 @@ PrimtiveGrayscaleFilter = (function(_super) {
 module.exports = PrimtiveGrayscaleFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],34:[function(require,module,exports){
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],32:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/bw.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16790,7 +16632,7 @@ BWFilter = (function(_super) {
 module.exports = BWFilter;
 
 
-},{"./primitives/grayscale.coffee":33,"__browserify_Buffer":3,"__browserify_process":1}],35:[function(require,module,exports){
+},{"./primitives/grayscale.coffee":31,"__browserify_Buffer":3,"__browserify_process":1}],33:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/contrast.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16848,7 +16690,7 @@ PrimitiveContrastFilter = (function(_super) {
 module.exports = PrimitiveContrastFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],36:[function(require,module,exports){
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],34:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/bwhard.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16887,7 +16729,7 @@ BWHardFilter = (function(_super) {
 module.exports = BWHardFilter;
 
 
-},{"./filter.coffee":9,"./primitives/contrast.coffee":35,"./primitives/grayscale.coffee":33,"__browserify_Buffer":3,"__browserify_process":1}],37:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/contrast.coffee":33,"./primitives/grayscale.coffee":31,"__browserify_Buffer":3,"__browserify_process":1}],35:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/lenin.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16930,7 +16772,7 @@ LeninFilter = (function(_super) {
 module.exports = LeninFilter;
 
 
-},{"./filter.coffee":9,"./primitives/desaturation.coffee":25,"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],38:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/desaturation.coffee":23,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],36:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/quozi.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16973,7 +16815,7 @@ QuoziFilter = (function(_super) {
 module.exports = QuoziFilter;
 
 
-},{"./filter.coffee":9,"./primitives/desaturation.coffee":25,"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],39:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/desaturation.coffee":23,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],37:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/pola669.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17020,7 +16862,7 @@ Pola669Filter = (function(_super) {
 module.exports = Pola669Filter;
 
 
-},{"./filter.coffee":9,"./primitives/contrast.coffee":35,"./primitives/saturation.coffee":18,"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],40:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/contrast.coffee":33,"./primitives/saturation.coffee":16,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],38:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/pola.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17067,7 +16909,7 @@ PolaFilter = (function(_super) {
 module.exports = PolaFilter;
 
 
-},{"./filter.coffee":9,"./primitives/contrast.coffee":35,"./primitives/saturation.coffee":18,"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],41:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/contrast.coffee":33,"./primitives/saturation.coffee":16,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],39:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/food.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17108,7 +16950,7 @@ FoodFilter = (function(_super) {
 module.exports = FoodFilter;
 
 
-},{"./filter.coffee":9,"./primitives/contrast.coffee":35,"./primitives/saturation.coffee":18,"__browserify_Buffer":3,"__browserify_process":1}],42:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/contrast.coffee":33,"./primitives/saturation.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],40:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/glam.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17153,7 +16995,7 @@ GlamFilter = (function(_super) {
 module.exports = GlamFilter;
 
 
-},{"./filter.coffee":9,"./primitives/contrast.coffee":35,"./primitives/grayscale.coffee":33,"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],43:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/contrast.coffee":33,"./primitives/grayscale.coffee":31,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],41:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/celsius.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17190,7 +17032,7 @@ CelsiusFilter = (function(_super) {
 module.exports = CelsiusFilter;
 
 
-},{"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],44:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],42:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/texas.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17227,7 +17069,7 @@ TexasFilter = (function(_super) {
 module.exports = TexasFilter;
 
 
-},{"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],45:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],43:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/glow.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17285,7 +17127,7 @@ PrimitiveGlowFilter = (function(_super) {
 module.exports = PrimitiveGlowFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],46:[function(require,module,exports){
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],44:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/morning.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17326,7 +17168,7 @@ MorningFilter = (function(_super) {
 module.exports = MorningFilter;
 
 
-},{"./filter.coffee":9,"./primitives/glow.coffee":45,"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],47:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/glow.coffee":43,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],45:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/lomo.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17365,7 +17207,7 @@ LomoFilter = (function(_super) {
 module.exports = LomoFilter;
 
 
-},{"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],48:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],46:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/gobblin.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17409,7 +17251,7 @@ PrimitiveGobblinFilter = (function(_super) {
 module.exports = PrimitiveGobblinFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],49:[function(require,module,exports){
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],47:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/gobblin.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17440,7 +17282,7 @@ GobblinFilter = (function(_super) {
 module.exports = GobblinFilter;
 
 
-},{"./primitives/gobblin.coffee":48,"__browserify_Buffer":3,"__browserify_process":1}],50:[function(require,module,exports){
+},{"./primitives/gobblin.coffee":46,"__browserify_Buffer":3,"__browserify_process":1}],48:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/mellow.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17477,7 +17319,7 @@ MellowFilter = (function(_super) {
 module.exports = MellowFilter;
 
 
-},{"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],51:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],49:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/sunny.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17522,7 +17364,7 @@ SunnyFilter = (function(_super) {
 module.exports = SunnyFilter;
 
 
-},{"./filter.coffee":9,"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],52:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],50:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/brightness.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17572,7 +17414,7 @@ PrimitiveBrightnessFilter = (function(_super) {
 module.exports = PrimitiveBrightnessFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],53:[function(require,module,exports){
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],51:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/a15.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17619,7 +17461,7 @@ A15Filter = (function(_super) {
 module.exports = A15Filter;
 
 
-},{"./filter.coffee":9,"./primitives/brightness.coffee":52,"./primitives/contrast.coffee":35,"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],54:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/brightness.coffee":50,"./primitives/contrast.coffee":33,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],52:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/semired.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17660,7 +17502,7 @@ SemiRedFilter = (function(_super) {
 module.exports = SemiRedFilter;
 
 
-},{"./filter.coffee":9,"./primitives/glow.coffee":45,"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],55:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/glow.coffee":43,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],53:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/filters.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17724,7 +17566,7 @@ UIControlsFilters = (function(_super) {
 module.exports = UIControlsFilters;
 
 
-},{"../../operations/filters/a15.coffee":53,"../../operations/filters/breeze.coffee":26,"../../operations/filters/bw.coffee":34,"../../operations/filters/bwhard.coffee":36,"../../operations/filters/celsius.coffee":43,"../../operations/filters/chest.coffee":28,"../../operations/filters/default.coffee":16,"../../operations/filters/fixie.coffee":30,"../../operations/filters/food.coffee":41,"../../operations/filters/fridge.coffee":24,"../../operations/filters/front.coffee":29,"../../operations/filters/glam.coffee":42,"../../operations/filters/gobblin.coffee":49,"../../operations/filters/k1.coffee":19,"../../operations/filters/k2.coffee":21,"../../operations/filters/k6.coffee":22,"../../operations/filters/kdynamic.coffee":23,"../../operations/filters/lenin.coffee":37,"../../operations/filters/lomo.coffee":47,"../../operations/filters/mellow.coffee":50,"../../operations/filters/morning.coffee":46,"../../operations/filters/orchid.coffee":27,"../../operations/filters/pola.coffee":40,"../../operations/filters/pola669.coffee":39,"../../operations/filters/quozi.coffee":38,"../../operations/filters/semired.coffee":54,"../../operations/filters/sunny.coffee":51,"../../operations/filters/texas.coffee":44,"../../operations/filters/x400.coffee":32,"../../utils.coffee":6,"./base/list.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],56:[function(require,module,exports){
+},{"../../operations/filters/a15.coffee":51,"../../operations/filters/breeze.coffee":24,"../../operations/filters/bw.coffee":32,"../../operations/filters/bwhard.coffee":34,"../../operations/filters/celsius.coffee":41,"../../operations/filters/chest.coffee":26,"../../operations/filters/default.coffee":14,"../../operations/filters/fixie.coffee":28,"../../operations/filters/food.coffee":39,"../../operations/filters/fridge.coffee":22,"../../operations/filters/front.coffee":27,"../../operations/filters/glam.coffee":40,"../../operations/filters/gobblin.coffee":47,"../../operations/filters/k1.coffee":17,"../../operations/filters/k2.coffee":19,"../../operations/filters/k6.coffee":20,"../../operations/filters/kdynamic.coffee":21,"../../operations/filters/lenin.coffee":35,"../../operations/filters/lomo.coffee":45,"../../operations/filters/mellow.coffee":48,"../../operations/filters/morning.coffee":44,"../../operations/filters/orchid.coffee":25,"../../operations/filters/pola.coffee":38,"../../operations/filters/pola669.coffee":37,"../../operations/filters/quozi.coffee":36,"../../operations/filters/semired.coffee":52,"../../operations/filters/sunny.coffee":49,"../../operations/filters/texas.coffee":42,"../../operations/filters/x400.coffee":30,"../../utils.coffee":6,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],54:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/math/vector2.coffee",__dirname="/math";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17896,7 +17738,7 @@ Vector2 = (function() {
 module.exports = Vector2;
 
 
-},{"__browserify_Buffer":3,"__browserify_process":1}],57:[function(require,module,exports){
+},{"__browserify_Buffer":3,"__browserify_process":1}],55:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/math/rect.coffee",__dirname="/math";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17985,7 +17827,7 @@ Rect = (function() {
 module.exports = Rect;
 
 
-},{"__browserify_Buffer":3,"__browserify_process":1}],58:[function(require,module,exports){
+},{"__browserify_Buffer":3,"__browserify_process":1}],56:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/draw_image.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -18058,7 +17900,7 @@ module.exports = DrawImageOperation = (function(_super) {
 })(Operation);
 
 
-},{"../math/rect.coffee":57,"../math/vector2.coffee":56,"../utils.coffee":6,"../vendor/queue.coffee":5,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],59:[function(require,module,exports){
+},{"../math/rect.coffee":55,"../math/vector2.coffee":54,"../utils.coffee":6,"../vendor/queue.coffee":5,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],57:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/stickers_control.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -18330,7 +18172,7 @@ UIControlsStickers = (function(_super) {
 module.exports = UIControlsStickers;
 
 
-},{"../../math/rect.coffee":57,"../../math/vector2.coffee":56,"../../operations/draw_image.coffee":58,"./base/list.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],60:[function(require,module,exports){
+},{"../../math/rect.coffee":55,"../../math/vector2.coffee":54,"../../operations/draw_image.coffee":56,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],58:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/orientation.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -18485,7 +18327,7 @@ OrientationOperation = (function(_super) {
 module.exports = OrientationOperation;
 
 
-},{"../utils.coffee":6,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],61:[function(require,module,exports){
+},{"../utils.coffee":6,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],59:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/orientation.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -18548,7 +18390,7 @@ UIControlsOrientation = (function(_super) {
 module.exports = UIControlsOrientation;
 
 
-},{"../../operations/orientation.coffee":60,"./base/list.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],62:[function(require,module,exports){
+},{"../../operations/orientation.coffee":58,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],60:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/focus/focus.coffee",__dirname="/operations/focus";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -18806,7 +18648,7 @@ Focus = (function(_super) {
 module.exports = Focus;
 
 
-},{"../../utils.coffee":6,"../operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],63:[function(require,module,exports){
+},{"../../utils.coffee":6,"../operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],61:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/focus/radial.coffee",__dirname="/operations/focus";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -18892,7 +18734,7 @@ RadialFocus = (function(_super) {
 module.exports = RadialFocus;
 
 
-},{"../../math/vector2.coffee":56,"./focus.coffee":62,"__browserify_Buffer":3,"__browserify_process":1}],64:[function(require,module,exports){
+},{"../../math/vector2.coffee":54,"./focus.coffee":60,"__browserify_Buffer":3,"__browserify_process":1}],62:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/focus/linear.coffee",__dirname="/operations/focus";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -18982,7 +18824,7 @@ LinearFocus = (function(_super) {
 module.exports = LinearFocus;
 
 
-},{"../../math/vector2.coffee":56,"./focus.coffee":62,"__browserify_Buffer":3,"__browserify_process":1}],65:[function(require,module,exports){
+},{"../../math/vector2.coffee":54,"./focus.coffee":60,"__browserify_Buffer":3,"__browserify_process":1}],63:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/focus.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -19321,7 +19163,7 @@ UIControlsFocus = (function(_super) {
 module.exports = UIControlsFocus;
 
 
-},{"../../math/vector2.coffee":56,"../../operations/focus/linear.coffee":64,"../../operations/focus/radial.coffee":63,"../../utils.coffee":6,"./base/list.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],66:[function(require,module,exports){
+},{"../../math/vector2.coffee":54,"../../operations/focus/linear.coffee":62,"../../operations/focus/radial.coffee":61,"../../utils.coffee":6,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],64:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/crop.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -19431,7 +19273,7 @@ CropOperation = (function(_super) {
 module.exports = CropOperation;
 
 
-},{"../math/vector2.coffee":56,"../utils.coffee":6,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],67:[function(require,module,exports){
+},{"../math/vector2.coffee":54,"../utils.coffee":6,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],65:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/crop.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -19893,7 +19735,7 @@ UIControlsCrop = (function(_super) {
 module.exports = UIControlsCrop;
 
 
-},{"../../math/rect.coffee":57,"../../math/vector2.coffee":56,"../../operations/crop.coffee":66,"./base/list.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],68:[function(require,module,exports){
+},{"../../math/rect.coffee":55,"../../math/vector2.coffee":54,"../../operations/crop.coffee":64,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],66:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/base/slider.coffee",__dirname="/ui/controls/base";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20023,7 +19865,7 @@ UIControlsBaseSlider = (function(_super) {
 module.exports = UIControlsBaseSlider;
 
 
-},{"./base.coffee":14,"__browserify_Buffer":3,"__browserify_process":1}],69:[function(require,module,exports){
+},{"./base.coffee":12,"__browserify_Buffer":3,"__browserify_process":1}],67:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/brightness.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20058,7 +19900,7 @@ UIControlsBrightness = (function(_super) {
 module.exports = UIControlsBrightness;
 
 
-},{"./base/slider.coffee":68,"__browserify_Buffer":3,"__browserify_process":1}],70:[function(require,module,exports){
+},{"./base/slider.coffee":66,"__browserify_Buffer":3,"__browserify_process":1}],68:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/brightness.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20115,7 +19957,7 @@ BrightnessOperation = (function(_super) {
 module.exports = BrightnessOperation;
 
 
-},{"./filters/filter.coffee":9,"./filters/primitives/brightness.coffee":52,"__browserify_Buffer":3,"__browserify_process":1}],71:[function(require,module,exports){
+},{"./filters/filter.coffee":9,"./filters/primitives/brightness.coffee":50,"__browserify_Buffer":3,"__browserify_process":1}],69:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/contrast.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20150,7 +19992,7 @@ UIControlsContrast = (function(_super) {
 module.exports = UIControlsContrast;
 
 
-},{"./base/slider.coffee":68,"__browserify_Buffer":3,"__browserify_process":1}],72:[function(require,module,exports){
+},{"./base/slider.coffee":66,"__browserify_Buffer":3,"__browserify_process":1}],70:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/contrast.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20207,7 +20049,7 @@ ContrastOperation = (function(_super) {
 module.exports = ContrastOperation;
 
 
-},{"./filters/filter.coffee":9,"./filters/primitives/contrast.coffee":35,"__browserify_Buffer":3,"__browserify_process":1}],73:[function(require,module,exports){
+},{"./filters/filter.coffee":9,"./filters/primitives/contrast.coffee":33,"__browserify_Buffer":3,"__browserify_process":1}],71:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/saturation.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20242,7 +20084,7 @@ UIControlsSaturation = (function(_super) {
 module.exports = UIControlsSaturation;
 
 
-},{"./base/slider.coffee":68,"__browserify_Buffer":3,"__browserify_process":1}],74:[function(require,module,exports){
+},{"./base/slider.coffee":66,"__browserify_Buffer":3,"__browserify_process":1}],72:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/saturation.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20299,7 +20141,7 @@ SaturationOperation = (function(_super) {
 module.exports = SaturationOperation;
 
 
-},{"./filters/filter.coffee":9,"./filters/primitives/saturation.coffee":18,"__browserify_Buffer":3,"__browserify_process":1}],75:[function(require,module,exports){
+},{"./filters/filter.coffee":9,"./filters/primitives/saturation.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],73:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/text.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20374,7 +20216,7 @@ FontOperation = (function(_super) {
 module.exports = FontOperation;
 
 
-},{"../math/rect.coffee":57,"../math/vector2.coffee":56,"../utils.coffee":6,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],76:[function(require,module,exports){
+},{"../math/rect.coffee":55,"../math/vector2.coffee":54,"../utils.coffee":6,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],74:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/frames.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20572,7 +20414,7 @@ FramesOperation = (function(_super) {
 module.exports = FramesOperation;
 
 
-},{"../math/rect.coffee":57,"../math/vector2.coffee":56,"../utils.coffee":6,"../vendor/queue.coffee":5,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],77:[function(require,module,exports){
+},{"../math/rect.coffee":55,"../math/vector2.coffee":54,"../utils.coffee":6,"../vendor/queue.coffee":5,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],75:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/frames.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20660,7 +20502,7 @@ UIControlsFrames = (function(_super) {
 module.exports = UIControlsFrames;
 
 
-},{"../../math/rect.coffee":57,"../../math/vector2.coffee":56,"../../operations/frames.coffee":76,"../../utils.coffee":6,"./base/list.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],13:[function(require,module,exports){
+},{"../../math/rect.coffee":55,"../../math/vector2.coffee":54,"../../operations/frames.coffee":74,"../../utils.coffee":6,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],76:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/overview.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20757,7 +20599,165 @@ UIControlsOverview = (function(_super) {
 module.exports = UIControlsOverview;
 
 
-},{"../../operations/brightness.coffee":70,"../../operations/contrast.coffee":72,"../../operations/crop.coffee":66,"../../operations/frames.coffee":76,"../../operations/saturation.coffee":74,"../../operations/text.coffee":75,"./base/list.coffee":15,"./brightness.coffee":69,"./contrast.coffee":71,"./crop.coffee":67,"./filters.coffee":55,"./focus.coffee":65,"./frames.coffee":77,"./orientation.coffee":61,"./saturation.coffee":73,"./stickers_control.coffee":59,"./text.coffee":78,"__browserify_Buffer":3,"__browserify_process":1}],79:[function(require,module,exports){
+},{"../../operations/brightness.coffee":68,"../../operations/contrast.coffee":70,"../../operations/crop.coffee":64,"../../operations/frames.coffee":74,"../../operations/saturation.coffee":72,"../../operations/text.coffee":73,"./base/list.coffee":13,"./brightness.coffee":67,"./contrast.coffee":69,"./crop.coffee":65,"./filters.coffee":53,"./focus.coffee":63,"./frames.coffee":75,"./orientation.coffee":59,"./saturation.coffee":71,"./stickers_control.coffee":57,"./text.coffee":77,"__browserify_Buffer":3,"__browserify_process":1}],78:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls.coffee",__dirname="/ui";/*
+  ImglyKit
+  Copyright (c) 2013-2014 img.ly
+*/
+
+var EventEmitter, Overview, UIControls,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Overview = require("./controls/overview.coffee");
+
+EventEmitter = require("events").EventEmitter;
+
+UIControls = (function(_super) {
+  __extends(UIControls, _super);
+
+  /*
+    @param {imglyUtil} app
+    @param {imglyUtil.UI} ui
+  */
+
+
+  function UIControls(app, ui) {
+    this.app = app;
+    this.ui = ui;
+    this.container = this.app.getContainer();
+    this.init();
+  }
+
+  /*
+    @returns {Integer} Height of the controls container
+  */
+
+
+  UIControls.prototype.getHeight = function() {
+    return this.controlsContainer.height();
+  };
+
+  /*
+    @returns {jQuery.Object} The controls container
+  */
+
+
+  UIControls.prototype.getContainer = function() {
+    return this.controlsContainer;
+  };
+
+  /*
+    @returns {ImglyKit.UI.Controls.Base}
+  */
+
+
+  UIControls.prototype.getCurrentControls = function() {
+    return this.currentControls;
+  };
+
+  /*
+    Initializes the container
+  */
+
+
+  UIControls.prototype.init = function() {
+    this.controlsContainer = $("<div>").addClass(ImglyKit.classPrefix + "controls-container").appendTo(this.container);
+    return this.initOverview();
+  };
+
+  /*
+    Initialize the overview
+  */
+
+
+  UIControls.prototype.initOverview = function() {
+    this.currentControls = this.overview = new Overview(this.app, this.ui, this);
+    this.attachEvents(this.currentControls);
+    this.overview.init();
+    if (this.app.options.initialControls == null) {
+      return this.overview.show();
+    }
+  };
+
+  /*
+    Attach select events
+  */
+
+
+  UIControls.prototype.attachEvents = function(controls) {
+    var _this = this;
+    controls.on("select", function(option) {
+      if (option.controls != null) {
+        _this.switchToControls(option.controls, controls);
+      }
+      if (option.operation != null) {
+        return _this.emit("preview_operation", new option.operation(_this.app, option.options));
+      }
+    });
+    controls.on("back", function() {
+      return _this.emit("back");
+    });
+    controls.on("done", function() {
+      return _this.emit("done");
+    });
+    return controls.on("renderPreview", function() {
+      return _this.app.getPhotoProcessor().renderPreview();
+    });
+  };
+
+  /*
+    Switch to another controls instance
+  */
+
+
+  UIControls.prototype.switchToControls = function(controlsClass, oldControls, options) {
+    var canvasControlsContainer, key, value,
+      _this = this;
+    if (options == null) {
+      options = {};
+    }
+    this.currentControls = new controlsClass(this.app, this.ui, this);
+    for (key in options) {
+      value = options[key];
+      this.currentControls.options[key] = value;
+    }
+    this.attachEvents(this.currentControls);
+    if (this.currentControls.hasCanvasControls) {
+      canvasControlsContainer = this.ui.getCanvas().getControlsContainer();
+      this.currentControls.setupCanvasControls(canvasControlsContainer);
+      canvasControlsContainer.fadeIn("slow");
+    }
+    this.currentControls.init();
+    return oldControls.hide(function() {
+      return _this.currentControls.show();
+    });
+  };
+
+  /*
+    Returns to the default view
+  */
+
+
+  UIControls.prototype.reset = function() {
+    var _ref,
+      _this = this;
+    this.overview.reset();
+    this.ui.getCanvas().getControlsContainer().hide().html("");
+    return (_ref = this.currentControls) != null ? _ref.hide(function() {
+      _this.currentControls.remove();
+      return _this.overview.show();
+    }) : void 0;
+  };
+
+  return UIControls;
+
+})(EventEmitter);
+
+module.exports = UIControls;
+
+
+},{"./controls/overview.coffee":76,"__browserify_Buffer":3,"__browserify_process":1,"events":7}],79:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/canvas.coffee",__dirname="/ui";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -21021,7 +21021,7 @@ UI = (function(_super) {
 module.exports = UI;
 
 
-},{"./canvas.coffee":79,"./controls.coffee":12,"__browserify_Buffer":3,"__browserify_process":1,"events":7}],81:[function(require,module,exports){
+},{"./canvas.coffee":79,"./controls.coffee":78,"__browserify_Buffer":3,"__browserify_process":1,"events":7}],81:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/imgly.coffee",__dirname="/";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -21273,7 +21273,7 @@ ImglyKit = (function() {
 window.ImglyKit = ImglyKit;
 
 
-},{"./photoprocessor.coffee":11,"./ui/controls/crop.coffee":67,"./ui/ui.coffee":80,"./utils.coffee":6,"__browserify_Buffer":3,"__browserify_process":1}],78:[function(require,module,exports){
+},{"./photoprocessor.coffee":11,"./ui/controls/crop.coffee":65,"./ui/ui.coffee":80,"./utils.coffee":6,"__browserify_Buffer":3,"__browserify_process":1}],77:[function(require,module,exports){
 /*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -21383,6 +21383,12 @@ UIControlsText = (function(_super) {
     defaultForegroundColor = '#ffffff';
     this.colorControl.spectrum({
       color: defaultForegroundColor,
+      showAlpha: true,
+      showPalette: true,
+      showSelectionPalette: true,
+      palette: [],
+      showButtons: false,
+      localStorageKey: "imgly.palette",
       move: function(color) {
         var colorHexString;
         colorHexString = color.toHexString();
@@ -21592,5 +21598,5 @@ UIControlsText = (function(_super) {
 module.exports = UIControlsText;
 
 
-},{"../../math/rect.coffee":57,"../../math/vector2.coffee":56,"../../operations/text.coffee":75,"./base/list.coffee":15}]},{},[81])
+},{"../../math/rect.coffee":55,"../../math/vector2.coffee":54,"../../operations/text.coffee":73,"./base/list.coffee":13}]},{},[81])
 ;

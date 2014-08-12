@@ -80,6 +80,12 @@ class UIControlsText extends List
     defaultForegroundColor = '#ffffff'
     @colorControl.spectrum(
       color: defaultForegroundColor
+      showAlpha: true
+      showPalette: true
+      showSelectionPalette: true
+      palette: [ ]
+      showButtons: false
+      localStorageKey: "imgly.palette" 
       move: (color) =>
         colorHexString = color.toHexString()
         @colorSelect.css(backgroundColor: colorHexString)
