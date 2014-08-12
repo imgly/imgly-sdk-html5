@@ -76,19 +76,17 @@ class UIControlsText extends List
   ###
     Handle the colors control
   ###
-  handleColorsControl: ->
-    defaultColor = 'ffffff'
-    @colorControl.ColorPicker(
-      'onChange': (hsbColor, hexColor) =>
-        color = '#' + hexColor
-        @colorSelect.css(backgroundColor: color)
-        @operationOptions.color = color
+  handleColorsControl: ->  
+    defaultForegroundColor = '#ffffff'
+    @colorControl.spectrum(
+      color: defaultForegroundColor
+      move: (color) =>
+        colorHexString = color.toHexString()
+        @colorSelect.css(backgroundColor: colorHexString)
+        @operationOptions.color = colorHexString
         @operation.setOptions @operationOptions
-        @console.log color
-      'color': defaultColor
-    )
-    
-    @colorSelect.css(backgroundColor: '#' + defaultColor)
+    )    
+    @colorSelect.css(backgroundColor: defaultForegroundColor)
     return
 
   ###

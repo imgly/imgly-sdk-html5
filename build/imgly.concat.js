@@ -10512,490 +10512,8 @@ window.Modernizr = (function( window, document, undefined ) {
 })(this, this.document);
 ;
 
-/**
- *
- * Color picker
- * Author: Stefan Petre www.eyecon.ro
- * 
- * Dual licensed under the MIT and GPL licenses
- * 
- */
-(function ($) {
-	var ColorPicker = function () {
-		var
-			ids = {},
-			inAction,
-			charMin = 65,
-			visible,
-			tpl = '<div class="colorpicker"><div class="colorpicker_color"><div><div></div></div></div><div class="colorpicker_hue"><div></div></div><div class="colorpicker_new_color"></div><div class="colorpicker_current_color"></div><div class="colorpicker_hex"><input type="text" maxlength="6" size="6" /></div><div class="colorpicker_rgb_r colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_rgb_g colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_rgb_b colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_hsb_h colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_hsb_s colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_hsb_b colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_submit"></div></div>',
-			defaults = {
-				eventName: 'click',
-				onShow: function () {},
-				onBeforeShow: function(){},
-				onHide: function () {},
-				onChange: function () {},
-				onSubmit: function () {},
-				color: 'ff0000',
-				livePreview: true,
-				flat: false
-			},
-			fillRGBFields = function  (hsb, cal) {
-				var rgb = HSBToRGB(hsb);
-				$(cal).data('colorpicker').fields
-					.eq(1).val(rgb.r).end()
-					.eq(2).val(rgb.g).end()
-					.eq(3).val(rgb.b).end();
-			},
-			fillHSBFields = function  (hsb, cal) {
-				$(cal).data('colorpicker').fields
-					.eq(4).val(hsb.h).end()
-					.eq(5).val(hsb.s).end()
-					.eq(6).val(hsb.b).end();
-			},
-			fillHexFields = function (hsb, cal) {
-				$(cal).data('colorpicker').fields
-					.eq(0).val(HSBToHex(hsb)).end();
-			},
-			setSelector = function (hsb, cal) {
-				$(cal).data('colorpicker').selector.css('backgroundColor', '#' + HSBToHex({h: hsb.h, s: 100, b: 100}));
-				$(cal).data('colorpicker').selectorIndic.css({
-					left: parseInt(150 * hsb.s/100, 10),
-					top: parseInt(150 * (100-hsb.b)/100, 10)
-				});
-			},
-			setHue = function (hsb, cal) {
-				$(cal).data('colorpicker').hue.css('top', parseInt(150 - 150 * hsb.h/360, 10));
-			},
-			setCurrentColor = function (hsb, cal) {
-				$(cal).data('colorpicker').currentColor.css('backgroundColor', '#' + HSBToHex(hsb));
-			},
-			setNewColor = function (hsb, cal) {
-				$(cal).data('colorpicker').newColor.css('backgroundColor', '#' + HSBToHex(hsb));
-			},
-			keyDown = function (ev) {
-				var pressedKey = ev.charCode || ev.keyCode || -1;
-				if ((pressedKey > charMin && pressedKey <= 90) || pressedKey == 32) {
-					return false;
-				}
-				var cal = $(this).parent().parent();
-				if (cal.data('colorpicker').livePreview === true) {
-					change.apply(this);
-				}
-			},
-			change = function (ev) {
-				var cal = $(this).parent().parent(), col;
-				if (this.parentNode.className.indexOf('_hex') > 0) {
-					cal.data('colorpicker').color = col = HexToHSB(fixHex(this.value));
-				} else if (this.parentNode.className.indexOf('_hsb') > 0) {
-					cal.data('colorpicker').color = col = fixHSB({
-						h: parseInt(cal.data('colorpicker').fields.eq(4).val(), 10),
-						s: parseInt(cal.data('colorpicker').fields.eq(5).val(), 10),
-						b: parseInt(cal.data('colorpicker').fields.eq(6).val(), 10)
-					});
-				} else {
-					cal.data('colorpicker').color = col = RGBToHSB(fixRGB({
-						r: parseInt(cal.data('colorpicker').fields.eq(1).val(), 10),
-						g: parseInt(cal.data('colorpicker').fields.eq(2).val(), 10),
-						b: parseInt(cal.data('colorpicker').fields.eq(3).val(), 10)
-					}));
-				}
-				if (ev) {
-					fillRGBFields(col, cal.get(0));
-					fillHexFields(col, cal.get(0));
-					fillHSBFields(col, cal.get(0));
-				}
-				setSelector(col, cal.get(0));
-				setHue(col, cal.get(0));
-				setNewColor(col, cal.get(0));
-				cal.data('colorpicker').onChange.apply(cal, [col, HSBToHex(col), HSBToRGB(col)]);
-			},
-			blur = function (ev) {
-				var cal = $(this).parent().parent();
-				cal.data('colorpicker').fields.parent().removeClass('colorpicker_focus');
-			},
-			focus = function () {
-				charMin = this.parentNode.className.indexOf('_hex') > 0 ? 70 : 65;
-				$(this).parent().parent().data('colorpicker').fields.parent().removeClass('colorpicker_focus');
-				$(this).parent().addClass('colorpicker_focus');
-			},
-			downIncrement = function (ev) {
-				var field = $(this).parent().find('input').focus();
-				var current = {
-					el: $(this).parent().addClass('colorpicker_slider'),
-					max: this.parentNode.className.indexOf('_hsb_h') > 0 ? 360 : (this.parentNode.className.indexOf('_hsb') > 0 ? 100 : 255),
-					y: ev.pageY,
-					field: field,
-					val: parseInt(field.val(), 10),
-					preview: $(this).parent().parent().data('colorpicker').livePreview					
-				};
-				$(document).bind('mouseup', current, upIncrement);
-				$(document).bind('mousemove', current, moveIncrement);
-			},
-			moveIncrement = function (ev) {
-				ev.data.field.val(Math.max(0, Math.min(ev.data.max, parseInt(ev.data.val + ev.pageY - ev.data.y, 10))));
-				if (ev.data.preview) {
-					change.apply(ev.data.field.get(0), [true]);
-				}
-				return false;
-			},
-			upIncrement = function (ev) {
-				change.apply(ev.data.field.get(0), [true]);
-				ev.data.el.removeClass('colorpicker_slider').find('input').focus();
-				$(document).unbind('mouseup', upIncrement);
-				$(document).unbind('mousemove', moveIncrement);
-				return false;
-			},
-			downHue = function (ev) {
-				var current = {
-					cal: $(this).parent(),
-					y: $(this).offset().top
-				};
-				current.preview = current.cal.data('colorpicker').livePreview;
-				$(document).bind('mouseup', current, upHue);
-				$(document).bind('mousemove', current, moveHue);
-			},
-			moveHue = function (ev) {
-				change.apply(
-					ev.data.cal.data('colorpicker')
-						.fields
-						.eq(4)
-						.val(parseInt(360*(150 - Math.max(0,Math.min(150,(ev.pageY - ev.data.y))))/150, 10))
-						.get(0),
-					[ev.data.preview]
-				);
-				return false;
-			},
-			upHue = function (ev) {
-				fillRGBFields(ev.data.cal.data('colorpicker').color, ev.data.cal.get(0));
-				fillHexFields(ev.data.cal.data('colorpicker').color, ev.data.cal.get(0));
-				$(document).unbind('mouseup', upHue);
-				$(document).unbind('mousemove', moveHue);
-				return false;
-			},
-			downSelector = function (ev) {
-				var current = {
-					cal: $(this).parent(),
-					pos: $(this).offset()
-				};
-				current.preview = current.cal.data('colorpicker').livePreview;
-				$(document).bind('mouseup', current, upSelector);
-				$(document).bind('mousemove', current, moveSelector);
-			},
-			moveSelector = function (ev) {
-				change.apply(
-					ev.data.cal.data('colorpicker')
-						.fields
-						.eq(6)
-						.val(parseInt(100*(150 - Math.max(0,Math.min(150,(ev.pageY - ev.data.pos.top))))/150, 10))
-						.end()
-						.eq(5)
-						.val(parseInt(100*(Math.max(0,Math.min(150,(ev.pageX - ev.data.pos.left))))/150, 10))
-						.get(0),
-					[ev.data.preview]
-				);
-				return false;
-			},
-			upSelector = function (ev) {
-				fillRGBFields(ev.data.cal.data('colorpicker').color, ev.data.cal.get(0));
-				fillHexFields(ev.data.cal.data('colorpicker').color, ev.data.cal.get(0));
-				$(document).unbind('mouseup', upSelector);
-				$(document).unbind('mousemove', moveSelector);
-				return false;
-			},
-			enterSubmit = function (ev) {
-				$(this).addClass('colorpicker_focus');
-			},
-			leaveSubmit = function (ev) {
-				$(this).removeClass('colorpicker_focus');
-			},
-			clickSubmit = function (ev) {
-				var cal = $(this).parent();
-				var col = cal.data('colorpicker').color;
-				cal.data('colorpicker').origColor = col;
-				setCurrentColor(col, cal.get(0));
-				cal.data('colorpicker').onSubmit(col, HSBToHex(col), HSBToRGB(col), cal.data('colorpicker').el);
-			},
-			show = function (ev) {
-				var cal = $('#' + $(this).data('colorpickerId'));
-				cal.data('colorpicker').onBeforeShow.apply(this, [cal.get(0)]);
-				var pos = $(this).offset();
-				var viewPort = getViewport();
-				var top = pos.top + this.offsetHeight;
-				var left = pos.left;
-				if (top + 176 > viewPort.t + viewPort.h) {
-					top -= this.offsetHeight + 176;
-				}
-				if (left + 356 > viewPort.l + viewPort.w) {
-					left -= 356;
-				}
-				cal.css({left: left + 'px', top: top + 'px'});
-				if (cal.data('colorpicker').onShow.apply(this, [cal.get(0)]) != false) {
-					cal.show();
-				}
-				$(document).bind('mousedown', {cal: cal}, hide);
-				return false;
-			},
-			hide = function (ev) {
-				if (!isChildOf(ev.data.cal.get(0), ev.target, ev.data.cal.get(0))) {
-					if (ev.data.cal.data('colorpicker').onHide.apply(this, [ev.data.cal.get(0)]) != false) {
-						ev.data.cal.hide();
-					}
-					$(document).unbind('mousedown', hide);
-				}
-			},
-			isChildOf = function(parentEl, el, container) {
-				if (parentEl == el) {
-					return true;
-				}
-				if (parentEl.contains) {
-					return parentEl.contains(el);
-				}
-				if ( parentEl.compareDocumentPosition ) {
-					return !!(parentEl.compareDocumentPosition(el) & 16);
-				}
-				var prEl = el.parentNode;
-				while(prEl && prEl != container) {
-					if (prEl == parentEl)
-						return true;
-					prEl = prEl.parentNode;
-				}
-				return false;
-			},
-			getViewport = function () {
-				var m = document.compatMode == 'CSS1Compat';
-				return {
-					l : window.pageXOffset || (m ? document.documentElement.scrollLeft : document.body.scrollLeft),
-					t : window.pageYOffset || (m ? document.documentElement.scrollTop : document.body.scrollTop),
-					w : window.innerWidth || (m ? document.documentElement.clientWidth : document.body.clientWidth),
-					h : window.innerHeight || (m ? document.documentElement.clientHeight : document.body.clientHeight)
-				};
-			},
-			fixHSB = function (hsb) {
-				return {
-					h: Math.min(360, Math.max(0, hsb.h)),
-					s: Math.min(100, Math.max(0, hsb.s)),
-					b: Math.min(100, Math.max(0, hsb.b))
-				};
-			}, 
-			fixRGB = function (rgb) {
-				return {
-					r: Math.min(255, Math.max(0, rgb.r)),
-					g: Math.min(255, Math.max(0, rgb.g)),
-					b: Math.min(255, Math.max(0, rgb.b))
-				};
-			},
-			fixHex = function (hex) {
-				var len = 6 - hex.length;
-				if (len > 0) {
-					var o = [];
-					for (var i=0; i<len; i++) {
-						o.push('0');
-					}
-					o.push(hex);
-					hex = o.join('');
-				}
-				return hex;
-			}, 
-			HexToRGB = function (hex) {
-				var hex = parseInt(((hex.indexOf('#') > -1) ? hex.substring(1) : hex), 16);
-				return {r: hex >> 16, g: (hex & 0x00FF00) >> 8, b: (hex & 0x0000FF)};
-			},
-			HexToHSB = function (hex) {
-				return RGBToHSB(HexToRGB(hex));
-			},
-			RGBToHSB = function (rgb) {
-				var hsb = {
-					h: 0,
-					s: 0,
-					b: 0
-				};
-				var min = Math.min(rgb.r, rgb.g, rgb.b);
-				var max = Math.max(rgb.r, rgb.g, rgb.b);
-				var delta = max - min;
-				hsb.b = max;
-				if (max != 0) {
-					
-				}
-				hsb.s = max != 0 ? 255 * delta / max : 0;
-				if (hsb.s != 0) {
-					if (rgb.r == max) {
-						hsb.h = (rgb.g - rgb.b) / delta;
-					} else if (rgb.g == max) {
-						hsb.h = 2 + (rgb.b - rgb.r) / delta;
-					} else {
-						hsb.h = 4 + (rgb.r - rgb.g) / delta;
-					}
-				} else {
-					hsb.h = -1;
-				}
-				hsb.h *= 60;
-				if (hsb.h < 0) {
-					hsb.h += 360;
-				}
-				hsb.s *= 100/255;
-				hsb.b *= 100/255;
-				return hsb;
-			},
-			HSBToRGB = function (hsb) {
-				var rgb = {};
-				var h = Math.round(hsb.h);
-				var s = Math.round(hsb.s*255/100);
-				var v = Math.round(hsb.b*255/100);
-				if(s == 0) {
-					rgb.r = rgb.g = rgb.b = v;
-				} else {
-					var t1 = v;
-					var t2 = (255-s)*v/255;
-					var t3 = (t1-t2)*(h%60)/60;
-					if(h==360) h = 0;
-					if(h<60) {rgb.r=t1;	rgb.b=t2; rgb.g=t2+t3}
-					else if(h<120) {rgb.g=t1; rgb.b=t2;	rgb.r=t1-t3}
-					else if(h<180) {rgb.g=t1; rgb.r=t2;	rgb.b=t2+t3}
-					else if(h<240) {rgb.b=t1; rgb.r=t2;	rgb.g=t1-t3}
-					else if(h<300) {rgb.b=t1; rgb.g=t2;	rgb.r=t2+t3}
-					else if(h<360) {rgb.r=t1; rgb.g=t2;	rgb.b=t1-t3}
-					else {rgb.r=0; rgb.g=0;	rgb.b=0}
-				}
-				return {r:Math.round(rgb.r), g:Math.round(rgb.g), b:Math.round(rgb.b)};
-			},
-			RGBToHex = function (rgb) {
-				var hex = [
-					rgb.r.toString(16),
-					rgb.g.toString(16),
-					rgb.b.toString(16)
-				];
-				$.each(hex, function (nr, val) {
-					if (val.length == 1) {
-						hex[nr] = '0' + val;
-					}
-				});
-				return hex.join('');
-			},
-			HSBToHex = function (hsb) {
-				return RGBToHex(HSBToRGB(hsb));
-			},
-			restoreOriginal = function () {
-				var cal = $(this).parent();
-				var col = cal.data('colorpicker').origColor;
-				cal.data('colorpicker').color = col;
-				fillRGBFields(col, cal.get(0));
-				fillHexFields(col, cal.get(0));
-				fillHSBFields(col, cal.get(0));
-				setSelector(col, cal.get(0));
-				setHue(col, cal.get(0));
-				setNewColor(col, cal.get(0));
-			};
-		return {
-			init: function (opt) {
-				opt = $.extend({}, defaults, opt||{});
-				if (typeof opt.color == 'string') {
-					opt.color = HexToHSB(opt.color);
-				} else if (opt.color.r != undefined && opt.color.g != undefined && opt.color.b != undefined) {
-					opt.color = RGBToHSB(opt.color);
-				} else if (opt.color.h != undefined && opt.color.s != undefined && opt.color.b != undefined) {
-					opt.color = fixHSB(opt.color);
-				} else {
-					return this;
-				}
-				return this.each(function () {
-					if (!$(this).data('colorpickerId')) {
-						var options = $.extend({}, opt);
-						options.origColor = opt.color;
-						var id = 'collorpicker_' + parseInt(Math.random() * 1000);
-						$(this).data('colorpickerId', id);
-						var cal = $(tpl).attr('id', id);
-						if (options.flat) {
-							cal.appendTo(this).show();
-						} else {
-							cal.appendTo(document.body);
-						}
-						options.fields = cal
-											.find('input')
-												.bind('keyup', keyDown)
-												.bind('change', change)
-												.bind('blur', blur)
-												.bind('focus', focus);
-						cal
-							.find('span').bind('mousedown', downIncrement).end()
-							.find('>div.colorpicker_current_color').bind('click', restoreOriginal);
-						options.selector = cal.find('div.colorpicker_color').bind('mousedown', downSelector);
-						options.selectorIndic = options.selector.find('div div');
-						options.el = this;
-						options.hue = cal.find('div.colorpicker_hue div');
-						cal.find('div.colorpicker_hue').bind('mousedown', downHue);
-						options.newColor = cal.find('div.colorpicker_new_color');
-						options.currentColor = cal.find('div.colorpicker_current_color');
-						cal.data('colorpicker', options);
-						cal.find('div.colorpicker_submit')
-							.bind('mouseenter', enterSubmit)
-							.bind('mouseleave', leaveSubmit)
-							.bind('click', clickSubmit);
-						fillRGBFields(options.color, cal.get(0));
-						fillHSBFields(options.color, cal.get(0));
-						fillHexFields(options.color, cal.get(0));
-						setHue(options.color, cal.get(0));
-						setSelector(options.color, cal.get(0));
-						setCurrentColor(options.color, cal.get(0));
-						setNewColor(options.color, cal.get(0));
-						if (options.flat) {
-							cal.css({
-								position: 'relative',
-								display: 'block'
-							});
-						} else {
-							$(this).bind(options.eventName, show);
-						}
-					}
-				});
-			},
-			showPicker: function() {
-				return this.each( function () {
-					if ($(this).data('colorpickerId')) {
-						show.apply(this);
-					}
-				});
-			},
-			hidePicker: function() {
-				return this.each( function () {
-					if ($(this).data('colorpickerId')) {
-						$('#' + $(this).data('colorpickerId')).hide();
-					}
-				});
-			},
-			setColor: function(col) {
-				if (typeof col == 'string') {
-					col = HexToHSB(col);
-				} else if (col.r != undefined && col.g != undefined && col.b != undefined) {
-					col = RGBToHSB(col);
-				} else if (col.h != undefined && col.s != undefined && col.b != undefined) {
-					col = fixHSB(col);
-				} else {
-					return this;
-				}
-				return this.each(function(){
-					if ($(this).data('colorpickerId')) {
-						var cal = $('#' + $(this).data('colorpickerId'));
-						cal.data('colorpicker').color = col;
-						cal.data('colorpicker').origColor = col;
-						fillRGBFields(col, cal.get(0));
-						fillHSBFields(col, cal.get(0));
-						fillHexFields(col, cal.get(0));
-						setHue(col, cal.get(0));
-						setSelector(col, cal.get(0));
-						setCurrentColor(col, cal.get(0));
-						setNewColor(col, cal.get(0));
-					}
-				});
-			}
-		};
-	}();
-	$.fn.extend({
-		ColorPicker: ColorPicker.init,
-		ColorPickerHide: ColorPicker.hidePicker,
-		ColorPickerShow: ColorPicker.showPicker,
-		ColorPickerSetColor: ColorPicker.setColor
-	});
-})(jQuery)
+!function(window,$,undefined){"use strict";function paletteTemplate(p,color,className,opts){for(var html=[],i=0;i<p.length;i++){var current=p[i];if(current){var tiny=tinycolor(current),c=tiny.toHsl().l<.5?"sp-thumb-el sp-thumb-dark":"sp-thumb-el sp-thumb-light";c+=tinycolor.equals(color,current)?" sp-thumb-active":"";var formattedString=tiny.toString(opts.preferredFormat||"rgb"),swatchStyle=rgbaSupport?"background-color:"+tiny.toRgbString():"filter:"+tiny.toFilter();html.push('<span title="'+formattedString+'" data-color="'+tiny.toRgbString()+'" class="'+c+'"><span class="sp-thumb-inner" style="'+swatchStyle+';" /></span>')}else{var cls="sp-clear-display";html.push($("<div />").append($('<span data-color="" style="background-color:transparent;" class="'+cls+'"></span>').attr("title",opts.noColorSelectedText)).html())}}return"<div class='sp-cf "+className+"'>"+html.join("")+"</div>"}function hideAll(){for(var i=0;i<spectrums.length;i++)spectrums[i]&&spectrums[i].hide()}function instanceOptions(o,callbackContext){var opts=$.extend({},defaultOpts,o);return opts.callbacks={move:bind(opts.move,callbackContext),change:bind(opts.change,callbackContext),show:bind(opts.show,callbackContext),hide:bind(opts.hide,callbackContext),beforeShow:bind(opts.beforeShow,callbackContext)},opts}function spectrum(element,o){function applyOptions(){if(opts.showPaletteOnly&&(opts.showPalette=!0),toggleButton.text(opts.showPaletteOnly?opts.togglePaletteMoreText:opts.togglePaletteLessText),opts.palette){palette=opts.palette.slice(0),paletteArray=$.isArray(palette[0])?palette:[palette],paletteLookup={};for(var i=0;i<paletteArray.length;i++)for(var j=0;j<paletteArray[i].length;j++){var rgb=tinycolor(paletteArray[i][j]).toRgbString();paletteLookup[rgb]=!0}}container.toggleClass("sp-flat",flat),container.toggleClass("sp-input-disabled",!opts.showInput),container.toggleClass("sp-alpha-enabled",opts.showAlpha),container.toggleClass("sp-clear-enabled",allowEmpty),container.toggleClass("sp-buttons-disabled",!opts.showButtons),container.toggleClass("sp-palette-buttons-disabled",!opts.togglePaletteOnly),container.toggleClass("sp-palette-disabled",!opts.showPalette),container.toggleClass("sp-palette-only",opts.showPaletteOnly),container.toggleClass("sp-initial-disabled",!opts.showInitial),container.addClass(opts.className).addClass(opts.containerClassName),reflow()}function initialize(){function paletteElementClick(e){return e.data&&e.data.ignore?(set($(e.target).closest(".sp-thumb-el").data("color")),move()):(set($(e.target).closest(".sp-thumb-el").data("color")),move(),updateOriginalInput(!0),opts.hideAfterPaletteSelect&&hide()),!1}if(IE&&container.find("*:not(input)").attr("unselectable","on"),applyOptions(),shouldReplace&&boundElement.after(replacer).hide(),allowEmpty||clearButton.hide(),flat)boundElement.after(container).hide();else{var appendTo="parent"===opts.appendTo?boundElement.parent():$(opts.appendTo);1!==appendTo.length&&(appendTo=$("body")),appendTo.append(container)}updateSelectionPaletteFromStorage(),offsetElement.bind("click.spectrum touchstart.spectrum",function(e){disabled||toggle(),e.stopPropagation(),$(e.target).is("input")||e.preventDefault()}),(boundElement.is(":disabled")||opts.disabled===!0)&&disable(),container.click(stopPropagation),textInput.change(setFromTextInput),textInput.bind("paste",function(){setTimeout(setFromTextInput,1)}),textInput.keydown(function(e){13==e.keyCode&&setFromTextInput()}),cancelButton.text(opts.cancelText),cancelButton.bind("click.spectrum",function(e){e.stopPropagation(),e.preventDefault(),hide("cancel")}),clearButton.attr("title",opts.clearText),clearButton.bind("click.spectrum",function(e){e.stopPropagation(),e.preventDefault(),isEmpty=!0,move(),flat&&updateOriginalInput(!0)}),chooseButton.text(opts.chooseText),chooseButton.bind("click.spectrum",function(e){e.stopPropagation(),e.preventDefault(),isValid()&&(updateOriginalInput(!0),hide())}),toggleButton.text(opts.showPaletteOnly?opts.togglePaletteMoreText:opts.togglePaletteLessText),toggleButton.bind("click.spectrum",function(e){e.stopPropagation(),e.preventDefault(),opts.showPaletteOnly=!opts.showPaletteOnly,opts.showPaletteOnly||flat||container.css("left","-="+(pickerContainer.outerWidth(!0)+5)),applyOptions()}),draggable(alphaSlider,function(dragX,dragY,e){currentAlpha=dragX/alphaWidth,isEmpty=!1,e.shiftKey&&(currentAlpha=Math.round(10*currentAlpha)/10),move()},dragStart,dragStop),draggable(slider,function(dragX,dragY){currentHue=parseFloat(dragY/slideHeight),isEmpty=!1,opts.showAlpha||(currentAlpha=1),move()},dragStart,dragStop),draggable(dragger,function(dragX,dragY,e){if(e.shiftKey){if(!shiftMovementDirection){var oldDragX=currentSaturation*dragWidth,oldDragY=dragHeight-currentValue*dragHeight,furtherFromX=Math.abs(dragX-oldDragX)>Math.abs(dragY-oldDragY);shiftMovementDirection=furtherFromX?"x":"y"}}else shiftMovementDirection=null;var setSaturation=!shiftMovementDirection||"x"===shiftMovementDirection,setValue=!shiftMovementDirection||"y"===shiftMovementDirection;setSaturation&&(currentSaturation=parseFloat(dragX/dragWidth)),setValue&&(currentValue=parseFloat((dragHeight-dragY)/dragHeight)),isEmpty=!1,opts.showAlpha||(currentAlpha=1),move()},dragStart,dragStop),initialColor?(set(initialColor),updateUI(),currentPreferredFormat=preferredFormat||tinycolor(initialColor).format,addColorToSelectionPalette(initialColor)):updateUI(),flat&&show();var paletteEvent=IE?"mousedown.spectrum":"click.spectrum touchstart.spectrum";paletteContainer.delegate(".sp-thumb-el",paletteEvent,paletteElementClick),initialColorContainer.delegate(".sp-thumb-el:nth-child(1)",paletteEvent,{ignore:!0},paletteElementClick)}function updateSelectionPaletteFromStorage(){if(localStorageKey&&window.localStorage){try{var oldPalette=window.localStorage[localStorageKey].split(",#");oldPalette.length>1&&(delete window.localStorage[localStorageKey],$.each(oldPalette,function(i,c){addColorToSelectionPalette(c)}))}catch(e){}try{selectionPalette=window.localStorage[localStorageKey].split(";")}catch(e){}}}function addColorToSelectionPalette(color){if(showSelectionPalette){var rgb=tinycolor(color).toRgbString();if(!paletteLookup[rgb]&&-1===$.inArray(rgb,selectionPalette))for(selectionPalette.push(rgb);selectionPalette.length>maxSelectionSize;)selectionPalette.shift();if(localStorageKey&&window.localStorage)try{window.localStorage[localStorageKey]=selectionPalette.join(";")}catch(e){}}}function getUniqueSelectionPalette(){var unique=[];if(opts.showPalette)for(var i=0;i<selectionPalette.length;i++){var rgb=tinycolor(selectionPalette[i]).toRgbString();paletteLookup[rgb]||unique.push(selectionPalette[i])}return unique.reverse().slice(0,opts.maxSelectionSize)}function drawPalette(){var currentColor=get(),html=$.map(paletteArray,function(palette,i){return paletteTemplate(palette,currentColor,"sp-palette-row sp-palette-row-"+i,opts)});updateSelectionPaletteFromStorage(),selectionPalette&&html.push(paletteTemplate(getUniqueSelectionPalette(),currentColor,"sp-palette-row sp-palette-row-selection",opts)),paletteContainer.html(html.join(""))}function drawInitial(){if(opts.showInitial){var initial=colorOnShow,current=get();initialColorContainer.html(paletteTemplate([initial,current],current,"sp-palette-row-initial",opts))}}function dragStart(){(0>=dragHeight||0>=dragWidth||0>=slideHeight)&&reflow(),container.addClass(draggingClass),shiftMovementDirection=null,boundElement.trigger("dragstart.spectrum",[get()])}function dragStop(){container.removeClass(draggingClass),boundElement.trigger("dragstop.spectrum",[get()])}function setFromTextInput(){var value=textInput.val();if(null!==value&&""!==value||!allowEmpty){var tiny=tinycolor(value);tiny.isValid()?(set(tiny),updateOriginalInput(!0)):textInput.addClass("sp-validation-error")}else set(null),updateOriginalInput(!0)}function toggle(){visible?hide():show()}function show(){var event=$.Event("beforeShow.spectrum");return visible?void reflow():(boundElement.trigger(event,[get()]),void(callbacks.beforeShow(get())===!1||event.isDefaultPrevented()||(hideAll(),visible=!0,$(doc).bind("click.spectrum",hide),$(window).bind("resize.spectrum",resize),replacer.addClass("sp-active"),container.removeClass("sp-hidden"),reflow(),updateUI(),colorOnShow=get(),drawInitial(),callbacks.show(colorOnShow),boundElement.trigger("show.spectrum",[colorOnShow]))))}function hide(e){if((!e||"click"!=e.type||2!=e.button)&&visible&&!flat){visible=!1,$(doc).unbind("click.spectrum",hide),$(window).unbind("resize.spectrum",resize),replacer.removeClass("sp-active"),container.addClass("sp-hidden");var colorHasChanged=!tinycolor.equals(get(),colorOnShow);colorHasChanged&&(clickoutFiresChange&&"cancel"!==e?updateOriginalInput(!0):revert()),callbacks.hide(get()),boundElement.trigger("hide.spectrum",[get()])}}function revert(){set(colorOnShow,!0)}function set(color,ignoreFormatChange){if(tinycolor.equals(color,get()))return void updateUI();var newColor,newHsv;!color&&allowEmpty?isEmpty=!0:(isEmpty=!1,newColor=tinycolor(color),newHsv=newColor.toHsv(),currentHue=newHsv.h%360/360,currentSaturation=newHsv.s,currentValue=newHsv.v,currentAlpha=newHsv.a),updateUI(),newColor&&newColor.isValid()&&!ignoreFormatChange&&(currentPreferredFormat=preferredFormat||newColor.getFormat())}function get(opts){return opts=opts||{},allowEmpty&&isEmpty?null:tinycolor.fromRatio({h:currentHue,s:currentSaturation,v:currentValue,a:Math.round(100*currentAlpha)/100},{format:opts.format||currentPreferredFormat})}function isValid(){return!textInput.hasClass("sp-validation-error")}function move(){updateUI(),callbacks.move(get()),boundElement.trigger("move.spectrum",[get()])}function updateUI(){textInput.removeClass("sp-validation-error"),updateHelperLocations();var flatColor=tinycolor.fromRatio({h:currentHue,s:1,v:1});dragger.css("background-color",flatColor.toHexString());var format=currentPreferredFormat;1>currentAlpha&&(0!==currentAlpha||"name"!==format)&&("hex"===format||"hex3"===format||"hex6"===format||"name"===format)&&(format="rgb");var realColor=get({format:format}),displayColor="";if(previewElement.removeClass("sp-clear-display"),previewElement.css("background-color","transparent"),!realColor&&allowEmpty)previewElement.addClass("sp-clear-display");else{var realHex=realColor.toHexString(),realRgb=realColor.toRgbString();if(rgbaSupport||1===realColor.alpha?previewElement.css("background-color",realRgb):(previewElement.css("background-color","transparent"),previewElement.css("filter",realColor.toFilter())),opts.showAlpha){var rgb=realColor.toRgb();rgb.a=0;var realAlpha=tinycolor(rgb).toRgbString(),gradient="linear-gradient(left, "+realAlpha+", "+realHex+")";IE?alphaSliderInner.css("filter",tinycolor(realAlpha).toFilter({gradientType:1},realHex)):(alphaSliderInner.css("background","-webkit-"+gradient),alphaSliderInner.css("background","-moz-"+gradient),alphaSliderInner.css("background","-ms-"+gradient),alphaSliderInner.css("background","linear-gradient(to right, "+realAlpha+", "+realHex+")"))}displayColor=realColor.toString(format)}opts.showInput&&textInput.val(displayColor),opts.showPalette&&drawPalette(),drawInitial()}function updateHelperLocations(){var s=currentSaturation,v=currentValue;if(allowEmpty&&isEmpty)alphaSlideHelper.hide(),slideHelper.hide(),dragHelper.hide();else{alphaSlideHelper.show(),slideHelper.show(),dragHelper.show();var dragX=s*dragWidth,dragY=dragHeight-v*dragHeight;dragX=Math.max(-dragHelperHeight,Math.min(dragWidth-dragHelperHeight,dragX-dragHelperHeight)),dragY=Math.max(-dragHelperHeight,Math.min(dragHeight-dragHelperHeight,dragY-dragHelperHeight)),dragHelper.css({top:dragY+"px",left:dragX+"px"});var alphaX=currentAlpha*alphaWidth;alphaSlideHelper.css({left:alphaX-alphaSlideHelperWidth/2+"px"});var slideY=currentHue*slideHeight;slideHelper.css({top:slideY-slideHelperHeight+"px"})}}function updateOriginalInput(fireCallback){var color=get(),displayColor="",hasChanged=!tinycolor.equals(color,colorOnShow);color&&(displayColor=color.toString(currentPreferredFormat),addColorToSelectionPalette(color)),isInput&&boundElement.val(displayColor),colorOnShow=color,fireCallback&&hasChanged&&(callbacks.change(color),boundElement.trigger("change",[color]))}function reflow(){dragWidth=dragger.width(),dragHeight=dragger.height(),dragHelperHeight=dragHelper.height(),slideWidth=slider.width(),slideHeight=slider.height(),slideHelperHeight=slideHelper.height(),alphaWidth=alphaSlider.width(),alphaSlideHelperWidth=alphaSlideHelper.width(),flat||(container.css("position","absolute"),container.offset(getOffset(container,offsetElement))),updateHelperLocations(),opts.showPalette&&drawPalette(),boundElement.trigger("reflow.spectrum")}function destroy(){boundElement.show(),offsetElement.unbind("click.spectrum touchstart.spectrum"),container.remove(),replacer.remove(),spectrums[spect.id]=null}function option(optionName,optionValue){return optionName===undefined?$.extend({},opts):optionValue===undefined?opts[optionName]:(opts[optionName]=optionValue,void applyOptions())}function enable(){disabled=!1,boundElement.attr("disabled",!1),offsetElement.removeClass("sp-disabled")}function disable(){hide(),disabled=!0,boundElement.attr("disabled",!0),offsetElement.addClass("sp-disabled")}var opts=instanceOptions(o,element),flat=opts.flat,showSelectionPalette=opts.showSelectionPalette,localStorageKey=opts.localStorageKey,theme=opts.theme,callbacks=opts.callbacks,resize=throttle(reflow,10),visible=!1,dragWidth=0,dragHeight=0,dragHelperHeight=0,slideHeight=0,slideWidth=0,alphaWidth=0,alphaSlideHelperWidth=0,slideHelperHeight=0,currentHue=0,currentSaturation=0,currentValue=0,currentAlpha=1,palette=[],paletteArray=[],paletteLookup={},selectionPalette=opts.selectionPalette.slice(0),maxSelectionSize=opts.maxSelectionSize,draggingClass="sp-dragging",shiftMovementDirection=null,doc=element.ownerDocument,boundElement=(doc.body,$(element)),disabled=!1,container=$(markup,doc).addClass(theme),pickerContainer=container.find(".sp-picker-container"),dragger=container.find(".sp-color"),dragHelper=container.find(".sp-dragger"),slider=container.find(".sp-hue"),slideHelper=container.find(".sp-slider"),alphaSliderInner=container.find(".sp-alpha-inner"),alphaSlider=container.find(".sp-alpha"),alphaSlideHelper=container.find(".sp-alpha-handle"),textInput=container.find(".sp-input"),paletteContainer=container.find(".sp-palette"),initialColorContainer=container.find(".sp-initial"),cancelButton=container.find(".sp-cancel"),clearButton=container.find(".sp-clear"),chooseButton=container.find(".sp-choose"),toggleButton=container.find(".sp-palette-toggle"),isInput=boundElement.is("input"),isInputTypeColor=isInput&&inputTypeColorSupport&&"color"===boundElement.attr("type"),shouldReplace=isInput&&!flat,replacer=shouldReplace?$(replaceInput).addClass(theme).addClass(opts.className).addClass(opts.replacerClassName):$([]),offsetElement=shouldReplace?replacer:boundElement,previewElement=replacer.find(".sp-preview-inner"),initialColor=opts.color||isInput&&boundElement.val(),colorOnShow=!1,preferredFormat=opts.preferredFormat,currentPreferredFormat=preferredFormat,clickoutFiresChange=!opts.showButtons||opts.clickoutFiresChange,isEmpty=!initialColor,allowEmpty=opts.allowEmpty&&!isInputTypeColor;initialize();var spect={show:show,hide:hide,toggle:toggle,reflow:reflow,option:option,enable:enable,disable:disable,set:function(c){set(c),updateOriginalInput()},get:get,destroy:destroy,container:container};return spect.id=spectrums.push(spect)-1,spect}function getOffset(picker,input){var extraY=0,dpWidth=picker.outerWidth(),dpHeight=picker.outerHeight(),inputHeight=input.outerHeight(),doc=picker[0].ownerDocument,docElem=doc.documentElement,viewWidth=docElem.clientWidth+$(doc).scrollLeft(),viewHeight=docElem.clientHeight+$(doc).scrollTop(),offset=input.offset();return offset.top+=inputHeight,offset.left-=Math.min(offset.left,offset.left+dpWidth>viewWidth&&viewWidth>dpWidth?Math.abs(offset.left+dpWidth-viewWidth):0),offset.top-=Math.min(offset.top,offset.top+dpHeight>viewHeight&&viewHeight>dpHeight?Math.abs(dpHeight+inputHeight-extraY):extraY),offset}function noop(){}function stopPropagation(e){e.stopPropagation()}function bind(func,obj){var slice=Array.prototype.slice,args=slice.call(arguments,2);return function(){return func.apply(obj,args.concat(slice.call(arguments)))}}function draggable(element,onmove,onstart,onstop){function prevent(e){e.stopPropagation&&e.stopPropagation(),e.preventDefault&&e.preventDefault(),e.returnValue=!1}function move(e){if(dragging){if(IE&&document.documentMode<9&&!e.button)return stop();var touches=e.originalEvent.touches,pageX=touches?touches[0].pageX:e.pageX,pageY=touches?touches[0].pageY:e.pageY,dragX=Math.max(0,Math.min(pageX-offset.left,maxWidth)),dragY=Math.max(0,Math.min(pageY-offset.top,maxHeight));hasTouch&&prevent(e),onmove.apply(element,[dragX,dragY,e])}}function start(e){{var rightclick=e.which?3==e.which:2==e.button;e.originalEvent.touches}rightclick||dragging||onstart.apply(element,arguments)!==!1&&(dragging=!0,maxHeight=$(element).height(),maxWidth=$(element).width(),offset=$(element).offset(),$(doc).bind(duringDragEvents),$(doc.body).addClass("sp-dragging"),hasTouch||move(e),prevent(e))}function stop(){dragging&&($(doc).unbind(duringDragEvents),$(doc.body).removeClass("sp-dragging"),onstop.apply(element,arguments)),dragging=!1}onmove=onmove||function(){},onstart=onstart||function(){},onstop=onstop||function(){};var doc=element.ownerDocument||document,dragging=!1,offset={},maxHeight=0,maxWidth=0,hasTouch="ontouchstart"in window,duringDragEvents={};duringDragEvents.selectstart=prevent,duringDragEvents.dragstart=prevent,duringDragEvents["touchmove mousemove"]=move,duringDragEvents["touchend mouseup"]=stop,$(element).bind("touchstart mousedown",start)}function throttle(func,wait,debounce){var timeout;return function(){var context=this,args=arguments,throttler=function(){timeout=null,func.apply(context,args)};debounce&&clearTimeout(timeout),(debounce||!timeout)&&(timeout=setTimeout(throttler,wait))}}var defaultOpts={beforeShow:noop,move:noop,change:noop,show:noop,hide:noop,color:!1,flat:!1,showInput:!1,allowEmpty:!1,showButtons:!0,clickoutFiresChange:!1,showInitial:!1,showPalette:!1,showPaletteOnly:!1,hideAfterPaletteSelect:!1,togglePaletteOnly:!1,showSelectionPalette:!0,localStorageKey:!1,appendTo:"body",maxSelectionSize:7,cancelText:"cancel",chooseText:"choose",togglePaletteMoreText:"more",togglePaletteLessText:"less",clearText:"Clear Color Selection",noColorSelectedText:"No Color Selected",preferredFormat:!1,className:"",containerClassName:"",replacerClassName:"",showAlpha:!1,theme:"sp-light",palette:[["#ffffff","#000000","#ff0000","#ff8000","#ffff00","#008000","#0000ff","#4b0082","#9400d3"]],selectionPalette:[],disabled:!1},spectrums=[],IE=!!/msie/i.exec(window.navigator.userAgent),rgbaSupport=function(){function contains(str,substr){return!!~(""+str).indexOf(substr)}var elem=document.createElement("div"),style=elem.style;return style.cssText="background-color:rgba(0,0,0,.5)",contains(style.backgroundColor,"rgba")||contains(style.backgroundColor,"hsla")}(),inputTypeColorSupport=function(){var colorInput=$("<input type='color' value='!' />")[0];return"color"===colorInput.type&&"!"!==colorInput.value}(),replaceInput=["<div class='sp-replacer'>","<div class='sp-preview'><div class='sp-preview-inner'></div></div>","<div class='sp-dd'>&#9660;</div>","</div>"].join(""),markup=function(){var gradientFix="";if(IE)for(var i=1;6>=i;i++)gradientFix+="<div class='sp-"+i+"'></div>";return["<div class='sp-container sp-hidden'>","<div class='sp-palette-container'>","<div class='sp-palette sp-thumb sp-cf'></div>","<div class='sp-palette-button-container sp-cf'>","<button type='button' class='sp-palette-toggle'></button>","</div>","</div>","<div class='sp-picker-container'>","<div class='sp-top sp-cf'>","<div class='sp-fill'></div>","<div class='sp-top-inner'>","<div class='sp-color'>","<div class='sp-sat'>","<div class='sp-val'>","<div class='sp-dragger'></div>","</div>","</div>","</div>","<div class='sp-clear sp-clear-display'>","</div>","<div class='sp-hue'>","<div class='sp-slider'></div>",gradientFix,"</div>","</div>","<div class='sp-alpha'><div class='sp-alpha-inner'><div class='sp-alpha-handle'></div></div></div>","</div>","<div class='sp-input-container sp-cf'>","<input class='sp-input' type='text' spellcheck='false'  />","</div>","<div class='sp-initial sp-thumb sp-cf'></div>","<div class='sp-button-container sp-cf'>","<a class='sp-cancel' href='#'></a>","<button type='button' class='sp-choose'></button>","</div>","</div>","</div>"].join("")}(),dataID="spectrum.id";$.fn.spectrum=function(opts){if("string"==typeof opts){var returnValue=this,args=Array.prototype.slice.call(arguments,1);return this.each(function(){var spect=spectrums[$(this).data(dataID)];if(spect){var method=spect[opts];if(!method)throw new Error("Spectrum: no such method: '"+opts+"'");"get"==opts?returnValue=spect.get():"container"==opts?returnValue=spect.container:"option"==opts?returnValue=spect.option.apply(spect,args):"destroy"==opts?(spect.destroy(),$(this).removeData(dataID)):method.apply(spect,args)}}),returnValue}return this.spectrum("destroy").each(function(){var options=$.extend({},opts,$(this).data()),spect=spectrum(this,options);$(this).data(dataID,spect.id)})},$.fn.spectrum.load=!0,$.fn.spectrum.loadOpts={},$.fn.spectrum.draggable=draggable,$.fn.spectrum.defaults=defaultOpts,$.spectrum={},$.spectrum.localization={},$.spectrum.palettes={},$.fn.spectrum.processNativeColorInputs=function(){inputTypeColorSupport||$("input[type=color]").spectrum({preferredFormat:"hex6"})},function(){function inputToRGB(color){var rgb={r:0,g:0,b:0},a=1,ok=!1,format=!1;return"string"==typeof color&&(color=stringInputToObject(color)),"object"==typeof color&&(color.hasOwnProperty("r")&&color.hasOwnProperty("g")&&color.hasOwnProperty("b")?(rgb=rgbToRgb(color.r,color.g,color.b),ok=!0,format="%"===String(color.r).substr(-1)?"prgb":"rgb"):color.hasOwnProperty("h")&&color.hasOwnProperty("s")&&color.hasOwnProperty("v")?(color.s=convertToPercentage(color.s),color.v=convertToPercentage(color.v),rgb=hsvToRgb(color.h,color.s,color.v),ok=!0,format="hsv"):color.hasOwnProperty("h")&&color.hasOwnProperty("s")&&color.hasOwnProperty("l")&&(color.s=convertToPercentage(color.s),color.l=convertToPercentage(color.l),rgb=hslToRgb(color.h,color.s,color.l),ok=!0,format="hsl"),color.hasOwnProperty("a")&&(a=color.a)),a=boundAlpha(a),{ok:ok,format:color.format||format,r:mathMin(255,mathMax(rgb.r,0)),g:mathMin(255,mathMax(rgb.g,0)),b:mathMin(255,mathMax(rgb.b,0)),a:a}}function rgbToRgb(r,g,b){return{r:255*bound01(r,255),g:255*bound01(g,255),b:255*bound01(b,255)}}function rgbToHsl(r,g,b){r=bound01(r,255),g=bound01(g,255),b=bound01(b,255);var h,s,max=mathMax(r,g,b),min=mathMin(r,g,b),l=(max+min)/2;if(max==min)h=s=0;else{var d=max-min;switch(s=l>.5?d/(2-max-min):d/(max+min),max){case r:h=(g-b)/d+(b>g?6:0);break;case g:h=(b-r)/d+2;break;case b:h=(r-g)/d+4}h/=6}return{h:h,s:s,l:l}}function hslToRgb(h,s,l){function hue2rgb(p,q,t){return 0>t&&(t+=1),t>1&&(t-=1),1/6>t?p+6*(q-p)*t:.5>t?q:2/3>t?p+(q-p)*(2/3-t)*6:p}var r,g,b;if(h=bound01(h,360),s=bound01(s,100),l=bound01(l,100),0===s)r=g=b=l;else{var q=.5>l?l*(1+s):l+s-l*s,p=2*l-q;r=hue2rgb(p,q,h+1/3),g=hue2rgb(p,q,h),b=hue2rgb(p,q,h-1/3)}return{r:255*r,g:255*g,b:255*b}}function rgbToHsv(r,g,b){r=bound01(r,255),g=bound01(g,255),b=bound01(b,255);var h,s,max=mathMax(r,g,b),min=mathMin(r,g,b),v=max,d=max-min;if(s=0===max?0:d/max,max==min)h=0;else{switch(max){case r:h=(g-b)/d+(b>g?6:0);break;case g:h=(b-r)/d+2;break;case b:h=(r-g)/d+4}h/=6}return{h:h,s:s,v:v}}function hsvToRgb(h,s,v){h=6*bound01(h,360),s=bound01(s,100),v=bound01(v,100);var i=math.floor(h),f=h-i,p=v*(1-s),q=v*(1-f*s),t=v*(1-(1-f)*s),mod=i%6,r=[v,q,p,p,t,v][mod],g=[t,v,v,q,p,p][mod],b=[p,p,t,v,v,q][mod];return{r:255*r,g:255*g,b:255*b}}function rgbToHex(r,g,b,allow3Char){var hex=[pad2(mathRound(r).toString(16)),pad2(mathRound(g).toString(16)),pad2(mathRound(b).toString(16))];return allow3Char&&hex[0].charAt(0)==hex[0].charAt(1)&&hex[1].charAt(0)==hex[1].charAt(1)&&hex[2].charAt(0)==hex[2].charAt(1)?hex[0].charAt(0)+hex[1].charAt(0)+hex[2].charAt(0):hex.join("")}function rgbaToHex(r,g,b,a){var hex=[pad2(convertDecimalToHex(a)),pad2(mathRound(r).toString(16)),pad2(mathRound(g).toString(16)),pad2(mathRound(b).toString(16))];return hex.join("")}function desaturate(color,amount){amount=0===amount?0:amount||10;var hsl=tinycolor(color).toHsl();return hsl.s-=amount/100,hsl.s=clamp01(hsl.s),tinycolor(hsl)}function saturate(color,amount){amount=0===amount?0:amount||10;var hsl=tinycolor(color).toHsl();return hsl.s+=amount/100,hsl.s=clamp01(hsl.s),tinycolor(hsl)}function greyscale(color){return tinycolor(color).desaturate(100)}function lighten(color,amount){amount=0===amount?0:amount||10;var hsl=tinycolor(color).toHsl();return hsl.l+=amount/100,hsl.l=clamp01(hsl.l),tinycolor(hsl)}function brighten(color,amount){amount=0===amount?0:amount||10;var rgb=tinycolor(color).toRgb();return rgb.r=mathMax(0,mathMin(255,rgb.r-mathRound(255*-(amount/100)))),rgb.g=mathMax(0,mathMin(255,rgb.g-mathRound(255*-(amount/100)))),rgb.b=mathMax(0,mathMin(255,rgb.b-mathRound(255*-(amount/100)))),tinycolor(rgb)}function darken(color,amount){amount=0===amount?0:amount||10;var hsl=tinycolor(color).toHsl();return hsl.l-=amount/100,hsl.l=clamp01(hsl.l),tinycolor(hsl)}function spin(color,amount){var hsl=tinycolor(color).toHsl(),hue=(mathRound(hsl.h)+amount)%360;return hsl.h=0>hue?360+hue:hue,tinycolor(hsl)}function complement(color){var hsl=tinycolor(color).toHsl();return hsl.h=(hsl.h+180)%360,tinycolor(hsl)}function triad(color){var hsl=tinycolor(color).toHsl(),h=hsl.h;return[tinycolor(color),tinycolor({h:(h+120)%360,s:hsl.s,l:hsl.l}),tinycolor({h:(h+240)%360,s:hsl.s,l:hsl.l})]}function tetrad(color){var hsl=tinycolor(color).toHsl(),h=hsl.h;return[tinycolor(color),tinycolor({h:(h+90)%360,s:hsl.s,l:hsl.l}),tinycolor({h:(h+180)%360,s:hsl.s,l:hsl.l}),tinycolor({h:(h+270)%360,s:hsl.s,l:hsl.l})]}function splitcomplement(color){var hsl=tinycolor(color).toHsl(),h=hsl.h;return[tinycolor(color),tinycolor({h:(h+72)%360,s:hsl.s,l:hsl.l}),tinycolor({h:(h+216)%360,s:hsl.s,l:hsl.l})]}function analogous(color,results,slices){results=results||6,slices=slices||30;var hsl=tinycolor(color).toHsl(),part=360/slices,ret=[tinycolor(color)];for(hsl.h=(hsl.h-(part*results>>1)+720)%360;--results;)hsl.h=(hsl.h+part)%360,ret.push(tinycolor(hsl));return ret}function monochromatic(color,results){results=results||6;for(var hsv=tinycolor(color).toHsv(),h=hsv.h,s=hsv.s,v=hsv.v,ret=[],modification=1/results;results--;)ret.push(tinycolor({h:h,s:s,v:v})),v=(v+modification)%1;return ret}function flip(o){var flipped={};for(var i in o)o.hasOwnProperty(i)&&(flipped[o[i]]=i);return flipped}function boundAlpha(a){return a=parseFloat(a),(isNaN(a)||0>a||a>1)&&(a=1),a}function bound01(n,max){isOnePointZero(n)&&(n="100%");var processPercent=isPercentage(n);return n=mathMin(max,mathMax(0,parseFloat(n))),processPercent&&(n=parseInt(n*max,10)/100),math.abs(n-max)<1e-6?1:n%max/parseFloat(max)}function clamp01(val){return mathMin(1,mathMax(0,val))}function parseIntFromHex(val){return parseInt(val,16)}function isOnePointZero(n){return"string"==typeof n&&-1!=n.indexOf(".")&&1===parseFloat(n)}function isPercentage(n){return"string"==typeof n&&-1!=n.indexOf("%")}function pad2(c){return 1==c.length?"0"+c:""+c}function convertToPercentage(n){return 1>=n&&(n=100*n+"%"),n}function convertDecimalToHex(d){return Math.round(255*parseFloat(d)).toString(16)}function convertHexToDecimal(h){return parseIntFromHex(h)/255}function stringInputToObject(color){color=color.replace(trimLeft,"").replace(trimRight,"").toLowerCase();var named=!1;if(names[color])color=names[color],named=!0;else if("transparent"==color)return{r:0,g:0,b:0,a:0,format:"name"};var match;return(match=matchers.rgb.exec(color))?{r:match[1],g:match[2],b:match[3]}:(match=matchers.rgba.exec(color))?{r:match[1],g:match[2],b:match[3],a:match[4]}:(match=matchers.hsl.exec(color))?{h:match[1],s:match[2],l:match[3]}:(match=matchers.hsla.exec(color))?{h:match[1],s:match[2],l:match[3],a:match[4]}:(match=matchers.hsv.exec(color))?{h:match[1],s:match[2],v:match[3]}:(match=matchers.hex8.exec(color))?{a:convertHexToDecimal(match[1]),r:parseIntFromHex(match[2]),g:parseIntFromHex(match[3]),b:parseIntFromHex(match[4]),format:named?"name":"hex8"}:(match=matchers.hex6.exec(color))?{r:parseIntFromHex(match[1]),g:parseIntFromHex(match[2]),b:parseIntFromHex(match[3]),format:named?"name":"hex"}:(match=matchers.hex3.exec(color))?{r:parseIntFromHex(match[1]+""+match[1]),g:parseIntFromHex(match[2]+""+match[2]),b:parseIntFromHex(match[3]+""+match[3]),format:named?"name":"hex"}:!1}var trimLeft=/^[\s,#]+/,trimRight=/\s+$/,tinyCounter=0,math=Math,mathRound=math.round,mathMin=math.min,mathMax=math.max,mathRandom=math.random,tinycolor=function tinycolor(color,opts){if(color=color?color:"",opts=opts||{},color instanceof tinycolor)return color;if(!(this instanceof tinycolor))return new tinycolor(color,opts);var rgb=inputToRGB(color);this._r=rgb.r,this._g=rgb.g,this._b=rgb.b,this._a=rgb.a,this._roundA=mathRound(100*this._a)/100,this._format=opts.format||rgb.format,this._gradientType=opts.gradientType,this._r<1&&(this._r=mathRound(this._r)),this._g<1&&(this._g=mathRound(this._g)),this._b<1&&(this._b=mathRound(this._b)),this._ok=rgb.ok,this._tc_id=tinyCounter++};tinycolor.prototype={isDark:function(){return this.getBrightness()<128},isLight:function(){return!this.isDark()},isValid:function(){return this._ok},getFormat:function(){return this._format},getAlpha:function(){return this._a},getBrightness:function(){var rgb=this.toRgb();return(299*rgb.r+587*rgb.g+114*rgb.b)/1e3},setAlpha:function(value){return this._a=boundAlpha(value),this._roundA=mathRound(100*this._a)/100,this},toHsv:function(){var hsv=rgbToHsv(this._r,this._g,this._b);return{h:360*hsv.h,s:hsv.s,v:hsv.v,a:this._a}},toHsvString:function(){var hsv=rgbToHsv(this._r,this._g,this._b),h=mathRound(360*hsv.h),s=mathRound(100*hsv.s),v=mathRound(100*hsv.v);return 1==this._a?"hsv("+h+", "+s+"%, "+v+"%)":"hsva("+h+", "+s+"%, "+v+"%, "+this._roundA+")"},toHsl:function(){var hsl=rgbToHsl(this._r,this._g,this._b);return{h:360*hsl.h,s:hsl.s,l:hsl.l,a:this._a}},toHslString:function(){var hsl=rgbToHsl(this._r,this._g,this._b),h=mathRound(360*hsl.h),s=mathRound(100*hsl.s),l=mathRound(100*hsl.l);return 1==this._a?"hsl("+h+", "+s+"%, "+l+"%)":"hsla("+h+", "+s+"%, "+l+"%, "+this._roundA+")"},toHex:function(allow3Char){return rgbToHex(this._r,this._g,this._b,allow3Char)},toHexString:function(allow3Char){return"#"+this.toHex(allow3Char)},toHex8:function(){return rgbaToHex(this._r,this._g,this._b,this._a)},toHex8String:function(){return"#"+this.toHex8()},toRgb:function(){return{r:mathRound(this._r),g:mathRound(this._g),b:mathRound(this._b),a:this._a}},toRgbString:function(){return 1==this._a?"rgb("+mathRound(this._r)+", "+mathRound(this._g)+", "+mathRound(this._b)+")":"rgba("+mathRound(this._r)+", "+mathRound(this._g)+", "+mathRound(this._b)+", "+this._roundA+")"},toPercentageRgb:function(){return{r:mathRound(100*bound01(this._r,255))+"%",g:mathRound(100*bound01(this._g,255))+"%",b:mathRound(100*bound01(this._b,255))+"%",a:this._a}},toPercentageRgbString:function(){return 1==this._a?"rgb("+mathRound(100*bound01(this._r,255))+"%, "+mathRound(100*bound01(this._g,255))+"%, "+mathRound(100*bound01(this._b,255))+"%)":"rgba("+mathRound(100*bound01(this._r,255))+"%, "+mathRound(100*bound01(this._g,255))+"%, "+mathRound(100*bound01(this._b,255))+"%, "+this._roundA+")"},toName:function(){return 0===this._a?"transparent":this._a<1?!1:hexNames[rgbToHex(this._r,this._g,this._b,!0)]||!1},toFilter:function(secondColor){var hex8String="#"+rgbaToHex(this._r,this._g,this._b,this._a),secondHex8String=hex8String,gradientType=this._gradientType?"GradientType = 1, ":"";if(secondColor){var s=tinycolor(secondColor);secondHex8String=s.toHex8String()
+}return"progid:DXImageTransform.Microsoft.gradient("+gradientType+"startColorstr="+hex8String+",endColorstr="+secondHex8String+")"},toString:function(format){var formatSet=!!format;format=format||this._format;var formattedString=!1,hasAlpha=this._a<1&&this._a>=0,needsAlphaFormat=!formatSet&&hasAlpha&&("hex"===format||"hex6"===format||"hex3"===format||"name"===format);return needsAlphaFormat?"name"===format&&0===this._a?this.toName():this.toRgbString():("rgb"===format&&(formattedString=this.toRgbString()),"prgb"===format&&(formattedString=this.toPercentageRgbString()),("hex"===format||"hex6"===format)&&(formattedString=this.toHexString()),"hex3"===format&&(formattedString=this.toHexString(!0)),"hex8"===format&&(formattedString=this.toHex8String()),"name"===format&&(formattedString=this.toName()),"hsl"===format&&(formattedString=this.toHslString()),"hsv"===format&&(formattedString=this.toHsvString()),formattedString||this.toHexString())},_applyModification:function(fn,args){var color=fn.apply(null,[this].concat([].slice.call(args)));return this._r=color._r,this._g=color._g,this._b=color._b,this.setAlpha(color._a),this},lighten:function(){return this._applyModification(lighten,arguments)},brighten:function(){return this._applyModification(brighten,arguments)},darken:function(){return this._applyModification(darken,arguments)},desaturate:function(){return this._applyModification(desaturate,arguments)},saturate:function(){return this._applyModification(saturate,arguments)},greyscale:function(){return this._applyModification(greyscale,arguments)},spin:function(){return this._applyModification(spin,arguments)},_applyCombination:function(fn,args){return fn.apply(null,[this].concat([].slice.call(args)))},analogous:function(){return this._applyCombination(analogous,arguments)},complement:function(){return this._applyCombination(complement,arguments)},monochromatic:function(){return this._applyCombination(monochromatic,arguments)},splitcomplement:function(){return this._applyCombination(splitcomplement,arguments)},triad:function(){return this._applyCombination(triad,arguments)},tetrad:function(){return this._applyCombination(tetrad,arguments)}},tinycolor.fromRatio=function(color,opts){if("object"==typeof color){var newColor={};for(var i in color)color.hasOwnProperty(i)&&(newColor[i]="a"===i?color[i]:convertToPercentage(color[i]));color=newColor}return tinycolor(color,opts)},tinycolor.equals=function(color1,color2){return color1&&color2?tinycolor(color1).toRgbString()==tinycolor(color2).toRgbString():!1},tinycolor.random=function(){return tinycolor.fromRatio({r:mathRandom(),g:mathRandom(),b:mathRandom()})},tinycolor.mix=function(color1,color2,amount){amount=0===amount?0:amount||50;var w1,rgb1=tinycolor(color1).toRgb(),rgb2=tinycolor(color2).toRgb(),p=amount/100,w=2*p-1,a=rgb2.a-rgb1.a;w1=w*a==-1?w:(w+a)/(1+w*a),w1=(w1+1)/2;var w2=1-w1,rgba={r:rgb2.r*w1+rgb1.r*w2,g:rgb2.g*w1+rgb1.g*w2,b:rgb2.b*w1+rgb1.b*w2,a:rgb2.a*p+rgb1.a*(1-p)};return tinycolor(rgba)},tinycolor.readability=function(color1,color2){var c1=tinycolor(color1),c2=tinycolor(color2),rgb1=c1.toRgb(),rgb2=c2.toRgb(),brightnessA=c1.getBrightness(),brightnessB=c2.getBrightness(),colorDiff=Math.max(rgb1.r,rgb2.r)-Math.min(rgb1.r,rgb2.r)+Math.max(rgb1.g,rgb2.g)-Math.min(rgb1.g,rgb2.g)+Math.max(rgb1.b,rgb2.b)-Math.min(rgb1.b,rgb2.b);return{brightness:Math.abs(brightnessA-brightnessB),color:colorDiff}},tinycolor.isReadable=function(color1,color2){var readability=tinycolor.readability(color1,color2);return readability.brightness>125&&readability.color>500},tinycolor.mostReadable=function(baseColor,colorList){for(var bestColor=null,bestScore=0,bestIsReadable=!1,i=0;i<colorList.length;i++){var readability=tinycolor.readability(baseColor,colorList[i]),readable=readability.brightness>125&&readability.color>500,score=3*(readability.brightness/125)+readability.color/500;(readable&&!bestIsReadable||readable&&bestIsReadable&&score>bestScore||!readable&&!bestIsReadable&&score>bestScore)&&(bestIsReadable=readable,bestScore=score,bestColor=tinycolor(colorList[i]))}return bestColor};var names=tinycolor.names={aliceblue:"f0f8ff",antiquewhite:"faebd7",aqua:"0ff",aquamarine:"7fffd4",azure:"f0ffff",beige:"f5f5dc",bisque:"ffe4c4",black:"000",blanchedalmond:"ffebcd",blue:"00f",blueviolet:"8a2be2",brown:"a52a2a",burlywood:"deb887",burntsienna:"ea7e5d",cadetblue:"5f9ea0",chartreuse:"7fff00",chocolate:"d2691e",coral:"ff7f50",cornflowerblue:"6495ed",cornsilk:"fff8dc",crimson:"dc143c",cyan:"0ff",darkblue:"00008b",darkcyan:"008b8b",darkgoldenrod:"b8860b",darkgray:"a9a9a9",darkgreen:"006400",darkgrey:"a9a9a9",darkkhaki:"bdb76b",darkmagenta:"8b008b",darkolivegreen:"556b2f",darkorange:"ff8c00",darkorchid:"9932cc",darkred:"8b0000",darksalmon:"e9967a",darkseagreen:"8fbc8f",darkslateblue:"483d8b",darkslategray:"2f4f4f",darkslategrey:"2f4f4f",darkturquoise:"00ced1",darkviolet:"9400d3",deeppink:"ff1493",deepskyblue:"00bfff",dimgray:"696969",dimgrey:"696969",dodgerblue:"1e90ff",firebrick:"b22222",floralwhite:"fffaf0",forestgreen:"228b22",fuchsia:"f0f",gainsboro:"dcdcdc",ghostwhite:"f8f8ff",gold:"ffd700",goldenrod:"daa520",gray:"808080",green:"008000",greenyellow:"adff2f",grey:"808080",honeydew:"f0fff0",hotpink:"ff69b4",indianred:"cd5c5c",indigo:"4b0082",ivory:"fffff0",khaki:"f0e68c",lavender:"e6e6fa",lavenderblush:"fff0f5",lawngreen:"7cfc00",lemonchiffon:"fffacd",lightblue:"add8e6",lightcoral:"f08080",lightcyan:"e0ffff",lightgoldenrodyellow:"fafad2",lightgray:"d3d3d3",lightgreen:"90ee90",lightgrey:"d3d3d3",lightpink:"ffb6c1",lightsalmon:"ffa07a",lightseagreen:"20b2aa",lightskyblue:"87cefa",lightslategray:"789",lightslategrey:"789",lightsteelblue:"b0c4de",lightyellow:"ffffe0",lime:"0f0",limegreen:"32cd32",linen:"faf0e6",magenta:"f0f",maroon:"800000",mediumaquamarine:"66cdaa",mediumblue:"0000cd",mediumorchid:"ba55d3",mediumpurple:"9370db",mediumseagreen:"3cb371",mediumslateblue:"7b68ee",mediumspringgreen:"00fa9a",mediumturquoise:"48d1cc",mediumvioletred:"c71585",midnightblue:"191970",mintcream:"f5fffa",mistyrose:"ffe4e1",moccasin:"ffe4b5",navajowhite:"ffdead",navy:"000080",oldlace:"fdf5e6",olive:"808000",olivedrab:"6b8e23",orange:"ffa500",orangered:"ff4500",orchid:"da70d6",palegoldenrod:"eee8aa",palegreen:"98fb98",paleturquoise:"afeeee",palevioletred:"db7093",papayawhip:"ffefd5",peachpuff:"ffdab9",peru:"cd853f",pink:"ffc0cb",plum:"dda0dd",powderblue:"b0e0e6",purple:"800080",red:"f00",rosybrown:"bc8f8f",royalblue:"4169e1",saddlebrown:"8b4513",salmon:"fa8072",sandybrown:"f4a460",seagreen:"2e8b57",seashell:"fff5ee",sienna:"a0522d",silver:"c0c0c0",skyblue:"87ceeb",slateblue:"6a5acd",slategray:"708090",slategrey:"708090",snow:"fffafa",springgreen:"00ff7f",steelblue:"4682b4",tan:"d2b48c",teal:"008080",thistle:"d8bfd8",tomato:"ff6347",turquoise:"40e0d0",violet:"ee82ee",wheat:"f5deb3",white:"fff",whitesmoke:"f5f5f5",yellow:"ff0",yellowgreen:"9acd32"},hexNames=tinycolor.hexNames=flip(names),matchers=function(){var CSS_INTEGER="[-\\+]?\\d+%?",CSS_NUMBER="[-\\+]?\\d*\\.\\d+%?",CSS_UNIT="(?:"+CSS_NUMBER+")|(?:"+CSS_INTEGER+")",PERMISSIVE_MATCH3="[\\s|\\(]+("+CSS_UNIT+")[,|\\s]+("+CSS_UNIT+")[,|\\s]+("+CSS_UNIT+")\\s*\\)?",PERMISSIVE_MATCH4="[\\s|\\(]+("+CSS_UNIT+")[,|\\s]+("+CSS_UNIT+")[,|\\s]+("+CSS_UNIT+")[,|\\s]+("+CSS_UNIT+")\\s*\\)?";return{rgb:new RegExp("rgb"+PERMISSIVE_MATCH3),rgba:new RegExp("rgba"+PERMISSIVE_MATCH4),hsl:new RegExp("hsl"+PERMISSIVE_MATCH3),hsla:new RegExp("hsla"+PERMISSIVE_MATCH4),hsv:new RegExp("hsv"+PERMISSIVE_MATCH3),hex3:/^([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,hex6:/^([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/,hex8:/^([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/}}();window.tinycolor=tinycolor}(),$(function(){$.fn.spectrum.load&&$.fn.spectrum.processNativeColorInputs()})}(window,jQuery);
 ;(function(e,t,n){function i(n,s){if(!t[n]){if(!e[n]){var o=typeof require=="function"&&require;if(!s&&o)return o(n,!0);if(r)return r(n,!0);throw new Error("Cannot find module '"+n+"'")}var u=t[n]={exports:{}};e[n][0].call(u.exports,function(t){var r=e[n][1][t];return i(r?r:t)},u,u.exports)}return t[n].exports}var r=typeof require=="function"&&require;for(var s=0;s<n.length;s++)i(n[s]);return i})({1:[function(require,module,exports){
 // shim for using process in browser
 
@@ -15894,6 +15412,164 @@ module.exports = PhotoProcessor;
 
 
 },{"./operations/filters/primitives/identity.coffee":10,"./utils.coffee":6,"./vendor/perf.coffee":2,"./vendor/queue.coffee":5,"__browserify_Buffer":3,"__browserify_process":1}],12:[function(require,module,exports){
+/*
+  ImglyKit
+  Copyright (c) 2013-2014 img.ly
+*/
+
+var EventEmitter, Overview, UIControls,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Overview = require("./controls/overview.coffee");
+
+EventEmitter = require("events").EventEmitter;
+
+UIControls = (function(_super) {
+  __extends(UIControls, _super);
+
+  /*
+    @param {imglyUtil} app
+    @param {imglyUtil.UI} ui
+  */
+
+
+  function UIControls(app, ui) {
+    this.app = app;
+    this.ui = ui;
+    this.container = this.app.getContainer();
+    this.init();
+  }
+
+  /*
+    @returns {Integer} Height of the controls container
+  */
+
+
+  UIControls.prototype.getHeight = function() {
+    return this.controlsContainer.height();
+  };
+
+  /*
+    @returns {jQuery.Object} The controls container
+  */
+
+
+  UIControls.prototype.getContainer = function() {
+    return this.controlsContainer;
+  };
+
+  /*
+    @returns {ImglyKit.UI.Controls.Base}
+  */
+
+
+  UIControls.prototype.getCurrentControls = function() {
+    return this.currentControls;
+  };
+
+  /*
+    Initializes the container
+  */
+
+
+  UIControls.prototype.init = function() {
+    this.controlsContainer = $("<div>").addClass(ImglyKit.classPrefix + "controls-container").appendTo(this.container);
+    return this.initOverview();
+  };
+
+  /*
+    Initialize the overview
+  */
+
+
+  UIControls.prototype.initOverview = function() {
+    this.currentControls = this.overview = new Overview(this.app, this.ui, this);
+    this.attachEvents(this.currentControls);
+    this.overview.init();
+    if (this.app.options.initialControls == null) {
+      return this.overview.show();
+    }
+  };
+
+  /*
+    Attach select events
+  */
+
+
+  UIControls.prototype.attachEvents = function(controls) {
+    var _this = this;
+    controls.on("select", function(option) {
+      if (option.controls != null) {
+        _this.switchToControls(option.controls, controls);
+      }
+      if (option.operation != null) {
+        return _this.emit("preview_operation", new option.operation(_this.app, option.options));
+      }
+    });
+    controls.on("back", function() {
+      return _this.emit("back");
+    });
+    controls.on("done", function() {
+      return _this.emit("done");
+    });
+    return controls.on("renderPreview", function() {
+      return _this.app.getPhotoProcessor().renderPreview();
+    });
+  };
+
+  /*
+    Switch to another controls instance
+  */
+
+
+  UIControls.prototype.switchToControls = function(controlsClass, oldControls, options) {
+    var canvasControlsContainer, key, value,
+      _this = this;
+    if (options == null) {
+      options = {};
+    }
+    this.currentControls = new controlsClass(this.app, this.ui, this);
+    for (key in options) {
+      value = options[key];
+      this.currentControls.options[key] = value;
+    }
+    this.attachEvents(this.currentControls);
+    if (this.currentControls.hasCanvasControls) {
+      canvasControlsContainer = this.ui.getCanvas().getControlsContainer();
+      this.currentControls.setupCanvasControls(canvasControlsContainer);
+      canvasControlsContainer.fadeIn("slow");
+    }
+    this.currentControls.init();
+    return oldControls.hide(function() {
+      return _this.currentControls.show();
+    });
+  };
+
+  /*
+    Returns to the default view
+  */
+
+
+  UIControls.prototype.reset = function() {
+    var _ref,
+      _this = this;
+    this.overview.reset();
+    this.ui.getCanvas().getControlsContainer().hide().html("");
+    return (_ref = this.currentControls) != null ? _ref.hide(function() {
+      _this.currentControls.remove();
+      return _this.overview.show();
+    }) : void 0;
+  };
+
+  return UIControls;
+
+})(EventEmitter);
+
+module.exports = UIControls;
+
+
+},{"./controls/overview.coffee":13,"events":7}],14:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/base/base.coffee",__dirname="/ui/controls/base";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16013,7 +15689,7 @@ UIControlsBase = (function(_super) {
 module.exports = UIControlsBase;
 
 
-},{"__browserify_Buffer":3,"__browserify_process":1,"events":7}],13:[function(require,module,exports){
+},{"__browserify_Buffer":3,"__browserify_process":1,"events":7}],15:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/base/list.coffee",__dirname="/ui/controls/base";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16184,7 +15860,7 @@ UIControlsBaseList = (function(_super) {
 module.exports = UIControlsBaseList;
 
 
-},{"../../../utils.coffee":6,"./base.coffee":12,"__browserify_Buffer":3,"__browserify_process":1}],14:[function(require,module,exports){
+},{"../../../utils.coffee":6,"./base.coffee":14,"__browserify_Buffer":3,"__browserify_process":1}],16:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/default.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16215,7 +15891,7 @@ DefaultFilter = (function(_super) {
 module.exports = DefaultFilter;
 
 
-},{"./primitives/identity.coffee":10,"__browserify_Buffer":3,"__browserify_process":1}],15:[function(require,module,exports){
+},{"./primitives/identity.coffee":10,"__browserify_Buffer":3,"__browserify_process":1}],17:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/tonecurve.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16418,7 +16094,7 @@ PrimitiveToneCurveFilter = (function(_super) {
 module.exports = PrimitiveToneCurveFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],16:[function(require,module,exports){
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],18:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/saturation.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16472,7 +16148,7 @@ PrimitiveSaturationFilter = (function(_super) {
 module.exports = PrimitiveSaturationFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],17:[function(require,module,exports){
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],19:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/k1.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16513,7 +16189,7 @@ K1Filter = (function(_super) {
 module.exports = K1Filter;
 
 
-},{"./filter.coffee":9,"./primitives/saturation.coffee":16,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],18:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/saturation.coffee":18,"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],20:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/softcoloroverlay.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16556,7 +16232,7 @@ PrimitiveSoftColorOverlayFilter = (function(_super) {
 module.exports = PrimitiveSoftColorOverlayFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],19:[function(require,module,exports){
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],21:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/k2.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16599,7 +16275,7 @@ K2Filter = (function(_super) {
 module.exports = K2Filter;
 
 
-},{"./filter.coffee":9,"./primitives/softcoloroverlay.coffee":18,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],20:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/softcoloroverlay.coffee":20,"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],22:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/k6.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16632,7 +16308,7 @@ K6Filter = (function(_super) {
 module.exports = K6Filter;
 
 
-},{"./primitives/saturation.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],21:[function(require,module,exports){
+},{"./primitives/saturation.coffee":18,"__browserify_Buffer":3,"__browserify_process":1}],23:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/kdynamic.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16673,7 +16349,7 @@ KDynamicFilter = (function(_super) {
 module.exports = KDynamicFilter;
 
 
-},{"./filter.coffee":9,"./primitives/saturation.coffee":16,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],22:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/saturation.coffee":18,"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],24:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/fridge.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16710,7 +16386,7 @@ FridgeFilter = (function(_super) {
 module.exports = FridgeFilter;
 
 
-},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],23:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],25:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/desaturation.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16760,7 +16436,7 @@ PrimitiveDesaturationFilter = (function(_super) {
 module.exports = PrimitiveDesaturationFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],24:[function(require,module,exports){
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],26:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/breeze.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16803,7 +16479,7 @@ BreezeFilter = (function(_super) {
 module.exports = BreezeFilter;
 
 
-},{"./filter.coffee":9,"./primitives/desaturation.coffee":23,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],25:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/desaturation.coffee":25,"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],27:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/orchid.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16848,7 +16524,7 @@ OrchidFilter = (function(_super) {
 module.exports = OrchidFilter;
 
 
-},{"./filter.coffee":9,"./primitives/desaturation.coffee":23,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],26:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/desaturation.coffee":25,"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],28:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/chest.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16885,7 +16561,7 @@ ChestFilter = (function(_super) {
 module.exports = ChestFilter;
 
 
-},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],27:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],29:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/front.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16922,7 +16598,7 @@ FrontFilter = (function(_super) {
 module.exports = FrontFilter;
 
 
-},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],28:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],30:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/fixie.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16959,7 +16635,7 @@ FixieFilter = (function(_super) {
 module.exports = FixieFilter;
 
 
-},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],29:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],31:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/x400.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17008,7 +16684,7 @@ PrimitiveX400Filter = (function(_super) {
 module.exports = PrimitiveX400Filter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],30:[function(require,module,exports){
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],32:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/x400.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17039,7 +16715,7 @@ X400Filter = (function(_super) {
 module.exports = X400Filter;
 
 
-},{"./primitives/x400.coffee":29,"__browserify_Buffer":3,"__browserify_process":1}],31:[function(require,module,exports){
+},{"./primitives/x400.coffee":31,"__browserify_Buffer":3,"__browserify_process":1}],33:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/grayscale.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17083,7 +16759,7 @@ PrimtiveGrayscaleFilter = (function(_super) {
 module.exports = PrimtiveGrayscaleFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],32:[function(require,module,exports){
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],34:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/bw.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17114,7 +16790,7 @@ BWFilter = (function(_super) {
 module.exports = BWFilter;
 
 
-},{"./primitives/grayscale.coffee":31,"__browserify_Buffer":3,"__browserify_process":1}],33:[function(require,module,exports){
+},{"./primitives/grayscale.coffee":33,"__browserify_Buffer":3,"__browserify_process":1}],35:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/contrast.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17172,7 +16848,7 @@ PrimitiveContrastFilter = (function(_super) {
 module.exports = PrimitiveContrastFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],34:[function(require,module,exports){
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],36:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/bwhard.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17211,7 +16887,7 @@ BWHardFilter = (function(_super) {
 module.exports = BWHardFilter;
 
 
-},{"./filter.coffee":9,"./primitives/contrast.coffee":33,"./primitives/grayscale.coffee":31,"__browserify_Buffer":3,"__browserify_process":1}],35:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/contrast.coffee":35,"./primitives/grayscale.coffee":33,"__browserify_Buffer":3,"__browserify_process":1}],37:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/lenin.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17254,7 +16930,7 @@ LeninFilter = (function(_super) {
 module.exports = LeninFilter;
 
 
-},{"./filter.coffee":9,"./primitives/desaturation.coffee":23,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],36:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/desaturation.coffee":25,"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],38:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/quozi.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17297,7 +16973,7 @@ QuoziFilter = (function(_super) {
 module.exports = QuoziFilter;
 
 
-},{"./filter.coffee":9,"./primitives/desaturation.coffee":23,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],37:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/desaturation.coffee":25,"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],39:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/pola669.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17344,7 +17020,7 @@ Pola669Filter = (function(_super) {
 module.exports = Pola669Filter;
 
 
-},{"./filter.coffee":9,"./primitives/contrast.coffee":33,"./primitives/saturation.coffee":16,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],38:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/contrast.coffee":35,"./primitives/saturation.coffee":18,"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],40:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/pola.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17391,7 +17067,7 @@ PolaFilter = (function(_super) {
 module.exports = PolaFilter;
 
 
-},{"./filter.coffee":9,"./primitives/contrast.coffee":33,"./primitives/saturation.coffee":16,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],39:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/contrast.coffee":35,"./primitives/saturation.coffee":18,"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],41:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/food.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17432,7 +17108,7 @@ FoodFilter = (function(_super) {
 module.exports = FoodFilter;
 
 
-},{"./filter.coffee":9,"./primitives/contrast.coffee":33,"./primitives/saturation.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],40:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/contrast.coffee":35,"./primitives/saturation.coffee":18,"__browserify_Buffer":3,"__browserify_process":1}],42:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/glam.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17477,7 +17153,7 @@ GlamFilter = (function(_super) {
 module.exports = GlamFilter;
 
 
-},{"./filter.coffee":9,"./primitives/contrast.coffee":33,"./primitives/grayscale.coffee":31,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],41:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/contrast.coffee":35,"./primitives/grayscale.coffee":33,"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],43:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/celsius.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17514,7 +17190,7 @@ CelsiusFilter = (function(_super) {
 module.exports = CelsiusFilter;
 
 
-},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],42:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],44:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/texas.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17551,7 +17227,7 @@ TexasFilter = (function(_super) {
 module.exports = TexasFilter;
 
 
-},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],43:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],45:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/glow.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17609,7 +17285,7 @@ PrimitiveGlowFilter = (function(_super) {
 module.exports = PrimitiveGlowFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],44:[function(require,module,exports){
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],46:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/morning.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17650,7 +17326,7 @@ MorningFilter = (function(_super) {
 module.exports = MorningFilter;
 
 
-},{"./filter.coffee":9,"./primitives/glow.coffee":43,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],45:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/glow.coffee":45,"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],47:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/lomo.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17689,7 +17365,7 @@ LomoFilter = (function(_super) {
 module.exports = LomoFilter;
 
 
-},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],46:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],48:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/gobblin.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17733,7 +17409,7 @@ PrimitiveGobblinFilter = (function(_super) {
 module.exports = PrimitiveGobblinFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],47:[function(require,module,exports){
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],49:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/gobblin.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17764,7 +17440,7 @@ GobblinFilter = (function(_super) {
 module.exports = GobblinFilter;
 
 
-},{"./primitives/gobblin.coffee":46,"__browserify_Buffer":3,"__browserify_process":1}],48:[function(require,module,exports){
+},{"./primitives/gobblin.coffee":48,"__browserify_Buffer":3,"__browserify_process":1}],50:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/mellow.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17801,7 +17477,7 @@ MellowFilter = (function(_super) {
 module.exports = MellowFilter;
 
 
-},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],49:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],51:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/sunny.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17846,7 +17522,7 @@ SunnyFilter = (function(_super) {
 module.exports = SunnyFilter;
 
 
-},{"./filter.coffee":9,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],50:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],52:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/brightness.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17896,7 +17572,7 @@ PrimitiveBrightnessFilter = (function(_super) {
 module.exports = PrimitiveBrightnessFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],51:[function(require,module,exports){
+},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],53:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/a15.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17943,7 +17619,7 @@ A15Filter = (function(_super) {
 module.exports = A15Filter;
 
 
-},{"./filter.coffee":9,"./primitives/brightness.coffee":50,"./primitives/contrast.coffee":33,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],52:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/brightness.coffee":52,"./primitives/contrast.coffee":35,"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],54:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/semired.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17984,7 +17660,7 @@ SemiRedFilter = (function(_super) {
 module.exports = SemiRedFilter;
 
 
-},{"./filter.coffee":9,"./primitives/glow.coffee":43,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],53:[function(require,module,exports){
+},{"./filter.coffee":9,"./primitives/glow.coffee":45,"./primitives/tonecurve.coffee":17,"__browserify_Buffer":3,"__browserify_process":1}],55:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/filters.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -18048,7 +17724,7 @@ UIControlsFilters = (function(_super) {
 module.exports = UIControlsFilters;
 
 
-},{"../../operations/filters/a15.coffee":51,"../../operations/filters/breeze.coffee":24,"../../operations/filters/bw.coffee":32,"../../operations/filters/bwhard.coffee":34,"../../operations/filters/celsius.coffee":41,"../../operations/filters/chest.coffee":26,"../../operations/filters/default.coffee":14,"../../operations/filters/fixie.coffee":28,"../../operations/filters/food.coffee":39,"../../operations/filters/fridge.coffee":22,"../../operations/filters/front.coffee":27,"../../operations/filters/glam.coffee":40,"../../operations/filters/gobblin.coffee":47,"../../operations/filters/k1.coffee":17,"../../operations/filters/k2.coffee":19,"../../operations/filters/k6.coffee":20,"../../operations/filters/kdynamic.coffee":21,"../../operations/filters/lenin.coffee":35,"../../operations/filters/lomo.coffee":45,"../../operations/filters/mellow.coffee":48,"../../operations/filters/morning.coffee":44,"../../operations/filters/orchid.coffee":25,"../../operations/filters/pola.coffee":38,"../../operations/filters/pola669.coffee":37,"../../operations/filters/quozi.coffee":36,"../../operations/filters/semired.coffee":52,"../../operations/filters/sunny.coffee":49,"../../operations/filters/texas.coffee":42,"../../operations/filters/x400.coffee":30,"../../utils.coffee":6,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],54:[function(require,module,exports){
+},{"../../operations/filters/a15.coffee":53,"../../operations/filters/breeze.coffee":26,"../../operations/filters/bw.coffee":34,"../../operations/filters/bwhard.coffee":36,"../../operations/filters/celsius.coffee":43,"../../operations/filters/chest.coffee":28,"../../operations/filters/default.coffee":16,"../../operations/filters/fixie.coffee":30,"../../operations/filters/food.coffee":41,"../../operations/filters/fridge.coffee":24,"../../operations/filters/front.coffee":29,"../../operations/filters/glam.coffee":42,"../../operations/filters/gobblin.coffee":49,"../../operations/filters/k1.coffee":19,"../../operations/filters/k2.coffee":21,"../../operations/filters/k6.coffee":22,"../../operations/filters/kdynamic.coffee":23,"../../operations/filters/lenin.coffee":37,"../../operations/filters/lomo.coffee":47,"../../operations/filters/mellow.coffee":50,"../../operations/filters/morning.coffee":46,"../../operations/filters/orchid.coffee":27,"../../operations/filters/pola.coffee":40,"../../operations/filters/pola669.coffee":39,"../../operations/filters/quozi.coffee":38,"../../operations/filters/semired.coffee":54,"../../operations/filters/sunny.coffee":51,"../../operations/filters/texas.coffee":44,"../../operations/filters/x400.coffee":32,"../../utils.coffee":6,"./base/list.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],56:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/math/vector2.coffee",__dirname="/math";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -18220,7 +17896,7 @@ Vector2 = (function() {
 module.exports = Vector2;
 
 
-},{"__browserify_Buffer":3,"__browserify_process":1}],55:[function(require,module,exports){
+},{"__browserify_Buffer":3,"__browserify_process":1}],57:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/math/rect.coffee",__dirname="/math";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -18309,7 +17985,7 @@ Rect = (function() {
 module.exports = Rect;
 
 
-},{"__browserify_Buffer":3,"__browserify_process":1}],56:[function(require,module,exports){
+},{"__browserify_Buffer":3,"__browserify_process":1}],58:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/draw_image.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -18382,7 +18058,7 @@ module.exports = DrawImageOperation = (function(_super) {
 })(Operation);
 
 
-},{"../math/rect.coffee":55,"../math/vector2.coffee":54,"../utils.coffee":6,"../vendor/queue.coffee":5,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],57:[function(require,module,exports){
+},{"../math/rect.coffee":57,"../math/vector2.coffee":56,"../utils.coffee":6,"../vendor/queue.coffee":5,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],59:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/stickers_control.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -18654,7 +18330,7 @@ UIControlsStickers = (function(_super) {
 module.exports = UIControlsStickers;
 
 
-},{"../../math/rect.coffee":55,"../../math/vector2.coffee":54,"../../operations/draw_image.coffee":56,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],58:[function(require,module,exports){
+},{"../../math/rect.coffee":57,"../../math/vector2.coffee":56,"../../operations/draw_image.coffee":58,"./base/list.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],60:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/orientation.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -18809,7 +18485,7 @@ OrientationOperation = (function(_super) {
 module.exports = OrientationOperation;
 
 
-},{"../utils.coffee":6,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],59:[function(require,module,exports){
+},{"../utils.coffee":6,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],61:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/orientation.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -18872,7 +18548,7 @@ UIControlsOrientation = (function(_super) {
 module.exports = UIControlsOrientation;
 
 
-},{"../../operations/orientation.coffee":58,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],60:[function(require,module,exports){
+},{"../../operations/orientation.coffee":60,"./base/list.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],62:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/focus/focus.coffee",__dirname="/operations/focus";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -19130,7 +18806,7 @@ Focus = (function(_super) {
 module.exports = Focus;
 
 
-},{"../../utils.coffee":6,"../operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],61:[function(require,module,exports){
+},{"../../utils.coffee":6,"../operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],63:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/focus/radial.coffee",__dirname="/operations/focus";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -19216,7 +18892,7 @@ RadialFocus = (function(_super) {
 module.exports = RadialFocus;
 
 
-},{"../../math/vector2.coffee":54,"./focus.coffee":60,"__browserify_Buffer":3,"__browserify_process":1}],62:[function(require,module,exports){
+},{"../../math/vector2.coffee":56,"./focus.coffee":62,"__browserify_Buffer":3,"__browserify_process":1}],64:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/focus/linear.coffee",__dirname="/operations/focus";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -19306,7 +18982,7 @@ LinearFocus = (function(_super) {
 module.exports = LinearFocus;
 
 
-},{"../../math/vector2.coffee":54,"./focus.coffee":60,"__browserify_Buffer":3,"__browserify_process":1}],63:[function(require,module,exports){
+},{"../../math/vector2.coffee":56,"./focus.coffee":62,"__browserify_Buffer":3,"__browserify_process":1}],65:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/focus.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -19645,7 +19321,7 @@ UIControlsFocus = (function(_super) {
 module.exports = UIControlsFocus;
 
 
-},{"../../math/vector2.coffee":54,"../../operations/focus/linear.coffee":62,"../../operations/focus/radial.coffee":61,"../../utils.coffee":6,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],64:[function(require,module,exports){
+},{"../../math/vector2.coffee":56,"../../operations/focus/linear.coffee":64,"../../operations/focus/radial.coffee":63,"../../utils.coffee":6,"./base/list.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],66:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/crop.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -19755,172 +19431,7 @@ CropOperation = (function(_super) {
 module.exports = CropOperation;
 
 
-},{"../math/vector2.coffee":54,"../utils.coffee":6,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],65:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/base/slider.coffee",__dirname="/ui/controls/base";/*
-  ImglyKit
-  Copyright (c) 2013-2014 img.ly
-*/
-
-var Base, UIControlsBaseSlider, _ref,
-  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Base = require("./base.coffee");
-
-UIControlsBaseSlider = (function(_super) {
-  __extends(UIControlsBaseSlider, _super);
-
-  function UIControlsBaseSlider() {
-    this.onMouseUp = __bind(this.onMouseUp, this);
-    this.onMouseMove = __bind(this.onMouseMove, this);
-    _ref = UIControlsBaseSlider.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  UIControlsBaseSlider.prototype.init = function() {
-    var spaceForPlusAndMinus, width;
-    spaceForPlusAndMinus = 60;
-    width = this.controls.getContainer().width();
-    width -= this.controls.getHeight() * 2;
-    width -= spaceForPlusAndMinus;
-    this.wrapper = $("<div>").addClass(ImglyKit.classPrefix + "controls-wrapper").attr("data-control", this.constructor.name).appendTo(this.controls.getContainer());
-    this.sliderWrapper = $("<div>").addClass(ImglyKit.classPrefix + "controls-slider-wrapper").width(width).appendTo(this.wrapper);
-    this.sliderCenterDot = $("<div>").addClass(ImglyKit.classPrefix + "controls-slider-dot").appendTo(this.sliderWrapper);
-    this.sliderBar = $("<div>").addClass(ImglyKit.classPrefix + "controls-slider-bar").appendTo(this.sliderWrapper);
-    this.slider = $("<div>").addClass(ImglyKit.classPrefix + "controls-slider").css({
-      left: width / 2
-    }).appendTo(this.sliderWrapper);
-    /*
-      Plus / Minus images
-    */
-
-    $("<div>").addClass(ImglyKit.classPrefix + "controls-slider-plus").appendTo(this.sliderWrapper);
-    $("<div>").addClass(ImglyKit.classPrefix + "controls-slider-minus").appendTo(this.sliderWrapper);
-    this.handleSliderControl();
-    return this.createButtons();
-  };
-
-  /*
-    Handles slider dragging
-  */
-
-
-  UIControlsBaseSlider.prototype.handleSliderControl = function() {
-    var _this = this;
-    this.sliderWidth = this.sliderWrapper.width();
-    return this.slider.mousedown(function(e) {
-      _this.lastX = e.clientX;
-      _this.currentSliderLeft = parseInt(_this.slider.css("left"));
-      $(document).mousemove(_this.onMouseMove);
-      return $(document).mouseup(_this.onMouseUp);
-    });
-  };
-
-  /*
-    Is called when the slider has been moved
-  
-    @param {Integer} left
-  */
-
-
-  UIControlsBaseSlider.prototype.setSliderLeft = function(left) {
-    var barWidth, normalized;
-    this.slider.css({
-      left: left
-    });
-    if (left < this.sliderWidth / 2) {
-      barWidth = this.sliderWidth / 2 - left;
-      this.sliderBar.css({
-        left: left,
-        width: barWidth
-      });
-    } else {
-      barWidth = left - this.sliderWidth / 2;
-      this.sliderBar.css({
-        left: this.sliderWidth / 2,
-        width: barWidth
-      });
-    }
-    normalized = (left - this.sliderWidth / 2) / this.sliderWidth * 2;
-    this.operation[this.valueSetMethod].apply(this.operation, [normalized]);
-    return this.app.getPhotoProcessor().renderPreview();
-  };
-
-  /*
-    Is called when the slider has been pressed and is being dragged
-  
-    @param {MouseEvent} e
-  */
-
-
-  UIControlsBaseSlider.prototype.onMouseMove = function(e) {
-    var curX, deltaX, sliderLeft;
-    curX = e.clientX;
-    deltaX = curX - this.lastX;
-    sliderLeft = Math.min(Math.max(0, this.currentSliderLeft + deltaX), this.sliderWidth);
-    if (sliderLeft < this.sliderWidth && sliderLeft > 0) {
-      this.lastX = curX;
-      this.currentSliderLeft = sliderLeft;
-    }
-    return this.setSliderLeft(sliderLeft);
-  };
-
-  /*
-    Is called when the slider has been pressed and is being dragged
-  
-    @param {MouseEvent} e
-  */
-
-
-  UIControlsBaseSlider.prototype.onMouseUp = function(e) {
-    $(document).off("mouseup", this.onMouseUp);
-    return $(document).off("mousemove", this.onMouseMove);
-  };
-
-  return UIControlsBaseSlider;
-
-})(Base);
-
-module.exports = UIControlsBaseSlider;
-
-
-},{"./base.coffee":12,"__browserify_Buffer":3,"__browserify_process":1}],66:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/brightness.coffee",__dirname="/ui/controls";/*
-  ImglyKit
-  Copyright (c) 2013-2014 img.ly
-*/
-
-var Slider, UIControlsBrightness, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Slider = require("./base/slider.coffee");
-
-UIControlsBrightness = (function(_super) {
-  __extends(UIControlsBrightness, _super);
-
-  function UIControlsBrightness() {
-    _ref = UIControlsBrightness.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  UIControlsBrightness.prototype.name = "Brightness";
-
-  UIControlsBrightness.prototype.cssClass = "brightness";
-
-  UIControlsBrightness.prototype.valueSetMethod = "setBrightness";
-
-  UIControlsBrightness.prototype.displayButtons = true;
-
-  return UIControlsBrightness;
-
-})(Slider);
-
-module.exports = UIControlsBrightness;
-
-
-},{"./base/slider.coffee":65,"__browserify_Buffer":3,"__browserify_process":1}],67:[function(require,module,exports){
+},{"../math/vector2.coffee":56,"../utils.coffee":6,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],67:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/crop.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20382,7 +19893,172 @@ UIControlsCrop = (function(_super) {
 module.exports = UIControlsCrop;
 
 
-},{"../../math/rect.coffee":55,"../../math/vector2.coffee":54,"../../operations/crop.coffee":64,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],68:[function(require,module,exports){
+},{"../../math/rect.coffee":57,"../../math/vector2.coffee":56,"../../operations/crop.coffee":66,"./base/list.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],68:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/base/slider.coffee",__dirname="/ui/controls/base";/*
+  ImglyKit
+  Copyright (c) 2013-2014 img.ly
+*/
+
+var Base, UIControlsBaseSlider, _ref,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Base = require("./base.coffee");
+
+UIControlsBaseSlider = (function(_super) {
+  __extends(UIControlsBaseSlider, _super);
+
+  function UIControlsBaseSlider() {
+    this.onMouseUp = __bind(this.onMouseUp, this);
+    this.onMouseMove = __bind(this.onMouseMove, this);
+    _ref = UIControlsBaseSlider.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  UIControlsBaseSlider.prototype.init = function() {
+    var spaceForPlusAndMinus, width;
+    spaceForPlusAndMinus = 60;
+    width = this.controls.getContainer().width();
+    width -= this.controls.getHeight() * 2;
+    width -= spaceForPlusAndMinus;
+    this.wrapper = $("<div>").addClass(ImglyKit.classPrefix + "controls-wrapper").attr("data-control", this.constructor.name).appendTo(this.controls.getContainer());
+    this.sliderWrapper = $("<div>").addClass(ImglyKit.classPrefix + "controls-slider-wrapper").width(width).appendTo(this.wrapper);
+    this.sliderCenterDot = $("<div>").addClass(ImglyKit.classPrefix + "controls-slider-dot").appendTo(this.sliderWrapper);
+    this.sliderBar = $("<div>").addClass(ImglyKit.classPrefix + "controls-slider-bar").appendTo(this.sliderWrapper);
+    this.slider = $("<div>").addClass(ImglyKit.classPrefix + "controls-slider").css({
+      left: width / 2
+    }).appendTo(this.sliderWrapper);
+    /*
+      Plus / Minus images
+    */
+
+    $("<div>").addClass(ImglyKit.classPrefix + "controls-slider-plus").appendTo(this.sliderWrapper);
+    $("<div>").addClass(ImglyKit.classPrefix + "controls-slider-minus").appendTo(this.sliderWrapper);
+    this.handleSliderControl();
+    return this.createButtons();
+  };
+
+  /*
+    Handles slider dragging
+  */
+
+
+  UIControlsBaseSlider.prototype.handleSliderControl = function() {
+    var _this = this;
+    this.sliderWidth = this.sliderWrapper.width();
+    return this.slider.mousedown(function(e) {
+      _this.lastX = e.clientX;
+      _this.currentSliderLeft = parseInt(_this.slider.css("left"));
+      $(document).mousemove(_this.onMouseMove);
+      return $(document).mouseup(_this.onMouseUp);
+    });
+  };
+
+  /*
+    Is called when the slider has been moved
+  
+    @param {Integer} left
+  */
+
+
+  UIControlsBaseSlider.prototype.setSliderLeft = function(left) {
+    var barWidth, normalized;
+    this.slider.css({
+      left: left
+    });
+    if (left < this.sliderWidth / 2) {
+      barWidth = this.sliderWidth / 2 - left;
+      this.sliderBar.css({
+        left: left,
+        width: barWidth
+      });
+    } else {
+      barWidth = left - this.sliderWidth / 2;
+      this.sliderBar.css({
+        left: this.sliderWidth / 2,
+        width: barWidth
+      });
+    }
+    normalized = (left - this.sliderWidth / 2) / this.sliderWidth * 2;
+    this.operation[this.valueSetMethod].apply(this.operation, [normalized]);
+    return this.app.getPhotoProcessor().renderPreview();
+  };
+
+  /*
+    Is called when the slider has been pressed and is being dragged
+  
+    @param {MouseEvent} e
+  */
+
+
+  UIControlsBaseSlider.prototype.onMouseMove = function(e) {
+    var curX, deltaX, sliderLeft;
+    curX = e.clientX;
+    deltaX = curX - this.lastX;
+    sliderLeft = Math.min(Math.max(0, this.currentSliderLeft + deltaX), this.sliderWidth);
+    if (sliderLeft < this.sliderWidth && sliderLeft > 0) {
+      this.lastX = curX;
+      this.currentSliderLeft = sliderLeft;
+    }
+    return this.setSliderLeft(sliderLeft);
+  };
+
+  /*
+    Is called when the slider has been pressed and is being dragged
+  
+    @param {MouseEvent} e
+  */
+
+
+  UIControlsBaseSlider.prototype.onMouseUp = function(e) {
+    $(document).off("mouseup", this.onMouseUp);
+    return $(document).off("mousemove", this.onMouseMove);
+  };
+
+  return UIControlsBaseSlider;
+
+})(Base);
+
+module.exports = UIControlsBaseSlider;
+
+
+},{"./base.coffee":14,"__browserify_Buffer":3,"__browserify_process":1}],69:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/brightness.coffee",__dirname="/ui/controls";/*
+  ImglyKit
+  Copyright (c) 2013-2014 img.ly
+*/
+
+var Slider, UIControlsBrightness, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Slider = require("./base/slider.coffee");
+
+UIControlsBrightness = (function(_super) {
+  __extends(UIControlsBrightness, _super);
+
+  function UIControlsBrightness() {
+    _ref = UIControlsBrightness.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  UIControlsBrightness.prototype.name = "Brightness";
+
+  UIControlsBrightness.prototype.cssClass = "brightness";
+
+  UIControlsBrightness.prototype.valueSetMethod = "setBrightness";
+
+  UIControlsBrightness.prototype.displayButtons = true;
+
+  return UIControlsBrightness;
+
+})(Slider);
+
+module.exports = UIControlsBrightness;
+
+
+},{"./base/slider.coffee":68,"__browserify_Buffer":3,"__browserify_process":1}],70:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/brightness.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20439,7 +20115,7 @@ BrightnessOperation = (function(_super) {
 module.exports = BrightnessOperation;
 
 
-},{"./filters/filter.coffee":9,"./filters/primitives/brightness.coffee":50,"__browserify_Buffer":3,"__browserify_process":1}],69:[function(require,module,exports){
+},{"./filters/filter.coffee":9,"./filters/primitives/brightness.coffee":52,"__browserify_Buffer":3,"__browserify_process":1}],71:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/contrast.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20474,7 +20150,7 @@ UIControlsContrast = (function(_super) {
 module.exports = UIControlsContrast;
 
 
-},{"./base/slider.coffee":65,"__browserify_Buffer":3,"__browserify_process":1}],70:[function(require,module,exports){
+},{"./base/slider.coffee":68,"__browserify_Buffer":3,"__browserify_process":1}],72:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/contrast.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20531,7 +20207,7 @@ ContrastOperation = (function(_super) {
 module.exports = ContrastOperation;
 
 
-},{"./filters/filter.coffee":9,"./filters/primitives/contrast.coffee":33,"__browserify_Buffer":3,"__browserify_process":1}],71:[function(require,module,exports){
+},{"./filters/filter.coffee":9,"./filters/primitives/contrast.coffee":35,"__browserify_Buffer":3,"__browserify_process":1}],73:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/saturation.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20566,7 +20242,7 @@ UIControlsSaturation = (function(_super) {
 module.exports = UIControlsSaturation;
 
 
-},{"./base/slider.coffee":65,"__browserify_Buffer":3,"__browserify_process":1}],72:[function(require,module,exports){
+},{"./base/slider.coffee":68,"__browserify_Buffer":3,"__browserify_process":1}],74:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/saturation.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20623,7 +20299,7 @@ SaturationOperation = (function(_super) {
 module.exports = SaturationOperation;
 
 
-},{"./filters/filter.coffee":9,"./filters/primitives/saturation.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],73:[function(require,module,exports){
+},{"./filters/filter.coffee":9,"./filters/primitives/saturation.coffee":18,"__browserify_Buffer":3,"__browserify_process":1}],75:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/text.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20698,7 +20374,7 @@ FontOperation = (function(_super) {
 module.exports = FontOperation;
 
 
-},{"../math/rect.coffee":55,"../math/vector2.coffee":54,"../utils.coffee":6,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],74:[function(require,module,exports){
+},{"../math/rect.coffee":57,"../math/vector2.coffee":56,"../utils.coffee":6,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],76:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/frames.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20896,7 +20572,7 @@ FramesOperation = (function(_super) {
 module.exports = FramesOperation;
 
 
-},{"../math/rect.coffee":55,"../math/vector2.coffee":54,"../utils.coffee":6,"../vendor/queue.coffee":5,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],75:[function(require,module,exports){
+},{"../math/rect.coffee":57,"../math/vector2.coffee":56,"../utils.coffee":6,"../vendor/queue.coffee":5,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],77:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/frames.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20984,7 +20660,7 @@ UIControlsFrames = (function(_super) {
 module.exports = UIControlsFrames;
 
 
-},{"../../math/rect.coffee":55,"../../math/vector2.coffee":54,"../../operations/frames.coffee":74,"../../utils.coffee":6,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],76:[function(require,module,exports){
+},{"../../math/rect.coffee":57,"../../math/vector2.coffee":56,"../../operations/frames.coffee":76,"../../utils.coffee":6,"./base/list.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],13:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/overview.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -21081,165 +20757,7 @@ UIControlsOverview = (function(_super) {
 module.exports = UIControlsOverview;
 
 
-},{"../../operations/brightness.coffee":68,"../../operations/contrast.coffee":70,"../../operations/crop.coffee":64,"../../operations/frames.coffee":74,"../../operations/saturation.coffee":72,"../../operations/text.coffee":73,"./base/list.coffee":13,"./brightness.coffee":66,"./contrast.coffee":69,"./crop.coffee":67,"./filters.coffee":53,"./focus.coffee":63,"./frames.coffee":75,"./orientation.coffee":59,"./saturation.coffee":71,"./stickers_control.coffee":57,"./text.coffee":77,"__browserify_Buffer":3,"__browserify_process":1}],78:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls.coffee",__dirname="/ui";/*
-  ImglyKit
-  Copyright (c) 2013-2014 img.ly
-*/
-
-var EventEmitter, Overview, UIControls,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Overview = require("./controls/overview.coffee");
-
-EventEmitter = require("events").EventEmitter;
-
-UIControls = (function(_super) {
-  __extends(UIControls, _super);
-
-  /*
-    @param {imglyUtil} app
-    @param {imglyUtil.UI} ui
-  */
-
-
-  function UIControls(app, ui) {
-    this.app = app;
-    this.ui = ui;
-    this.container = this.app.getContainer();
-    this.init();
-  }
-
-  /*
-    @returns {Integer} Height of the controls container
-  */
-
-
-  UIControls.prototype.getHeight = function() {
-    return this.controlsContainer.height();
-  };
-
-  /*
-    @returns {jQuery.Object} The controls container
-  */
-
-
-  UIControls.prototype.getContainer = function() {
-    return this.controlsContainer;
-  };
-
-  /*
-    @returns {ImglyKit.UI.Controls.Base}
-  */
-
-
-  UIControls.prototype.getCurrentControls = function() {
-    return this.currentControls;
-  };
-
-  /*
-    Initializes the container
-  */
-
-
-  UIControls.prototype.init = function() {
-    this.controlsContainer = $("<div>").addClass(ImglyKit.classPrefix + "controls-container").appendTo(this.container);
-    return this.initOverview();
-  };
-
-  /*
-    Initialize the overview
-  */
-
-
-  UIControls.prototype.initOverview = function() {
-    this.currentControls = this.overview = new Overview(this.app, this.ui, this);
-    this.attachEvents(this.currentControls);
-    this.overview.init();
-    if (this.app.options.initialControls == null) {
-      return this.overview.show();
-    }
-  };
-
-  /*
-    Attach select events
-  */
-
-
-  UIControls.prototype.attachEvents = function(controls) {
-    var _this = this;
-    controls.on("select", function(option) {
-      if (option.controls != null) {
-        _this.switchToControls(option.controls, controls);
-      }
-      if (option.operation != null) {
-        return _this.emit("preview_operation", new option.operation(_this.app, option.options));
-      }
-    });
-    controls.on("back", function() {
-      return _this.emit("back");
-    });
-    controls.on("done", function() {
-      return _this.emit("done");
-    });
-    return controls.on("renderPreview", function() {
-      return _this.app.getPhotoProcessor().renderPreview();
-    });
-  };
-
-  /*
-    Switch to another controls instance
-  */
-
-
-  UIControls.prototype.switchToControls = function(controlsClass, oldControls, options) {
-    var canvasControlsContainer, key, value,
-      _this = this;
-    if (options == null) {
-      options = {};
-    }
-    this.currentControls = new controlsClass(this.app, this.ui, this);
-    for (key in options) {
-      value = options[key];
-      this.currentControls.options[key] = value;
-    }
-    this.attachEvents(this.currentControls);
-    if (this.currentControls.hasCanvasControls) {
-      canvasControlsContainer = this.ui.getCanvas().getControlsContainer();
-      this.currentControls.setupCanvasControls(canvasControlsContainer);
-      canvasControlsContainer.fadeIn("slow");
-    }
-    this.currentControls.init();
-    return oldControls.hide(function() {
-      return _this.currentControls.show();
-    });
-  };
-
-  /*
-    Returns to the default view
-  */
-
-
-  UIControls.prototype.reset = function() {
-    var _ref,
-      _this = this;
-    this.overview.reset();
-    this.ui.getCanvas().getControlsContainer().hide().html("");
-    return (_ref = this.currentControls) != null ? _ref.hide(function() {
-      _this.currentControls.remove();
-      return _this.overview.show();
-    }) : void 0;
-  };
-
-  return UIControls;
-
-})(EventEmitter);
-
-module.exports = UIControls;
-
-
-},{"./controls/overview.coffee":76,"__browserify_Buffer":3,"__browserify_process":1,"events":7}],79:[function(require,module,exports){
+},{"../../operations/brightness.coffee":70,"../../operations/contrast.coffee":72,"../../operations/crop.coffee":66,"../../operations/frames.coffee":76,"../../operations/saturation.coffee":74,"../../operations/text.coffee":75,"./base/list.coffee":15,"./brightness.coffee":69,"./contrast.coffee":71,"./crop.coffee":67,"./filters.coffee":55,"./focus.coffee":65,"./frames.coffee":77,"./orientation.coffee":61,"./saturation.coffee":73,"./stickers_control.coffee":59,"./text.coffee":78,"__browserify_Buffer":3,"__browserify_process":1}],79:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/canvas.coffee",__dirname="/ui";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -21503,7 +21021,7 @@ UI = (function(_super) {
 module.exports = UI;
 
 
-},{"./canvas.coffee":79,"./controls.coffee":78,"__browserify_Buffer":3,"__browserify_process":1,"events":7}],81:[function(require,module,exports){
+},{"./canvas.coffee":79,"./controls.coffee":12,"__browserify_Buffer":3,"__browserify_process":1,"events":7}],81:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/imgly.coffee",__dirname="/";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -21755,7 +21273,7 @@ ImglyKit = (function() {
 window.ImglyKit = ImglyKit;
 
 
-},{"./photoprocessor.coffee":11,"./ui/controls/crop.coffee":67,"./ui/ui.coffee":80,"./utils.coffee":6,"__browserify_Buffer":3,"__browserify_process":1}],77:[function(require,module,exports){
+},{"./photoprocessor.coffee":11,"./ui/controls/crop.coffee":67,"./ui/ui.coffee":80,"./utils.coffee":6,"__browserify_Buffer":3,"__browserify_process":1}],78:[function(require,module,exports){
 /*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -21860,24 +21378,23 @@ UIControlsText = (function(_super) {
 
 
   UIControlsText.prototype.handleColorsControl = function() {
-    var defaultColor,
+    var defaultForegroundColor,
       _this = this;
-    defaultColor = 'ffffff';
-    this.colorControl.ColorPicker({
-      'onChange': function(hsbColor, hexColor) {
-        var color;
-        color = '#' + hexColor;
+    defaultForegroundColor = '#ffffff';
+    this.colorControl.spectrum({
+      color: defaultForegroundColor,
+      move: function(color) {
+        var colorHexString;
+        colorHexString = color.toHexString();
         _this.colorSelect.css({
-          backgroundColor: color
+          backgroundColor: colorHexString
         });
-        _this.operationOptions.color = color;
-        _this.operation.setOptions(_this.operationOptions);
-        return _this.console.log(color);
-      },
-      'color': defaultColor
+        _this.operationOptions.color = colorHexString;
+        return _this.operation.setOptions(_this.operationOptions);
+      }
     });
     this.colorSelect.css({
-      backgroundColor: '#' + defaultColor
+      backgroundColor: defaultForegroundColor
     });
   };
 
@@ -22075,5 +21592,5 @@ UIControlsText = (function(_super) {
 module.exports = UIControlsText;
 
 
-},{"../../math/rect.coffee":55,"../../math/vector2.coffee":54,"../../operations/text.coffee":73,"./base/list.coffee":13}]},{},[81])
+},{"../../math/rect.coffee":57,"../../math/vector2.coffee":56,"../../operations/text.coffee":75,"./base/list.coffee":15}]},{},[81])
 ;
