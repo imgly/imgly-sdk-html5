@@ -1,7 +1,7 @@
 // List has another button on the right,
 // add some more padding
-.#{$prefix}controls-list-text
-  padding-right: 153px
+// .#{$prefix}controls-list-text
+  // padding-right: 0px
 
 .#{$prefix}controls-item
   $items: ("helvetica", "lucida-grande", "times-new-roman")
@@ -37,10 +37,10 @@
 
   display: none
 
-  .#{$prefix}controls-text-color
+  .#{$prefix}controls-text-color, .#{$prefix}controls-background-color
     cursor: pointer
 
-.#{$prefix}controls-text-color
+.#{$prefix}controls-text-color, .#{$prefix}controls-background-color
   width: 34px
   height: 34px
   display: inline-block
@@ -52,7 +52,7 @@
   border: 1px solid rgba(black, 0.1)
 
 // Color controls
-.#{$prefix}controls-text-color-button
+.#{$prefix}controls-text-color-button, .#{$prefix}controls-background-color-button
   width: 80px
   height: 80px
 
@@ -61,11 +61,11 @@
   position: absolute
 
   top: 0
-  right: 73px
+  right: 80px
 
   border-left: 1px solid #363636
 
-  > .#{$prefix}controls-text-color
+  > .#{$prefix}controls-text-color, .#{$prefix}controls-background-color
     margin: 0
     position: absolute
 
@@ -75,3 +75,5 @@
     margin-top: -17px
     margin-left: -20px
 
+.#{$prefix}controls-text-color-button,
+  right: 160px

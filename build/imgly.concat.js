@@ -10570,72 +10570,200 @@ process.chdir = function (dir) {
 };
 
 },{}],2:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/vendor/perf.coffee",__dirname="/vendor";var Perf;
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/../node_modules/grunt-watchify/node_modules/browserify/node_modules/browser-builtins/builtin/events.js",__dirname="/../node_modules/grunt-watchify/node_modules/browserify/node_modules/browser-builtins/builtin";if (!process.EventEmitter) process.EventEmitter = function () {};
 
-Perf = (function() {
-  function Perf(name, options) {
-    var _base, _base1, _base2;
-    this.name = name;
-    this.options = options != null ? options : {};
-    if ((_base = this.options).good == null) {
-      _base.good = 100;
+var EventEmitter = exports.EventEmitter = process.EventEmitter;
+var isArray = typeof Array.isArray === 'function'
+    ? Array.isArray
+    : function (xs) {
+        return Object.prototype.toString.call(xs) === '[object Array]'
     }
-    if ((_base1 = this.options).bad == null) {
-      _base1.bad = 500;
+;
+function indexOf (xs, x) {
+    if (xs.indexOf) return xs.indexOf(x);
+    for (var i = 0; i < xs.length; i++) {
+        if (x === xs[i]) return i;
     }
-    if ((_base2 = this.options).debug == null) {
-      _base2.debug = true;
+    return -1;
+}
+
+// By default EventEmitters will print a warning if more than
+// 10 listeners are added to it. This is a useful default which
+// helps finding memory leaks.
+//
+// Obviously not all Emitters should be limited to 10. This function allows
+// that to be increased. Set to zero for unlimited.
+var defaultMaxListeners = 10;
+EventEmitter.prototype.setMaxListeners = function(n) {
+  if (!this._events) this._events = {};
+  this._events.maxListeners = n;
+};
+
+
+EventEmitter.prototype.emit = function(type) {
+  // If there is no 'error' event listener then throw.
+  if (type === 'error') {
+    if (!this._events || !this._events.error ||
+        (isArray(this._events.error) && !this._events.error.length))
+    {
+      if (arguments[1] instanceof Error) {
+        throw arguments[1]; // Unhandled 'error' event
+      } else {
+        throw new Error("Uncaught, unspecified 'error' event.");
+      }
+      return false;
     }
-    this.started = false;
   }
 
-  Perf.prototype.start = function() {
-    if (this.started || !this.options.debug) {
-      return;
-    }
-    this.start = +new Date();
-    return this.started = true;
-  };
+  if (!this._events) return false;
+  var handler = this._events[type];
+  if (!handler) return false;
 
-  Perf.prototype.stop = function(printLine) {
-    var background, color, duration, end, message;
-    if (!this.started || !this.options.debug) {
-      return;
+  if (typeof handler == 'function') {
+    switch (arguments.length) {
+      // fast cases
+      case 1:
+        handler.call(this);
+        break;
+      case 2:
+        handler.call(this, arguments[1]);
+        break;
+      case 3:
+        handler.call(this, arguments[1], arguments[2]);
+        break;
+      // slower
+      default:
+        var args = Array.prototype.slice.call(arguments, 1);
+        handler.apply(this, args);
     }
-    end = +new Date();
-    duration = end - this.start;
-    if (this.name != null) {
-      message = this.name + ' took';
-    } else {
-      message = 'Code execution time:';
+    return true;
+
+  } else if (isArray(handler)) {
+    var args = Array.prototype.slice.call(arguments, 1);
+
+    var listeners = handler.slice();
+    for (var i = 0, l = listeners.length; i < l; i++) {
+      listeners[i].apply(this, args);
     }
-    if (typeof window !== "undefined" && window !== null) {
-      if (duration < this.options.good) {
-        background = 'darkgreen';
-        color = 'white';
-      } else if (duration > this.options.good && duration < this.options.bad) {
-        background = 'orange';
-        color = 'black';
+    return true;
+
+  } else {
+    return false;
+  }
+};
+
+// EventEmitter is defined in src/node_events.cc
+// EventEmitter.prototype.emit() is also defined there.
+EventEmitter.prototype.addListener = function(type, listener) {
+  if ('function' !== typeof listener) {
+    throw new Error('addListener only takes instances of Function');
+  }
+
+  if (!this._events) this._events = {};
+
+  // To avoid recursion in the case that type == "newListeners"! Before
+  // adding it to the listeners, first emit "newListeners".
+  this.emit('newListener', type, listener);
+
+  if (!this._events[type]) {
+    // Optimize the case of one listener. Don't need the extra array object.
+    this._events[type] = listener;
+  } else if (isArray(this._events[type])) {
+
+    // Check for listener leak
+    if (!this._events[type].warned) {
+      var m;
+      if (this._events.maxListeners !== undefined) {
+        m = this._events.maxListeners;
       } else {
-        background = 'darkred';
-        color = 'white';
+        m = defaultMaxListeners;
       }
-      console.log('%c perf %c ' + message + ' %c ' + duration.toFixed(2) + 'ms ', 'background: #222; color: #bada55', '', 'background: ' + background + '; color: ' + color);
-    } else {
-      console.log('[perf] ' + message + ' ' + duration.toFixed(2) + 'ms');
+
+      if (m && m > 0 && this._events[type].length > m) {
+        this._events[type].warned = true;
+        console.error('(node) warning: possible EventEmitter memory ' +
+                      'leak detected. %d listeners added. ' +
+                      'Use emitter.setMaxListeners() to increase limit.',
+                      this._events[type].length);
+        console.trace();
+      }
     }
-    this.started = false;
-    if (printLine && (typeof window !== "undefined" && window !== null)) {
-      return console.log('%c perf %c -- END --                                                                          ', 'background: #222; color: #bada55', 'background: #222; color: #ffffff');
-    }
-  };
 
-  return Perf;
+    // If we've already got an array, just append.
+    this._events[type].push(listener);
+  } else {
+    // Adding the second element, need to change to array.
+    this._events[type] = [this._events[type], listener];
+  }
 
-})();
+  return this;
+};
 
-module.exports = Perf;
+EventEmitter.prototype.on = EventEmitter.prototype.addListener;
 
+EventEmitter.prototype.once = function(type, listener) {
+  var self = this;
+  self.on(type, function g() {
+    self.removeListener(type, g);
+    listener.apply(this, arguments);
+  });
+
+  return this;
+};
+
+EventEmitter.prototype.removeListener = function(type, listener) {
+  if ('function' !== typeof listener) {
+    throw new Error('removeListener only takes instances of Function');
+  }
+
+  // does not use listeners(), so no side effect of creating _events[type]
+  if (!this._events || !this._events[type]) return this;
+
+  var list = this._events[type];
+
+  if (isArray(list)) {
+    var i = indexOf(list, listener);
+    if (i < 0) return this;
+    list.splice(i, 1);
+    if (list.length == 0)
+      delete this._events[type];
+  } else if (this._events[type] === listener) {
+    delete this._events[type];
+  }
+
+  return this;
+};
+
+EventEmitter.prototype.removeAllListeners = function(type) {
+  if (arguments.length === 0) {
+    this._events = {};
+    return this;
+  }
+
+  // does not use listeners(), so no side effect of creating _events[type]
+  if (type && this._events && this._events[type]) this._events[type] = null;
+  return this;
+};
+
+EventEmitter.prototype.listeners = function(type) {
+  if (!this._events) this._events = {};
+  if (!this._events[type]) this._events[type] = [];
+  if (!isArray(this._events[type])) {
+    this._events[type] = [this._events[type]];
+  }
+  return this._events[type];
+};
+
+EventEmitter.listenerCount = function(emitter, type) {
+  var ret;
+  if (!emitter._events || !emitter._events[type])
+    ret = 0;
+  else if (typeof emitter._events[type] === 'function')
+    ret = 1;
+  else
+    ret = emitter._events[type].length;
+  return ret;
+};
 
 },{"__browserify_Buffer":3,"__browserify_process":1}],3:[function(require,module,exports){
 require=(function(e,t,n,r){function i(r){if(!n[r]){if(!t[r]){if(e)return e(r);throw new Error("Cannot find module '"+r+"'")}var s=n[r]={exports:{}};t[r][0](function(e){var n=t[r][1][e];return i(n?n:e)},s,s.exports)}return n[r].exports}for(var s=0;s<r.length;s++)i(r[s]);return i})(typeof require!=="undefined"&&require,{1:[function(require,module,exports){
@@ -14500,61 +14628,126 @@ SlowBuffer.prototype.writeDoubleBE = Buffer.prototype.writeDoubleBE;
 ;;module.exports=require("buffer-browserify")
 
 },{}],4:[function(require,module,exports){
-
-},{"__browserify_Buffer":3,"__browserify_process":1}],5:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/vendor/queue.coffee",__dirname="/vendor";/*
-  Common interface for promises.
-
-  Use jQuery's Deferreds when in browser environment,
-  otherwise assume node environment and load kriskowal's q.
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/base/base.coffee",__dirname="/ui/controls/base";/*
+  ImglyKit
+  Copyright (c) 2013-2014 img.ly
 */
 
-var Queue, provider;
+var EventEmitter, UIControlsBase,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-provider = typeof window !== "undefined" ? window.jQuery : require("q");
+EventEmitter = require("events").EventEmitter;
 
-/*
-  Creates a thenable value from the given value.
+UIControlsBase = (function(_super) {
+  __extends(UIControlsBase, _super);
 
-  @param value
-  @returns {Promise}
-*/
+  UIControlsBase.prototype.allowMultipleClick = true;
 
-
-Queue = function() {
-  return provider.when.apply(provider, arguments);
-};
-
-/*
-  Creates a new promise.
-
-  Calls the resolver which takes as arguments three functions `resolve`,
-  `reject` and `progress`.
-
-  @param {function} resolver
-  @returns {Promise}
-*/
+  /*
+    @param {imglyUtil} app
+    @param {imglyUtil.UI} ui
+  */
 
 
-Queue.promise = (function() {
-  if (typeof window !== "undefined") {
-    return function(resolver) {
-      var d;
-      d = provider.Deferred();
-      resolver(d.resolve, d.reject, d.progress);
-      return d;
-    };
-  } else {
-    return function() {
-      return provider.promise.apply(provider, arguments);
-    };
+  function UIControlsBase(app, ui, controls) {
+    var _base, _base1;
+    this.app = app;
+    this.ui = ui;
+    this.controls = controls;
+    this.domCreated = false;
+    if (this.options == null) {
+      this.options = {};
+    }
+    if ((_base = this.options).backButton == null) {
+      _base.backButton = true;
+    }
+    if ((_base1 = this.options).showList == null) {
+      _base1.showList = true;
+    }
   }
-})();
 
-module.exports = Queue;
+  /*
+    @param {imglyUtil.Operations.Operation}
+  */
 
 
-},{"__browserify_Buffer":3,"__browserify_process":1,"q":4}],6:[function(require,module,exports){
+  UIControlsBase.prototype.setOperation = function(operation) {
+    this.operation = operation;
+  };
+
+  /*
+    @param {Object} options
+  */
+
+
+  UIControlsBase.prototype.init = function(options) {};
+
+  /*
+    Handle visibility
+  */
+
+
+  UIControlsBase.prototype.show = function(cb) {
+    return this.wrapper.fadeIn("fast", cb);
+  };
+
+  UIControlsBase.prototype.hide = function(cb) {
+    return this.wrapper.fadeOut("fast", cb);
+  };
+
+  /*
+    Returns to the default view
+  */
+
+
+  UIControlsBase.prototype.reset = function() {};
+
+  /*
+    Create "Back" and "Done" buttons
+  */
+
+
+  UIControlsBase.prototype.createButtons = function() {
+    var back, done,
+      _this = this;
+    if (this.buttons == null) {
+      this.buttons = {};
+    }
+    /*
+      "Back" Button
+    */
+
+    if (this.options.backButton) {
+      back = $("<div>").addClass(ImglyKit.classPrefix + "controls-button-back").appendTo(this.wrapper);
+      back.click(function() {
+        return _this.emit("back");
+      });
+      this.buttons.back = back;
+    }
+    /*
+      "Done" Button
+    */
+
+    done = $("<div>").addClass(ImglyKit.classPrefix + "controls-button-done").appendTo(this.wrapper);
+    done.click(function() {
+      return _this.emit("done");
+    });
+    return this.buttons.done = done;
+  };
+
+  UIControlsBase.prototype.remove = function() {
+    return this.wrapper.remove();
+  };
+
+  return UIControlsBase;
+
+})(EventEmitter);
+
+module.exports = UIControlsBase;
+
+
+},{"__browserify_Buffer":3,"__browserify_process":1,"events":2}],5:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/utils.coffee",__dirname="/";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -14802,736 +14995,7 @@ Utils.truncate = function(string, length) {
 module.exports = Utils;
 
 
-},{"__browserify_Buffer":3,"__browserify_process":1}],7:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/../node_modules/grunt-watchify/node_modules/browserify/node_modules/browser-builtins/builtin/events.js",__dirname="/../node_modules/grunt-watchify/node_modules/browserify/node_modules/browser-builtins/builtin";if (!process.EventEmitter) process.EventEmitter = function () {};
-
-var EventEmitter = exports.EventEmitter = process.EventEmitter;
-var isArray = typeof Array.isArray === 'function'
-    ? Array.isArray
-    : function (xs) {
-        return Object.prototype.toString.call(xs) === '[object Array]'
-    }
-;
-function indexOf (xs, x) {
-    if (xs.indexOf) return xs.indexOf(x);
-    for (var i = 0; i < xs.length; i++) {
-        if (x === xs[i]) return i;
-    }
-    return -1;
-}
-
-// By default EventEmitters will print a warning if more than
-// 10 listeners are added to it. This is a useful default which
-// helps finding memory leaks.
-//
-// Obviously not all Emitters should be limited to 10. This function allows
-// that to be increased. Set to zero for unlimited.
-var defaultMaxListeners = 10;
-EventEmitter.prototype.setMaxListeners = function(n) {
-  if (!this._events) this._events = {};
-  this._events.maxListeners = n;
-};
-
-
-EventEmitter.prototype.emit = function(type) {
-  // If there is no 'error' event listener then throw.
-  if (type === 'error') {
-    if (!this._events || !this._events.error ||
-        (isArray(this._events.error) && !this._events.error.length))
-    {
-      if (arguments[1] instanceof Error) {
-        throw arguments[1]; // Unhandled 'error' event
-      } else {
-        throw new Error("Uncaught, unspecified 'error' event.");
-      }
-      return false;
-    }
-  }
-
-  if (!this._events) return false;
-  var handler = this._events[type];
-  if (!handler) return false;
-
-  if (typeof handler == 'function') {
-    switch (arguments.length) {
-      // fast cases
-      case 1:
-        handler.call(this);
-        break;
-      case 2:
-        handler.call(this, arguments[1]);
-        break;
-      case 3:
-        handler.call(this, arguments[1], arguments[2]);
-        break;
-      // slower
-      default:
-        var args = Array.prototype.slice.call(arguments, 1);
-        handler.apply(this, args);
-    }
-    return true;
-
-  } else if (isArray(handler)) {
-    var args = Array.prototype.slice.call(arguments, 1);
-
-    var listeners = handler.slice();
-    for (var i = 0, l = listeners.length; i < l; i++) {
-      listeners[i].apply(this, args);
-    }
-    return true;
-
-  } else {
-    return false;
-  }
-};
-
-// EventEmitter is defined in src/node_events.cc
-// EventEmitter.prototype.emit() is also defined there.
-EventEmitter.prototype.addListener = function(type, listener) {
-  if ('function' !== typeof listener) {
-    throw new Error('addListener only takes instances of Function');
-  }
-
-  if (!this._events) this._events = {};
-
-  // To avoid recursion in the case that type == "newListeners"! Before
-  // adding it to the listeners, first emit "newListeners".
-  this.emit('newListener', type, listener);
-
-  if (!this._events[type]) {
-    // Optimize the case of one listener. Don't need the extra array object.
-    this._events[type] = listener;
-  } else if (isArray(this._events[type])) {
-
-    // Check for listener leak
-    if (!this._events[type].warned) {
-      var m;
-      if (this._events.maxListeners !== undefined) {
-        m = this._events.maxListeners;
-      } else {
-        m = defaultMaxListeners;
-      }
-
-      if (m && m > 0 && this._events[type].length > m) {
-        this._events[type].warned = true;
-        console.error('(node) warning: possible EventEmitter memory ' +
-                      'leak detected. %d listeners added. ' +
-                      'Use emitter.setMaxListeners() to increase limit.',
-                      this._events[type].length);
-        console.trace();
-      }
-    }
-
-    // If we've already got an array, just append.
-    this._events[type].push(listener);
-  } else {
-    // Adding the second element, need to change to array.
-    this._events[type] = [this._events[type], listener];
-  }
-
-  return this;
-};
-
-EventEmitter.prototype.on = EventEmitter.prototype.addListener;
-
-EventEmitter.prototype.once = function(type, listener) {
-  var self = this;
-  self.on(type, function g() {
-    self.removeListener(type, g);
-    listener.apply(this, arguments);
-  });
-
-  return this;
-};
-
-EventEmitter.prototype.removeListener = function(type, listener) {
-  if ('function' !== typeof listener) {
-    throw new Error('removeListener only takes instances of Function');
-  }
-
-  // does not use listeners(), so no side effect of creating _events[type]
-  if (!this._events || !this._events[type]) return this;
-
-  var list = this._events[type];
-
-  if (isArray(list)) {
-    var i = indexOf(list, listener);
-    if (i < 0) return this;
-    list.splice(i, 1);
-    if (list.length == 0)
-      delete this._events[type];
-  } else if (this._events[type] === listener) {
-    delete this._events[type];
-  }
-
-  return this;
-};
-
-EventEmitter.prototype.removeAllListeners = function(type) {
-  if (arguments.length === 0) {
-    this._events = {};
-    return this;
-  }
-
-  // does not use listeners(), so no side effect of creating _events[type]
-  if (type && this._events && this._events[type]) this._events[type] = null;
-  return this;
-};
-
-EventEmitter.prototype.listeners = function(type) {
-  if (!this._events) this._events = {};
-  if (!this._events[type]) this._events[type] = [];
-  if (!isArray(this._events[type])) {
-    this._events[type] = [this._events[type]];
-  }
-  return this._events[type];
-};
-
-EventEmitter.listenerCount = function(emitter, type) {
-  var ret;
-  if (!emitter._events || !emitter._events[type])
-    ret = 0;
-  else if (typeof emitter._events[type] === 'function')
-    ret = 1;
-  else
-    ret = emitter._events[type].length;
-  return ret;
-};
-
-},{"__browserify_Buffer":3,"__browserify_process":1}],8:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/operation.coffee",__dirname="/operations";/*
-  ImglyKit
-  Copyright (c) 2013-2014 img.ly
-*/
-
-var EventEmitter, Operation, Queue,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  __slice = [].slice;
-
-Queue = require("../vendor/queue.coffee");
-
-EventEmitter = require("events").EventEmitter;
-
-Operation = (function(_super) {
-  var buildComposition;
-
-  __extends(Operation, _super);
-
-  Operation.prototype.renderPreview = true;
-
-  /*
-    @param {ImglyKit} app
-    @param {Object} options
-  */
-
-
-  function Operation(app, options) {
-    var apply;
-    this.app = app;
-    this.options = options != null ? options : {};
-    apply = this.apply;
-    this.apply = function(dataOrPromise) {
-      var _this = this;
-      return Queue(dataOrPromise).then(function(imageData) {
-        return apply.call(_this, imageData);
-      });
-    };
-  }
-
-  /*
-    @param {CanvasRenderingContext2d} context
-  */
-
-
-  Operation.prototype.setContext = function(context) {
-    this.context = context;
-  };
-
-  /*
-    @param {Object} options
-  */
-
-
-  Operation.prototype.setOptions = function(options) {
-    var key, val;
-    for (key in options) {
-      val = options[key];
-      this.options[key] = val;
-    }
-    return this.emit("updateOptions", options);
-  };
-
-  /*
-    This applies this operation to the image in the editor. However, it is not
-    responsible for storing the result in any way. It receives imageData and
-    returns a modified version. 
-    @param {ImageData} imageData
-    @param {Function} callback
-    @returns {ImageData}
-  */
-
-
-  Operation.prototype.apply = function() {
-    throw Error("Abstract: Filter#apply");
-  };
-
-  buildComposition = function(direction, filter, args) {
-    var composition, self;
-    if (args == null) {
-      args = [];
-    }
-    self = this;
-    if (filter.prototype instanceof Operation) {
-      filter = (function(func, args, ctor) {
-        ctor.prototype = func.prototype;
-        var child = new ctor, result = func.apply(child, args);
-        return Object(result) === result ? result : child;
-      })(filter, [this.app].concat(__slice.call(args)), function(){});
-    }
-    composition = direction === "pre" ? function(imageData) {
-      return self.apply(filter.apply(imageData || this));
-    } : direction === "post" ? function(imageData) {
-      return filter.apply(self.apply(imageData || this));
-    } : void 0;
-    composition.compose = Operation.prototype.compose;
-    composition.precompose = Operation.prototype.precompose;
-    return composition;
-  };
-
-  /*
-    @param {Operation} filter
-    @returns {Function}
-  */
-
-
-  Operation.prototype.compose = function() {
-    var args, filter;
-    filter = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-    return buildComposition.call(this, "post", filter, args);
-  };
-
-  /*
-    @param {Operation} filter
-    @returns {Function}
-  */
-
-
-  Operation.prototype.precompose = function() {
-    var args, filter;
-    filter = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-    return buildComposition.call(this, "pre", filter, args);
-  };
-
-  return Operation;
-
-})(EventEmitter);
-
-module.exports = Operation;
-
-
-},{"../vendor/queue.coffee":5,"__browserify_Buffer":3,"__browserify_process":1,"events":7}],9:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/filter.coffee",__dirname="/operations/filters";/*
-  ImglyKit
-  Copyright (c) 2013-2014 img.ly
-*/
-
-var Filter, Operation, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Operation = require("../operation.coffee");
-
-Filter = (function(_super) {
-  __extends(Filter, _super);
-
-  function Filter() {
-    _ref = Filter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  Filter.preview = null;
-
-  Filter.displayName = null;
-
-  return Filter;
-
-})(Operation);
-
-module.exports = Filter;
-
-
-},{"../operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],10:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/identity.coffee",__dirname="/operations/filters/primitives";/*
-  ImglyKit
-  Copyright (c) 2013-2014 img.ly
-*/
-
-var Filter, PrimitiveIdentityFilter, _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Filter = require("../filter.coffee");
-
-PrimitiveIdentityFilter = (function(_super) {
-  __extends(PrimitiveIdentityFilter, _super);
-
-  function PrimitiveIdentityFilter() {
-    _ref = PrimitiveIdentityFilter.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  PrimitiveIdentityFilter.prototype.apply = function(imageData) {
-    return imageData;
-  };
-
-  return PrimitiveIdentityFilter;
-
-})(Filter);
-
-module.exports = PrimitiveIdentityFilter;
-
-
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],11:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/photoprocessor.coffee",__dirname="/";/*
-  ImglyKit
-  Copyright (c) 2013-2014 img.ly
-*/
-
-var IdentityFilter, Perf, PhotoProcessor, Queue, Utils;
-
-Perf = require("./vendor/perf.coffee");
-
-Queue = require("./vendor/queue.coffee");
-
-Utils = require("./utils.coffee");
-
-IdentityFilter = require("./operations/filters/primitives/identity.coffee");
-
-PhotoProcessor = (function() {
-  /*
-    @param {imglyUtil} app
-  */
-
-  function PhotoProcessor(app) {
-    this.app = app;
-    this.canvas = null;
-    this.operationChain = new IdentityFilter;
-    this.operationChainNeedsRender = true;
-    this.cachedPreviewImageData = null;
-    this.previewOperation = null;
-    this.rendering = false;
-  }
-
-  PhotoProcessor.prototype.setCanvas = function(canvas) {
-    this.canvas = canvas;
-  };
-
-  PhotoProcessor.prototype.setSourceImage = function(sourceImage) {
-    this.sourceImage = sourceImage;
-  };
-
-  /*
-    @params {ImglyKit.Operations.Operation} operation
-  */
-
-
-  PhotoProcessor.prototype.setPreviewOperation = function(operation) {
-    operation.setContext(this.canvas.getContext());
-    this.previewOperation = operation;
-    if (!operation.renderPreview) {
-      return;
-    }
-    return this.renderPreview();
-  };
-
-  PhotoProcessor.prototype.unsetPreviewOperation = function() {
-    this.previewOperation = null;
-    return this.renderPreview();
-  };
-
-  PhotoProcessor.prototype.acceptPreviewOperation = function() {
-    if (!this.previewOperation) {
-      return;
-    }
-    this.operationChainNeedsRender = true;
-    this.operationChain = this.operationChain.compose(this.previewOperation);
-    this.previewOperation = null;
-    return this.renderPreview();
-  };
-
-  /*
-    Render the full size final image
-  */
-
-
-  PhotoProcessor.prototype.renderImage = function(options, callback) {
-    var dimensions, height, imageData, p, scale, width, _ref, _ref1;
-    p = new Perf("imglyPhotoProcessor#renderFullImage()", {
-      debug: this.app.options.debug
-    });
-    p.start();
-    if (!(options.maxSize || options.size)) {
-      dimensions = {
-        width: this.sourceImage.width,
-        height: this.sourceImage.height
-      };
-      imageData = Utils.getImageDataForImage(this.sourceImage);
-    } else if (options.maxSize) {
-      _ref = options.maxSize.split("x"), width = _ref[0], height = _ref[1];
-      options = {
-        image: {
-          width: this.sourceImage.width,
-          height: this.sourceImage.height
-        },
-        container: {
-          width: width - ImglyKit.canvasContainerPadding * 2,
-          height: height - ImglyKit.canvasContainerPadding * 2
-        }
-      };
-      dimensions = Utils.calculateCanvasSize(options);
-      imageData = Utils.getResizedImageDataForImage(this.sourceImage, dimensions, {
-        smooth: true
-      });
-    } else if (options.size) {
-      _ref1 = options.size.split("x"), width = _ref1[0], height = _ref1[1];
-      if (width && !height) {
-        scale = this.sourceImage.height / this.sourceImage.width;
-        height = width * scale;
-      } else if (height && !width) {
-        scale = this.sourceImage.width / this.sourceImage.height;
-        width = height * scale;
-      }
-      dimensions = {
-        width: parseInt(width),
-        height: parseInt(height)
-      };
-      imageData = Utils.getResizedImageDataForImage(this.sourceImage, dimensions, {
-        smooth: true
-      });
-    }
-    return this.render(imageData, {
-      preview: false
-    }, callback);
-  };
-
-  /*
-    Renders a preview
-  */
-
-
-  PhotoProcessor.prototype.renderPreview = function(callback) {
-    return this.render(null, {
-      preview: true
-    }, callback);
-  };
-
-  /*
-    Render preview or image
-  */
-
-
-  PhotoProcessor.prototype.render = function(imageData, options, callback) {
-    /*
-      Make sure we are not rendering multiple previews at a time
-    */
-
-    var p,
-      _this = this;
-    if (this.rendering) {
-      return;
-    }
-    this.rendering = true;
-    p = new Perf("imglyPhotoProcessor#render({ preview: " + options.preview + " })", {
-      debug: this.app.options.debug
-    });
-    p.start();
-    imageData = options.preview ? this.renderOperationChainPreview(imageData) : this.operationChain.apply(imageData);
-    return Queue(imageData).then(function(imageData) {
-      if (options.preview && _this.operationChainNeedsRender) {
-        _this.cachedPreviewImageData = imageData;
-        _this.operationChainNeedsRender = false;
-      }
-      if (_this.previewOperation && options.preview) {
-        return _this.previewOperation.apply(imageData);
-      } else {
-        return imageData;
-      }
-    }).then(function(imageData) {
-      if (options.preview) {
-        _this.canvas.renderImageData(imageData);
-      }
-      if (typeof callback === "function") {
-        callback(null, imageData);
-      }
-      _this.rendering = false;
-      p.stop(true);
-      return imageData;
-    });
-  };
-
-  PhotoProcessor.prototype.renderOperationChainPreview = function(imageData) {
-    var dimensions, imageDimensions;
-    if (!this.operationChainNeedsRender) {
-      return Utils.cloneImageData(this.cachedPreviewImageData);
-    } else {
-      dimensions = this.canvas.getDimensionsForImage(this.sourceImage);
-      if (this.resizedPreviewImageData == null) {
-        imageDimensions = {
-          width: dimensions.width * (window.devicePixelRatio || 1),
-          height: dimensions.height * (window.devicePixelRatio || 1)
-        };
-        this.resizedPreviewImageData = imageData = Utils.getResizedImageDataForImage(this.sourceImage, imageDimensions, {
-          smooth: true
-        });
-      } else {
-        imageData = Utils.cloneImageData(this.resizedPreviewImageData);
-      }
-      return this.operationChain.apply(imageData);
-    }
-  };
-
-  /*
-    Resets all UI elements
-  */
-
-
-  PhotoProcessor.prototype.reset = function() {
-    this.operationChain = new IdentityFilter;
-    this.previewOperation = null;
-    this.rendering = false;
-    this.operationChainNeedsRender = true;
-    return this.resizedPreviewImageData = null;
-  };
-
-  return PhotoProcessor;
-
-})();
-
-module.exports = PhotoProcessor;
-
-
-},{"./operations/filters/primitives/identity.coffee":10,"./utils.coffee":6,"./vendor/perf.coffee":2,"./vendor/queue.coffee":5,"__browserify_Buffer":3,"__browserify_process":1}],12:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/base/base.coffee",__dirname="/ui/controls/base";/*
-  ImglyKit
-  Copyright (c) 2013-2014 img.ly
-*/
-
-var EventEmitter, UIControlsBase,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-EventEmitter = require("events").EventEmitter;
-
-UIControlsBase = (function(_super) {
-  __extends(UIControlsBase, _super);
-
-  UIControlsBase.prototype.allowMultipleClick = true;
-
-  /*
-    @param {imglyUtil} app
-    @param {imglyUtil.UI} ui
-  */
-
-
-  function UIControlsBase(app, ui, controls) {
-    var _base, _base1;
-    this.app = app;
-    this.ui = ui;
-    this.controls = controls;
-    this.domCreated = false;
-    if (this.options == null) {
-      this.options = {};
-    }
-    if ((_base = this.options).backButton == null) {
-      _base.backButton = true;
-    }
-    if ((_base1 = this.options).showList == null) {
-      _base1.showList = true;
-    }
-  }
-
-  /*
-    @param {imglyUtil.Operations.Operation}
-  */
-
-
-  UIControlsBase.prototype.setOperation = function(operation) {
-    this.operation = operation;
-  };
-
-  /*
-    @param {Object} options
-  */
-
-
-  UIControlsBase.prototype.init = function(options) {};
-
-  /*
-    Handle visibility
-  */
-
-
-  UIControlsBase.prototype.show = function(cb) {
-    return this.wrapper.fadeIn("fast", cb);
-  };
-
-  UIControlsBase.prototype.hide = function(cb) {
-    return this.wrapper.fadeOut("fast", cb);
-  };
-
-  /*
-    Returns to the default view
-  */
-
-
-  UIControlsBase.prototype.reset = function() {};
-
-  /*
-    Create "Back" and "Done" buttons
-  */
-
-
-  UIControlsBase.prototype.createButtons = function() {
-    var back, done,
-      _this = this;
-    if (this.buttons == null) {
-      this.buttons = {};
-    }
-    /*
-      "Back" Button
-    */
-
-    if (this.options.backButton) {
-      back = $("<div>").addClass(ImglyKit.classPrefix + "controls-button-back").appendTo(this.wrapper);
-      back.click(function() {
-        return _this.emit("back");
-      });
-      this.buttons.back = back;
-    }
-    /*
-      "Done" Button
-    */
-
-    done = $("<div>").addClass(ImglyKit.classPrefix + "controls-button-done").appendTo(this.wrapper);
-    done.click(function() {
-      return _this.emit("done");
-    });
-    return this.buttons.done = done;
-  };
-
-  UIControlsBase.prototype.remove = function() {
-    return this.wrapper.remove();
-  };
-
-  return UIControlsBase;
-
-})(EventEmitter);
-
-module.exports = UIControlsBase;
-
-
-},{"__browserify_Buffer":3,"__browserify_process":1,"events":7}],13:[function(require,module,exports){
+},{"__browserify_Buffer":3,"__browserify_process":1}],6:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/base/list.coffee",__dirname="/ui/controls/base";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -15667,7 +15131,7 @@ UIControlsBaseList = (function(_super) {
     }
     if (this.displayButtons) {
       this.list.addClass(ImglyKit.classPrefix + "controls-list-with-buttons");
-      this.list.width(this.controls.getContainer().width() - this.controls.getHeight() * 2);
+      this.list.css("margin-right", this.controls.getHeight());
       return this.createButtons();
     }
   };
@@ -15702,7 +15166,256 @@ UIControlsBaseList = (function(_super) {
 module.exports = UIControlsBaseList;
 
 
-},{"../../../utils.coffee":6,"./base.coffee":12,"__browserify_Buffer":3,"__browserify_process":1}],14:[function(require,module,exports){
+},{"../../../utils.coffee":5,"./base.coffee":4,"__browserify_Buffer":3,"__browserify_process":1}],7:[function(require,module,exports){
+
+},{"__browserify_Buffer":3,"__browserify_process":1}],8:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/vendor/queue.coffee",__dirname="/vendor";/*
+  Common interface for promises.
+
+  Use jQuery's Deferreds when in browser environment,
+  otherwise assume node environment and load kriskowal's q.
+*/
+
+var Queue, provider;
+
+provider = typeof window !== "undefined" ? window.jQuery : require("q");
+
+/*
+  Creates a thenable value from the given value.
+
+  @param value
+  @returns {Promise}
+*/
+
+
+Queue = function() {
+  return provider.when.apply(provider, arguments);
+};
+
+/*
+  Creates a new promise.
+
+  Calls the resolver which takes as arguments three functions `resolve`,
+  `reject` and `progress`.
+
+  @param {function} resolver
+  @returns {Promise}
+*/
+
+
+Queue.promise = (function() {
+  if (typeof window !== "undefined") {
+    return function(resolver) {
+      var d;
+      d = provider.Deferred();
+      resolver(d.resolve, d.reject, d.progress);
+      return d;
+    };
+  } else {
+    return function() {
+      return provider.promise.apply(provider, arguments);
+    };
+  }
+})();
+
+module.exports = Queue;
+
+
+},{"__browserify_Buffer":3,"__browserify_process":1,"q":7}],9:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/operation.coffee",__dirname="/operations";/*
+  ImglyKit
+  Copyright (c) 2013-2014 img.ly
+*/
+
+var EventEmitter, Operation, Queue,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  __slice = [].slice;
+
+Queue = require("../vendor/queue.coffee");
+
+EventEmitter = require("events").EventEmitter;
+
+Operation = (function(_super) {
+  var buildComposition;
+
+  __extends(Operation, _super);
+
+  Operation.prototype.renderPreview = true;
+
+  /*
+    @param {ImglyKit} app
+    @param {Object} options
+  */
+
+
+  function Operation(app, options) {
+    var apply;
+    this.app = app;
+    this.options = options != null ? options : {};
+    apply = this.apply;
+    this.apply = function(dataOrPromise) {
+      var _this = this;
+      return Queue(dataOrPromise).then(function(imageData) {
+        return apply.call(_this, imageData);
+      });
+    };
+  }
+
+  /*
+    @param {CanvasRenderingContext2d} context
+  */
+
+
+  Operation.prototype.setContext = function(context) {
+    this.context = context;
+  };
+
+  /*
+    @param {Object} options
+  */
+
+
+  Operation.prototype.setOptions = function(options) {
+    var key, val;
+    for (key in options) {
+      val = options[key];
+      this.options[key] = val;
+    }
+    return this.emit("updateOptions", options);
+  };
+
+  /*
+    This applies this operation to the image in the editor. However, it is not
+    responsible for storing the result in any way. It receives imageData and
+    returns a modified version. 
+    @param {ImageData} imageData
+    @param {Function} callback
+    @returns {ImageData}
+  */
+
+
+  Operation.prototype.apply = function() {
+    throw Error("Abstract: Filter#apply");
+  };
+
+  buildComposition = function(direction, filter, args) {
+    var composition, self;
+    if (args == null) {
+      args = [];
+    }
+    self = this;
+    if (filter.prototype instanceof Operation) {
+      filter = (function(func, args, ctor) {
+        ctor.prototype = func.prototype;
+        var child = new ctor, result = func.apply(child, args);
+        return Object(result) === result ? result : child;
+      })(filter, [this.app].concat(__slice.call(args)), function(){});
+    }
+    composition = direction === "pre" ? function(imageData) {
+      return self.apply(filter.apply(imageData || this));
+    } : direction === "post" ? function(imageData) {
+      return filter.apply(self.apply(imageData || this));
+    } : void 0;
+    composition.compose = Operation.prototype.compose;
+    composition.precompose = Operation.prototype.precompose;
+    return composition;
+  };
+
+  /*
+    @param {Operation} filter
+    @returns {Function}
+  */
+
+
+  Operation.prototype.compose = function() {
+    var args, filter;
+    filter = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+    return buildComposition.call(this, "post", filter, args);
+  };
+
+  /*
+    @param {Operation} filter
+    @returns {Function}
+  */
+
+
+  Operation.prototype.precompose = function() {
+    var args, filter;
+    filter = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+    return buildComposition.call(this, "pre", filter, args);
+  };
+
+  return Operation;
+
+})(EventEmitter);
+
+module.exports = Operation;
+
+
+},{"../vendor/queue.coffee":8,"__browserify_Buffer":3,"__browserify_process":1,"events":2}],10:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/filter.coffee",__dirname="/operations/filters";/*
+  ImglyKit
+  Copyright (c) 2013-2014 img.ly
+*/
+
+var Filter, Operation, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Operation = require("../operation.coffee");
+
+Filter = (function(_super) {
+  __extends(Filter, _super);
+
+  function Filter() {
+    _ref = Filter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  Filter.preview = null;
+
+  Filter.displayName = null;
+
+  return Filter;
+
+})(Operation);
+
+module.exports = Filter;
+
+
+},{"../operation.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],11:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/identity.coffee",__dirname="/operations/filters/primitives";/*
+  ImglyKit
+  Copyright (c) 2013-2014 img.ly
+*/
+
+var Filter, PrimitiveIdentityFilter, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Filter = require("../filter.coffee");
+
+PrimitiveIdentityFilter = (function(_super) {
+  __extends(PrimitiveIdentityFilter, _super);
+
+  function PrimitiveIdentityFilter() {
+    _ref = PrimitiveIdentityFilter.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  PrimitiveIdentityFilter.prototype.apply = function(imageData) {
+    return imageData;
+  };
+
+  return PrimitiveIdentityFilter;
+
+})(Filter);
+
+module.exports = PrimitiveIdentityFilter;
+
+
+},{"../filter.coffee":10,"__browserify_Buffer":3,"__browserify_process":1}],12:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/default.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -15733,7 +15446,7 @@ DefaultFilter = (function(_super) {
 module.exports = DefaultFilter;
 
 
-},{"./primitives/identity.coffee":10,"__browserify_Buffer":3,"__browserify_process":1}],15:[function(require,module,exports){
+},{"./primitives/identity.coffee":11,"__browserify_Buffer":3,"__browserify_process":1}],13:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/tonecurve.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -15936,7 +15649,7 @@ PrimitiveToneCurveFilter = (function(_super) {
 module.exports = PrimitiveToneCurveFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],16:[function(require,module,exports){
+},{"../filter.coffee":10,"__browserify_Buffer":3,"__browserify_process":1}],14:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/saturation.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -15990,7 +15703,7 @@ PrimitiveSaturationFilter = (function(_super) {
 module.exports = PrimitiveSaturationFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],17:[function(require,module,exports){
+},{"../filter.coffee":10,"__browserify_Buffer":3,"__browserify_process":1}],15:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/k1.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16031,7 +15744,7 @@ K1Filter = (function(_super) {
 module.exports = K1Filter;
 
 
-},{"./filter.coffee":9,"./primitives/saturation.coffee":16,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],18:[function(require,module,exports){
+},{"./filter.coffee":10,"./primitives/saturation.coffee":14,"./primitives/tonecurve.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],16:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/softcoloroverlay.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16074,7 +15787,7 @@ PrimitiveSoftColorOverlayFilter = (function(_super) {
 module.exports = PrimitiveSoftColorOverlayFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],19:[function(require,module,exports){
+},{"../filter.coffee":10,"__browserify_Buffer":3,"__browserify_process":1}],17:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/k2.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16117,7 +15830,7 @@ K2Filter = (function(_super) {
 module.exports = K2Filter;
 
 
-},{"./filter.coffee":9,"./primitives/softcoloroverlay.coffee":18,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],20:[function(require,module,exports){
+},{"./filter.coffee":10,"./primitives/softcoloroverlay.coffee":16,"./primitives/tonecurve.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],18:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/k6.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16150,7 +15863,7 @@ K6Filter = (function(_super) {
 module.exports = K6Filter;
 
 
-},{"./primitives/saturation.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],21:[function(require,module,exports){
+},{"./primitives/saturation.coffee":14,"__browserify_Buffer":3,"__browserify_process":1}],19:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/kdynamic.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16191,7 +15904,7 @@ KDynamicFilter = (function(_super) {
 module.exports = KDynamicFilter;
 
 
-},{"./filter.coffee":9,"./primitives/saturation.coffee":16,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],22:[function(require,module,exports){
+},{"./filter.coffee":10,"./primitives/saturation.coffee":14,"./primitives/tonecurve.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],20:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/fridge.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16228,7 +15941,7 @@ FridgeFilter = (function(_super) {
 module.exports = FridgeFilter;
 
 
-},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],23:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],21:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/desaturation.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16278,7 +15991,7 @@ PrimitiveDesaturationFilter = (function(_super) {
 module.exports = PrimitiveDesaturationFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],24:[function(require,module,exports){
+},{"../filter.coffee":10,"__browserify_Buffer":3,"__browserify_process":1}],22:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/breeze.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16321,7 +16034,7 @@ BreezeFilter = (function(_super) {
 module.exports = BreezeFilter;
 
 
-},{"./filter.coffee":9,"./primitives/desaturation.coffee":23,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],25:[function(require,module,exports){
+},{"./filter.coffee":10,"./primitives/desaturation.coffee":21,"./primitives/tonecurve.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],23:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/orchid.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16366,7 +16079,7 @@ OrchidFilter = (function(_super) {
 module.exports = OrchidFilter;
 
 
-},{"./filter.coffee":9,"./primitives/desaturation.coffee":23,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],26:[function(require,module,exports){
+},{"./filter.coffee":10,"./primitives/desaturation.coffee":21,"./primitives/tonecurve.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],24:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/chest.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16403,7 +16116,7 @@ ChestFilter = (function(_super) {
 module.exports = ChestFilter;
 
 
-},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],27:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],25:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/front.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16440,7 +16153,7 @@ FrontFilter = (function(_super) {
 module.exports = FrontFilter;
 
 
-},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],28:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],26:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/fixie.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16477,7 +16190,7 @@ FixieFilter = (function(_super) {
 module.exports = FixieFilter;
 
 
-},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],29:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],27:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/x400.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16526,7 +16239,7 @@ PrimitiveX400Filter = (function(_super) {
 module.exports = PrimitiveX400Filter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],30:[function(require,module,exports){
+},{"../filter.coffee":10,"__browserify_Buffer":3,"__browserify_process":1}],28:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/x400.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16557,7 +16270,7 @@ X400Filter = (function(_super) {
 module.exports = X400Filter;
 
 
-},{"./primitives/x400.coffee":29,"__browserify_Buffer":3,"__browserify_process":1}],31:[function(require,module,exports){
+},{"./primitives/x400.coffee":27,"__browserify_Buffer":3,"__browserify_process":1}],29:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/grayscale.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16601,7 +16314,7 @@ PrimtiveGrayscaleFilter = (function(_super) {
 module.exports = PrimtiveGrayscaleFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],32:[function(require,module,exports){
+},{"../filter.coffee":10,"__browserify_Buffer":3,"__browserify_process":1}],30:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/bw.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16632,7 +16345,7 @@ BWFilter = (function(_super) {
 module.exports = BWFilter;
 
 
-},{"./primitives/grayscale.coffee":31,"__browserify_Buffer":3,"__browserify_process":1}],33:[function(require,module,exports){
+},{"./primitives/grayscale.coffee":29,"__browserify_Buffer":3,"__browserify_process":1}],31:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/contrast.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16690,7 +16403,7 @@ PrimitiveContrastFilter = (function(_super) {
 module.exports = PrimitiveContrastFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],34:[function(require,module,exports){
+},{"../filter.coffee":10,"__browserify_Buffer":3,"__browserify_process":1}],32:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/bwhard.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16729,7 +16442,7 @@ BWHardFilter = (function(_super) {
 module.exports = BWHardFilter;
 
 
-},{"./filter.coffee":9,"./primitives/contrast.coffee":33,"./primitives/grayscale.coffee":31,"__browserify_Buffer":3,"__browserify_process":1}],35:[function(require,module,exports){
+},{"./filter.coffee":10,"./primitives/contrast.coffee":31,"./primitives/grayscale.coffee":29,"__browserify_Buffer":3,"__browserify_process":1}],33:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/lenin.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16772,7 +16485,7 @@ LeninFilter = (function(_super) {
 module.exports = LeninFilter;
 
 
-},{"./filter.coffee":9,"./primitives/desaturation.coffee":23,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],36:[function(require,module,exports){
+},{"./filter.coffee":10,"./primitives/desaturation.coffee":21,"./primitives/tonecurve.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],34:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/quozi.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16815,7 +16528,7 @@ QuoziFilter = (function(_super) {
 module.exports = QuoziFilter;
 
 
-},{"./filter.coffee":9,"./primitives/desaturation.coffee":23,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],37:[function(require,module,exports){
+},{"./filter.coffee":10,"./primitives/desaturation.coffee":21,"./primitives/tonecurve.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],35:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/pola669.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16862,7 +16575,7 @@ Pola669Filter = (function(_super) {
 module.exports = Pola669Filter;
 
 
-},{"./filter.coffee":9,"./primitives/contrast.coffee":33,"./primitives/saturation.coffee":16,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],38:[function(require,module,exports){
+},{"./filter.coffee":10,"./primitives/contrast.coffee":31,"./primitives/saturation.coffee":14,"./primitives/tonecurve.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],36:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/pola.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16909,7 +16622,7 @@ PolaFilter = (function(_super) {
 module.exports = PolaFilter;
 
 
-},{"./filter.coffee":9,"./primitives/contrast.coffee":33,"./primitives/saturation.coffee":16,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],39:[function(require,module,exports){
+},{"./filter.coffee":10,"./primitives/contrast.coffee":31,"./primitives/saturation.coffee":14,"./primitives/tonecurve.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],37:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/food.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16950,7 +16663,7 @@ FoodFilter = (function(_super) {
 module.exports = FoodFilter;
 
 
-},{"./filter.coffee":9,"./primitives/contrast.coffee":33,"./primitives/saturation.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],40:[function(require,module,exports){
+},{"./filter.coffee":10,"./primitives/contrast.coffee":31,"./primitives/saturation.coffee":14,"__browserify_Buffer":3,"__browserify_process":1}],38:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/glam.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -16995,7 +16708,7 @@ GlamFilter = (function(_super) {
 module.exports = GlamFilter;
 
 
-},{"./filter.coffee":9,"./primitives/contrast.coffee":33,"./primitives/grayscale.coffee":31,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],41:[function(require,module,exports){
+},{"./filter.coffee":10,"./primitives/contrast.coffee":31,"./primitives/grayscale.coffee":29,"./primitives/tonecurve.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],39:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/celsius.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17032,7 +16745,7 @@ CelsiusFilter = (function(_super) {
 module.exports = CelsiusFilter;
 
 
-},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],42:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],40:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/texas.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17069,7 +16782,7 @@ TexasFilter = (function(_super) {
 module.exports = TexasFilter;
 
 
-},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],43:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],41:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/glow.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17127,7 +16840,7 @@ PrimitiveGlowFilter = (function(_super) {
 module.exports = PrimitiveGlowFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],44:[function(require,module,exports){
+},{"../filter.coffee":10,"__browserify_Buffer":3,"__browserify_process":1}],42:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/morning.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17168,7 +16881,7 @@ MorningFilter = (function(_super) {
 module.exports = MorningFilter;
 
 
-},{"./filter.coffee":9,"./primitives/glow.coffee":43,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],45:[function(require,module,exports){
+},{"./filter.coffee":10,"./primitives/glow.coffee":41,"./primitives/tonecurve.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],43:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/lomo.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17207,7 +16920,7 @@ LomoFilter = (function(_super) {
 module.exports = LomoFilter;
 
 
-},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],46:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],44:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/gobblin.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17251,7 +16964,7 @@ PrimitiveGobblinFilter = (function(_super) {
 module.exports = PrimitiveGobblinFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],47:[function(require,module,exports){
+},{"../filter.coffee":10,"__browserify_Buffer":3,"__browserify_process":1}],45:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/gobblin.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17282,7 +16995,7 @@ GobblinFilter = (function(_super) {
 module.exports = GobblinFilter;
 
 
-},{"./primitives/gobblin.coffee":46,"__browserify_Buffer":3,"__browserify_process":1}],48:[function(require,module,exports){
+},{"./primitives/gobblin.coffee":44,"__browserify_Buffer":3,"__browserify_process":1}],46:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/mellow.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17319,7 +17032,7 @@ MellowFilter = (function(_super) {
 module.exports = MellowFilter;
 
 
-},{"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],49:[function(require,module,exports){
+},{"./primitives/tonecurve.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],47:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/sunny.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17364,7 +17077,7 @@ SunnyFilter = (function(_super) {
 module.exports = SunnyFilter;
 
 
-},{"./filter.coffee":9,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],50:[function(require,module,exports){
+},{"./filter.coffee":10,"./primitives/tonecurve.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],48:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/primitives/brightness.coffee",__dirname="/operations/filters/primitives";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17414,7 +17127,7 @@ PrimitiveBrightnessFilter = (function(_super) {
 module.exports = PrimitiveBrightnessFilter;
 
 
-},{"../filter.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],51:[function(require,module,exports){
+},{"../filter.coffee":10,"__browserify_Buffer":3,"__browserify_process":1}],49:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/a15.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17461,7 +17174,7 @@ A15Filter = (function(_super) {
 module.exports = A15Filter;
 
 
-},{"./filter.coffee":9,"./primitives/brightness.coffee":50,"./primitives/contrast.coffee":33,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],52:[function(require,module,exports){
+},{"./filter.coffee":10,"./primitives/brightness.coffee":48,"./primitives/contrast.coffee":31,"./primitives/tonecurve.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],50:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/filters/semired.coffee",__dirname="/operations/filters";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17502,7 +17215,7 @@ SemiRedFilter = (function(_super) {
 module.exports = SemiRedFilter;
 
 
-},{"./filter.coffee":9,"./primitives/glow.coffee":43,"./primitives/tonecurve.coffee":15,"__browserify_Buffer":3,"__browserify_process":1}],53:[function(require,module,exports){
+},{"./filter.coffee":10,"./primitives/glow.coffee":41,"./primitives/tonecurve.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],51:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/filters.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17566,7 +17279,7 @@ UIControlsFilters = (function(_super) {
 module.exports = UIControlsFilters;
 
 
-},{"../../operations/filters/a15.coffee":51,"../../operations/filters/breeze.coffee":24,"../../operations/filters/bw.coffee":32,"../../operations/filters/bwhard.coffee":34,"../../operations/filters/celsius.coffee":41,"../../operations/filters/chest.coffee":26,"../../operations/filters/default.coffee":14,"../../operations/filters/fixie.coffee":28,"../../operations/filters/food.coffee":39,"../../operations/filters/fridge.coffee":22,"../../operations/filters/front.coffee":27,"../../operations/filters/glam.coffee":40,"../../operations/filters/gobblin.coffee":47,"../../operations/filters/k1.coffee":17,"../../operations/filters/k2.coffee":19,"../../operations/filters/k6.coffee":20,"../../operations/filters/kdynamic.coffee":21,"../../operations/filters/lenin.coffee":35,"../../operations/filters/lomo.coffee":45,"../../operations/filters/mellow.coffee":48,"../../operations/filters/morning.coffee":44,"../../operations/filters/orchid.coffee":25,"../../operations/filters/pola.coffee":38,"../../operations/filters/pola669.coffee":37,"../../operations/filters/quozi.coffee":36,"../../operations/filters/semired.coffee":52,"../../operations/filters/sunny.coffee":49,"../../operations/filters/texas.coffee":42,"../../operations/filters/x400.coffee":30,"../../utils.coffee":6,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],54:[function(require,module,exports){
+},{"../../operations/filters/a15.coffee":49,"../../operations/filters/breeze.coffee":22,"../../operations/filters/bw.coffee":30,"../../operations/filters/bwhard.coffee":32,"../../operations/filters/celsius.coffee":39,"../../operations/filters/chest.coffee":24,"../../operations/filters/default.coffee":12,"../../operations/filters/fixie.coffee":26,"../../operations/filters/food.coffee":37,"../../operations/filters/fridge.coffee":20,"../../operations/filters/front.coffee":25,"../../operations/filters/glam.coffee":38,"../../operations/filters/gobblin.coffee":45,"../../operations/filters/k1.coffee":15,"../../operations/filters/k2.coffee":17,"../../operations/filters/k6.coffee":18,"../../operations/filters/kdynamic.coffee":19,"../../operations/filters/lenin.coffee":33,"../../operations/filters/lomo.coffee":43,"../../operations/filters/mellow.coffee":46,"../../operations/filters/morning.coffee":42,"../../operations/filters/orchid.coffee":23,"../../operations/filters/pola.coffee":36,"../../operations/filters/pola669.coffee":35,"../../operations/filters/quozi.coffee":34,"../../operations/filters/semired.coffee":50,"../../operations/filters/sunny.coffee":47,"../../operations/filters/texas.coffee":40,"../../operations/filters/x400.coffee":28,"../../utils.coffee":5,"./base/list.coffee":6,"__browserify_Buffer":3,"__browserify_process":1}],52:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/math/vector2.coffee",__dirname="/math";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17738,7 +17451,7 @@ Vector2 = (function() {
 module.exports = Vector2;
 
 
-},{"__browserify_Buffer":3,"__browserify_process":1}],55:[function(require,module,exports){
+},{"__browserify_Buffer":3,"__browserify_process":1}],53:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/math/rect.coffee",__dirname="/math";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17827,7 +17540,7 @@ Rect = (function() {
 module.exports = Rect;
 
 
-},{"__browserify_Buffer":3,"__browserify_process":1}],56:[function(require,module,exports){
+},{"__browserify_Buffer":3,"__browserify_process":1}],54:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/draw_image.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -17900,7 +17613,7 @@ module.exports = DrawImageOperation = (function(_super) {
 })(Operation);
 
 
-},{"../math/rect.coffee":55,"../math/vector2.coffee":54,"../utils.coffee":6,"../vendor/queue.coffee":5,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],57:[function(require,module,exports){
+},{"../math/rect.coffee":53,"../math/vector2.coffee":52,"../utils.coffee":5,"../vendor/queue.coffee":8,"./operation.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],55:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/stickers_control.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -18172,7 +17885,7 @@ UIControlsStickers = (function(_super) {
 module.exports = UIControlsStickers;
 
 
-},{"../../math/rect.coffee":55,"../../math/vector2.coffee":54,"../../operations/draw_image.coffee":56,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],58:[function(require,module,exports){
+},{"../../math/rect.coffee":53,"../../math/vector2.coffee":52,"../../operations/draw_image.coffee":54,"./base/list.coffee":6,"__browserify_Buffer":3,"__browserify_process":1}],56:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/orientation.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -18327,7 +18040,7 @@ OrientationOperation = (function(_super) {
 module.exports = OrientationOperation;
 
 
-},{"../utils.coffee":6,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],59:[function(require,module,exports){
+},{"../utils.coffee":5,"./operation.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],57:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/orientation.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -18390,7 +18103,7 @@ UIControlsOrientation = (function(_super) {
 module.exports = UIControlsOrientation;
 
 
-},{"../../operations/orientation.coffee":58,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],60:[function(require,module,exports){
+},{"../../operations/orientation.coffee":56,"./base/list.coffee":6,"__browserify_Buffer":3,"__browserify_process":1}],58:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/focus/focus.coffee",__dirname="/operations/focus";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -18648,7 +18361,7 @@ Focus = (function(_super) {
 module.exports = Focus;
 
 
-},{"../../utils.coffee":6,"../operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],61:[function(require,module,exports){
+},{"../../utils.coffee":5,"../operation.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],59:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/focus/radial.coffee",__dirname="/operations/focus";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -18734,7 +18447,7 @@ RadialFocus = (function(_super) {
 module.exports = RadialFocus;
 
 
-},{"../../math/vector2.coffee":54,"./focus.coffee":60,"__browserify_Buffer":3,"__browserify_process":1}],62:[function(require,module,exports){
+},{"../../math/vector2.coffee":52,"./focus.coffee":58,"__browserify_Buffer":3,"__browserify_process":1}],60:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/focus/linear.coffee",__dirname="/operations/focus";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -18824,7 +18537,7 @@ LinearFocus = (function(_super) {
 module.exports = LinearFocus;
 
 
-},{"../../math/vector2.coffee":54,"./focus.coffee":60,"__browserify_Buffer":3,"__browserify_process":1}],63:[function(require,module,exports){
+},{"../../math/vector2.coffee":52,"./focus.coffee":58,"__browserify_Buffer":3,"__browserify_process":1}],61:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/focus.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -19163,7 +18876,7 @@ UIControlsFocus = (function(_super) {
 module.exports = UIControlsFocus;
 
 
-},{"../../math/vector2.coffee":54,"../../operations/focus/linear.coffee":62,"../../operations/focus/radial.coffee":61,"../../utils.coffee":6,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],64:[function(require,module,exports){
+},{"../../math/vector2.coffee":52,"../../operations/focus/linear.coffee":60,"../../operations/focus/radial.coffee":59,"../../utils.coffee":5,"./base/list.coffee":6,"__browserify_Buffer":3,"__browserify_process":1}],62:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/crop.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -19273,7 +18986,7 @@ CropOperation = (function(_super) {
 module.exports = CropOperation;
 
 
-},{"../math/vector2.coffee":54,"../utils.coffee":6,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],65:[function(require,module,exports){
+},{"../math/vector2.coffee":52,"../utils.coffee":5,"./operation.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],63:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/crop.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -19735,7 +19448,7 @@ UIControlsCrop = (function(_super) {
 module.exports = UIControlsCrop;
 
 
-},{"../../math/rect.coffee":55,"../../math/vector2.coffee":54,"../../operations/crop.coffee":64,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],66:[function(require,module,exports){
+},{"../../math/rect.coffee":53,"../../math/vector2.coffee":52,"../../operations/crop.coffee":62,"./base/list.coffee":6,"__browserify_Buffer":3,"__browserify_process":1}],64:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/base/slider.coffee",__dirname="/ui/controls/base";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -19865,7 +19578,7 @@ UIControlsBaseSlider = (function(_super) {
 module.exports = UIControlsBaseSlider;
 
 
-},{"./base.coffee":12,"__browserify_Buffer":3,"__browserify_process":1}],67:[function(require,module,exports){
+},{"./base.coffee":4,"__browserify_Buffer":3,"__browserify_process":1}],65:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/brightness.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -19900,7 +19613,7 @@ UIControlsBrightness = (function(_super) {
 module.exports = UIControlsBrightness;
 
 
-},{"./base/slider.coffee":66,"__browserify_Buffer":3,"__browserify_process":1}],68:[function(require,module,exports){
+},{"./base/slider.coffee":64,"__browserify_Buffer":3,"__browserify_process":1}],66:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/brightness.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -19957,7 +19670,7 @@ BrightnessOperation = (function(_super) {
 module.exports = BrightnessOperation;
 
 
-},{"./filters/filter.coffee":9,"./filters/primitives/brightness.coffee":50,"__browserify_Buffer":3,"__browserify_process":1}],69:[function(require,module,exports){
+},{"./filters/filter.coffee":10,"./filters/primitives/brightness.coffee":48,"__browserify_Buffer":3,"__browserify_process":1}],67:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/contrast.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -19992,7 +19705,7 @@ UIControlsContrast = (function(_super) {
 module.exports = UIControlsContrast;
 
 
-},{"./base/slider.coffee":66,"__browserify_Buffer":3,"__browserify_process":1}],70:[function(require,module,exports){
+},{"./base/slider.coffee":64,"__browserify_Buffer":3,"__browserify_process":1}],68:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/contrast.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20049,7 +19762,7 @@ ContrastOperation = (function(_super) {
 module.exports = ContrastOperation;
 
 
-},{"./filters/filter.coffee":9,"./filters/primitives/contrast.coffee":33,"__browserify_Buffer":3,"__browserify_process":1}],71:[function(require,module,exports){
+},{"./filters/filter.coffee":10,"./filters/primitives/contrast.coffee":31,"__browserify_Buffer":3,"__browserify_process":1}],69:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/saturation.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20084,7 +19797,7 @@ UIControlsSaturation = (function(_super) {
 module.exports = UIControlsSaturation;
 
 
-},{"./base/slider.coffee":66,"__browserify_Buffer":3,"__browserify_process":1}],72:[function(require,module,exports){
+},{"./base/slider.coffee":64,"__browserify_Buffer":3,"__browserify_process":1}],70:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/saturation.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20141,82 +19854,368 @@ SaturationOperation = (function(_super) {
 module.exports = SaturationOperation;
 
 
-},{"./filters/filter.coffee":9,"./filters/primitives/saturation.coffee":16,"__browserify_Buffer":3,"__browserify_process":1}],73:[function(require,module,exports){
-var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/text.coffee",__dirname="/operations";/*
+},{"./filters/filter.coffee":10,"./filters/primitives/saturation.coffee":14,"__browserify_Buffer":3,"__browserify_process":1}],71:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/text.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
 */
 
-var FontOperation, Operation, Rect, Utils, Vector2,
+var List, Rect, UIControlsText, Vector2,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-Operation = require("./operation.coffee");
+List = require("./base/list.coffee");
 
-Utils = require("../utils.coffee");
+Vector2 = require("../../math/vector2.coffee");
 
-Vector2 = require("../math/vector2.coffee");
+Rect = require("../../math/rect.coffee");
 
-Rect = require("../math/rect.coffee");
+UIControlsText = (function(_super) {
+  __extends(UIControlsText, _super);
 
-FontOperation = (function(_super) {
-  __extends(FontOperation, _super);
+  UIControlsText.prototype.displayButtons = true;
 
-  FontOperation.prototype.renderPreview = false;
+  UIControlsText.prototype.singleOperation = true;
 
-  function FontOperation(app, options) {
-    this.app = app;
-    this.options = options != null ? options : {};
-    FontOperation.__super__.constructor.apply(this, arguments);
-    this.options.start = new Vector2(0.2, 0.2);
-    this.options.width = 300;
-    this.options.font = "Helvetica";
-    this.options.text = "Text";
-    this.options.color = "#ffffff";
-    this.options.fontSize = 0.1;
-    this.options.lineHeight = 1.1;
-    this.options.paddingLeft = 0;
-    this.options.paddingTop = 0;
-  }
+  UIControlsText.prototype.hasCanvasControls = true;
+
+  UIControlsText.prototype.cssClassIdentifier = "text";
 
   /*
-    @param {String} font
+    @param {imglyUtil} app
+    @param {imglyUtil.UI} ui
   */
 
 
-  FontOperation.prototype.setFont = function(font) {
-    this.options.font = font;
-    return this.emit("updateOptions", this.options);
-  };
-
-  FontOperation.prototype.apply = function(imageData) {
-    var canvas, context, line, lineHeight, lineNum, lineOffset, paddingVector, scaledFontSize, scaledStart, _i, _len, _ref;
-    scaledFontSize = this.options.fontSize * imageData.height;
-    paddingVector = new Vector2(this.options.paddingLeft, this.options.paddingTop);
-    scaledStart = new Vector2().copy(this.options.start).add(paddingVector).multiplyWithRect(imageData);
-    canvas = Utils.newCanvasFromImageData(imageData);
-    context = canvas.getContext("2d");
-    context.font = "normal " + scaledFontSize + "px " + this.options.font;
-    context.fillStyle = this.options.color;
-    context.textBaseline = "hanging";
-    lineHeight = this.options.lineHeight;
-    _ref = this.options.text.split("\n");
-    for (lineNum = _i = 0, _len = _ref.length; _i < _len; lineNum = ++_i) {
-      line = _ref[lineNum];
-      lineOffset = lineNum * scaledFontSize * lineHeight;
-      context.fillText(line, scaledStart.x, scaledStart.y + this.options.paddingLeft + lineOffset);
+  function UIControlsText(app, ui, controls) {
+    var additionalFont, _i, _len, _ref;
+    this.app = app;
+    this.ui = ui;
+    this.controls = controls;
+    this.autoResizeTextInput = __bind(this.autoResizeTextInput, this);
+    this.onFontsizeSmallerClick = __bind(this.onFontsizeSmallerClick, this);
+    this.onFontsizeBiggerClick = __bind(this.onFontsizeBiggerClick, this);
+    UIControlsText.__super__.constructor.apply(this, arguments);
+    this.initialized = false;
+    this.fontResizePerClick = 3;
+    this.operationClass = require("../../operations/text.coffee");
+    this.listItems = [
+      {
+        name: "Helvetica",
+        method: "setFont",
+        cssClass: "helvetica",
+        "arguments": ["Helvetica"],
+        tooltip: "Helvetica",
+        "default": true
+      }, {
+        name: "Lucida Grande",
+        method: "setFont",
+        cssClass: "lucida-grande",
+        "arguments": ["Lucida Grande"],
+        tooltip: "Lucida Grande"
+      }, {
+        name: "Times New Roman",
+        method: "setFont",
+        cssClass: "times-new-roman",
+        "arguments": ["Times New Roman"],
+        tooltip: "Times New Roman"
+      }
+    ];
+    if (this.app.options.additionalFonts != null) {
+      _ref = this.app.options.additionalFonts;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        additionalFont = _ref[_i];
+        this.listItems.push({
+          name: additionalFont.name,
+          method: "setFont",
+          cssClass: additionalFont.cssClass,
+          "arguments": [additionalFont.name]
+        });
+      }
     }
-    return context.getImageData(0, 0, imageData.width, imageData.height);
+  }
+
+  /*
+    Create controls DOM tree
+  */
+
+
+  UIControlsText.prototype.createList = function() {
+    UIControlsText.__super__.createList.apply(this, arguments);
+    /*
+      Color control
+    */
+
+    this.textColorControl = $("<div>").addClass(ImglyKit.classPrefix + "controls-text-color-button " + ImglyKit.classPrefix + "controls-button-right").appendTo(this.wrapper);
+    this.textColorPreview = $("<div>").addClass(ImglyKit.classPrefix + "controls-text-color").appendTo(this.textColorControl);
+    /*
+      Background color control
+    */
+
+    this.backgroundColorControl = $("<div>").addClass(ImglyKit.classPrefix + "controls-background-color-button " + ImglyKit.classPrefix + "controls-button-right").appendTo(this.wrapper);
+    this.backgroundColorPreview = $("<div>").addClass(ImglyKit.classPrefix + "controls-background-color").appendTo(this.backgroundColorControl);
+    this.list.css("margin-right", this.controls.getHeight() * 3);
+    return this.handleColorsControl();
   };
 
-  return FontOperation;
-
-})(Operation);
-
-module.exports = FontOperation;
+  /*
+    Handle the colors control
+  */
 
 
-},{"../math/rect.coffee":55,"../math/vector2.coffee":54,"../utils.coffee":6,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],74:[function(require,module,exports){
+  UIControlsText.prototype.handleColorsControl = function() {
+    var defaultBackgroundColor, defaultForegroundColor,
+      _this = this;
+    defaultForegroundColor = "rgba(255, 255, 255, 1.0)";
+    defaultBackgroundColor = "rgba(0, 0, 0, 0.5)";
+    this.textColorControl.spectrum({
+      color: defaultForegroundColor,
+      showAlpha: true,
+      showPalette: true,
+      showSelectionPalette: true,
+      palette: [],
+      showButtons: false,
+      localStorageKey: "imgly.palette",
+      move: function(color) {
+        var colorComponents, rgbaString;
+        colorComponents = color.toRgb();
+        rgbaString = "rgba(" + colorComponents.r + "," + colorComponents.g + "," + colorComponents.b + "," + colorComponents.a + ")";
+        _this.textColorPreview.css({
+          backgroundColor: rgbaString
+        });
+        _this.operationOptions.color = rgbaString;
+        return _this.operation.setOptions(_this.operationOptions);
+      }
+    });
+    this.backgroundColorControl.spectrum({
+      color: defaultBackgroundColor,
+      showAlpha: true,
+      showPalette: true,
+      showSelectionPalette: true,
+      palette: [],
+      showButtons: false,
+      localStorageKey: "imgly.palette",
+      move: function(color) {
+        var colorComponents, rgbaString;
+        colorComponents = color.toRgb();
+        rgbaString = "rgba(" + colorComponents.r + "," + colorComponents.g + "," + colorComponents.b + "," + colorComponents.a + ")";
+        _this.backgroundColorPreview.css({
+          backgroundColor: rgbaString
+        });
+        _this.textContainer.css({
+          backgroundColor: rgbaString
+        });
+        _this.operationOptions.backgroundColor = rgbaString;
+        return _this.operation.setOptions(_this.operationOptions);
+      }
+    });
+    this.textColorPreview.css({
+      backgroundColor: defaultForegroundColor
+    });
+    this.backgroundColorPreview.css({
+      backgroundColor: defaultBackgroundColor
+    });
+    this.textContainer.css({
+      backgroundColor: defaultBackgroundColor
+    });
+  };
+
+  /*
+    @param {jQuery.Object} canvasControlsContainer
+  */
+
+
+  UIControlsText.prototype.setupCanvasControls = function(canvasControlsContainer) {
+    var control, _i, _len, _ref,
+      _this = this;
+    this.canvasControlsContainer = canvasControlsContainer;
+    this.textContainer = $("<div>").addClass(ImglyKit.classPrefix + "canvas-text-container").appendTo(this.canvasControlsContainer);
+    this.fontsizeButtonsContainer = $("<div>").addClass(ImglyKit.classPrefix + "canvas-text-size-container").appendTo(this.textContainer);
+    _ref = ["Smaller", "Bigger"];
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      control = _ref[_i];
+      this["fontsize" + control + "Button"] = $("<div>").addClass(ImglyKit.classPrefix + "canvas-text-size-" + control.toLowerCase()).appendTo(this.fontsizeButtonsContainer);
+      this["fontsize" + control + "Button"].on("click", this["onFontsize" + control + "Click"]);
+    }
+    this.crosshair = $("<div>").addClass(ImglyKit.classPrefix + "canvas-crosshair " + ImglyKit.classPrefix + "canvas-text-crosshair").appendTo(this.textContainer);
+    this.handleCrosshair();
+    this.textInput = $("<textarea>").addClass(ImglyKit.classPrefix + "canvas-text-input").appendTo(this.textContainer).attr({
+      placeholder: "Text"
+    }).focus();
+    this.textInputDummy = $("<div>").addClass(ImglyKit.classPrefix + "canvas-text-input-dummy").appendTo(this.canvasControlsContainer);
+    this.textInput.keyup(function(e) {
+      _this.operationOptions.text = _this.textInput.val();
+      _this.operation.setOptions(_this.operationOptions);
+      return _this.autoResizeTextInput();
+    });
+    return after(100, function() {
+      return _this.autoResizeTextInput();
+    });
+  };
+
+  /*
+    Gets called as soon as the user clicks the button
+    to increase font size
+  */
+
+
+  UIControlsText.prototype.onFontsizeBiggerClick = function(e) {
+    var canvasHeight, newFontSize, resizeFactor;
+    canvasHeight = this.canvasControlsContainer.height();
+    resizeFactor = this.fontResizePerClick / canvasHeight;
+    newFontSize = Math.min(this.operationOptions.fontSize + resizeFactor, 1);
+    this.operationOptions.fontSize = newFontSize;
+    this.operation.setOptions(this.operationOptions);
+    return this.updateCanvasControls();
+  };
+
+  /*
+    Gets called as soon as the user clicks the button
+    to reduce font size
+  */
+
+
+  UIControlsText.prototype.onFontsizeSmallerClick = function(e) {
+    var canvasHeight, newFontSize, resizeFactor;
+    canvasHeight = this.canvasControlsContainer.height();
+    resizeFactor = this.fontResizePerClick / canvasHeight;
+    newFontSize = Math.max(this.operationOptions.fontSize - resizeFactor, 0.05);
+    this.operationOptions.fontSize = newFontSize;
+    this.operation.setOptions(this.operationOptions);
+    return this.updateCanvasControls();
+  };
+
+  /*
+    Update input position
+  */
+
+
+  UIControlsText.prototype.updateCanvasControls = function() {
+    var canvasHeight, canvasWidth;
+    canvasWidth = this.canvasControlsContainer.width();
+    canvasHeight = this.canvasControlsContainer.height();
+    this.textContainer.css({
+      left: this.operationOptions.start.x * canvasWidth,
+      top: this.operationOptions.start.y * canvasHeight
+    });
+    return this.autoResizeTextInput();
+  };
+
+  /*
+    Move the text input around by dragging the crosshair
+  */
+
+
+  UIControlsText.prototype.handleCrosshair = function() {
+    var canvasRect, maxContainerPosition, minContainerPosition, minimumHeight, minimumWidth,
+      _this = this;
+    canvasRect = new Rect(0, 0, this.canvasControlsContainer.width(), this.canvasControlsContainer.height());
+    minimumWidth = 50;
+    minimumHeight = 50;
+    minContainerPosition = new Vector2(0, 0);
+    maxContainerPosition = new Vector2(canvasRect.width - minimumWidth, canvasRect.height - minimumHeight);
+    return this.crosshair.mousedown(function(e) {
+      var currentContainerPosition, currentMousePosition, initialContainerPosition, initialMousePosition;
+      initialMousePosition = new Vector2(e.clientX, e.clientY);
+      currentMousePosition = new Vector2().copy(initialMousePosition);
+      initialContainerPosition = new Vector2(_this.textContainer.position().left, _this.textContainer.position().top);
+      currentContainerPosition = new Vector2().copy(initialContainerPosition);
+      $(document).mousemove(function(e) {
+        var mousePositionDifference;
+        currentMousePosition.set(e.clientX, e.clientY);
+        mousePositionDifference = new Vector2().copy(currentMousePosition).substract(initialMousePosition);
+        currentContainerPosition.copy(initialContainerPosition).add(mousePositionDifference).clamp(minContainerPosition, maxContainerPosition);
+        _this.textContainer.css({
+          left: currentContainerPosition.x,
+          top: currentContainerPosition.y
+        });
+        _this.operationOptions.start = new Vector2().copy(currentContainerPosition).divideByRect(canvasRect);
+        _this.operation.setOptions(_this.operationOptions);
+        return _this.updateCanvasControls();
+      });
+      return $(document).mouseup(function() {
+        $(document).off("mousemove");
+        return $(document).off("mouseup");
+      });
+    });
+  };
+
+  /*
+    Automatically resizes the text input
+  */
+
+
+  UIControlsText.prototype.autoResizeTextInput = function() {
+    var canvasHeight, canvasWidth, comfortZoneX, comfortZoneY, fontSize, inputWidth, maxHeight, maxWidth, paddingX, paddingY, text;
+    canvasWidth = this.canvasControlsContainer.width();
+    canvasHeight = this.canvasControlsContainer.height();
+    inputWidth = this.textInput.width();
+    fontSize = parseInt(this.textInput.css("font-size"));
+    comfortZoneX = fontSize * 3;
+    comfortZoneY = fontSize * 2;
+    paddingX = parseInt(this.textInputDummy.css("padding-left")) + parseInt(this.textInputDummy.css("padding-right"));
+    paddingY = parseInt(this.textInputDummy.css("padding-top")) + parseInt(this.textInputDummy.css("padding-bottom"));
+    this.operationOptions.paddingLeft = (parseInt(this.textInputDummy.css("padding-left")) + parseInt(this.textContainer.css("border-left-width"))) / canvasWidth;
+    this.operationOptions.paddingTop = (parseInt(this.textInputDummy.css("padding-top")) + parseInt(this.textContainer.css("border-top-width"))) / canvasHeight;
+    maxWidth = canvasWidth - this.operationOptions.start.x * canvasWidth;
+    maxHeight = canvasHeight - this.operationOptions.start.y * canvasHeight;
+    text = this.textInput.val();
+    if (text.match(/\n$/i)) {
+      text = text + "&nbsp;";
+    }
+    text = text.replace(/\n/g, "<br />");
+    if (!text) {
+      text = "&nbsp;";
+    }
+    this.textInputDummy.css({
+      width: "auto",
+      height: "auto"
+    }).html(text);
+    if (this.textInputDummy.width() >= maxWidth) {
+      this.textInputDummy.css({
+        width: maxWidth
+      });
+      comfortZoneX = 0;
+    }
+    if (this.textInputDummy.height() >= maxHeight) {
+      this.textInputDummy.css({
+        height: maxHeight
+      });
+      comfortZoneY = 0;
+    }
+    return this.textInput.css({
+      width: Math.min(this.textInputDummy.width() + comfortZoneX, maxWidth),
+      height: Math.min(this.textInputDummy.height() + comfortZoneY, maxHeight)
+    });
+  };
+
+  /*
+    @params {Object} options
+  */
+
+
+  UIControlsText.prototype.updateOptions = function(operationOptions) {
+    var canvasHeight;
+    this.operationOptions = operationOptions;
+    canvasHeight = this.canvasControlsContainer.height();
+    $([this.textInput.get(0), this.textInputDummy.get(0)]).css({
+      fontSize: this.operationOptions.fontSize * canvasHeight,
+      color: this.operationOptions.color,
+      fontFamily: this.operationOptions.font,
+      lineHeight: this.operationOptions.lineHeight
+    });
+    return this.updateCanvasControls();
+  };
+
+  return UIControlsText;
+
+})(List);
+
+module.exports = UIControlsText;
+
+
+},{"../../math/rect.coffee":53,"../../math/vector2.coffee":52,"../../operations/text.coffee":72,"./base/list.coffee":6,"__browserify_Buffer":3,"__browserify_process":1}],73:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/operations/frames.coffee",__dirname="/operations";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20414,7 +20413,7 @@ FramesOperation = (function(_super) {
 module.exports = FramesOperation;
 
 
-},{"../math/rect.coffee":55,"../math/vector2.coffee":54,"../utils.coffee":6,"../vendor/queue.coffee":5,"./operation.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],75:[function(require,module,exports){
+},{"../math/rect.coffee":53,"../math/vector2.coffee":52,"../utils.coffee":5,"../vendor/queue.coffee":8,"./operation.coffee":9,"__browserify_Buffer":3,"__browserify_process":1}],74:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/frames.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20502,7 +20501,7 @@ UIControlsFrames = (function(_super) {
 module.exports = UIControlsFrames;
 
 
-},{"../../math/rect.coffee":55,"../../math/vector2.coffee":54,"../../operations/frames.coffee":74,"../../utils.coffee":6,"./base/list.coffee":13,"__browserify_Buffer":3,"__browserify_process":1}],76:[function(require,module,exports){
+},{"../../math/rect.coffee":53,"../../math/vector2.coffee":52,"../../operations/frames.coffee":73,"../../utils.coffee":5,"./base/list.coffee":6,"__browserify_Buffer":3,"__browserify_process":1}],75:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls/overview.coffee",__dirname="/ui/controls";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20599,7 +20598,7 @@ UIControlsOverview = (function(_super) {
 module.exports = UIControlsOverview;
 
 
-},{"../../operations/brightness.coffee":68,"../../operations/contrast.coffee":70,"../../operations/crop.coffee":64,"../../operations/frames.coffee":74,"../../operations/saturation.coffee":72,"../../operations/text.coffee":73,"./base/list.coffee":13,"./brightness.coffee":67,"./contrast.coffee":69,"./crop.coffee":65,"./filters.coffee":53,"./focus.coffee":63,"./frames.coffee":75,"./orientation.coffee":59,"./saturation.coffee":71,"./stickers_control.coffee":57,"./text.coffee":77,"__browserify_Buffer":3,"__browserify_process":1}],78:[function(require,module,exports){
+},{"../../operations/brightness.coffee":66,"../../operations/contrast.coffee":68,"../../operations/crop.coffee":62,"../../operations/frames.coffee":73,"../../operations/saturation.coffee":70,"../../operations/text.coffee":72,"./base/list.coffee":6,"./brightness.coffee":65,"./contrast.coffee":67,"./crop.coffee":63,"./filters.coffee":51,"./focus.coffee":61,"./frames.coffee":74,"./orientation.coffee":57,"./saturation.coffee":69,"./stickers_control.coffee":55,"./text.coffee":71,"__browserify_Buffer":3,"__browserify_process":1}],76:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/controls.coffee",__dirname="/ui";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20757,7 +20756,7 @@ UIControls = (function(_super) {
 module.exports = UIControls;
 
 
-},{"./controls/overview.coffee":76,"__browserify_Buffer":3,"__browserify_process":1,"events":7}],79:[function(require,module,exports){
+},{"./controls/overview.coffee":75,"__browserify_Buffer":3,"__browserify_process":1,"events":2}],77:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/canvas.coffee",__dirname="/ui";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -20935,7 +20934,7 @@ UICanvas = (function() {
 module.exports = UICanvas;
 
 
-},{"../utils.coffee":6,"__browserify_Buffer":3,"__browserify_process":1}],80:[function(require,module,exports){
+},{"../utils.coffee":5,"__browserify_Buffer":3,"__browserify_process":1}],78:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/ui/ui.coffee",__dirname="/ui";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -21021,7 +21020,294 @@ UI = (function(_super) {
 module.exports = UI;
 
 
-},{"./canvas.coffee":79,"./controls.coffee":78,"__browserify_Buffer":3,"__browserify_process":1,"events":7}],81:[function(require,module,exports){
+},{"./canvas.coffee":77,"./controls.coffee":76,"__browserify_Buffer":3,"__browserify_process":1,"events":2}],79:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/vendor/perf.coffee",__dirname="/vendor";var Perf;
+
+Perf = (function() {
+  function Perf(name, options) {
+    var _base, _base1, _base2;
+    this.name = name;
+    this.options = options != null ? options : {};
+    if ((_base = this.options).good == null) {
+      _base.good = 100;
+    }
+    if ((_base1 = this.options).bad == null) {
+      _base1.bad = 500;
+    }
+    if ((_base2 = this.options).debug == null) {
+      _base2.debug = true;
+    }
+    this.started = false;
+  }
+
+  Perf.prototype.start = function() {
+    if (this.started || !this.options.debug) {
+      return;
+    }
+    this.start = +new Date();
+    return this.started = true;
+  };
+
+  Perf.prototype.stop = function(printLine) {
+    var background, color, duration, end, message;
+    if (!this.started || !this.options.debug) {
+      return;
+    }
+    end = +new Date();
+    duration = end - this.start;
+    if (this.name != null) {
+      message = this.name + ' took';
+    } else {
+      message = 'Code execution time:';
+    }
+    if (typeof window !== "undefined" && window !== null) {
+      if (duration < this.options.good) {
+        background = 'darkgreen';
+        color = 'white';
+      } else if (duration > this.options.good && duration < this.options.bad) {
+        background = 'orange';
+        color = 'black';
+      } else {
+        background = 'darkred';
+        color = 'white';
+      }
+      console.log('%c perf %c ' + message + ' %c ' + duration.toFixed(2) + 'ms ', 'background: #222; color: #bada55', '', 'background: ' + background + '; color: ' + color);
+    } else {
+      console.log('[perf] ' + message + ' ' + duration.toFixed(2) + 'ms');
+    }
+    this.started = false;
+    if (printLine && (typeof window !== "undefined" && window !== null)) {
+      return console.log('%c perf %c -- END --                                                                          ', 'background: #222; color: #bada55', 'background: #222; color: #ffffff');
+    }
+  };
+
+  return Perf;
+
+})();
+
+module.exports = Perf;
+
+
+},{"__browserify_Buffer":3,"__browserify_process":1}],80:[function(require,module,exports){
+var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/photoprocessor.coffee",__dirname="/";/*
+  ImglyKit
+  Copyright (c) 2013-2014 img.ly
+*/
+
+var IdentityFilter, Perf, PhotoProcessor, Queue, Utils;
+
+Perf = require("./vendor/perf.coffee");
+
+Queue = require("./vendor/queue.coffee");
+
+Utils = require("./utils.coffee");
+
+IdentityFilter = require("./operations/filters/primitives/identity.coffee");
+
+PhotoProcessor = (function() {
+  /*
+    @param {imglyUtil} app
+  */
+
+  function PhotoProcessor(app) {
+    this.app = app;
+    this.canvas = null;
+    this.operationChain = new IdentityFilter;
+    this.operationChainNeedsRender = true;
+    this.cachedPreviewImageData = null;
+    this.previewOperation = null;
+    this.rendering = false;
+  }
+
+  PhotoProcessor.prototype.setCanvas = function(canvas) {
+    this.canvas = canvas;
+  };
+
+  PhotoProcessor.prototype.setSourceImage = function(sourceImage) {
+    this.sourceImage = sourceImage;
+  };
+
+  /*
+    @params {ImglyKit.Operations.Operation} operation
+  */
+
+
+  PhotoProcessor.prototype.setPreviewOperation = function(operation) {
+    operation.setContext(this.canvas.getContext());
+    this.previewOperation = operation;
+    if (!operation.renderPreview) {
+      return;
+    }
+    return this.renderPreview();
+  };
+
+  PhotoProcessor.prototype.unsetPreviewOperation = function() {
+    this.previewOperation = null;
+    return this.renderPreview();
+  };
+
+  PhotoProcessor.prototype.acceptPreviewOperation = function() {
+    if (!this.previewOperation) {
+      return;
+    }
+    this.operationChainNeedsRender = true;
+    this.operationChain = this.operationChain.compose(this.previewOperation);
+    this.previewOperation = null;
+    return this.renderPreview();
+  };
+
+  /*
+    Render the full size final image
+  */
+
+
+  PhotoProcessor.prototype.renderImage = function(options, callback) {
+    var dimensions, height, imageData, p, scale, width, _ref, _ref1;
+    p = new Perf("imglyPhotoProcessor#renderFullImage()", {
+      debug: this.app.options.debug
+    });
+    p.start();
+    if (!(options.maxSize || options.size)) {
+      dimensions = {
+        width: this.sourceImage.width,
+        height: this.sourceImage.height
+      };
+      imageData = Utils.getImageDataForImage(this.sourceImage);
+    } else if (options.maxSize) {
+      _ref = options.maxSize.split("x"), width = _ref[0], height = _ref[1];
+      options = {
+        image: {
+          width: this.sourceImage.width,
+          height: this.sourceImage.height
+        },
+        container: {
+          width: width - ImglyKit.canvasContainerPadding * 2,
+          height: height - ImglyKit.canvasContainerPadding * 2
+        }
+      };
+      dimensions = Utils.calculateCanvasSize(options);
+      imageData = Utils.getResizedImageDataForImage(this.sourceImage, dimensions, {
+        smooth: true
+      });
+    } else if (options.size) {
+      _ref1 = options.size.split("x"), width = _ref1[0], height = _ref1[1];
+      if (width && !height) {
+        scale = this.sourceImage.height / this.sourceImage.width;
+        height = width * scale;
+      } else if (height && !width) {
+        scale = this.sourceImage.width / this.sourceImage.height;
+        width = height * scale;
+      }
+      dimensions = {
+        width: parseInt(width),
+        height: parseInt(height)
+      };
+      imageData = Utils.getResizedImageDataForImage(this.sourceImage, dimensions, {
+        smooth: true
+      });
+    }
+    return this.render(imageData, {
+      preview: false
+    }, callback);
+  };
+
+  /*
+    Renders a preview
+  */
+
+
+  PhotoProcessor.prototype.renderPreview = function(callback) {
+    return this.render(null, {
+      preview: true
+    }, callback);
+  };
+
+  /*
+    Render preview or image
+  */
+
+
+  PhotoProcessor.prototype.render = function(imageData, options, callback) {
+    /*
+      Make sure we are not rendering multiple previews at a time
+    */
+
+    var p,
+      _this = this;
+    if (this.rendering) {
+      return;
+    }
+    this.rendering = true;
+    p = new Perf("imglyPhotoProcessor#render({ preview: " + options.preview + " })", {
+      debug: this.app.options.debug
+    });
+    p.start();
+    imageData = options.preview ? this.renderOperationChainPreview(imageData) : this.operationChain.apply(imageData);
+    return Queue(imageData).then(function(imageData) {
+      if (options.preview && _this.operationChainNeedsRender) {
+        _this.cachedPreviewImageData = imageData;
+        _this.operationChainNeedsRender = false;
+      }
+      if (_this.previewOperation && options.preview) {
+        return _this.previewOperation.apply(imageData);
+      } else {
+        return imageData;
+      }
+    }).then(function(imageData) {
+      if (options.preview) {
+        _this.canvas.renderImageData(imageData);
+      }
+      if (typeof callback === "function") {
+        callback(null, imageData);
+      }
+      _this.rendering = false;
+      p.stop(true);
+      return imageData;
+    });
+  };
+
+  PhotoProcessor.prototype.renderOperationChainPreview = function(imageData) {
+    var dimensions, imageDimensions;
+    if (!this.operationChainNeedsRender) {
+      return Utils.cloneImageData(this.cachedPreviewImageData);
+    } else {
+      dimensions = this.canvas.getDimensionsForImage(this.sourceImage);
+      if (this.resizedPreviewImageData == null) {
+        imageDimensions = {
+          width: dimensions.width * (window.devicePixelRatio || 1),
+          height: dimensions.height * (window.devicePixelRatio || 1)
+        };
+        this.resizedPreviewImageData = imageData = Utils.getResizedImageDataForImage(this.sourceImage, imageDimensions, {
+          smooth: true
+        });
+      } else {
+        imageData = Utils.cloneImageData(this.resizedPreviewImageData);
+      }
+      return this.operationChain.apply(imageData);
+    }
+  };
+
+  /*
+    Resets all UI elements
+  */
+
+
+  PhotoProcessor.prototype.reset = function() {
+    this.operationChain = new IdentityFilter;
+    this.previewOperation = null;
+    this.rendering = false;
+    this.operationChainNeedsRender = true;
+    return this.resizedPreviewImageData = null;
+  };
+
+  return PhotoProcessor;
+
+})();
+
+module.exports = PhotoProcessor;
+
+
+},{"./operations/filters/primitives/identity.coffee":11,"./utils.coffee":5,"./vendor/perf.coffee":79,"./vendor/queue.coffee":8,"__browserify_Buffer":3,"__browserify_process":1}],81:[function(require,module,exports){
 var process=require("__browserify_process"),global=self,Buffer=require("__browserify_Buffer").Buffer,__filename="/imgly.coffee",__dirname="/";/*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
@@ -21273,331 +21559,95 @@ ImglyKit = (function() {
 window.ImglyKit = ImglyKit;
 
 
-},{"./photoprocessor.coffee":11,"./ui/controls/crop.coffee":65,"./ui/ui.coffee":80,"./utils.coffee":6,"__browserify_Buffer":3,"__browserify_process":1}],77:[function(require,module,exports){
+},{"./photoprocessor.coffee":80,"./ui/controls/crop.coffee":63,"./ui/ui.coffee":78,"./utils.coffee":5,"__browserify_Buffer":3,"__browserify_process":1}],72:[function(require,module,exports){
 /*
   ImglyKit
   Copyright (c) 2013-2014 img.ly
 */
 
-var List, Rect, UIControlsText, Vector2,
-  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+var FontOperation, Operation, Rect, Utils, Vector2,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-List = require("./base/list.coffee");
+Operation = require("./operation.coffee");
 
-Vector2 = require("../../math/vector2.coffee");
+Utils = require("../utils.coffee");
 
-Rect = require("../../math/rect.coffee");
+Vector2 = require("../math/vector2.coffee");
 
-UIControlsText = (function(_super) {
-  __extends(UIControlsText, _super);
+Rect = require("../math/rect.coffee");
 
-  UIControlsText.prototype.displayButtons = true;
+FontOperation = (function(_super) {
+  __extends(FontOperation, _super);
 
-  UIControlsText.prototype.singleOperation = true;
+  FontOperation.prototype.renderPreview = false;
 
-  UIControlsText.prototype.hasCanvasControls = true;
-
-  UIControlsText.prototype.cssClassIdentifier = "text";
-
-  /*
-    @param {imglyUtil} app
-    @param {imglyUtil.UI} ui
-  */
-
-
-  function UIControlsText(app, ui, controls) {
-    var additionalFont, _i, _len, _ref;
+  function FontOperation(app, options) {
     this.app = app;
-    this.ui = ui;
-    this.controls = controls;
-    this.autoResizeTextInput = __bind(this.autoResizeTextInput, this);
-    this.onFontsizeSmallerClick = __bind(this.onFontsizeSmallerClick, this);
-    this.onFontsizeBiggerClick = __bind(this.onFontsizeBiggerClick, this);
-    UIControlsText.__super__.constructor.apply(this, arguments);
-    this.initialized = false;
-    this.fontResizePerClick = 3;
-    this.operationClass = require("../../operations/text.coffee");
-    this.listItems = [
-      {
-        name: "Helvetica",
-        method: "setFont",
-        cssClass: "helvetica",
-        "arguments": ["Helvetica"],
-        tooltip: "Helvetica",
-        "default": true
-      }, {
-        name: "Lucida Grande",
-        method: "setFont",
-        cssClass: "lucida-grande",
-        "arguments": ["Lucida Grande"],
-        tooltip: "Lucida Grande"
-      }, {
-        name: "Times New Roman",
-        method: "setFont",
-        cssClass: "times-new-roman",
-        "arguments": ["Times New Roman"],
-        tooltip: "Times New Roman"
-      }
-    ];
-    if (this.app.options.additionalFonts != null) {
-      _ref = this.app.options.additionalFonts;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        additionalFont = _ref[_i];
-        this.listItems.push({
-          name: additionalFont.name,
-          method: "setFont",
-          cssClass: additionalFont.cssClass,
-          "arguments": [additionalFont.name]
-        });
-      }
-    }
+    this.options = options != null ? options : {};
+    FontOperation.__super__.constructor.apply(this, arguments);
+    this.options.start = new Vector2(0.2, 0.2);
+    this.options.width = 300;
+    this.options.font = "Helvetica";
+    this.options.text = "Text";
+    this.options.color = "rgba(255, 255, 255, 1.0)";
+    this.options.backgroundColor = "rgba(0, 0, 0, 0.5)";
+    this.options.fontSize = 0.1;
+    this.options.lineHeight = 1.1;
+    this.options.paddingLeft = 0;
+    this.options.paddingTop = 0;
   }
 
   /*
-    Create controls DOM tree
+    @param {String} font
   */
 
 
-  UIControlsText.prototype.createList = function() {
-    UIControlsText.__super__.createList.apply(this, arguments);
-    /*
-      Color control
-    */
-
-    this.colorControl = $("<div>").addClass(ImglyKit.classPrefix + "controls-text-color-button " + ImglyKit.classPrefix + "controls-button-right").appendTo(this.wrapper);
-    this.colorSelect = $("<div>").addClass(ImglyKit.classPrefix + "controls-text-color").appendTo(this.colorControl);
-    this.handleColorsControl();
-    return this.buttons.color = this.colorControl;
+  FontOperation.prototype.setFont = function(font) {
+    this.options.font = font;
+    return this.emit("updateOptions", this.options);
   };
 
-  /*
-    Handle the colors control
-  */
-
-
-  UIControlsText.prototype.handleColorsControl = function() {
-    var defaultForegroundColor,
-      _this = this;
-    defaultForegroundColor = '#ffffff';
-    this.colorControl.spectrum({
-      color: defaultForegroundColor,
-      showAlpha: true,
-      showPalette: true,
-      showSelectionPalette: true,
-      palette: [],
-      showButtons: false,
-      localStorageKey: "imgly.palette",
-      move: function(color) {
-        var colorComponents, rgbaString;
-        colorComponents = color.toRgb();
-        rgbaString = "rgba(" + colorComponents.r + "," + colorComponents.g + "," + colorComponents.b + "," + colorComponents.a + ")";
-        _this.colorSelect.css({
-          backgroundColor: rgbaString
-        });
-        _this.operationOptions.color = rgbaString;
-        return _this.operation.setOptions(_this.operationOptions);
+  FontOperation.prototype.apply = function(imageData) {
+    var boundingBoxHeight, boundingBoxWidth, canvas, context, line, lineHeight, lineNum, lineOffset, lineWidth, padding, paddingVector, scaledFontSize, scaledStart, _i, _j, _len, _len1, _ref, _ref1;
+    scaledFontSize = this.options.fontSize * imageData.height;
+    paddingVector = new Vector2(this.options.paddingLeft, this.options.paddingTop);
+    scaledStart = new Vector2().copy(this.options.start).add(paddingVector).multiplyWithRect(imageData);
+    canvas = Utils.newCanvasFromImageData(imageData);
+    context = canvas.getContext("2d");
+    context.font = "normal " + scaledFontSize + "px " + this.options.font;
+    context.textBaseline = "hanging";
+    lineHeight = this.options.lineHeight;
+    boundingBoxWidth = 0;
+    boundingBoxHeight = 0;
+    _ref = this.options.text.split("\n");
+    for (lineNum = _i = 0, _len = _ref.length; _i < _len; lineNum = ++_i) {
+      line = _ref[lineNum];
+      lineWidth = context.measureText(line).width;
+      if (lineWidth > boundingBoxWidth) {
+        boundingBoxWidth = lineWidth;
       }
-    });
-    this.colorSelect.css({
-      backgroundColor: defaultForegroundColor
-    });
-  };
-
-  /*
-    @param {jQuery.Object} canvasControlsContainer
-  */
-
-
-  UIControlsText.prototype.setupCanvasControls = function(canvasControlsContainer) {
-    var control, _i, _len, _ref,
-      _this = this;
-    this.canvasControlsContainer = canvasControlsContainer;
-    this.textContainer = $("<div>").addClass(ImglyKit.classPrefix + "canvas-text-container").appendTo(this.canvasControlsContainer);
-    this.fontsizeButtonsContainer = $("<div>").addClass(ImglyKit.classPrefix + "canvas-text-size-container").appendTo(this.textContainer);
-    _ref = ["Smaller", "Bigger"];
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      control = _ref[_i];
-      this["fontsize" + control + "Button"] = $("<div>").addClass(ImglyKit.classPrefix + "canvas-text-size-" + control.toLowerCase()).appendTo(this.fontsizeButtonsContainer);
-      this["fontsize" + control + "Button"].on("click", this["onFontsize" + control + "Click"]);
+      boundingBoxHeight += scaledFontSize * lineHeight;
     }
-    this.crosshair = $("<div>").addClass(ImglyKit.classPrefix + "canvas-crosshair " + ImglyKit.classPrefix + "canvas-text-crosshair").appendTo(this.textContainer);
-    this.handleCrosshair();
-    this.textInput = $("<textarea>").addClass(ImglyKit.classPrefix + "canvas-text-input").appendTo(this.textContainer).attr({
-      placeholder: "Text"
-    }).focus();
-    this.textInputDummy = $("<div>").addClass(ImglyKit.classPrefix + "canvas-text-input-dummy").appendTo(this.canvasControlsContainer);
-    this.textInput.keyup(function(e) {
-      _this.operationOptions.text = _this.textInput.val();
-      _this.operation.setOptions(_this.operationOptions);
-      return _this.autoResizeTextInput();
-    });
-    return after(100, function() {
-      return _this.autoResizeTextInput();
-    });
-  };
-
-  /*
-    Gets called as soon as the user clicks the button
-    to increase font size
-  */
-
-
-  UIControlsText.prototype.onFontsizeBiggerClick = function(e) {
-    var canvasHeight, newFontSize, resizeFactor;
-    canvasHeight = this.canvasControlsContainer.height();
-    resizeFactor = this.fontResizePerClick / canvasHeight;
-    newFontSize = Math.min(this.operationOptions.fontSize + resizeFactor, 1);
-    this.operationOptions.fontSize = newFontSize;
-    this.operation.setOptions(this.operationOptions);
-    return this.updateCanvasControls();
-  };
-
-  /*
-    Gets called as soon as the user clicks the button
-    to reduce font size
-  */
-
-
-  UIControlsText.prototype.onFontsizeSmallerClick = function(e) {
-    var canvasHeight, newFontSize, resizeFactor;
-    canvasHeight = this.canvasControlsContainer.height();
-    resizeFactor = this.fontResizePerClick / canvasHeight;
-    newFontSize = Math.max(this.operationOptions.fontSize - resizeFactor, 0.05);
-    this.operationOptions.fontSize = newFontSize;
-    this.operation.setOptions(this.operationOptions);
-    return this.updateCanvasControls();
-  };
-
-  /*
-    Update input position
-  */
-
-
-  UIControlsText.prototype.updateCanvasControls = function() {
-    var canvasHeight, canvasWidth;
-    canvasWidth = this.canvasControlsContainer.width();
-    canvasHeight = this.canvasControlsContainer.height();
-    this.textContainer.css({
-      left: this.operationOptions.start.x * canvasWidth,
-      top: this.operationOptions.start.y * canvasHeight
-    });
-    return this.autoResizeTextInput();
-  };
-
-  /*
-    Move the text input around by dragging the crosshair
-  */
-
-
-  UIControlsText.prototype.handleCrosshair = function() {
-    var canvasRect, maxContainerPosition, minContainerPosition, minimumHeight, minimumWidth,
-      _this = this;
-    canvasRect = new Rect(0, 0, this.canvasControlsContainer.width(), this.canvasControlsContainer.height());
-    minimumWidth = 50;
-    minimumHeight = 50;
-    minContainerPosition = new Vector2(0, 0);
-    maxContainerPosition = new Vector2(canvasRect.width - minimumWidth, canvasRect.height - minimumHeight);
-    return this.crosshair.mousedown(function(e) {
-      var currentContainerPosition, currentMousePosition, initialContainerPosition, initialMousePosition;
-      initialMousePosition = new Vector2(e.clientX, e.clientY);
-      currentMousePosition = new Vector2().copy(initialMousePosition);
-      initialContainerPosition = new Vector2(_this.textContainer.position().left, _this.textContainer.position().top);
-      currentContainerPosition = new Vector2().copy(initialContainerPosition);
-      $(document).mousemove(function(e) {
-        var mousePositionDifference;
-        currentMousePosition.set(e.clientX, e.clientY);
-        mousePositionDifference = new Vector2().copy(currentMousePosition).substract(initialMousePosition);
-        currentContainerPosition.copy(initialContainerPosition).add(mousePositionDifference).clamp(minContainerPosition, maxContainerPosition);
-        _this.textContainer.css({
-          left: currentContainerPosition.x,
-          top: currentContainerPosition.y
-        });
-        _this.operationOptions.start = new Vector2().copy(currentContainerPosition).divideByRect(canvasRect);
-        _this.operation.setOptions(_this.operationOptions);
-        return _this.updateCanvasControls();
-      });
-      return $(document).mouseup(function() {
-        $(document).off("mousemove");
-        return $(document).off("mouseup");
-      });
-    });
-  };
-
-  /*
-    Automatically resizes the text input
-  */
-
-
-  UIControlsText.prototype.autoResizeTextInput = function() {
-    var canvasHeight, canvasWidth, comfortZoneX, comfortZoneY, fontSize, inputWidth, maxHeight, maxWidth, paddingX, paddingY, text;
-    canvasWidth = this.canvasControlsContainer.width();
-    canvasHeight = this.canvasControlsContainer.height();
-    inputWidth = this.textInput.width();
-    fontSize = parseInt(this.textInput.css("font-size"));
-    comfortZoneX = fontSize * 3;
-    comfortZoneY = fontSize * 2;
-    paddingX = parseInt(this.textInputDummy.css("padding-left")) + parseInt(this.textInputDummy.css("padding-right"));
-    paddingY = parseInt(this.textInputDummy.css("padding-top")) + parseInt(this.textInputDummy.css("padding-bottom"));
-    this.operationOptions.paddingLeft = (parseInt(this.textInputDummy.css("padding-left")) + parseInt(this.textContainer.css("border-left-width"))) / canvasWidth;
-    this.operationOptions.paddingTop = (parseInt(this.textInputDummy.css("padding-top")) + parseInt(this.textContainer.css("border-top-width"))) / canvasHeight;
-    maxWidth = canvasWidth - this.operationOptions.start.x * canvasWidth;
-    maxHeight = canvasHeight - this.operationOptions.start.y * canvasHeight;
-    text = this.textInput.val();
-    if (text.match(/\n$/i)) {
-      text = text + "&nbsp;";
+    context.fillStyle = this.options.backgroundColor;
+    padding = 10;
+    context.fillRect(scaledStart.x - padding, scaledStart.y - padding, boundingBoxWidth + padding * 2, boundingBoxHeight + padding);
+    context.fillStyle = this.options.color;
+    _ref1 = this.options.text.split("\n");
+    for (lineNum = _j = 0, _len1 = _ref1.length; _j < _len1; lineNum = ++_j) {
+      line = _ref1[lineNum];
+      lineOffset = lineNum * scaledFontSize * lineHeight;
+      context.fillText(line, scaledStart.x, scaledStart.y + this.options.paddingLeft + lineOffset);
     }
-    text = text.replace(/\n/g, "<br />");
-    if (!text) {
-      text = "&nbsp;";
-    }
-    this.textInputDummy.css({
-      width: "auto",
-      height: "auto"
-    }).html(text);
-    if (this.textInputDummy.width() >= maxWidth) {
-      this.textInputDummy.css({
-        width: maxWidth
-      });
-      comfortZoneX = 0;
-    }
-    if (this.textInputDummy.height() >= maxHeight) {
-      this.textInputDummy.css({
-        height: maxHeight
-      });
-      comfortZoneY = 0;
-    }
-    return this.textInput.css({
-      width: Math.min(this.textInputDummy.width() + comfortZoneX, maxWidth),
-      height: Math.min(this.textInputDummy.height() + comfortZoneY, maxHeight)
-    });
+    return context.getImageData(0, 0, imageData.width, imageData.height);
   };
 
-  /*
-    @params {Object} options
-  */
+  return FontOperation;
+
+})(Operation);
+
+module.exports = FontOperation;
 
 
-  UIControlsText.prototype.updateOptions = function(operationOptions) {
-    var canvasHeight;
-    this.operationOptions = operationOptions;
-    canvasHeight = this.canvasControlsContainer.height();
-    $([this.textInput.get(0), this.textInputDummy.get(0)]).css({
-      fontSize: this.operationOptions.fontSize * canvasHeight,
-      color: this.operationOptions.color,
-      fontFamily: this.operationOptions.font,
-      lineHeight: this.operationOptions.lineHeight
-    });
-    return this.updateCanvasControls();
-  };
-
-  return UIControlsText;
-
-})(List);
-
-module.exports = UIControlsText;
-
-
-},{"../../math/rect.coffee":55,"../../math/vector2.coffee":54,"../../operations/text.coffee":73,"./base/list.coffee":13}]},{},[81])
+},{"../math/rect.coffee":53,"../math/vector2.coffee":52,"../utils.coffee":5,"./operation.coffee":9}]},{},[81])
 ;

@@ -62,23 +62,39 @@ class UIControlsText extends List
     ###
       Color control
     ###
-    @colorControl = $("<div>")
+    @textColorControl = $("<div>")
       .addClass(ImglyKit.classPrefix + "controls-text-color-button " + ImglyKit.classPrefix + "controls-button-right")
       .appendTo @wrapper
 
-    @colorSelect = $("<div>")
+    @textColorPreview = $("<div>")
       .addClass(ImglyKit.classPrefix + "controls-text-color")
-      .appendTo @colorControl
+      .appendTo @textColorControl
+
+    ###
+      Background color control
+    ###
+    @backgroundColorControl = $("<div>")
+      .addClass(ImglyKit.classPrefix + "controls-background-color-button " + ImglyKit.classPrefix + "controls-button-right")
+      .appendTo @wrapper
+
+    @backgroundColorPreview = $("<div>")
+      .addClass(ImglyKit.classPrefix + "controls-background-color")
+      .appendTo @backgroundColorControl
+    
+    # We need room for one accept button and two color buttons to the right
+    @list.css "margin-right", @controls.getHeight() * 3
 
     @handleColorsControl()
-    @buttons.color = @colorControl
-
+    
   ###
     Handle the colors control
   ###
   handleColorsControl: ->  
-    defaultForegroundColor = '#ffffff'
-    @colorControl.spectrum(
+    defaultForegroundColor = "rgba(255, 255, 255, 1.0)"
+    defaultBackgroundColor = "rgba(0, 0, 0, 0.5)"
+
+    # Initialize color picker for foreground color
+    @textColorControl.spectrum(
       color: defaultForegroundColor
       showAlpha: true
       showPalette: true
@@ -89,11 +105,34 @@ class UIControlsText extends List
       move: (color) =>
         colorComponents = color.toRgb()
         rgbaString = "rgba(" + colorComponents.r + "," + colorComponents.g + ","  + colorComponents.b + "," + colorComponents.a + ")"
-        @colorSelect.css(backgroundColor: rgbaString)
+        @textColorPreview.css(backgroundColor: rgbaString)
         @operationOptions.color = rgbaString
         @operation.setOptions @operationOptions
-    )    
-    @colorSelect.css(backgroundColor: defaultForegroundColor)
+    )
+
+    # Initialize color picker for background color
+    @backgroundColorControl.spectrum(
+      color: defaultBackgroundColor
+      showAlpha: true
+      showPalette: true
+      showSelectionPalette: true
+      palette: [ ]
+      showButtons: false
+      localStorageKey: "imgly.palette" 
+      move: (color) =>
+        colorComponents = color.toRgb()
+        rgbaString = "rgba(" + colorComponents.r + "," + colorComponents.g + ","  + colorComponents.b + "," + colorComponents.a + ")"
+        @backgroundColorPreview.css(backgroundColor: rgbaString)
+        @textContainer.css(backgroundColor: rgbaString)
+        @operationOptions.backgroundColor = rgbaString
+        @operation.setOptions @operationOptions
+    )
+    
+    # Initially set default colors
+    @textColorPreview.css(backgroundColor: defaultForegroundColor)
+    @backgroundColorPreview.css(backgroundColor: defaultBackgroundColor)
+    @textContainer.css(backgroundColor: defaultBackgroundColor)
+    
     return
 
   ###

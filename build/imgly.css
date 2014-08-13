@@ -846,10 +846,6 @@
 .imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-linear {
   background-image: url("assets/option-focus-linear.png");
 }
-/* line 3, ../sass/ui/controls/_text.sass */
-.imgly-container .imgly-controls-container .imgly-controls-list-text {
-  padding-right: 153px;
-}
 /* line 10, ../sass/ui/controls/_text.sass */
 .imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-helvetica {
   background-image: url("assets/text/helvetica.png");
@@ -879,11 +875,11 @@
   display: none;
 }
 /* line 40, ../sass/ui/controls/_text.sass */
-.imgly-container .imgly-controls-container .imgly-controls-text-color-dropdown .imgly-controls-text-color {
+.imgly-container .imgly-controls-container .imgly-controls-text-color-dropdown .imgly-controls-text-color, .imgly-container .imgly-controls-container .imgly-controls-text-color-dropdown .imgly-controls-background-color {
   cursor: pointer;
 }
 /* line 43, ../sass/ui/controls/_text.sass */
-.imgly-container .imgly-controls-container .imgly-controls-text-color {
+.imgly-container .imgly-controls-container .imgly-controls-text-color, .imgly-container .imgly-controls-container .imgly-controls-background-color {
   width: 34px;
   height: 34px;
   display: inline-block;
@@ -892,23 +888,27 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
 /* line 55, ../sass/ui/controls/_text.sass */
-.imgly-container .imgly-controls-container .imgly-controls-text-color-button {
+.imgly-container .imgly-controls-container .imgly-controls-text-color-button, .imgly-container .imgly-controls-container .imgly-controls-background-color-button {
   width: 80px;
   height: 80px;
   cursor: pointer;
   position: absolute;
   top: 0;
-  right: 73px;
+  right: 80px;
   border-left: 1px solid #363636;
 }
 /* line 68, ../sass/ui/controls/_text.sass */
-.imgly-container .imgly-controls-container .imgly-controls-text-color-button > .imgly-controls-text-color {
+.imgly-container .imgly-controls-container .imgly-controls-text-color-button > .imgly-controls-text-color, .imgly-container .imgly-controls-container .imgly-controls-text-color-button .imgly-controls-background-color, .imgly-container .imgly-controls-container .imgly-controls-background-color-button > .imgly-controls-text-color, .imgly-container .imgly-controls-container .imgly-controls-background-color-button .imgly-controls-background-color {
   margin: 0;
   position: absolute;
   top: 50%;
   left: 50%;
   margin-top: -17px;
   margin-left: -20px;
+}
+/* line 78, ../sass/ui/controls/_text.sass */
+.imgly-container .imgly-controls-container .imgly-controls-text-color-button {
+  right: 160px;
 }
 /* line 1, ../sass/ui/controls/_frames.sass */
 .imgly-container .imgly-controls-container .imgly-controls-item {

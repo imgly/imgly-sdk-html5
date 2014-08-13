@@ -14,7 +14,8 @@ class FontOperation extends Operation
     @options.width = 300
     @options.font  = "Helvetica"
     @options.text  = "Text"
-    @options.color = "#ffffff"
+    @options.color = "rgba(255, 255, 255, 1.0)"
+    @options.backgroundColor = "rgba(0, 0, 0, 0.5)"
 
     @options.fontSize = 0.1
     @options.lineHeight = 1.1
@@ -44,12 +45,25 @@ class FontOperation extends Operation
 
     # Set text options
     context.font         = "normal #{scaledFontSize}px #{@options.font}"
-    context.fillStyle    = @options.color
     context.textBaseline = "hanging"
 
     # Default line height is roughly 1.1
     lineHeight = @options.lineHeight
 
+    # Calculate the bounding box, so we can put a rect under the text
+    boundingBoxWidth = 0
+    boundingBoxHeight = 0
+    for line, lineNum in @options.text.split("\n")
+      lineWidth = context.measureText(line).width
+      if lineWidth > boundingBoxWidth
+        boundingBoxWidth = lineWidth
+      boundingBoxHeight += scaledFontSize * lineHeight
+
+    context.fillStyle = @options.backgroundColor
+    padding = 10
+    context.fillRect scaledStart.x - padding, scaledStart.y - padding, boundingBoxWidth + padding * 2, boundingBoxHeight + padding
+    
+    context.fillStyle = @options.color
     # Render the text line per line
     for line, lineNum in @options.text.split("\n")
       lineOffset = lineNum * scaledFontSize * lineHeight

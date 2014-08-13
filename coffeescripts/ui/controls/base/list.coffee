@@ -104,7 +104,7 @@ class UIControlsBaseList extends Base
 
     if @displayButtons
       @list.addClass(ImglyKit.classPrefix + "controls-list-with-buttons")
-      @list.width(@controls.getContainer().width() - @controls.getHeight() * 2)
+      @list.css "margin-right", @controls.getHeight()
 
       @createButtons()
 
