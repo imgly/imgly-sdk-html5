@@ -268,6 +268,11 @@ class UIControlsCrop extends List
               new Vector2(canvasRect.width - 1, canvasRect.height - 1)
             )
             .divideByRect(canvasRect)
+            
+            {width, height} = @app.ui.getCanvas().getImageData()
+            widthInPixels  = endInPixels.x - startInPixels.x
+          
+            console.log width
         else
           # Increase x by average mouse position and clamp to boundaries
           endInPixels.x += (diffMousePosition.x + diffMousePosition.y) / 2
@@ -290,6 +295,7 @@ class UIControlsCrop extends List
             .add(new Vector2(widthInPixels, heightInPixels))
             .divideByRect(canvasRect)
 
+        
         @resizeCanvasControls()
 
   ###
