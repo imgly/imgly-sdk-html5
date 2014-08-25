@@ -13,11 +13,16 @@ module.exports = class DrawImageOperation extends Operation
     super
     @options.resizeButtonOffset = 20
     @options.scale = @options.resizeButtonOffset + 100
-    @options.sticker = "stickers/sticker-glasses-nerd.png"
-
     @options.stickerImageWidth = 100
     @options.stickerImageHeight = 100
 
+    # There is an architectural problem that needs refactoring in the future,
+    # but for now we have to store the initial sticker image and the canvas
+    # size in the operation.
+    @options.sticker = "stickers/sticker-glasses-nerd.png"
+    @options.widthRange = 570
+    @options.heightRange = 427
+    
   ###
     @param {String} sticker
   ###
@@ -44,6 +49,8 @@ module.exports = class DrawImageOperation extends Operation
       unless @options.stickerPosition?
         @options.stickerPosition = new Vector2(canvas.width / 2, canvas.height / 2)
 
+      scaling = canvas.width / @options.widthRange
+
       # Draw sticker image
       context.drawImage(
         # Image to be used
@@ -57,13 +64,13 @@ module.exports = class DrawImageOperation extends Operation
         # The height of the clipped image
         #stickerImage.height,
         # The x coord. where to place image on target canvas
-        @options.stickerPosition.x,
+        @options.stickerPosition.x * scaling,
         # The y coord. where to place image on target canvas
-        @options.stickerPosition.y,
+        @options.stickerPosition.y * scaling,
         # The width of the image to use (stretch)
-        @options.stickerImageWidth,
+        @options.stickerImageWidth * scaling,
         # The height of the image to use (stretch)
-        @options.stickerImageHeight
+        @options.stickerImageHeight * scaling
       )
 
       # Return the new image data

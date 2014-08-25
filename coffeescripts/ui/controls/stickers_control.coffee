@@ -165,6 +165,7 @@ class UIControlsStickers extends List
   ###
   hasCanvasControls: true
   setupCanvasControls: (@canvasControlsContainer) ->
+    
     @stickerContainer = $("<div>")
       .addClass(ImglyKit.classPrefix + "canvas-sticker-container")
       .appendTo @canvasControlsContainer
@@ -180,7 +181,10 @@ class UIControlsStickers extends List
       .css
         left: 120
       .appendTo @stickerContainer
+    
 
+    # console.log "need @operation"
+    
     @handleCrosshair()
     @handleResizeKnob()
 
@@ -189,7 +193,7 @@ class UIControlsStickers extends List
   ###
   handleCrosshair: ->
     canvasRect = new Rect(0, 0, @canvasControlsContainer.width(), @canvasControlsContainer.height())
-
+    
     minimumWidth  = 0
     minimumHeight = 0
 
@@ -204,7 +208,7 @@ class UIControlsStickers extends List
       # We need the initial as well as the updated container position
       initialContainerPosition = new Vector2(@stickerContainer.position().left, @stickerContainer.position().top)
       currentContainerPosition = new Vector2().copy initialContainerPosition
-
+              
       $(document).mousemove (e) =>
         currentMousePosition.set e.clientX, e.clientY
 
@@ -244,6 +248,13 @@ class UIControlsStickers extends List
         # knows where to place the image.
         @operationOptions.stickerPosition = new Vector2()
           .copy(currentContainerPosition)
+          
+        # Width and height range information needed for scaling appropriately when
+        # the target canvas is different in size than UI canvas
+        #canvasRangeOptions = new Array
+        @operationOptions.widthRange = @canvasControlsContainer.width()
+        @operationOptions.heightRange = @canvasControlsContainer.height()
+        #@operation.setOptions canvasRangeOptions
 
         # Update the operation options
         @operation.setOptions @operationOptions

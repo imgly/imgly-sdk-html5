@@ -55,6 +55,7 @@ class UIControls extends EventEmitter
   ###
   attachEvents: (controls) ->
     controls.on "select", (option) =>
+      
       if option.controls?
         @switchToControls option.controls, controls
 

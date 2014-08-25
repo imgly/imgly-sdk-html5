@@ -55,6 +55,7 @@ class UIControlsBaseList extends Base
     @param {ImglyKit.Operations.Operation}
   ###
   setOperation: (@operation) ->
+    console.log "setOperation"
     @updateOptions @operation.options
     @operation.on "updateOptions", (o) => @updateOptions o
 

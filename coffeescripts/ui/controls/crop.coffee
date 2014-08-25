@@ -272,7 +272,6 @@ class UIControlsCrop extends List
             {width, height} = @app.ui.getCanvas().getImageData()
             widthInPixels  = endInPixels.x - startInPixels.x
           
-            console.log width
         else
           # Increase x by average mouse position and clamp to boundaries
           endInPixels.x += (diffMousePosition.x + diffMousePosition.y) / 2
