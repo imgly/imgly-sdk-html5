@@ -6,8 +6,9 @@ Perf           = require "./vendor/perf.coffee"
 Queue          = require "./vendor/queue.coffee"
 Utils          = require "./utils.coffee"
 IdentityFilter = require "./operations/filters/primitives/identity.coffee"
+EventEmitter   = require("events").EventEmitter
 
-class PhotoProcessor
+class PhotoProcessor extends EventEmitter
   ###
     @param {imglyUtil} app
   ###

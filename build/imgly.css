@@ -3,14 +3,12 @@
 .imgly-container {
   text-align: left;
   position: relative;
-  background: #2b2b2b;
-  -webkit-border-radius: 5px;
+  background: #2B2B2B;
   -moz-border-radius: 5px;
-  -ms-border-radius: 5px;
-  -o-border-radius: 5px;
+  -webkit-border-radius: 5px;
   border-radius: 5px;
 }
-/* line 52, ../../../../.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0/gems/compass-0.12.7/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 40, ../../../../.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0/gems/compass-core-1.0.1/stylesheets/compass/reset/_utilities.scss */
 .imgly-container div, .imgly-container span, .imgly-container applet, .imgly-container object, .imgly-container iframe,
 .imgly-container h1, .imgly-container h2, .imgly-container h3, .imgly-container h4, .imgly-container h5, .imgly-container h6, .imgly-container p, .imgly-container blockquote, .imgly-container pre,
 .imgly-container a, .imgly-container abbr, .imgly-container acronym, .imgly-container address, .imgly-container big, .imgly-container cite, .imgly-container code,
@@ -31,34 +29,35 @@
   font-size: 100%;
   vertical-align: baseline;
 }
-/* line 55, ../../../../.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0/gems/compass-0.12.7/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 55, ../../../../.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0/gems/compass-core-1.0.1/stylesheets/compass/reset/_utilities.scss */
 .imgly-container table {
   border-collapse: collapse;
   border-spacing: 0;
 }
-/* line 57, ../../../../.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0/gems/compass-0.12.7/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 57, ../../../../.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0/gems/compass-core-1.0.1/stylesheets/compass/reset/_utilities.scss */
 .imgly-container caption, .imgly-container th, .imgly-container td {
   text-align: left;
   font-weight: normal;
   vertical-align: middle;
 }
-/* line 59, ../../../../.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0/gems/compass-0.12.7/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 59, ../../../../.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0/gems/compass-core-1.0.1/stylesheets/compass/reset/_utilities.scss */
 .imgly-container q, .imgly-container blockquote {
   quotes: none;
 }
-/* line 103, ../../../../.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0/gems/compass-0.12.7/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 103, ../../../../.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0/gems/compass-core-1.0.1/stylesheets/compass/reset/_utilities.scss */
 .imgly-container q:before, .imgly-container q:after, .imgly-container blockquote:before, .imgly-container blockquote:after {
   content: "";
   content: none;
 }
-/* line 61, ../../../../.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0/gems/compass-0.12.7/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 61, ../../../../.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0/gems/compass-core-1.0.1/stylesheets/compass/reset/_utilities.scss */
 .imgly-container a img {
   border: none;
 }
 /* line 20, ../sass/imgly.sass */
 .imgly-container * {
+  -moz-user-select: -moz-none;
+  -ms-user-select: none;
   -webkit-user-select: none;
-  -moz-user-select: none;
   user-select: none;
   box-sizing: border-box;
 }
@@ -115,26 +114,26 @@
 }
 /* line 12, ../sass/ui/canvas-controls/_crop.sass */
 .imgly-container .imgly-canvas-container .imgly-canvas-cropping-spotlight-lc {
-  -webkit-box-shadow: 1px 0 0 0 white;
   -moz-box-shadow: 1px 0 0 0 white;
+  -webkit-box-shadow: 1px 0 0 0 white;
   box-shadow: 1px 0 0 0 white;
 }
 /* line 15, ../sass/ui/canvas-controls/_crop.sass */
 .imgly-container .imgly-canvas-container .imgly-canvas-cropping-spotlight-rc {
-  -webkit-box-shadow: -1px 0 0 0 white;
   -moz-box-shadow: -1px 0 0 0 white;
+  -webkit-box-shadow: -1px 0 0 0 white;
   box-shadow: -1px 0 0 0 white;
 }
 /* line 18, ../sass/ui/canvas-controls/_crop.sass */
 .imgly-container .imgly-canvas-container .imgly-canvas-cropping-spotlight-tc {
-  -webkit-box-shadow: 0 1px 0 0 white;
   -moz-box-shadow: 0 1px 0 0 white;
+  -webkit-box-shadow: 0 1px 0 0 white;
   box-shadow: 0 1px 0 0 white;
 }
 /* line 21, ../sass/ui/canvas-controls/_crop.sass */
 .imgly-container .imgly-canvas-container .imgly-canvas-cropping-spotlight-bc {
-  -webkit-box-shadow: 0 -1px 0 0 white;
   -moz-box-shadow: 0 -1px 0 0 white;
+  -webkit-box-shadow: 0 -1px 0 0 white;
   box-shadow: 0 -1px 0 0 white;
 }
 /* line 24, ../sass/ui/canvas-controls/_crop.sass */
@@ -161,8 +160,9 @@
 }
 /* line 17, ../sass/ui/canvas-controls/_text.sass */
 .imgly-container .imgly-canvas-container .imgly-canvas-text-input, .imgly-container .imgly-canvas-container .imgly-canvas-text-input-dummy {
-  -webkit-user-select: auto;
   -moz-user-select: auto;
+  -ms-user-select: auto;
+  -webkit-user-select: auto;
   user-select: auto;
   background: transparent;
   border: none;
@@ -223,6 +223,33 @@
 /* line 19, ../sass/ui/_canvas.sass */
 .imgly-container .imgly-canvas-container canvas {
   position: relative;
+}
+/* line 2, ../sass/ui/canvas-controls/_undo.sass */
+.imgly-container .imgly-undo {
+  width: 60px;
+  height: 40px;
+  background: rgba(0, 0, 0, 0.3) url("assets/undo.png") no-repeat center center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  cursor: pointer;
+  -moz-border-radius-topleft: 5px;
+  -webkit-border-top-left-radius: 5px;
+  border-top-left-radius: 5px;
+  -moz-transition: background 0.3s ease-in-out;
+  -o-transition: background 0.3s ease-in-out;
+  -webkit-transition: background 0.3s ease-in-out;
+  transition: background 0.3s ease-in-out;
+}
+/* line 18, ../sass/ui/canvas-controls/_undo.sass */
+.imgly-container .imgly-undo.imgly-disabled {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=50);
+  opacity: 0.5;
+}
+/* line 21, ../sass/ui/canvas-controls/_undo.sass */
+.imgly-container .imgly-undo:hover {
+  background: rgba(0, 0, 0, 0.6) url("assets/undo.png") no-repeat center center;
 }
 /* line 3, ../sass/ui/_controls.sass */
 .imgly-container .imgly-controls-container {
@@ -313,15 +340,13 @@
 }
 /* line 9, ../sass/ui/controls/_scrollbars.sass */
 .imgly-container .imgly-controls-container .imgly-controls-list::-webkit-scrollbar-thumb {
-  background: #9fbdff;
-  -webkit-border-radius: 5px;
+  background: #9FBDFF;
   -moz-border-radius: 5px;
-  -ms-border-radius: 5px;
-  -o-border-radius: 5px;
+  -webkit-border-radius: 5px;
   border-radius: 5px;
   width: 5px;
   margin: 3px;
-  border: 3px solid #2b2b2b;
+  border: 3px solid #2B2B2B;
 }
 /* line 12, ../sass/ui/controls/_list.sass */
 .imgly-container .imgly-controls-container .imgly-controls-list .imgly-controls-item, .imgly-container .imgly-controls-container .imgly-controls-list .imgly-controls-item-space {
@@ -344,9 +369,9 @@
 }
 /* line 32, ../sass/ui/controls/_list.sass */
 .imgly-container .imgly-controls-container .imgly-controls-list .imgly-controls-item:hover {
-  -webkit-box-shadow: 0 -2px 0 0 #9fbdff inset;
-  -moz-box-shadow: 0 -2px 0 0 #9fbdff inset;
-  box-shadow: 0 -2px 0 0 #9fbdff inset;
+  -moz-box-shadow: 0 -2px 0 0 #9FBDFF inset;
+  -webkit-box-shadow: 0 -2px 0 0 #9FBDFF inset;
+  box-shadow: 0 -2px 0 0 #9FBDFF inset;
 }
 /* line 1, ../sass/ui/controls/_slider.sass */
 .imgly-container .imgly-controls-container .imgly-controls-slider-wrapper, .imgly-container .imgly-controls-container .imgly-controls-slider-bar {
@@ -354,7 +379,7 @@
 }
 /* line 4, ../sass/ui/controls/_slider.sass */
 .imgly-container .imgly-controls-container .imgly-controls-slider-wrapper {
-  background: #1a1a1a;
+  background: #1A1A1A;
   border-radius: 6px;
   display: inline-block;
   position: relative;
@@ -362,7 +387,7 @@
 }
 /* line 14, ../sass/ui/controls/_slider.sass */
 .imgly-container .imgly-controls-container .imgly-controls-slider-bar {
-  background: #a1c0ff;
+  background: #A1C0FF;
   width: 0;
   position: absolute;
   left: 50%;
@@ -377,7 +402,7 @@
   margin-top: -12px;
   margin-left: -12px;
   border-radius: 50%;
-  background: #a1c0ff;
+  background: #A1C0FF;
 }
 /* line 36, ../sass/ui/controls/_slider.sass */
 .imgly-container .imgly-controls-container .imgly-controls-slider {
@@ -860,7 +885,7 @@
 }
 /* line 18, ../sass/ui/controls/_text.sass */
 .imgly-container .imgly-controls-container .imgly-controls-text-color-dropdown {
-  background: #f7f7f7;
+  background: #F7F7F7;
   width: 167px;
   height: 105px;
   position: absolute;

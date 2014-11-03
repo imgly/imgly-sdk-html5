@@ -38,6 +38,7 @@ class UIControls extends EventEmitter
       .appendTo @container
 
     @initOverview()
+    @createUndoButton()
 
   ###
     Initialize the overview
@@ -55,7 +56,6 @@ class UIControls extends EventEmitter
   ###
   attachEvents: (controls) ->
     controls.on "select", (option) =>
-      
       if option.controls?
         @switchToControls option.controls, controls
 
@@ -92,6 +92,28 @@ class UIControls extends EventEmitter
     @currentControls.init()
     oldControls.hide =>
       @currentControls.show()
+
+  ###
+    Creates the undo button
+  ###
+  createUndoButton: ->
+    @undoButton = $("<div>")
+      .addClass("#{ImglyKit.classPrefix}undo #{ImglyKit.classPrefix}disabled")
+      .appendTo @container
+
+    @undoButton.click @onUndoClick
+
+  ###
+    Gets called when the user clicks the undo button
+  ###
+  onUndoClick: (e) =>
+    e.preventDefault()
+
+  ###
+    Updates the undo state (active / inactive)
+  ###
+  updateUndoState: ->
+    return
 
   ###
     Returns to the default view

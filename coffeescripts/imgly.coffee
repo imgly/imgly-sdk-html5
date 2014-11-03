@@ -12,7 +12,7 @@ window.every = (t, f) -> setInterval f, t
 class ImglyKit
   @classPrefix: "imgly-"
   @canvasContainerPadding: 15
-  
+
   ###
     @param options.container The container we ImglyKit will run in
     @param options.additionalFonts Array with objects like to specify additional fonts [{
