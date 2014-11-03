@@ -14,7 +14,7 @@ class PhotoProcessor extends EventEmitter
   ###
   constructor: (@app) ->
     @canvas = null
-    @operationChain = new IdentityFilter
+    @operationChain = new IdentityFilter @app
     @operationStack = [@operationChain]
     @operationChainNeedsRender = true
     @cachedPreviewImageData = null
@@ -174,7 +174,7 @@ class PhotoProcessor extends EventEmitter
     Checks whether the current operation chain allows an undo action
   ###
   isUndoPossible: ->
-    @operationStack.slice(-1)[0]?.hasCache()
+    @operationStack[@operationStack.length - 2]?.hasCache()
 
   ###
     Undos the last operation
@@ -183,14 +183,23 @@ class PhotoProcessor extends EventEmitter
     return unless @isUndoPossible()
 
     lastOperation = @operationStack.pop()
-    secondLastOperation = @operationStack[@operationStack.length - 1]
+    currentOperation = @operationStack[@operationStack.length - 1]
 
-    if secondLastOperation.cachedImageData?
-      @canvas.renderImageData secondLastOperation.cachedImageData
+    # Update the canvas to render the cached image data of the
+    # current operation
+    if currentOperation.cachedImageData?
+      @canvas.renderImageData currentOperation.cachedImageData
 
-    @operationChain = secondLastOperation
-    @operationChain.compose = null
-    @operationChain.precompose = null
+    if @operationStack.length is 1
+      # If we're back to the first operation, reset
+      @reset()
+    else
+      # Create the current operation by calling `compose` on the previous
+      # operation.
+      previousOperation = @operationStack[@operationStack.length - 2]
+      @operationChain = previousOperation.compose currentOperation.constructor
+
+      @operationChainNeedsRender = true
 
     @emit "operation_chain_changed"
 
@@ -198,7 +207,7 @@ class PhotoProcessor extends EventEmitter
     Resets all UI elements
   ###
   reset: ->
-    @operationChain = new IdentityFilter
+    @operationChain = new IdentityFilter @app
     @operationStack = [@operationChain]
     @previewOperation = null
     @rendering = false
