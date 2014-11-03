@@ -9,6 +9,18 @@ A Text editor with an elegant and simple to use interface allows adding text ins
 
 ![Example](http://i.imgur.com/xR5VSKQ.gif)
 
+### Building the SDK
+First, make sure you have node.js and npm installed, then proceed with the following commands:
+
+```
+$ git clone git@github.com:imgly/imgly-sdk-html5.git
+$ cd imgly-sdk-html5
+$ npm install
+$ gulp
+```
+
+This will automatically open a browser window with some examples. Run `gulp build` to build a minified version of the SDK.
+
 ### Examples
 See the examples folder for implementation examples or play with the [demo on our website](http://sdk.img.ly/).
 
