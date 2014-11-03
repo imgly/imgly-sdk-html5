@@ -39,7 +39,7 @@ class UIControlsBaseList extends Base
 
         if option.tooltip?
           item.attr "title", option.tooltip
-          
+
         item.click (e) =>
           unless @allowMultipleClick
             return if @optionSelected
@@ -55,7 +55,6 @@ class UIControlsBaseList extends Base
     @param {ImglyKit.Operations.Operation}
   ###
   setOperation: (@operation) ->
-    console.log "setOperation"
     @updateOptions @operation.options
     @operation.on "updateOptions", (o) => @updateOptions o
 
