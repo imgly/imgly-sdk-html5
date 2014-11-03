@@ -38,6 +38,7 @@ class Operation extends EventEmitter
     Caches the given image data
   ###
   cacheImageData: (imageData) ->
+    return unless imageData?
     @cachedImageData = Utils.cloneImageData imageData
 
   ###
@@ -65,7 +66,6 @@ class Operation extends EventEmitter
     throw Error "Abstract: Filter#apply"
 
   buildComposition = (direction, filter, args = []) ->
-    console.log filter
     self = this
     if filter.prototype instanceof Operation
       filter = new filter @app, args...
