@@ -2,6 +2,7 @@
   ImglyKit
   Copyright (c) 2013-2014 img.ly
 ###
+$     = require "jquery"
 Base  = require "./base.coffee"
 Utils = require "../../../utils.coffee"
 class UIControlsBaseList extends Base

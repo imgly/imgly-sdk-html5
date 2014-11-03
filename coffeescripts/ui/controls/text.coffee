@@ -2,6 +2,7 @@
   ImglyKit
   Copyright (c) 2013-2014 img.ly
 ###
+$       = require "jquery"
 List    = require "./base/list.coffee"
 Vector2 = require "../../math/vector2.coffee"
 Rect    = require "../../math/rect.coffee"
@@ -80,16 +81,16 @@ class UIControlsText extends List
     @backgroundColorPreview = $("<div>")
       .addClass(ImglyKit.classPrefix + "controls-background-color")
       .appendTo @backgroundColorControl
-    
+
     # We need room for one accept button and two color buttons to the right
     @list.css "margin-right", @controls.getHeight() * 3
 
     @handleColorsControl()
-    
+
   ###
     Handle the colors control
   ###
-  handleColorsControl: ->  
+  handleColorsControl: ->
     defaultForegroundColor = "rgba(255, 255, 255, 1.0)"
     defaultBackgroundColor = "rgba(0, 0, 0, 0.5)"
 
@@ -101,7 +102,7 @@ class UIControlsText extends List
       showSelectionPalette: true
       palette: [ ]
       showButtons: false
-      localStorageKey: "imgly.palette" 
+      localStorageKey: "imgly.palette"
       move: (color) =>
         colorComponents = color.toRgb()
         rgbaString = "rgba(" + colorComponents.r + "," + colorComponents.g + ","  + colorComponents.b + "," + colorComponents.a + ")"
@@ -118,7 +119,7 @@ class UIControlsText extends List
       showSelectionPalette: true
       palette: [ ]
       showButtons: false
-      localStorageKey: "imgly.palette" 
+      localStorageKey: "imgly.palette"
       move: (color) =>
         colorComponents = color.toRgb()
         rgbaString = "rgba(" + colorComponents.r + "," + colorComponents.g + ","  + colorComponents.b + "," + colorComponents.a + ")"
@@ -127,12 +128,12 @@ class UIControlsText extends List
         @operationOptions.backgroundColor = rgbaString
         @operation.setOptions @operationOptions
     )
-    
+
     # Initially set default colors
     @textColorPreview.css(backgroundColor: defaultForegroundColor)
     @backgroundColorPreview.css(backgroundColor: defaultBackgroundColor)
     @textContainer.css(backgroundColor: defaultBackgroundColor)
-    
+
     return
 
   ###

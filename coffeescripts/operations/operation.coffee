@@ -3,16 +3,18 @@
   Copyright (c) 2013-2014 img.ly
 ###
 Queue        = require "../vendor/queue.coffee"
+Utils        = require "../utils.coffee"
 EventEmitter = require("events").EventEmitter
 class Operation extends EventEmitter
   renderPreview: true
-  cachedImageData: null
 
   ###
     @param {ImglyKit} app
     @param {Object} options
   ###
   constructor: (@app, @options = {}) ->
+    @cachedImageData = null
+
     apply = @apply
     @apply = (dataOrPromise) ->
       Queue(dataOrPromise).then (imageData) =>
@@ -36,7 +38,7 @@ class Operation extends EventEmitter
     Caches the given image data
   ###
   cacheImageData: (imageData) ->
-    @cachedImageData = imageData
+    @cachedImageData = Utils.cloneImageData imageData
 
   ###
     Invalidates the cached image data so it can be removed from memory
@@ -63,6 +65,7 @@ class Operation extends EventEmitter
     throw Error "Abstract: Filter#apply"
 
   buildComposition = (direction, filter, args = []) ->
+    console.log filter
     self = this
     if filter.prototype instanceof Operation
       filter = new filter @app, args...

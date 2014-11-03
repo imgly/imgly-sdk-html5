@@ -2,6 +2,7 @@
   ImglyKit
   Copyright (c) 2013-2014 img.ly
 ###
+$     = require "jquery"
 Utils = require "../utils.coffee"
 class UICanvas
   ###

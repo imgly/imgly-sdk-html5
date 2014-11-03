@@ -2,10 +2,11 @@
   ImglyKit
   Copyright (c) 2013-2014 img.ly
 ###
+Resize = require "./vendor/resize"
+
 Utils = {}
 Utils.sharedCanvas  = document.createElement "canvas"
-if Modernizr.canvas
-  Utils.sharedContext = Utils.sharedCanvas.getContext "2d"
+Utils.sharedContext = Utils.sharedCanvas.getContext "2d"
 
 ###
   @param options Options

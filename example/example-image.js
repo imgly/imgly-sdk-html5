@@ -5,10 +5,10 @@
  * Copyright (c) 2013-2014 img.ly
  */
 
-$(function () {
+window.onload = function () {
   var imgly
     , image = new Image()
-    , renderButton = $("#renderButton");
+    , renderButton = document.getElementById("renderButton");
 
   // Load image
   image.src = "img-1.jpg";
@@ -23,17 +23,17 @@ $(function () {
     try {
       imgly.run(image);
     } catch (e) {
-      if(e.name == "NoSupportError") {
-        alert("Your browser does not support canvas.");
-      } else if(e.name == "InvalidError") {
+      if(e.name == "InvalidError") {
         alert("The given file is not an image");
+      } else {
+        throw e;
       }
     }
 
   };
 
   // Listen for "Render final image" click
-  renderButton.click(function (event) {
+  renderButton.addEventListener("click", function (event) {
     var dataUrl;
 
     // dataUrl = imgly.renderToDataURL("png", function (err, dataUrl) {});
@@ -54,10 +54,10 @@ $(function () {
       // `dataUrl` now contains a resized rendered image with
       // a width of 300 pixels while keeping the ratio
 
-      $("<img>").attr({
-        src: dataUrl
-      }).appendTo($("body"));
+      var image = document.createElement(image);
+      image.setAttribute("src", dataUrl);
+      document.getElementsByTagName("body")[0].appendChild(image);
     });
 
   });
-});
+};

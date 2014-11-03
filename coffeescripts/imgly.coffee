@@ -2,6 +2,7 @@
   ImglyKit
   Copyright (c) 2013-2014 img.ly
 ###
+$              = require "jquery"
 PhotoProcessor = require "./photoprocessor.coffee"
 UI             = require "./ui/ui.coffee"
 Utils          = require "./utils.coffee"
@@ -42,8 +43,7 @@ class ImglyKit
     @returns {Boolean} Whether Canvas and Canvastext is supported or not
   ###
   checkSupport: ->
-    if Modernizr.canvas && Modernizr.canvastext
-      return true
+    return true
 
     error = new Error("Canvas and / or Canvas Text drawing not supported")
     error.name = "NoSupportError"

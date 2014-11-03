@@ -6,7 +6,7 @@
 ###
 
 provider = if typeof window isnt "undefined"
-  window.jQuery
+  require "jquery"
 else
   require "q"
 
@@ -16,7 +16,8 @@ else
   @param value
   @returns {Promise}
 ###
-Queue = -> provider.when arguments...
+Queue = ->
+  provider.when(arguments...)
 
 ###
   Creates a new promise.

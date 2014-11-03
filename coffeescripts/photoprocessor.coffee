@@ -14,8 +14,8 @@ class PhotoProcessor extends EventEmitter
   ###
   constructor: (@app) ->
     @canvas = null
-    @operationStack = []
     @operationChain = new IdentityFilter
+    @operationStack = [@operationChain]
     @operationChainNeedsRender = true
     @cachedPreviewImageData = null
     @previewOperation = null
@@ -46,10 +46,10 @@ class PhotoProcessor extends EventEmitter
     @operationChainNeedsRender = true
 
     # Invalidate cache of last operation
-    @operationStack.slice(-1)[0]?.invalidateCache()
+    # @operationStack[@operationStack.length - 1].invalidateCache()
 
-    @operationStack.push @previewOperation
     @operationChain = @operationChain.compose @previewOperation
+    @operationStack.push @previewOperation
     @previewOperation = null
     @renderPreview()
 
@@ -175,6 +175,20 @@ class PhotoProcessor extends EventEmitter
   ###
   isUndoPossible: ->
     @operationStack.slice(-1)[0]?.hasCache()
+
+  ###
+    Undos the last operation
+  ###
+  undo: ->
+    return unless @isUndoPossible()
+
+    # lastOperation = @operationStack.pop()
+    # secondLastOperation = @operationStack[@operationStack.length - 1]
+
+    # if secondLastOperation.cachedImageData?
+    #   @canvas.renderImageData secondLastOperation.cachedImageData
+
+    # @emit "operation_chain_changed"
 
   ###
     Resets all UI elements

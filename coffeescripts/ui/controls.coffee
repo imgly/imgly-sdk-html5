@@ -2,6 +2,7 @@
   ImglyKit
   Copyright (c) 2013-2014 img.ly
 ###
+$            = require "jquery"
 Overview     = require "./controls/overview.coffee"
 EventEmitter = require("events").EventEmitter
 class UIControls extends EventEmitter
@@ -109,6 +110,8 @@ class UIControls extends EventEmitter
   ###
   onUndoClick: (e) =>
     e.preventDefault()
+
+    @app.getPhotoProcessor().undo()
 
   ###
     Updates the undo state (active / inactive)

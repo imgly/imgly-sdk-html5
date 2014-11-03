@@ -2,6 +2,7 @@
   ImglyKit
   Copyright (c) 2013-2014 img.ly
 ###
+$            = require "jquery"
 EventEmitter = require("events").EventEmitter
 class UIControlsBase extends EventEmitter
   allowMultipleClick: true

@@ -2,6 +2,7 @@
   ImglyKit
   Copyright (c) 2013-2014 img.ly
 ###
+$       = require "jquery"
 List    = require "./base/list.coffee"
 Vector2 = require "../../math/vector2.coffee"
 Rect    = require "../../math/rect.coffee"
@@ -268,10 +269,10 @@ class UIControlsCrop extends List
               new Vector2(canvasRect.width - 1, canvasRect.height - 1)
             )
             .divideByRect(canvasRect)
-            
+
             {width, height} = @app.ui.getCanvas().getImageData()
             widthInPixels  = endInPixels.x - startInPixels.x
-          
+
         else
           # Increase x by average mouse position and clamp to boundaries
           endInPixels.x += (diffMousePosition.x + diffMousePosition.y) / 2
@@ -294,7 +295,7 @@ class UIControlsCrop extends List
             .add(new Vector2(widthInPixels, heightInPixels))
             .divideByRect(canvasRect)
 
-        
+
         @resizeCanvasControls()
 
   ###

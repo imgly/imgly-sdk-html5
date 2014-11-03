@@ -2,6 +2,7 @@
   ImglyKit
   Copyright (c) 2013-2014 img.ly
 ###
+$               = require "jquery"
 List            = require "./base/list.coffee"
 Utils           = require "../../utils.coffee"
 Vector2         = require "../../math/vector2.coffee"
