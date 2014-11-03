@@ -110,17 +110,14 @@ class ImglyKit
     and the image dimensions are available
   ###
   onImageLoaded: =>
-    console.log "onImageLoaded"
     ###
       Set up the user interface
     ###
     unless @ui.initialized
-      console.log "Initializing UI"
       @ui.init()
       @photoProcessor.setCanvas @ui.getCanvas()
 
       @ui.on "preview_operation", (operation) =>
-        console.log "Setting operation"
         @ui.getCurrentControls()?.setOperation operation
         @photoProcessor.setPreviewOperation operation
 

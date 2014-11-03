@@ -22,7 +22,7 @@ module.exports = class DrawImageOperation extends Operation
     @options.sticker = "stickers/sticker-glasses-nerd.png"
     @options.widthRange = 570
     @options.heightRange = 427
-    
+
   ###
     @param {String} sticker
   ###

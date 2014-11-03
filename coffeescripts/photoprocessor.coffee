@@ -14,6 +14,7 @@ class PhotoProcessor extends EventEmitter
   ###
   constructor: (@app) ->
     @canvas = null
+    @operationStack = []
     @operationChain = new IdentityFilter
     @operationChainNeedsRender = true
     @cachedPreviewImageData = null
@@ -44,9 +45,15 @@ class PhotoProcessor extends EventEmitter
 
     @operationChainNeedsRender = true
 
+    # Invalidate cache of last operation
+    @operationStack.slice(-1)[0]?.invalidateCache()
+
+    @operationStack.push @previewOperation
     @operationChain = @operationChain.compose @previewOperation
     @previewOperation = null
     @renderPreview()
+
+    @emit "operation_chain_changed"
 
   ###
     Render the full size final image
@@ -117,28 +124,30 @@ class PhotoProcessor extends EventEmitter
 
     # Apply potential preview operation and cache preview
     Queue(imageData)
-     .then((imageData) =>
-       # Operation chain rendered, cache the data
-       if options.preview and @operationChainNeedsRender
-         @cachedPreviewImageData = imageData
-         @operationChainNeedsRender = false
+      .then((imageData) =>
+        if typeof @operationChain is "function"
+          @operationChain.filter.cacheImageData imageData
+        else
+          @operationChain.cacheImageData imageData
 
-       if @previewOperation and options.preview
-         @previewOperation.apply(imageData)
-       else
-         imageData
-     ).then((imageData) =>
-       if options.preview
-         @canvas.renderImageData imageData
+        # Operation chain rendered, cache the data
+        if options.preview and @operationChainNeedsRender
+          @cachedPreviewImageData = imageData
+          @operationChainNeedsRender = false
 
-       callback? null, imageData
+        if @previewOperation and options.preview
+          @previewOperation.apply(imageData)
+        else
+          imageData
+      ).then((imageData) =>
+        if options.preview
+          @canvas.renderImageData imageData
 
-       @rendering = false
-
-       p.stop true
-
-       imageData
-     )
+        callback? null, imageData
+        @rendering = false
+        p.stop true
+        imageData
+      )
 
   renderOperationChainPreview: (imageData) ->
     unless @operationChainNeedsRender
@@ -160,6 +169,12 @@ class PhotoProcessor extends EventEmitter
       else
         imageData = Utils.cloneImageData @resizedPreviewImageData
       @operationChain.apply imageData
+
+  ###
+    Checks whether the current operation chain allows an undo action
+  ###
+  isUndoPossible: ->
+    @operationStack.slice(-1)[0]?.hasCache()
 
   ###
     Resets all UI elements

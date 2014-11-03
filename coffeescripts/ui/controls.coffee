@@ -39,6 +39,7 @@ class UIControls extends EventEmitter
 
     @initOverview()
     @createUndoButton()
+    @app.getPhotoProcessor().on "operation_chain_changed", @updateUndoState
 
   ###
     Initialize the overview
@@ -112,8 +113,9 @@ class UIControls extends EventEmitter
   ###
     Updates the undo state (active / inactive)
   ###
-  updateUndoState: ->
-    return
+  updateUndoState: =>
+    disabled = !@app.getPhotoProcessor().isUndoPossible()
+    @undoButton.toggleClass "#{ImglyKit.classPrefix}disabled", disabled
 
   ###
     Returns to the default view

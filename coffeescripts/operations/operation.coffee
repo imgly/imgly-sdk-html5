@@ -6,6 +6,8 @@ Queue        = require "../vendor/queue.coffee"
 EventEmitter = require("events").EventEmitter
 class Operation extends EventEmitter
   renderPreview: true
+  cachedImageData: null
+
   ###
     @param {ImglyKit} app
     @param {Object} options
@@ -31,9 +33,28 @@ class Operation extends EventEmitter
     @emit "updateOptions", options
 
   ###
+    Caches the given image data
+  ###
+  cacheImageData: (imageData) ->
+    @cachedImageData = imageData
+
+  ###
+    Invalidates the cached image data so it can be removed from memory
+    by the garbage collection
+  ###
+  invalidateCache: ->
+    @cachedImageData = null
+
+  ###
+    Checks whether this operation has a cached copy of the image data
+  ###
+  hasCache: ->
+    !!@cachedImageData
+
+  ###
     This applies this operation to the image in the editor. However, it is not
     responsible for storing the result in any way. It receives imageData and
-    returns a modified version. 
+    returns a modified version.
     @param {ImageData} imageData
     @param {Function} callback
     @returns {ImageData}
@@ -51,6 +72,7 @@ class Operation extends EventEmitter
         (imageData) -> filter.apply self.apply(imageData or this)
     composition.compose = Operation::compose
     composition.precompose = Operation::precompose
+    composition.filter = filter
     composition
 
   ###
