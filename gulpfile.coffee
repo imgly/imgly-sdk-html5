@@ -2,12 +2,12 @@ es              = require 'event-stream'
 gulp            = require 'gulp'
 fs              = require 'fs'
 source          = require 'vinyl-source-stream'
-browserify      = require 'browserify'
-watchify        = require 'watchify'
-coffeeify       = require 'coffeeify'
 runSequence     = require 'run-sequence'
 gulpLoadPlugins = require 'gulp-load-plugins'
 browserSync     = require 'browser-sync'
+browserify      = require 'browserify'
+watchify        = require 'watchify'
+coffeeify       = require 'coffeeify'
 reload          = browserSync.reload
 $               = gulpLoadPlugins()
 isProduction    = false
@@ -23,6 +23,12 @@ EXTERNALS         = [
 ]
 
 SERVER_PORT       = 8000
+
+###############################################################################
+# production
+###############################################################################
+gulp.task 'set-production', ->
+  isProduction = true
 
 ###############################################################################
 # clean
@@ -74,11 +80,11 @@ gulp.task 'uglify:all', ->
 ###############################################################################
 
 gulp.task 'cssmin:minify', ->
-  gulp.src('./build/stylesheets/*.css')
+  gulp.src('./build/*.css')
     .pipe($.plumber())
     .pipe($.cssmin())
     .pipe($.rename({ suffix: '.min' }))
-    .pipe(gulp.dest("./build/stylesheets"));
+    .pipe(gulp.dest("./build"));
 
 ###############################################################################
 # Browserify
@@ -92,25 +98,27 @@ requireExternals = (bundler, externals) ->
       bundler.require external.require
 
 gulp.task 'watchify', ->
-  console.log 'watchify'
   entry = "./coffeescripts/imgly.coffee"
-  output = 'imgly.js'
+  output = "imgly.js"
+
+  b = browserify(watchify.args)
+  b.add entry
+  b.transform coffeeify
+
   if isProduction
-    bundler = browserify(entry)
+    bundler = b
   else
-    bundler = watchify(entry)
-  bundler.transform coffeeify
+    bundler = watchify(b)
+
   requireExternals bundler, EXTERNALS
 
   rebundle = ->
-    console.log "rebundle"
-    stream = bundler.bundle()
-    stream.on 'error', $.notify.onError({ onError: true })
+    bundler.bundle()
       .pipe($.plumber())
       .pipe(source(output))
       .pipe(gulp.dest("./build"))
       .pipe($.if(!isProduction, reload({ stream: true, once: true })))
-    stream
+      .on 'error', $.notify.onError({ onError: true })
 
   bundler.on 'update', rebundle
   rebundle()
@@ -136,7 +144,6 @@ gulp.task 'serve', ->
       min: SERVER_PORT
     }
   })
-  console.log "Point your browser to #{SERVER_PORT}"
 
 ###############################################################################
 # high level tasks
@@ -149,7 +156,6 @@ gulp.task 'build:stylesheets', ->
   runSequence 'compass', 'cssmin:minify'
 
 gulp.task 'build', ->
-  console.log 'browserify:sequence'
   seq = runSequence(
     'clean',
     [
@@ -160,6 +166,15 @@ gulp.task 'build', ->
   )
   seq
 
+gulp.task 'release', ->
+  seq = runSequence(
+    'set-production',
+    'clean',
+    'build:markup'
+    'build:scripts'
+    'build:stylesheets'
+  )
+  seq
 
 gulp.task 'default', ->
   runSequence('build', 'serve', 'watch')

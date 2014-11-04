@@ -19,7 +19,7 @@ $ npm install
 $ gulp
 ```
 
-This will automatically open a browser window with some examples. Run `gulp build` to build a minified version of the SDK.
+This will automatically open a browser window with some examples. Run `gulp release` to build a minified version of the SDK.
 
 ### Examples
 See the examples folder for implementation examples or play with the [demo on our website](http://sdk.img.ly/).
