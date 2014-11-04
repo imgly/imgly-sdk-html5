@@ -17,9 +17,9 @@ isProduction    = false
 ###############################################################################
 
 EXTERNALS         = [
-  { require: "jquery", expose: 'jquery' }
-  { require: "q", expose: 'q' }
-  { require: "spectrum", expose: 'spectrum' }
+  { require: "jquery", expose: "jquery" }
+  { require: "q", expose: "q" }
+  { require: "spectrum", expose: "spectrum" }
 ]
 
 SERVER_PORT       = 8000
@@ -101,15 +101,15 @@ gulp.task 'watchify', ->
   entry = "./coffeescripts/imgly.coffee"
   output = "imgly.js"
 
-  b = browserify(watchify.args)
+  b = browserify({ cache: {}, packageCache: {}, fullPaths: false })
   b.add entry
-  b.transform coffeeify
 
   if isProduction
     bundler = b
   else
     bundler = watchify(b)
 
+  bundler.transform coffeeify
   requireExternals bundler, EXTERNALS
 
   rebundle = ->
@@ -151,9 +151,9 @@ gulp.task 'serve', ->
 
 gulp.task 'build:markup', ['copy']
 gulp.task 'build:scripts', ->
-  runSequence 'watchify', 'uglify:all'
+  runSequence 'watchify'
 gulp.task 'build:stylesheets', ->
-  runSequence 'compass', 'cssmin:minify'
+  runSequence 'compass'
 
 gulp.task 'build', ->
   seq = runSequence(
@@ -168,11 +168,13 @@ gulp.task 'build', ->
 
 gulp.task 'release', ->
   seq = runSequence(
-    'set-production',
-    'clean',
+    'set-production'
+    'clean'
     'build:markup'
     'build:scripts'
     'build:stylesheets'
+    'uglify:all'
+    'cssmin:minify'
   )
   seq
 
