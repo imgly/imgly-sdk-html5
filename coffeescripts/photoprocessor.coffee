@@ -6,6 +6,7 @@ Perf           = require "./vendor/perf.coffee"
 Queue          = require "./vendor/queue.coffee"
 Utils          = require "./utils.coffee"
 IdentityFilter = require "./operations/filters/primitives/identity.coffee"
+CropOperation  = require "./operations/crop.coffee"
 EventEmitter   = require("events").EventEmitter
 
 class PhotoProcessor extends EventEmitter
@@ -47,6 +48,9 @@ class PhotoProcessor extends EventEmitter
 
     # Invalidate cache of last operation
     @operationStack[@operationStack.length - 2]?.invalidateCache()
+
+    if @previewOperation instanceof CropOperation
+      @resizedPreviewImageData = null
 
     @operationChain = @operationChain.compose @previewOperation
     @operationStack.push @previewOperation
@@ -155,8 +159,9 @@ class PhotoProcessor extends EventEmitter
       # stack
       return Utils.cloneImageData(@cachedPreviewImageData)
     else
-      # Get dimensions that fit our preview canvas
-      dimensions = @canvas.getDimensionsForImage @sourceImage
+      # Get dimensions that fit our preview canvas while taking
+      # crop operations into account
+      dimensions = @calculateMinimumPreviewDimensions @sourceImage
 
       # If we don't have a cached version of the resized preview image, then
       # resize it
@@ -175,6 +180,25 @@ class PhotoProcessor extends EventEmitter
   ###
   isUndoPossible: ->
     @operationStack[@operationStack.length - 2]?.hasCache()
+
+  ###
+    Calculates the minimum dimensions of the initial picture. The dimensions
+    might be larger than the canvas itself (to keep the quality when cropping)
+  ###
+  calculateMinimumPreviewDimensions: (image) ->
+    [originalWidth, originalHeight] = [@sourceImage.width, @sourceImage.height]
+    minimumDimensions = @canvas.getDimensionsForImage @sourceImage
+
+    for operation in @operationStack when operation instanceof CropOperation
+      {options} = operation
+      {start, end} = options
+      size = end.clone().subtract start # 0...1
+
+      minimumDimensions.height += minimumDimensions.height * (1 - size.y)
+      minimumDimensions.width += minimumDimensions.width * (1 - size.x)
+
+    console.log minimumDimensions
+    return minimumDimensions
 
   ###
     Undos the last operation

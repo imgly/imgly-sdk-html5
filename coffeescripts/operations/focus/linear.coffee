@@ -41,7 +41,7 @@ class LinearFocus extends Focus
     ###
     halfDiff = new Vector2()
       .copy(controlPoint2)
-      .substract(controlPoint1)
+      .subtract(controlPoint1)
       .divide(2)
 
     ###
@@ -52,7 +52,7 @@ class LinearFocus extends Focus
     ###
     start = new Vector2()
       .copy(controlPoint1)
-      .substract(halfDiff)
+      .subtract(halfDiff)
 
     end = new Vector2()
       .copy(controlPoint2)

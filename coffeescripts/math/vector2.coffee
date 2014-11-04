@@ -77,7 +77,7 @@ class Vector2
   ###
     @param {Integer|Vector2}
   ###
-  substract: (subtrahend) ->
+  subtract: (subtrahend) ->
     if subtrahend instanceof Vector2
       @x -= subtrahend.x
       @y -= subtrahend.y
@@ -90,7 +90,7 @@ class Vector2
   ###
     @param {Rect} The object to substract
   ###
-  substractRect: (subtrahend) ->
+  subtractRect: (subtrahend) ->
     @x -= subtrahend.width
     @y -= subtrahend.height
 

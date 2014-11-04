@@ -212,7 +212,7 @@ class UIControlsStickers extends List
         # mouse difference = current mouse position - initial mouse position
         mousePositionDifference = new Vector2()
           .copy(currentMousePosition)
-          .substract(initialMousePosition)
+          .subtract(initialMousePosition)
 
         # updated container position = initial container position - mouse difference
         currentContainerPosition
@@ -284,13 +284,13 @@ class UIControlsStickers extends List
 
         mousePositionDifference = new Vector2()
           .copy(currentMousePosition)
-          .substract(initialMousePosition)
+          .subtract(initialMousePosition)
 
         # Do not let the user drag the knob over the right boundary of image
         # Refactor: Resize button offset should be ready from operationOptions.resizeButtonOffset
         ajdustedMaxContainerPosition = new Vector2()
           .copy(maxContainerPosition)
-          .substract(new Vector2 @stickerContainer.position().left - 20, 0)
+          .subtract(new Vector2 @stickerContainer.position().left - 20, 0)
 
         currentKnobPosition = new Vector2()
           .copy(initialKnobPosition)

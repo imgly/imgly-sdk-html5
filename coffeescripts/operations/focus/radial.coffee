@@ -41,7 +41,7 @@ class RadialFocus extends Focus
     ###
     halfDiff = new Vector2()
       .copy(controlPoint2)
-      .substract(controlPoint1)
+      .subtract(controlPoint1)
       .divide(2)
 
     ###

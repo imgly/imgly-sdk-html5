@@ -255,7 +255,7 @@ class UIControlsText extends List
         # mouse difference = current mouse position - initial mouse position
         mousePositionDifference = new Vector2()
           .copy(currentMousePosition)
-          .substract(initialMousePosition)
+          .subtract(initialMousePosition)
 
         # updated container position = initial container position - mouse difference
         currentContainerPosition

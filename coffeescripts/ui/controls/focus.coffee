@@ -141,7 +141,7 @@ class UIControlsFocus extends List
 
     diff = new Vector2()
       .copy(controlPoint2)
-      .substract(controlPoint1)
+      .subtract(controlPoint1)
       .divide(2)
 
     @crosshair.css
@@ -164,7 +164,7 @@ class UIControlsFocus extends List
         # Get a normalized (0..1) difference between the last
         # mouse position and the current one
         normalizedDiff = new Vector2(e.clientX, e.clientY)
-          .substract(lastPos)
+          .subtract(lastPos)
           .divide(canvasSize)
 
         # Calculate new knob positions and check for boundaries
@@ -212,7 +212,7 @@ class UIControlsFocus extends List
             # Get a normalized (0..1) difference between the last
             # mouse position and the current one
             normalizedDiff = new Vector2(e.clientX, e.clientY)
-              .substract(lastPos)
+              .subtract(lastPos)
               .divide(canvasSize)
 
             # Calculate indexes for our knobs
@@ -229,7 +229,7 @@ class UIControlsFocus extends List
 
             newOppositeKnobPosition = new Vector2()
               .copy(oppositeKnobPosition)
-              .substract(normalizedDiff)
+              .subtract(normalizedDiff)
 
             # Boundaries for the knobs
             # Default boundaries are 0 to 1
@@ -278,7 +278,7 @@ class UIControlsFocus extends List
 
     halfDiff = new Vector2()
       .copy(controlPoint2)
-      .substract(controlPoint1)
+      .subtract(controlPoint1)
       .divide(2)
 
     radius  = Math.sqrt(Math.pow(halfDiff.x, 2) + Math.pow(halfDiff.y, 2))
@@ -318,7 +318,7 @@ class UIControlsFocus extends List
 
     diff = new Vector2()
       .copy(controlPoint2)
-      .substract(controlPoint1)
+      .subtract(controlPoint1)
 
     diagonal = Math.sqrt(Math.pow(@canvas.width, 2) + Math.pow(@canvas.height, 2))
 

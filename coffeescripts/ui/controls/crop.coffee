@@ -126,7 +126,7 @@ class UIControlsCrop extends List
       $(document).mousemove (e) =>
         # Mouse position difference to initial position
         diffMousePosition = new Vector2(e.clientX, e.clientY)
-          .substract(initialMousePosition)
+          .subtract(initialMousePosition)
 
         # Turn start and end into pixel values
         endInPixels   = new Vector2().copy(initialEnd).multiplyWithRect(canvasRect)
@@ -190,7 +190,7 @@ class UIControlsCrop extends List
       $(document).mousemove (e) =>
         # Mouse position difference to initial position
         diffMousePosition = new Vector2(e.clientX, e.clientY)
-          .substract(initialMousePosition)
+          .subtract(initialMousePosition)
 
         # Turn start and end into pixel values
         endInPixels   = new Vector2().copy(initialEnd).multiplyWithRect(canvasRect)
@@ -253,7 +253,7 @@ class UIControlsCrop extends List
       $(document).mousemove (e) =>
         # Mouse position difference to initial position
         diffMousePosition = new Vector2(e.clientX, e.clientY)
-          .substract(initialMousePosition)
+          .subtract(initialMousePosition)
 
         # Turn start and end into pixel values
         endInPixels   = new Vector2().copy(initialEnd).multiplyWithRect(canvasRect)
@@ -318,7 +318,7 @@ class UIControlsCrop extends List
       $(document).mousemove (e) =>
         # Mouse position difference to initial position
         diffMousePosition = new Vector2(e.clientX, e.clientY)
-          .substract(initialMousePosition)
+          .subtract(initialMousePosition)
 
         if @operationOptions.ratio is 0
           # Custom cropping, allow free scaling
@@ -350,7 +350,7 @@ class UIControlsCrop extends List
           @operationOptions.start
             .copy(@operationOptions.end)
             .multiplyWithRect(canvasRect)
-            .substract(new Vector2(widthInPixels, heightInPixels))
+            .subtract(new Vector2(widthInPixels, heightInPixels))
             .divideByRect(canvasRect)
 
         @resizeCanvasControls()
@@ -383,7 +383,7 @@ class UIControlsCrop extends List
         # Normalized mouse position
         diffMousePosition = new Vector2()
           .copy(currentMousePosition)
-          .substract(initialMousePosition)
+          .subtract(initialMousePosition)
 
         # Calculate new start vector
         @operationOptions.start
