@@ -43,7 +43,6 @@
     "jquery": "^2.1.1",
     "modernizr": "^3.0.0-pre",
     "q": "^1.0.1",
-    "spectrum": "^0.4.2",
     "watchify": "^2.1.1"
   }
 }

@@ -19,7 +19,6 @@ isProduction    = false
 EXTERNALS         = [
   { require: "jquery", expose: "jquery" }
   { require: "q", expose: "q" }
-  { require: "spectrum", expose: "spectrum" }
 ]
 
 SERVER_PORT       = 8000

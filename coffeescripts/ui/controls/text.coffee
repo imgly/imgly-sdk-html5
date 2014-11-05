@@ -6,6 +6,8 @@ $       = require "jquery"
 List    = require "./base/list.coffee"
 Vector2 = require "../../math/vector2.coffee"
 Rect    = require "../../math/rect.coffee"
+require("../../vendor/spectrum")(window, $)
+
 class UIControlsText extends List
   displayButtons: true
   singleOperation: true
