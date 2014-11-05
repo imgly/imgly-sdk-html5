@@ -121,7 +121,6 @@ Utils.getResizedImageDataForImage = (image, dimensions, options={}) ->
   @returns {ImageData}
 ###
 Utils.getResizedImageDataForImageData = (imageData, dimensions, options={}) ->
-  debugger
   options.smooth ?= false
 
   # Create a canvas that fits the dimensions

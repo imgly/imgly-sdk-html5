@@ -83,7 +83,7 @@ class PhotoProcessor extends EventEmitter
           height: height - ImglyKit.canvasContainerPadding * 2
 
       dimensions = Utils.calculateCanvasSize options
-      imageData = Utils.getResizedImageDataForImage @sourceImage, dimensions, smooth: true
+      imageData = Utils.getImageDataForImage @sourceImage
     else if options.size
       [width, height] = options.size.split "x"
 
@@ -98,7 +98,7 @@ class PhotoProcessor extends EventEmitter
         width: parseInt width
         height: parseInt height
 
-      imageData = Utils.getResizedImageDataForImage @sourceImage, dimensions, smooth: true
+      imageData = Utils.getImageDataForImage @sourceImage
 
     @render imageData, preview: false, (err, imageData) =>
       return callback err if err?
