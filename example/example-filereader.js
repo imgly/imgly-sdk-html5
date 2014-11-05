@@ -69,7 +69,7 @@ window.onload = function () {
       // `dataUrl` now contains a resized rendered image with
       // a width of 300 pixels while keeping the ratio
 
-      var image = document.createElement(image);
+      var image = document.createElement("img");
       image.setAttribute("src", dataUrl);
       document.getElementsByTagName("body")[0].appendChild(image);
     });

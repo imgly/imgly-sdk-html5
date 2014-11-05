@@ -117,6 +117,44 @@ Utils.getResizedImageDataForImage = (image, dimensions, options={}) ->
 
 ###
   @param {ImageData} imageData
+  @param {Object} dimensions
+  @returns {ImageData}
+###
+Utils.getResizedImageDataForImageData = (imageData, dimensions, options={}) ->
+  debugger
+  options.smooth ?= false
+
+  # Create a canvas that fits the dimensions
+  sourceCanvas = document.createElement "canvas"
+  sourceCanvas.width = imageData.width
+  sourceCanvas.height = imageData.height
+
+  sourceContext = sourceCanvas.getContext "2d"
+  sourceContext.putImageData imageData, 0, 0
+
+  # Create the destination canvas
+  destinationCanvas = document.createElement "canvas"
+  destinationCanvas.width = dimensions.width
+  destinationCanvas.height = dimensions.height
+
+  destinationContext = destinationCanvas.getContext "2d"
+
+  unless options.smooth
+    destinationContext.drawImage(
+      sourceCanvas,
+      0, 0,
+      sourceCanvas.width, sourceCanvas.height,
+      0, 0,
+      destinationCanvas.width, destinationCanvas.height
+    )
+  else
+    Utils.resizeImageSmooth sourceCanvas, destinationContext
+
+  # Get the image data
+  destinationContext.getImageData 0, 0, destinationCanvas.width, destinationCanvas.height
+
+###
+  @param {ImageData} imageData
   @returns {ImageData}
 ###
 Utils.cloneImageData = (imageData) ->

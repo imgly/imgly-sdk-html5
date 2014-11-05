@@ -100,7 +100,15 @@ class PhotoProcessor extends EventEmitter
 
       imageData = Utils.getResizedImageDataForImage @sourceImage, dimensions, smooth: true
 
-    @render imageData, preview: false, callback
+    @render imageData, preview: false, (err, imageData) =>
+      return callback err if err?
+
+      if imageData.width isnt dimensions.width or
+        imageData.height isnt dimensions.height
+          # We need to resize
+          imageData = Utils.getResizedImageDataForImageData imageData, dimensions, smooth: true
+
+      callback null, imageData
 
   ###
     Renders a preview
@@ -186,19 +194,26 @@ class PhotoProcessor extends EventEmitter
     might be larger than the canvas itself (to keep the quality when cropping)
   ###
   calculateMinimumPreviewDimensions: (image) ->
-    [originalWidth, originalHeight] = [@sourceImage.width, @sourceImage.height]
-    minimumDimensions = @canvas.getDimensionsForImage @sourceImage
+    originalWidth = @sourceImage.width
+    originalHeight = @sourceImage.height
+
+    initialDimensions = @canvas.getDimensionsForImage @sourceImage
+    initialWidth = initialDimensions.width
+    initialHeight = initialDimensions.height
 
     for operation in @operationStack when operation instanceof CropOperation
-      {options} = operation
-      {start, end} = options
-      size = end.clone().subtract start # 0...1
+      { start, end } = operation.options
+      cropSize = end.clone().subtract start
 
-      minimumDimensions.height += minimumDimensions.height * (1 - size.y)
-      minimumDimensions.width += minimumDimensions.width * (1 - size.x)
+      maxCropFactor = Math.max 1 / cropSize.x, 1 / cropSize.y
 
-    console.log minimumDimensions
-    return minimumDimensions
+      initialWidth *= maxCropFactor
+      initialHeight *= maxCropFactor
+
+    initialWidth = Math.min initialWidth, originalWidth
+    initialHeight = Math.min initialHeight, originalHeight
+
+    return width: initialWidth, height: initialHeight
 
   ###
     Undos the last operation
