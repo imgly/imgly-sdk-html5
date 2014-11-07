@@ -42,15 +42,15 @@ window.onload = function () {
     // dataURL size of 2M. You will not be able to set location.href
     // or an <img> tag's `src` attribute to this dataUrl.
 
-    // dataUrl = imgly.renderToDataURL("png", { maxSize: "100x100" }, function (err, dataUrl) {});
+    // dataUrl = imgly.renderToDataURL("png", { size: "100x100" }, function (err, dataUrl) {});
     // `dataUrl` now contains a resized rendered image that
     // does not exceed 100x100 while keeping the ratio
 
-    // dataUrl = imgly.renderToDataURL("png", { size: "100x100" }, function (err, dataUrl) {});
+    // dataUrl = imgly.renderToDataURL("png", { size: "100x100!" }, function (err, dataUrl) {});
     // `dataUrl` now contains a resized rendered image with
     // a size of 100x100 pixels while _not_ keeping the ratio
 
-    imgly.renderToDataURL("png", { size: "300x" }, function (err, dataUrl) {
+    imgly.renderToDataURL("png", { size: "300x300" }, function (err, dataUrl) {
       // `dataUrl` now contains a resized rendered image with
       // a width of 300 pixels while keeping the ratio
 

@@ -66,23 +66,11 @@ class PhotoProcessor extends EventEmitter
     p = new Perf "imglyPhotoProcessor#renderFullImage()", debug: @app.options.debug
     p.start()
 
-    unless options.maxSize or options.size
+    unless options.size
       dimensions =
         width: @sourceImage.width
         height: @sourceImage.height
 
-      imageData = Utils.getImageDataForImage @sourceImage
-    else if options.maxSize
-      [width, height] = options.maxSize.split "x"
-      options =
-        image:
-          width: @sourceImage.width
-          height: @sourceImage.height
-        container:
-          width: width - ImglyKit.canvasContainerPadding * 2
-          height: height - ImglyKit.canvasContainerPadding * 2
-
-      dimensions = Utils.calculateCanvasSize options
       imageData = Utils.getImageDataForImage @sourceImage
     else if options.size
       [width, height] = options.size.split "x"
@@ -103,10 +91,8 @@ class PhotoProcessor extends EventEmitter
     @render imageData, preview: false, (err, imageData) =>
       return callback err if err?
 
-      if imageData.width isnt dimensions.width or
-        imageData.height isnt dimensions.height
-          # We need to resize
-          imageData = Utils.getResizedImageDataForImageData imageData, dimensions, smooth: true
+      if options.size
+        imageData = Utils.resizeImageData imageData, options, smooth: true
 
       callback null, imageData
 

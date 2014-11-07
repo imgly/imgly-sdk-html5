@@ -86,7 +86,6 @@ Utils.resizeImageSmooth = (image, context) ->
 
 ###
   @param {Image} image
-  @param {} dimensions
   @returns {ImageData}
 ###
 Utils.getResizedImageDataForImage = (image, dimensions, options={}) ->
@@ -120,7 +119,10 @@ Utils.getResizedImageDataForImage = (image, dimensions, options={}) ->
   @param {Object} dimensions
   @returns {ImageData}
 ###
-Utils.getResizedImageDataForImageData = (imageData, dimensions, options={}) ->
+Utils.resizeImageData = (imageData, options={}) ->
+  unless options.size?
+    throw new Error("No size given.")
+
   options.smooth ?= false
 
   # Create a canvas that fits the dimensions
@@ -130,6 +132,8 @@ Utils.getResizedImageDataForImageData = (imageData, dimensions, options={}) ->
 
   sourceContext = sourceCanvas.getContext "2d"
   sourceContext.putImageData imageData, 0, 0
+
+  dimensions = Utils.calculateDimensionsFromSize imageData, options.size
 
   # Create the destination canvas
   destinationCanvas = document.createElement "canvas"
@@ -151,6 +155,51 @@ Utils.getResizedImageDataForImageData = (imageData, dimensions, options={}) ->
 
   # Get the image data
   destinationContext.getImageData 0, 0, destinationCanvas.width, destinationCanvas.height
+
+###
+  @param {Object} size
+  @returns {Object}
+###
+Utils.calculateDimensionsFromSize = (sourceSize, size) ->
+  match = size.match /^([0-9]+)?x([0-9]+)?([\!])?$/i
+  unless match
+    throw new Error("Invalid size option: #{size}")
+
+  [m, x, y, modifier] = match
+
+  # Validations
+  if modifier is "!" and not (x? && y?)
+    throw new Error("Both `x` and `y` have to be set when using the fixed (!) modifier.")
+  unless x? or y?
+    throw new Error("Neither `x` nor `y` are given.")
+
+  if modifier is "!"
+    return width: x, height: y
+  else
+    containerSize =
+      width: sourceSize.width
+      height: sourceSize.height
+
+    if x? and y?
+      return Utils.calculateCanvasSize
+        container:
+          width: x
+          height: y
+        image: sourceSize
+    else if x?
+      # Fixed x, y by ratio
+      width = x
+
+      ratio = sourceSize.height / sourceSize.width
+      height = width * ratio
+    else if y?
+      # Fixed y, x by ratio
+      height = y
+
+      ratio = sourceSize.width / sourceSize.height
+      width = height * ratio
+
+    return { width, height }
 
 ###
   @param {ImageData} imageData
