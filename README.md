@@ -10,7 +10,6 @@ This branch of the img.ly SDK repository will contain the rewrite of the SDK.
 
 Here's what we're planning for img.ly HTML5 SDK 1.0:
 
-* Use ES6 features, use traceur as a precompiler
 * Sophisticated and easy to use JavaScript API that allows the user to modify and extend the SDK
 * Decoupled rendering mechanisms with WebGL support
 * Test suite
