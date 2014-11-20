@@ -151,6 +151,7 @@ gulp.task("watch", function () {
 gulp.task("serve", function () {
   return browserSync({
     notify: false,
+    open: false,
     server: {
       baseDir: ["."]
     },
