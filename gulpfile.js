@@ -91,6 +91,18 @@ gulp.task("cssmin:minify", function () {
 });
 
 /**
+ * `gulp jsdoc`
+ * Generates the documentation
+ */
+gulp.task("jsdoc", function () {
+  gulp.src("./src/js/*.js")
+    .pipe($.jsdoc.parser())
+    .pipe($.jsdoc.generator("./doc", {
+      path: "node_modules/jaguarjs-jsdoc"
+    }));
+});
+
+/**
  * `gulp browserify`
  * Runs browserify on the JS source files which packs all source
  * files together. If `set-production` has NOT been called before,

@@ -14,4 +14,4 @@
 function ImglyKit() {
   console.log("foo?");
 }
-module.exports = ImglyKit;
+window.ImglyKit = ImglyKit;
