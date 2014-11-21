@@ -13,7 +13,8 @@ var Operation = require("./operation");
 /**
  * An operation that can rotate an image
  *
- * @class Operations.RotationOperation
+ * @class
+ * @alias ImglyKit.Operations.RotationOperation
  * @extends ImglyKit.Operation
  */
 var RotationOperation = Operation.extend({

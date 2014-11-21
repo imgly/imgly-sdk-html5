@@ -9,10 +9,11 @@
  */
 
 var Utils = require("./utils");
-var Operation = require("../operations/operation");
 
 /**
- * @constructor
+ * Manages the available and selected operations
+ * @class
+ * @alias ImglyKit.OperationsManager
  */
 function OperationsManager() {
   /**
@@ -35,13 +36,31 @@ function OperationsManager() {
  *                                      be enabled.
  */
 OperationsManager.prototype.select = function(selector) {
-  var availableIdentifiers = this.operations.map(function (operation) {
-    return operation.identifier;
-  });
+  if (["string", "object", "array"].indexOf(typeof selector) === -1) {
+    throw new Error("Argument of type " + typeof selector + " is not a valid selector.");
+  }
+
+  var availableIdentifiers = [];
+  var name, operation;
+
+  // Iterate over all available operations, get their identifiers
+  for (name in this.operations) {
+    operation = this.operations[name];
+    availableIdentifiers.push(operation.identifier);
+  }
+
+  // Filter the identifiers
   var selectedIdentifiers = Utils.select(availableIdentifiers, selector);
-  this.enabledOperations = this.operations.filter(function (operation) {
-    return selectedIdentifiers.indexOf(operation) !== -1;
-  });
+
+  // Iterate over all available operations, finding those that have been
+  // selected and push them to the `enabledOperations` array
+  this.enabledOperations = [];
+  for (name in this.operations) {
+    operation = this.operations[name];
+    if (selectedIdentifiers.indexOf(operation.identifier) !== -1) {
+      this.enabledOperations.push(operation);
+    }
+  }
 };
 
 /**
@@ -53,18 +72,28 @@ OperationsManager.prototype.register = function(operation) {
     throw new Error("An operation with identifier \"" + operation.identifier +
       "\" has already been registered.");
   }
+
+  // Register the operation
   this.operations[operation.identifier] = operation;
+
+  // Enable it per default
+  this.enabledOperations.push(operation);
 };
 
 /**
- * Finds the operation with the given identifier and calls the given
- * function with the operation as first parameter.
+ * Finds the instance of the {@link Operation} with the given identifier
  * @param  {string} identifier - The {@link Operation}'s identifier
- * @param  {Function} fn - The function that will be called with the {@link Operation}
- *                         as first parameter.
  */
-OperationsManager.prototype.configure = function(identifier, fn) {
+OperationsManager.prototype.find = function(identifier) {
 
+};
+
+/**
+ * Resets all custom and selected operations
+ */
+OperationsManager.prototype.reset = function() {
+  this.operations = {};
+  this.enabledOperations = [];
 };
 
 module.exports = OperationsManager;

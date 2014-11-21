@@ -14,13 +14,13 @@ var Operation = require("./operation");
  * An operation that can apply a selected filter
  *
  * @class
- * @alias ImglyKit.Operations.FiltersOperation
+ * @alias ImglyKit.Operations.CropOperation
  * @extends ImglyKit.Operation
  */
-var FiltersOperation = Operation.extend({
+var CropOperation = Operation.extend({
 
 }, {
-  identifier: "filters"
+  identifier: "crop"
 });
 
-module.exports = FiltersOperation;
+module.exports = CropOperation;

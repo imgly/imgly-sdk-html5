@@ -10,6 +10,9 @@ window.onload = function() {
    * the stickers operation. See the documentation on how to
    * create a custom operation.
    */
+
+   var StickersOperation = Operation.extend({});
+
   ImglyKit.operations.register(StickersOperation);
 
   /*
@@ -29,6 +32,10 @@ window.onload = function() {
    * Here we make sure that the "filters" operation only shows
    * the "A15" and "Goblin" filters.
    */
+
+  var operation = kit.operations.find("filters");
+  filtersOperation.selectFilters({ only: "a15,goblin" });
+
   kit.operations.configure("filters", function (filtersOperation) {
     filtersOperation.selectFilters({ only: "a15,goblin" });
   });

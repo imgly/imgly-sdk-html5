@@ -9,16 +9,18 @@
  */
 
 /**
- * @constructor
+ * Base class for Operations. Extendable via {@link ImglyKit.Operation#extend}.
+ * @class
+ * @alias ImglyKit.Operation
  */
 function Operation(kit) {
   this.kit = kit;
 }
 
 /**
+ * To create an {@link ImglyKit.Operation} class of your own, call this
+ * method and provide instance properties and functions.
  * @function
- * @description  To create an {@link Operation} class of your own, call this
- *               method and provide instance properties and functions.
  */
 Operation.extend = require("../lib/extend");
 

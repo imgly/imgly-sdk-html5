@@ -11,7 +11,7 @@
 var OperationsManager = require("./lib/operations-manager");
 
 /**
- * @constructor
+ * @class
  */
 function ImglyKit() {
   /**
@@ -34,17 +34,28 @@ ImglyKit.version = "0.0.1";
  */
 ImglyKit.operations = new OperationsManager();
 
+// Exposed classes
 ImglyKit.Operation = require("./operations/operation");
 
 /**
  * Registers all default operations
  * @private
  */
-ImglyKit._registerOperations = function() {
+ImglyKit._registerOperations = function () {
   this.operations.register(require("./operations/filters-operation"));
   this.operations.register(require("./operations/rotation-operation"));
+  this.operations.register(require("./operations/crop-operation"));
 };
 
+/**
+ * Resets all custom and selected operations
+ */
+ImglyKit.reset = function () {
+  this.operations.reset();
+  this._registerOperations();
+}
+
+// Initial operations registration
 ImglyKit._registerOperations();
 
 if (typeof window !== "undefined") {
