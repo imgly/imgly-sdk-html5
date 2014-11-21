@@ -1,9 +1,7 @@
 .DS_Store
 .sass-cache
 *~
-Gemfile.lock
 node_modules
 build
-
-twistd.pid
+coverage
 doc

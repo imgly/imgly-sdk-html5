@@ -8,10 +8,49 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+var OperationsManager = require("./lib/operations-manager");
+
 /**
  * @constructor
  */
 function ImglyKit() {
-  console.log("foo?");
+  /**
+   * The stack of {@link Operation} instances that will be used
+   * to render the final Image
+   * @type {array.<Operation>}
+   */
+  this.operationsStack = [];
 }
-window.ImglyKit = ImglyKit;
+
+/**
+ * The current version of the SDK
+ * @name ImglyKit.version
+ */
+ImglyKit.version = "0.0.1";
+
+/**
+ * The global OperationsManager object
+ * @type {OperationsManager}
+ */
+ImglyKit.operations = new OperationsManager();
+
+ImglyKit.Operation = require("./operations/operation");
+
+/**
+ * Registers all default operations
+ * @private
+ */
+ImglyKit._registerOperations = function() {
+  this.operations.register(require("./operations/filters-operation"));
+  this.operations.register(require("./operations/rotation-operation"));
+};
+
+ImglyKit._registerOperations();
+
+if (typeof window !== "undefined") {
+  window.ImglyKit = ImglyKit;
+} else if (typeof module !== "undefined") {
+  module.exports = ImglyKit;
+} else if (typeof global !== "undefined") {
+  global.ImglyKit = ImglyKit;
+}

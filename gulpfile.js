@@ -95,7 +95,7 @@ gulp.task("cssmin:minify", function () {
  * Generates the documentation
  */
 gulp.task("jsdoc", function () {
-  gulp.src(["./src/js/*.js", "README.md"])
+  gulp.src(["./src/js/**/*.js", "README.md"])
     .pipe($.jsdoc.parser())
     .pipe($.jsdoc.generator("./doc", {
       path: "node_modules/jaguarjs-jsdoc"
