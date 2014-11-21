@@ -11,6 +11,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+var should = require("should");
 var ImglyKit = require("..");
 
 describe("OperationsManager", function () {
@@ -38,7 +39,7 @@ describe("OperationsManager", function () {
       throwable.should.throw();
     });
 
-  });
+  }); // #register
 
   describe("#select", function () {
 
@@ -121,6 +122,29 @@ describe("OperationsManager", function () {
       });
     });
 
-  });
+  }); // #select
 
-});
+  describe("#find", function () {
+
+    describe("with an existing identifier", function () {
+
+      it("should return an Operation", function () {
+        var operation = ImglyKit.operations.find("filters");
+        var FiltersOperation = require("../src/js/operations/filters-operation");
+        operation.prototype.should.equal(FiltersOperation.prototype);
+      });
+
+    });
+
+    describe("with an identifier that does not exist", function () {
+
+      it("should return null", function () {
+        var operation = ImglyKit.operations.find("nothing");
+        should.not.exist(operation);
+      });
+
+    });
+
+  }); // #find
+
+}); // OperationsManager

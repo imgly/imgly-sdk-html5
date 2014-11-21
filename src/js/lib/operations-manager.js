@@ -85,7 +85,13 @@ OperationsManager.prototype.register = function(operation) {
  * @param  {string} identifier - The {@link Operation}'s identifier
  */
 OperationsManager.prototype.find = function(identifier) {
-
+  for (var name in this.operations) {
+    var operation = this.operations[name];
+    if (operation.identifier === identifier) {
+      return operation;
+    }
+  }
+  return null;
 };
 
 /**

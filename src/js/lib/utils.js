@@ -23,7 +23,7 @@ var Utils = {};
  */
 Utils.isArray = function (object) {
   return Object.prototype.toString.call(object) === "[object Array]";
-}
+};
 
 /**
  * Returns the items selected by the given selector
