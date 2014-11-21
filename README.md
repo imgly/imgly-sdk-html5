@@ -5,8 +5,8 @@
   <a href="https://travis-ci.org/imgly/imgly-sdk-html5">
     <img src="http://img.shields.io/travis/imgly/imgly-sdk-html5.svg?cb=2" alt="Test Status" />
   </a>
-  <a href="https://coveralls.io/r/imgly/imgly-sdk-html5?branch=master">
-    <img src="http://img.shields.io/coveralls/imgly/imgly-sdk-html5/master.svg?cb=2" alt="Coverage Status" />
+  <a href="https://coveralls.io/r/imgly/imgly-sdk-html5?branch=rewrite">
+    <img src="http://img.shields.io/coveralls/imgly/imgly-sdk-html5/rewrite.svg?cb=2" alt="Coverage Status" />
   </a>
 </p>
 
