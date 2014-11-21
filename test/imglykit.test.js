@@ -12,14 +12,11 @@
  */
 
 var ImglyKit = require("..");
-var kit;
-
-before(function () {
-  kit = new ImglyKit();
-});
 
 describe("OperationsManager", function () {
+
   describe("#register", function () {
+
     it("should successfully register an Operation", function () {
       var StickersOperation = ImglyKit.Operation.extend({}, {
         identifier: "stickers"
@@ -27,5 +24,19 @@ describe("OperationsManager", function () {
       ImglyKit.operations.register(StickersOperation);
       ImglyKit.operations.operations.should.have.property("stickers");
     });
+
+    it("should not register the same identifier twice", function () {
+      var FooOperation = ImglyKit.Operation.extend({}, {
+        identifier: "foo"
+      });
+      ImglyKit.operations.register(FooOperation);
+
+      function throwable() {
+        ImglyKit.operations.register(FooOperation);
+      }
+      throwable.should.throw();
+    });
+
   });
+
 });

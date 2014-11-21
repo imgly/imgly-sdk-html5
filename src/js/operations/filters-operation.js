@@ -18,6 +18,8 @@ var Operation = require("./operation");
  */
 var FiltersOperation = Operation.extend({
 
+}, {
+  identifier: "filters"
 });
 
 module.exports = FiltersOperation;

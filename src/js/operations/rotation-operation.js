@@ -18,6 +18,8 @@ var Operation = require("./operation");
  */
 var RotationOperation = Operation.extend({
 
+}, {
+  identifier: "rotation"
 });
 
 module.exports = RotationOperation;

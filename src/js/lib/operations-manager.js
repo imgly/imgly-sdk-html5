@@ -9,6 +9,7 @@
  */
 
 var Utils = require("./utils");
+var Operation = require("../operations/operation");
 
 /**
  * @constructor
@@ -48,6 +49,10 @@ OperationsManager.prototype.select = function(selector) {
  * @param  {class} operation - The {@link Operation} to register
  */
 OperationsManager.prototype.register = function(operation) {
+  if (this.operations[operation.identifier]) {
+    throw new Error("An operation with identifier \"" + operation.identifier +
+      "\" has already been registered.");
+  }
   this.operations[operation.identifier] = operation;
 };
 
