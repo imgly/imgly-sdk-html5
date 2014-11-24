@@ -8,18 +8,25 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var OperationsManager = require("./lib/operations-manager");
+var OperationsManager = require("./operations-manager");
 
 /**
  * @class
  */
 function ImglyKit() {
   /**
+   * @type {ImglyKit.OperationsManager}
+   */
+  this.operations = new OperationsManager();
+
+  /**
    * The stack of {@link Operation} instances that will be used
    * to render the final Image
    * @type {array.<Operation>}
    */
   this.operationsStack = [];
+
+  this.reset();
 }
 
 /**
@@ -28,12 +35,6 @@ function ImglyKit() {
  */
 ImglyKit.version = "0.0.1";
 
-/**
- * The global OperationsManager object
- * @type {OperationsManager}
- */
-ImglyKit.operations = new OperationsManager();
-
 // Exposed classes
 ImglyKit.Operation = require("./operations/operation");
 
@@ -41,7 +42,7 @@ ImglyKit.Operation = require("./operations/operation");
  * Registers all default operations
  * @private
  */
-ImglyKit._registerOperations = function () {
+ImglyKit.prototype._registerOperations = function () {
   this.operations.register(require("./operations/filters-operation"));
   this.operations.register(require("./operations/rotation-operation"));
   this.operations.register(require("./operations/crop-operation"));
@@ -50,13 +51,10 @@ ImglyKit._registerOperations = function () {
 /**
  * Resets all custom and selected operations
  */
-ImglyKit.reset = function () {
+ImglyKit.prototype.reset = function () {
   this.operations.reset();
   this._registerOperations();
-}
-
-// Initial operations registration
-ImglyKit._registerOperations();
+};
 
 if (typeof window !== "undefined") {
   window.ImglyKit = ImglyKit;

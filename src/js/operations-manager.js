@@ -8,7 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var Utils = require("./utils");
+var Utils = require("./lib/utils");
 
 /**
  * Manages the available and selected operations
