@@ -52,6 +52,8 @@ ImglyKit.version = "0.0.1";
 ImglyKit.Operation = require("./operations/operation");
 ImglyKit.Operations = {};
 ImglyKit.Operations.FiltersOperation = require("./operations/filters-operation");
+ImglyKit.Operations.RotationOperation = require("./operations/rotation-operation");
+ImglyKit.Operations.CropOperation = require("./operations/crop-operation");
 
 /**
  * The available render types
@@ -76,9 +78,9 @@ ImglyKit.ImageFormat = {
  * @private
  */
 ImglyKit.prototype._registerOperations = function () {
-  this.operations.register(require("./operations/filters-operation"));
-  this.operations.register(require("./operations/rotation-operation"));
-  this.operations.register(require("./operations/crop-operation"));
+  this.operations.register(ImglyKit.Operations.FiltersOperation);
+  this.operations.register(ImglyKit.Operations.RotationOperation);
+  this.operations.register(ImglyKit.Operations.CropOperation);
 };
 
 /**
