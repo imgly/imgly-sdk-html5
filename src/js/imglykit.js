@@ -10,6 +10,8 @@
 
 var OperationsManager = require("./operations-manager");
 var OperationsStack = require("./operations-stack");
+var RenderImage = require("./render-image");
+var ImageDimensions = require("./image-dimensions");
 var Utils = require("./lib/utils");
 
 /**
@@ -25,6 +27,12 @@ function ImglyKit(options) {
   if (typeof options !== "object") throw new Error("No options given.");
   // `options.image` is required
   if (typeof options.image === "undefined") throw new Error("`options.image` is undefined.");
+
+  /**
+   * @type {Object}
+   * @private
+   */
+  this._options = options;
 
   /**
    * @type {ImglyKit.OperationsManager}
@@ -62,7 +70,7 @@ ImglyKit.Operations.CropOperation = require("./operations/crop-operation");
 ImglyKit.RenderType = {
   IMAGE: "image",
   DATAURL: "data-url"
-}
+};
 
 /**
  * The available output image formats
@@ -71,7 +79,7 @@ ImglyKit.RenderType = {
 ImglyKit.ImageFormat = {
   PNG: "image/png",
   JPEG: "image/jpeg"
-}
+};
 
 /**
  * Registers all default operations
@@ -100,6 +108,15 @@ ImglyKit.prototype.render = function(renderType, imageFormat, dimensions) {
     Utils.objectValues(ImglyKit.ImageFormat).indexOf(imageFormat) === -1) {
     throw new Error("Invalid image format: " + imageFormat);
   }
+
+  // Parse the dimensions
+  var imageDimensions = new ImageDimensions(this.options.image, dimensions);
+
+  // Create a RenderImage
+  var renderImage = new RenderImage(this.operationsStack, imageDimensions);
+
+  // Initiate image rendering
+  return renderImage.render();
 };
 
 /**
