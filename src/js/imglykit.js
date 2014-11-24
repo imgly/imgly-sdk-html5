@@ -56,10 +56,4 @@ ImglyKit.prototype.reset = function () {
   this._registerOperations();
 };
 
-if (typeof window !== "undefined") {
-  window.ImglyKit = ImglyKit;
-} else if (typeof module !== "undefined") {
-  module.exports = ImglyKit;
-} else if (typeof global !== "undefined") {
-  global.ImglyKit = ImglyKit;
-}
+module.exports = ImglyKit;
