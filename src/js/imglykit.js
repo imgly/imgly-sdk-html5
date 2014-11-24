@@ -14,14 +14,13 @@ var Utils = require("./lib/utils");
 
 /**
  * @class
- * @param {HTMLElementObject} [container]
  * @param {Object} options
- * @param {boolean} [options.ui=true] - Specifies whether the UI should be visible
+ * @param {HTMLElement} [options.container] - Specifies where the UI should be
+ *                                          added to. If none is given, the UI
+ *                                          will automatically be disabled.
  * @param {Image} options.image - The source image
  */
-function ImglyKit(container, options) {
-  // `container` is optional
-  if (typeof options === "undefined") options = container;
+function ImglyKit(options) {
   // `options` is required
   if (typeof options !== "object") throw new Error("No options given.");
   // `options.image` is required

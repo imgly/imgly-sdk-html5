@@ -30,7 +30,7 @@ describe("ImglyKit", function () {
 
     });
 
-    describe("when `options.ui` is set to false", function () {
+    describe("when `options.container` is not set", function () {
 
       it("should not initialize the UI");
 
@@ -41,7 +41,7 @@ describe("ImglyKit", function () {
   describe("#render", function () {
 
     before(function () {
-      kit = new ImglyKit({ ui: false, image: image });
+      kit = new ImglyKit({ image: image });
     });
 
     describe("validations", function () {
@@ -68,7 +68,7 @@ describe("ImglyKit", function () {
 
       });
 
-    });
+    }); // validations
 
   }); // #render
 

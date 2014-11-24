@@ -20,7 +20,7 @@ describe("OperationsStack", function () {
   describe("#push", function () {
 
     before(function () {
-      kit = new ImglyKit({ ui: false, image: image });
+      kit = new ImglyKit({ image: image });
     });
 
     it("should add an operation", function () {
