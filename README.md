@@ -23,3 +23,24 @@ Here's what we're planning for img.ly HTML5 SDK 1.0:
 * Test suite
 * An all-new design
 * Tutorials and advanced documentation
+
+## Setting up the development environment
+
+```shell
+$ npm install -g gulp
+$ npm install
+```
+
+## Running the tests
+
+```shell
+$ npm test
+```
+
+## Building the documentation
+
+```shell
+$ gulp jsdocs
+```
+
+The documentation will be in the `doc` directory.
