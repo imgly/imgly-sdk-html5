@@ -11,8 +11,7 @@ window.onload = function() {
    * create a custom operation.
    */
 
-   var StickersOperation = Operation.extend({});
-
+  var StickersOperation = Operation.extend({});
   ImglyKit.operations.register(StickersOperation);
 
   /*

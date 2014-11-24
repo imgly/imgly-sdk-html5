@@ -11,3 +11,24 @@
  */
 
 var ImglyKit = require("..");
+var kit, image;
+var canvas = require("canvas");
+
+describe("ImglyKit", function () {
+
+  describe("#constructor", function () {
+
+    describe("when no options are given", function () {
+
+      it("should throw an error", function () {
+        var throwable = function () {
+          new ImglyKit();
+        };
+        throwable.should.throw();
+      });
+
+    });
+
+  }); // #constructor
+
+});

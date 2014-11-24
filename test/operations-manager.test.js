@@ -12,6 +12,7 @@
 
 var should = require("should");
 var ImglyKit = require("..");
+var Image = require("canvas").Image;
 var kit;
 var StickersOperation;
 
@@ -22,7 +23,9 @@ describe("OperationsManager", function () {
       identifier: "stickers"
     });
 
-    kit = new ImglyKit();
+    kit = new ImglyKit({
+      image: new Image(100, 100)
+    });
   });
 
   describe("#register", function () {
