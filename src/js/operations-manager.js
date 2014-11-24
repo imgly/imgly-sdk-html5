@@ -14,8 +14,15 @@ var Utils = require("./lib/utils");
  * Manages the available and selected operations
  * @class
  * @alias ImglyKit.OperationsManager
+ * @param {ImglyKit} kit
  */
-function OperationsManager() {
+function OperationsManager(kit) {
+  /**
+   * @type {ImglyKit}
+   * @private
+   */
+  this._kit = kit;
+
   /**
    * The registered operations
    * @type {Object.<string, class>}

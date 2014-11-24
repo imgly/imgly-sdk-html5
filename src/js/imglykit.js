@@ -29,14 +29,14 @@ function ImglyKit(container, options) {
   /**
    * @type {ImglyKit.OperationsManager}
    */
-  this.operations = new OperationsManager();
+  this.operations = new OperationsManager(this);
 
   /**
    * The stack of {@link Operation} instances that will be used
    * to render the final Image
    * @type {ImglyKit.OperationsStack}
    */
-  this.operationsStack = new OperationsStack();
+  this.operationsStack = new OperationsStack(this);
 
   this.reset();
 }

@@ -13,9 +13,14 @@
  * @class
  * @alias ImglyKit.OperationsStack
  * @extends {Array}
+ * @param {ImglyKit} kit
  */
-function OperationsStack() {
-
+function OperationsStack(kit) {
+  /**
+   * @type {ImglyKit}
+   * @private
+   */
+  this._kit = kit;
 }
 
 OperationsStack.prototype = new Array();
