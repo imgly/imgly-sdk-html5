@@ -12,15 +12,15 @@
 
 var ImglyKit = require("..");
 var Image = require("canvas").Image;
-var kit;
 var image = new Image(100, 100);
+var kit;
 
 describe("OperationsStack", function () {
 
   describe("#push", function () {
 
     before(function () {
-      kit = new ImglyKit({ image: image });
+      kit = new ImglyKit({ ui: false, image: image });
     });
 
     it("should add an operation", function () {

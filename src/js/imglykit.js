@@ -10,6 +10,7 @@
 
 var OperationsManager = require("./operations-manager");
 var OperationsStack = require("./operations-stack");
+var Utils = require("./lib/utils");
 
 /**
  * @class
@@ -54,6 +55,24 @@ ImglyKit.Operations = {};
 ImglyKit.Operations.FiltersOperation = require("./operations/filters-operation");
 
 /**
+ * The available render types
+ * @enum {string}
+ */
+ImglyKit.RenderType = {
+  IMAGE: "image",
+  DATAURL: "data-url"
+}
+
+/**
+ * The available output image formats
+ * @enum {string}
+ */
+ImglyKit.ImageFormat = {
+  PNG: "image/png",
+  JPEG: "image/jpeg"
+}
+
+/**
  * Registers all default operations
  * @private
  */
@@ -61,6 +80,25 @@ ImglyKit.prototype._registerOperations = function () {
   this.operations.register(require("./operations/filters-operation"));
   this.operations.register(require("./operations/rotation-operation"));
   this.operations.register(require("./operations/crop-operation"));
+};
+
+/**
+ * Renders the image
+ * @param  {ImglyKit.RenderType} [renderType=ImglyKit.RenderType.IMAGE] - The output type
+ * @param  {ImglyKit.ImageFormat} [imageFormat=ImglyKit.ImageFormat.PNG] - The output image format
+ * @param  {string} [dimensions] - The final dimensions of the image
+ * @return {Promise}
+ */
+ImglyKit.prototype.render = function(renderType, imageFormat, dimensions) {
+  if (typeof renderType !== "undefined" &&
+    Utils.objectValues(ImglyKit.RenderType).indexOf(renderType) === -1) {
+    throw new Error("Invalid render type: " + renderType);
+  }
+
+  if (typeof imageFormat !== "undefined" &&
+    Utils.objectValues(ImglyKit.ImageFormat).indexOf(imageFormat) === -1) {
+    throw new Error("Invalid image format: " + imageFormat);
+  }
 };
 
 /**

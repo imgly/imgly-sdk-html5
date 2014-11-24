@@ -11,8 +11,9 @@
  */
 
 var ImglyKit = require("..");
-var kit, image;
-var canvas = require("canvas");
+var Image = require("canvas").Image;
+var image = new Image(100, 100);
+var kit;
 
 describe("ImglyKit", function () {
 
@@ -29,6 +30,46 @@ describe("ImglyKit", function () {
 
     });
 
+    describe("when `options.ui` is set to false", function () {
+
+      it("should not initialize the UI");
+
+    });
+
   }); // #constructor
+
+  describe("#render", function () {
+
+    before(function () {
+      kit = new ImglyKit({ ui: false, image: image });
+    });
+
+    describe("validations", function () {
+
+      describe("when an invalid render type is given", function () {
+
+        it("should throw an error", function () {
+          var throwable = function () {
+            kit.render("invalid");
+          };
+          throwable.should.throw();
+        });
+
+      });
+
+      describe("when an invalid image format is given", function () {
+
+        it("should throw an error", function () {
+          var throwable = function () {
+            kit.render(null, "invalid");
+          };
+          throwable.should.throw();
+        });
+
+      });
+
+    });
+
+  }); // #render
 
 });

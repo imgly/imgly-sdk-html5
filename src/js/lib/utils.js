@@ -32,13 +32,14 @@ Utils.isArray = function (object) {
  * @return {Array} The selected items
  */
 Utils.select = function (items, selector) {
-  // Turn string and array parameter into an object
+  // Turn string parameter into an array
   if (typeof selector === "string") {
     selector = selector.split(",").map(function (identifier) {
       return identifier.trim();
     });
   }
 
+  // Turn array parameter into an object with `only`
   if (Utils.isArray(selector)) {
     selector = { only: selector };
   }
@@ -56,6 +57,19 @@ Utils.select = function (items, selector) {
   }
 
   throw new Error("Utils#select failed to filter items.");
+};
+
+/**
+ * Returns the given object's values as an array
+ * @param {Object} object
+ * @returns {Array<*>}
+ */
+Utils.values = function (object) {
+  var values = [];
+  for (var key in object) {
+    values.push(object[key]);
+  }
+  return values;
 };
 
 module.exports = Utils;
