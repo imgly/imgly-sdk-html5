@@ -9,9 +9,13 @@
  */
 
 /**
+ * @class ImglyKit.TypeDefs
+ */
+
+/**
  * An object that will be used to select specific items from
  * a list of items. See {@link OperationsManager#select} for an example.
- * @typedef {object|array|string} ImglyKit~Selector
+ * @typedef {object|array|string} ImglyKit.TypeDefs~Selector
  * @property {array.<string>} only - A string of identifiers, separated by commas or an array of identifiers.
  * @property {array.<string>} except - A string of identifiers, separated by commas or an array of identifiers.
  */
