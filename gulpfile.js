@@ -17,7 +17,9 @@ var $ = gulpLoadPlugins();
  */
 var config = {
   serverPort: 8000,
-  externals: []
+  externals: [{
+    require: "./src/js/vendor/bluebird", expose: "bluebird"
+  }]
 };
 
 /**
