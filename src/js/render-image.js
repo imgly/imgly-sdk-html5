@@ -7,18 +7,56 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
+var bluebird = require("bluebird");
+var ImageDimensions = require("./image-dimensions");
+var Vector2 = require("./lib/math/vector2");
+var CanvasRenderer = require("./renderers/canvas-renderer");
+var WebGLRenderer = require("./renderers/webgl-renderer");
+
+// Load canvas in non-browser environments
+var Canvas, isBrowser = true;
+if (typeof window === "undefined") {
+  Canvas = require("canvas");
+  isBrowser = false;
+}
 
 /**
  * Handles the image rendering process
  * @class
  * @alias ImglyKit.RenderImage
- * @param {ImglyKit.OperationsStack} operationsStack
- * @param {ImglyKit.ImageDimensions} imageDimensions
+ * @param {Image} image
+ * @param {Array.<ImglyKit.Operation>} operationsStack
+ * @param {string} dimensions
  * @private
  */
-function RenderImage(operationsStack, imageDimensions) {
+function RenderImage(image, operationsStack, dimensions) {
   /**
-   * @type {ImglyKit.OperationsStack}
+   * @type {Boolean}
+   * @private
+   * @default true
+   */
+  this._webglEnabled = true;
+
+  /**
+   * @type {Canvas}
+   * @private
+   */
+  this._canvas = null;
+
+  /**
+   * @type {CanvasRenderingContext2D|CanvasRenderingContext3D}
+   * @private
+   */
+  this._context = null;
+
+  /**
+   * @type {Image}
+   * @private
+   */
+  this._image = image;
+
+  /**
+   * @type {Array.<ImglyKit.Operation>}
    * @private
    */
   this._stack = operationsStack;
@@ -27,7 +65,61 @@ function RenderImage(operationsStack, imageDimensions) {
    * @type {ImglyKit.ImageDimensions}
    * @private
    */
-  this._dimensions = imageDimensions;
+  this._dimensions = new ImageDimensions(this._image, dimensions);
+
+  /**
+   * @type {Vector2}
+   * @private
+   */
+  this._initialDimensions = new Vector2(this._image.width, this._image.height);
+
+  this._initCanvas();
 }
+
+/**
+ * Creates a canvas with the input image drawn on it
+ * @return {Promise}
+ * @private
+ */
+RenderImage.prototype._initCanvas = function() {
+  this._canvas = isBrowser ? document.createElement("canvas") : new Canvas();
+  this._canvas.width = this._initialDimensions.x;
+  this._canvas.height = this._initialDimensions.y;
+
+  // Detect WebGL support
+  this._context = this._canvas.getContext("webgl") ||
+    this._canvas.getContext("webgl-experimental");
+
+  if (typeof this._context === "undefined") {
+    // No WebGL support
+    this._context = this._canvas.getContext("2d");
+    this._renderer = new CanvasRenderer(this._canvas, this._context);
+    this._webglEnabled = false;
+  } else {
+    // WebGL support
+    this._renderer = new WebGLRenderer(this._canvas, this._context);
+    this._webglEnabled = true;
+  }
+
+  this._renderer.drawImage(this._image);
+};
+
+/**
+ * Renders the image
+ * @return {Promise}
+ */
+RenderImage.prototype.render = function() {
+  return bluebird.map(this._stack, function (operation) {
+    return operation.render(this._renderer);
+  });
+};
+
+/**
+ * Returns the canvas
+ * @return {Canvas}
+ */
+RenderImage.prototype.getCanvas = function() {
+  return this._canvas;
+};
 
 module.exports = RenderImage;

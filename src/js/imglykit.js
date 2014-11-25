@@ -9,10 +9,10 @@
  */
 
 var OperationsManager = require("./operations-manager");
-var OperationsStack = require("./operations-stack");
 var RenderImage = require("./render-image");
-var ImageDimensions = require("./image-dimensions");
+var ImageExporter = require("./image-exporter");
 var Utils = require("./lib/utils");
+var Constants = require("./constants");
 
 /**
  * @class
@@ -42,9 +42,9 @@ function ImglyKit(options) {
   /**
    * The stack of {@link Operation} instances that will be used
    * to render the final Image
-   * @type {ImglyKit.OperationsStack}
+   * @type {Array.<ImglyKit.Operation>}
    */
-  this.operationsStack = new OperationsStack(this);
+  this.operationsStack = [];
 
   this.reset();
 }
@@ -63,23 +63,9 @@ ImglyKit.Operations.FiltersOperation = require("./operations/filters-operation")
 ImglyKit.Operations.RotationOperation = require("./operations/rotation-operation");
 ImglyKit.Operations.CropOperation = require("./operations/crop-operation");
 
-/**
- * The available render types
- * @enum {string}
- */
-ImglyKit.RenderType = {
-  IMAGE: "image",
-  DATAURL: "data-url"
-};
-
-/**
- * The available output image formats
- * @enum {string}
- */
-ImglyKit.ImageFormat = {
-  PNG: "image/png",
-  JPEG: "image/jpeg"
-};
+// Exposed constants
+ImglyKit.RenderType = Constants.RenderType;
+ImglyKit.ImageFormat = Constants.ImageFormat;
 
 /**
  * Registers all default operations
@@ -93,30 +79,37 @@ ImglyKit.prototype._registerOperations = function () {
 
 /**
  * Renders the image
- * @param  {ImglyKit.RenderType} [renderType=ImglyKit.RenderType.IMAGE] - The output type
+ * @param  {ImglyKit.RenderType} [renderType=ImglyKit.RenderType.DATA_URL] - The output type
  * @param  {ImglyKit.ImageFormat} [imageFormat=ImglyKit.ImageFormat.PNG] - The output image format
  * @param  {string} [dimensions] - The final dimensions of the image
  * @return {Promise}
  */
 ImglyKit.prototype.render = function(renderType, imageFormat, dimensions) {
+  // Validate RenderType
   if (typeof renderType !== "undefined" &&
-    Utils.objectValues(ImglyKit.RenderType).indexOf(renderType) === -1) {
+    Utils.values(ImglyKit.RenderType).indexOf(renderType) === -1) {
     throw new Error("Invalid render type: " + renderType);
+  } else if (typeof renderType === "undefined") {
+    renderType = ImglyKit.RenderType.DATA_URL;
   }
 
+  // Validate ImageFormat
   if (typeof imageFormat !== "undefined" &&
-    Utils.objectValues(ImglyKit.ImageFormat).indexOf(imageFormat) === -1) {
+    Utils.values(ImglyKit.ImageFormat).indexOf(imageFormat) === -1) {
     throw new Error("Invalid image format: " + imageFormat);
+  } else if (typeof imageFormat === "undefined") {
+    imageFormat = ImglyKit.ImageFormat.PNG;
   }
-
-  // Parse the dimensions
-  var imageDimensions = new ImageDimensions(this.options.image, dimensions);
 
   // Create a RenderImage
-  var renderImage = new RenderImage(this.operationsStack, imageDimensions);
+  var renderImage = new RenderImage(this._options.image, this.operationsStack, dimensions);
 
   // Initiate image rendering
-  return renderImage.render();
+  var self = this;
+  return renderImage.render()
+    .then(function () {
+      return ImageExporter.export(renderImage.getCanvas(), renderType, imageFormat);
+    });
 };
 
 /**
