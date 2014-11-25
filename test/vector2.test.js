@@ -120,6 +120,39 @@ describe("Vector2", function () {
 
   }); // #divide
 
+  describe("#multiply", function () {
+
+    it("should multiply the x and y values with the given values", function () {
+      var vec = new Vector2(100, 100);
+      vec.multiply(2, 5);
+      vec.x.should.equal(200);
+      vec.y.should.equal(500);
+    });
+
+    describe("when a vector is given", function () {
+
+      it("should multiply with the vector's values", function () {
+        var vec = new Vector2(100, 100);
+        vec.multiply(new Vector2(2, 5));
+        vec.x.should.equal(200);
+        vec.y.should.equal(500);
+      });
+
+    });
+
+    describe("when y is not given", function () {
+
+      it("should multiply x and y with the given single value", function () {
+        var vec = new Vector2(100, 100);
+        vec.multiply(2);
+        vec.x.should.equal(200);
+        vec.y.should.equal(200);
+      });
+
+    });
+
+  }); // #multiply
+
   describe("#subtract", function () {
 
     it("should subtract the given values", function () {
