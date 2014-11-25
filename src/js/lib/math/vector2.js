@@ -114,6 +114,23 @@ Vector2.prototype.subtract = function(subtrahend, y) {
 };
 
 /**
+ * Multiplies the given Vector2 / number with this vector
+ * @param  {(number|Vector2)} subtrahend
+ * @param  {number} [y]
+ * @return {Vector2}
+ */
+Vector2.prototype.multiply = function(factor, y) {
+  if (factor instanceof Vector2) {
+    this.x *= factor.x;
+    this.y *= factor.y;
+  } else {
+    this.x *= factor;
+    this.y *= (typeof y === "undefined" ? factor : y);
+  }
+  return this;
+};
+
+/**
  * Adds the given Vector2 / numbers to this vector
  * @param {(number|Vector2)} addend
  * @param {number} [y]

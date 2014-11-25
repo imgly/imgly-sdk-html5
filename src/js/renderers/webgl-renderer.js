@@ -7,26 +7,16 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
+var Renderer = require("./renderer");
 
 /**
  * @class
  * @alias ImglyKit.WebGLRenderer
  * @param {Canvas} canvas
  * @param {CanvasRenderingContext3D} context
+ * @extends {ImglyKit.Renderer}
  * @private
  */
-function WebGLRenderer(canvas, context) {
-  /**
-   * @type {Canvas}
-   * @private
-   */
-  this._canvas = canvas;
-
-  /**
-   * @type {CanvasRenderingContext3D}
-   * @private
-   */
-  this._context = context;
-}
+var WebGLRenderer = Renderer.extend({});
 
 module.exports = WebGLRenderer;

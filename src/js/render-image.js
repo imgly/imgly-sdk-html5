@@ -65,7 +65,7 @@ function RenderImage(image, operationsStack, dimensions) {
    * @type {ImglyKit.ImageDimensions}
    * @private
    */
-  this._dimensions = new ImageDimensions(this._image, dimensions);
+  this._dimensions = new ImageDimensions(dimensions);
 
   /**
    * @type {Vector2}
@@ -110,8 +110,13 @@ RenderImage.prototype._initCanvas = function() {
  * @return {Promise}
  */
 RenderImage.prototype.render = function() {
+  var self = this;
   return bluebird.map(this._stack, function (operation) {
-    return operation.render(this._renderer);
+    return operation.render(self._renderer);
+  }).then(function () {
+    return null;
+    // var finalDimensions = self._dimensions.calculateFinalDimensions(self._renderer.getSize());
+    // console.log(finalDimensions);
   });
 };
 

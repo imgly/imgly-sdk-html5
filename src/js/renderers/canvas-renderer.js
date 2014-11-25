@@ -7,27 +7,17 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
+var Renderer = require("./renderer");
 
 /**
  * @class
  * @alias ImglyKit.CanvasRenderer
  * @param {Canvas} canvas
  * @param {CanvasRenderingContext2D} context
+ * @extends {ImglyKit.Renderer}
  * @private
  */
-function CanvasRenderer(canvas, context) {
-  /**
-   * @type {Canvas}
-   * @private
-   */
-  this._canvas = canvas;
-
-  /**
-   * @type {CanvasRenderingContext2D}
-   * @private
-   */
-  this._context = context;
-}
+var CanvasRenderer = Renderer.extend({});
 
 /**
  * Draws the given image on the canvas
