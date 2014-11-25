@@ -15,6 +15,7 @@ var WebGLRenderer = require("./renderers/webgl-renderer");
 
 // Load canvas in non-browser environments
 var Canvas, isBrowser = true;
+/* istanbul ignore next */
 if (typeof window === "undefined") {
   Canvas = require("canvas");
   isBrowser = false;

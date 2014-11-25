@@ -55,6 +55,19 @@ describe("ImageDimensions", function () {
 
   describe("#calculateFinalDimensions", function () {
 
+    describe("without any rules", function () {
+
+      it("should return the initial dimensions", function () {
+
+        dimensions = new ImageDimensions();
+        calculatedDimensions = dimensions.calculateFinalDimensions(initialDimensions);
+        calculatedDimensions.x.should.equal(initialDimensions.x);
+        calculatedDimensions.y.should.equal(initialDimensions.y);
+
+      });
+
+    });
+
     describe("with a fixed size like \"100x200!\"", function () {
 
       it("should return the fixed dimensions", function () {

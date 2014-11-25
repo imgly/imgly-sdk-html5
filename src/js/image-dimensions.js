@@ -93,6 +93,7 @@ ImageDimensions.prototype.calculateFinalDimensions = function(initialDimensions)
 
   if (this._rules === null) return dimensions;
 
+  /* istanbul ignore else */
   if (this._rules.modifier === this._modifiers.FIXED) {
     // Fixed dimensions
     dimensions.set(this._rules.x, this._rules.y);
