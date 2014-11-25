@@ -82,7 +82,7 @@ function RenderImage(image, operationsStack, dimensions) {
  * @private
  */
 RenderImage.prototype._initCanvas = function() {
-  this._canvas = isBrowser ? document.createElement("canvas") : new Canvas();
+  this._canvas = isBrowser ? /* istanbul ignore next */ document.createElement("canvas") : new Canvas();
   this._canvas.width = this._initialDimensions.x;
   this._canvas.height = this._initialDimensions.y;
 
@@ -90,6 +90,7 @@ RenderImage.prototype._initCanvas = function() {
   this._context = this._canvas.getContext("webgl") ||
     this._canvas.getContext("webgl-experimental");
 
+  /* istanbul ignore else  */
   if (typeof this._context === "undefined") {
     // No WebGL support
     this._context = this._canvas.getContext("2d");

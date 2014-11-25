@@ -30,6 +30,17 @@ describe("ImglyKit", function () {
 
     });
 
+    describe("when options.image is not given", function () {
+
+      it("should throw an error", function () {
+        var throwable = function () {
+          new ImglyKit({});
+        };
+        throwable.should.throw();
+      });
+
+    });
+
     describe("when `options.container` is not set", function () {
 
       it("should not initialize the UI");

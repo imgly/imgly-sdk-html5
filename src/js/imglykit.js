@@ -86,7 +86,7 @@ ImglyKit.prototype._registerOperations = function () {
  */
 ImglyKit.prototype.render = function(renderType, imageFormat, dimensions) {
   // Validate RenderType
-  if (typeof renderType !== "undefined" &&
+  if ((typeof renderType !== "undefined" && renderType !== null) &&
     Utils.values(ImglyKit.RenderType).indexOf(renderType) === -1) {
     throw new Error("Invalid render type: " + renderType);
   } else if (typeof renderType === "undefined") {
@@ -94,7 +94,7 @@ ImglyKit.prototype.render = function(renderType, imageFormat, dimensions) {
   }
 
   // Validate ImageFormat
-  if (typeof imageFormat !== "undefined" &&
+  if ((typeof imageFormat !== "undefined" && imageFormat !== null) &&
     Utils.values(ImglyKit.ImageFormat).indexOf(imageFormat) === -1) {
     throw new Error("Invalid image format: " + imageFormat);
   } else if (typeof imageFormat === "undefined") {
@@ -105,7 +105,6 @@ ImglyKit.prototype.render = function(renderType, imageFormat, dimensions) {
   var renderImage = new RenderImage(this._options.image, this.operationsStack, dimensions);
 
   // Initiate image rendering
-  var self = this;
   return renderImage.render()
     .then(function () {
       return ImageExporter.export(renderImage.getCanvas(), renderType, imageFormat);

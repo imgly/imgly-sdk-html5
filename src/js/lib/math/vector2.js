@@ -20,10 +20,10 @@
 function Vector2(x, y) {
   this.x = x;
   this.y = y;
-  if (this.x === null) {
+  if (typeof this.x === "undefined") {
     this.x = 0;
   }
-  if (this.y === null) {
+  if (typeof this.y === "undefined") {
     this.y = 0;
   }
 }
@@ -66,9 +66,11 @@ Vector2.prototype.copy = function(other) {
  * @return {Vector2}
  */
 Vector2.prototype.clamp = function(minimum, maximum) {
+  /* istanbul ignore else  */
   if (!(minimum instanceof Vector2)) {
     minimum = new Vector2(minimum, minimum);
   }
+  /* istanbul ignore else  */
   if (!(maximum instanceof Vector2)) {
     maximum = new Vector2(maximum, maximum);
   }

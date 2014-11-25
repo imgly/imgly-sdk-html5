@@ -28,6 +28,7 @@ ImageExporter.export = function (canvas, renderType, imageFormat) {
   if (renderType == RenderType.IMAGE) {
     var image;
 
+    /* istanbul ignore else  */
     if (typeof window === "undefined") {
       // Not a browser environment
       var CanvasImage = require("canvas").Image;
