@@ -7,7 +7,10 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-var RenderType = require("./constants").RenderType;
+var Constants = require("./constants");
+var RenderType = Constants.RenderType;
+var ImageFormat = Constants.ImageFormat;
+var Utils = require("./lib/utils");
 
 /**
  * @class
@@ -15,6 +18,31 @@ var RenderType = require("./constants").RenderType;
  * @private
  */
 var ImageExporter = {};
+
+ImageExporter.validateSettings = function (renderType, imageFormat) {
+  var settings = {
+    renderType: renderType,
+    imageFormat: imageFormat
+  };
+
+  // Validate RenderType
+  if ((typeof settings.renderType !== "undefined" && settings.renderType !== null) &&
+    Utils.values(RenderType).indexOf(settings.renderType) === -1) {
+      throw new Error("Invalid render type: " + settings.renderType);
+  } else if (typeof renderType === "undefined") {
+    settings.renderType = RenderType.DATA_URL;
+  }
+
+  // Validate ImageFormat
+  if ((typeof settings.imageFormat !== "undefined" && settings.imageFormat !== null) &&
+    Utils.values(ImageFormat).indexOf(settings.imageFormat) === -1) {
+      throw new Error("Invalid image format: " + settings.imageFormat);
+  } else if (typeof imageFormat === "undefined") {
+    settings.imageFormat = ImageFormat.PNG;
+  }
+
+  return settings;
+};
 
 /**
  * Exports the image from the given canvas with the given options

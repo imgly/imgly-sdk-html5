@@ -85,21 +85,10 @@ ImglyKit.prototype._registerOperations = function () {
  * @return {Promise}
  */
 ImglyKit.prototype.render = function(renderType, imageFormat, dimensions) {
-  // Validate RenderType
-  if ((typeof renderType !== "undefined" && renderType !== null) &&
-    Utils.values(ImglyKit.RenderType).indexOf(renderType) === -1) {
-      throw new Error("Invalid render type: " + renderType);
-  } else if (typeof renderType === "undefined") {
-    renderType = ImglyKit.RenderType.DATA_URL;
-  }
+  var settings = ImageExporter.validateSettings(renderType, imageFormat);
 
-  // Validate ImageFormat
-  if ((typeof imageFormat !== "undefined" && imageFormat !== null) &&
-    Utils.values(ImglyKit.ImageFormat).indexOf(imageFormat) === -1) {
-      throw new Error("Invalid image format: " + imageFormat);
-  } else if (typeof imageFormat === "undefined") {
-    imageFormat = ImglyKit.ImageFormat.PNG;
-  }
+  renderType = settings.renderType;
+  imageFormat = settings.imageFormat;
 
   // Create a RenderImage
   var renderImage = new RenderImage(this._options.image, this.operationsStack, dimensions);
