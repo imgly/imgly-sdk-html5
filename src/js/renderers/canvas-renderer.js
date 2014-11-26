@@ -12,12 +12,30 @@ var Renderer = require("./renderer");
 /**
  * @class
  * @alias ImglyKit.CanvasRenderer
- * @param {Canvas} canvas
- * @param {CanvasRenderingContext2D} context
  * @extends {ImglyKit.Renderer}
  * @private
  */
 var CanvasRenderer = Renderer.extend({});
+
+/**
+ * Checks whether this type of renderer is supported in the current environment
+ * @abstract
+ * @returns {boolean}
+ */
+CanvasRenderer.isSupported = function () {
+  var elem = this.prototype._createCanvas();
+  return !!(elem.getContext && elem.getContext("2d"));
+};
+
+/**
+ * Gets the rendering context from the Canva
+ * @return {RenderingContext}
+ * @abstract
+ */
+CanvasRenderer.prototype._getContext = function() {
+  /* istanbul ignore next */
+  return this._canvas.getContext("2d");
+};
 
 /**
  * Draws the given image on the canvas
@@ -25,6 +43,15 @@ var CanvasRenderer = Renderer.extend({});
  */
 CanvasRenderer.prototype.drawImage = function(image) {
   this._context.drawImage(image, 0, 0);
+};
+
+/**
+ * Resizes the current canvas picture to the given dimensions
+ * @param  {Vector2} dimensions
+ * @return {Promise}
+ */
+CanvasRenderer.prototype.resizeTo = function(dimensions) {
+  // body...
 };
 
 module.exports = CanvasRenderer;

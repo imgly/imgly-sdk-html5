@@ -12,11 +12,29 @@ var Renderer = require("./renderer");
 /**
  * @class
  * @alias ImglyKit.WebGLRenderer
- * @param {Canvas} canvas
- * @param {CanvasRenderingContext3D} context
  * @extends {ImglyKit.Renderer}
  * @private
  */
 var WebGLRenderer = Renderer.extend({});
+
+/**
+ * Checks whether this type of renderer is supported in the current environment
+ * @abstract
+ * @returns {boolean}
+ */
+WebGLRenderer.isSupported = function () {
+  return !!(typeof window !== "undefined" && window.WebGLRenderingContext);
+};
+
+/**
+ * Gets the rendering context from the Canva
+ * @return {RenderingContext}
+ * @abstract
+ */
+WebGLRenderer.prototype._getContext = function() {
+  /* istanbul ignore next */
+  return this._canvas.getContext("webgl") ||
+    this._canvas.getContext("webgl-experimental");
+};
 
 module.exports = WebGLRenderer;

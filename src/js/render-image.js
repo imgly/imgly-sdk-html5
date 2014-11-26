@@ -13,14 +13,6 @@ var Vector2 = require("./lib/math/vector2");
 var CanvasRenderer = require("./renderers/canvas-renderer");
 var WebGLRenderer = require("./renderers/webgl-renderer");
 
-// Load canvas in non-browser environments
-var Canvas, isBrowser = true;
-/* istanbul ignore next */
-if (typeof window === "undefined") {
-  Canvas = require("canvas");
-  isBrowser = false;
-}
-
 /**
  * Handles the image rendering process
  * @class
@@ -34,21 +26,9 @@ function RenderImage(image, operationsStack, dimensions) {
   /**
    * @type {Boolean}
    * @private
-   * @default true
+   * @default false
    */
-  this._webglEnabled = true;
-
-  /**
-   * @type {Canvas}
-   * @private
-   */
-  this._canvas = null;
-
-  /**
-   * @type {CanvasRenderingContext2D|CanvasRenderingContext3D}
-   * @private
-   */
-  this._context = null;
+  this._webglEnabled = false;
 
   /**
    * @type {Image}
@@ -74,35 +54,27 @@ function RenderImage(image, operationsStack, dimensions) {
    */
   this._initialDimensions = new Vector2(this._image.width, this._image.height);
 
-  this._initCanvas();
+  this._initRenderer();
 }
 
 /**
- * Creates a canvas with the input image drawn on it
+ * Creates a renderer (canvas or webgl, depending on support)
  * @return {Promise}
  * @private
  */
-RenderImage.prototype._initCanvas = function() {
-  this._canvas = isBrowser ? /* istanbul ignore next */ document.createElement("canvas") : new Canvas();
-  this._canvas.width = this._initialDimensions.x;
-  this._canvas.height = this._initialDimensions.y;
-
-  // Detect WebGL support
-  this._context = this._canvas.getContext("webgl") ||
-    this._canvas.getContext("webgl-experimental");
-
-  /* istanbul ignore else  */
-  if (typeof this._context === "undefined") {
-    // No WebGL support
-    this._context = this._canvas.getContext("2d");
-    this._renderer = new CanvasRenderer(this._canvas, this._context);
+RenderImage.prototype._initRenderer = function() {
+  /* istanbul ignore else */
+  if (WebGLRenderer.isSupported()) {
+    this._renderer = new WebGLRenderer();
+    this._webglEnabled = true;
+  } else if (CanvasRenderer.isSupported()) {
+    this._renderer = new CanvasRenderer();
     this._webglEnabled = false;
   } else {
-    // WebGL support
-    this._renderer = new WebGLRenderer(this._canvas, this._context);
-    this._webglEnabled = true;
+    throw new Error("Neither Canvas nor WebGL renderer are supported.");
   }
 
+  this._renderer.setSize(this._initialDimensions);
   this._renderer.drawImage(this._image);
 };
 
@@ -115,18 +87,24 @@ RenderImage.prototype.render = function() {
   return bluebird.map(this._stack, function (operation) {
     return operation.render(self._renderer);
   }).then(function () {
-    return null;
-    // var finalDimensions = self._dimensions.calculateFinalDimensions(self._renderer.getSize());
-    // console.log(finalDimensions);
+    var initialSize = self._renderer.getSize();
+    var finalDimensions = self._dimensions.calculateFinalDimensions(initialSize);
+
+    if (finalDimensions.equals(initialSize)) {
+      // No need to resize
+      return;
+    }
+
+    return self._renderer.resizeTo(finalDimensions);
   });
 };
 
 /**
- * Returns the canvas
- * @return {Canvas}
+ * Returns the renderer
+ * @return {Renderer}
  */
-RenderImage.prototype.getCanvas = function() {
-  return this._canvas;
+RenderImage.prototype.getRenderer = function() {
+  return this._renderer;
 };
 
 module.exports = RenderImage;
