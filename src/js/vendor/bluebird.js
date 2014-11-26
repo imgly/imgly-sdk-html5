@@ -1,7 +1,7 @@
 /**
  * bluebird build version 2.3.11
- * Features enabled: core
- * Features disabled: race, call_get, generators, map, nodeify, promisify, props, reduce, settle, some, progress, cancel, using, filter, any, each, timers
+ * Features enabled: core, map
+ * Features disabled: race, call_get, generators, nodeify, promisify, props, reduce, settle, some, progress, cancel, using, filter, any, each, timers
 */
 /**
  * @preserve The MIT License (MIT)
@@ -142,7 +142,7 @@ Async.prototype._reset = function Async$_reset() {
 
 module.exports = new Async();
 
-},{"./queue.js":14,"./schedule.js":15,"./util.js":18}],2:[function(_dereq_,module,exports){
+},{"./queue.js":15,"./schedule.js":16,"./util.js":19}],2:[function(_dereq_,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -170,7 +170,7 @@ module.exports = new Async();
 "use strict";
 var Promise = _dereq_("./promise.js")();
 module.exports = Promise;
-},{"./promise.js":11}],3:[function(_dereq_,module,exports){
+},{"./promise.js":12}],3:[function(_dereq_,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -416,7 +416,7 @@ var captureStackTrace = (function stackDetection() {
 return CapturedTrace;
 };
 
-},{"./es5.js":8,"./util.js":18}],4:[function(_dereq_,module,exports){
+},{"./es5.js":8,"./util.js":19}],4:[function(_dereq_,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -514,7 +514,7 @@ CatchFilter.prototype.doFilter = function CatchFilter$_doFilter(e) {
 return CatchFilter;
 };
 
-},{"./errors.js":6,"./es5.js":8,"./util.js":18}],5:[function(_dereq_,module,exports){
+},{"./errors.js":6,"./es5.js":8,"./util.js":19}],5:[function(_dereq_,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -596,7 +596,7 @@ function Promise$thenThrow(reason) {
 };
 };
 
-},{"./util.js":18}],6:[function(_dereq_,module,exports){
+},{"./util.js":19}],6:[function(_dereq_,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -745,7 +745,7 @@ module.exports = {
     canAttach: canAttach
 };
 
-},{"./es5.js":8,"./util.js":18}],7:[function(_dereq_,module,exports){
+},{"./es5.js":8,"./util.js":19}],7:[function(_dereq_,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -1002,7 +1002,7 @@ Promise.prototype.tap = function Promise$tap(handler) {
 };
 };
 
-},{"./util.js":18}],10:[function(_dereq_,module,exports){
+},{"./util.js":19}],10:[function(_dereq_,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -1128,7 +1128,160 @@ Promise.join = function Promise$Join() {
 
 };
 
-},{"./util.js":18}],11:[function(_dereq_,module,exports){
+},{"./util.js":19}],11:[function(_dereq_,module,exports){
+/**
+ * The MIT License (MIT)
+ * 
+ * Copyright (c) 2014 Petka Antonov
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:</p>
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ * 
+ */
+"use strict";
+module.exports = function(Promise, PromiseArray, apiRejection, cast, INTERNAL) {
+var util = _dereq_("./util.js");
+var tryCatch3 = util.tryCatch3;
+var errorObj = util.errorObj;
+var PENDING = {};
+var EMPTY_ARRAY = [];
+
+function MappingPromiseArray(promises, fn, limit, _filter) {
+    this.constructor$(promises);
+    this._callback = fn;
+    this._preservedValues = _filter === INTERNAL
+        ? new Array(this.length())
+        : null;
+    this._limit = limit;
+    this._inFlight = 0;
+    this._queue = limit >= 1 ? [] : EMPTY_ARRAY;
+    this._init$(void 0, -2);
+}
+util.inherits(MappingPromiseArray, PromiseArray);
+
+MappingPromiseArray.prototype._init = function MappingPromiseArray$_init() {};
+
+MappingPromiseArray.prototype._promiseFulfilled =
+function MappingPromiseArray$_promiseFulfilled(value, index) {
+    var values = this._values;
+    if (values === null) return;
+
+    var length = this.length();
+    var preservedValues = this._preservedValues;
+    var limit = this._limit;
+    if (values[index] === PENDING) {
+        values[index] = value;
+        if (limit >= 1) {
+            this._inFlight--;
+            this._drainQueue();
+            if (this._isResolved()) return;
+        }
+    } else {
+        if (limit >= 1 && this._inFlight >= limit) {
+            values[index] = value;
+            this._queue.push(index);
+            return;
+        }
+        if (preservedValues !== null) preservedValues[index] = value;
+
+        var callback = this._callback;
+        var receiver = this._promise._boundTo;
+        var ret = tryCatch3(callback, receiver, value, index, length);
+        if (ret === errorObj) return this._reject(ret.e);
+
+        var maybePromise = cast(ret, void 0);
+        if (maybePromise instanceof Promise) {
+            if (maybePromise.isPending()) {
+                if (limit >= 1) this._inFlight++;
+                values[index] = PENDING;
+                return maybePromise._proxyPromiseArray(this, index);
+            } else if (maybePromise.isFulfilled()) {
+                ret = maybePromise.value();
+            } else {
+                maybePromise._unsetRejectionIsUnhandled();
+                return this._reject(maybePromise.reason());
+            }
+        }
+        values[index] = ret;
+    }
+    var totalResolved = ++this._totalResolved;
+    if (totalResolved >= length) {
+        if (preservedValues !== null) {
+            this._filter(values, preservedValues);
+        } else {
+            this._resolve(values);
+        }
+
+    }
+};
+
+MappingPromiseArray.prototype._drainQueue =
+function MappingPromiseArray$_drainQueue() {
+    var queue = this._queue;
+    var limit = this._limit;
+    var values = this._values;
+    while (queue.length > 0 && this._inFlight < limit) {
+        var index = queue.pop();
+        this._promiseFulfilled(values[index], index);
+    }
+};
+
+MappingPromiseArray.prototype._filter =
+function MappingPromiseArray$_filter(booleans, values) {
+    var len = values.length;
+    var ret = new Array(len);
+    var j = 0;
+    for (var i = 0; i < len; ++i) {
+        if (booleans[i]) ret[j++] = values[i];
+    }
+    ret.length = j;
+    this._resolve(ret);
+};
+
+MappingPromiseArray.prototype.preservedValues =
+function MappingPromiseArray$preserveValues() {
+    return this._preservedValues;
+};
+
+function map(promises, fn, options, _filter) {
+    var limit = typeof options === "object" && options !== null
+        ? options.concurrency
+        : 0;
+    limit = typeof limit === "number" &&
+        isFinite(limit) && limit >= 1 ? limit : 0;
+    return new MappingPromiseArray(promises, fn, limit, _filter);
+}
+
+Promise.prototype.map = function Promise$map(fn, options) {
+    if (typeof fn !== "function") return apiRejection("fn must be a function");
+
+    return map(this, fn, options, null).promise();
+};
+
+Promise.map = function Promise$Map(promises, fn, options, _filter) {
+    if (typeof fn !== "function") return apiRejection("fn must be a function");
+    return map(promises, fn, options, _filter).promise();
+};
+
+
+};
+
+},{"./util.js":19}],12:[function(_dereq_,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -2203,13 +2356,14 @@ Promise.AggregateError = errors.AggregateError;
 util.toFastProperties(Promise);
 util.toFastProperties(Promise.prototype);
 Promise.Promise = Promise;
+_dereq_('./map.js')(Promise,PromiseArray,apiRejection,cast,INTERNAL);
 
 Promise.prototype = Promise.prototype;
 return Promise;
 
 };
 
-},{"./async.js":1,"./captured_trace.js":3,"./catch_filter.js":4,"./direct_resolve.js":5,"./errors.js":6,"./errors_api_rejection":7,"./finally.js":9,"./join.js":10,"./promise_array.js":12,"./promise_resolver.js":13,"./synchronous_inspection.js":16,"./thenables.js":17,"./util.js":18}],12:[function(_dereq_,module,exports){
+},{"./async.js":1,"./captured_trace.js":3,"./catch_filter.js":4,"./direct_resolve.js":5,"./errors.js":6,"./errors_api_rejection":7,"./finally.js":9,"./join.js":10,"./map.js":11,"./promise_array.js":13,"./promise_resolver.js":14,"./synchronous_inspection.js":17,"./thenables.js":18,"./util.js":19}],13:[function(_dereq_,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -2415,7 +2569,7 @@ function PromiseArray$getActualLength(len) {
 return PromiseArray;
 };
 
-},{"./errors.js":6,"./util.js":18}],13:[function(_dereq_,module,exports){
+},{"./errors.js":6,"./util.js":19}],14:[function(_dereq_,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -2577,7 +2731,7 @@ function PromiseResolver$_setCarriedStackTrace(trace) {
 
 module.exports = PromiseResolver;
 
-},{"./async.js":1,"./errors.js":6,"./es5.js":8,"./util.js":18}],14:[function(_dereq_,module,exports){
+},{"./async.js":1,"./errors.js":6,"./es5.js":8,"./util.js":19}],15:[function(_dereq_,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -2696,7 +2850,7 @@ Queue.prototype._resizeTo = function Queue$_resizeTo(capacity) {
 
 module.exports = Queue;
 
-},{}],15:[function(_dereq_,module,exports){
+},{}],16:[function(_dereq_,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -2761,7 +2915,7 @@ else if (typeof setTimeout !== "undefined") {
 else throw new Error("no async scheduler available");
 module.exports = schedule;
 
-},{}],16:[function(_dereq_,module,exports){
+},{}],17:[function(_dereq_,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -2841,7 +2995,7 @@ Promise.prototype.isResolved = function Promise$isResolved() {
 Promise.PromiseInspection = PromiseInspection;
 };
 
-},{}],17:[function(_dereq_,module,exports){
+},{}],18:[function(_dereq_,module,exports){
 /**
  * The MIT License (MIT)
  * 
@@ -2978,7 +3132,7 @@ function Promise$_doThenable(x, then, originalPromise) {
 return Promise$_Cast;
 };
 
-},{"./errors.js":6,"./util.js":18}],18:[function(_dereq_,module,exports){
+},{"./errors.js":6,"./util.js":19}],19:[function(_dereq_,module,exports){
 /**
  * The MIT License (MIT)
  * 

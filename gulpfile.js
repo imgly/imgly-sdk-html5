@@ -112,11 +112,13 @@ gulp.task("jsdoc", function () {
  * a source file has been changed.
  */
 gulp.task("browserify", function () {
-  var input = "./src/js/imglykit.js";
+  var input = "./index.js";
   var output = "js/imglykit.js";
 
   // Initialize browserify
-  var b = browserify(watchify.args);
+  var args = watchify.args;
+  args.fullPaths = false;
+  var b = browserify(args);
   b.add(input);
 
   // Make sure to use watchify in development
@@ -130,6 +132,8 @@ gulp.task("browserify", function () {
     }
     bundler.require(external.require, options);
   });
+
+  bundler.external("canvas");
 
   // Creates the bundle
   function rebundle() {
@@ -208,7 +212,7 @@ gulp.task("release", function () {
     "build:copy",
     "build:js",
     "build:css",
-    "uglify:all",
+    "uglify:js",
     "cssmin:minify"
   );
 });
