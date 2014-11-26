@@ -93,19 +93,26 @@ RenderImage.prototype._initRenderer = function() {
  */
 RenderImage.prototype.render = function() {
   var self = this;
-  return bluebird.map(this._stack, function (operation) {
-    return operation.render(self._renderer);
-  }).then(function () {
-    var initialSize = self._renderer.getSize();
-    var finalDimensions = self._dimensions.calculateFinalDimensions(initialSize);
+  return bluebird
+    .map(this._stack, function (operation) {
+      return operation.validateSettings();
+    })
+    .then(function () {
+      return bluebird.map(self._stack, function (operation) {
+        return operation.render(self._renderer);
+      });
+    })
+    .then(function () {
+      var initialSize = self._renderer.getSize();
+      var finalDimensions = self._dimensions.calculateFinalDimensions(initialSize);
 
-    if (finalDimensions.equals(initialSize)) {
-      // No need to resize
-      return;
-    }
+      if (finalDimensions.equals(initialSize)) {
+        // No need to resize
+        return;
+      }
 
-    return self._renderer.resizeTo(finalDimensions);
-  });
+      return self._renderer.resizeTo(finalDimensions);
+    });
 };
 
 /**

@@ -8,45 +8,57 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+/**
+ * Helper function to correctly set up the prototype chain
+ * Based on the backbone.js extend function:
+ * https://github.com/jashkenas/backbone/blob/master/backbone.js
+ * @param  {Object} prototypeProperties
+ * @param  {Object} classProperties
+ * @return {Object}
+ */
 module.exports = function(prototypeProperties, classProperties) {
   /*jshint validthis:true*/
   var parent = this;
-  var name, prop;
+  var child;
 
-  if (typeof classProperties === "undefined") {
-    classProperties = {};
+  // The constructor function for the new subclass is either defined by you
+  // (the "constructor" property in your `extend` definition), or defaulted
+  // by us to simply call the parent's constructor.
+  if (prototypeProperties &&
+    prototypeProperties.hasOwnProperty("constructor")) {
+      child = prototypeProperties.constructor;
+  } else {
+    child = function(){ return parent.apply(this, arguments); };
   }
 
-  // Constructor
-  function child() {
-    parent.apply(this, arguments);
+  // Add static properties to the constructor function, if supplied.
+  var key;
+  for (key in parent) {
+    child[key] = parent[key];
+  }
+  if (typeof classProperties !== "undefined") {
+    for (key in classProperties) {
+      child[key] = classProperties[key];
+    }
   }
 
-  // Copy static properties
-  for (name in parent) {
-    prop = parent[name];
-    child[name] = prop;
-  }
-
-  // Inherit from parent while avoiding that the
-  // parent's constructor is called
-  function Surrogate() {
-    this.constructor = child;
-  }
+  // Set the prototype chain to inherit from `parent`, without calling
+  // `parent`'s constructor function.
+  var Surrogate = function(){ this.constructor = child; };
   Surrogate.prototype = parent.prototype;
   child.prototype = new Surrogate();
 
-  // Copy prototype properties
-  for (name in prototypeProperties) {
-    prop = prototypeProperties[name];
-    child.prototype[name] = prop;
+  // Add prototype properties (instance properties) to the subclass,
+  // if supplied.
+  if (prototypeProperties) {
+    for (key in prototypeProperties) {
+      child.prototype[key] = prototypeProperties[key];
+    }
   }
 
-  // Copy class properties
-  for (name in classProperties) {
-    prop = classProperties[name];
-    child[name] = prop;
-  }
+  // Set a convenience property in case the parent's prototype is needed
+  // later.
+  child.__super__ = parent.prototype;
 
   return child;
 };

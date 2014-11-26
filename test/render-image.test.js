@@ -117,7 +117,7 @@ describe("RenderImage", function () {
      * Rendering
      */
 
-    describe.only("rendering", function () {
+    describe("rendering", function () {
 
       describe("dimensions", function () {
 
@@ -138,16 +138,16 @@ describe("RenderImage", function () {
       describe("operations", function () {
 
         it("should call the operation's #render method", function (done) {
-          // Create filterOperation and stub #render
-          var filterOperation = new ImglyKit.Operations.FiltersOperation(kit);
-          sinon.stub(filterOperation, "render");
+          // Create cropOperation and stub #render
+          var cropOperation = new ImglyKit.Operations.CropOperation(kit);
+          sinon.stub(cropOperation, "render");
 
           // Make sure the operation is used
-          kit.operationsStack.push(filterOperation);
+          kit.operationsStack.push(cropOperation);
 
           kit.render()
             .then(function () {
-              filterOperation.render.calledOnce.should.equal(true);
+              cropOperation.render.calledOnce.should.equal(true);
               done();
             });
         });

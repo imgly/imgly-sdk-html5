@@ -18,9 +18,48 @@ var Operation = require("./operation");
  * @extends ImglyKit.Operation
  */
 var FiltersOperation = Operation.extend({
+  constructor: function (renderer, options) {
+    Operation.apply(this, arguments);
 
-}, {
-  identifier: "filters"
+    if (typeof options === "undefined") {
+      options = {};
+    }
+
+    /**
+     * The selected filter
+     * @type {class}
+     * @private
+     */
+    this._selectedFilter = options.filter;
+  }
 });
+
+/**
+ * A unique string that identifies this operation. Can be used to select
+ * operations.
+ * @type {String}
+ */
+FiltersOperation.identifier = "filters";
+
+/**
+ * Checks whether this Operation can be applied the way it is configured
+ * @return {boolean}
+ */
+FiltersOperation.prototype.validateSettings = function() {
+  // Did the user select a filter?
+  /* istanbul ignore else */
+  if (typeof this._selectedFilter === "undefined") {
+    throw new Error("FiltersOperation: Need to select a filter.");
+  }
+};
+
+/**
+ * Renders the filter
+ * @param  {Renderer} renderer
+ * @return {Promise}
+ */
+FiltersOperation.prototype.render = function(renderer) {
+
+};
 
 module.exports = FiltersOperation;

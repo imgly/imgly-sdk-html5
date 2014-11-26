@@ -1,3 +1,4 @@
+/* jshint unused:false */
 "use strict";
 /*!
  * Copyright (c) 2013-2014 9elements GmbH
@@ -16,6 +17,18 @@
 function Operation(kit) {
   this.kit = kit;
 }
+
+/**
+ * A unique string that identifies this operation. Can be used to select
+ * operations.
+ * @type {String}
+ */
+Operation.identifier = null;
+
+/**
+ * Checks whether this Operation can be applied the way it is configured
+ */
+Operation.prototype.validateSettings = function() {};
 
 /**
  * Applies this operation
