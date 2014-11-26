@@ -28,85 +28,118 @@ describe("RenderImage", function () {
       kit = new ImglyKit({ image: image });
     });
 
-    /**
-     * RenderType
-     */
+    describe("validations", function () {
 
-    describe("RenderType", function () {
+      /**
+       * RenderType
+       */
 
-      describe("when none is given", function () {
+      describe("RenderType", function () {
 
-        it("should render to a data url", function (done) {
-          kit.render()
-            .then(function (result) {
-              result.should.be.type("string");
-              result.should.startWith("data:");
-              done();
-            });
+        describe("when none is given", function () {
+
+          it("should render to a data url", function (done) {
+            kit.render()
+              .then(function (result) {
+                result.should.be.type("string");
+                result.should.startWith("data:");
+                done();
+              });
+          });
+
         });
 
-      });
+        describe("when set to ImglyKit.RenderType.IMAGE", function () {
 
-      describe("when set to ImglyKit.RenderType.IMAGE", function () {
+          it("should render to an image", function (done) {
+            kit.render(ImglyKit.RenderType.IMAGE)
+              .then(function (result) {
+                result.should.be.an.instanceOf(canvas.Image);
+                done();
+              });
+          });
 
-        it("should render to an image", function (done) {
-          kit.render(ImglyKit.RenderType.IMAGE)
-            .then(function (result) {
-              result.should.be.an.instanceOf(canvas.Image);
-              done();
-            });
         });
 
-      });
+        describe("when set to ImglyKit.RenderType.DATA_URL", function () {
 
-      describe("when set to ImglyKit.RenderType.DATA_URL", function () {
+          it("should render to a data url", function (done) {
+            kit.render(ImglyKit.RenderType.DATA_URL)
+              .then(function (result) {
+                result.should.be.type("string");
+                result.should.startWith("data:");
+                done();
+              });
+          });
 
-        it("should render to a data url", function (done) {
-          kit.render(ImglyKit.RenderType.DATA_URL)
-            .then(function (result) {
-              result.should.be.type("string");
-              result.should.startWith("data:");
-              done();
-            });
         });
 
-      });
+      }); // RenderType
 
-    }); // RenderType
+      /**
+       * ImageFormat
+       */
 
-    /**
-     * ImageFormat
-     */
+      describe("ImageFormat", function () {
 
-    describe("ImageFormat", function () {
+        describe("when none is given", function () {
 
-      describe("when none is given", function () {
+          it("should render as PNG", function (done) {
+            kit.render(ImglyKit.RenderType.DATA_URL)
+              .then(function (result) {
+                result.should.be.type("string");
+                result.should.startWith("data:image/png");
+                done();
+              });
+          });
 
-        it("should render as PNG", function (done) {
-          kit.render(ImglyKit.RenderType.DATA_URL)
-            .then(function (result) {
-              result.should.be.type("string");
-              result.should.startWith("data:image/png");
-              done();
-            });
         });
 
-      });
+        describe("when set to ImglyKit.ImageFormat.PNG", function () {
 
-      describe("when set to ImglyKit.ImageFormat.PNG", function () {
+          it("should render as PNG", function (done) {
+            kit.render(ImglyKit.RenderType.DATA_URL)
+              .then(function (result) {
+                result.should.be.type("string");
+                result.should.startWith("data:image/png");
+                done();
+              });
+          });
 
-        it("should render as PNG", function (done) {
-          kit.render(ImglyKit.RenderType.DATA_URL)
-            .then(function (result) {
-              result.should.be.type("string");
-              result.should.startWith("data:image/png");
-              done();
-            });
         });
 
       });
 
     });
+
+    /**
+     * Rendering
+     */
+
+    describe("rendering", function () {
+
+      describe("dimensions", function () {
+
+        it("should resize the result to the requested size", function (done) {
+          kit.render(ImglyKit.RenderType.IMAGE, null, "100x100!")
+            .then(function (result) {
+              result.width.should.equal(100);
+              result.height.should.equal(100);
+              done();
+            })
+            .catch(function (err) {
+              done(err);
+            });
+        });
+
+      });
+
+      describe("operations", function () {
+
+      });
+
+    });
+
 
   }); // #render
 

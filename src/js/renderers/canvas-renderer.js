@@ -51,7 +51,24 @@ CanvasRenderer.prototype.drawImage = function(image) {
  * @return {Promise}
  */
 CanvasRenderer.prototype.resizeTo = function(dimensions) {
-  // body...
+  // Create a temporary canvas to draw to
+  var newCanvas = this._createCanvas();
+  newCanvas.width = dimensions.x;
+  newCanvas.height = dimensions.y;
+  var newContext = newCanvas.getContext("2d");
+
+  // Draw the source canvas onto the new one
+  newContext.drawImage(this._canvas,
+    0, 0,
+    this._canvas.width,
+    this._canvas.height,
+    0, 0,
+    newCanvas.width,
+    newCanvas.height);
+
+  // Set the new canvas and context
+  this._canvas = newCanvas;
+  this._context = newContext;
 };
 
 module.exports = CanvasRenderer;
