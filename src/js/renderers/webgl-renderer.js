@@ -8,6 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 var Renderer = require("./renderer");
+var Utils = require("../lib/utils");
 
 /**
  * @class
@@ -23,16 +24,18 @@ var WebGLRenderer = Renderer.extend({});
  * @type {String}
  * @private
  */
-WebGLRenderer.defaultVertexShader = [
-  "attribute vec2 a_position;",
-  "attribute vec2 a_texCoord;",
-  "varying vec2 v_texCoord;",
+WebGLRenderer.defaultVertexShader = Utils.shaderString(function() {/**
 
-  "void main() {",
-  "  gl_Position = vec4(a_position, 0, 1);",
-  "  v_texCoord = a_texCoord;",
-  "}"
-].join("\n");
+  attribute vec2 a_position;
+  attribute vec2 a_texCoord;
+  varying vec2 v_texCoord;
+
+  void main() {
+    gl_Position = vec4(a_position, 0, 1);
+    v_texCoord = a_texCoord;
+  }
+
+*/});
 
 /**
  * The default fragment shader which will just look up the colors from the
@@ -40,15 +43,17 @@ WebGLRenderer.defaultVertexShader = [
  * @type {String}
  * @private
  */
-WebGLRenderer.defaultFragmentShader = [
-  "precision mediump float;",
-  "uniform sampler2D u_image;",
-  "varying vec2 v_texCoord;",
+WebGLRenderer.defaultFragmentShader = Utils.shaderString(function() {/*
 
-  "void main() {",
-  "  gl_FragColor = texture2D(u_image, v_texCoord);",
-  "}"
-].join("\n");
+  precision mediump float;
+  uniform sampler2D u_image;
+  varying vec2 v_texCoord;
+
+  void main() {
+    gl_FragColor = texture2D(u_image, v_texCoord);
+  }
+
+*/});
 
 /**
  * Checks whether this type of renderer is supported in the current environment
@@ -136,6 +141,39 @@ WebGLRenderer.prototype.drawImage = function(image) {
 };
 
 /**
+ * Runs the given shader
+ * @param  {String} [vertexShader]
+ * @param  {String} [fragmentShader]
+ */
+WebGLRenderer.prototype.runShader = function(vertexShader, fragmentShader) {
+  var gl = this._context;
+  var program = this.setupGLSLProgram(vertexShader, fragmentShader);
+  gl.useProgram(program);
+
+  var positionLocation = gl.getAttribLocation(program, "a_position");
+
+  // Create a buffer for the rectangle positions
+  var buffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  gl.enableVertexAttribArray(positionLocation);
+  gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+    // First triangle
+    -1.0, -1.0,
+     1.0, -1.0,
+    -1.0,  1.0,
+
+    // Second triangle
+    -1.0,  1.0,
+     1.0, -1.0,
+     1.0,  1.0
+  ]), gl.STATIC_DRAW);
+
+  // Draw the rectangle
+  gl.drawArrays(gl.TRIANGLES, 0, 6);
+};
+
+/**
  * Sets up a GLSL program. Uses the default vertex and fragment shader
  * if none are given.
  * @param {String} [vertexShader]
@@ -147,15 +185,11 @@ WebGLRenderer.prototype.setupGLSLProgram = function(vertexShader, fragmentShader
   var shaders = [];
 
   // Use default vertex shader
-  if (typeof vertexShader === "undefined" || vertexShader === null) {
-    vertexShader = this._createShader(gl.VERTEX_SHADER, WebGLRenderer.defaultVertexShader);
-  }
+  vertexShader = this._createShader(gl.VERTEX_SHADER, vertexShader || WebGLRenderer.defaultVertexShader);
   shaders.push(vertexShader);
 
   // Use default fragment shader
-  if (typeof fragmentShader === "undefined" || fragmentShader === null) {
-    fragmentShader = this._createShader(gl.FRAGMENT_SHADER, WebGLRenderer.defaultFragmentShader);
-  }
+  fragmentShader = this._createShader(gl.FRAGMENT_SHADER, fragmentShader || WebGLRenderer.defaultFragmentShader);
   shaders.push(fragmentShader);
 
   // Create the program

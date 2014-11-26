@@ -70,7 +70,7 @@ FiltersOperation.prototype.validateSettings = function() {
  * @return {Promise}
  */
 FiltersOperation.prototype.render = function(renderer) {
-
+  this._selectedFilter.render(renderer);
 };
 
 /**
@@ -78,11 +78,12 @@ FiltersOperation.prototype.render = function(renderer) {
  * @param  {String} identifier
  */
 FiltersOperation.prototype.selectFilter = function(identifier) {
-  if (typeof this._filters[identifier] === "undefined") {
+  var Filter = this._filters[identifier];
+  if (typeof Filter === "undefined") {
     throw new Error("FiltersOperation: Unknown filter \"" + identifier + "\".");
   }
 
-  this._selectedFilter = this._filters[identifier];
+  this._selectedFilter = new Filter();
 };
 
 /**
