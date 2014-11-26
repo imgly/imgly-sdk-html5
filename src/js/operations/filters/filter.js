@@ -31,4 +31,14 @@ Filter.identifier = null;
  */
 Filter.extend = require("../../lib/extend");
 
+/**
+ * Renders the filter
+ * @param  {Renderer} renderer
+ * @return {Promise}
+ */
+Filter.prototype.render = function(renderer) {
+  /* istanbul ignore next */
+  throw new Error("Filter#render is abstract and not implemented in inherited class.");
+};
+
 module.exports = Filter;
