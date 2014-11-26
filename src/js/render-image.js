@@ -71,10 +71,10 @@ function RenderImage(image, operationsStack, dimensions) {
 RenderImage.prototype._initRenderer = function() {
   /* istanbul ignore if */
   if (WebGLRenderer.isSupported()) {
-    this._renderer = new WebGLRenderer();
+    this._renderer = new WebGLRenderer(this._initialDimensions);
     this._webglEnabled = true;
   } else if (CanvasRenderer.isSupported()) {
-    this._renderer = new CanvasRenderer();
+    this._renderer = new CanvasRenderer(this._initialDimensions);
     this._webglEnabled = false;
   }
 
@@ -83,7 +83,6 @@ RenderImage.prototype._initRenderer = function() {
     throw new Error("Neither Canvas nor WebGL renderer are supported.");
   }
 
-  this._renderer.setSize(this._initialDimensions);
   this._renderer.drawImage(this._image);
 };
 

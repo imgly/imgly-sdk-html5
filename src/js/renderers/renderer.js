@@ -13,14 +13,17 @@ var Vector2 = require("../lib/math/vector2");
 /**
  * @class
  * @alias ImglyKit.Renderer
+ * @param {Vector2} dimensions
  * @private
  */
-function Renderer() {
+function Renderer(dimensions) {
   /**
    * @type {Canvas}
    * @private
    */
   this._canvas = this._createCanvas();
+
+  this.setSize(dimensions);
 
   /**
    * @type {RenderingContext}
