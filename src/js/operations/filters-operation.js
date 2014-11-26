@@ -30,7 +30,18 @@ var FiltersOperation = Operation.extend({
      * @type {class}
      * @private
      */
-    this._selectedFilter = options.filter;
+    this._selectedFilter = null;
+
+    /**
+     * The registered filters
+     * @type {Object.<string, class>}
+     */
+    this._filters = {};
+    this._registerFilters();
+
+    if (typeof options.filter !== "undefined") {
+      this.selectFilter(options.filter);
+    }
   }
 });
 
@@ -48,7 +59,7 @@ FiltersOperation.identifier = "filters";
 FiltersOperation.prototype.validateSettings = function() {
   // Did the user select a filter?
   /* istanbul ignore else */
-  if (typeof this._selectedFilter === "undefined") {
+  if (this._selectedFilter === null) {
     throw new Error("FiltersOperation: Need to select a filter.");
   }
 };
@@ -60,6 +71,35 @@ FiltersOperation.prototype.validateSettings = function() {
  */
 FiltersOperation.prototype.render = function(renderer) {
 
+};
+
+/**
+ * Sets the selected filter by the given identifier
+ * @param  {String} identifier
+ */
+FiltersOperation.prototype.selectFilter = function(identifier) {
+  if (typeof this._filters[identifier] === "undefined") {
+    throw new Error("FiltersOperation: Unknown filter \"" + identifier + "\".");
+  }
+
+  this._selectedFilter = this._filters[identifier];
+};
+
+/**
+ * Registers all the known filters
+ * @private
+ */
+FiltersOperation.prototype._registerFilters = function() {
+  this._registerFilter(require("./filters/k1-filter"));
+};
+
+/**
+ * Registers the given filter
+ * @param  {class} filter
+ * @private
+ */
+FiltersOperation.prototype._registerFilter = function(filter) {
+  this._filters[filter.identifier] = filter;
 };
 
 module.exports = FiltersOperation;
