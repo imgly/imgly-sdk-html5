@@ -31,6 +31,12 @@ function RenderImage(image, operationsStack, dimensions) {
   this._webglEnabled = false;
 
   /**
+   * @type {Renderer}
+   * @private
+   */
+  this._renderer = null;
+
+  /**
    * @type {Image}
    * @private
    */
@@ -63,14 +69,17 @@ function RenderImage(image, operationsStack, dimensions) {
  * @private
  */
 RenderImage.prototype._initRenderer = function() {
-  /* istanbul ignore else */
+  /* istanbul ignore if */
   if (WebGLRenderer.isSupported()) {
     this._renderer = new WebGLRenderer();
     this._webglEnabled = true;
   } else if (CanvasRenderer.isSupported()) {
     this._renderer = new CanvasRenderer();
     this._webglEnabled = false;
-  } else {
+  }
+
+  /* istanbul ignore if */
+  if (this._renderer === null) {
     throw new Error("Neither Canvas nor WebGL renderer are supported.");
   }
 
