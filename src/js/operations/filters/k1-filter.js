@@ -9,7 +9,6 @@
  */
 
 var Filter = require("./filter");
-var Utils = require("../../lib/utils");
 
 /**
  * K1 Filter
@@ -32,20 +31,25 @@ K1Filter.identifier = "k1";
  * @return {Promise}
  */
 K1Filter.prototype.render = function(renderer) {
-  var fragmentShader = Utils.shaderString(function() {/*
+  var stack = new Filter.PrimitivesStack();
 
-    precision mediump float;
-    varying vec2 v_texCoord;
-    uniform sampler2D u_image;
+  // Tone curve
+  // stack.add(new Filter.Primitives.ToneCurve({
+  //   controlPoints: [
+  //     [0, 0],
+  //     [53 / 255, 32 / 255],
+  //     [91 / 255, 80 / 255],
+  //     [176 / 255, 205 / 255],
+  //     [0, 205 / 255]
+  //   ]
+  // }));
 
-    void main() {
-      vec4 texColor = texture2D(u_image, v_texCoord);
-      gl_FragColor = vec4((texColor.rgb + vec3(0.2)), texColor.a);
-    }
+  // Saturation
+  stack.add(new Filter.Primitives.Saturation({
+    saturation: 0.9
+  }));
 
-  */});
-
-  renderer.runShader(null, fragmentShader);
+  stack.render(renderer);
 };
 
 module.exports = K1Filter;

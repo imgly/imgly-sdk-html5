@@ -24,7 +24,7 @@ var WebGLRenderer = Renderer.extend({});
  * @type {String}
  * @private
  */
-WebGLRenderer.defaultVertexShader = Utils.shaderString(function() {/**
+WebGLRenderer.defaultVertexShader = Utils.shaderString(function() {/*webgl
 
   attribute vec2 a_position;
   attribute vec2 a_texCoord;
@@ -43,7 +43,7 @@ WebGLRenderer.defaultVertexShader = Utils.shaderString(function() {/**
  * @type {String}
  * @private
  */
-WebGLRenderer.defaultFragmentShader = Utils.shaderString(function() {/*
+WebGLRenderer.defaultFragmentShader = Utils.shaderString(function() {/*webgl
 
   precision mediump float;
   uniform sampler2D u_image;
@@ -145,16 +145,25 @@ WebGLRenderer.prototype.drawImage = function(image) {
  * @param  {String} [vertexShader]
  * @param  {String} [fragmentShader]
  */
-WebGLRenderer.prototype.runShader = function(vertexShader, fragmentShader) {
+WebGLRenderer.prototype.runShader = function(vertexShader, fragmentShader, options) {
+  if (typeof options === "undefined") options = {};
+  if (typeof options.uniforms === "undefined") options.uniforms = {};
+
   var gl = this._context;
   var program = this.setupGLSLProgram(vertexShader, fragmentShader);
   gl.useProgram(program);
 
   var positionLocation = gl.getAttribLocation(program, "a_position");
 
+  // Set the uniforms
+  for (var name in options.uniforms) {
+    var location = gl.getUniformLocation(program, name);
+    gl.uniform1f(location, options.uniforms[name]);
+  }
+
   // Create a buffer for the rectangle positions
-  var buffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  var positionBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
   gl.enableVertexAttribArray(positionLocation);
   gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([

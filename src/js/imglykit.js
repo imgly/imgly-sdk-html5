@@ -24,7 +24,7 @@ var Constants = require("./constants");
  */
 function ImglyKit(options) {
   // `options` is required
-  if (typeof options !== "object") throw new Error("No options given.");
+  if (typeof options === "undefined") throw new Error("No options given.");
   // `options.image` is required
   if (typeof options.image === "undefined") throw new Error("`options.image` is undefined.");
 
@@ -57,6 +57,7 @@ function ImglyKit(options) {
 ImglyKit.version = "0.0.1";
 
 // Exposed classes
+ImglyKit.RenderImage = require("./render-image");
 ImglyKit.Operation = require("./operations/operation");
 ImglyKit.Operations = {};
 ImglyKit.Operations.FiltersOperation = require("./operations/filters-operation");

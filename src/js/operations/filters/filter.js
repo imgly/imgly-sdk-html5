@@ -1,3 +1,4 @@
+/* jshint unused: false */
 "use strict";
 /*!
  * Copyright (c) 2013-2014 9elements GmbH
@@ -40,5 +41,10 @@ Filter.prototype.render = function(renderer) {
   /* istanbul ignore next */
   throw new Error("Filter#render is abstract and not implemented in inherited class.");
 };
+
+// Exposed classes
+Filter.PrimitivesStack = require("./primitives-stack");
+Filter.Primitives = {};
+Filter.Primitives.Saturation = require("./primitives/saturation");
 
 module.exports = Filter;
