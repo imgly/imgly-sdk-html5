@@ -9,6 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+var sinon = require("sinon");
 var path = require("path");
 var fs = require("fs");
 var ImglyKit = require("..");
@@ -116,7 +117,7 @@ describe("RenderImage", function () {
      * Rendering
      */
 
-    describe("rendering", function () {
+    describe.only("rendering", function () {
 
       describe("dimensions", function () {
 
@@ -135,6 +136,21 @@ describe("RenderImage", function () {
       });
 
       describe("operations", function () {
+
+        it("should call the operation's #render method", function (done) {
+          // Create filterOperation and stub #render
+          var filterOperation = new ImglyKit.Operations.FiltersOperation(kit);
+          sinon.stub(filterOperation, "render");
+
+          // Make sure the operation is used
+          kit.operationsStack.push(filterOperation);
+
+          kit.render()
+            .then(function () {
+              filterOperation.render.calledOnce.should.equal(true);
+              done();
+            });
+        });
 
       });
 

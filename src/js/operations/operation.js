@@ -18,6 +18,17 @@ function Operation(kit) {
 }
 
 /**
+ * Applies this operation
+ * @param  {Renderer} renderer
+ * @return {Promise}
+ * @abstract
+ */
+Operation.prototype.render = function(renderer) {
+  /* istanbul ignore next */
+  throw new Error("Operation#render is abstract and not implemented in inherited class.");
+};
+
+/**
  * To create an {@link ImglyKit.Operation} class of your own, call this
  * method and provide instance properties and functions.
  * @function

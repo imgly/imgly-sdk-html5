@@ -34,6 +34,7 @@
     "mocha-lcov-reporter": "0.0.1",
     "run-sequence": "~0.3.6",
     "should": "^4.3.0",
+    "sinon": "^1.12.1",
     "vinyl-source-stream": "0.1.1",
     "watchify": "^2.1.1"
   }
