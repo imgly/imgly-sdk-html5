@@ -72,4 +72,17 @@ Utils.values = function (object) {
   return values;
 };
 
+/**
+ * We use this method to allow easy-to-use multiline strings by wrapping them
+ * in a function inside of a multiline comment. We then use Function#toString
+ * to get the content of the function, strip away the first and last line
+ * et voila, we have a string.
+ * I know this is ugly, but it's less noisy than ["a", "b"].join("\n");
+ * @param {Function}
+ * @returns {String}
+ */
+Utils.shaderString = function (f) {
+  return f.toString().split("\n").slice(1, -1).join("\n");
+};
+
 module.exports = Utils;
