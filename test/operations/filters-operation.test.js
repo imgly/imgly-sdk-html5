@@ -14,7 +14,7 @@ var fs = require("fs");
 var canvas = require("canvas");
 var ImglyKit = require("../..");
 var FiltersOperation = ImglyKit.Operations.FiltersOperation;
-var kit, image;
+var kit, image, filtersOperation;
 
 beforeEach(function () {
   image = new canvas.Image();
@@ -23,6 +23,9 @@ beforeEach(function () {
   image.src = buffer;
 
   kit = new ImglyKit({ image: image });
+
+  filtersOperation = new FiltersOperation(kit);
+  kit.operationsStack.push(filtersOperation);
 });
 
 describe("FiltersOperation", function () {
@@ -30,9 +33,6 @@ describe("FiltersOperation", function () {
   describe("with no selected filter", function () {
 
     it("rendering should fail", function (done) {
-
-      var filtersOperation = new FiltersOperation(kit);
-      kit.operationsStack.push(filtersOperation);
 
       kit.render()
         .then(function () {
@@ -42,6 +42,21 @@ describe("FiltersOperation", function () {
           err.should.be.an.instanceOf(Error);
           done();
         });
+
+    });
+
+  });
+
+  describe("#selectFilter", function () {
+
+    describe("with an unknown identifier", function () {
+
+      it("should throw an error", function () {
+        var throwable = function () {
+          filtersOperation.selectFilter("foobarbaz");
+        };
+        throwable.should.throw();
+      });
 
     });
 
