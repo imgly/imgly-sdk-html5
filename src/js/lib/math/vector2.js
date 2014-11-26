@@ -147,6 +147,20 @@ Vector2.prototype.add = function(addend, y) {
 };
 
 /**
+ * Checks whether the x and y value are the same as the given ones
+ * @param  {(number|Vector2)} vec
+ * @param  {number} y
+ * @return {boolean}
+ */
+Vector2.prototype.equals = function(vec, y) {
+  if (vec instanceof Vector2) {
+    return vec.x === this.x && vec.y === this.y;
+  } else {
+    return vec === this.x && y === this.y;
+  }
+};
+
+/**
  * Returns a string representation of this vector
  * @return {String}
  */

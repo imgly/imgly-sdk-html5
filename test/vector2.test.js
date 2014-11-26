@@ -219,6 +219,48 @@ describe("Vector2", function () {
 
   }); // #add
 
+  describe("#equals", function () {
+
+    describe("when a vector is given", function () {
+
+      describe("if the values are equal", function () {
+        it("should return true", function () {
+          var vec1 = new Vector2(100, 100);
+          var vec2 = new Vector2(100, 100);
+          vec2.equals(vec1).should.equal(true);
+        });
+      });
+
+      describe("if the values are not equal", function () {
+        it("should return false", function () {
+          var vec1 = new Vector2(100, 100);
+          var vec2 = new Vector2(20, 20);
+          vec2.equals(vec1).should.equal(false);
+        });
+      });
+
+    });
+
+    describe("when two numbers are given", function () {
+
+      describe("if the values are equal", function () {
+        it("should return true", function () {
+          var vec1 = new Vector2(100, 100);
+          vec1.equals(100, 100).should.equal(true);
+        });
+      });
+
+      describe("if the values are not equal", function () {
+        it("should return false", function () {
+          var vec1 = new Vector2(100, 100);
+          vec1.equals(20, 20).should.equal(false);
+        });
+      });
+
+    });
+
+  }); // #equals
+
   describe("#toString", function () {
 
     it("should return a string representation of the vector", function () {
