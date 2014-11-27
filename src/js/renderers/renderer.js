@@ -107,6 +107,12 @@ Renderer.prototype.drawImage = function(image) {
 };
 
 /**
+ * Gets called after the stack has been rendered
+ * @param  {Image} image
+ */
+Renderer.prototype.renderFinal = function() {};
+
+/**
  * Returns the canvas
  * @return {Canvas}
  */
