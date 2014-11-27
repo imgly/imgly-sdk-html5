@@ -11,31 +11,37 @@
 var Filter = require("./filter");
 
 /**
- * X400 Filter
+ * Food Filter
  * @class
- * @alias ImglyKit.Filters.X400Filter
+ * @alias ImglyKit.Filters.FoodFilter
  * @extends {ImglyKit.Filter}
  */
-var X400Filter = Filter.extend({});
+var FoodFilter = Filter.extend({});
 
 /**
  * A unique string that identifies this operation. Can be used to select
  * the active filter.
  * @type {String}
  */
-X400Filter.identifier = "x400";
+FoodFilter.identifier = "food";
 
 /**
  * Renders the filter
  * @param  {Renderer} renderer
  * @return {Promise}
  */
-X400Filter.prototype.render = function(renderer) {
+FoodFilter.prototype.render = function(renderer) {
   var stack = new Filter.PrimitivesStack();
 
-  stack.add(new Filter.Primitives.X400());
+  stack.add(new Filter.Primitives.Saturation({
+    saturation: 1.35
+  }));
+
+  stack.add(new Filter.Primitives.Contrast({
+    contrast: 1.1
+  }));
 
   stack.render(renderer);
 };
 
-module.exports = X400Filter;
+module.exports = FoodFilter;

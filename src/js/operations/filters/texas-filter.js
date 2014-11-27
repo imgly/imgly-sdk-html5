@@ -11,31 +11,48 @@
 var Filter = require("./filter");
 
 /**
- * X400 Filter
+ * Texas Filter
  * @class
- * @alias ImglyKit.Filters.X400Filter
+ * @alias ImglyKit.Filters.TexasFilter
  * @extends {ImglyKit.Filter}
  */
-var X400Filter = Filter.extend({});
+var TexasFilter = Filter.extend({});
 
 /**
  * A unique string that identifies this operation. Can be used to select
  * the active filter.
  * @type {String}
  */
-X400Filter.identifier = "x400";
+TexasFilter.identifier = "texas";
 
 /**
  * Renders the filter
  * @param  {Renderer} renderer
  * @return {Promise}
  */
-X400Filter.prototype.render = function(renderer) {
+TexasFilter.prototype.render = function(renderer) {
   var stack = new Filter.PrimitivesStack();
 
-  stack.add(new Filter.Primitives.X400());
+  stack.add(new Filter.Primitives.ToneCurve({
+    rgbControlPoints: {
+      red: [
+        [0, 72],
+        [89, 99],
+        [176, 212],
+        [255, 237]
+      ],
+      green: [
+        [0, 49],
+        [255, 192]
+      ],
+      blue: [
+        [0, 72],
+        [255, 151]
+      ]
+    }
+  }));
 
   stack.render(renderer);
 };
 
-module.exports = X400Filter;
+module.exports = TexasFilter;

@@ -20,7 +20,7 @@ window.onload = function() {
      */
 
     var filtersOperation = new ImglyKit.Operations.FiltersOperation(kit, {
-      filter: "x400"
+      filter: "semired"
     });
     kit.operationsStack.push(filtersOperation);
 

@@ -15,6 +15,8 @@
  * @alias ImglyKit.Filter.Primitive
  */
 function Primitive(options) {
+  options = options || {};
+
   this._options = options;
 }
 

@@ -11,31 +11,48 @@
 var Filter = require("./filter");
 
 /**
- * X400 Filter
+ * Mellow Filter
  * @class
- * @alias ImglyKit.Filters.X400Filter
+ * @alias ImglyKit.Filters.MellowFilter
  * @extends {ImglyKit.Filter}
  */
-var X400Filter = Filter.extend({});
+var MellowFilter = Filter.extend({});
 
 /**
  * A unique string that identifies this operation. Can be used to select
  * the active filter.
  * @type {String}
  */
-X400Filter.identifier = "x400";
+MellowFilter.identifier = "mellow";
 
 /**
  * Renders the filter
  * @param  {Renderer} renderer
  * @return {Promise}
  */
-X400Filter.prototype.render = function(renderer) {
+MellowFilter.prototype.render = function(renderer) {
   var stack = new Filter.PrimitivesStack();
 
-  stack.add(new Filter.Primitives.X400());
+  stack.add(new Filter.Primitives.ToneCurve({
+    rgbControlPoints: {
+      red: [
+        [0, 0],
+        [41, 84],
+        [87, 134],
+        [255, 255]
+      ],
+      green: [
+        [0, 0],
+        [255, 216]
+      ],
+      blue: [
+        [0, 0],
+        [255, 131]
+      ]
+    }
+  }));
 
   stack.render(renderer);
 };
 
-module.exports = X400Filter;
+module.exports = MellowFilter;

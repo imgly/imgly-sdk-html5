@@ -11,31 +11,31 @@
 var Filter = require("./filter");
 
 /**
- * X400 Filter
+ * BW Filter
  * @class
- * @alias ImglyKit.Filters.X400Filter
+ * @alias ImglyKit.Filters.BWFilter
  * @extends {ImglyKit.Filter}
  */
-var X400Filter = Filter.extend({});
+var BWFilter = Filter.extend({});
 
 /**
  * A unique string that identifies this operation. Can be used to select
  * the active filter.
  * @type {String}
  */
-X400Filter.identifier = "x400";
+BWFilter.identifier = "bw";
 
 /**
  * Renders the filter
  * @param  {Renderer} renderer
  * @return {Promise}
  */
-X400Filter.prototype.render = function(renderer) {
+BWFilter.prototype.render = function(renderer) {
   var stack = new Filter.PrimitivesStack();
 
-  stack.add(new Filter.Primitives.X400());
+  stack.add(new Filter.Primitives.Grayscale());
 
   stack.render(renderer);
 };
 
-module.exports = X400Filter;
+module.exports = BWFilter;

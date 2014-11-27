@@ -102,6 +102,23 @@ FiltersOperation.prototype._registerFilters = function() {
   this._registerFilter(require("./filters/front-filter"));
   this._registerFilter(require("./filters/fixie-filter"));
   this._registerFilter(require("./filters/x400-filter"));
+  this._registerFilter(require("./filters/bw-filter"));
+  this._registerFilter(require("./filters/bwhard-filter"));
+  this._registerFilter(require("./filters/lenin-filter"));
+  this._registerFilter(require("./filters/quozi-filter"));
+  this._registerFilter(require("./filters/pola669-filter"));
+  this._registerFilter(require("./filters/pola-filter"));
+  this._registerFilter(require("./filters/food-filter"));
+  this._registerFilter(require("./filters/glam-filter"));
+  this._registerFilter(require("./filters/celsius-filter"));
+  this._registerFilter(require("./filters/texas-filter"));
+  this._registerFilter(require("./filters/morning-filter"));
+  this._registerFilter(require("./filters/lomo-filter"));
+  this._registerFilter(require("./filters/gobblin-filter"));
+  this._registerFilter(require("./filters/mellow-filter"));
+  this._registerFilter(require("./filters/sunny-filter"));
+  this._registerFilter(require("./filters/a15-filter"));
+  this._registerFilter(require("./filters/semired-filter"));
 };
 
 /**

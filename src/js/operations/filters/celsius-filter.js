@@ -11,31 +11,52 @@
 var Filter = require("./filter");
 
 /**
- * X400 Filter
+ * Celsius Filter
  * @class
- * @alias ImglyKit.Filters.X400Filter
+ * @alias ImglyKit.Filters.CelsiusFilter
  * @extends {ImglyKit.Filter}
  */
-var X400Filter = Filter.extend({});
+var CelsiusFilter = Filter.extend({});
 
 /**
  * A unique string that identifies this operation. Can be used to select
  * the active filter.
  * @type {String}
  */
-X400Filter.identifier = "x400";
+CelsiusFilter.identifier = "celsius";
 
 /**
  * Renders the filter
  * @param  {Renderer} renderer
  * @return {Promise}
  */
-X400Filter.prototype.render = function(renderer) {
+CelsiusFilter.prototype.render = function(renderer) {
   var stack = new Filter.PrimitivesStack();
 
-  stack.add(new Filter.Primitives.X400());
+  stack.add(new Filter.Primitives.ToneCurve({
+    rgbControlPoints: {
+      red: [
+        [0, 69],
+        [55, 110],
+        [202, 230],
+        [255, 255]
+      ],
+      green: [
+        [0, 44],
+        [89, 93],
+        [185, 141],
+        [255, 189]
+      ],
+      blue: [
+        [0, 76],
+        [39, 82],
+        [218, 138],
+        [255, 171]
+      ]
+    }
+  }));
 
   stack.render(renderer);
 };
 
-module.exports = X400Filter;
+module.exports = CelsiusFilter;

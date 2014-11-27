@@ -11,31 +11,48 @@
 var Filter = require("./filter");
 
 /**
- * X400 Filter
+ * Morning Filter
  * @class
- * @alias ImglyKit.Filters.X400Filter
+ * @alias ImglyKit.Filters.MorningFilter
  * @extends {ImglyKit.Filter}
  */
-var X400Filter = Filter.extend({});
+var MorningFilter = Filter.extend({});
 
 /**
  * A unique string that identifies this operation. Can be used to select
  * the active filter.
  * @type {String}
  */
-X400Filter.identifier = "x400";
+MorningFilter.identifier = "morning";
 
 /**
  * Renders the filter
  * @param  {Renderer} renderer
  * @return {Promise}
  */
-X400Filter.prototype.render = function(renderer) {
+MorningFilter.prototype.render = function(renderer) {
   var stack = new Filter.PrimitivesStack();
 
-  stack.add(new Filter.Primitives.X400());
+  stack.add(new Filter.Primitives.ToneCurve({
+    rgbControlPoints: {
+      red: [
+        [0, 40],
+        [255, 230]
+      ],
+      green: [
+        [0, 10],
+        [255, 225]
+      ],
+      blue: [
+        [0, 20],
+        [255, 181]
+      ]
+    }
+  }));
+
+  stack.add(new Filter.Primitives.Glow());
 
   stack.render(renderer);
 };
 
-module.exports = X400Filter;
+module.exports = MorningFilter;

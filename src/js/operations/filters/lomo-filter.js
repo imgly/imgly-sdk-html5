@@ -11,31 +11,39 @@
 var Filter = require("./filter");
 
 /**
- * X400 Filter
+ * Lomo Filter
  * @class
- * @alias ImglyKit.Filters.X400Filter
+ * @alias ImglyKit.Filters.LomoFilter
  * @extends {ImglyKit.Filter}
  */
-var X400Filter = Filter.extend({});
+var LomoFilter = Filter.extend({});
 
 /**
  * A unique string that identifies this operation. Can be used to select
  * the active filter.
  * @type {String}
  */
-X400Filter.identifier = "x400";
+LomoFilter.identifier = "lomo";
 
 /**
  * Renders the filter
  * @param  {Renderer} renderer
  * @return {Promise}
  */
-X400Filter.prototype.render = function(renderer) {
+LomoFilter.prototype.render = function(renderer) {
   var stack = new Filter.PrimitivesStack();
 
-  stack.add(new Filter.Primitives.X400());
+  stack.add(new Filter.Primitives.ToneCurve({
+    controlPoints: [
+      [0, 0],
+      [87, 20],
+      [131, 156],
+      [183, 205],
+      [255, 200]
+    ]
+  }));
 
   stack.render(renderer);
 };
 
-module.exports = X400Filter;
+module.exports = LomoFilter;
