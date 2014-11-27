@@ -93,6 +93,7 @@ FiltersOperation.prototype.selectFilter = function(identifier) {
 FiltersOperation.prototype._registerFilters = function() {
   this._registerFilter(require("./filters/k1-filter"));
   this._registerFilter(require("./filters/k2-filter"));
+  this._registerFilter(require("./filters/k6-filter"));
 };
 
 /**

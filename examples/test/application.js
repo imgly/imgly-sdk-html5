@@ -20,7 +20,7 @@ window.onload = function() {
      */
 
     var filtersOperation = new ImglyKit.Operations.FiltersOperation(kit, {
-      filter: "k2"
+      filter: "k6"
     });
     kit.operationsStack.push(filtersOperation);
 
