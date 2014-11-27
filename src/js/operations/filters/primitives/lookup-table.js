@@ -59,7 +59,7 @@ LookupTable.prototype.render = function(renderer) {
 
   renderer.runShader(null, this._fragmentShader, {
     uniforms: {
-      u_lookupTable: 3
+      u_lookupTable: { type: "i", value: 3 }
     }
   });
 };

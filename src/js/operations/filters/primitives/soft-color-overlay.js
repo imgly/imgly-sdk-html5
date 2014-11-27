@@ -12,42 +12,29 @@ var Primitive = require("./primitive");
 var Utils = require("../../../lib/utils");
 
 /**
- * Saturation primitive
+ * SoftColorOverlay primitive
  * @class
- * @alias ImglyKit.Filter.Primitives.Saturation
+ * @alias ImglyKit.Filter.Primitives.SoftColorOverlay
  * @extends {ImglyKit.Filter.Primitive}
  */
-var Saturation = Primitive.extend({
-  constructor: function () {
-    Primitive.apply(this, arguments);
-
-    if (typeof this._options.saturation === "undefined") {
-      this._options.saturation = 0;
-    }
-  }
-});
+var SoftColorOverlay = Primitive.extend({});
 
 /**
  * The fragment shader for this primitive
  * @return {String}
  * @private
  */
-Saturation.prototype._fragmentShader = Utils.shaderString(function() {/*webgl
+SoftColorOverlay.prototype._fragmentShader = Utils.shaderString(function() {/*webgl
 
   precision mediump float;
   varying vec2 v_texCoord;
   uniform sampler2D u_image;
-  uniform float u_saturation;
-
-  const vec3 luminanceWeighting = vec3(0.2125, 0.7154, 0.0721);
+  uniform vec3 u_overlay;
 
   void main() {
     vec4 texColor = texture2D(u_image, v_texCoord);
-    float luminance = dot(texColor.rgb, luminanceWeighting);
-
-    vec3 greyScaleColor = vec3(luminance);
-
-    gl_FragColor = vec4(mix(greyScaleColor, texColor.rgb, u_saturation), texColor.a);
+    vec4 overlayVec4 = vec4(u_overlay, texColor.a);
+    gl_FragColor = max(overlayVec4, texColor);
   }
 
 */});
@@ -57,12 +44,18 @@ Saturation.prototype._fragmentShader = Utils.shaderString(function() {/*webgl
  * @param  {Renderer} renderer
  * @return {Promise}
  */
-Saturation.prototype.render = function(renderer) {
+SoftColorOverlay.prototype.render = function(renderer) {
+  var overlay = [
+    this._options.red / 255,
+    this._options.green / 255,
+    this._options.blue / 255
+  ];
+
   renderer.runShader(null, this._fragmentShader, {
     uniforms: {
-      u_saturation: { type: "f", value: this._options.saturation }
+      u_overlay: { type: "3f", value: overlay }
     }
   });
 };
 
-module.exports = Saturation;
+module.exports = SoftColorOverlay;

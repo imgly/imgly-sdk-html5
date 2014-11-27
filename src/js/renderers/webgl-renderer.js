@@ -133,11 +133,13 @@ WebGLRenderer.prototype.runShader = function(vertexShader, fragmentShader, optio
   // Set the uniforms
   for (var name in options.uniforms) {
     var location = gl.getUniformLocation(program, name);
-    var value = options.uniforms[name];
-    if (value === +value && value === (value|0)) {
-      gl.uniform1i(location, value);
-    } else {
-      gl.uniform1f(location, value);
+    var uniform = options.uniforms[name];
+    if (uniform.type === "i") {
+      gl.uniform1i(location, uniform.value);
+    } else if (uniform.type === "f") {
+      gl.uniform1f(location, uniform.value);
+    } else if (uniform.type === "3f") {
+      gl.uniform3f(location, uniform.value[0], uniform.value[1], uniform.value[2]);
     }
   }
 
