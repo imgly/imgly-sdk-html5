@@ -37,17 +37,17 @@ K1Filter.prototype.render = function(renderer) {
   stack.add(new Filter.Primitives.ToneCurve({
     controlPoints: [
       [0, 0],
-      [53 / 255, 32 / 255],
-      [91 / 255, 80 / 255],
-      [176 / 255, 205 / 255],
-      [0, 205 / 255]
+      [53, 32],
+      [91, 80],
+      [176, 205],
+      [255, 255]
     ]
   }));
 
   // Saturation
-  // stack.add(new Filter.Primitives.Saturation({
-  //   saturation: 0.9
-  // }));
+  stack.add(new Filter.Primitives.Saturation({
+    saturation: 0.9
+  }));
 
   stack.render(renderer);
 };
