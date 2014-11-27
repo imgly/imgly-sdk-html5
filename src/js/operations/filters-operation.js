@@ -97,6 +97,11 @@ FiltersOperation.prototype._registerFilters = function() {
   this._registerFilter(require("./filters/kdynamic-filter"));
   this._registerFilter(require("./filters/fridge-filter"));
   this._registerFilter(require("./filters/breeze-filter"));
+  this._registerFilter(require("./filters/orchid-filter"));
+  this._registerFilter(require("./filters/chest-filter"));
+  this._registerFilter(require("./filters/front-filter"));
+  this._registerFilter(require("./filters/fixie-filter"));
+  this._registerFilter(require("./filters/x400-filter"));
 };
 
 /**
