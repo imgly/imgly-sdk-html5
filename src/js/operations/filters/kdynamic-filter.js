@@ -48,7 +48,7 @@ KDynamicFilter.prototype.render = function(renderer) {
 
   // Saturation
   stack.add(new Filter.Primitives.Saturation({
-    saturation: 0.5
+    saturation: 0.7
   }));
 
   stack.render(renderer);

@@ -96,6 +96,7 @@ FiltersOperation.prototype._registerFilters = function() {
   this._registerFilter(require("./filters/k6-filter"));
   this._registerFilter(require("./filters/kdynamic-filter"));
   this._registerFilter(require("./filters/fridge-filter"));
+  this._registerFilter(require("./filters/breeze-filter"));
 };
 
 /**

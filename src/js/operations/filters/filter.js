@@ -49,5 +49,6 @@ Filter.Primitives.Saturation = require("./primitives/saturation");
 Filter.Primitives.LookupTable = require("./primitives/lookup-table");
 Filter.Primitives.ToneCurve = require("./primitives/tone-curve");
 Filter.Primitives.SoftColorOverlay = require("./primitives/soft-color-overlay");
+Filter.Primitives.Desaturation = require("./primitives/desaturation");
 
 module.exports = Filter;

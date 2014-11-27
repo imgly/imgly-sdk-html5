@@ -20,7 +20,7 @@ window.onload = function() {
      */
 
     var filtersOperation = new ImglyKit.Operations.FiltersOperation(kit, {
-      filter: "fridge"
+      filter: "breeze"
     });
     kit.operationsStack.push(filtersOperation);
 
