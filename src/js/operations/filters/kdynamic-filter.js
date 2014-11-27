@@ -11,27 +11,40 @@
 var Filter = require("./filter");
 
 /**
- * K6 Filter
+ * KDynamic Filter
  * @class
- * @alias ImglyKit.Filters.K6Filter
+ * @alias ImglyKit.Filters.KDynamicFilter
  * @extends {ImglyKit.Filter}
  */
-var K6Filter = Filter.extend({});
+var KDynamicFilter = Filter.extend({});
 
 /**
  * A unique string that identifies this operation. Can be used to select
  * the active filter.
  * @type {String}
  */
-K6Filter.identifier = "k6";
+KDynamicFilter.identifier = "kdynamic";
 
 /**
  * Renders the filter
  * @param  {Renderer} renderer
  * @return {Promise}
  */
-K6Filter.prototype.render = function(renderer) {
+KDynamicFilter.prototype.render = function(renderer) {
   var stack = new Filter.PrimitivesStack();
+
+  // Tone curve
+  stack.add(new Filter.Primitives.ToneCurve({
+    controlPoints: [
+      [0, 0],
+      [17, 27],
+      [46, 69],
+      [90, 112],
+      [156, 200],
+      [203, 243],
+      [255, 255]
+    ]
+  }));
 
   // Saturation
   stack.add(new Filter.Primitives.Saturation({
@@ -41,4 +54,4 @@ K6Filter.prototype.render = function(renderer) {
   stack.render(renderer);
 };
 
-module.exports = K6Filter;
+module.exports = KDynamicFilter;

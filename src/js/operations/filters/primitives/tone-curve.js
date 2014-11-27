@@ -22,9 +22,9 @@ var ToneCurve = LookupTable.extend({
 
     if (typeof this._options.controlPoints !== "undefined") {
       this._options.rgbControlPoints = {
-        r: this._options.controlPoints,
-        g: this._options.controlPoints,
-        b: this._options.controlPoints
+        red: this._options.controlPoints,
+        green: this._options.controlPoints,
+        blue: this._options.controlPoints
       };
     }
 
@@ -39,9 +39,9 @@ var ToneCurve = LookupTable.extend({
  * @private
  */
 ToneCurve.prototype._updateLookupTable = function() {
-  var r = this._calculateSplineCurve(this._options.rgbControlPoints.r);
-  var g = this._calculateSplineCurve(this._options.rgbControlPoints.g);
-  var b = this._calculateSplineCurve(this._options.rgbControlPoints.b);
+  var r = this._calculateSplineCurve(this._options.rgbControlPoints.red);
+  var g = this._calculateSplineCurve(this._options.rgbControlPoints.green);
+  var b = this._calculateSplineCurve(this._options.rgbControlPoints.blue);
 
   this._options.data = this._buildTextureData(r, g, b);
 };
