@@ -268,6 +268,10 @@ WebGLRenderer.prototype._createShader = function(shaderType, shaderSource) {
   return shader;
 };
 
+/**
+ * Creates an empty texture
+ * @return {WebGLTexture}
+ */
 WebGLRenderer.prototype.createTexture = function() {
   var gl = this._context;
   var texture = gl.createTexture();
@@ -282,6 +286,11 @@ WebGLRenderer.prototype.createTexture = function() {
   return texture;
 };
 
+/**
+ * Creates two textures and framebuffers that are used for the stack
+ * rendering
+ * @private
+ */
 WebGLRenderer.prototype._createFramebuffers = function() {
   var gl = this._context;
 
@@ -302,6 +311,10 @@ WebGLRenderer.prototype._createFramebuffers = function() {
   }
 };
 
+/**
+ * Returns the context
+ * @return {WebGLRenderingContext}
+ */
 WebGLRenderer.prototype.getContext = function() {
   return this._context;
 };
