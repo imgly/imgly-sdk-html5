@@ -46,5 +46,7 @@ Filter.prototype.render = function(renderer) {
 Filter.PrimitivesStack = require("./primitives-stack");
 Filter.Primitives = {};
 Filter.Primitives.Saturation = require("./primitives/saturation");
+Filter.Primitives.LookupTable = require("./primitives/lookup-table");
+Filter.Primitives.ToneCurve = require("./primitives/tone-curve");
 
 module.exports = Filter;

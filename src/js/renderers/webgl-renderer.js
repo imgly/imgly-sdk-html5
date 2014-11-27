@@ -16,7 +16,19 @@ var Utils = require("../lib/utils");
  * @extends {ImglyKit.Renderer}
  * @private
  */
-var WebGLRenderer = Renderer.extend({});
+var WebGLRenderer = Renderer.extend({
+  constructor: function() {
+    Renderer.apply(this, arguments);
+
+    this._defaultProgram = this.setupGLSLProgram();
+    this._currentTexture = null;
+    this._textures = [];
+    this._framebuffers = [];
+    this._bufferIndex = 0;
+
+    this._createFramebuffers();
+  }
+});
 
 /**
  * The default vertex shader which just passes the texCoord to the
@@ -81,60 +93,15 @@ WebGLRenderer.prototype._getContext = function() {
  */
 WebGLRenderer.prototype.drawImage = function(image) {
   var gl = this._context;
-  var program = this.setupGLSLProgram();
-  gl.useProgram(program);
-
-  // Lookup texture coordinates location
-  var positionLocation = gl.getAttribLocation(program, "a_position");
-  var texCoordLocation = gl.getAttribLocation(program, "a_texCoord");
-
-  // Provide texture coordinates
-  var texCoordBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-    // First triangle
-    0.0, 0.0,
-    1.0, 0.0,
-    0.0, 1.0,
-
-    // Second triangle
-    0.0, 1.0,
-    1.0, 0.0,
-    1.0, 1.0
-  ]), gl.STATIC_DRAW);
-  gl.enableVertexAttribArray(texCoordLocation);
-  gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 0, 0);
+  gl.useProgram(this._defaultProgram);
 
   // Create the texture
-  var texture = gl.createTexture();
-  gl.bindTexture(gl.TEXTURE_2D, texture);
+  var texture = this.createTexture();
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-
-  // Set the parameters
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  this._currentTexture = texture;
 
   // Upload the image into the texture
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-
-  // Create a buffer for the rectangle positions
-  var buffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-  gl.enableVertexAttribArray(positionLocation);
-  gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-    // First triangle
-    -1.0, -1.0,
-     1.0, -1.0,
-    -1.0,  1.0,
-
-    // Second triangle
-    -1.0,  1.0,
-     1.0, -1.0,
-     1.0,  1.0
-  ]), gl.STATIC_DRAW);
 
   // Draw the rectangle
   gl.drawArrays(gl.TRIANGLES, 0, 6);
@@ -153,30 +120,44 @@ WebGLRenderer.prototype.runShader = function(vertexShader, fragmentShader, optio
   var program = this.setupGLSLProgram(vertexShader, fragmentShader);
   gl.useProgram(program);
 
-  var positionLocation = gl.getAttribLocation(program, "a_position");
+  var fbo = this._framebuffers[this._bufferIndex % 2];
+  var texture = this._textures[this._bufferIndex % 2];
+
+  // Select the current framebuffer
+  gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+  gl.viewport(0, 0, this._canvas.width, this._canvas.height);
+
+  // Make sure we select the current texture
+  gl.bindTexture(gl.TEXTURE_2D, this._currentTexture);
 
   // Set the uniforms
   for (var name in options.uniforms) {
     var location = gl.getUniformLocation(program, name);
-    gl.uniform1f(location, options.uniforms[name]);
+    var value = options.uniforms[name];
+    if (value === +value && value === (value|0)) {
+      gl.uniform1i(location, value);
+    } else {
+      gl.uniform1f(location, value);
+    }
   }
 
-  // Create a buffer for the rectangle positions
-  var positionBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-  gl.enableVertexAttribArray(positionLocation);
-  gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-    // First triangle
-    -1.0, -1.0,
-     1.0, -1.0,
-    -1.0,  1.0,
+  // Draw the rectangle
+  gl.drawArrays(gl.TRIANGLES, 0, 6);
 
-    // Second triangle
-    -1.0,  1.0,
-     1.0, -1.0,
-     1.0,  1.0
-  ]), gl.STATIC_DRAW);
+  this._currentTexture = texture;
+};
+
+WebGLRenderer.prototype.renderFinal = function() {
+  var gl = this._context;
+  var program = this._defaultProgram;
+  gl.useProgram(program);
+
+  // Don't draw to framebuffer
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  gl.viewport(0, 0, this._canvas.width, this._canvas.height);
+
+  // Select the last texture that has been rendered to
+  gl.bindTexture(gl.TEXTURE_2D, this._currentTexture);
 
   // Draw the rectangle
   gl.drawArrays(gl.TRIANGLES, 0, 6);
@@ -219,6 +200,45 @@ WebGLRenderer.prototype.setupGLSLProgram = function(vertexShader, fragmentShader
     gl.deleteProgram(program);
     throw new Error("WebGL program linking error: " + lastError);
   }
+
+  // Lookup texture coordinates location
+  var positionLocation = gl.getAttribLocation(program, "a_position");
+  var texCoordLocation = gl.getAttribLocation(program, "a_texCoord");
+
+  // Provide texture coordinates
+  var texCoordBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+    // First triangle
+    0.0, 0.0,
+    1.0, 0.0,
+    0.0, 1.0,
+
+    // Second triangle
+    0.0, 1.0,
+    1.0, 0.0,
+    1.0, 1.0
+  ]), gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(texCoordLocation);
+  gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 0, 0);
+
+  // Create a buffer for the rectangle positions
+  var buffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  gl.enableVertexAttribArray(positionLocation);
+  gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+    // First triangle
+    -1.0, -1.0,
+     1.0, -1.0,
+    -1.0,  1.0,
+
+    // Second triangle
+    -1.0,  1.0,
+     1.0, -1.0,
+     1.0,  1.0
+  ]), gl.STATIC_DRAW);
+
   return program;
 };
 
@@ -246,6 +266,44 @@ WebGLRenderer.prototype._createShader = function(shaderType, shaderSource) {
   }
 
   return shader;
+};
+
+WebGLRenderer.prototype.createTexture = function() {
+  var gl = this._context;
+  var texture = gl.createTexture();
+
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+
+  return texture;
+};
+
+WebGLRenderer.prototype._createFramebuffers = function() {
+  var gl = this._context;
+
+  for(var i = 0; i < 2; i++) {
+    // Create texture
+    var texture = this.createTexture();
+    this._textures.push(texture);
+
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._canvas.width, this._canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+
+    // Create framebuffer
+    var fbo = gl.createFramebuffer();
+    this._framebuffers.push(fbo);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+
+    // Attach the texture
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+  }
+};
+
+WebGLRenderer.prototype.getContext = function() {
+  return this._context;
 };
 
 module.exports = WebGLRenderer;
