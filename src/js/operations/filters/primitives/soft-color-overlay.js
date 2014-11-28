@@ -43,6 +43,7 @@ SoftColorOverlay.prototype._fragmentShader = Utils.shaderString(function() {/*we
  * Renders the primitive (WebGL)
  * @param  {WebGLRenderer} renderer
  */
+/* istanbul ignore next */
 SoftColorOverlay.prototype.renderWebGL = function(renderer) {
   var overlay = [
     this._options.red / 255,

@@ -55,6 +55,7 @@ Desaturation.prototype._fragmentShader = Utils.shaderString(function() {/*webgl
  * @param  {WebGLRenderer} renderer
  * @return {Promise}
  */
+/* istanbul ignore next */
 Desaturation.prototype.renderWebGL = function(renderer) {
   renderer.runShader(null, this._fragmentShader, {
     uniforms: {

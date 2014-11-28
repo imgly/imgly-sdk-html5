@@ -9,7 +9,7 @@ window.onload = function() {
     /*
      * Initialize ImglyKit
      */
-    var kit = new ImglyKit({ image: image });
+    var kit = new ImglyKit({ image: image, renderer: "canvas" });
 
     /*
      * Operations can be customized. See the API reference for information
@@ -20,7 +20,7 @@ window.onload = function() {
      */
 
     var filtersOperation = new ImglyKit.Operations.FiltersOperation(kit, {
-      filter: "semired"
+      filter: "k6"
     });
     kit.operationsStack.push(filtersOperation);
 

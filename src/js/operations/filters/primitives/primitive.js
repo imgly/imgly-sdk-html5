@@ -37,6 +37,7 @@ Primitive.prototype.render = function(renderer) {
  * Renders the primitive (WebGL)
  * @param  {CanvasRenderer} renderer
  */
+/* istanbul ignore next */
 Primitive.prototype.renderWebGL = function(renderer) {
   /* istanbul ignore next */
   throw new Error("Primitive#renderWebGL is abstract and not implemented in inherited class.");

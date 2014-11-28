@@ -56,6 +56,7 @@ Saturation.prototype._fragmentShader = Utils.shaderString(function() {/*webgl
  * Renders the primitive (WebGL)
  * @param  {WebGLRenderer} renderer
  */
+/* istanbul ignore next */
 Saturation.prototype.renderWebGL = function(renderer) {
   renderer.runShader(null, this._fragmentShader, {
     uniforms: {

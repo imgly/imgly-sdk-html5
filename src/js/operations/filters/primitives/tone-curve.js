@@ -43,10 +43,18 @@ ToneCurve.prototype._updateLookupTable = function() {
   var g = this._calculateSplineCurve(this._options.rgbControlPoints.green);
   var b = this._calculateSplineCurve(this._options.rgbControlPoints.blue);
 
-  this._options.data = this._buildTextureData(r, g, b);
+  this._options.data = this._buildLookupTable(r, g, b);
 };
 
-ToneCurve.prototype._buildTextureData = function(r, g, b) {
+/**
+ * Builds the lookup table
+ * @param  {Array} r
+ * @param  {Array} g
+ * @param  {Array} b
+ * @return {Array}
+ * @private
+ */
+ToneCurve.prototype._buildLookupTable = function(r, g, b) {
   var data = [];
 
   for (var i = 0; i < 256; i++) {

@@ -53,6 +53,7 @@ LookupTable.prototype._fragmentShader = Utils.shaderString(function() {/*webgl
  * Renders the primitive (WebGL)
  * @param  {WebGLRenderer} renderer
  */
+/* istanbul ignore next */
 LookupTable.prototype.renderWebGL = function(renderer) {
   this._updateTexture(renderer);
 
@@ -92,6 +93,7 @@ LookupTable.prototype.renderCanvas = function(renderer) {
  * Updates the lookup table texture (WebGL only)
  * @private
  */
+/* istanbul ignore next */
 LookupTable.prototype._updateTexture = function(renderer) {
   var gl = renderer.getContext();
 

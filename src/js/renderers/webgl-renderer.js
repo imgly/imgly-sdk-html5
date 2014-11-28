@@ -97,6 +97,7 @@ WebGLRenderer.prototype._getContext = function() {
  * Draws the given image on the canvas
  * @param  {Image} image
  */
+/* istanbul ignore next */
 WebGLRenderer.prototype.drawImage = function(image) {
   var gl = this._context;
   gl.useProgram(this._defaultProgram);
@@ -118,6 +119,7 @@ WebGLRenderer.prototype.drawImage = function(image) {
  * @param  {String} [vertexShader]
  * @param  {String} [fragmentShader]
  */
+/* istanbul ignore next */
 WebGLRenderer.prototype.runShader = function(vertexShader, fragmentShader, options) {
   if (typeof options === "undefined") options = {};
   if (typeof options.uniforms === "undefined") options.uniforms = {};
@@ -155,6 +157,10 @@ WebGLRenderer.prototype.runShader = function(vertexShader, fragmentShader, optio
   this._currentTexture = texture;
 };
 
+/**
+ * Draws the last used buffer onto the canvas
+ */
+/* istanbul ignore next */
 WebGLRenderer.prototype.renderFinal = function() {
   var gl = this._context;
   var program = this._defaultProgram;
@@ -178,6 +184,7 @@ WebGLRenderer.prototype.renderFinal = function() {
  * @param {String} [fragmentShader]
  * @return {WebGLProgram}
  */
+/* istanbul ignore next */
 WebGLRenderer.prototype.setupGLSLProgram = function(vertexShader, fragmentShader) {
   var gl = this._context;
   var shaders = [];
@@ -257,6 +264,7 @@ WebGLRenderer.prototype.setupGLSLProgram = function(vertexShader, fragmentShader
  * @return {WebGLShader}
  * @private
  */
+/* istanbul ignore next */
 WebGLRenderer.prototype._createShader = function(shaderType, shaderSource) {
   var gl = this._context;
 
@@ -280,6 +288,7 @@ WebGLRenderer.prototype._createShader = function(shaderType, shaderSource) {
  * Creates an empty texture
  * @return {WebGLTexture}
  */
+/* istanbul ignore next */
 WebGLRenderer.prototype.createTexture = function() {
   var gl = this._context;
   var texture = gl.createTexture();
@@ -299,6 +308,7 @@ WebGLRenderer.prototype.createTexture = function() {
  * rendering
  * @private
  */
+/* istanbul ignore next */
 WebGLRenderer.prototype._createFramebuffers = function() {
   var gl = this._context;
 

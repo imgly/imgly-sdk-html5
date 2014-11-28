@@ -46,6 +46,7 @@ X400.prototype._fragmentShader = Utils.shaderString(function() {/*webgl
  * Renders the primitive (WebGL)
  * @param  {WebGLRenderer} renderer
  */
+/* istanbul ignore next */
 X400.prototype.renderWebGL = function(renderer) {
   renderer.runShader(null, this._fragmentShader);
 };

@@ -59,6 +59,7 @@ Glow.prototype._fragmentShader = Utils.shaderString(function() {/*webgl
  * @param  {WebGLRenderer} renderer
  * @return {Promise}
  */
+/* istanbul ignore next */
 Glow.prototype.renderWebGL = function(renderer) {
   renderer.runShader(null, this._fragmentShader, {
     uniforms: {

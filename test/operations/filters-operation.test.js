@@ -1,4 +1,5 @@
 /* global describe, it, beforeEach */
+/*jshint -W083 */
 "use strict";
 /*!
  * Copyright (c) 2013-2014 9elements GmbH
@@ -14,6 +15,7 @@ var fs = require("fs");
 var canvas = require("canvas");
 var ImglyKit = require("../..");
 var FiltersOperation = ImglyKit.Operations.FiltersOperation;
+var dummyFiltersOperation = new FiltersOperation(null);
 var kit, image, filtersOperation;
 
 beforeEach(function () {
@@ -23,8 +25,8 @@ beforeEach(function () {
   image.src = buffer;
 
   kit = new ImglyKit({ image: image });
-
-  filtersOperation = new FiltersOperation(kit);
+  filtersOperation = dummyFiltersOperation;
+  filtersOperation.kit = kit;
   kit.operationsStack.push(filtersOperation);
 });
 
@@ -59,6 +61,26 @@ describe("FiltersOperation", function () {
       });
 
     });
+
+  });
+
+  describe("#render", function () {
+
+    for (var id in dummyFiltersOperation._filters) {
+      (function (identifier) {
+        it("should work with " + identifier + " filter", function(done) {
+          filtersOperation.selectFilter(identifier);
+
+          kit.render()
+            .then(function () {
+              done();
+            })
+            .catch(function (err) {
+              throw err;
+            });
+        });
+      })(id);
+    }
 
   });
 
