@@ -25,7 +25,7 @@ var SaturationOperation = Operation.extend({});
  * operations.
  * @type {String}
  */
-SaturationOperation.identifier = "saturatin";
+SaturationOperation.identifier = "saturation";
 
 /**
  * Checks whether this Operation can be applied the way it is configured
