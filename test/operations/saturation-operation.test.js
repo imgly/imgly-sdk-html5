@@ -28,7 +28,7 @@ beforeEach(function () {
   kit.operationsStack.push(saturationOperation);
 });
 
-describe.only("SaturationOperation", function () {
+describe("SaturationOperation", function () {
 
   describe("#render", function () {
 
