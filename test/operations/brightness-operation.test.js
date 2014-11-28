@@ -12,6 +12,7 @@
 
 var path = require("path");
 var fs = require("fs");
+var should = require("should");
 var canvas = require("canvas");
 var ImglyKit = require("../..");
 var BrightnessOperation = ImglyKit.Operations.BrightnessOperation;
@@ -24,23 +25,47 @@ beforeEach(function () {
   image.src = buffer;
 
   kit = new ImglyKit({ image: image });
-  brightnessOperation = new BrightnessOperation(kit);
-  kit.operationsStack.push(brightnessOperation);
 });
 
-describe.only("BrightnessOperation", function () {
+describe("BrightnessOperation", function () {
 
   describe("#render", function () {
 
-    it("should succeed", function (done) {
+    describe("without brightness set", function () {
 
-      kit.render()
-        .then(function () {
-          done();
-        })
-        .catch(function (err) {
-          throw err;
+      it("should fail", function (done) {
+        brightnessOperation = new BrightnessOperation(kit);
+        kit.operationsStack.push(brightnessOperation);
+
+        kit.render()
+          .then(function (result) {
+            should.not.exist(result);
+            done();
+          })
+          .catch(function (err) {
+            err.should.be.instanceOf(Error);
+            done();
+          });
+      });
+
+    });
+
+    describe("with brightness set", function () {
+
+      it("should succeed", function (done) {
+        brightnessOperation = new BrightnessOperation(kit, {
+          brightness: 1.1
         });
+        kit.operationsStack.push(brightnessOperation);
+
+        kit.render()
+          .then(function () {
+            done();
+          })
+          .catch(function (err) {
+            throw err;
+          });
+      });
 
     });
 

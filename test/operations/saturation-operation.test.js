@@ -12,6 +12,7 @@
 
 var path = require("path");
 var fs = require("fs");
+var should = require("should");
 var canvas = require("canvas");
 var ImglyKit = require("../..");
 var SaturationOperation = ImglyKit.Operations.SaturationOperation;
@@ -24,23 +25,51 @@ beforeEach(function () {
   image.src = buffer;
 
   kit = new ImglyKit({ image: image });
-  saturationOperation = new SaturationOperation(kit);
-  kit.operationsStack.push(saturationOperation);
 });
 
 describe("SaturationOperation", function () {
 
   describe("#render", function () {
 
-    it("should succeed", function (done) {
+    describe("without saturation set", function () {
 
-      kit.render()
-        .then(function () {
-          done();
-        })
-        .catch(function (err) {
-          throw err;
+      it("should fail", function (done) {
+
+        saturationOperation = new SaturationOperation(kit);
+        kit.operationsStack.push(saturationOperation);
+
+        kit.render()
+          .then(function (result) {
+            should.not.exist(result);
+            done();
+          })
+          .catch(function (err) {
+            err.should.be.instanceOf(Error);
+            done();
+          });
+
+      });
+
+    });
+
+    describe("with saturation set", function () {
+
+      it("should succeed", function (done) {
+
+        saturationOperation = new SaturationOperation(kit, {
+          saturation: 1.1
         });
+        kit.operationsStack.push(saturationOperation);
+
+        kit.render()
+          .then(function () {
+            done();
+          })
+          .catch(function (err) {
+            throw err;
+          });
+
+      });
 
     });
 

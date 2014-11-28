@@ -12,6 +12,7 @@
 
 var path = require("path");
 var fs = require("fs");
+var should = require("should");
 var canvas = require("canvas");
 var ImglyKit = require("../..");
 var ContrastOperation = ImglyKit.Operations.ContrastOperation;
@@ -24,23 +25,47 @@ beforeEach(function () {
   image.src = buffer;
 
   kit = new ImglyKit({ image: image });
-  contrastOperation = new ContrastOperation(kit);
-  kit.operationsStack.push(contrastOperation);
 });
 
 describe("ContrastOperation", function () {
 
   describe("#render", function () {
 
-    it("should succeed", function (done) {
+    describe("without contrast set", function () {
 
-      kit.render()
-        .then(function () {
-          done();
-        })
-        .catch(function (err) {
-          throw err;
+      it("should fail", function (done) {
+        contrastOperation = new ContrastOperation(kit);
+        kit.operationsStack.push(contrastOperation);
+
+        kit.render()
+          .then(function (result) {
+            should.not.exist(result);
+            done();
+          })
+          .catch(function (err) {
+            err.should.be.instanceOf(Error);
+            done();
+          });
+      });
+
+    });
+
+    describe("with contrast set", function () {
+
+      it("should succeed", function (done) {
+        contrastOperation = new ContrastOperation(kit, {
+          contrast: 1.1
         });
+        kit.operationsStack.push(contrastOperation);
+
+        kit.render()
+          .then(function () {
+            done();
+          })
+          .catch(function (err) {
+            throw err;
+          });
+      });
 
     });
 

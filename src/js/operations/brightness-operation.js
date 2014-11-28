@@ -32,7 +32,7 @@ BrightnessOperation.identifier = "brightness";
  * @return {boolean}
  */
 BrightnessOperation.prototype.validateSettings = function() {
-  if (this._options.brightness === null) {
+  if (typeof this._options.brightness === "undefined") {
     throw new Error("BrightnessOperation: No brightness set.");
   }
 };

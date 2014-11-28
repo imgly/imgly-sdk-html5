@@ -32,7 +32,7 @@ SaturationOperation.identifier = "saturation";
  * @return {boolean}
  */
 SaturationOperation.prototype.validateSettings = function() {
-  if (this._options.saturation === null) {
+  if (typeof this._options.saturation === "undefined") {
     throw new Error("SaturationOperation: No saturation set.");
   }
 };
