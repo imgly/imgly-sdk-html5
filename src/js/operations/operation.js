@@ -14,8 +14,14 @@
  * @class
  * @alias ImglyKit.Operation
  */
-function Operation(kit) {
+function Operation(kit, options) {
   this.kit = kit;
+
+  if (typeof options === "undefined") {
+    options = {};
+  }
+
+  this._options = options;
 }
 
 /**

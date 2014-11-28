@@ -18,12 +18,8 @@ var Operation = require("./operation");
  * @extends ImglyKit.Operation
  */
 var FiltersOperation = Operation.extend({
-  constructor: function (renderer, options) {
+  constructor: function () {
     Operation.apply(this, arguments);
-
-    if (typeof options === "undefined") {
-      options = {};
-    }
 
     /**
      * The selected filter
@@ -39,8 +35,8 @@ var FiltersOperation = Operation.extend({
     this._filters = {};
     this._registerFilters();
 
-    if (typeof options.filter !== "undefined") {
-      this.selectFilter(options.filter);
+    if (typeof this._options.filter !== "undefined") {
+      this.selectFilter(this._options.filter);
     }
   }
 });
