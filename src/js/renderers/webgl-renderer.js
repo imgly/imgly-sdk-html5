@@ -329,4 +329,24 @@ WebGLRenderer.prototype._createFramebuffers = function() {
   }
 };
 
+/**
+ * Resizes the current canvas picture to the given dimensions
+ * @param  {Vector2} dimensions
+ * @todo Use a downsampling shader for smoother image resizing
+ */
+/* istanbul ignore next */
+WebGLRenderer.prototype.resizeTo = function(dimensions) {
+  var gl = this._context;
+
+  // Resize the canvas
+  this._canvas.width = dimensions.x;
+  this._canvas.height = dimensions.y;
+
+  // Update the viewport dimensions
+  gl.viewport(0, 0, this._canvas.width, this._canvas.height);
+
+  // Draw the rectangle
+  gl.drawArrays(gl.TRIANGLES, 0, 6);
+};
+
 module.exports = WebGLRenderer;
