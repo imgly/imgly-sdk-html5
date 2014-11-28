@@ -23,7 +23,7 @@ var Pola669Filter = Filter.extend({});
  * the active filter.
  * @type {String}
  */
-Pola669Filter.identifier = "Pola669Filter";
+Pola669Filter.identifier = "pola669";
 
 /**
  * Renders the filter
