@@ -50,11 +50,10 @@ LookupTable.prototype._fragmentShader = Utils.shaderString(function() {/*webgl
 */});
 
 /**
- * Renders the primitive
- * @param  {Renderer} renderer
- * @return {Promise}
+ * Renders the primitive (WebGL)
+ * @param  {WebGLRenderer} renderer
  */
-LookupTable.prototype.render = function(renderer) {
+LookupTable.prototype.renderWebGL = function(renderer) {
   this._updateTexture(renderer);
 
   renderer.runShader(null, this._fragmentShader, {
@@ -65,7 +64,32 @@ LookupTable.prototype.render = function(renderer) {
 };
 
 /**
- * Updates the lookup table texture
+ * Renders the primitive (Canvas)
+ * @param  {CanvasRenderer} renderer
+ */
+LookupTable.prototype.renderCanvas = function(renderer) {
+  var canvas = renderer.getCanvas();
+  var imageData = renderer.getContext().getImageData(0, 0, canvas.width, canvas.height);
+  var table = this._options.data;
+
+  for (var x = 0; x < canvas.width; x++) {
+    for (var y = 0; y < canvas.height; y++) {
+      var index = (canvas.width * y + x) * 4;
+
+      var r = imageData.data[index];
+      imageData.data[index] = table[r * 4];
+      var g = imageData.data[index + 1];
+      imageData.data[index + 1] = table[1 + g * 4];
+      var b = imageData.data[index + 2];
+      imageData.data[index + 2] = table[2 + b * 4];
+    }
+  }
+
+  renderer.getContext().putImageData(imageData, 0, 0);
+};
+
+/**
+ * Updates the lookup table texture (WebGL only)
  * @private
  */
 LookupTable.prototype._updateTexture = function(renderer) {

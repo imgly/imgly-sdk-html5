@@ -40,12 +40,35 @@ Grayscale.prototype._fragmentShader = Utils.shaderString(function() {/*webgl
 */});
 
 /**
- * Renders the primitive
- * @param  {Renderer} renderer
+ * Renders the primitive (WebGL)
+ * @param  {WebGLRenderer} renderer
  * @return {Promise}
  */
-Grayscale.prototype.render = function(renderer) {
+Grayscale.prototype.renderWebGL = function(renderer) {
   renderer.runShader(null, this._fragmentShader);
+};
+
+/**
+ * Renders the primitive (Canvas)
+ * @param  {CanvasRenderer} renderer
+ */
+Grayscale.prototype.renderCanvas = function(renderer) {
+  var canvas = renderer.getCanvas();
+  var imageData = renderer.getContext().getImageData(0, 0, canvas.width, canvas.height);
+
+  for (var x = 0; x < canvas.width; x++) {
+    for (var y = 0; y < canvas.height; y++) {
+      var index = (canvas.width * y + x) * 4;
+
+      var luminance = imageData.data[index] * 0.2125 + imageData.data[index + 1] * 0.7154 + imageData.data[index + 2] * 0.0721;
+
+      imageData.data[index] = luminance;
+      imageData.data[index + 1] = luminance;
+      imageData.data[index + 2] = luminance;
+    }
+  }
+
+  renderer.getContext().putImageData(imageData, 0, 0);
 };
 
 module.exports = Grayscale;

@@ -51,16 +51,39 @@ Desaturation.prototype._fragmentShader = Utils.shaderString(function() {/*webgl
 */});
 
 /**
- * Renders the primitive
- * @param  {Renderer} renderer
+ * Renders the primitive (WebGL)
+ * @param  {WebGLRenderer} renderer
  * @return {Promise}
  */
-Desaturation.prototype.render = function(renderer) {
+Desaturation.prototype.renderWebGL = function(renderer) {
   renderer.runShader(null, this._fragmentShader, {
     uniforms: {
       u_desaturation: { type: "f", value: this._options.desaturation }
     }
   });
+};
+
+/**
+ * Renders the primitive (Canvas)
+ * @param  {CanvasRenderer} renderer
+ */
+Desaturation.prototype.renderCanvas = function(renderer) {
+  var canvas = renderer.getCanvas();
+  var imageData = renderer.getContext().getImageData(0, 0, canvas.width, canvas.height);
+  var desaturation = this._options.desaturation;
+
+  for (var x = 0; x < canvas.width; x++) {
+    for (var y = 0; y < canvas.height; y++) {
+      var index = (canvas.width * y + x) * 4;
+
+      var luminance = imageData.data[index] * 0.3 + imageData.data[index + 1] * 0.59 + imageData.data[index + 2] * 0.11;
+      imageData.data[index] = luminance * (1 - desaturation) + (imageData.data[index] * desaturation);
+      imageData.data[index + 1] = luminance * (1 - desaturation) + (imageData.data[index + 1] * desaturation);
+      imageData.data[index + 2] = luminance * (1 - desaturation) + (imageData.data[index + 2] * desaturation);
+    }
+  }
+
+  renderer.getContext().putImageData(imageData, 0, 0);
 };
 
 module.exports = Desaturation;

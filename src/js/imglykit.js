@@ -92,7 +92,7 @@ ImglyKit.prototype.render = function(renderType, imageFormat, dimensions) {
   imageFormat = settings.imageFormat;
 
   // Create a RenderImage
-  var renderImage = new RenderImage(this._options.image, this.operationsStack, dimensions);
+  var renderImage = new RenderImage(this._options.image, this.operationsStack, dimensions, this._options.renderer);
 
   // Initiate image rendering
   return renderImage.render()

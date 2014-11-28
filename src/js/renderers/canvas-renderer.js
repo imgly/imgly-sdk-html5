@@ -18,6 +18,12 @@ var Renderer = require("./renderer");
 var CanvasRenderer = Renderer.extend({});
 
 /**
+ * A unique string that identifies this renderer
+ * @type {String}
+ */
+CanvasRenderer.prototype.identifier = "canvas";
+
+/**
  * Checks whether this type of renderer is supported in the current environment
  * @abstract
  * @returns {boolean}

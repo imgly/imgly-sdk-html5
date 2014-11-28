@@ -33,6 +33,12 @@ function Renderer(dimensions) {
 }
 
 /**
+ * A unique string that identifies this renderer
+ * @type {String}
+ */
+Renderer.prototype.identifier = null;
+
+/**
  * Checks whether this type of renderer is supported in the current environment
  * @abstract
  * @returns {boolean}
@@ -118,6 +124,14 @@ Renderer.prototype.renderFinal = function() {};
  */
 Renderer.prototype.getCanvas = function() {
   return this._canvas;
+};
+
+/**
+ * Returns the context
+ * @return {RenderingContext}
+ */
+Renderer.prototype.getContext = function() {
+  return this._context;
 };
 
 /**

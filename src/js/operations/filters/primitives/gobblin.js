@@ -42,12 +42,35 @@ Gobblin.prototype._fragmentShader = Utils.shaderString(function() {/*webgl
 */});
 
 /**
- * Renders the primitive
- * @param  {Renderer} renderer
+ * Renders the primitive (WebGL)
+ * @param  {WebGLRenderer} renderer
  * @return {Promise}
  */
-Gobblin.prototype.render = function(renderer) {
+Gobblin.prototype.renderWebGL = function(renderer) {
   renderer.runShader(null, this._fragmentShader);
+};
+
+/**
+ * Renders the primitive (Canvas)
+ * @param  {CanvasRenderer} renderer
+ */
+Gobblin.prototype.renderCanvas = function(renderer) {
+  var canvas = renderer.getCanvas();
+  var imageData = renderer.getContext().getImageData(0, 0, canvas.width, canvas.height);
+
+  for (var x = 0; x < canvas.width; x++) {
+    for (var y = 0; y < canvas.height; y++) {
+      var index = (canvas.width * y + x) * 4;
+
+      imageData.data[index + 2] = imageData.data[index + 1] * 0.33;
+      imageData.data[index] = imageData.data[index] * 0.6;
+      imageData.data[index + 2] += imageData.data[index] * 0.33;
+      imageData.data[index + 1] = imageData.data[index + 1] * 0.7;
+      imageData.data[index + 3] = 255;
+    }
+  }
+
+  renderer.getContext().putImageData(imageData, 0, 0);
 };
 
 module.exports = Gobblin;

@@ -47,16 +47,37 @@ Contrast.prototype._fragmentShader = Utils.shaderString(function() {/*webgl
 */});
 
 /**
- * Renders the primitive
- * @param  {Renderer} renderer
- * @return {Promise}
+ * Renders the primitive (WebGL)
+ * @param  {WebGLRenderer} renderer
  */
-Contrast.prototype.render = function(renderer) {
+Contrast.prototype.renderWebGL = function(renderer) {
   renderer.runShader(null, this._fragmentShader, {
     uniforms: {
       u_contrast: { type: "f", value: this._options.contrast }
     }
   });
+};
+
+/**
+ * Renders the primitive (Canvas)
+ * @param  {CanvasRenderer} renderer
+ */
+Contrast.prototype.renderCanvas = function(renderer) {
+  var canvas = renderer.getCanvas();
+  var imageData = renderer.getContext().getImageData(0, 0, canvas.width, canvas.height);
+  var contrast = this._options.contrast;
+
+  for (var x = 0; x < canvas.width; x++) {
+    for (var y = 0; y < canvas.height; y++) {
+      var index = (canvas.width * y + x) * 4;
+
+      imageData.data[index]     = (imageData.data[index] - 127) * contrast + 127;
+      imageData.data[index + 1] = (imageData.data[index + 1] - 127) * contrast + 127;
+      imageData.data[index + 2] = (imageData.data[index + 2] - 127) * contrast + 127;
+    }
+  }
+
+  renderer.getContext().putImageData(imageData, 0, 0);
 };
 
 module.exports = Contrast;

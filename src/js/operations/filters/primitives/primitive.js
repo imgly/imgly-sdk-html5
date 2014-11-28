@@ -26,8 +26,29 @@ function Primitive(options) {
  * @return {Promise}
  */
 Primitive.prototype.render = function(renderer) {
+  if (renderer.identifier === "webgl") {
+    this.renderWebGL(renderer);
+  } else {
+    this.renderCanvas(renderer);
+  }
+};
+
+/**
+ * Renders the primitive (WebGL)
+ * @param  {CanvasRenderer} renderer
+ */
+Primitive.prototype.renderWebGL = function(renderer) {
   /* istanbul ignore next */
-  throw new Error("Primitive#render is abstract and not implemented in inherited class.");
+  throw new Error("Primitive#renderWebGL is abstract and not implemented in inherited class.");
+};
+
+/**
+ * Renders the primitive (Canvas2D)
+ * @param  {CanvasRenderer} renderer
+ */
+Primitive.prototype.renderCanvas = function(renderer) {
+  /* istanbul ignore next */
+  throw new Error("Primitive#renderCanvas is abstract and not implemented in inherited class.");
 };
 
 Primitive.extend = require("../../../lib/extend");

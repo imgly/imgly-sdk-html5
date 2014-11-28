@@ -53,16 +53,40 @@ Saturation.prototype._fragmentShader = Utils.shaderString(function() {/*webgl
 */});
 
 /**
- * Renders the primitive
- * @param  {Renderer} renderer
- * @return {Promise}
+ * Renders the primitive (WebGL)
+ * @param  {WebGLRenderer} renderer
  */
-Saturation.prototype.render = function(renderer) {
+Saturation.prototype.renderWebGL = function(renderer) {
   renderer.runShader(null, this._fragmentShader, {
     uniforms: {
       u_saturation: { type: "f", value: this._options.saturation }
     }
   });
+};
+
+/**
+ * Renders the primitive (Canvas)
+ * @param  {CanvasRenderer} renderer
+ * @return {Promise}
+ */
+Saturation.prototype.renderCanvas = function(renderer) {
+  var canvas = renderer.getCanvas();
+  var imageData = renderer.getContext().getImageData(0, 0, canvas.width, canvas.height);
+  var saturation = this._options.saturation;
+
+  var d;
+  for (var x = 0; x < canvas.width; x++) {
+    for (var y = 0; y < canvas.height; y++) {
+      var index = (canvas.width * y + x) * 4;
+
+      var luminance = imageData.data[index] * 0.2125 + imageData.data[index + 1] * 0.7154 + imageData.data[index + 2] * 0.0721;
+      imageData.data[index] = luminance * (1 - saturation) + (imageData.data[index] * saturation);
+      imageData.data[index + 1] = luminance * (1 - saturation) + (imageData.data[index + 1] * saturation);
+      imageData.data[index + 2] = luminance * (1 - saturation) + (imageData.data[index + 2] * saturation);
+    }
+  }
+
+  renderer.getContext().putImageData(imageData, 0, 0);
 };
 
 module.exports = Saturation;

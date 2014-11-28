@@ -20,9 +20,18 @@ var WebGLRenderer = require("./renderers/webgl-renderer");
  * @param {Image} image
  * @param {Array.<ImglyKit.Operation>} operationsStack
  * @param {string} dimensions
+ * @param {string} preferredRenderer
  * @private
  */
-function RenderImage(image, operationsStack, dimensions) {
+function RenderImage(image, operationsStack, dimensions, preferredRenderer) {
+  /**
+   * @type {Object}
+   * @private
+   */
+  this._options = {
+    preferredRenderer: preferredRenderer
+  };
+
   /**
    * @type {Boolean}
    * @private
@@ -70,7 +79,7 @@ function RenderImage(image, operationsStack, dimensions) {
  */
 RenderImage.prototype._initRenderer = function() {
   /* istanbul ignore if */
-  if (WebGLRenderer.isSupported()) {
+  if (WebGLRenderer.isSupported() && this._options.preferredRenderer !== "canvas") {
     this._renderer = new WebGLRenderer(this._initialDimensions);
     this._webglEnabled = true;
   } else if (CanvasRenderer.isSupported()) {

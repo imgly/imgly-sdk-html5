@@ -40,11 +40,10 @@ SoftColorOverlay.prototype._fragmentShader = Utils.shaderString(function() {/*we
 */});
 
 /**
- * Renders the primitive
- * @param  {Renderer} renderer
- * @return {Promise}
+ * Renders the primitive (WebGL)
+ * @param  {WebGLRenderer} renderer
  */
-SoftColorOverlay.prototype.render = function(renderer) {
+SoftColorOverlay.prototype.renderWebGL = function(renderer) {
   var overlay = [
     this._options.red / 255,
     this._options.green / 255,
@@ -56,6 +55,27 @@ SoftColorOverlay.prototype.render = function(renderer) {
       u_overlay: { type: "3f", value: overlay }
     }
   });
+};
+
+/**
+ * Renders the primitive (Canvas)
+ * @param  {CanvasRenderer} renderer
+ */
+SoftColorOverlay.prototype.renderCanvas = function(renderer) {
+  var canvas = renderer.getCanvas();
+  var imageData = renderer.getContext().getImageData(0, 0, canvas.width, canvas.height);
+
+  for (var x = 0; x < canvas.width; x++) {
+    for (var y = 0; y < canvas.height; y++) {
+      var index = (canvas.width * y + x) * 4;
+
+      imageData.data[index] = Math.max(this._options.red, imageData.data[index]);
+      imageData.data[index + 1] = Math.max(this._options.green, imageData.data[index + 1]);
+      imageData.data[index + 2] = Math.max(this._options.blue, imageData.data[index + 2]);
+    }
+  }
+
+  renderer.getContext().putImageData(imageData, 0, 0);
 };
 
 module.exports = SoftColorOverlay;

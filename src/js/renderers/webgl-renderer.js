@@ -31,6 +31,12 @@ var WebGLRenderer = Renderer.extend({
 });
 
 /**
+ * A unique string that identifies this renderer
+ * @type {String}
+ */
+WebGLRenderer.prototype.identifier = "webgl";
+
+/**
  * The default vertex shader which just passes the texCoord to the
  * fragment shader.
  * @type {String}
@@ -311,14 +317,6 @@ WebGLRenderer.prototype._createFramebuffers = function() {
     // Attach the texture
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
   }
-};
-
-/**
- * Returns the context
- * @return {WebGLRenderingContext}
- */
-WebGLRenderer.prototype.getContext = function() {
-  return this._context;
 };
 
 module.exports = WebGLRenderer;
