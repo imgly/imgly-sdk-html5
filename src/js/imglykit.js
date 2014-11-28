@@ -11,7 +11,6 @@
 var OperationsManager = require("./operations-manager");
 var RenderImage = require("./render-image");
 var ImageExporter = require("./image-exporter");
-var Utils = require("./lib/utils");
 var Constants = require("./constants");
 
 /**
@@ -64,6 +63,7 @@ ImglyKit.Operations.FiltersOperation = require("./operations/filters-operation")
 ImglyKit.Operations.RotationOperation = require("./operations/rotation-operation");
 ImglyKit.Operations.CropOperation = require("./operations/crop-operation");
 ImglyKit.Operations.SaturationOperation = require("./operations/saturation-operation");
+ImglyKit.Operations.ContrastOperation = require("./operations/contrast-operation");
 
 // Exposed constants
 ImglyKit.RenderType = Constants.RenderType;
