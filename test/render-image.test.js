@@ -138,16 +138,16 @@ describe("RenderImage", function () {
       describe("operations", function () {
 
         it("should call the operation's #render method", function (done) {
-          // Create cropOperation and stub #render
-          var cropOperation = new ImglyKit.Operations.CropOperation(kit);
-          sinon.stub(cropOperation, "render");
+          // Create Operation and stub #render
+          var operation = new ImglyKit.Operation(kit);
+          sinon.stub(operation, "render");
 
           // Make sure the operation is used
-          kit.operationsStack.push(cropOperation);
+          kit.operationsStack.push(operation);
 
           kit.render()
             .then(function () {
-              cropOperation.render.calledOnce.should.equal(true);
+              operation.render.calledOnce.should.equal(true);
               done();
             });
         });
