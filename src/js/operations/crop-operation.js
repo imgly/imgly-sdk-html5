@@ -60,7 +60,52 @@ CropOperation.prototype.render = function(renderer) {
  * @param  {WebGLRenderer} renderer
  */
 CropOperation.prototype._renderWebGL = function(renderer) {
+  var canvas = renderer.getCanvas();
+  var dimensions = new Vector2(canvas.width, canvas.height);
+  var gl = renderer.getContext();
 
+  // The new size
+  var newDimensions = this._getNewDimensions(renderer);
+
+  // Create a new program
+  var program = renderer.setupGLSLProgram();
+
+  // Lookup the texture coordinates location
+  var texCoordLocation = gl.getAttribLocation(program, "a_texCoord");
+
+  var start = this._options.start.clone();
+  var end = this._options.end.clone();
+
+  var tmpStartY = start.y;
+  start.y = 1 - end.y;
+  end.y = 1 - tmpStartY;
+
+  // Provide texture coordinates
+  var texCoordBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+    // First triangle
+    start.x, start.y,
+    end.x, start.y,
+    start.x, end.y,
+
+    // Second triangle
+    start.x, end.y,
+    end.x, start.y,
+    end.x, end.y
+  ]), gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(texCoordLocation);
+  gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 0, 0);
+
+  // Resize the canvas
+  canvas.width = newDimensions.x;
+  canvas.height = newDimensions.y;
+
+  // Resize the viewport
+  gl.viewport(0, 0, newDimensions.x, newDimensions.y);
+
+  // Draw the rectangle
+  gl.drawArrays(gl.TRIANGLES, 0, 6);
 };
 
 /**
@@ -71,11 +116,7 @@ CropOperation.prototype._renderCanvas = function(renderer) {
   var canvas = renderer.getCanvas();
   var dimensions = new Vector2(canvas.width, canvas.height);
 
-  // The new size, relative to the current dimensions
-  var newDimensions = this._options.end
-    .clone()
-    .subtract(this._options.start)
-    .multiply(dimensions);
+  var newDimensions = this._getNewDimensions(renderer);
 
   // Create a temporary canvas to draw to
   var newCanvas = renderer.createCanvas();
@@ -96,6 +137,21 @@ CropOperation.prototype._renderCanvas = function(renderer) {
 
   // Set the new canvas
   renderer.setCanvas(newCanvas);
+};
+
+/**
+ * Gets the new dimensions
+ * @return {Vector2}
+ * @private
+ */
+CropOperation.prototype._getNewDimensions = function(renderer) {
+  var canvas = renderer.getCanvas();
+  var dimensions = new Vector2(canvas.width, canvas.height);
+
+  return this._options.end
+    .clone()
+    .subtract(this._options.start)
+    .multiply(dimensions);
 };
 
 module.exports = CropOperation;

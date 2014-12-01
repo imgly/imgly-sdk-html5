@@ -87,6 +87,25 @@ describe("CropOperation", function () {
           });
       });
 
+      it("should correctly resize the canvas", function (done) {
+        cropOperation = new CropOperation(kit, {
+          start: new ImglyKit.Vector2(0.1, 0.1),
+          end: new ImglyKit.Vector2(0.9, 0.9)
+        });
+        kit.operationsStack.push(cropOperation);
+
+        kit.render(ImglyKit.RenderType.IMAGE)
+          .then(function (result) {
+            result.width.should.equal(image.width * 0.8);
+            result.height.should.equal(image.height * 0.8);
+
+            done();
+          })
+          .catch(function (err) {
+            throw err;
+          });
+      });
+
     });
 
   });
