@@ -15,6 +15,10 @@
  * @alias ImglyKit.Operation
  */
 function Operation(kit, options) {
+  if (kit.constructor.name !== "ImglyKit") {
+    throw new Error("Operation: First parameter for constructor has to be an ImglyKit instance");
+  }
+
   this.kit = kit;
 
   if (typeof options === "undefined") {

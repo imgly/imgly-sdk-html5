@@ -15,7 +15,7 @@ var fs = require("fs");
 var canvas = require("canvas");
 var ImglyKit = require("../..");
 var FiltersOperation = ImglyKit.Operations.FiltersOperation;
-var dummyFiltersOperation = new FiltersOperation(null);
+var dummyFiltersOperation = new FiltersOperation(new ImglyKit({image: null}));
 var kit, image, filtersOperation;
 
 beforeEach(function () {
