@@ -138,11 +138,11 @@ gulp.task("browserify", function () {
   // Creates the bundle
   function rebundle() {
     return bundler.bundle()
+      .on("error", $.notify.onError({ onError: true }))
       .pipe($.plumber())
       .pipe(source(output))
       .pipe(gulp.dest("./build"))
-      .pipe($.if(!isProduction, reload({ stream: true, once: true })))
-      .on("error", $.notify.onError({ onError: true }));
+      .pipe($.if(!isProduction, reload({ stream: true, once: true })));
   }
 
   // Re-bundle on any changes
