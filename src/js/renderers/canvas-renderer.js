@@ -29,7 +29,7 @@ CanvasRenderer.prototype.identifier = "canvas";
  * @returns {boolean}
  */
 CanvasRenderer.isSupported = function () {
-  var elem = this.prototype._createCanvas();
+  var elem = this.prototype.createCanvas();
   return !!(elem.getContext && elem.getContext("2d"));
 };
 
@@ -58,7 +58,7 @@ CanvasRenderer.prototype.drawImage = function(image) {
  */
 CanvasRenderer.prototype.resizeTo = function(dimensions) {
   // Create a temporary canvas to draw to
-  var newCanvas = this._createCanvas();
+  var newCanvas = this.createCanvas();
   newCanvas.width = dimensions.x;
   newCanvas.height = dimensions.y;
   var newContext = newCanvas.getContext("2d");
@@ -73,8 +73,7 @@ CanvasRenderer.prototype.resizeTo = function(dimensions) {
     newCanvas.height);
 
   // Set the new canvas and context
-  this._canvas = newCanvas;
-  this._context = newContext;
+  this.setCanvas(newCanvas);
 };
 
 module.exports = CanvasRenderer;

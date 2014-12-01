@@ -21,7 +21,7 @@ function Renderer(dimensions) {
    * @type {Canvas}
    * @private
    */
-  this._canvas = this._createCanvas();
+  this._canvas = this.createCanvas();
 
   this.setSize(dimensions);
 
@@ -53,7 +53,7 @@ Renderer.isSupported = function() {
  * @return {Canvas}
  * @private
  */
-Renderer.prototype._createCanvas = function() {
+Renderer.prototype.createCanvas = function() {
   var isBrowser = typeof window !== "undefined";
   if (isBrowser) {
     /* istanbul ignore next */
@@ -132,6 +132,22 @@ Renderer.prototype.getCanvas = function() {
  */
 Renderer.prototype.getContext = function() {
   return this._context;
+};
+
+/**
+ * Sets the current canvas to the given one
+ * @param {Canvas} canvas
+ */
+Renderer.prototype.setCanvas = function(canvas) {
+  this._canvas = canvas;
+};
+
+/**
+ * Sets the current context to the given one
+ * @param {RenderingContext2D} context
+ */
+Renderer.prototype.setContext = function(context) {
+  this._context = context;
 };
 
 /**

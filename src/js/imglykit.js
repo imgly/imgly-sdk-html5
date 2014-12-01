@@ -69,6 +69,7 @@ ImglyKit.Operations.BrightnessOperation = require("./operations/brightness-opera
 // Exposed constants
 ImglyKit.RenderType = Constants.RenderType;
 ImglyKit.ImageFormat = Constants.ImageFormat;
+ImglyKit.Vector2 = require("./lib/math/vector2");
 
 /**
  * Registers all default operations
