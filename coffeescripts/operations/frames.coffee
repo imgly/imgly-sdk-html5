@@ -30,6 +30,7 @@ class FramesOperation extends Operation
     # Load frame from image
     Queue.promise((resolve, reject) =>
       frameImage = new Image()
+      frameImage.crossOrigin = "anonymous"
       frameImage.onload = -> resolve frameImage
       frameImage.src = @app.buildAssetsPath("frames/" + @options.frame + ".png")
     # Process frame image

@@ -34,6 +34,7 @@ module.exports = class DrawImageOperation extends Operation
     Queue.promise((resolve, reject) =>
       # DRAW IMAGE HERE
       stickerImage = new Image()
+      stickerImage.crossOrigin = "anonymous"
       stickerImage.onload = -> resolve stickerImage
       stickerImage.src = @app.buildAssetsPath(@options.sticker)
     ).then (stickerImage) =>
