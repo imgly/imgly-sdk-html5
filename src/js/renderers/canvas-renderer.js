@@ -76,4 +76,22 @@ CanvasRenderer.prototype.resizeTo = function(dimensions) {
   this.setCanvas(newCanvas);
 };
 
+/**
+ * Returns a cloned version of the current canvas
+ * @return {Canvas}
+ */
+CanvasRenderer.prototype.cloneCanvas = function() {
+  var canvas = this.createCanvas();
+  var context = canvas.getContext("2d");
+
+  // Resize the canvas
+  canvas.width = this._canvas.width;
+  canvas.height = this._canvas.height;
+
+  // Draw the current canvas on the new one
+  context.drawImage(this._canvas, 0, 0);
+
+  return canvas;
+};
+
 module.exports = CanvasRenderer;

@@ -65,6 +65,7 @@ ImglyKit.Operations.CropOperation = require("./operations/crop-operation");
 ImglyKit.Operations.SaturationOperation = require("./operations/saturation-operation");
 ImglyKit.Operations.ContrastOperation = require("./operations/contrast-operation");
 ImglyKit.Operations.BrightnessOperation = require("./operations/brightness-operation");
+ImglyKit.Operations.FlipOperation = require("./operations/flip-operation");
 
 // Exposed constants
 ImglyKit.RenderType = Constants.RenderType;
