@@ -118,6 +118,10 @@ CropOperation.prototype._renderWebGL = function(renderer) {
       u_cropEnd: { type: "2f", value: [end.x, end.y] }
     }
   });
+
+  // Resize the input texture
+  gl.bindTexture(gl.TEXTURE_2D, lastTexture);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, newDimensions.x, newDimensions.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
 };
 
 /**
