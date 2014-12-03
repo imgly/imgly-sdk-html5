@@ -21,10 +21,11 @@ var WebGLRenderer = Renderer.extend({
     Renderer.apply(this, arguments);
 
     this._defaultProgram = this.setupGLSLProgram();
-    this._currentTexture = null;
+    this._lastTexture = null;
     this._textures = [];
     this._framebuffers = [];
     this._bufferIndex = 0;
+    this._inputTexture = null;
 
     this._createFramebuffers();
   }
@@ -105,7 +106,8 @@ WebGLRenderer.prototype.drawImage = function(image) {
   // Create the texture
   var texture = this.createTexture();
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-  this._currentTexture = texture;
+  this._inputTexture = texture;
+  this.setLastTexture(texture);
 
   // Upload the image into the texture
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
@@ -128,15 +130,15 @@ WebGLRenderer.prototype.runShader = function(vertexShader, fragmentShader, optio
   var program = this.setupGLSLProgram(vertexShader, fragmentShader);
   gl.useProgram(program);
 
-  var fbo = this._framebuffers[this._bufferIndex % 2];
-  var texture = this._textures[this._bufferIndex % 2];
+  var fbo = this.getCurrentFramebuffer();
+  var texture = this.getCurrentTexture();
 
   // Select the current framebuffer
   gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
   gl.viewport(0, 0, this._canvas.width, this._canvas.height);
 
   // Make sure we select the current texture
-  gl.bindTexture(gl.TEXTURE_2D, this._currentTexture);
+  gl.bindTexture(gl.TEXTURE_2D, this._lastTexture);
 
   // Set the uniforms
   for (var name in options.uniforms) {
@@ -154,7 +156,8 @@ WebGLRenderer.prototype.runShader = function(vertexShader, fragmentShader, optio
   // Draw the rectangle
   gl.drawArrays(gl.TRIANGLES, 0, 6);
 
-  this._currentTexture = texture;
+  this.setLastTexture(texture);
+  this.selectNextBuffer();
 };
 
 /**
@@ -168,10 +171,12 @@ WebGLRenderer.prototype.renderFinal = function() {
 
   // Don't draw to framebuffer
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+  // Make sure the viewport size is correct
   gl.viewport(0, 0, this._canvas.width, this._canvas.height);
 
   // Select the last texture that has been rendered to
-  gl.bindTexture(gl.TEXTURE_2D, this._currentTexture);
+  gl.bindTexture(gl.TEXTURE_2D, this._lastTexture);
 
   // Draw the rectangle
   gl.drawArrays(gl.TRIANGLES, 0, 6);
@@ -347,6 +352,61 @@ WebGLRenderer.prototype.resizeTo = function(dimensions) {
 
   // Draw the rectangle
   gl.drawArrays(gl.TRIANGLES, 0, 6);
+};
+
+/**
+ * Returns the current framebuffer
+ * @return {WebGLFramebuffer}
+ */
+WebGLRenderer.prototype.getCurrentFramebuffer = function() {
+  return this._framebuffers[this._bufferIndex % 2];
+};
+
+/**
+ * Returns the current texture
+ * @return {WebGLTexture}
+ */
+WebGLRenderer.prototype.getCurrentTexture = function() {
+  return this._textures[this._bufferIndex % 2];
+};
+
+/**
+ * Increases the buffer index
+ */
+WebGLRenderer.prototype.selectNextBuffer = function() {
+  this._bufferIndex++;
+};
+
+/**
+ * Returns the default program
+ * @return {WebGLProgram}
+ */
+WebGLRenderer.prototype.getDefaultProgram = function() {
+  return this._defaultProgram;
+};
+
+/**
+ * Returns the last texture that has been drawn to
+ * @return {WebGLTexture}
+ */
+WebGLRenderer.prototype.getLastTexture = function() {
+  return this._lastTexture;
+};
+
+/**
+ * Returns all textures
+ * @return {Array.<WebGLTexture>}
+ */
+WebGLRenderer.prototype.getTextures = function() {
+  return this._textures;
+};
+
+/**
+ * Sets the last texture
+ * @param {WebGLTexture} texture
+ */
+WebGLRenderer.prototype.setLastTexture = function(texture) {
+  this._lastTexture = texture;
 };
 
 module.exports = WebGLRenderer;

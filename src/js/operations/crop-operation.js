@@ -10,6 +10,7 @@
 
 var Operation = require("./operation");
 var Vector2 = require("../lib/math/vector2");
+var Utils = require("../lib/utils");
 
 /**
  * An operation that can apply a selected filter
@@ -26,6 +27,25 @@ var CropOperation = Operation.extend({});
  * @type {String}
  */
 CropOperation.identifier = "crop";
+
+/**
+ * The fragment shader used for this operation
+ */
+CropOperation.fragmentShader = Utils.shaderString(function () {/**webgl
+
+  precision mediump float;
+  uniform sampler2D u_image;
+  varying vec2 v_texCoord;
+  uniform vec4 u_cropCoords;
+
+  void main() {
+    vec2 start = u_cropCoords.xy;
+    vec2 end = vec2(u_cropCoords.z, u_cropCoords.w);
+    vec2 size = end - start;
+    gl_FragColor = texture2D(u_image, v_texCoord * size + start);
+  }
+
+*/});
 
 /**
  * Checks whether this Operation can be applied the way it is configured
@@ -61,41 +81,51 @@ CropOperation.prototype.render = function(renderer) {
  */
 CropOperation.prototype._renderWebGL = function(renderer) {
   var canvas = renderer.getCanvas();
-  var dimensions = new Vector2(canvas.width, canvas.height);
   var gl = renderer.getContext();
+  var program = renderer.setupGLSLProgram(null, CropOperation.fragmentShader);
+  gl.useProgram(program);
+
+  var start = this._options.start;
+  var end = this._options.end;
+
+  var originalStartY = start.y;
+  start.y = 1 - end.y;
+  end.y = 1 - originalStartY;
+
+
+  // Provide the cropping parameters
+  var cropCoordsUniform = gl.getUniformLocation(program, "u_cropCoords");
+  gl.uniform4f(cropCoordsUniform, start.x, start.y, end.x, end.y);
 
   // The new size
   var newDimensions = this._getNewDimensions(renderer);
 
-  // Create a new program
-  var program = renderer.setupGLSLProgram();
+  // Make sure we're drawing to the current FBO
+  var fbo = renderer.getCurrentFramebuffer();
+  gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
 
-  // Lookup the texture coordinates location
-  var texCoordLocation = gl.getAttribLocation(program, "a_texCoord");
+  // Resize the attached texture
+  var attachedTexture = renderer.getCurrentTexture();
+  gl.bindTexture(gl.TEXTURE_2D, attachedTexture);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, newDimensions.x, newDimensions.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
 
-  var start = this._options.start.clone();
-  var end = this._options.end.clone();
+  var lastTexture = renderer.getLastTexture();
 
-  var tmpStartY = start.y;
-  start.y = 1 - end.y;
-  end.y = 1 - tmpStartY;
+  // Resize all textures except the one we already resized and the
+  // one we use as input
+  var textures = renderer.getTextures();
+  var texture;
+  for (var i = 0; i < textures.length; i++) {
+    texture = textures[i];
+    if (texture === attachedTexture) continue;
+    if (texture === lastTexture) continue;
 
-  // Provide texture coordinates
-  var texCoordBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-    // First triangle
-    start.x, start.y,
-    end.x, start.y,
-    start.x, end.y,
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, newDimensions.x, newDimensions.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+  }
 
-    // Second triangle
-    start.x, end.y,
-    end.x, start.y,
-    end.x, end.y
-  ]), gl.STATIC_DRAW);
-  gl.enableVertexAttribArray(texCoordLocation);
-  gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 0, 0);
+  // Make sure we use the last texture as input
+  gl.bindTexture(gl.TEXTURE_2D, lastTexture);
 
   // Resize the canvas
   canvas.width = newDimensions.x;
@@ -106,6 +136,9 @@ CropOperation.prototype._renderWebGL = function(renderer) {
 
   // Draw the rectangle
   gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+  // Set the last used texture
+  renderer.setLastTexture(attachedTexture);
 };
 
 /**
