@@ -13,7 +13,7 @@ var Vector2 = require("../lib/math/vector2");
 var Utils = require("../lib/utils");
 
 /**
- * An operation that can apply a selected filter
+ * An operation that can flip the canvas
  *
  * @class
  * @alias ImglyKit.Operations.FlipOperation
