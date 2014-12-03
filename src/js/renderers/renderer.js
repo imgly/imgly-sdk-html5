@@ -140,6 +140,7 @@ Renderer.prototype.getContext = function() {
  */
 Renderer.prototype.setCanvas = function(canvas) {
   this._canvas = canvas;
+  this._context = this._getContext();
 };
 
 /**
