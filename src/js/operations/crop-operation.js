@@ -36,13 +36,12 @@ CropOperation.fragmentShader = Utils.shaderString(function () {/**webgl
   precision mediump float;
   uniform sampler2D u_image;
   varying vec2 v_texCoord;
-  uniform vec4 u_cropCoords;
+  uniform vec2 u_cropStart;
+  uniform vec2 u_cropEnd;
 
   void main() {
-    vec2 start = u_cropCoords.xy;
-    vec2 end = vec2(u_cropCoords.z, u_cropCoords.w);
-    vec2 size = end - start;
-    gl_FragColor = texture2D(u_image, v_texCoord * size + start);
+    vec2 size = u_cropEnd - u_cropStart;
+    gl_FragColor = texture2D(u_image, v_texCoord * size + u_cropStart);
   }
 
 */});
@@ -88,57 +87,39 @@ CropOperation.prototype._renderWebGL = function(renderer) {
   var start = this._options.start;
   var end = this._options.end;
 
+  // 0..1 > 1..0 on y-axis
   var originalStartY = start.y;
   start.y = 1 - end.y;
   end.y = 1 - originalStartY;
 
-
-  // Provide the cropping parameters
-  var cropCoordsUniform = gl.getUniformLocation(program, "u_cropCoords");
-  gl.uniform4f(cropCoordsUniform, start.x, start.y, end.x, end.y);
-
   // The new size
   var newDimensions = this._getNewDimensions(renderer);
 
-  // Make sure we're drawing to the current FBO
-  var fbo = renderer.getCurrentFramebuffer();
-  gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
-
-  // Resize the attached texture
-  var attachedTexture = renderer.getCurrentTexture();
-  gl.bindTexture(gl.TEXTURE_2D, attachedTexture);
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, newDimensions.x, newDimensions.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-
+  // Make sure we don't resize the input texture
   var lastTexture = renderer.getLastTexture();
 
-  // Resize all textures except the one we already resized and the
-  // one we use as input
+  // Resize all textures except the one we use as input
   var textures = renderer.getTextures();
   var texture;
   for (var i = 0; i < textures.length; i++) {
     texture = textures[i];
-    if (texture === attachedTexture) continue;
     if (texture === lastTexture) continue;
 
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, newDimensions.x, newDimensions.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
   }
 
-  // Make sure we use the last texture as input
-  gl.bindTexture(gl.TEXTURE_2D, lastTexture);
-
   // Resize the canvas
   canvas.width = newDimensions.x;
   canvas.height = newDimensions.y;
 
-  // Resize the viewport
-  gl.viewport(0, 0, newDimensions.x, newDimensions.y);
-
-  // Draw the rectangle
-  gl.drawArrays(gl.TRIANGLES, 0, 6);
-
-  // Set the last used texture
-  renderer.setLastTexture(attachedTexture);
+  // Run the cropping shader
+  renderer.runShader(null, CropOperation.fragmentShader, {
+    uniforms: {
+      u_cropStart: { type: "2f", value: [start.x, start.y] },
+      u_cropEnd: { type: "2f", value: [end.x, end.y] }
+    }
+  });
 };
 
 /**

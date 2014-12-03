@@ -148,6 +148,8 @@ WebGLRenderer.prototype.runShader = function(vertexShader, fragmentShader, optio
       gl.uniform1i(location, uniform.value);
     } else if (uniform.type === "f") {
       gl.uniform1f(location, uniform.value);
+    } else if (uniform.type === "2f") {
+      gl.uniform2f(location, uniform.value[0], uniform.value[1]);
     } else if (uniform.type === "3f") {
       gl.uniform3f(location, uniform.value[0], uniform.value[1], uniform.value[2]);
     }
