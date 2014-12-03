@@ -67,16 +67,6 @@ ImglyKit.ImageFormat = Constants.ImageFormat;
 ImglyKit.Vector2 = require("./lib/math/vector2");
 
 /**
- * Registers all default operations
- * @private
- */
-ImglyKit.prototype._registerOperations = function () {
-  this.operations.register(ImglyKit.Operations.FiltersOperation);
-  this.operations.register(ImglyKit.Operations.RotationOperation);
-  this.operations.register(ImglyKit.Operations.CropOperation);
-};
-
-/**
  * Renders the image
  * @param  {ImglyKit.RenderType} [renderType=ImglyKit.RenderType.DATA_URL] - The output type
  * @param  {ImglyKit.ImageFormat} [imageFormat=ImglyKit.ImageFormat.PNG] - The output image format
@@ -104,8 +94,7 @@ ImglyKit.prototype.render = function(renderType, imageFormat, dimensions) {
  * Resets all custom and selected operations
  */
 ImglyKit.prototype.reset = function () {
-  this.operations.reset();
-  this._registerOperations();
+
 };
 
 module.exports = ImglyKit;
