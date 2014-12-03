@@ -48,12 +48,18 @@ FlipOperation.fragmentShader = Utils.shaderString(function () {/**webgl
   precision mediump float;
   uniform sampler2D u_image;
   varying vec2 v_texCoord;
-  uniform vec2 u_cropStart;
-  uniform vec2 u_cropEnd;
+  uniform bool u_flipVertical;
+  uniform bool u_flipHorizontal;
 
   void main() {
-    vec2 size = u_cropEnd - u_cropStart;
-    gl_FragColor = texture2D(u_image, v_texCoord * size + u_cropStart);
+    vec2 texCoord = vec2(v_texCoord);
+    if (u_flipVertical) {
+      texCoord.y = 1.0 - texCoord.y;
+    }
+    if (u_flipHorizontal) {
+      texCoord.x = 1.0 - texCoord.x;
+    }
+    gl_FragColor = texture2D(u_image, texCoord);
   }
 
 */});
@@ -79,8 +85,8 @@ FlipOperation.prototype.render = function(renderer) {
 FlipOperation.prototype._renderWebGL = function(renderer) {
   renderer.runShader(null, FlipOperation.fragmentShader, {
     uniforms: {
-      u_flipVertical: { type: "1f", value: this._options.vertical },
-      u_flipHorizontal: { type: "1f", value: this._options.horizontal }
+      u_flipVertical: { type: "f", value: this._options.vertical },
+      u_flipHorizontal: { type: "f", value: this._options.horizontal }
     }
   });
 };
