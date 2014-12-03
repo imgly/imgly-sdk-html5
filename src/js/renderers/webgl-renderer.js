@@ -152,6 +152,12 @@ WebGLRenderer.prototype.runShader = function(vertexShader, fragmentShader, optio
       gl.uniform2f(location, uniform.value[0], uniform.value[1]);
     } else if (uniform.type === "3f") {
       gl.uniform3f(location, uniform.value[0], uniform.value[1], uniform.value[2]);
+    } else if (uniform.type === "2fv") {
+      gl.uniform2fv(location, uniform.value);
+    } else if (uniform.type === "mat3fv") {
+      gl.uniformMatrix3fv(location, false, uniform.value);
+    } else {
+      throw new Error("Unknown uniform type: " + uniform.type);
     }
   }
 

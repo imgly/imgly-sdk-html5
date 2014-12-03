@@ -48,15 +48,16 @@ RotationOperation.prototype.validateSettings = function() {
 /**
  * The fragment shader used for this operation
  */
-RotationOperation.fragmentShader = Utils.shaderString(function () {/**webgl
+RotationOperation.vertexShader = Utils.shaderString(function () {/**webgl
 
-  precision mediump float;
-  uniform sampler2D u_image;
+  attribute vec2 a_position;
+  attribute vec2 a_texCoord;
   varying vec2 v_texCoord;
-  uniform bool u_rotation;
+  uniform mat3 u_matrix;
 
   void main() {
-    gl_FragColor = texture2D(u_image, v_texCoord);
+    gl_Position = vec4((u_matrix * vec3(a_position, 1)).xy, 0, 1);
+    v_texCoord = a_texCoord;
   }
 
 */});
@@ -80,11 +81,55 @@ RotationOperation.prototype.render = function(renderer) {
  * @param  {WebGLRenderer} renderer
  */
 RotationOperation.prototype._renderWebGL = function(renderer) {
-  renderer.runShader(null, RotationOperation.fragmentShader, {
+  var canvas = renderer.getCanvas();
+  var gl = renderer.getContext();
+
+  var actualDegrees = this._options.degrees % 360;
+  var lastTexture = renderer.getLastTexture();
+
+  if (actualDegrees % 180 !== 0) {
+    // Resize the canvas
+    var width = canvas.width;
+    canvas.width = canvas.height;
+    canvas.height = width;
+
+    // Resize the current texture
+    var currentTexture = renderer.getCurrentTexture();
+    gl.bindTexture(gl.TEXTURE_2D, currentTexture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, canvas.width, canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+
+    // Resize all other textures except the input texture
+    var textures = renderer.getTextures();
+    var texture;
+    for (var i = 0; i < textures.length; i++) {
+      texture = textures[i];
+      if (texture === lastTexture) continue;
+
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, canvas.width, canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    }
+  }
+
+  // Build the rotation matrix
+  var radians = actualDegrees * (Math.PI / 180);
+  var c = Math.cos(radians);
+  var s = Math.sin(radians);
+  var rotationMatrix = [
+    c,-s, 0,
+    s, c, 0,
+    0, 0, 1
+  ];
+
+  // Run the shader
+  renderer.runShader(RotationOperation.vertexShader, null, {
     uniforms: {
-      u_rotation: { type: "f", value: this._options.rotation }
+      u_matrix: { type: "mat3fv", value: rotationMatrix }
     }
   });
+
+  // Resize the input texture
+  gl.bindTexture(gl.TEXTURE_2D, lastTexture);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, canvas.width, canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
 };
 
 /**
@@ -93,7 +138,6 @@ RotationOperation.prototype._renderWebGL = function(renderer) {
  */
 RotationOperation.prototype._renderCanvas = function(renderer) {
   var canvas = renderer.getCanvas();
-  var context = renderer.getContext();
 
   var actualDegrees = this._options.degrees % 360;
   var width = canvas.width;
