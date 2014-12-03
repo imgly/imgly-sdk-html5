@@ -144,20 +144,31 @@ WebGLRenderer.prototype.runShader = function(vertexShader, fragmentShader, optio
   for (var name in options.uniforms) {
     var location = gl.getUniformLocation(program, name);
     var uniform = options.uniforms[name];
-    if (uniform.type === "i") {
-      gl.uniform1i(location, uniform.value);
-    } else if (uniform.type === "f") {
-      gl.uniform1f(location, uniform.value);
-    } else if (uniform.type === "2f") {
-      gl.uniform2f(location, uniform.value[0], uniform.value[1]);
-    } else if (uniform.type === "3f") {
-      gl.uniform3f(location, uniform.value[0], uniform.value[1], uniform.value[2]);
-    } else if (uniform.type === "2fv") {
-      gl.uniform2fv(location, uniform.value);
-    } else if (uniform.type === "mat3fv") {
-      gl.uniformMatrix3fv(location, false, uniform.value);
-    } else {
-      throw new Error("Unknown uniform type: " + uniform.type);
+
+    switch (uniform.type) {
+      case "i":
+      case "1i":
+        gl.uniform1i(location, uniform.value);
+        break;
+      case "f":
+      case "1f":
+        gl.uniform1f(location, uniform.value);
+        break;
+      case "2f":
+        gl.uniform2f(location, uniform.value[0], uniform.value[1]);
+        break;
+      case "3f":
+        gl.uniform3f(location, uniform.value[0], uniform.value[1], uniform.value[2]);
+        break;
+      case "2fv":
+        gl.uniform2fv(location, uniform.value);
+        break;
+      case "mat3fv":
+        gl.uniformMatrix3fv(location, false, uniform.value);
+        break;
+      default:
+        throw new Error("Unknown uniform type: " + uniform.type);
+        break;
     }
   }
 
