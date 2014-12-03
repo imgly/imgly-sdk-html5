@@ -8,7 +8,6 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var OperationsManager = require("./operations-manager");
 var RenderImage = require("./render-image");
 var ImageExporter = require("./image-exporter");
 var Constants = require("./constants");
@@ -32,11 +31,6 @@ function ImglyKit(options) {
    * @private
    */
   this._options = options;
-
-  /**
-   * @type {ImglyKit.OperationsManager}
-   */
-  this.operations = new OperationsManager(this);
 
   /**
    * The stack of {@link Operation} instances that will be used
