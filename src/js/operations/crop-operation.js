@@ -13,7 +13,7 @@ var Vector2 = require("../lib/math/vector2");
 var Utils = require("../lib/utils");
 
 /**
- * An operation that can apply a selected filter
+ * An operation that can crop out a part of the image
  *
  * @class
  * @alias ImglyKit.Operations.CropOperation
@@ -81,8 +81,6 @@ CropOperation.prototype.render = function(renderer) {
 CropOperation.prototype._renderWebGL = function(renderer) {
   var canvas = renderer.getCanvas();
   var gl = renderer.getContext();
-  var program = renderer.setupGLSLProgram(null, CropOperation.fragmentShader);
-  gl.useProgram(program);
 
   var start = this._options.start;
   var end = this._options.end;
