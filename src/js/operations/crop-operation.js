@@ -78,6 +78,7 @@ CropOperation.prototype.render = function(renderer) {
  * Crops this image using WebGL
  * @param  {WebGLRenderer} renderer
  */
+/* istanbul ignore next */
 CropOperation.prototype._renderWebGL = function(renderer) {
   var canvas = renderer.getCanvas();
   var gl = renderer.getContext();

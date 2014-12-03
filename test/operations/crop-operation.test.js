@@ -34,7 +34,9 @@ describe("CropOperation", function () {
     describe("without start set", function () {
 
       it("should fail", function (done) {
-        cropOperation = new CropOperation(kit);
+        cropOperation = new CropOperation(kit, {
+          end: new ImglyKit.Vector2(1, 1)
+        });
         kit.operationsStack.push(cropOperation);
 
         kit.render()
@@ -53,7 +55,9 @@ describe("CropOperation", function () {
     describe("without end set", function () {
 
       it("should fail", function (done) {
-        cropOperation = new CropOperation(kit);
+        cropOperation = new CropOperation(kit, {
+          start: new ImglyKit.Vector2(1, 1)
+        });
         kit.operationsStack.push(cropOperation);
 
         kit.render()
