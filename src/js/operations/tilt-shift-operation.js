@@ -138,26 +138,23 @@ TiltShiftOperation.prototype._renderWebGL = function(renderer) {
 
   var d = Math.sqrt(delta.x * delta.x + delta.y * delta.y);
 
-  renderer.runShader(null, TiltShiftOperation.fragmentShader, {
-    uniforms: {
-      blurRadius: { type: "f", value: this._options.blurRadius },
-      gradientRadius: { type: "f", value: this._options.gradientRadius },
-      start: { type: "2f", value: [start.x, start.y] },
-      end: { type: "2f", value: [end.x, end.y] },
-      delta: { type: "2f", value: [delta.x / d, delta.y / d] },
-      texSize: { type: "2f", value: [canvas.width, canvas.height] }
-    }
-  });
+  var uniforms = {
+    blurRadius: { type: "f", value: this._options.blurRadius },
+    gradientRadius: { type: "f", value: this._options.gradientRadius },
+    start: { type: "2f", value: [start.x, start.y] },
+    end: { type: "2f", value: [end.x, end.y] },
+    delta: { type: "2f", value: [delta.x / d, delta.y / d] },
+    texSize: { type: "2f", value: [canvas.width, canvas.height] }
+  };
 
   renderer.runShader(null, TiltShiftOperation.fragmentShader, {
-    uniforms: {
-      blurRadius: { type: "f", value: this._options.blurRadius },
-      gradientRadius: { type: "f", value: this._options.gradientRadius },
-      start: { type: "2f", value: [start.x, start.y] },
-      end: { type: "2f", value: [end.x, end.y] },
-      delta: { type: "2f", value: [-delta.y / d, delta.x / d] },
-      texSize: { type: "2f", value: [canvas.width, canvas.height] }
-    }
+    uniforms: uniforms
+  });
+
+  uniforms.delta.value = [-delta.y / d, delta.x / d];
+
+  renderer.runShader(null, TiltShiftOperation.fragmentShader, {
+    uniforms: uniforms
   });
 };
 
