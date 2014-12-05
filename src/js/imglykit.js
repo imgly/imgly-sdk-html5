@@ -51,6 +51,7 @@ ImglyKit.version = "0.0.1";
 
 // Exposed classes
 ImglyKit.RenderImage = require("./render-image");
+ImglyKit.Color = require("./color");
 ImglyKit.Operation = require("./operations/operation");
 ImglyKit.Operations = {};
 ImglyKit.Operations.FiltersOperation = require("./operations/filters-operation");
