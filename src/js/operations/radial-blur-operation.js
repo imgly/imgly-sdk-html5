@@ -17,27 +17,15 @@ var StackBlur = require("../vendor/stack-blur");
  * An operation that can crop out a part of the image
  *
  * @class
- * @alias ImglyKit.Operations.TiltShiftOperation
+ * @alias ImglyKit.Operations.RadialBlurOperation
  * @extends ImglyKit.Operation
  */
-var TiltShiftOperation = Operation.extend({
+var RadialBlurOperation = Operation.extend({
   constructor: function () {
     Operation.apply(this, arguments);
 
-    if (typeof this._options.start === "undefined") {
-      this._options.start = new Vector2(0.0, 0.5);
-    }
-
-    if (typeof this._options.end === "undefined") {
-      this._options.end = new Vector2(1.0, 0.5);
-    }
-
-    if (typeof this._options.blurRadius === "undefined") {
-      this._options.blurRadius = 30;
-    }
-
-    if (typeof this._options.gradientRadius === "undefined") {
-      this._options.gradientRadius = 100;
+    if (typeof this._options.position === "undefined") {
+      this._options.position = new Vector2(0.5, 0.5);
     }
   }
 });
@@ -47,21 +35,20 @@ var TiltShiftOperation = Operation.extend({
  * operations.
  * @type {String}
  */
-TiltShiftOperation.identifier = "tilt-shift";
+RadialBlurOperation.identifier = "radial-blur";
 
 /**
  * The fragment shader used for this operation
  * @internal Based on evanw's glfx.js tilt shift shader:
  *           https://github.com/evanw/glfx.js/blob/master/src/filters/blur/tiltshift.js
  */
-TiltShiftOperation.fragmentShader = Utils.shaderString(function () {/**webgl
+RadialBlurOperation.fragmentShader = Utils.shaderString(function () {/**webgl
 
   precision mediump float;
   uniform sampler2D u_image;
   uniform float blurRadius;
   uniform float gradientRadius;
-  uniform vec2 start;
-  uniform vec2 end;
+  uniform vec2 position;
   uniform vec2 delta;
   uniform vec2 texSize;
   varying vec2 v_texCoord;
@@ -75,9 +62,7 @@ TiltShiftOperation.fragmentShader = Utils.shaderString(function () {/**webgl
       float total = 0.0;
 
       float offset = random(vec3(12.9898, 78.233, 151.7182), 0.0);
-
-      vec2 normal = normalize(vec2(start.y - end.y, end.x - start.x));
-      float radius = smoothstep(0.0, 1.0, abs(dot(v_texCoord * texSize - start, normal)) / gradientRadius) * blurRadius;
+      float radius = smoothstep(0.0, 1.0, abs(distance(v_texCoord * texSize, position)) / (gradientRadius * 2.0)) * blurRadius;
       for (float t = -30.0; t <= 30.0; t++) {
           float percent = (t + offset - 0.5) / 30.0;
           float weight = 1.0 - abs(percent);
@@ -99,13 +84,9 @@ TiltShiftOperation.fragmentShader = Utils.shaderString(function () {/**webgl
  * Checks whether this Operation can be applied the way it is configured
  * @return {boolean}
  */
-TiltShiftOperation.prototype.validateSettings = function() {
-  if (!(this._options.start instanceof Vector2)) {
-    throw new Error("TiltShiftOperation: `start` has to be a Vector2 instance.");
-  }
-
-  if (!(this._options.end instanceof Vector2)) {
-    throw new Error("TiltShiftOperation: `end` has to be a Vector2 instance.");
+RadialBlurOperation.prototype.validateSettings = function() {
+  if (!(this._options.position instanceof Vector2)) {
+    throw new Error("RadialBlurOperation: `position` has to be a Vector2 instance.");
   }
 };
 
@@ -115,7 +96,7 @@ TiltShiftOperation.prototype.validateSettings = function() {
  * @return {Promise}
  * @abstract
  */
-TiltShiftOperation.prototype.render = function(renderer) {
+RadialBlurOperation.prototype.render = function(renderer) {
   if (renderer.identifier === "webgl") {
     this._renderWebGL(renderer);
   } else {
@@ -128,34 +109,30 @@ TiltShiftOperation.prototype.render = function(renderer) {
  * @param  {WebGLRenderer} renderer
  */
 /* istanbul ignore next */
-TiltShiftOperation.prototype._renderWebGL = function(renderer) {
+RadialBlurOperation.prototype._renderWebGL = function(renderer) {
   var canvas = renderer.getCanvas();
   var canvasSize = new Vector2(canvas.width, canvas.height);
 
-  var start = this._options.start.clone().multiply(canvasSize);
-  start.y = canvasSize.y - start.y;
-  var end = this._options.end.clone().multiply(canvasSize);
-  end.y = canvasSize.y - end.y;
-  var delta = end.clone().subtract(start);
-
-  var d = Math.sqrt(delta.x * delta.x + delta.y * delta.y);
+  var position = this._options.position.clone().multiply(canvasSize);
+  position.y = canvasSize.y - position.y;
 
   var uniforms = {
     blurRadius: { type: "f", value: this._options.blurRadius },
     gradientRadius: { type: "f", value: this._options.gradientRadius },
-    start: { type: "2f", value: [start.x, start.y] },
-    end: { type: "2f", value: [end.x, end.y] },
-    delta: { type: "2f", value: [delta.x / d, delta.y / d] },
-    texSize: { type: "2f", value: [canvas.width, canvas.height] }
+    position: { type: "2f", value: [position.x, position.y] },
+    texSize: { type: "2f", value: [canvas.width, canvas.height] },
+    delta: { type: "2f", value: [1, 1] }
   };
 
-  renderer.runShader(null, TiltShiftOperation.fragmentShader, {
+  // First pass
+  renderer.runShader(null, RadialBlurOperation.fragmentShader, {
     uniforms: uniforms
   });
 
-  uniforms.delta.value = [-delta.y / d, delta.x / d];
+  // Update delta for second pass
+  uniforms.delta.value = [-1, 1];
 
-  renderer.runShader(null, TiltShiftOperation.fragmentShader, {
+  renderer.runShader(null, RadialBlurOperation.fragmentShader, {
     uniforms: uniforms
   });
 };
@@ -164,7 +141,7 @@ TiltShiftOperation.prototype._renderWebGL = function(renderer) {
  * Crops the image using Canvas2D
  * @param  {CanvasRenderer} renderer
  */
-TiltShiftOperation.prototype._renderCanvas = function(renderer) {
+RadialBlurOperation.prototype._renderCanvas = function(renderer) {
   var canvas = renderer.getCanvas();
 
   var blurryCanvas = this._blurCanvas(renderer);
@@ -179,7 +156,7 @@ TiltShiftOperation.prototype._renderCanvas = function(renderer) {
  * @return {Canvas}
  * @private
  */
-TiltShiftOperation.prototype._blurCanvas = function(renderer) {
+RadialBlurOperation.prototype._blurCanvas = function(renderer) {
   var newCanvas = renderer.cloneCanvas();
   var blurryContext = newCanvas.getContext("2d");
   var blurryImageData = blurryContext.getImageData(0, 0, newCanvas.width, newCanvas.height);
@@ -195,7 +172,7 @@ TiltShiftOperation.prototype._blurCanvas = function(renderer) {
  * @return {Canvas}
  * @private
  */
-TiltShiftOperation.prototype._createMask = function(renderer) {
+RadialBlurOperation.prototype._createMask = function(renderer) {
   var canvas = renderer.getCanvas();
 
   var canvasSize = new Vector2(canvas.width, canvas.height);
@@ -204,26 +181,15 @@ TiltShiftOperation.prototype._createMask = function(renderer) {
   var maskCanvas = renderer.createCanvas(canvas.width, canvas.height);
   var maskContext = maskCanvas.getContext("2d");
 
-  var start = this._options.start.clone().multiply(canvasSize);
-  var end = this._options.end.clone().multiply(canvasSize);
-
-  var rad = Math.atan((end.y - start.y) / (end.x - start.x));
-
-  var gradientStart = start.clone();
-  gradientStart.x += Math.sin(rad * Math.PI / 2) * gradientRadius;
-  gradientStart.y -= Math.cos(rad * Math.PI / 2) * gradientRadius;
-
-  var gradientEnd = start.clone();
-  gradientEnd.x -= Math.sin(rad * Math.PI / 2) * gradientRadius;
-  gradientEnd.y += Math.cos(rad * Math.PI / 2) * gradientRadius;
+  var position = this._options.position.clone().multiply(canvasSize);
 
   // Build gradient
-  var gradient = maskContext.createLinearGradient(
-    gradientStart.x, gradientStart.y,
-    gradientEnd.x,   gradientEnd.y
+  var gradient = maskContext.createRadialGradient(
+    position.x, position.y, 0,
+    position.x, position.y, gradientRadius
   );
-  gradient.addColorStop(0, "#000000");
-  gradient.addColorStop(0.5, "#FFFFFF");
+  gradient.addColorStop(0, "#FFFFFF");
+  gradient.addColorStop(0.5, "#000000");
   gradient.addColorStop(1, "#000000");
 
   // Draw gradient
@@ -240,7 +206,7 @@ TiltShiftOperation.prototype._createMask = function(renderer) {
  * @param  {Canvas} maskCanvas
  * @private
  */
-TiltShiftOperation.prototype._applyMask = function(inputCanvas, blurryCanvas, maskCanvas) {
+RadialBlurOperation.prototype._applyMask = function(inputCanvas, blurryCanvas, maskCanvas) {
   var inputContext = inputCanvas.getContext("2d");
   var blurryContext = blurryCanvas.getContext("2d");
   var maskContext = maskCanvas.getContext("2d");
@@ -265,4 +231,4 @@ TiltShiftOperation.prototype._applyMask = function(inputCanvas, blurryCanvas, ma
   inputContext.putImageData(inputImageData, 0, 0);
 };
 
-module.exports = TiltShiftOperation;
+module.exports = RadialBlurOperation;

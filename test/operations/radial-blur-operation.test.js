@@ -15,8 +15,8 @@ var fs = require("fs");
 var should = require("should");
 var canvas = require("canvas");
 var ImglyKit = require("../..");
-var TiltShiftOperation = ImglyKit.Operations.TiltShiftOperation;
-var kit, image, tiltShiftOperation;
+var RadialBlurOperation = ImglyKit.Operations.RadialBlurOperation;
+var kit, image, radialBlurOperation;
 
 beforeEach(function () {
   image = new canvas.Image();
@@ -27,17 +27,17 @@ beforeEach(function () {
   kit = new ImglyKit({ image: image });
 });
 
-describe("TiltShiftOperation", function () {
+describe("RadialBlurOperation", function () {
 
   describe("#render", function () {
 
-    describe("if `start` is not a Vector2", function () {
+    describe("if `position` is not a Vector2", function () {
 
       it("should fail", function (done) {
-        tiltShiftOperation = new TiltShiftOperation(kit, {
-          start: null
+        radialBlurOperation = new RadialBlurOperation(kit, {
+          position: null
         });
-        kit.operationsStack.push(tiltShiftOperation);
+        kit.operationsStack.push(radialBlurOperation);
 
         kit.render()
           .then(function (result) {
@@ -52,35 +52,13 @@ describe("TiltShiftOperation", function () {
 
     });
 
-    describe("if `end` is not a Vector2", function () {
-
-      it("should fail", function (done) {
-        tiltShiftOperation = new TiltShiftOperation(kit, {
-          end: null
-        });
-        kit.operationsStack.push(tiltShiftOperation);
-
-        kit.render()
-          .then(function (result) {
-            should.not.exist(result);
-            done();
-          })
-          .catch(function (err) {
-            err.should.be.instanceOf(Error);
-            done();
-          });
-      });
-
-    });
-
-    describe("if both `start` and `end` are given", function () {
+    describe("if `position` is valid", function () {
 
       it("should succeed", function (done) {
-        tiltShiftOperation = new TiltShiftOperation(kit, {
-          start: new ImglyKit.Vector2(0.5, 0.5),
-          end: new ImglyKit.Vector2(0.5, 0.8)
+        radialBlurOperation = new RadialBlurOperation(kit, {
+          position: new ImglyKit.Vector2(0.5, 0.5)
         });
-        kit.operationsStack.push(tiltShiftOperation);
+        kit.operationsStack.push(radialBlurOperation);
 
         kit.render()
           .then(function () {
