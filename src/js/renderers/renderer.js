@@ -50,18 +50,33 @@ Renderer.isSupported = function() {
 
 /**
  * Creates a new canvas
+ * @param {Number} [width]
+ * @param {Number} [height]
  * @return {Canvas}
  * @private
  */
-Renderer.prototype.createCanvas = function() {
+Renderer.prototype.createCanvas = function(width, height) {
   var isBrowser = typeof window !== "undefined";
+  var canvas;
   if (isBrowser) {
     /* istanbul ignore next */
-    return document.createElement("canvas");
+    canvas = document.createElement("canvas");
   } else {
     var Canvas = require("canvas");
-    return new Canvas();
+    canvas = new Canvas();
   }
+
+  // Apply width
+  if (typeof width !== "undefined") {
+    canvas.width = width;
+  }
+
+  // Apply height
+  if (typeof height !== "undefined") {
+    canvas.height = height;
+  }
+
+  return canvas;
 };
 
 /**
