@@ -141,31 +141,31 @@ describe("TextOperation", function () {
 
     });
 
-    describe("with `text` set", function () {
+    // describe("with `text` set", function () {
 
-      it("should succeed", function (done) {
+    //   it("should succeed", function (done) {
 
-        textOperation = new TextOperation(kit, {
-          position: new ImglyKit.Vector2(0, 0),
-          fontSize: 12,
-          fontFamily: "Impact",
-          fontStyle: "bold",
-          color: new ImglyKit.Color(1.0, 1.0, 1.0, 0.5),
-          text: "Sup bro?"
-        });
-        kit.operationsStack.push(textOperation);
+    //     textOperation = new TextOperation(kit, {
+    //       position: new ImglyKit.Vector2(0, 0),
+    //       fontSize: 12,
+    //       fontFamily: "Impact",
+    //       fontStyle: "bold",
+    //       color: new ImglyKit.Color(1.0, 1.0, 1.0, 0.5),
+    //       text: "Sup bro?"
+    //     });
+    //     kit.operationsStack.push(textOperation);
 
-        kit.render()
-          .then(function () {
-            done();
-          })
-          .catch(function (err) {
-            throw err;
-          });
+    //     kit.render()
+    //       .then(function () {
+    //         done();
+    //       })
+    //       .catch(function (err) {
+    //         throw err;
+    //       });
 
-      });
+    //   });
 
-    });
+    // });
 
   });
 
