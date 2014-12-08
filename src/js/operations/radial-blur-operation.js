@@ -89,7 +89,7 @@ RadialBlurOperation.fragmentShader = Utils.shaderString(function () {/**webgl
  */
 RadialBlurOperation.prototype.validateSettings = function() {
   if (!(this._options.position instanceof Vector2)) {
-    throw new Error("RadialBlurOperation: `position` has to be a Vector2 instance.");
+    throw new Error("RadialBlurOperation: `position` has to be an instance of ImglyKit.Vector2.");
   }
 };
 

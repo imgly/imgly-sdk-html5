@@ -93,11 +93,11 @@ TiltShiftOperation.fragmentShader = Utils.shaderString(function () {/**webgl
  */
 TiltShiftOperation.prototype.validateSettings = function() {
   if (!(this._options.start instanceof Vector2)) {
-    throw new Error("TiltShiftOperation: `start` has to be a Vector2 instance.");
+    throw new Error("TiltShiftOperation: `start` has to be an instance of ImglyKit.Vector2.");
   }
 
   if (!(this._options.end instanceof Vector2)) {
-    throw new Error("TiltShiftOperation: `end` has to be a Vector2 instance.");
+    throw new Error("TiltShiftOperation: `end` has to be an instance of ImglyKit.Vector2.");
   }
 };
 

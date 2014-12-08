@@ -52,11 +52,11 @@ CropOperation.fragmentShader = Utils.shaderString(function () {/**webgl
  */
 CropOperation.prototype.validateSettings = function() {
   if (!(this._options.start instanceof Vector2)) {
-    throw new Error("CropOperation: `start` has to be a Vector2 instance.");
+    throw new Error("CropOperation: `start` has to be an instance of ImglyKit.Vector2.");
   }
 
   if (!(this._options.end instanceof Vector2)) {
-    throw new Error("CropOperation: `end` has to be a Vector2 instance.");
+    throw new Error("CropOperation: `end` has to be an instance of ImglyKit.Vector2.");
   }
 };
 

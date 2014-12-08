@@ -75,7 +75,7 @@ FramesOperation.prototype._fragmentShader = Utils.shaderString(function () {/**w
  */
 FramesOperation.prototype.validateSettings = function() {
   if (!(this._options.color instanceof Color)) {
-    throw new Error("FramesOperation: `color` has to be an instance of ImglyKit.Color");
+    throw new Error("FramesOperation: `color` has to be an instance of ImglyKit.Color.");
   }
 };
 

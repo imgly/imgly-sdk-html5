@@ -87,15 +87,15 @@ TextOperation.prototype._fragmentShader = Utils.shaderString(function () {/**web
  */
 TextOperation.prototype.validateSettings = function() {
   if (!(this._options.position instanceof Vector2)) {
-    throw new Error("TextOperation: `position` must be an instance of ImglyKit.Vector2.");
+    throw new Error("TextOperation: `position` has to be an instance of ImglyKit.Vector2.");
   }
 
   if (typeof this._options.text === "undefined") {
-    throw new Error("TextOperation: `text` must be specified.");
+    throw new Error("TextOperation: `text` has to be set.");
   }
 
   if (typeof this._options.text !== "string") {
-    throw new Error("TextOperation: `text` must a string.");
+    throw new Error("TextOperation: `text` has to be a string.");
   }
 };
 

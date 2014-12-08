@@ -42,7 +42,7 @@ RotationOperation.identifier = "rotation";
  */
 RotationOperation.prototype.validateSettings = function() {
   if (this._options.degrees % 90 !== 0) {
-    throw new Error("RotationOperation: `rotation` must be a multiple of 90");
+    throw new Error("RotationOperation: `rotation` has to be a multiple of 90.");
   }
 };
 

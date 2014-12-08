@@ -41,7 +41,7 @@ ContrastOperation.identifier = "contrast";
  */
 ContrastOperation.prototype.validateSettings = function() {
   if (typeof this._options.contrast === "undefined") {
-    throw new Error("ContrastOperation: No contrast set.");
+    throw new Error("ContrastOperation: `contrast` has to be set.");
   }
 };
 

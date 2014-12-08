@@ -54,7 +54,7 @@ FiltersOperation.identifier = "filters";
  */
 FiltersOperation.prototype.validateSettings = function() {
   if (this._selectedFilter === null) {
-    throw new Error("FiltersOperation: Need to select a filter.");
+    throw new Error("FiltersOperation: `filter` has to be set.");
   }
 };
 
