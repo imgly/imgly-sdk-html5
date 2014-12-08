@@ -125,9 +125,17 @@ StickersOperation.prototype._renderWebGL = function(renderer, image) {
   var position = this._options.position.clone();
   var canvasSize = new Vector2(canvas.width, canvas.height);
 
+  if (this._options.numberFormat === "absolute") {
+    position.divide(canvasSize);
+  }
+
   var size = new Vector2(image.width, image.height);
   if (typeof this._options.size !== "undefined") {
     size.copy(this._options.size);
+
+    if (this._options.numberFormat === "relative") {
+      size.multiply(canvasSize);
+    }
   }
   size.divide(canvasSize);
 
@@ -168,11 +176,19 @@ StickersOperation.prototype._renderCanvas = function(renderer, image) {
   var context = renderer.getContext();
 
   var canvasSize = new Vector2(canvas.width, canvas.height);
-  var scaledPosition = this._options.position.clone().multiply(canvasSize);
+  var scaledPosition = this._options.position.clone();
+
+  if (this._options.numberFormat === "relative") {
+    scaledPosition.multiply(canvasSize);
+  }
 
   var size = new Vector2(image.width, image.height);
   if (typeof this._options.size !== "undefined") {
     size.copy(this._options.size);
+
+    if (this._options.numberFormat === "relative") {
+      size.multiply(canvasSize);
+    }
   }
 
   context.drawImage(image,
