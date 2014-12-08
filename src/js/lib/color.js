@@ -21,10 +21,10 @@
 function Color(r, g, b, a) {
   if (typeof a === "undefined") a = 1.0;
 
-  this._r = r;
-  this._g = g;
-  this._b = b;
-  this._a = a;
+  this.r = r;
+  this.g = g;
+  this.b = b;
+  this.a = a;
 }
 
 /**
@@ -33,10 +33,10 @@ function Color(r, g, b, a) {
  */
 Color.prototype.toRGBA = function() {
   var colors = [
-    this._r * 255,
-    this._g * 255,
-    this._b * 255,
-    this._a
+    this.r * 255,
+    this.g * 255,
+    this.b * 255,
+    this.a
   ];
   return "rgba(" + colors.join(",") + ")";
 };
@@ -47,9 +47,9 @@ Color.prototype.toRGBA = function() {
  */
 Color.prototype.toHex = function() {
   var components = [
-    this._componentToHex(this._r * 255),
-    this._componentToHex(this._g * 255),
-    this._componentToHex(this._b * 255)
+    this.componentToHex(this.r * 255),
+    this.componentToHex(this.g * 255),
+    this.componentToHex(this.b * 255)
   ];
   return "#" + components.join("");
 };
@@ -59,7 +59,7 @@ Color.prototype.toHex = function() {
  * @return {Array.<Number>}
  */
 Color.prototype.toGLColor = function() {
-  return [this._r, this._g, this._b, this._a];
+  return [this.r, this.g, this.b, this.a];
 };
 
 /**
@@ -67,7 +67,7 @@ Color.prototype.toGLColor = function() {
  * @return {Array.<Number>}
  */
 Color.prototype.toRGBGLColor = function() {
-  return [this._r, this._g, this._b];
+  return [this.r, this.g, this.b];
 };
 
 /**

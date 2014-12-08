@@ -74,9 +74,9 @@ SoftColorOverlay.prototype.renderCanvas = function(renderer) {
     for (var y = 0; y < canvas.height; y++) {
       var index = (canvas.width * y + x) * 4;
 
-      imageData.data[index] = Math.max(this._options.red, imageData.data[index]);
-      imageData.data[index + 1] = Math.max(this._options.green, imageData.data[index + 1]);
-      imageData.data[index + 2] = Math.max(this._options.blue, imageData.data[index + 2]);
+      imageData.data[index] = Math.max(this._options.color.r, imageData.data[index]);
+      imageData.data[index + 1] = Math.max(this._options.color.g, imageData.data[index + 1]);
+      imageData.data[index + 2] = Math.max(this._options.color.b, imageData.data[index + 2]);
     }
   }
 
