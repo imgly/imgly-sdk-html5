@@ -47,9 +47,9 @@ Color.prototype.toRGBA = function() {
  */
 Color.prototype.toHex = function() {
   var components = [
-    this.componentToHex(this.r * 255),
-    this.componentToHex(this.g * 255),
-    this.componentToHex(this.b * 255)
+    this._componentToHex(this.r * 255),
+    this._componentToHex(this.g * 255),
+    this._componentToHex(this.b * 255)
   ];
   return "#" + components.join("");
 };
