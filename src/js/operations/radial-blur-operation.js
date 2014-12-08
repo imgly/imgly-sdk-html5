@@ -116,8 +116,12 @@ RadialBlurOperation.prototype._renderWebGL = function(renderer) {
   var canvas = renderer.getCanvas();
   var canvasSize = new Vector2(canvas.width, canvas.height);
 
-  var position = this._options.position.clone().multiply(canvasSize);
+  var position = this._options.position.clone();
   position.y = canvasSize.y - position.y;
+
+  if (this._options.numberFormat === "relative") {
+    position.multiply(canvasSize);
+  }
 
   var uniforms = {
     blurRadius: { type: "f", value: this._options.blurRadius },
