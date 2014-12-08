@@ -63,6 +63,14 @@ Color.prototype.toGLColor = function() {
 };
 
 /**
+ * Returns an array with 3 values (0...1)
+ * @return {Array.<Number>}
+ */
+Color.prototype.toRGBGLColor = function() {
+  return [this._r, this._g, this._b];
+};
+
+/**
  * Returns the given number as hex
  * @param  {Number} component
  * @return {String}

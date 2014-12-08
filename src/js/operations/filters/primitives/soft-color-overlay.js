@@ -11,6 +11,7 @@
 var _ = require("lodash");
 var Primitive = require("./primitive");
 var Utils = require("../../../lib/utils");
+var Color = require("../../../lib/color");
 
 /**
  * SoftColorOverlay primitive
@@ -23,9 +24,7 @@ var SoftColorOverlay = Primitive.extend({
     Primitive.apply(this, arguments);
 
     this._options = _.defaults(this._options, {
-      red: 1.0,
-      green: 1.0,
-      blue: 1.0
+      color: new Color(1.0, 1.0, 1.0)
     });
   }
 });
@@ -56,15 +55,9 @@ SoftColorOverlay.prototype._fragmentShader = Utils.shaderString(function() {/*we
  */
 /* istanbul ignore next */
 SoftColorOverlay.prototype.renderWebGL = function(renderer) {
-  var overlay = [
-    this._options.red / 255,
-    this._options.green / 255,
-    this._options.blue / 255
-  ];
-
   renderer.runShader(null, this._fragmentShader, {
     uniforms: {
-      u_overlay: { type: "3f", value: overlay }
+      u_overlay: { type: "3f", value: this._options.color.toRGBGLColor() }
     }
   });
 };

@@ -45,4 +45,15 @@ describe("Color", function () {
 
   });
 
+  describe("#toRGBGLColor", function () {
+
+    it("should return an array with 0..1 values", function () {
+      var gl = color.toGLColor();
+      gl[0].should.equal(1.0);
+      gl[1].should.equal(0.0);
+      gl[2].should.equal(0.0);
+    });
+
+  });
+
 });

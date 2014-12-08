@@ -9,6 +9,7 @@
  */
 
 var Filter = require("./filter");
+var Color = require("../../lib/color");
 
 /**
  * K2 Filter
@@ -49,9 +50,7 @@ K2Filter.prototype.render = function(renderer) {
 
   // Soft color overlay
   stack.add(new Filter.Primitives.SoftColorOverlay({
-    red: 40,
-    green: 40,
-    blue: 40
+    color: new Color(40 / 255, 40 / 255, 40 / 255)
   }));
 
   stack.render(renderer);

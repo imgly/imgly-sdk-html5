@@ -11,6 +11,7 @@
 var _ = require("lodash");
 var Primitive = require("./primitive");
 var Utils = require("../../../lib/utils");
+var Color = require("../../../lib/color");
 
 /**
  * Glow primitive
@@ -23,7 +24,7 @@ var Glow = Primitive.extend({
     Primitive.apply(this, arguments);
 
     this._options = _.defaults(this._options, {
-      color: [255, 255, 255]
+      color: new Color(1, 1, 1)
     });
   }
 });
@@ -64,11 +65,7 @@ Glow.prototype._fragmentShader = Utils.shaderString(function() {/*webgl
 Glow.prototype.renderWebGL = function(renderer) {
   renderer.runShader(null, this._fragmentShader, {
     uniforms: {
-      u_color: { type: "3f", value: [
-        this._options.color[0] / 255,
-        this._options.color[1] / 255,
-        this._options.color[2] / 255
-      ]}
+      u_color: { type: "3f", value: this._options.color.toRGBGLColor()}
     }
   });
 };
