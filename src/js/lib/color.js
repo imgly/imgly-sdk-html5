@@ -55,6 +55,14 @@ Color.prototype.toHex = function() {
 };
 
 /**
+ * Returns an array with 4 values (0...1)
+ * @return {Array.<Number>}
+ */
+Color.prototype.toGLColor = function() {
+  return [this._r, this._g, this._b, this._a];
+};
+
+/**
  * Returns the given number as hex
  * @param  {Number} component
  * @return {String}

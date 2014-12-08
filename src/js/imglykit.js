@@ -69,6 +69,7 @@ ImglyKit.Operations.TiltShiftOperation = require("./operations/tilt-shift-operat
 ImglyKit.Operations.RadialBlurOperation = require("./operations/radial-blur-operation");
 ImglyKit.Operations.TextOperation = require("./operations/text-operation");
 ImglyKit.Operations.StickersOperation = require("./operations/stickers-operation");
+ImglyKit.Operations.FramesOperation = require("./operations/frames-operation");
 
 // Exposed constants
 ImglyKit.RenderType = Constants.RenderType;

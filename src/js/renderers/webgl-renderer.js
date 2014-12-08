@@ -160,6 +160,9 @@ WebGLRenderer.prototype.runShader = function(vertexShader, fragmentShader, optio
       case "3f":
         gl.uniform3f(location, uniform.value[0], uniform.value[1], uniform.value[2]);
         break;
+      case "4f":
+        gl.uniform4f(location, uniform.value[0], uniform.value[1], uniform.value[2], uniform.value[3]);
+        break;
       case "2fv":
         gl.uniform2fv(location, uniform.value);
         break;
