@@ -27,7 +27,7 @@ beforeEach(function () {
   kit = new ImglyKit({ image: image });
 });
 
-describe("CropOperation", function () {
+describe.only("CropOperation", function () {
 
   describe("#render", function () {
 
@@ -102,6 +102,47 @@ describe("CropOperation", function () {
           .then(function (result) {
             result.width.should.equal(image.width * 0.8);
             result.height.should.equal(image.height * 0.8);
+
+            done();
+          })
+          .catch(function (err) {
+            throw err;
+          });
+      });
+
+    });
+
+    describe("with `numberFormat` set to `absolute`", function () {
+
+      it("should succeed", function (done) {
+        cropOperation = new CropOperation(kit, {
+          start: new ImglyKit.Vector2(100, 100),
+          end: new ImglyKit.Vector2(400, 400),
+          numberFormat: "absolute"
+        });
+        kit.operationsStack.push(cropOperation);
+
+        kit.render()
+          .then(function () {
+            done();
+          })
+          .catch(function (err) {
+            throw err;
+          });
+      });
+
+      it("should correctly resize the canvas", function (done) {
+        cropOperation = new CropOperation(kit, {
+          start: new ImglyKit.Vector2(100, 100),
+          end: new ImglyKit.Vector2(400, 400),
+          numberFormat: "absolute"
+        });
+        kit.operationsStack.push(cropOperation);
+
+        kit.render(ImglyKit.RenderType.IMAGE)
+          .then(function (result) {
+            result.width.should.equal(300);
+            result.height.should.equal(300);
 
             done();
           })

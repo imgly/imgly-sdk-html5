@@ -8,6 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+var _ = require("lodash");
 var Operation = require("./operation");
 var Vector2 = require("../lib/math/vector2");
 var Utils = require("../lib/utils");
@@ -19,7 +20,11 @@ var Utils = require("../lib/utils");
  * @alias ImglyKit.Operations.CropOperation
  * @extends ImglyKit.Operation
  */
-var CropOperation = Operation.extend({});
+var CropOperation = Operation.extend({
+  constructor: function () {
+    Operation.apply(this, arguments);
+  }
+});
 
 /**
  * A unique string that identifies this operation. Can be used to select
@@ -82,9 +87,15 @@ CropOperation.prototype.render = function(renderer) {
 CropOperation.prototype._renderWebGL = function(renderer) {
   var canvas = renderer.getCanvas();
   var gl = renderer.getContext();
+  var canvasSize = new Vector2(canvas.width, canvas.height);
 
-  var start = this._options.start;
-  var end = this._options.end;
+  var start = this._options.start.clone();
+  var end = this._options.end.clone();
+
+  if (this._options.numberFormat === "absolute") {
+    start.divide(canvasSize);
+    end.divide(canvasSize);
+  }
 
   // 0..1 > 1..0 on y-axis
   var originalStartY = start.y;
@@ -142,7 +153,11 @@ CropOperation.prototype._renderCanvas = function(renderer) {
   var newContext = newCanvas.getContext("2d");
 
   // The upper left corner of the cropped area on the original image
-  var startPosition = dimensions.clone().multiply(this._options.start);
+  var startPosition = this._options.start.clone();
+
+  if (this._options.numberFormat === "relative") {
+    startPosition.multiply(dimensions);
+  }
 
   // Draw the source canvas onto the new one
   newContext.drawImage(canvas,
@@ -165,10 +180,15 @@ CropOperation.prototype._getNewDimensions = function(renderer) {
   var canvas = renderer.getCanvas();
   var dimensions = new Vector2(canvas.width, canvas.height);
 
-  return this._options.end
+  var newDimensions = this._options.end
     .clone()
-    .subtract(this._options.start)
-    .multiply(dimensions);
+    .subtract(this._options.start);
+
+  if (this._options.numberFormat === "relative") {
+    newDimensions.multiply(dimensions);
+  }
+
+  return newDimensions;
 };
 
 module.exports = CropOperation;

@@ -9,6 +9,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+var _ = require("lodash");
+
 /**
  * Base class for Operations. Extendable via {@link ImglyKit.Operation#extend}.
  * @class
@@ -21,6 +23,11 @@ function Operation(kit, options) {
 
   this._kit = kit;
   this._options = options || {};
+
+  // Default options
+  this._options = _.defaults(this._options, {
+    numberFormat: "relative"
+  });
 }
 
 /**
@@ -33,7 +40,11 @@ Operation.identifier = null;
 /**
  * Checks whether this Operation can be applied the way it is configured
  */
-Operation.prototype.validateSettings = function() {};
+Operation.prototype.validateSettings = function() {
+  if (["relative", "absolute"].indexOf(this._options.numberFormat) === -1) {
+    throw new Error("Operation: Invalid `numberFormat`: " + this._optoins.numberFormat + " (valid options are: absolute, relative).");
+  }
+};
 
 /**
  * Applies this operation

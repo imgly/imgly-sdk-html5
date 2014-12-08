@@ -88,6 +88,8 @@ TextOperation.prototype._fragmentShader = Utils.shaderString(function () {/**web
  * @return {boolean}
  */
 TextOperation.prototype.validateSettings = function() {
+  Operation.prototype.validateSettings.apply(this, arguments);
+
   if (!(this._options.position instanceof Vector2)) {
     throw new Error("TextOperation: `position` has to be an instance of ImglyKit.Vector2.");
   }
