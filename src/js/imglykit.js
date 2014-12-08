@@ -51,7 +51,7 @@ ImglyKit.version = "0.0.1";
 
 // Exposed classes
 ImglyKit.RenderImage = require("./render-image");
-ImglyKit.Color = require("./color");
+ImglyKit.Color = require("./lib/color");
 ImglyKit.Operation = require("./operations/operation");
 ImglyKit.Operations = {};
 ImglyKit.Operations.FiltersOperation = require("./operations/filters-operation");
@@ -63,6 +63,7 @@ ImglyKit.Operations.BrightnessOperation = require("./operations/brightness-opera
 ImglyKit.Operations.FlipOperation = require("./operations/flip-operation");
 ImglyKit.Operations.TiltShiftOperation = require("./operations/tilt-shift-operation");
 ImglyKit.Operations.RadialBlurOperation = require("./operations/radial-blur-operation");
+ImglyKit.Operations.TextOperation = require("./operations/text-operation");
 
 // Exposed constants
 ImglyKit.RenderType = Constants.RenderType;
