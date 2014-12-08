@@ -30,6 +30,8 @@ var TextOperation = Operation.extend({
       lineHeight: 1.1,
       fontFamily: "Times New Roman",
       fontWeight: "normal",
+      alignment: "left",
+      verticalAlignment: "top",
       color: new Color(0, 0, 0, 1),
       position: new Vector2(0, 0)
     });
@@ -97,6 +99,14 @@ TextOperation.prototype.validateSettings = function() {
   if (typeof this._options.text !== "string") {
     throw new Error("TextOperation: `text` has to be a string.");
   }
+
+  if (["left", "center", "right"].indexOf(this._options.alignment) === -1) {
+    throw new Error("TextOperation: Invalid `alignment`: " + this._options.alignment + " (valid options are: left, center, right)");
+  }
+
+  if (["top", "center", "bottom"].indexOf(this._options.verticalAlignment) === -1) {
+    throw new Error("TextOperation: Invalid `verticalAlignment`: " + this._options.verticalAlignment + " (valid options are: top, center, bottom)");
+  }
 };
 
 /**
@@ -129,6 +139,20 @@ TextOperation.prototype._renderWebGL = function(renderer) {
 
   position.y = 1 - position.y; // Invert y
   position.y -= size.y; // Fix y
+
+  // Adjust vertical alignment
+  if (this._options.verticalAlignment === "center") {
+    position.y += size.y / 2;
+  } else if (this._options.verticalAlignment === "bottom") {
+    position.y += size.y;
+  }
+
+  // Adjust horizontal alignment
+  if (this._options.alignment === "center") {
+    position.x -= size.x / 2;
+  } else if (this._options.alignment === "right") {
+    position.x -= size.x;
+  }
 
   // Upload the texture
   gl.activeTexture(gl.TEXTURE0 + this._textureIndex);
@@ -166,6 +190,20 @@ TextOperation.prototype._renderCanvas = function(renderer) {
   var canvasSize = new Vector2(canvas.width, canvas.height);
   var scaledPosition = this._options.position.clone().multiply(canvasSize);
 
+  // Adjust vertical alignment
+  if (this._options.verticalAlignment === "center") {
+    scaledPosition.y -= textCanvas.height / 2;
+  } else if (this._options.verticalAlignment === "bottom") {
+    scaledPosition.y -= textCanvas.height;
+  }
+
+  // Adjust horizontal alignment
+  if (this._options.alignment === "center") {
+    scaledPosition.x -= textCanvas.width / 2;
+  } else if (this._options.alignment === "right") {
+    scaledPosition.x -= textCanvas.width;
+  }
+
   context.drawImage(textCanvas, scaledPosition.x, scaledPosition.y);
 };
 
@@ -176,6 +214,7 @@ TextOperation.prototype._renderCanvas = function(renderer) {
  * @private
  */
 TextOperation.prototype._renderTextCanvas = function(renderer) {
+  var line, lineNum;
   var canvas = renderer.createCanvas();
   var context = canvas.getContext("2d");
   var maxWidth = this._options.maxWidth;
@@ -186,45 +225,33 @@ TextOperation.prototype._renderTextCanvas = function(renderer) {
 
   var boundingBox = new Vector2();
 
+  var lines = this._options.text.split("\n");
   if (typeof maxWidth !== "undefined") {
     // Calculate the bounding box
-    boundingBox = new Vector2(this._options.maxWidth, 0);
-
-    var outputLines = this._buildOutputLines(context, maxWidth);
-
-    // Calculate boundingbox height
-    boundingBox.y = actualLineHeight * outputLines.length;
-
-    // Resize the canvas
-    canvas.width = boundingBox.x;
-    canvas.height = boundingBox.y;
-
-    // Get the context again, apply text options
-    context = canvas.getContext("2d");
-    this._applyTextOptions(context);
-
-    // Draw lines
-    for (var lineNum = 0; lineNum < outputLines.length; lineNum++) {
-      var line = outputLines[lineNum];
-      context.fillText(line, 0, actualLineHeight * lineNum);
-    }
-
+    boundingBox.x = this._options.maxWidth;
+    lines = this._buildOutputLines(context, maxWidth);
   } else {
-    boundingBox.set(
-      context.measureText(this._options.text).width,
-      actualLineHeight
-    );
+    for (lineNum = 0; lineNum < lines.length; lineNum++) {
+      line = lines[lineNum];
+      boundingBox.x = Math.max(boundingBox.x, context.measureText(line).width);
+    }
+  }
 
-    // Resize the canvas
-    canvas.width = boundingBox.x;
-    canvas.height = boundingBox.y;
+  // Calculate boundingbox height
+  boundingBox.y = actualLineHeight * lines.length;
 
-    // Get the context again, apply text options
-    context = canvas.getContext("2d");
-    this._applyTextOptions(context);
+  // Resize the canvas
+  canvas.width = boundingBox.x;
+  canvas.height = boundingBox.y;
 
-    // No bounding box needed, just draw the text
-    context.fillText(this._options.text, 0, 0);
+  // Get the context again, apply text options
+  context = canvas.getContext("2d");
+  this._applyTextOptions(context);
+
+  // Draw lines
+  for (lineNum = 0; lineNum < lines.length; lineNum++) {
+    line = lines[lineNum];
+    this._drawText(context, line, actualLineHeight * lineNum);
   }
 
   return canvas;
@@ -240,6 +267,7 @@ TextOperation.prototype._applyTextOptions = function(context) {
     this._options.fontSize + "px " +
     this._options.fontFamily;
   context.textBaseline = "hanging";
+  context.textAlign = this._options.alignment;
   context.fillStyle = this._options.color.toRGBA();
 };
 
@@ -294,6 +322,24 @@ TextOperation.prototype._buildOutputLines = function(context, maxWidth) {
 
   }
   return outputLines;
+};
+
+/**
+ * Draws the given line onto the given context at the given Y position
+ * @param  {RenderingContext2D} context
+ * @param  {String} text
+ * @param  {Number} y
+ * @private
+ */
+TextOperation.prototype._drawText = function(context, text, y) {
+  var canvas = context.canvas;
+  if (this._options.alignment === "center") {
+    context.fillText(text, canvas.width / 2, y);
+  } else if (this._options.alignment === "left") {
+    context.fillText(text, 0, y);
+  } else if (this._options.alignment === "right") {
+    context.fillText(text, canvas.width, y);
+  }
 };
 
 module.exports = TextOperation;

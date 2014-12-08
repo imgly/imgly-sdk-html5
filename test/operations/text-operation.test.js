@@ -12,7 +12,6 @@
 
 var path = require("path");
 var fs = require("fs");
-var should = require("should");
 var canvas = require("canvas");
 var ImglyKit = require("../..");
 var TextOperation = ImglyKit.Operations.TextOperation;
@@ -45,9 +44,8 @@ describe("TextOperation", function () {
         kit.operationsStack.push(textOperation);
 
         kit.render()
-          .then(function (result) {
-            should.not.exist(result);
-            done();
+          .then(function () {
+            done(new Error("Rendering worked while it should not."));
           })
           .catch(function (err) {
             err.should.match(/text/);
@@ -73,9 +71,8 @@ describe("TextOperation", function () {
         kit.operationsStack.push(textOperation);
 
         kit.render()
-          .then(function (result) {
-            should.not.exist(result);
-            done();
+          .then(function () {
+            done(new Error("Rendering worked while it should not."));
           })
           .catch(function (err) {
             err.should.match(/text/);
@@ -101,9 +98,8 @@ describe("TextOperation", function () {
         kit.operationsStack.push(textOperation);
 
         kit.render()
-          .then(function (result) {
-            should.not.exist(result);
-            done();
+          .then(function () {
+            done(new Error("Rendering worked while it should not."));
           })
           .catch(function (err) {
             err.should.match(/position/);
@@ -113,6 +109,53 @@ describe("TextOperation", function () {
       });
 
     });
+
+    describe("with `alignment` being invalid", function () {
+
+      it("should throw an error", function (done) {
+
+        textOperation = new TextOperation(kit, {
+          alignment: "somewhere?",
+          text: "foo"
+        });
+        kit.operationsStack.push(textOperation);
+
+        kit.render()
+          .then(function () {
+            done(new Error("Rendering worked while it should not."));
+          })
+          .catch(function (err) {
+            err.should.match(/alignment/);
+            done();
+          });
+
+      });
+
+    });
+
+    describe("with `verticalAlignment` being invalid", function () {
+
+      it("should throw an error", function (done) {
+
+        textOperation = new TextOperation(kit, {
+          verticalAlignment: "somewhere?",
+          text: "foo"
+        });
+        kit.operationsStack.push(textOperation);
+
+        kit.render()
+          .then(function () {
+            done(new Error("Rendering worked while it should not."));
+          })
+          .catch(function (err) {
+            err.should.match(/verticalAlignment/);
+            done();
+          });
+
+      });
+
+    });
+
 
     // describe("with `text` set", function () {
 
