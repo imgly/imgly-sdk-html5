@@ -188,7 +188,11 @@ RadialBlurOperation.prototype._createMask = function(renderer) {
   var maskCanvas = renderer.createCanvas(canvas.width, canvas.height);
   var maskContext = maskCanvas.getContext("2d");
 
-  var position = this._options.position.clone().multiply(canvasSize);
+  var position = this._options.position.clone();
+
+  if (this._options.numberFormat === "relative") {
+    position.multiply(canvasSize);
+  }
 
   // Build gradient
   var gradient = maskContext.createRadialGradient(

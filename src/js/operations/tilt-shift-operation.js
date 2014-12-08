@@ -201,8 +201,13 @@ TiltShiftOperation.prototype._createMask = function(renderer) {
   var maskCanvas = renderer.createCanvas(canvas.width, canvas.height);
   var maskContext = maskCanvas.getContext("2d");
 
-  var start = this._options.start.clone().multiply(canvasSize);
-  var end = this._options.end.clone().multiply(canvasSize);
+  var start = this._options.start.clone();
+  var end = this._options.end.clone();
+
+  if (this._options.numberFormat === "relative") {
+    start.multiply(canvasSize);
+    end.multiply(canvasSize);
+  }
 
   var rad = Math.atan((end.y - start.y) / (end.x - start.x));
 

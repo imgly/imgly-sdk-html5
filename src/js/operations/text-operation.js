@@ -139,6 +139,10 @@ TextOperation.prototype._renderWebGL = function(renderer) {
   var canvasSize = new Vector2(canvas.width, canvas.height);
   var size = new Vector2(textCanvas.width, textCanvas.height).divide(canvasSize);
 
+  if (this._options.numberFormat === "absolute") {
+    position.divide(canvasSize);
+  }
+
   position.y = 1 - position.y; // Invert y
   position.y -= size.y; // Fix y
 
@@ -190,7 +194,11 @@ TextOperation.prototype._renderCanvas = function(renderer) {
   var context = renderer.getContext();
 
   var canvasSize = new Vector2(canvas.width, canvas.height);
-  var scaledPosition = this._options.position.clone().multiply(canvasSize);
+  var scaledPosition = this._options.position.clone();
+
+  if (this._options.numberFormat === "relative") {
+    scaledPosition.multiply(canvasSize);
+  }
 
   // Adjust vertical alignment
   if (this._options.verticalAlignment === "center") {
