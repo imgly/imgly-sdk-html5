@@ -124,11 +124,16 @@ TiltShiftOperation.prototype._renderWebGL = function(renderer) {
   var canvas = renderer.getCanvas();
   var canvasSize = new Vector2(canvas.width, canvas.height);
 
-  var start = this._options.start.clone().multiply(canvasSize);
+  var start = this._options.start.clone();
   start.y = canvasSize.y - start.y;
-  var end = this._options.end.clone().multiply(canvasSize);
+  var end = this._options.end.clone();
   end.y = canvasSize.y - end.y;
   var delta = end.clone().subtract(start);
+
+  if (this._options.numberFormat === "relative") {
+    start.multiply(canvasSize);
+    end.multiply(canvasSize);
+  }
 
   var d = Math.sqrt(delta.x * delta.x + delta.y * delta.y);
 
