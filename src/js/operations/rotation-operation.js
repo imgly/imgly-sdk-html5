@@ -8,6 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+var _ = require("lodash");
 var Operation = require("./operation");
 var Utils = require("../lib/utils");
 
@@ -22,9 +23,9 @@ var RotationOperation = Operation.extend({
   constructor: function () {
     Operation.apply(this, arguments);
 
-    if (typeof this._options.degrees === "undefined") {
-      this._options.degrees = 0;
-    }
+    this._options = _.defaults(this._options, {
+      degrees: 0
+    });
   }
 });
 

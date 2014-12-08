@@ -17,9 +17,10 @@ var $ = gulpLoadPlugins();
  */
 var config = {
   serverPort: 8080,
-  externals: [{
-    require: "./src/js/vendor/bluebird", expose: "bluebird"
-  }]
+  externals: [
+    { require: "./src/js/vendor/bluebird", expose: "bluebird" },
+    { require: "./src/js/vendor/lodash", expose: "lodash" }
+  ]
 };
 
 /**

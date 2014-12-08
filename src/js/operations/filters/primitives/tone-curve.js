@@ -8,6 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+var _ = require("lodash");
 var LookupTable = require("./lookup-table");
 
 /**
@@ -20,13 +21,13 @@ var ToneCurve = LookupTable.extend({
   constructor: function () {
     LookupTable.apply(this, arguments);
 
-    if (typeof this._options.controlPoints !== "undefined") {
-      this._options.rgbControlPoints = {
+    this._options = _.defaults(this._options, {
+      rgbControlPoints: {
         red: this._options.controlPoints,
         green: this._options.controlPoints,
         blue: this._options.controlPoints
-      };
-    }
+      }
+    });
 
     if (typeof this._options.rgbControlPoints !== "undefined") {
       this._updateLookupTable();

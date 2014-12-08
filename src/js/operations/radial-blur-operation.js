@@ -8,6 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+var _ = require("lodash");
 var Operation = require("./operation");
 var Vector2 = require("../lib/math/vector2");
 var Utils = require("../lib/utils");
@@ -24,9 +25,11 @@ var RadialBlurOperation = Operation.extend({
   constructor: function () {
     Operation.apply(this, arguments);
 
-    if (typeof this._options.position === "undefined") {
-      this._options.position = new Vector2(0.5, 0.5);
-    }
+    this._options = _.defaults(this._options, {
+      position: new Vector2(0.5, 0.5),
+      gradientRadius: 50,
+      blurRadius: 20
+    });
   }
 });
 

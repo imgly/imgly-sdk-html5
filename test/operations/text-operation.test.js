@@ -86,33 +86,6 @@ describe("TextOperation", function () {
 
     });
 
-    describe("without a `position` set", function () {
-
-      it("should throw an error", function (done) {
-
-        textOperation = new TextOperation(kit, {
-          fontSize: 12,
-          fontFamily: "Impact",
-          fontStyle: "bold",
-          color: new ImglyKit.Color(1.0, 1.0, 1.0, 0.5),
-          text: "foo"
-        });
-        kit.operationsStack.push(textOperation);
-
-        kit.render()
-          .then(function (result) {
-            should.not.exist(result);
-            done();
-          })
-          .catch(function (err) {
-            err.should.match(/position/);
-            done();
-          });
-
-      });
-
-    });
-
     describe("with `position` not being an instance of Vector2", function () {
 
       it("should throw an error", function (done) {

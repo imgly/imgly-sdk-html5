@@ -20,12 +20,7 @@ function Operation(kit, options) {
   }
 
   this._kit = kit;
-
-  if (typeof options === "undefined") {
-    options = {};
-  }
-
-  this._options = options;
+  this._options = options || {};
 }
 
 /**

@@ -8,8 +8,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+var _ = require("lodash");
 var Operation = require("./operation");
-
 var PrimitivesStack = require("./filters/primitives-stack");
 var SaturationPrimitive = require("./filters/primitives/saturation");
 
@@ -18,7 +18,15 @@ var SaturationPrimitive = require("./filters/primitives/saturation");
  * @alias ImglyKit.Operations.SaturationOperation
  * @extends ImglyKit.Operation
  */
-var SaturationOperation = Operation.extend({});
+var SaturationOperation = Operation.extend({
+  constructor: function () {
+    Operation.apply(this, arguments);
+
+    this._options = _.defaults(this._options, {
+      saturation: 1.0
+    });
+  }
+});
 
 /**
  * A unique string that identifies this operation. Can be used to select

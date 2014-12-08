@@ -8,11 +8,10 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+var _ = require("lodash");
 var Operation = require("./operation");
-var Vector2 = require("../lib/math/vector2");
 var Color = require("../lib/color");
 var Utils = require("../lib/utils");
-var bluebird = require("bluebird");
 
 /**
  * An operation that can frames on the canvas
@@ -25,13 +24,10 @@ var FramesOperation = Operation.extend({
   constructor: function () {
     Operation.apply(this, arguments);
 
-    if (typeof this._options.color === "undefined") {
-      this._options.color = new Color(0, 0, 0, 1);
-    }
-
-    if (typeof this._options.thickness === "undefined") {
-      this._options.thickness = 0.02;
-    }
+    this._options = _.defaults(this._options, {
+      color: new Color(0, 0, 0, 1),
+      thickness: 0.02
+    });
   }
 });
 

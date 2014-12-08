@@ -8,8 +8,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+var _ = require("lodash");
 var Operation = require("./operation");
-var Vector2 = require("../lib/math/vector2");
 var Utils = require("../lib/utils");
 
 /**
@@ -23,13 +23,10 @@ var FlipOperation = Operation.extend({
   constructor: function () {
     Operation.apply(this, arguments);
 
-    if (typeof this._options.horizontal === "undefined") {
-      this._options.horizontal = false;
-    }
-
-    if (typeof this._options.vertical === "undefined") {
-      this._options.vertical = false;
-    }
+    this._options = _.defaults(this._options,  {
+      horizontal: false,
+      vertical: false
+    });
   }
 });
 

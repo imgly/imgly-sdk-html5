@@ -30,6 +30,7 @@
     "gulp-util": "~2.2.16",
     "istanbul": "^0.3.2",
     "jaguarjs-jsdoc": "0.0.1",
+    "lodash": "^2.4.1",
     "mocha": "^2.0.1",
     "mocha-lcov-reporter": "0.0.1",
     "run-sequence": "~0.3.6",

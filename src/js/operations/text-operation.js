@@ -8,6 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+var _ = require("lodash");
 var Operation = require("./operation");
 var Vector2 = require("../lib/math/vector2");
 var Color = require("../lib/color");
@@ -24,25 +25,14 @@ var TextOperation = Operation.extend({
   constructor: function () {
     Operation.apply(this, arguments);
 
-    if (typeof this._options.fontSize === "undefined") {
-      this._options.fontSize = 30;
-    }
-
-    if (typeof this._options.lineHeight === "undefined") {
-      this._options.lineHeight = 1.1;
-    }
-
-    if (typeof this._options.fontFamily === "undefined") {
-      this._options.fontFamily = "Times New Roman";
-    }
-
-    if (typeof this._options.fontWeight === "undefined") {
-      this._options.fontWeight = "normal";
-    }
-
-    if (typeof this._options.color === "undefined") {
-      this._options.color = new Color(0.0, 0.0, 0.0, 1.0);
-    }
+    this._options = _.defaults(this._options, {
+      fontSize: 30,
+      lineHeight: 1.1,
+      fontFamily: "Times New Roman",
+      fontWeight: "normal",
+      color: new Color(0, 0, 0, 1),
+      position: new Vector2(0, 0)
+    });
   }
 });
 
@@ -96,10 +86,6 @@ TextOperation.prototype._fragmentShader = Utils.shaderString(function () {/**web
  * @return {boolean}
  */
 TextOperation.prototype.validateSettings = function() {
-  if (typeof this._options.position === "undefined") {
-    throw new Error("TextOperation: `position` must be specified.");
-  }
-
   if (!(this._options.position instanceof Vector2)) {
     throw new Error("TextOperation: `position` must be an instance of ImglyKit.Vector2.");
   }

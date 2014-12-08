@@ -8,6 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+var _ = require("lodash");
 var Primitive = require("./primitive");
 var Utils = require("../../../lib/utils");
 
@@ -21,9 +22,9 @@ var Desaturation = Primitive.extend({
   constructor: function () {
     Primitive.apply(this, arguments);
 
-    if (typeof this._options.desaturation === "undefined") {
-      this._options.desaturation = 0;
-    }
+    this._options = _.defaults(this._options, {
+      desaturation: 1.0
+    });
   }
 });
 

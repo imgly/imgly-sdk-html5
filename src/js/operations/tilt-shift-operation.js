@@ -8,6 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+var _ = require("lodash");
 var Operation = require("./operation");
 var Vector2 = require("../lib/math/vector2");
 var Utils = require("../lib/utils");
@@ -24,21 +25,12 @@ var TiltShiftOperation = Operation.extend({
   constructor: function () {
     Operation.apply(this, arguments);
 
-    if (typeof this._options.start === "undefined") {
-      this._options.start = new Vector2(0.0, 0.5);
-    }
-
-    if (typeof this._options.end === "undefined") {
-      this._options.end = new Vector2(1.0, 0.5);
-    }
-
-    if (typeof this._options.blurRadius === "undefined") {
-      this._options.blurRadius = 30;
-    }
-
-    if (typeof this._options.gradientRadius === "undefined") {
-      this._options.gradientRadius = 100;
-    }
+    this._options = _.defaults(this._options, {
+      start: new Vector2(0.0, 0.5),
+      end: new Vector2(1.0, 0.5),
+      blurRadius: 20,
+      gradientRadius: 50
+    });
   }
 });
 

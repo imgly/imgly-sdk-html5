@@ -8,6 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+var _ = require("lodash");
 var Operation = require("./operation");
 var Vector2 = require("../lib/math/vector2");
 var Utils = require("../lib/utils");
@@ -23,6 +24,10 @@ var bluebird = require("bluebird");
 var StickersOperation = Operation.extend({
   constructor: function () {
     Operation.apply(this, arguments);
+
+    this._options = _.defaults(this._options, {
+      position: new Vector2(0, 0)
+    });
   }
 });
 
@@ -78,10 +83,6 @@ StickersOperation.prototype._fragmentShader = Utils.shaderString(function () {/*
 StickersOperation.prototype.validateSettings = function() {
   if (typeof this._options.sticker === "undefined") {
     throw new Error("StickersOperation: `sticker` has to be set.");
-  }
-
-  if (typeof this._options.position === "undefined") {
-    throw new Error("StickersOperation: `position` has to be set.");
   }
 
   if (!(this._options.position instanceof Vector2)) {

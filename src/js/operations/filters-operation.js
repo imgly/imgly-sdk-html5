@@ -53,8 +53,6 @@ FiltersOperation.identifier = "filters";
  * @return {boolean}
  */
 FiltersOperation.prototype.validateSettings = function() {
-  // Did the user select a filter?
-  /* istanbul ignore else */
   if (this._selectedFilter === null) {
     throw new Error("FiltersOperation: Need to select a filter.");
   }

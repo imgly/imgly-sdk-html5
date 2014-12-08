@@ -8,6 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+var _ = require("lodash");
 var Primitive = require("./primitive");
 var Utils = require("../../../lib/utils");
 
@@ -17,7 +18,17 @@ var Utils = require("../../../lib/utils");
  * @alias ImglyKit.Filter.Primitives.SoftColorOverlay
  * @extends {ImglyKit.Filter.Primitive}
  */
-var SoftColorOverlay = Primitive.extend({});
+var SoftColorOverlay = Primitive.extend({
+  constructor: function () {
+    Primitive.apply(this, arguments);
+
+    this._options = _.defaults(this._options, {
+      red: 1.0,
+      green: 1.0,
+      blue: 1.0
+    });
+  }
+});
 
 /**
  * The fragment shader for this primitive
