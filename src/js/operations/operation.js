@@ -19,7 +19,7 @@ function Operation(kit, options) {
     throw new Error("Operation: First parameter for constructor has to be an ImglyKit instance");
   }
 
-  this.kit = kit;
+  this._kit = kit;
 
   if (typeof options === "undefined") {
     options = {};

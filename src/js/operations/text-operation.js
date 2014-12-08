@@ -141,7 +141,8 @@ TextOperation.prototype._renderWebGL = function(renderer) {
   var canvasSize = new Vector2(canvas.width, canvas.height);
   var size = new Vector2(textCanvas.width, textCanvas.height).divide(canvasSize);
 
-  position.y -= size.y;
+  position.y = 1 - position.y; // Invert y
+  position.y -= size.y; // Fix y
 
   // Upload the texture
   gl.activeTexture(gl.TEXTURE0 + this._textureIndex);
@@ -199,7 +200,7 @@ TextOperation.prototype._renderTextCanvas = function(renderer) {
 
   var boundingBox = new Vector2();
 
-  if (maxWidth !== "undefined") {
+  if (typeof maxWidth !== "undefined") {
     // Calculate the bounding box
     boundingBox = new Vector2(this._options.maxWidth, 0);
 

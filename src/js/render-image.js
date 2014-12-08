@@ -108,7 +108,7 @@ RenderImage.prototype.render = function() {
     .then(function () {
       return bluebird.map(self._stack, function (operation) {
         return operation.render(self._renderer);
-      }).then(function () {
+      }, { concurrency: 1 }).then(function () {
         return self._renderer.renderFinal();
       });
     })

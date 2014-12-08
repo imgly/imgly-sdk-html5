@@ -26,6 +26,10 @@ function ImglyKit(options) {
   // `options.image` is required
   if (typeof options.image === "undefined") throw new Error("`options.image` is undefined.");
 
+  if (typeof options.assetsUrl === "undefined") {
+    options.assetsUrl = "assets";
+  }
+
   /**
    * @type {Object}
    * @private
@@ -64,6 +68,7 @@ ImglyKit.Operations.FlipOperation = require("./operations/flip-operation");
 ImglyKit.Operations.TiltShiftOperation = require("./operations/tilt-shift-operation");
 ImglyKit.Operations.RadialBlurOperation = require("./operations/radial-blur-operation");
 ImglyKit.Operations.TextOperation = require("./operations/text-operation");
+ImglyKit.Operations.StickersOperation = require("./operations/stickers-operation");
 
 // Exposed constants
 ImglyKit.RenderType = Constants.RenderType;
@@ -99,6 +104,21 @@ ImglyKit.prototype.render = function(renderType, imageFormat, dimensions) {
  */
 ImglyKit.prototype.reset = function () {
 
+};
+
+/**
+ * Returns the asset path for the given filename
+ * @param  {String} asset
+ * @return {String}
+ */
+ImglyKit.prototype.getAssetPath = function(asset) {
+  var isBrowser = typeof window !== "undefined";
+  if (isBrowser) {
+    return this._options.assetsUrl + "/" + asset;
+  } else {
+    var path = require("path");
+    return path.resolve(this._options.assetsUrl, asset);
+  }
 };
 
 module.exports = ImglyKit;
