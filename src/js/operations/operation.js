@@ -88,18 +88,12 @@ Operation.prototype._initOptions = function(userOptions) {
     (function (optionName, option) {
       capitalized = optionName.charAt(0).toUpperCase() + optionName.slice(1);
 
-      if (typeof option.setter !== "undefined") {
-        // Custom setter
-        self["set" + capitalized] = function (value) {
+      self["set" + capitalized] = function (value) {
+        if (typeof option.setter !== "undefined") {
           value = option.setter.call(this, value);
-          self._setOption(optionName, value);
         }
-      } else {
-        // Default setter
-        self["set" + capitalized] = function (value) {
-          self._setOption(optionName, value);
-        };
-      }
+        self._setOption(optionName, value);
+      };
 
       // Default getter
       self["get" + capitalized] = function () {
