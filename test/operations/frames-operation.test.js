@@ -33,21 +33,12 @@ describe("FramesOperation", function () {
 
     describe("with `color` not being an instance of ImglyKit.Color", function () {
 
-      it("should throw an error", function (done) {
+      it("should throw an error", function () {
 
-        framesOperation = new FramesOperation(kit, {
-          color: "red"
-        });
-        kit.operationsStack.push(framesOperation);
-
-        kit.render()
-          .then(function (result) {
-            should.not.exist(result);
-            done();
-          })
-          .catch(function () {
-            done();
-          });
+        var throwable = function () {
+          new FramesOperation(kit, { color: "red" });
+        };
+        throwable.should.throw("Operation `frames`: Option `color` has to be an instance of ImglyKit.Color.");
 
       });
 

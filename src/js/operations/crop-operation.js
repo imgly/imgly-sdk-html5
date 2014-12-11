@@ -8,7 +8,6 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var _ = require("lodash");
 var Operation = require("./operation");
 var Vector2 = require("../lib/math/vector2");
 var Utils = require("../lib/utils");
@@ -21,8 +20,9 @@ var Utils = require("../lib/utils");
  * @extends ImglyKit.Operation
  */
 var CropOperation = Operation.extend({
-  constructor: function () {
-    Operation.apply(this, arguments);
+  availableOptions: {
+    start: { type: "vector2", required: true },
+    end: { type: "vector2", required: true }
   }
 });
 
@@ -50,20 +50,6 @@ CropOperation.fragmentShader = Utils.shaderString(function () {/**webgl
   }
 
 */});
-
-/**
- * Checks whether this Operation can be applied the way it is configured
- * @return {boolean}
- */
-CropOperation.prototype.validateSettings = function() {
-  if (!(this._options.start instanceof Vector2)) {
-    throw new Error("CropOperation: `start` has to be an instance of ImglyKit.Vector2.");
-  }
-
-  if (!(this._options.end instanceof Vector2)) {
-    throw new Error("CropOperation: `end` has to be an instance of ImglyKit.Vector2.");
-  }
-};
 
 /**
  * Applies this operation

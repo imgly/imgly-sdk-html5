@@ -32,17 +32,11 @@ describe("RotationOperation", function () {
 
     describe("with a rotation that's not divisible by 90", function () {
 
-      it("should fail", function (done) {
-        rotationOperation = new RotationOperation(kit, {
-          degrees: 45
-        });
-        kit.operationsStack.push(rotationOperation);
-
-        kit.render()
-          .catch(function (err) {
-            err.should.be.an.instanceOf(Error);
-            done();
-          });
+      it("should fail", function () {
+        var throwable = function () {
+          new RotationOperation(kit, { degrees: 45 });
+        }
+        throwable.should.throw("RotationOperation: `rotation` has to be a multiple of 90.");
       });
 
     });

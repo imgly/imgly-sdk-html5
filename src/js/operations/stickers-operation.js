@@ -8,7 +8,6 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var _ = require("lodash");
 var Operation = require("./operation");
 var Vector2 = require("../lib/math/vector2");
 var Utils = require("../lib/utils");
@@ -22,12 +21,10 @@ var bluebird = require("bluebird");
  * @extends ImglyKit.Operation
  */
 var StickersOperation = Operation.extend({
-  constructor: function () {
-    Operation.apply(this, arguments);
-
-    this._options = _.defaults(this._options, {
-      position: new Vector2(0, 0)
-    });
+  availableOptions: {
+    sticker: { type: "string", required: true },
+    position: { type: "vector2", default: new Vector2(0, 0) },
+    size: { type: "vector2" }
   }
 });
 
@@ -75,24 +72,6 @@ StickersOperation.prototype._fragmentShader = Utils.shaderString(function () {/*
   }
 
 */});
-
-/**
- * Checks whether this Operation can be applied the way it is configured
- * @return {boolean}
- */
-StickersOperation.prototype.validateSettings = function() {
-  if (typeof this._options.sticker === "undefined") {
-    throw new Error("StickersOperation: `sticker` has to be set.");
-  }
-
-  if (!(this._options.position instanceof Vector2)) {
-    throw new Error("StickersOperation: `position` has to be an instance of ImglyKit.Vector2.");
-  }
-
-  if (typeof this._options.size !== "undefined" && !(this._options.size instanceof Vector2)) {
-    throw new Error("StickersOperation: `size` has to be an instance of ImglyKit.Vector2.");
-  }
-};
 
 /**
  * Applies this operation

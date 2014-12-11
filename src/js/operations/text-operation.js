@@ -8,7 +8,6 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var _ = require("lodash");
 var Operation = require("./operation");
 var Vector2 = require("../lib/math/vector2");
 var Color = require("../lib/color");
@@ -22,19 +21,16 @@ var Utils = require("../lib/utils");
  * @extends ImglyKit.Operation
  */
 var TextOperation = Operation.extend({
-  constructor: function () {
-    Operation.apply(this, arguments);
-
-    this._options = _.defaults(this._options, {
-      fontSize: 30,
-      lineHeight: 1.1,
-      fontFamily: "Times New Roman",
-      fontWeight: "normal",
-      alignment: "left",
-      verticalAlignment: "top",
-      color: new Color(0, 0, 0, 1),
-      position: new Vector2(0, 0)
-    });
+  availableOptions: {
+    fontSize: { type: "number", default: 30 },
+    lineHeight: { type: "number", default: 1.1 },
+    fontFamily: { type: "string", default: "Times New Roman" },
+    fontWeight: { type: "string", default: "normal" },
+    alignment: { type: "string", default: "left", available: ["left", "center", "right"] },
+    verticalAlignment: { type: "string", default: "top", available: ["top", "center", "bottom"] },
+    color: { type: "color", default: new Color(0, 0, 0, 1) },
+    position: { type: "vector2", default: new Vector2(0, 0) },
+    text: { type: "string", required: true }
   }
 });
 
@@ -82,34 +78,6 @@ TextOperation.prototype._fragmentShader = Utils.shaderString(function () {/**web
   }
 
 */});
-
-/**
- * Checks whether this Operation can be applied the way it is configured
- * @return {boolean}
- */
-TextOperation.prototype.validateSettings = function() {
-  Operation.prototype.validateSettings.apply(this, arguments);
-
-  if (!(this._options.position instanceof Vector2)) {
-    throw new Error("TextOperation: `position` has to be an instance of ImglyKit.Vector2.");
-  }
-
-  if (typeof this._options.text === "undefined") {
-    throw new Error("TextOperation: `text` has to be set.");
-  }
-
-  if (typeof this._options.text !== "string") {
-    throw new Error("TextOperation: `text` has to be a string.");
-  }
-
-  if (["left", "center", "right"].indexOf(this._options.alignment) === -1) {
-    throw new Error("TextOperation: Invalid `alignment`: " + this._options.alignment + " (valid options are: left, center, right)");
-  }
-
-  if (["top", "center", "bottom"].indexOf(this._options.verticalAlignment) === -1) {
-    throw new Error("TextOperation: Invalid `verticalAlignment`: " + this._options.verticalAlignment + " (valid options are: top, center, bottom)");
-  }
-};
 
 /**
  * Applies this operation

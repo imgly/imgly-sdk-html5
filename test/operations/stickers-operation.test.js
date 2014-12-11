@@ -79,22 +79,15 @@ describe("StickersOperation", function () {
 
     describe("with `position` not being an instance of Vector2", function () {
 
-      it("should throw an error", function (done) {
+      it("should throw an error", function () {
 
-        stickersOperation = new StickersOperation(kit, {
-          sticker: "nerd-glasses",
-          position: null
-        });
-        kit.operationsStack.push(stickersOperation);
-
-        kit.render()
-          .then(function (result) {
-            should.not.exist(result);
-            done();
-          })
-          .catch(function () {
-            done();
+        var throwable = function () {
+          new StickersOperation(kit, {
+            sticker: "nerd-glasses",
+            position: null
           });
+        };
+        throwable.should.throw("Operation `stickers`: Option `position` has to be an instance of ImglyKit.Vector2.");
 
       });
 
@@ -102,22 +95,15 @@ describe("StickersOperation", function () {
 
     describe("with `size` not being an instance of Vector2", function () {
 
-      it("should throw an error", function (done) {
+      it("should throw an error", function () {
 
-        stickersOperation = new StickersOperation(kit, {
-          sticker: "nerd-glasses",
-          size: null
-        });
-        kit.operationsStack.push(stickersOperation);
-
-        kit.render()
-          .then(function (result) {
-            should.not.exist(result);
-            done();
-          })
-          .catch(function () {
-            done();
+        var throwable = function () {
+          new StickersOperation(kit, {
+            sticker: "nerd-glasses",
+            size: null
           });
+        };
+        throwable.should.throw("Operation `stickers`: Option `size` has to be an instance of ImglyKit.Vector2.");
 
       });
 

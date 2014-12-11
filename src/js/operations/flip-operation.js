@@ -8,7 +8,6 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var _ = require("lodash");
 var Operation = require("./operation");
 var Utils = require("../lib/utils");
 
@@ -20,13 +19,9 @@ var Utils = require("../lib/utils");
  * @extends ImglyKit.Operation
  */
 var FlipOperation = Operation.extend({
-  constructor: function () {
-    Operation.apply(this, arguments);
-
-    this._options = _.defaults(this._options,  {
-      horizontal: false,
-      vertical: false
-    });
+  availableOptions: {
+    horizontal: { type: "boolean", default: false },
+    vertical: { type: "boolean", default: false }
   }
 });
 

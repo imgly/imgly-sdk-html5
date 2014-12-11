@@ -12,7 +12,6 @@
 
 var path = require("path");
 var fs = require("fs");
-var should = require("should");
 var canvas = require("canvas");
 var ImglyKit = require("../..");
 var TiltShiftOperation = ImglyKit.Operations.TiltShiftOperation;
@@ -33,42 +32,26 @@ describe("TiltShiftOperation", function () {
 
     describe("if `start` is not a Vector2", function () {
 
-      it("should fail", function (done) {
-        tiltShiftOperation = new TiltShiftOperation(kit, {
-          start: null
-        });
-        kit.operationsStack.push(tiltShiftOperation);
-
-        kit.render()
-          .then(function (result) {
-            should.not.exist(result);
-            done();
-          })
-          .catch(function (err) {
-            err.should.be.instanceOf(Error);
-            done();
+      it("should throw an error", function () {
+        var throwable = function () {
+          new TiltShiftOperation(kit, {
+            start: null
           });
+        };
+        throwable.should.throw("Operation `tilt-shift`: Option `start` has to be an instance of ImglyKit.Vector2.");
       });
 
     });
 
     describe("if `end` is not a Vector2", function () {
 
-      it("should fail", function (done) {
-        tiltShiftOperation = new TiltShiftOperation(kit, {
-          end: null
-        });
-        kit.operationsStack.push(tiltShiftOperation);
-
-        kit.render()
-          .then(function (result) {
-            should.not.exist(result);
-            done();
-          })
-          .catch(function (err) {
-            err.should.be.instanceOf(Error);
-            done();
+      it("should throw an error", function () {
+        var throwable = function () {
+          new TiltShiftOperation(kit, {
+            end: null
           });
+        };
+        throwable.should.throw("Operation `tilt-shift`: Option `end` has to be an instance of ImglyKit.Vector2.");
       });
 
     });

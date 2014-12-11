@@ -8,7 +8,6 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var _ = require("lodash");
 var Operation = require("./operation");
 var Vector2 = require("../lib/math/vector2");
 var Utils = require("../lib/utils");
@@ -22,14 +21,10 @@ var StackBlur = require("../vendor/stack-blur");
  * @extends ImglyKit.Operation
  */
 var RadialBlurOperation = Operation.extend({
-  constructor: function () {
-    Operation.apply(this, arguments);
-
-    this._options = _.defaults(this._options, {
-      position: new Vector2(0.5, 0.5),
-      gradientRadius: 50,
-      blurRadius: 20
-    });
+  availableOptions: {
+    position: { type: "vector2", default: new Vector2(0.5, 0.5) },
+    gradientRadius: { type: "number", default: 50 },
+    blurRadius: { type: "number", default: 20 }
   }
 });
 
@@ -82,16 +77,6 @@ RadialBlurOperation.fragmentShader = Utils.shaderString(function () {/**webgl
   }
 
 */});
-
-/**
- * Checks whether this Operation can be applied the way it is configured
- * @return {boolean}
- */
-RadialBlurOperation.prototype.validateSettings = function() {
-  if (!(this._options.position instanceof Vector2)) {
-    throw new Error("RadialBlurOperation: `position` has to be an instance of ImglyKit.Vector2.");
-  }
-};
 
 /**
  * Applies this operation

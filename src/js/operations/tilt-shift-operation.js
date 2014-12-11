@@ -8,7 +8,6 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var _ = require("lodash");
 var Operation = require("./operation");
 var Vector2 = require("../lib/math/vector2");
 var Utils = require("../lib/utils");
@@ -22,15 +21,11 @@ var StackBlur = require("../vendor/stack-blur");
  * @extends ImglyKit.Operation
  */
 var TiltShiftOperation = Operation.extend({
-  constructor: function () {
-    Operation.apply(this, arguments);
-
-    this._options = _.defaults(this._options, {
-      start: new Vector2(0.0, 0.5),
-      end: new Vector2(1.0, 0.5),
-      blurRadius: 20,
-      gradientRadius: 50
-    });
+  availableOptions: {
+    start: { type: "vector2", default: new Vector2(0.0, 0.5) },
+    end: { type: "vector2", default: new Vector2(1.0, 0.5) },
+    blurRadius: { type: "number", default: 20 },
+    gradientRadius: { type: "number", default: 50 }
   }
 });
 
@@ -86,20 +81,6 @@ TiltShiftOperation.fragmentShader = Utils.shaderString(function () {/**webgl
   }
 
 */});
-
-/**
- * Checks whether this Operation can be applied the way it is configured
- * @return {boolean}
- */
-TiltShiftOperation.prototype.validateSettings = function() {
-  if (!(this._options.start instanceof Vector2)) {
-    throw new Error("TiltShiftOperation: `start` has to be an instance of ImglyKit.Vector2.");
-  }
-
-  if (!(this._options.end instanceof Vector2)) {
-    throw new Error("TiltShiftOperation: `end` has to be an instance of ImglyKit.Vector2.");
-  }
-};
 
 /**
  * Applies this operation

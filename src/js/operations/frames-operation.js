@@ -8,7 +8,6 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var _ = require("lodash");
 var Operation = require("./operation");
 var Color = require("../lib/color");
 var Utils = require("../lib/utils");
@@ -21,13 +20,9 @@ var Utils = require("../lib/utils");
  * @extends ImglyKit.Operation
  */
 var FramesOperation = Operation.extend({
-  constructor: function () {
-    Operation.apply(this, arguments);
-
-    this._options = _.defaults(this._options, {
-      color: new Color(0, 0, 0, 1),
-      thickness: 0.02
-    });
+  availableOptions: {
+    color: { type: "color", default: new Color(0, 0, 0, 1) },
+    thickness: { type: "number", default: 0.02 }
   }
 });
 
@@ -68,16 +63,6 @@ FramesOperation.prototype._fragmentShader = Utils.shaderString(function () {/**w
   }
 
 */});
-
-/**
- * Checks whether this Operation can be applied the way it is configured
- * @return {boolean}
- */
-FramesOperation.prototype.validateSettings = function() {
-  if (!(this._options.color instanceof Color)) {
-    throw new Error("FramesOperation: `color` has to be an instance of ImglyKit.Color.");
-  }
-};
 
 /**
  * Applies this operation

@@ -8,7 +8,6 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var _ = require("lodash");
 var Operation = require("./operation");
 var Utils = require("../lib/utils");
 
@@ -20,12 +19,12 @@ var Utils = require("../lib/utils");
  * @extends ImglyKit.Operation
  */
 var RotationOperation = Operation.extend({
-  constructor: function () {
-    Operation.apply(this, arguments);
-
-    this._options = _.defaults(this._options, {
-      degrees: 0
-    });
+  availableOptions: {
+    degrees: { type: "number", default: 0, validation: function (value) {
+      if (value % 90 !== 0) {
+        throw new Error("RotationOperation: `rotation` has to be a multiple of 90.");
+      }
+    }}
   }
 });
 
@@ -35,16 +34,6 @@ var RotationOperation = Operation.extend({
  * @type {String}
  */
 RotationOperation.identifier = "rotation";
-
-/**
- * Checks whether this Operation can be applied the way it is configured
- * @return {boolean}
- */
-RotationOperation.prototype.validateSettings = function() {
-  if (this._options.degrees % 90 !== 0) {
-    throw new Error("RotationOperation: `rotation` has to be a multiple of 90.");
-  }
-};
 
 /**
  * The fragment shader used for this operation

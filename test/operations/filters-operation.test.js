@@ -49,13 +49,13 @@ describe("FiltersOperation", function () {
 
   });
 
-  describe("#selectFilter", function () {
+  describe("#setFilter", function () {
 
     describe("with an unknown identifier", function () {
 
       it("should throw an error", function () {
         var throwable = function () {
-          filtersOperation.selectFilter("foobarbaz");
+          filtersOperation.setFilter("foobarbaz");
         };
         throwable.should.throw();
       });
@@ -69,7 +69,7 @@ describe("FiltersOperation", function () {
     for (var id in dummyFiltersOperation._filters) {
       (function (identifier) {
         it("should work with " + identifier + " filter", function(done) {
-          filtersOperation.selectFilter(identifier);
+          filtersOperation.setFilter(identifier);
 
           kit.render()
             .then(function () {

@@ -38,7 +38,7 @@ describe("TextOperation", function () {
           position: new ImglyKit.Vector2(0, 0),
           fontSize: 12,
           fontFamily: "Impact",
-          fontStyle: "bold",
+          fontWeight: "bold",
           color: new ImglyKit.Color(1.0, 1.0, 1.0, 0.5)
         });
         kit.operationsStack.push(textOperation);
@@ -48,7 +48,7 @@ describe("TextOperation", function () {
             done(new Error("Rendering worked while it should not."));
           })
           .catch(function (err) {
-            err.should.match(/text/);
+            err.message.should.equal("Operation `text`: Option `text` is required.");
             done();
           });
 
@@ -58,26 +58,19 @@ describe("TextOperation", function () {
 
     describe("with `text` not being a string", function () {
 
-      it("should throw an error", function (done) {
+      it("should throw an error", function () {
 
-        textOperation = new TextOperation(kit, {
-          position: new ImglyKit.Vector2(0, 0),
-          fontSize: 12,
-          fontFamily: "Impact",
-          fontStyle: "bold",
-          color: new ImglyKit.Color(1.0, 1.0, 1.0, 0.5),
-          text: null
-        });
-        kit.operationsStack.push(textOperation);
-
-        kit.render()
-          .then(function () {
-            done(new Error("Rendering worked while it should not."));
-          })
-          .catch(function (err) {
-            err.should.match(/text/);
-            done();
+        var throwable = function () {
+          new TextOperation(kit, {
+            position: new ImglyKit.Vector2(0, 0),
+            fontSize: 12,
+            fontFamily: "Impact",
+            fontWeight: "bold",
+            color: new ImglyKit.Color(1.0, 1.0, 1.0, 0.5),
+            text: null
           });
+        };
+        throwable.should.throw("Operation `text`: Option `text` has to be a string.");
 
       });
 
@@ -85,26 +78,19 @@ describe("TextOperation", function () {
 
     describe("with `position` not being an instance of Vector2", function () {
 
-      it("should throw an error", function (done) {
+      it("should throw an error", function () {
 
-        textOperation = new TextOperation(kit, {
-          position: null,
-          fontSize: 12,
-          fontFamily: "Impact",
-          fontStyle: "bold",
-          color: new ImglyKit.Color(1.0, 1.0, 1.0, 0.5),
-          text: "foo"
-        });
-        kit.operationsStack.push(textOperation);
-
-        kit.render()
-          .then(function () {
-            done(new Error("Rendering worked while it should not."));
-          })
-          .catch(function (err) {
-            err.should.match(/position/);
-            done();
+        var throwable = function () {
+          new TextOperation(kit, {
+            position: null,
+            fontSize: 12,
+            fontFamily: "Impact",
+            fontWeight: "bold",
+            color: new ImglyKit.Color(1.0, 1.0, 1.0, 0.5),
+            text: "foo"
           });
+        };
+        throwable.should.throw("Operation `text`: Option `position` has to be an instance of ImglyKit.Vector2.");
 
       });
 
@@ -112,22 +98,15 @@ describe("TextOperation", function () {
 
     describe("with `alignment` being invalid", function () {
 
-      it("should throw an error", function (done) {
+      it("should throw an error", function () {
 
-        textOperation = new TextOperation(kit, {
-          alignment: "somewhere?",
-          text: "foo"
-        });
-        kit.operationsStack.push(textOperation);
-
-        kit.render()
-          .then(function () {
-            done(new Error("Rendering worked while it should not."));
-          })
-          .catch(function (err) {
-            err.should.match(/alignment/);
-            done();
+        var throwable = function () {
+          new TextOperation(kit, {
+            alignment: "somewhere?",
+            text: "foo"
           });
+        };
+        throwable.should.throw("Operation `text`: Invalid value for `alignment` (valid values are: left, center, right)");
 
       });
 
@@ -135,53 +114,19 @@ describe("TextOperation", function () {
 
     describe("with `verticalAlignment` being invalid", function () {
 
-      it("should throw an error", function (done) {
+      it("should throw an error", function () {
 
-        textOperation = new TextOperation(kit, {
-          verticalAlignment: "somewhere?",
-          text: "foo"
-        });
-        kit.operationsStack.push(textOperation);
-
-        kit.render()
-          .then(function () {
-            done(new Error("Rendering worked while it should not."));
-          })
-          .catch(function (err) {
-            err.should.match(/verticalAlignment/);
-            done();
+        var throwable = function () {
+          new TextOperation(kit, {
+            verticalAlignment: "somewhere?",
+            text: "foo"
           });
+        };
+        throwable.should.throw("Operation `text`: Invalid value for `verticalAlignment` (valid values are: top, center, bottom)");
 
       });
 
     });
-
-
-    // describe("with `text` set", function () {
-
-    //   it("should succeed", function (done) {
-
-    //     textOperation = new TextOperation(kit, {
-    //       position: new ImglyKit.Vector2(0, 0),
-    //       fontSize: 12,
-    //       fontFamily: "Impact",
-    //       fontStyle: "bold",
-    //       color: new ImglyKit.Color(1.0, 1.0, 1.0, 0.5),
-    //       text: "Sup bro?"
-    //     });
-    //     kit.operationsStack.push(textOperation);
-
-    //     kit.render()
-    //       .then(function () {
-    //         done();
-    //       })
-    //       .catch(function (err) {
-    //         throw err;
-    //       });
-
-    //   });
-
-    // });
 
   });
 

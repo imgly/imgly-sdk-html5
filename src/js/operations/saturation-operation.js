@@ -8,7 +8,6 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var _ = require("lodash");
 var Operation = require("./operation");
 var PrimitivesStack = require("./filters/primitives-stack");
 var SaturationPrimitive = require("./filters/primitives/saturation");
@@ -19,12 +18,8 @@ var SaturationPrimitive = require("./filters/primitives/saturation");
  * @extends ImglyKit.Operation
  */
 var SaturationOperation = Operation.extend({
-  constructor: function () {
-    Operation.apply(this, arguments);
-
-    this._options = _.defaults(this._options, {
-      saturation: 1.0
-    });
+  availableOptions: {
+    saturation: { type: "number", default: 1.0 }
   }
 });
 
@@ -34,16 +29,6 @@ var SaturationOperation = Operation.extend({
  * @type {String}
  */
 SaturationOperation.identifier = "saturation";
-
-/**
- * Checks whether this Operation can be applied the way it is configured
- * @return {boolean}
- */
-SaturationOperation.prototype.validateSettings = function() {
-  if (typeof this._options.saturation === "undefined") {
-    throw new Error("SaturationOperation: `saturation` has to be set.");
-  }
-};
 
 /**
  * Renders the filter

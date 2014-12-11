@@ -18,16 +18,19 @@ var Operation = require("./operation");
  * @extends ImglyKit.Operation
  */
 var FiltersOperation = Operation.extend({
+  availableOptions: {
+    filter: { type: "string", required: true,
+      setter: function (value) {
+        var Filter = this._filters[value];
+        if (typeof Filter === "undefined") {
+          throw new Error("FiltersOperation: Unknown filter \"" + value + "\".");
+        }
+        this._selectedFilter = new Filter();
+        return value;
+      }
+    }
+  },
   constructor: function () {
-    Operation.apply(this, arguments);
-
-    /**
-     * The selected filter
-     * @type {class}
-     * @private
-     */
-    this._selectedFilter = null;
-
     /**
      * The registered filters
      * @type {Object.<string, class>}
@@ -35,9 +38,7 @@ var FiltersOperation = Operation.extend({
     this._filters = {};
     this._registerFilters();
 
-    if (typeof this._options.filter !== "undefined") {
-      this.selectFilter(this._options.filter);
-    }
+    Operation.apply(this, arguments);
   }
 });
 
@@ -49,35 +50,12 @@ var FiltersOperation = Operation.extend({
 FiltersOperation.identifier = "filters";
 
 /**
- * Checks whether this Operation can be applied the way it is configured
- * @return {boolean}
- */
-FiltersOperation.prototype.validateSettings = function() {
-  if (this._selectedFilter === null) {
-    throw new Error("FiltersOperation: `filter` has to be set.");
-  }
-};
-
-/**
  * Renders the filter
  * @param  {Renderer} renderer
  * @return {Promise}
  */
 FiltersOperation.prototype.render = function(renderer) {
   this._selectedFilter.render(renderer);
-};
-
-/**
- * Sets the selected filter by the given identifier
- * @param  {String} identifier
- */
-FiltersOperation.prototype.selectFilter = function(identifier) {
-  var Filter = this._filters[identifier];
-  if (typeof Filter === "undefined") {
-    throw new Error("FiltersOperation: Unknown filter \"" + identifier + "\".");
-  }
-
-  this._selectedFilter = new Filter();
 };
 
 /**

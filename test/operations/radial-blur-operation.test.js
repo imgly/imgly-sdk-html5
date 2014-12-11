@@ -12,7 +12,6 @@
 
 var path = require("path");
 var fs = require("fs");
-var should = require("should");
 var canvas = require("canvas");
 var ImglyKit = require("../..");
 var RadialBlurOperation = ImglyKit.Operations.RadialBlurOperation;
@@ -33,21 +32,11 @@ describe("RadialBlurOperation", function () {
 
     describe("if `position` is not a Vector2", function () {
 
-      it("should fail", function (done) {
-        radialBlurOperation = new RadialBlurOperation(kit, {
-          position: null
-        });
-        kit.operationsStack.push(radialBlurOperation);
-
-        kit.render()
-          .then(function (result) {
-            should.not.exist(result);
-            done();
-          })
-          .catch(function (err) {
-            err.should.be.instanceOf(Error);
-            done();
-          });
+      it("should fail", function () {
+        var throwable = function () {
+          new RadialBlurOperation(kit, { position: null });
+        };
+        throwable.should.throw("Operation `radial-blur`: Option `position` has to be an instance of ImglyKit.Vector2.");
       });
 
     });
