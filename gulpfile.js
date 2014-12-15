@@ -164,7 +164,7 @@ gulp.task("browserify", function () {
  * makes sure they are rebuilt / moved to the build folder
  */
 gulp.task("watch", function () {
-  gulp.watch("./sass/**/*.{css,scss,sass}", ["build:stylesheets"]);
+  gulp.watch("./src/css/**/*.{css,scss,sass}", ["build:css"]);
   gulp.watch("./assets/**/*", ["copy"]);
 });
 

@@ -9,27 +9,27 @@
  */
 
 var fs = require("fs");
-var Template = require("../../base/template");
+var Template = require("../../../base/template");
 
 /**
- * The navigation partial
+ * An operation button
  *
  * @class
  * @extends ImglyKit.UI.Template
  * @private
  */
-var NavigationPartial = Template.extend();
+var OperationButtonPartial = Template.extend();
 
 /**
  * The string that will be used in the parent template
  * @type {String}
  */
-NavigationPartial.prototype.name = "navigation";
+OperationButtonPartial.prototype.name = "operationButton";
 
 /**
  * The source of this partial
  * @type {String}
  */
-NavigationPartial.prototype.source = fs.readFileSync(__dirname + "/../templates/navigation.mustache", "utf8");
+OperationButtonPartial.prototype.source = fs.readFileSync(__dirname + "/../../templates/controls/operation-button.mustache", "utf8");
 
-module.exports = NavigationPartial;
+module.exports = OperationButtonPartial;

@@ -7,11 +7,14 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-@import compass/reset/utilities
-@import compass/css3/border-radius
+.imglykit-container
+  position: absolute
+  width: 100%
+  height: 100%
 
-@import night/variables
-@import night/basics
-@import night/canvas
-@import night/controls
-@import night/scrollbars
+  background: $backgroundColor
+  +border-radius(5px)
+
+  overflow: hidden
+
+  +nested-reset()

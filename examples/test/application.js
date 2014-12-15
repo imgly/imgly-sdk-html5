@@ -13,12 +13,8 @@ window.onload = function() {
       image: image,
       renderer: "webgl",
       assetsUrl: "/src/assets",
-      container: document.getElementById("container")
+      container: document.getElementById("container"),
+      ui: true
     });
-
-    kit.render(ImglyKit.RenderType.IMAGE)
-      .then(function (image) {
-        document.body.appendChild(image);
-      });
   };
 };

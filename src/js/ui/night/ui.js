@@ -8,10 +8,12 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+var _ = require("lodash");
 var UI = require("../base/ui");
 
 // Partials
-var NavigationPartial = require("./partials/navigation");
+var ControlsPartial = require("./partials/controls");
+var OperationButtonPartial = require("./partials/controls/operation-button");
 var Layout = require("./layout");
 
 /**
@@ -32,7 +34,8 @@ var ImglyKitUI = UI.extend({
    * @private
    */
   _partialTemplates: [
-    new NavigationPartial()
+    new ControlsPartial(), // {{>controls}}
+    new OperationButtonPartial() // {{>operationButton}}
   ],
 
   /**
@@ -40,7 +43,20 @@ var ImglyKitUI = UI.extend({
    * @type {Template}
    * @private
    */
-  _layoutTemplate: new Layout()
+  _layoutTemplate: new Layout(),
+
+  /**
+   * Returns the context that is passed to Hogan
+   * @return {Object}
+   * @private
+   */
+  _getRenderingContext: function () {
+    var context = UI.prototype._getRenderingContext.call(this);
+
+    return _.extend(context, {
+
+    });
+  }
 });
 
 module.exports = ImglyKitUI;

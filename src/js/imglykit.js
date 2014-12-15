@@ -180,10 +180,23 @@ ImglyKit.prototype._initUI = function() {
   /**
    * @type {ImglyKit.UI}
    */
-  this.ui = new UI({
-    container: this._options.container
+  this.ui = new UI(this, {
+    container: this._options.container,
+    assetsUrl: this._options.assetsUrl
   });
   this.ui.attach();
+};
+
+/**
+ * Returns an array with all known operations
+ * @return {Array.<Operation>}
+ */
+ImglyKit.prototype.getAllOperations = function() {
+  var operations = [];
+  for (var key in ImglyKit.Operations) {
+    operations.push(ImglyKit.Operations[key]);
+  }
+  return operations;
 };
 
 module.exports = ImglyKit;

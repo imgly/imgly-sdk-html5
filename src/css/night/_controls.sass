@@ -1,0 +1,41 @@
+/*!
+ * Copyright (c) 2013-2014 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+
+// Outter controls container
+.imglykit-controls-container
+  position: absolute
+  bottom: 0
+  left: 0
+
+  width: 100%
+  height: $controlsHeight
+
+// Controls list (centered)
+ul.imglykit-controls
+  text-align: center
+  height: $controlsHeight
+  border-top: 1px solid $borderColor
+
+  overflow: hidden
+  overflow-x: auto
+
+  white-space: nowrap
+
+  li
+    display: inline-block
+    height: $controlsHeight
+    width: $controlsWidth
+    cursor: pointer
+
+    border-left: 1px solid $borderColor
+    &:last-child
+      border-right: 1px solid $borderColor
+
+    img
+      margin-top: 20px

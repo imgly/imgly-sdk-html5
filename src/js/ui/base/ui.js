@@ -12,12 +12,13 @@ var Utils = require("../../lib/utils");
 
 /**
  * @class
+ * @param {ImglyKit} kit
  * @param {Object} options
  * @param {HTMLElement} [options.container] - Specifies where the UI should be
  *                                          added to. If none is given, the UI
  *                                          will automatically be disabled.
  */
-function UI(options) {
+function UI(kit, options) {
   if (typeof options.container === "undefined") {
     throw new Error("UI: `container` not defined in options.");
   }
@@ -27,10 +28,24 @@ function UI(options) {
   }
 
   /**
+   * @type {ImglyKit}
+   * @private
+   */
+  this._kit = kit;
+
+  /**
    * @type {Object}
    * @private
    */
   this._options = options;
+
+  /**
+   * @type {Array.<Operation>}
+   * @private
+   */
+  this._operations = this._kit.getAllOperations().map(function (operation) {
+    return { identifier: operation.identifier };
+  });
 
   /**
    * Contains the partial objects
@@ -111,7 +126,7 @@ UI.prototype._renderPartials = function() {
   var partials = {}, partial;
   for (var partialName in this._partials) {
     partial = this._partials[partialName];
-    partials[partialName] = partial.render();
+    partials[partialName] = partial.getTemplate();
   }
   return partials;
 };
@@ -123,12 +138,39 @@ UI.prototype._renderPartials = function() {
  */
 UI.prototype._render = function () {
   var partials = this._renderPartials();
-  var context = {
-    options: this._options
-  };
+  var context = this._getRenderingContext();
 
   return this._layout.render(context, partials);
 };
+
+/**
+ * Returns the context that is passed to Hogan
+ * @return {Object}
+ * @private
+ */
+UI.prototype._getRenderingContext = function() {
+  var self = this;
+  return {
+    options: this._options,
+    operations: this._operations,
+
+    // Helpers
+    img: function () { return self._imagePathHelper.call(self); }
+  };
+};
+
+/**
+ * A helper that creates a valid file path for the given file name
+ * @param  {String} file
+ * @return {Function}
+ * @private
+ */
+UI.prototype._imagePathHelper = function () {
+  var self = this;
+  return function (file) {
+    return self._options.assetsUrl + "/" + file;
+  };
+}
 
 /**
  * To create an {@link ImglyKit.UI} class of your own, call this
