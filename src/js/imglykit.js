@@ -9,8 +9,8 @@
  */
 
 var _ = require("lodash");
-var RenderImage = require("./render-image");
-var ImageExporter = require("./image-exporter");
+var RenderImage = require("./lib/render-image");
+var ImageExporter = require("./lib/image-exporter");
 var Constants = require("./constants");
 var Utils = require("./lib/utils");
 
@@ -74,7 +74,7 @@ function ImglyKit(options) {
 ImglyKit.version = "0.0.1";
 
 // Exposed classes
-ImglyKit.RenderImage = require("./render-image");
+ImglyKit.RenderImage = RenderImage;
 ImglyKit.Color = require("./lib/color");
 ImglyKit.Operation = require("./operations/operation");
 ImglyKit.Operations = {};

@@ -7,10 +7,10 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-var Constants = require("./constants");
+var Constants = require("../constants");
 var RenderType = Constants.RenderType;
 var ImageFormat = Constants.ImageFormat;
-var Utils = require("./lib/utils");
+var Utils = require("./utils");
 
 /**
  * @class

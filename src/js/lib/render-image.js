@@ -9,9 +9,9 @@
  */
 var bluebird = require("bluebird");
 var ImageDimensions = require("./image-dimensions");
-var Vector2 = require("./lib/math/vector2");
-var CanvasRenderer = require("./renderers/canvas-renderer");
-var WebGLRenderer = require("./renderers/webgl-renderer");
+var Vector2 = require("./math/vector2");
+var CanvasRenderer = require("../renderers/canvas-renderer");
+var WebGLRenderer = require("../renderers/webgl-renderer");
 
 /**
  * Handles the image rendering process

@@ -7,7 +7,7 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-var Vector2 = require("./lib/math/vector2");
+var Vector2 = require("./math/vector2");
 
 /**
  * Parses the dimensions string and provides calculation functions
