@@ -83,20 +83,6 @@ TiltShiftOperation.fragmentShader = Utils.shaderString(function () {/**webgl
 */});
 
 /**
- * Applies this operation
- * @param  {Renderer} renderer
- * @return {Promise}
- * @abstract
- */
-TiltShiftOperation.prototype.render = function(renderer) {
-  if (renderer.identifier === "webgl") {
-    this._renderWebGL(renderer);
-  } else {
-    this._renderCanvas(renderer);
-  }
-};
-
-/**
  * Crops this image using WebGL
  * @param  {WebGLRenderer} renderer
  */

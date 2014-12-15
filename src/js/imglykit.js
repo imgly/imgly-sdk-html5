@@ -50,6 +50,7 @@ function ImglyKit(options) {
   this.reset();
 
   if (this._options.ui) {
+    /* istanbul ignore next */
     this._initUI();
   }
 }
@@ -123,6 +124,7 @@ ImglyKit.prototype.reset = function () {
 ImglyKit.prototype.getAssetPath = function(asset) {
   var isBrowser = typeof window !== "undefined";
   if (isBrowser) {
+    /* istanbul ignore next */
     return this._options.assetsUrl + "/" + asset;
   } else {
     var path = require("path");
@@ -134,6 +136,7 @@ ImglyKit.prototype.getAssetPath = function(asset) {
  * Initializes the UI
  * @private
  */
+/* istanbul ignore next */
 ImglyKit.prototype._initUI = function() {
   var UI = require("./ui/ui");
 

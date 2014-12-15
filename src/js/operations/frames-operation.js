@@ -65,25 +65,11 @@ FramesOperation.prototype._fragmentShader = Utils.shaderString(function () {/**w
 */});
 
 /**
- * Applies this operation
- * @param  {Renderer} renderer
- * @return {Promise}
- * @abstract
- */
-FramesOperation.prototype.render = function(renderer) {
-  var self = this;
-  if (renderer.identifier === "webgl") {
-    return self._renderWebGL(renderer);
-  } else {
-    return self._renderCanvas(renderer);
-  }
-};
-
-/**
  * Crops this image using WebGL
  * @param  {WebGLRenderer} renderer
  * @private
  */
+/* istanbul ignore next */
 FramesOperation.prototype._renderWebGL = function(renderer) {
   var canvas = renderer.getCanvas();
 

@@ -80,23 +80,10 @@ TextOperation.prototype._fragmentShader = Utils.shaderString(function () {/**web
 */});
 
 /**
- * Applies this operation
- * @param  {Renderer} renderer
- * @return {Promise}
- * @abstract
- */
-TextOperation.prototype.render = function(renderer) {
-  if (renderer.identifier === "webgl") {
-    this._renderWebGL(renderer);
-  } else {
-    this._renderCanvas(renderer);
-  }
-};
-
-/**
  * Crops this image using WebGL
  * @param  {WebGLRenderer} renderer
  */
+/* istanbul ignore next */
 TextOperation.prototype._renderWebGL = function(renderer) {
   var textCanvas = this._renderTextCanvas(renderer);
 

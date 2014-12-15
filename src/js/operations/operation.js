@@ -60,9 +60,31 @@ Operation.prototype.validateSettings = function() {
  * @return {Promise}
  * @abstract
  */
-Operation.prototype.render = function() {
-  /* istanbul ignore next */
-  throw new Error("Operation#render is abstract and not implemented in inherited class.");
+Operation.prototype.render = function(renderer) {
+  if (renderer.identifier === "webgl") {
+    /* istanbul ignore next */
+    this._renderWebGL(renderer);
+  } else {
+    this._renderCanvas(renderer);
+  }
+};
+
+/**
+ * Applies this operation using WebGL
+ * @return {WebGLRenderer} renderer
+ * @private
+ */
+Operation.prototype._renderWebGL = function() {
+  throw new Error("Operation#_renderWebGL is abstract and not implemented in inherited class.");
+};
+
+/**
+ * Applies this operation using Canvas2D
+ * @return {CanvasRenderer} renderer
+ * @private
+ */
+Operation.prototype._renderCanvas = function() {
+  throw new Error("Operation#_renderCanvas is abstract and not implemented in inherited class.");
 };
 
 /**

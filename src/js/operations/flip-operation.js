@@ -57,23 +57,10 @@ FlipOperation.fragmentShader = Utils.shaderString(function () {/**webgl
 */});
 
 /**
- * Applies this operation
- * @param  {Renderer} renderer
- * @return {Promise}
- * @abstract
- */
-FlipOperation.prototype.render = function(renderer) {
-  if (renderer.identifier === "webgl") {
-    this._renderWebGL(renderer);
-  } else {
-    this._renderCanvas(renderer);
-  }
-};
-
-/**
  * Crops this image using WebGL
  * @param  {WebGLRenderer} renderer
  */
+/* istanbul ignore next */
 FlipOperation.prototype._renderWebGL = function(renderer) {
   renderer.runShader(null, FlipOperation.fragmentShader, {
     uniforms: {

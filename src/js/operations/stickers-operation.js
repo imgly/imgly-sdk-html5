@@ -84,6 +84,7 @@ StickersOperation.prototype.render = function(renderer) {
   return this._loadSticker()
     .then(function (image) {
       if (renderer.identifier === "webgl") {
+        /* istanbul ignore next */
         return self._renderWebGL(renderer, image);
       } else {
         return self._renderCanvas(renderer, image);
@@ -97,6 +98,7 @@ StickersOperation.prototype.render = function(renderer) {
  * @param  {Image} image
  * @private
  */
+/* istanbul ignore next */
 StickersOperation.prototype._renderWebGL = function(renderer, image) {
   var canvas = renderer.getCanvas();
   var gl = renderer.getContext();
