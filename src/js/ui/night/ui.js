@@ -11,7 +11,7 @@
 var UI = require("../base/ui");
 
 // Partials
-var HeaderPartial = require("./partials/header");
+var NavigationPartial = require("./partials/navigation");
 var Layout = require("./layout");
 
 /**
@@ -24,7 +24,7 @@ var ImglyKitUI = UI.extend({
    * A unique string that identifies this UI
    * @type {String}
    */
-  identifier: "imglykit",
+  identifier: "night",
 
   /**
    * The list of partial templates that will be used
@@ -32,7 +32,7 @@ var ImglyKitUI = UI.extend({
    * @private
    */
   _partialTemplates: [
-    new HeaderPartial()
+    new NavigationPartial()
   ],
 
   /**

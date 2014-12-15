@@ -12,24 +12,24 @@ var fs = require("fs");
 var Template = require("../../base/template");
 
 /**
- * The header partial
+ * The navigation partial
  *
  * @class
  * @extends ImglyKit.UI.Template
  * @private
  */
-var HeaderPartial = Template.extend();
+var NavigationPartial = Template.extend();
 
 /**
  * The string that will be used in the parent template
  * @type {String}
  */
-HeaderPartial.prototype.name = "header";
+NavigationPartial.prototype.name = "navigation";
 
 /**
  * The source of this partial
  * @type {String}
  */
-HeaderPartial.prototype.source = fs.readFileSync(__dirname + "/../templates/header.mustache", "utf8");
+NavigationPartial.prototype.source = fs.readFileSync(__dirname + "/../templates/navigation.mustache", "utf8");
 
-module.exports = HeaderPartial;
+module.exports = NavigationPartial;

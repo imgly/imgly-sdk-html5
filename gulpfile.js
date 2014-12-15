@@ -23,6 +23,10 @@ var config = {
   ]
 };
 
+var sassFiles = [
+  "./src/css/imglykit-night-ui.sass"
+];
+
 /**
  * `gulp set-production`
  * Sets the production state to true
@@ -45,7 +49,7 @@ gulp.task("clean", function () {
  * Compiles the main .sass file to .css
  */
 gulp.task("sass", function () {
-  return gulp.src(["./src/css/imglykit.sass"])
+  return gulp.src(sassFiles)
     .pipe($.plumber())
     .pipe($.compass({
       css: "build/css",
@@ -63,7 +67,7 @@ gulp.task("sass", function () {
  * Copies the static assets files to the build folder
  */
 gulp.task("copy", function () {
-  return gulp.src("./assets/**")
+  return gulp.src("./src/assets/**")
     .pipe($.plumber())
     .pipe(gulp.dest("./build/assets"))
     .pipe($.if(!isProduction, reload({ stream: true, once: true })));

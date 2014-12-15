@@ -43,7 +43,7 @@ function UI(options) {
    * Contains the layout template
    * @type {HoganTemplate}
    */
-   this._layout = this._compileLayout();
+  this._layout = this._compileLayout();
 }
 
 /**

@@ -12,9 +12,10 @@ var _ = require("lodash");
 var RenderImage = require("./render-image");
 var ImageExporter = require("./image-exporter");
 var Constants = require("./constants");
+var Utils = require("./lib/utils");
 
 // Default UIs
-var ImglyKitUI = require("./ui/imglykit/ui");
+var NightUI = require("./ui/night/ui");
 
 /**
  * @class
@@ -51,20 +52,14 @@ function ImglyKit(options) {
   this._registeredUIs = {};
 
   /**
-   * The default UI
-   * @type {UI}
-   * @private
-   */
-  this._defaultUI = ImglyKitUI;
-
-  /**
    * The stack of {@link Operation} instances that will be used
    * to render the final Image
    * @type {Array.<ImglyKit.Operation>}
    */
   this.operationsStack = [];
 
-  this.reset();
+  // Register the default UIs
+  this._registerUIs();
 
   if (this._options.ui) {
     this._initUI();
@@ -129,7 +124,7 @@ ImglyKit.prototype.render = function(renderType, imageFormat, dimensions) {
  * Resets all custom and selected operations
  */
 ImglyKit.prototype.reset = function () {
-  this._registerUIs();
+
 };
 
 /**
@@ -153,7 +148,7 @@ ImglyKit.prototype.getAssetPath = function(asset) {
  * @private
  */
 ImglyKit.prototype._registerUIs = function() {
-  this.registerUI(ImglyKitUI);
+  this.registerUI(NightUI);
 };
 
 /**
@@ -173,7 +168,7 @@ ImglyKit.prototype._initUI = function() {
   var UI;
 
   if (this._options.ui === true) {
-    UI = ImglyKitUI;
+    UI = Utils.values(this._registeredUIs)[0];
   } else {
     UI = this._registeredUIs[this._options.ui];
   }
