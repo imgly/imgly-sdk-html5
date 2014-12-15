@@ -24,7 +24,7 @@ var TiltShiftOperation = Operation.extend({
   availableOptions: {
     start: { type: "vector2", default: new Vector2(0.0, 0.5) },
     end: { type: "vector2", default: new Vector2(1.0, 0.5) },
-    blurRadius: { type: "number", default: 20 },
+    blurRadius: { type: "number", default: 30 },
     gradientRadius: { type: "number", default: 50 }
   }
 });
@@ -106,16 +106,17 @@ TiltShiftOperation.prototype._renderWebGL = function(renderer) {
   var canvasSize = new Vector2(canvas.width, canvas.height);
 
   var start = this._options.start.clone();
-  start.y = canvasSize.y - start.y;
   var end = this._options.end.clone();
-  end.y = canvasSize.y - end.y;
-  var delta = end.clone().subtract(start);
 
   if (this._options.numberFormat === "relative") {
     start.multiply(canvasSize);
     end.multiply(canvasSize);
   }
 
+  start.y = canvasSize.y - start.y;
+  end.y = canvasSize.y - end.y;
+
+  var delta = end.clone().subtract(start);
   var d = Math.sqrt(delta.x * delta.x + delta.y * delta.y);
 
   var uniforms = {

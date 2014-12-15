@@ -8,6 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+var _ = require("lodash");
 var RenderImage = require("./render-image");
 var ImageExporter = require("./image-exporter");
 var Constants = require("./constants");
@@ -26,9 +27,12 @@ function ImglyKit(options) {
   // `options.image` is required
   if (typeof options.image === "undefined") throw new Error("`options.image` is undefined.");
 
-  if (typeof options.assetsUrl === "undefined") {
-    options.assetsUrl = "assets";
-  }
+  // Set default options
+  options = _.defaults(options, {
+    assetsUrl: "assets",
+    container: null,
+    ui: true
+  });
 
   /**
    * @type {Object}
@@ -44,6 +48,10 @@ function ImglyKit(options) {
   this.operationsStack = [];
 
   this.reset();
+
+  if (this._options.ui) {
+    this._initUI();
+  }
 }
 
 /**
@@ -120,6 +128,23 @@ ImglyKit.prototype.getAssetPath = function(asset) {
     var path = require("path");
     return path.resolve(this._options.assetsUrl, asset);
   }
+};
+
+/**
+ * Initializes the UI
+ * @private
+ */
+ImglyKit.prototype._initUI = function() {
+  var UI = require("./ui/ui");
+
+  /**
+   * @type {ImglyKit.UI}
+   */
+  this.ui = new UI({
+    container: this._options.container
+  });
+
+  this.ui.attach();
 };
 
 module.exports = ImglyKit;

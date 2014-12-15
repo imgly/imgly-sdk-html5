@@ -121,4 +121,16 @@ Utils.multiplyMatrices = function(a, b) {
           a20 * b02 + a21 * b12 + a22 * b22];
 };
 
+/**
+ * Checks if the given object is a DOM element
+ * @param  {Object}  o
+ * @return {Boolean}
+ */
+Utils.isDOMElement = function (o) {
+  return (
+    typeof HTMLElement === "object" ? o instanceof HTMLElement :
+    o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string"
+  );
+};
+
 module.exports = Utils;

@@ -24,7 +24,7 @@ beforeEach(function () {
   var buffer = fs.readFileSync(imagePath);
   image.src = buffer;
 
-  kit = new ImglyKit({ image: image, assetsUrl: "src/assets" });
+  kit = new ImglyKit({ image: image, assetsUrl: "src/assets", ui: false });
 });
 
 describe("FramesOperation", function () {

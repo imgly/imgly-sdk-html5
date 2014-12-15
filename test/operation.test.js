@@ -10,7 +10,7 @@
  */
 
 var ImglyKit = require("../");
-var kit = new ImglyKit({ image: null });
+var kit = new ImglyKit({ image: null, ui: false });
 var testOperation = ImglyKit.Operation.extend({
   availableOptions: {
     vec: { type: "vector2", default: new ImglyKit.Vector2(100, 200) },

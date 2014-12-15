@@ -135,6 +135,7 @@ gulp.task("browserify", function () {
   });
 
   bundler.external("canvas");
+  bundler.transform("brfs");
 
   // Creates the bundle
   function rebundle() {
