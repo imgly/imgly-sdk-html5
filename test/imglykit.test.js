@@ -14,6 +14,14 @@ var fs = require("fs");
 var ImglyKit = require("..");
 var canvas = require("canvas");
 var image, kit;
+var should = require("should");
+var ImglyKitUI = require("../src/js/ui/imglykit/ui");
+
+// A fake container that passes Utils#isDOMElement
+var stubContainer = {
+  nodeType: 1,
+  nodeName: "stub"
+};
 
 describe("ImglyKit", function () {
 
@@ -41,11 +49,47 @@ describe("ImglyKit", function () {
 
     });
 
-    describe("when `options.container` is not set", function () {
+    describe("UI", function () {
 
-      it("should not initialize the UI");
+      describe("when `options.ui` is set to false", function () {
 
-    });
+        it("should not initialize the UI", function () {
+          kit = new ImglyKit({ image: null, ui: false });
+          should.not.exist(kit.ui);
+        });
+
+      });
+
+      describe("when `options.ui` is not set", function () {
+
+        it("should initialize the default (imglykit) UI", function () {
+          kit = new ImglyKit({ image: null, container: stubContainer });
+          kit.ui.should.be.an.instanceOf(ImglyKitUI);
+        });
+
+      });
+
+      describe("when `options.ui` is set to an invalid identifier", function () {
+
+        it("should throw an error", function () {
+          var throwable = function () {
+            kit = new ImglyKit({ image: null, ui: "foo", container: stubContainer });
+          };
+          throwable.should.throw("ImglyKit: Unknown UI: foo");
+        });
+
+      });
+
+      describe("when `options.ui` is set to a valid identifier", function () {
+
+        it("should initialize the correct UI", function () {
+          kit = new ImglyKit({ image: null, ui: "imglykit", container: stubContainer });
+          kit.ui.should.be.an.instanceOf(ImglyKitUI);
+        });
+
+      });
+
+    }); // UI
 
   }); // #constructor
 

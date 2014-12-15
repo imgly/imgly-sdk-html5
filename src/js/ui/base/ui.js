@@ -8,12 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var fs = require("fs");
-var Utils = require("../lib/utils");
-var Hogan = require("hogan");
-
-// Partials
-var HeaderPartial = require("./partials/header");
+var Utils = require("../../lib/utils");
 
 /**
  * @class
@@ -52,6 +47,26 @@ function UI(options) {
 }
 
 /**
+ * The list of partial templates that will be used
+ * @type {Array.<Template>}
+ * @private
+ */
+UI.prototype._partialTemplates = [];
+
+/**
+ * The layout template that will be compiled and rendered
+ * @type {Template}
+ * @private
+ */
+UI.prototype._layoutTemplate = null;
+
+/**
+ * A unique string that identifies this UI
+ * @type {String}
+ */
+UI.prototype.identifier = null;
+
+/**
  * Renders the UI, then attaches it to the DOM
  */
 UI.prototype.attach = function () {
@@ -66,24 +81,23 @@ UI.prototype.attach = function () {
  * @private
  */
 UI.prototype._compileLayout = function() {
-  var layout = fs.readFileSync(__dirname + "/templates/layout.mustache", "utf8");
-  var template = Hogan.compile(layout);
+  this._layoutTemplate.compile();
+  return this._layoutTemplate.getTemplate();
 };
 
 /**
  * Compiles the partials
+ * @param {Array.<Partial>} partialObjects
  * @return {Object.<String, Partial>}
  * @private
  */
 UI.prototype._compilePartials = function() {
-  var partialObjects = [
-    new HeaderPartial()
-  ];
-
   var partials = {}, partialObject;
-  for (var i = 0; i < partialObjects.length; i++) {
-    partialObject = partialObjects[i];
+  var templates = this._partialTemplates;
+  for (var i = 0; i < templates.length; i++) {
+    partialObject = templates[i];
     partials[partialObject.name] = partialObject;
+    partialObject.compile();
   }
   return partials;
 };
@@ -108,15 +122,19 @@ UI.prototype._renderPartials = function() {
  * @private
  */
 UI.prototype._render = function () {
-  var layout = fs.readFileSync(__dirname + "/templates/layout.mustache", "utf8");
-  var template = Hogan.compile(layout);
-
   var partials = this._renderPartials();
   var context = {
     options: this._options
   };
 
-  return template.render(context, partials);
+  return this._layout.render(context, partials);
 };
+
+/**
+ * To create an {@link ImglyKit.UI} class of your own, call this
+ * method and provide instance properties and functions.
+ * @function
+ */
+UI.extend = require("../../lib/extend");
 
 module.exports = UI;

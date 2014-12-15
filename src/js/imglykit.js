@@ -13,6 +13,9 @@ var RenderImage = require("./render-image");
 var ImageExporter = require("./image-exporter");
 var Constants = require("./constants");
 
+// Default UIs
+var ImglyKitUI = require("./ui/imglykit/ui");
+
 /**
  * @class
  * @param {Object} options
@@ -41,6 +44,20 @@ function ImglyKit(options) {
   this._options = options;
 
   /**
+   * The registered UI types that can be selected via the `ui` option
+   * @type {Object.<String, UI>}
+   * @private
+   */
+  this._registeredUIs = {};
+
+  /**
+   * The default UI
+   * @type {UI}
+   * @private
+   */
+  this._defaultUI = ImglyKitUI;
+
+  /**
    * The stack of {@link Operation} instances that will be used
    * to render the final Image
    * @type {Array.<ImglyKit.Operation>}
@@ -50,7 +67,6 @@ function ImglyKit(options) {
   this.reset();
 
   if (this._options.ui) {
-    /* istanbul ignore next */
     this._initUI();
   }
 }
@@ -113,7 +129,7 @@ ImglyKit.prototype.render = function(renderType, imageFormat, dimensions) {
  * Resets all custom and selected operations
  */
 ImglyKit.prototype.reset = function () {
-
+  this._registerUIs();
 };
 
 /**
@@ -133,12 +149,38 @@ ImglyKit.prototype.getAssetPath = function(asset) {
 };
 
 /**
+ * Registers all default UIs
+ * @private
+ */
+ImglyKit.prototype._registerUIs = function() {
+  this.registerUI(ImglyKitUI);
+};
+
+/**
+ * Registers the given UI
+ * @param {UI} ui
+ */
+ImglyKit.prototype.registerUI = function (ui) {
+  this._registeredUIs[ui.prototype.identifier] = ui;
+};
+
+/**
  * Initializes the UI
  * @private
  */
 /* istanbul ignore next */
 ImglyKit.prototype._initUI = function() {
-  var UI = require("./ui/ui");
+  var UI;
+
+  if (this._options.ui === true) {
+    UI = ImglyKitUI;
+  } else {
+    UI = this._registeredUIs[this._options.ui];
+  }
+
+  if (typeof UI === "undefined") {
+    throw new Error("ImglyKit: Unknown UI: " + this._options.ui);
+  }
 
   /**
    * @type {ImglyKit.UI}
@@ -146,7 +188,6 @@ ImglyKit.prototype._initUI = function() {
   this.ui = new UI({
     container: this._options.container
   });
-
   this.ui.attach();
 };
 
