@@ -8,16 +8,17 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var _ = require("lodash");
 var UI = require("../base/ui");
 
 // Partials
+var CanvasPartial = require("./partials/canvas");
 var ControlsPartial = require("./partials/controls");
-var OperationButtonPartial = require("./partials/controls/operation-button");
+var OverviewButtonPartial = require("./partials/controls/overview-button");
+
 var Layout = require("./layout");
 
 /**
- * The default (new) UI
+ * The default UI
  * @class
  * @private
  */
@@ -28,15 +29,13 @@ var ImglyKitUI = UI.extend({
    */
   identifier: "night",
 
-  /**
-   * The list of partial templates that will be used
-   * @type {Array.<Template>}
-   * @private
-   */
-  _partialTemplates: [
-    new ControlsPartial(), // {{>controls}}
-    new OperationButtonPartial() // {{>operationButton}}
-  ],
+  constructor: function (kit) {
+    this._partialTemplates.push(new ControlsPartial(kit, this));
+    this._partialTemplates.push(new OverviewButtonPartial(kit, this));
+    this._partialTemplates.push(new CanvasPartial(kit, this));
+
+    UI.apply(this, arguments);
+  },
 
   /**
    * The layout template that will be compiled and rendered
@@ -46,16 +45,12 @@ var ImglyKitUI = UI.extend({
   _layoutTemplate: new Layout(),
 
   /**
-   * Returns the context that is passed to Hogan
-   * @return {Object}
-   * @private
+   * Checks whether the operation with the given identifier is enabled
+   * @param  {String} identifier
+   * @return {Boolean}
    */
-  _getRenderingContext: function () {
-    var context = UI.prototype._getRenderingContext.call(this);
-
-    return _.extend(context, {
-
-    });
+  operationEnabled: function (identifier) {
+    return true;
   }
 });
 

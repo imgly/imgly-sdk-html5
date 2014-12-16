@@ -40,14 +40,6 @@ function UI(kit, options) {
   this._options = options;
 
   /**
-   * @type {Array.<Operation>}
-   * @private
-   */
-  this._operations = this._kit.getAllOperations().map(function (operation) {
-    return { identifier: operation.identifier };
-  });
-
-  /**
    * Contains the partial objects
    * @type {Object.<String, HoganTemplate>}
    * @private
@@ -138,25 +130,32 @@ UI.prototype._renderPartials = function() {
  */
 UI.prototype._render = function () {
   var partials = this._renderPartials();
-  var context = this._getRenderingContext();
+  var locals = this.getLocals();
 
-  return this._layout.render(context, partials);
+  return this._layout.render(locals, partials);
 };
 
 /**
- * Returns the context that is passed to Hogan
+ * Returns the locals that are passed to Hogan
  * @return {Object}
- * @private
  */
-UI.prototype._getRenderingContext = function() {
+UI.prototype.getLocals = function() {
   var self = this;
-  return {
+  var locals = {
     options: this._options,
-    operations: this._operations,
 
     // Helpers
     img: function () { return self._imagePathHelper.call(self); }
   };
+
+  // Attach locals for all known partials
+  for (var partialName in this._partials) {
+    locals[partialName] = this._partials[partialName].getLocals();
+  }
+
+  console.log(locals);
+
+  return locals;
 };
 
 /**
@@ -170,7 +169,7 @@ UI.prototype._imagePathHelper = function () {
   return function (file) {
     return self._options.assetsUrl + "/" + file;
   };
-}
+};
 
 /**
  * To create an {@link ImglyKit.UI} class of your own, call this

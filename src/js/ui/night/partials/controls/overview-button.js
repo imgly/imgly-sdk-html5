@@ -12,24 +12,24 @@ var fs = require("fs");
 var Template = require("../../../base/template");
 
 /**
- * An operation button
+ * An overview button
  *
  * @class
  * @extends ImglyKit.UI.Template
  * @private
  */
-var OperationButtonPartial = Template.extend();
+var OverviewButtonPartial = Template.extend();
 
 /**
  * The string that will be used in the parent template
  * @type {String}
  */
-OperationButtonPartial.prototype.name = "operationButton";
+OverviewButtonPartial.prototype.name = "overviewButton";
 
 /**
  * The source of this partial
  * @type {String}
  */
-OperationButtonPartial.prototype.source = fs.readFileSync(__dirname + "/../../templates/controls/operation-button.mustache", "utf8");
+OverviewButtonPartial.prototype.source = fs.readFileSync(__dirname + "/../../templates/controls/overview-button.mustache", "utf8");
 
-module.exports = OperationButtonPartial;
+module.exports = OverviewButtonPartial;

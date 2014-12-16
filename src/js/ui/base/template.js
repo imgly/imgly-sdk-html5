@@ -14,8 +14,18 @@ var Hogan = require("hogan");
  * @class
  * @alias ImglyKit.UI.Template
  */
-function Template() {
+function Template(kit, ui) {
+  /**
+   * @type {ImglyKit}
+   * @private
+   */
+  this._kit = kit;
 
+  /**
+   * @type {ImglyKit.UI}
+   * @private
+   */
+  this._ui = ui;
 }
 
 /**
@@ -57,6 +67,16 @@ Template.prototype.render = function() {
  */
 Template.prototype.getTemplate = function() {
   return this._template;
+};
+
+/**
+ * Returns an object that is being attached to the layout locals
+ * so that they can be used via {{#partialName}}{{>partialName}}{{/partialName}}
+ * in Hogan
+ * @return {Object.<String,*>}
+ */
+Template.prototype.getLocals = function() {
+  return {};
 };
 
 /**
