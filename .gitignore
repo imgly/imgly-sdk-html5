@@ -6,3 +6,4 @@ build
 coverage
 doc
 *.sublime-workspace
+.idea

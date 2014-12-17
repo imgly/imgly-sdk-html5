@@ -8,7 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var ImglyKit = require("./src/js/imglykit");
+import ImglyKit from "./src/js/imglykit";
 
 /* istanbul ignore next */
 (function () {

@@ -8,7 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var Filter = require("./filter");
+import Filter from "./filter";
 
 /**
  * K6 Filter
@@ -16,29 +16,31 @@ var Filter = require("./filter");
  * @alias ImglyKit.Filters.K6Filter
  * @extends {ImglyKit.Filter}
  */
-var K6Filter = Filter.extend({});
+class K6Filter extends Filter {
+  /**
+   * A unique string that identifies this operation. Can be used to select
+   * the active filter.
+   * @type {String}
+   */
+  static get identifier () {
+    return "k6";
+  }
 
-/**
- * A unique string that identifies this operation. Can be used to select
- * the active filter.
- * @type {String}
- */
-K6Filter.identifier = "k6";
+  /**
+   * Renders the filter
+   * @param  {Renderer} renderer
+   * @return {Promise}
+   */
+  render (renderer) {
+    var stack = new Filter.PrimitivesStack();
 
-/**
- * Renders the filter
- * @param  {Renderer} renderer
- * @return {Promise}
- */
-K6Filter.prototype.render = function(renderer) {
-  var stack = new Filter.PrimitivesStack();
+    // Saturation
+    stack.add(new Filter.Primitives.Saturation({
+      saturation: 0.5
+    }));
 
-  // Saturation
-  stack.add(new Filter.Primitives.Saturation({
-    saturation: 0.5
-  }));
+    stack.render(renderer);
+  }
+}
 
-  stack.render(renderer);
-};
-
-module.exports = K6Filter;
+export default K6Filter;

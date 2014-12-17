@@ -6,9 +6,9 @@
   "author": "img.ly <contact@img.ly>",
   "license": "BSD",
   "scripts": {
-    "test": "NODE_ENV=test node_modules/.bin/mocha --require should --reporter spec test/*.test.js test/**/*.test.js",
+    "test": "NODE_ENV=test node_modules/.bin/mocha --require should --require 6to5/register --reporter spec test/*.test.js test/**/*.test.js",
     "coveralls": "npm run coverage && cat ./coverage/lcov.info | node_modules/.bin/coveralls && rm -rf ./coverage",
-    "coverage": "NODE_ENV=test node_modules/.bin/istanbul cover node_modules/.bin/_mocha -- --require should -R spec test/*.test.js test/**/*.test.js"
+    "coverage": "NODE_ENV=test node_modules/.bin/istanbul cover node_modules/.bin/_mocha -- --require should --require 6to5/register -R spec test/*.test.js test/**/*.test.js"
   },
   "devDependencies": {
     "bluebird": "^2.3.11",
@@ -40,6 +40,8 @@
     "watchify": "^2.1.1"
   },
   "dependencies": {
+    "6to5": "^1.15.0",
+    "6to5ify": "^2.0.0",
     "brfs": "^1.2.0",
     "hogan": "^1.0.2"
   }

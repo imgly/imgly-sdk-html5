@@ -8,50 +8,50 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var UI = require("../base/ui");
+import UI from "../base/ui";
 
 // Partials
-var CanvasPartial = require("./partials/canvas");
-var ControlsPartial = require("./partials/controls");
-var OverviewButtonPartial = require("./partials/controls/overview-button");
+import CanvasPartial from "./partials/canvas";
+import ControlsPartial from "./partials/controls";
+import OverviewButtonPartial from "./partials/controls/overview-button";
 
-var Layout = require("./layout");
+import Layout from "./layout";
 
 /**
  * The default UI
  * @class
  * @private
  */
-var ImglyKitUI = UI.extend({
-  /**
-   * A unique string that identifies this UI
-   * @type {String}
-   */
-  identifier: "night",
+class ImglyKitUI extends UI {
+  constructor (kit, ...args) {
+    super(kit, ...args);
 
-  constructor: function (kit) {
     this._partialTemplates.push(new ControlsPartial(kit, this));
     this._partialTemplates.push(new OverviewButtonPartial(kit, this));
     this._partialTemplates.push(new CanvasPartial(kit, this));
 
-    UI.apply(this, arguments);
-  },
+    /**
+     * A unique string that identifies this UI
+     * @type {String}
+     */
+    this.identifier = "night";
 
-  /**
-   * The layout template that will be compiled and rendered
-   * @type {Template}
-   * @private
-   */
-  _layoutTemplate: new Layout(),
+    /**
+     * The layout template that will be compiled and rendered
+     * @type {Template}
+     * @private
+     */
+    this._layoutTemplate = new Layout();
+  }
 
   /**
    * Checks whether the operation with the given identifier is enabled
    * @param  {String} identifier
    * @return {Boolean}
    */
-  operationEnabled: function (identifier) {
+  operationEnabled (identifier) {
     return true;
   }
-});
+}
 
-module.exports = ImglyKitUI;
+export default ImglyKitUI;

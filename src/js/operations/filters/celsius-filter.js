@@ -8,7 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var Filter = require("./filter");
+import Filter from "./filter";
 
 /**
  * Celsius Filter
@@ -16,47 +16,49 @@ var Filter = require("./filter");
  * @alias ImglyKit.Filters.CelsiusFilter
  * @extends {ImglyKit.Filter}
  */
-var CelsiusFilter = Filter.extend({});
+class CelsiusFilter extends Filter {
+  /**
+   * A unique string that identifies this operation. Can be used to select
+   * the active filter.
+   * @type {String}
+   */
+  static get identifier () {
+    return "celsius";
+  }
 
-/**
- * A unique string that identifies this operation. Can be used to select
- * the active filter.
- * @type {String}
- */
-CelsiusFilter.identifier = "celsius";
+  /**
+   * Renders the filter
+   * @param  {Renderer} renderer
+   * @return {Promise}
+   */
+  render (renderer) {
+    var stack = new Filter.PrimitivesStack();
 
-/**
- * Renders the filter
- * @param  {Renderer} renderer
- * @return {Promise}
- */
-CelsiusFilter.prototype.render = function(renderer) {
-  var stack = new Filter.PrimitivesStack();
+    stack.add(new Filter.Primitives.ToneCurve({
+      rgbControlPoints: {
+        red: [
+          [0, 69],
+          [55, 110],
+          [202, 230],
+          [255, 255]
+        ],
+        green: [
+          [0, 44],
+          [89, 93],
+          [185, 141],
+          [255, 189]
+        ],
+        blue: [
+          [0, 76],
+          [39, 82],
+          [218, 138],
+          [255, 171]
+        ]
+      }
+    }));
 
-  stack.add(new Filter.Primitives.ToneCurve({
-    rgbControlPoints: {
-      red: [
-        [0, 69],
-        [55, 110],
-        [202, 230],
-        [255, 255]
-      ],
-      green: [
-        [0, 44],
-        [89, 93],
-        [185, 141],
-        [255, 189]
-      ],
-      blue: [
-        [0, 76],
-        [39, 82],
-        [218, 138],
-        [255, 171]
-      ]
-    }
-  }));
+    stack.render(renderer);
+  }
+}
 
-  stack.render(renderer);
-};
-
-module.exports = CelsiusFilter;
+export default CelsiusFilter;

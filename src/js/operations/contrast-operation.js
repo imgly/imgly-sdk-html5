@@ -8,41 +8,47 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var Operation = require("./operation");
-var PrimitivesStack = require("./filters/primitives-stack");
-var ContrastPrimitive = require("./filters/primitives/contrast");
+import Operation from "./operation";
+import PrimitivesStack from "./filters/primitives-stack";
+import ContrastPrimitive from "./filters/primitives/contrast";
 
 /**
  * @class
  * @alias ImglyKit.Operations.ContrastOperation
  * @extends ImglyKit.Operation
  */
-var ContrastOperation = Operation.extend({
-  availableOptions: {
-    contrast: { type: "number", default: 1.0 }
+class ContrastOperation extends Operation {
+  constructor (...args) {
+    this._availableOptions = {
+      contrast: { type: "number", default: 1.0 }
+    };
+
+    super(...args);
   }
-});
 
-/**
- * A unique string that identifies this operation. Can be used to select
- * operations.
- * @type {String}
- */
-ContrastOperation.identifier = "contrast";
+  /**
+   * A unique string that identifies this operation. Can be used to select
+   * operations.
+   * @type {String}
+   */
+  static get identifier () {
+    return "contrast";
+  }
 
-/**
- * Renders the filter
- * @param  {Renderer} renderer
- * @return {Promise}
- */
-ContrastOperation.prototype.render = function(renderer) {
-  var stack = new PrimitivesStack();
+  /**
+   * Renders the filter
+   * @param  {Renderer} renderer
+   * @return {Promise}
+   */
+  render (renderer) {
+    var stack = new PrimitivesStack();
 
-  stack.add(new ContrastPrimitive({
-    contrast: this._options.contrast
-  }));
+    stack.add(new ContrastPrimitive({
+      contrast: this._options.contrast
+    }));
 
-  stack.render(renderer);
-};
+    stack.render(renderer);
+  }
+}
 
-module.exports = ContrastOperation;
+export default ContrastOperation;

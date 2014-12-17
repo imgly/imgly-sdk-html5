@@ -7,68 +7,68 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-var Constants = require("../constants");
-var RenderType = Constants.RenderType;
-var ImageFormat = Constants.ImageFormat;
-var Utils = require("./utils");
+import { RenderType, ImageFormat } from "../constants";
+import Utils from "./utils";
 
 /**
  * @class
  * @alias ImglyKit.ImageExporter
  * @private
  */
-var ImageExporter = {};
+class ImageExporter {
 
-ImageExporter.validateSettings = function (renderType, imageFormat) {
-  var settings = {
-    renderType: renderType,
-    imageFormat: imageFormat
-  };
+  static validateSettings (renderType, imageFormat) {
+    var settings = {
+      renderType: renderType,
+      imageFormat: imageFormat
+    };
 
-  // Validate RenderType
-  if ((typeof settings.renderType !== "undefined" && settings.renderType !== null) &&
-    Utils.values(RenderType).indexOf(settings.renderType) === -1) {
-      throw new Error("Invalid render type: " + settings.renderType);
-  } else if (typeof renderType === "undefined") {
-    settings.renderType = RenderType.DATA_URL;
-  }
-
-  // Validate ImageFormat
-  if ((typeof settings.imageFormat !== "undefined" && settings.imageFormat !== null) &&
-    Utils.values(ImageFormat).indexOf(settings.imageFormat) === -1) {
-      throw new Error("Invalid image format: " + settings.imageFormat);
-  } else if (typeof imageFormat === "undefined") {
-    settings.imageFormat = ImageFormat.PNG;
-  }
-
-  return settings;
-};
-
-/**
- * Exports the image from the given canvas with the given options
- * @param  {Canvas} canvas
- * @param  {ImglyKit.RenderType} renderType
- * @param  {ImglyKit.ImageFormat} imageFormat
- * @return {string|image}
- */
-ImageExporter.export = function (canvas, renderType, imageFormat) {
-  var result = canvas.toDataURL(imageFormat);
-  if (renderType == RenderType.IMAGE) {
-    var image;
-
-    /* istanbul ignore else  */
-    if (typeof window === "undefined") {
-      // Not a browser environment
-      var CanvasImage = require("canvas").Image;
-      image = new CanvasImage();
-    } else {
-      image = new Image();
+    // Validate RenderType
+    if ((typeof settings.renderType !== "undefined" && settings.renderType !== null) &&
+      Utils.values(RenderType).indexOf(settings.renderType) === -1) {
+        throw new Error("Invalid render type: " + settings.renderType);
+    } else if (typeof renderType === "undefined") {
+      settings.renderType = RenderType.DATA_URL;
     }
 
-    image.src = result;
-    result = image;
-  }
-  return result;
-};
+    // Validate ImageFormat
+    if ((typeof settings.imageFormat !== "undefined" && settings.imageFormat !== null) &&
+      Utils.values(ImageFormat).indexOf(settings.imageFormat) === -1) {
+        throw new Error("Invalid image format: " + settings.imageFormat);
+    } else if (typeof imageFormat === "undefined") {
+      settings.imageFormat = ImageFormat.PNG;
+    }
 
-module.exports = ImageExporter;
+    return settings;
+  }
+
+  /**
+   * Exports the image from the given canvas with the given options
+   * @param  {Canvas} canvas
+   * @param  {ImglyKit.RenderType} renderType
+   * @param  {ImglyKit.ImageFormat} imageFormat
+   * @return {string|image}
+   */
+  static export (canvas, renderType, imageFormat) {
+    var result = canvas.toDataURL(imageFormat);
+    if (renderType == RenderType.IMAGE) {
+      var image;
+
+      /* istanbul ignore else  */
+      if (typeof window === "undefined") {
+        // Not a browser environment
+        var CanvasImage = require("canvas").Image;
+        image = new CanvasImage();
+      } else {
+        image = new Image();
+      }
+
+      image.src = result;
+      result = image;
+    }
+    return result;
+  }
+
+}
+
+export default ImageExporter;

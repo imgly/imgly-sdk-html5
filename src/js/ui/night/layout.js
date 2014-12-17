@@ -8,8 +8,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var fs = require("fs");
-var Template = require("../base/template");
+import * as fs from "fs";
+import Template from "../base/template";
 
 /**
  * The layout template
@@ -18,18 +18,22 @@ var Template = require("../base/template");
  * @extends ImglyKit.UI.Template
  * @private
  */
-var Layout = Template.extend();
+class Layout extends Template {
+  constructor (...args) {
+    super(...args);
 
-/**
- * The string that will be used in the parent template
- * @type {String}
- */
-Layout.prototype.name = "layout";
+    /**
+     * The string that will be used in the parent template
+     * @type {String}
+     */
+    this.name = "layout";
 
-/**
- * The source of this partial
- * @type {String}
- */
-Layout.prototype.source = fs.readFileSync(__dirname + "/templates/layout.mustache", "utf8");
+    /**
+     * The source of this partial
+     * @type {String}
+     */
+    this.source = fs.readFileSync(__dirname + "/templates/layout.mustache", "utf8");
+  }
+}
 
-module.exports = Layout;
+export default Layout;

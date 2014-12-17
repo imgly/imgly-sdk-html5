@@ -8,8 +8,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var fs = require("fs");
-var Template = require("../../../base/template");
+import * as fs from "fs";
+import Template from "../../../base/template";
 
 /**
  * An overview button
@@ -18,18 +18,22 @@ var Template = require("../../../base/template");
  * @extends ImglyKit.UI.Template
  * @private
  */
-var OverviewButtonPartial = Template.extend();
+class OverviewButtonPartial extends Template {
+  constructor (...args) {
+    super(...args);
 
-/**
- * The string that will be used in the parent template
- * @type {String}
- */
-OverviewButtonPartial.prototype.name = "overviewButton";
+    /**
+     * The string that will be used in the parent template
+     * @type {String}
+     */
+    this.name = "overviewButton";
 
-/**
- * The source of this partial
- * @type {String}
- */
-OverviewButtonPartial.prototype.source = fs.readFileSync(__dirname + "/../../templates/controls/overview-button.mustache", "utf8");
+    /**
+     * The source of this partial
+     * @type {String}
+     */
+    this.source = fs.readFileSync(__dirname + "/../../templates/controls/overview-button.mustache", "utf8");
+  }
+}
 
-module.exports = OverviewButtonPartial;
+export default OverviewButtonPartial;

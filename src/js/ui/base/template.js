@@ -8,82 +8,85 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var Hogan = require("hogan");
+import * as Hogan from "hogan";
 
 /**
  * @class
  * @alias ImglyKit.UI.Template
  */
-function Template(kit, ui) {
-  /**
-   * @type {ImglyKit}
-   * @private
-   */
-  this._kit = kit;
+class Template {
+  constructor (kit, ui) {
+    /**
+     * @type {ImglyKit}
+     * @private
+     */
+    this._kit = kit;
 
-  /**
-   * @type {ImglyKit.UI}
-   * @private
-   */
-  this._ui = ui;
-}
+    /**
+     * @type {ImglyKit.UI}
+     * @private
+     */
+    this._ui = ui;
 
-/**
- * The string that will be used in the parent template
- * @type {String}
- */
-Template.prototype.name = null;
+    /**
+     * The string that will be used in the parent template
+     * @type {String}
+     */
+    this.name = null;
 
-/**
- * The source of this partial
- * @type {String}
- */
-Template.prototype.source = null;
-
-/**
- * Compiles this partial
- * @return {Hogan.Template}
- */
-Template.prototype.compile = function() {
-  if (this.source === null) {
-    throw new Error("Template#compile: No source available.");
+    /**
+     * The source of this partial
+     * @type {String}
+     */
+    this.source = null;
   }
-  this._template = Hogan.compile(this.source);
-};
 
-/**
- * Renders the template
- * @return {String}
- */
-Template.prototype.render = function() {
-  return this._template.render();
-};
+  /**
+   * Compiles this partial
+   * @return {Hogan.Template}
+   */
+  compile () {
+    if (this.source === null) {
+      throw new Error("Template#compile: No source available.");
+    }
+    this._template = Hogan.compile(this.source);
+  }
 
-/**
- * Returns the Hogan.Template instance. If this Template class is
- * used for the layout, `ImglyKit.UI` needs to have a reference to
- * the Hogan.Template instance to pass a context and the partials
- * @return {Hogan.Template}
- */
-Template.prototype.getTemplate = function() {
-  return this._template;
-};
+  /**
+   * Renders the template
+   * @return {String}
+   */
+  render () {
+    return this._template.render();
+  }
 
-/**
- * Returns an object that is being attached to the layout locals
- * so that they can be used via {{#partialName}}{{>partialName}}{{/partialName}}
- * in Hogan
- * @return {Object.<String,*>}
- */
-Template.prototype.getLocals = function() {
-  return {};
-};
+  /**
+   * Returns the Hogan.Template instance. If this Template class is
+   * used for the layout, `ImglyKit.UI` needs to have a reference to
+   * the Hogan.Template instance to pass a context and the partials
+   * @return {Hogan.Template}
+   */
+  getTemplate () {
+    return this._template;
+  }
+
+  /**
+   * Returns an object that is being attached to the layout locals
+   * so that they can be used via {{#partialName}}{{>partialName}}{{/partialName}}
+   * in Hogan
+   * @return {Object.<String,*>}
+   */
+  getLocals () {
+    return {};
+  }
+}
 
 /**
  * To create an {@link ImglyKit.UI.Template} class of your own, call this
  * method and provide instance properties and functions.
  * @function
  */
-Template.extend = require("../../lib/extend");
+import extend from "../../lib/extend";
+Template.extend = extend;
 
-module.exports = Template;
+export default Template;

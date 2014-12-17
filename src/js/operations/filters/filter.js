@@ -14,16 +14,24 @@
  * @class
  * @alias ImglyKit.Filter
  */
-function Filter() {
+class Filter {
+  /**
+   * A unique string that identifies this operation. Can be used to select
+   * the active filter.
+   * @type {String}
+   */
+  static get identifier () { return null; }
 
+  /**
+   * Renders the filter
+   * @param  {Renderer} renderer
+   * @return {Promise}
+   */
+  render (renderer) {
+    /* istanbul ignore next */
+    throw new Error("Filter#render is abstract and not implemented in inherited class.");
+  }
 }
-
-/**
- * A unique string that identifies this operation. Can be used to select
- * the active filter.
- * @type {String}
- */
-Filter.identifier = null;
 
 /**
  * To create an {@link ImglyKit.Filter} class of your own, call this
@@ -31,16 +39,6 @@ Filter.identifier = null;
  * @function
  */
 Filter.extend = require("../../lib/extend");
-
-/**
- * Renders the filter
- * @param  {Renderer} renderer
- * @return {Promise}
- */
-Filter.prototype.render = function(renderer) {
-  /* istanbul ignore next */
-  throw new Error("Filter#render is abstract and not implemented in inherited class.");
-};
 
 // Exposed classes
 Filter.PrimitivesStack = require("./primitives-stack");
@@ -57,4 +55,4 @@ Filter.Primitives.Glow = require("./primitives/glow");
 Filter.Primitives.Gobblin = require("./primitives/gobblin");
 Filter.Primitives.Brightness = require("./primitives/brightness");
 
-module.exports = Filter;
+export default Filter;

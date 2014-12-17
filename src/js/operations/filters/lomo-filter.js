@@ -8,7 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var Filter = require("./filter");
+import Filter from "./filter";
 
 /**
  * Lomo Filter
@@ -16,34 +16,37 @@ var Filter = require("./filter");
  * @alias ImglyKit.Filters.LomoFilter
  * @extends {ImglyKit.Filter}
  */
-var LomoFilter = Filter.extend({});
+class LomoFilter extends Filter {
 
-/**
- * A unique string that identifies this operation. Can be used to select
- * the active filter.
- * @type {String}
- */
-LomoFilter.identifier = "lomo";
+  /**
+   * A unique string that identifies this operation. Can be used to select
+   * the active filter.
+   * @type {String}
+   */
+  static get identifier () {
+    return "lomo";
+  }
 
-/**
- * Renders the filter
- * @param  {Renderer} renderer
- * @return {Promise}
- */
-LomoFilter.prototype.render = function(renderer) {
-  var stack = new Filter.PrimitivesStack();
+  /**
+   * Renders the filter
+   * @param  {Renderer} renderer
+   * @return {Promise}
+   */
+  render (renderer) {
+    var stack = new Filter.PrimitivesStack();
 
-  stack.add(new Filter.Primitives.ToneCurve({
-    controlPoints: [
-      [0, 0],
-      [87, 20],
-      [131, 156],
-      [183, 205],
-      [255, 200]
-    ]
-  }));
+    stack.add(new Filter.Primitives.ToneCurve({
+      controlPoints: [
+        [0, 0],
+        [87, 20],
+        [131, 156],
+        [183, 205],
+        [255, 200]
+      ]
+    }));
 
-  stack.render(renderer);
-};
+    stack.render(renderer);
+  }
+}
 
-module.exports = LomoFilter;
+export default LomoFilter;

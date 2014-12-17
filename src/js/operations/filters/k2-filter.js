@@ -8,8 +8,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var Filter = require("./filter");
-var Color = require("../../lib/color");
+import Filter from "./filter";
+import Color from "../../lib/color";
 
 /**
  * K2 Filter
@@ -17,43 +17,45 @@ var Color = require("../../lib/color");
  * @alias ImglyKit.Filters.K2Filter
  * @extends {ImglyKit.Filter}
  */
-var K2Filter = Filter.extend({});
+class K2Filter extends Filter {
+  /**
+   * A unique string that identifies this operation. Can be used to select
+   * the active filter.
+   * @type {String}
+   */
+  static get identifier () {
+    return "k2";
+  }
 
-/**
- * A unique string that identifies this operation. Can be used to select
- * the active filter.
- * @type {String}
- */
-K2Filter.identifier = "k2";
+  /**
+   * Renders the filter
+   * @param  {Renderer} renderer
+   * @return {Promise}
+   */
+  render (renderer) {
+    var stack = new Filter.PrimitivesStack();
 
-/**
- * Renders the filter
- * @param  {Renderer} renderer
- * @return {Promise}
- */
-K2Filter.prototype.render = function(renderer) {
-  var stack = new Filter.PrimitivesStack();
+    // Tone curve
+    stack.add(new Filter.Primitives.ToneCurve({
+      controlPoints: [
+        [0, 0],
+        [54, 33],
+        [77, 82],
+        [94, 103],
+        [122, 126],
+        [177, 193],
+        [229, 232],
+        [255, 255]
+      ]
+    }));
 
-  // Tone curve
-  stack.add(new Filter.Primitives.ToneCurve({
-    controlPoints: [
-      [0, 0],
-      [54, 33],
-      [77, 82],
-      [94, 103],
-      [122, 126],
-      [177, 193],
-      [229, 232],
-      [255, 255]
-    ]
-  }));
+    // Soft color overlay
+    stack.add(new Filter.Primitives.SoftColorOverlay({
+      color: new Color(40 / 255, 40 / 255, 40 / 255)
+    }));
 
-  // Soft color overlay
-  stack.add(new Filter.Primitives.SoftColorOverlay({
-    color: new Color(40 / 255, 40 / 255, 40 / 255)
-  }));
+    stack.render(renderer);
+  }
+}
 
-  stack.render(renderer);
-};
-
-module.exports = K2Filter;
+export default K2Filter;

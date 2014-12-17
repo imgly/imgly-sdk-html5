@@ -8,7 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var Filter = require("./filter");
+import Filter from "./filter";
 
 /**
  * Breeze Filter
@@ -16,54 +16,57 @@ var Filter = require("./filter");
  * @alias ImglyKit.Filters.BreezeFilter
  * @extends {ImglyKit.Filter}
  */
-var BreezeFilter = Filter.extend({});
+class BreezeFilter extends Filter {
 
-/**
- * A unique string that identifies this operation. Can be used to select
- * the active filter.
- * @type {String}
- */
-BreezeFilter.identifier = "breeze";
+  /**
+   * A unique string that identifies this operation. Can be used to select
+   * the active filter.
+   * @type {String}
+   */
+  static get identifier () {
+    return "breeze";
+  }
 
-/**
- * Renders the filter
- * @param  {Renderer} renderer
- * @return {Promise}
- */
-BreezeFilter.prototype.render = function(renderer) {
-  var stack = new Filter.PrimitivesStack();
+  /**
+   * Renders the filter
+   * @param  {Renderer} renderer
+   * @return {Promise}
+   */
+  render (renderer) {
+    var stack = new Filter.PrimitivesStack();
 
-  // Desaturation
-  stack.add(new Filter.Primitives.Desaturation({
-    desaturation: 0.5
-  }));
+    // Desaturation
+    stack.add(new Filter.Primitives.Desaturation({
+      desaturation: 0.5
+    }));
 
-  // Tone curve
-  stack.add(new Filter.Primitives.ToneCurve({
-    rgbControlPoints: {
-      red: [
-        [0, 0],
-        [170, 170],
-        [212, 219],
-        [234, 242],
-        [255, 255]
-      ],
-      green: [
-        [0, 0],
-        [170, 168],
-        [234, 231],
-        [255, 255]
-      ],
-      blue: [
-        [0, 0],
-        [170, 170],
-        [212, 208],
-        [255, 255]
-      ]
-    }
-  }));
+    // Tone curve
+    stack.add(new Filter.Primitives.ToneCurve({
+      rgbControlPoints: {
+        red: [
+          [0, 0],
+          [170, 170],
+          [212, 219],
+          [234, 242],
+          [255, 255]
+        ],
+        green: [
+          [0, 0],
+          [170, 168],
+          [234, 231],
+          [255, 255]
+        ],
+        blue: [
+          [0, 0],
+          [170, 170],
+          [212, 208],
+          [255, 255]
+        ]
+      }
+    }));
 
-  stack.render(renderer);
-};
+    stack.render(renderer);
+  }
+}
 
-module.exports = BreezeFilter;
+export default BreezeFilter;

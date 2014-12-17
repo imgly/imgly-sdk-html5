@@ -8,7 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var Filter = require("./filter");
+import Filter from "./filter";
 
 /**
  * BW Filter
@@ -16,26 +16,28 @@ var Filter = require("./filter");
  * @alias ImglyKit.Filters.BWFilter
  * @extends {ImglyKit.Filter}
  */
-var BWFilter = Filter.extend({});
+class BWFilter extends Filter {
+  /**
+   * A unique string that identifies this operation. Can be used to select
+   * the active filter.
+   * @type {String}
+   */
+  static get identifier () {
+    return "bw";
+  }
 
-/**
- * A unique string that identifies this operation. Can be used to select
- * the active filter.
- * @type {String}
- */
-BWFilter.identifier = "bw";
+  /**
+   * Renders the filter
+   * @param  {Renderer} renderer
+   * @return {Promise}
+   */
+  render (renderer) {
+    var stack = new Filter.PrimitivesStack();
 
-/**
- * Renders the filter
- * @param  {Renderer} renderer
- * @return {Promise}
- */
-BWFilter.prototype.render = function(renderer) {
-  var stack = new Filter.PrimitivesStack();
+    stack.add(new Filter.Primitives.Grayscale());
 
-  stack.add(new Filter.Primitives.Grayscale());
+    stack.render(renderer);
+  }
+}
 
-  stack.render(renderer);
-};
-
-module.exports = BWFilter;
+export default BWFilter;

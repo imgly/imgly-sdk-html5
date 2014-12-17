@@ -8,9 +8,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var Operation = require("./operation");
-var Vector2 = require("../lib/math/vector2");
-var Utils = require("../lib/utils");
+import Operation from "./operation";
+import Vector2 from "../lib/math/vector2";
 
 /**
  * An operation that can crop out a part of the image
@@ -19,148 +18,152 @@ var Utils = require("../lib/utils");
  * @alias ImglyKit.Operations.CropOperation
  * @extends ImglyKit.Operation
  */
-var CropOperation = Operation.extend({
-  availableOptions: {
-    start: { type: "vector2", required: true },
-    end: { type: "vector2", required: true }
-  }
-});
+class CropOperation extends Operation {
+  constructor (...args) {
+    this.availableOptions = {
+      start: { type: "vector2", required: true },
+      end: { type: "vector2", required: true }
+    };
 
-/**
- * A unique string that identifies this operation. Can be used to select
- * operations.
- * @type {String}
- */
-CropOperation.identifier = "crop";
+    /**
+     * The fragment shader used for this operation
+     */
+    this.fragmentShader = `
+      precision mediump float;
+      uniform sampler2D u_image;
+      varying vec2 v_texCoord;
+      uniform vec2 u_cropStart;
+      uniform vec2 u_cropEnd;
 
-/**
- * The fragment shader used for this operation
- */
-CropOperation.fragmentShader = Utils.shaderString(function () {/**webgl
+      void main() {
+        vec2 size = u_cropEnd - u_cropStart;
+        gl_FragColor = texture2D(u_image, v_texCoord * size + u_cropStart);
+      }
+    `;
 
-  precision mediump float;
-  uniform sampler2D u_image;
-  varying vec2 v_texCoord;
-  uniform vec2 u_cropStart;
-  uniform vec2 u_cropEnd;
-
-  void main() {
-    vec2 size = u_cropEnd - u_cropStart;
-    gl_FragColor = texture2D(u_image, v_texCoord * size + u_cropStart);
+    super(...args);
   }
 
-*/});
-
-/**
- * Crops this image using WebGL
- * @param  {WebGLRenderer} renderer
- */
-/* istanbul ignore next */
-CropOperation.prototype._renderWebGL = function(renderer) {
-  var canvas = renderer.getCanvas();
-  var gl = renderer.getContext();
-  var canvasSize = new Vector2(canvas.width, canvas.height);
-
-  var start = this._options.start.clone();
-  var end = this._options.end.clone();
-
-  if (this._options.numberFormat === "absolute") {
-    start.divide(canvasSize);
-    end.divide(canvasSize);
+  /**
+   * A unique string that identifies this operation. Can be used to select
+   * operations.
+   * @type {String}
+   */
+  static get identifier () {
+    return "crop";
   }
 
-  // 0..1 > 1..0 on y-axis
-  var originalStartY = start.y;
-  start.y = 1 - end.y;
-  end.y = 1 - originalStartY;
+  /**
+   * Crops this image using WebGL
+   * @param  {WebGLRenderer} renderer
+   */
+  /* istanbul ignore next */
+  _renderWebGL (renderer) {
+    var canvas = renderer.getCanvas();
+    var gl = renderer.getContext();
+    var canvasSize = new Vector2(canvas.width, canvas.height);
 
-  // The new size
-  var newDimensions = this._getNewDimensions(renderer);
+    var start = this._options.start.clone();
+    var end = this._options.end.clone();
 
-  // Make sure we don't resize the input texture
-  var lastTexture = renderer.getLastTexture();
+    if (this._options.numberFormat === "absolute") {
+      start.divide(canvasSize);
+      end.divide(canvasSize);
+    }
 
-  // Resize all textures except the one we use as input
-  var textures = renderer.getTextures();
-  var texture;
-  for (var i = 0; i < textures.length; i++) {
-    texture = textures[i];
-    if (texture === lastTexture) continue;
+    // 0..1 > 1..0 on y-axis
+    var originalStartY = start.y;
+    start.y = 1 - end.y;
+    end.y = 1 - originalStartY;
 
-    gl.bindTexture(gl.TEXTURE_2D, texture);
+    // The new size
+    var newDimensions = this._getNewDimensions(renderer);
+
+    // Make sure we don't resize the input texture
+    var lastTexture = renderer.getLastTexture();
+
+    // Resize all textures except the one we use as input
+    var textures = renderer.getTextures();
+    var texture;
+    for (var i = 0; i < textures.length; i++) {
+      texture = textures[i];
+      if (texture === lastTexture) continue;
+
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, newDimensions.x, newDimensions.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    }
+
+    // Resize the canvas
+    canvas.width = newDimensions.x;
+    canvas.height = newDimensions.y;
+
+    // Run the cropping shader
+    renderer.runShader(null, CropOperation.fragmentShader, {
+      uniforms: {
+        u_cropStart: { type: "2f", value: [start.x, start.y] },
+        u_cropEnd: { type: "2f", value: [end.x, end.y] }
+      }
+    });
+
+    // Resize the input texture
+    gl.bindTexture(gl.TEXTURE_2D, lastTexture);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, newDimensions.x, newDimensions.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
   }
 
-  // Resize the canvas
-  canvas.width = newDimensions.x;
-  canvas.height = newDimensions.y;
+  /**
+   * Crops the image using Canvas2D
+   * @param  {CanvasRenderer} renderer
+   */
+  _renderCanvas (renderer) {
+    var canvas = renderer.getCanvas();
+    var dimensions = new Vector2(canvas.width, canvas.height);
 
-  // Run the cropping shader
-  renderer.runShader(null, CropOperation.fragmentShader, {
-    uniforms: {
-      u_cropStart: { type: "2f", value: [start.x, start.y] },
-      u_cropEnd: { type: "2f", value: [end.x, end.y] }
+    var newDimensions = this._getNewDimensions(renderer);
+
+    // Create a temporary canvas to draw to
+    var newCanvas = renderer.createCanvas();
+    newCanvas.width = newDimensions.x;
+    newCanvas.height = newDimensions.y;
+    var newContext = newCanvas.getContext("2d");
+
+    // The upper left corner of the cropped area on the original image
+    var startPosition = this._options.start.clone();
+
+    if (this._options.numberFormat === "relative") {
+      startPosition.multiply(dimensions);
     }
-  });
 
-  // Resize the input texture
-  gl.bindTexture(gl.TEXTURE_2D, lastTexture);
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, newDimensions.x, newDimensions.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-};
+    // Draw the source canvas onto the new one
+    newContext.drawImage(canvas,
+      startPosition.x, startPosition.y, // source x, y
+      newDimensions.x, newDimensions.y, // source dimensions
+      0, 0, // destination x, y
+      newDimensions.x, newDimensions.y // destination dimensions
+      );
 
-/**
- * Crops the image using Canvas2D
- * @param  {CanvasRenderer} renderer
- */
-CropOperation.prototype._renderCanvas = function(renderer) {
-  var canvas = renderer.getCanvas();
-  var dimensions = new Vector2(canvas.width, canvas.height);
-
-  var newDimensions = this._getNewDimensions(renderer);
-
-  // Create a temporary canvas to draw to
-  var newCanvas = renderer.createCanvas();
-  newCanvas.width = newDimensions.x;
-  newCanvas.height = newDimensions.y;
-  var newContext = newCanvas.getContext("2d");
-
-  // The upper left corner of the cropped area on the original image
-  var startPosition = this._options.start.clone();
-
-  if (this._options.numberFormat === "relative") {
-    startPosition.multiply(dimensions);
+    // Set the new canvas
+    renderer.setCanvas(newCanvas);
   }
 
-  // Draw the source canvas onto the new one
-  newContext.drawImage(canvas,
-    startPosition.x, startPosition.y, // source x, y
-    newDimensions.x, newDimensions.y, // source dimensions
-    0, 0, // destination x, y
-    newDimensions.x, newDimensions.y // destination dimensions
-    );
+  /**
+   * Gets the new dimensions
+   * @return {Vector2}
+   * @private
+   */
+  _getNewDimensions (renderer) {
+    var canvas = renderer.getCanvas();
+    var dimensions = new Vector2(canvas.width, canvas.height);
 
-  // Set the new canvas
-  renderer.setCanvas(newCanvas);
-};
+    var newDimensions = this._options.end
+      .clone()
+      .subtract(this._options.start);
 
-/**
- * Gets the new dimensions
- * @return {Vector2}
- * @private
- */
-CropOperation.prototype._getNewDimensions = function(renderer) {
-  var canvas = renderer.getCanvas();
-  var dimensions = new Vector2(canvas.width, canvas.height);
+    if (this._options.numberFormat === "relative") {
+      newDimensions.multiply(dimensions);
+    }
 
-  var newDimensions = this._options.end
-    .clone()
-    .subtract(this._options.start);
-
-  if (this._options.numberFormat === "relative") {
-    newDimensions.multiply(dimensions);
+    return newDimensions;
   }
+}
 
-  return newDimensions;
-};
-
-module.exports = CropOperation;
+export default CropOperation;

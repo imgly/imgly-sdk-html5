@@ -8,7 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var Filter = require("./filter");
+import Filter from "./filter";
 
 /**
  * X400 Filter
@@ -16,26 +16,28 @@ var Filter = require("./filter");
  * @alias ImglyKit.Filters.X400Filter
  * @extends {ImglyKit.Filter}
  */
-var X400Filter = Filter.extend({});
+class X400Filter extends Filter {
+  /**
+   * A unique string that identifies this operation. Can be used to select
+   * the active filter.
+   * @type {String}
+   */
+  static get identifier () {
+    return "x400";
+  }
 
-/**
- * A unique string that identifies this operation. Can be used to select
- * the active filter.
- * @type {String}
- */
-X400Filter.identifier = "x400";
+  /**
+   * Renders the filter
+   * @param  {Renderer} renderer
+   * @return {Promise}
+   */
+  render (renderer) {
+    var stack = new Filter.PrimitivesStack();
 
-/**
- * Renders the filter
- * @param  {Renderer} renderer
- * @return {Promise}
- */
-X400Filter.prototype.render = function(renderer) {
-  var stack = new Filter.PrimitivesStack();
+    stack.add(new Filter.Primitives.X400());
 
-  stack.add(new Filter.Primitives.X400());
+    stack.render(renderer);
+  }
+}
 
-  stack.render(renderer);
-};
-
-module.exports = X400Filter;
+export default X400Filter;

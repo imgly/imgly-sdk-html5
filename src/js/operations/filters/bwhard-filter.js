@@ -8,7 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var Filter = require("./filter");
+import Filter from "./filter";
 
 /**
  * BWHard Filter
@@ -16,29 +16,31 @@ var Filter = require("./filter");
  * @alias ImglyKit.Filters.BWHardFilter
  * @extends {ImglyKit.Filter}
  */
-var BWHardFilter = Filter.extend({});
+class BWHardFilter extends Filter {
+  /**
+   * A unique string that identifies this operation. Can be used to select
+   * the active filter.
+   * @type {String}
+   */
+  static get identifier () {
+    return "bwhard";
+  }
 
-/**
- * A unique string that identifies this operation. Can be used to select
- * the active filter.
- * @type {String}
- */
-BWHardFilter.identifier = "bwhard";
+  /**
+   * Renders the filter
+   * @param  {Renderer} renderer
+   * @return {Promise}
+   */
+  render (renderer) {
+    var stack = new Filter.PrimitivesStack();
 
-/**
- * Renders the filter
- * @param  {Renderer} renderer
- * @return {Promise}
- */
-BWHardFilter.prototype.render = function(renderer) {
-  var stack = new Filter.PrimitivesStack();
+    stack.add(new Filter.Primitives.Grayscale());
+    stack.add(new Filter.Primitives.Contrast({
+      contrast: 1.5
+    }));
 
-  stack.add(new Filter.Primitives.Grayscale());
-  stack.add(new Filter.Primitives.Contrast({
-    contrast: 1.5
-  }));
+    stack.render(renderer);
+  }
+}
 
-  stack.render(renderer);
-};
-
-module.exports = BWHardFilter;
+export default BWHardFilter;

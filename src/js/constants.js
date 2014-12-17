@@ -13,7 +13,7 @@
  * @enum {string}
  * @alias ImglyKit.RenderType
  */
-exports.RenderType = {
+export var RenderType = {
   IMAGE: "image",
   DATAURL: "data-url"
 };
@@ -23,7 +23,7 @@ exports.RenderType = {
  * @enum {string}
  * @alias ImglyKit.ImageFormat
  */
-exports.ImageFormat = {
+export var ImageFormat = {
   PNG: "image/png",
   JPEG: "image/jpeg"
 };

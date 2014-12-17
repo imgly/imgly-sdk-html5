@@ -8,41 +8,47 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var Operation = require("./operation");
-var PrimitivesStack = require("./filters/primitives-stack");
-var BrightnessPrimitive = require("./filters/primitives/brightness");
+import Operation from "./operation";
+import PrimitivesStack from "./filters/primitives-stack";
+import BrightnessPrimitive from "./filters/primitives/brightness";
 
 /**
  * @class
  * @alias ImglyKit.Operations.BrightnessOperation
  * @extends ImglyKit.Operation
  */
-var BrightnessOperation = Operation.extend({
-  availableOptions: {
-    brightness: { type: "number", default: 0 }
+class BrightnessOperation extends Operation {
+  constructor (...args) {
+    this.availableOptions = {
+      brightness: { type: "number", default: 0 }
+    };
+
+    super(...args);
   }
-});
 
-/**
- * A unique string that identifies this operation. Can be used to select
- * operations.
- * @type {String}
- */
-BrightnessOperation.identifier = "brightness";
+  /**
+   * A unique string that identifies this operation. Can be used to select
+   * operations.
+   * @type {String}
+   */
+  static get identifier () {
+    return "brightness";
+  }
 
-/**
- * Renders the filter
- * @param  {Renderer} renderer
- * @return {Promise}
- */
-BrightnessOperation.prototype.render = function(renderer) {
-  var stack = new PrimitivesStack();
+  /**
+   * Renders the filter
+   * @param  {Renderer} renderer
+   * @return {Promise}
+   */
+  render (renderer) {
+    var stack = new PrimitivesStack();
 
-  stack.add(new BrightnessPrimitive({
-    brightness: this._options.brightness
-  }));
+    stack.add(new BrightnessPrimitive({
+      brightness: this._options.brightness
+    }));
 
-  stack.render(renderer);
-};
+    stack.render(renderer);
+  }
+}
 
-module.exports = BrightnessOperation;
+export default BrightnessOperation;

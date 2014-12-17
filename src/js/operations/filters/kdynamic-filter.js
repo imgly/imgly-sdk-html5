@@ -8,7 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var Filter = require("./filter");
+import Filter from "./filter";
 
 /**
  * KDynamic Filter
@@ -16,42 +16,44 @@ var Filter = require("./filter");
  * @alias ImglyKit.Filters.KDynamicFilter
  * @extends {ImglyKit.Filter}
  */
-var KDynamicFilter = Filter.extend({});
+class KDynamicFilter extends Filter {
+  /**
+   * A unique string that identifies this operation. Can be used to select
+   * the active filter.
+   * @type {String}
+   */
+  static get identifier () {
+    return "kdynamic";
+  }
 
-/**
- * A unique string that identifies this operation. Can be used to select
- * the active filter.
- * @type {String}
- */
-KDynamicFilter.identifier = "kdynamic";
+  /**
+   * Renders the filter
+   * @param  {Renderer} renderer
+   * @return {Promise}
+   */
+  render (renderer) {
+    var stack = new Filter.PrimitivesStack();
 
-/**
- * Renders the filter
- * @param  {Renderer} renderer
- * @return {Promise}
- */
-KDynamicFilter.prototype.render = function(renderer) {
-  var stack = new Filter.PrimitivesStack();
+    // Tone curve
+    stack.add(new Filter.Primitives.ToneCurve({
+      controlPoints: [
+        [0, 0],
+        [17, 27],
+        [46, 69],
+        [90, 112],
+        [156, 200],
+        [203, 243],
+        [255, 255]
+      ]
+    }));
 
-  // Tone curve
-  stack.add(new Filter.Primitives.ToneCurve({
-    controlPoints: [
-      [0, 0],
-      [17, 27],
-      [46, 69],
-      [90, 112],
-      [156, 200],
-      [203, 243],
-      [255, 255]
-    ]
-  }));
+    // Saturation
+    stack.add(new Filter.Primitives.Saturation({
+      saturation: 0.7
+    }));
 
-  // Saturation
-  stack.add(new Filter.Primitives.Saturation({
-    saturation: 0.7
-  }));
+    stack.render(renderer);
+  }
+}
 
-  stack.render(renderer);
-};
-
-module.exports = KDynamicFilter;
+export default KDynamicFilter;

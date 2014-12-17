@@ -14,44 +14,44 @@
  * @class
  * @alias ImglyKit.Filter.Primitive
  */
-function Primitive(options) {
-  options = options || {};
+class Primitive {
+  constructor (options) {
+    options = options || {};
 
-  this._options = options;
+    this._options = options;
+  }
+
+  /**
+   * Renders the primitive
+   * @param  {Renderer} renderer
+   * @return {Promise}
+   */
+  render (renderer) {
+    if (renderer.identifier === "webgl") {
+      this.renderWebGL(renderer);
+    } else {
+      this.renderCanvas(renderer);
+    }
+  }
+
+  /**
+   * Renders the primitive (WebGL)
+   * @param  {CanvasRenderer} renderer
+   */
+  /* istanbul ignore next */
+  renderWebGL (renderer) {
+    /* istanbul ignore next */
+    throw new Error("Primitive#renderWebGL is abstract and not implemented in inherited class.");
+  }
+
+  /**
+   * Renders the primitive (Canvas2D)
+   * @param  {CanvasRenderer} renderer
+   */
+  renderCanvas (renderer) {
+    /* istanbul ignore next */
+    throw new Error("Primitive#renderCanvas is abstract and not implemented in inherited class.");
+  }
 }
 
-/**
- * Renders the primitive
- * @param  {Renderer} renderer
- * @return {Promise}
- */
-Primitive.prototype.render = function(renderer) {
-  if (renderer.identifier === "webgl") {
-    this.renderWebGL(renderer);
-  } else {
-    this.renderCanvas(renderer);
-  }
-};
-
-/**
- * Renders the primitive (WebGL)
- * @param  {CanvasRenderer} renderer
- */
-/* istanbul ignore next */
-Primitive.prototype.renderWebGL = function(renderer) {
-  /* istanbul ignore next */
-  throw new Error("Primitive#renderWebGL is abstract and not implemented in inherited class.");
-};
-
-/**
- * Renders the primitive (Canvas2D)
- * @param  {CanvasRenderer} renderer
- */
-Primitive.prototype.renderCanvas = function(renderer) {
-  /* istanbul ignore next */
-  throw new Error("Primitive#renderCanvas is abstract and not implemented in inherited class.");
-};
-
-Primitive.extend = require("../../../lib/extend");
-
-module.exports = Primitive;
+export default Primitive;

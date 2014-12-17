@@ -6,6 +6,8 @@ var runSequence = require("run-sequence");
 var browserSync = require("browser-sync");
 var browserify = require("browserify");
 var watchify = require("watchify");
+var to5ify = require("6to5ify");
+var brfs = require("brfs");
 var reload = browserSync.reload;
 
 var gulpLoadPlugins = require("gulp-load-plugins");
@@ -122,9 +124,14 @@ gulp.task("browserify", function () {
 
   // Initialize browserify
   var args = watchify.args;
+  args.debug = !isProduction;
+  args.entries = [input];
+  args.extensions = [".js"];
   args.fullPaths = false;
   var b = browserify(args);
-  b.add(input);
+
+  b.transform(to5ify);
+  b.transform(brfs);
 
   // Make sure to use watchify in development
   var bundler = isProduction ? b : watchify(b);
@@ -139,7 +146,6 @@ gulp.task("browserify", function () {
   });
 
   bundler.external("canvas");
-  bundler.transform("brfs");
 
   // Creates the bundle
   function rebundle() {

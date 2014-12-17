@@ -8,7 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var Filter = require("./filter");
+import Filter from "./filter";
 
 /**
  * Gobblin Filter
@@ -16,26 +16,28 @@ var Filter = require("./filter");
  * @alias ImglyKit.Filters.GobblinFilter
  * @extends {ImglyKit.Filter}
  */
-var GobblinFilter = Filter.extend({});
+class GobblinFilter extends Filter {
+  /**
+   * A unique string that identifies this operation. Can be used to select
+   * the active filter.
+   * @type {String}
+   */
+  static get identifier () {
+    return "gobblin";
+  }
 
-/**
- * A unique string that identifies this operation. Can be used to select
- * the active filter.
- * @type {String}
- */
-GobblinFilter.identifier = "gobblin";
+  /**
+   * Renders the filter
+   * @param  {Renderer} renderer
+   * @return {Promise}
+   */
+  render (renderer) {
+    var stack = new Filter.PrimitivesStack();
 
-/**
- * Renders the filter
- * @param  {Renderer} renderer
- * @return {Promise}
- */
-GobblinFilter.prototype.render = function(renderer) {
-  var stack = new Filter.PrimitivesStack();
+    stack.add(new Filter.Primitives.Gobblin());
 
-  stack.add(new Filter.Primitives.Gobblin());
+    stack.render(renderer);
+  }
+}
 
-  stack.render(renderer);
-};
-
-module.exports = GobblinFilter;
+export default GobblinFilter;

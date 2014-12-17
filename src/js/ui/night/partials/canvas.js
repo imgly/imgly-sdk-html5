@@ -8,8 +8,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var fs = require("fs");
-var Template = require("../../base/template");
+import * as fs from "fs";
+import Template from "../../base/template";
 
 /**
  * The canvas partial
@@ -18,18 +18,22 @@ var Template = require("../../base/template");
  * @extends ImglyKit.UI.Template
  * @private
  */
-var CanvasPartial = Template.extend();
+class CanvasPartial extends Template {
+  constructor (...args) {
+    super(...args);
 
-/**
- * The string that will be used in the parent template
- * @type {String}
- */
-CanvasPartial.prototype.name = "canvas";
+    /**
+     * The string that will be used in the parent template
+     * @type {String}
+     */
+    this.name = "canvas";
 
-/**
- * The source of this partial
- * @type {String}
- */
-CanvasPartial.prototype.source = fs.readFileSync(__dirname + "/../templates/canvas.mustache", "utf8");
+    /**
+     * The source of this partial
+     * @type {String}
+     */
+    this.source = fs.readFileSync(__dirname + "/../templates/canvas.mustache", "utf8");
+  }
+}
 
-module.exports = CanvasPartial;
+export default CanvasPartial;

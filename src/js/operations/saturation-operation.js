@@ -8,41 +8,45 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var Operation = require("./operation");
-var PrimitivesStack = require("./filters/primitives-stack");
-var SaturationPrimitive = require("./filters/primitives/saturation");
+import Operation from "./operation";
+import PrimitivesStack from "./filters/primitives-stack";
+import SaturationPrimitive from "./filters/primitives/saturation";
 
 /**
  * @class
  * @alias ImglyKit.Operations.SaturationOperation
  * @extends ImglyKit.Operation
  */
-var SaturationOperation = Operation.extend({
-  availableOptions: {
-    saturation: { type: "number", default: 1.0 }
+class SaturationOperation extends Operation {
+  constructor () {
+    this.availableOptions = {
+      saturation: { type: "number", default: 1.0 }
+    };
   }
-});
 
-/**
- * A unique string that identifies this operation. Can be used to select
- * operations.
- * @type {String}
- */
-SaturationOperation.identifier = "saturation";
+  /**
+   * A unique string that identifies this operation. Can be used to select
+   * operations.
+   * @type {String}
+   */
+  static get identifier () {
+    return "saturation";
+  }
 
-/**
- * Renders the filter
- * @param  {Renderer} renderer
- * @return {Promise}
- */
-SaturationOperation.prototype.render = function(renderer) {
-  var stack = new PrimitivesStack();
+  /**
+   * Renders the filter
+   * @param  {Renderer} renderer
+   * @return {Promise}
+   */
+  render (renderer) {
+    var stack = new PrimitivesStack();
 
-  stack.add(new SaturationPrimitive({
-    saturation: this._options.saturation
-  }));
+    stack.add(new SaturationPrimitive({
+      saturation: this._options.saturation
+    }));
 
-  stack.render(renderer);
-};
+    stack.render(renderer);
+  }
+}
 
-module.exports = SaturationOperation;
+export default SaturationOperation;

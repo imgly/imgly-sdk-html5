@@ -8,7 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var Filter = require("./filter");
+import Filter from "./filter";
 
 /**
  * Food Filter
@@ -16,32 +16,34 @@ var Filter = require("./filter");
  * @alias ImglyKit.Filters.FoodFilter
  * @extends {ImglyKit.Filter}
  */
-var FoodFilter = Filter.extend({});
+class FoodFilter extends Filter {
+  /**
+   * A unique string that identifies this operation. Can be used to select
+   * the active filter.
+   * @type {String}
+   */
+  static get identifier () {
+    return "food";
+  }
 
-/**
- * A unique string that identifies this operation. Can be used to select
- * the active filter.
- * @type {String}
- */
-FoodFilter.identifier = "food";
+  /**
+   * Renders the filter
+   * @param  {Renderer} renderer
+   * @return {Promise}
+   */
+  render (renderer) {
+    var stack = new Filter.PrimitivesStack();
 
-/**
- * Renders the filter
- * @param  {Renderer} renderer
- * @return {Promise}
- */
-FoodFilter.prototype.render = function(renderer) {
-  var stack = new Filter.PrimitivesStack();
+    stack.add(new Filter.Primitives.Saturation({
+      saturation: 1.35
+    }));
 
-  stack.add(new Filter.Primitives.Saturation({
-    saturation: 1.35
-  }));
+    stack.add(new Filter.Primitives.Contrast({
+      contrast: 1.1
+    }));
 
-  stack.add(new Filter.Primitives.Contrast({
-    contrast: 1.1
-  }));
+    stack.render(renderer);
+  }
+}
 
-  stack.render(renderer);
-};
-
-module.exports = FoodFilter;
+export default FoodFilter;

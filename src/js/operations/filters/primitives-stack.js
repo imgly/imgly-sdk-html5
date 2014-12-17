@@ -14,32 +14,36 @@
  * @class
  * @alias ImglyKit.Filter.PrimitivesStack
  */
-function PrimitivesStack() {
+class PrimitivesStack {
+  constructor (...args) {
+    super(...args);
+
+    /**
+     * The stack of {@link ImglyKit.Filter.Primitive} instances
+     * @type {Array}
+     * @private
+     */
+    this._stack = [];
+  }
+
   /**
-   * The stack of {@link ImglyKit.Filter.Primitive} instances
-   * @type {Array}
-   * @private
+   * Adds the given primitive to the stack
+   * @param {ImglyKit.Filter.Primitive} primitive
    */
-  this._stack = [];
+  add (primitive) {
+    this._stack.push(primitive);
+  }
+
+  /**
+   * Renders the stack of primitives on the renderer
+   * @param  {Renderer} renderer
+   */
+  render (renderer) {
+    for (var i = 0; i < this._stack.length; i++) {
+      var primitive = this._stack[i];
+      primitive.render(renderer);
+    }
+  }
 }
 
-/**
- * Adds the given primitive to the stack
- * @param {ImglyKit.Filter.Primitive} primitive
- */
-PrimitivesStack.prototype.add = function(primitive) {
-  this._stack.push(primitive);
-};
-
-/**
- * Renders the stack of primitives on the renderer
- * @param  {Renderer} renderer
- */
-PrimitivesStack.prototype.render = function(renderer) {
-  for (var i = 0; i < this._stack.length; i++) {
-    var primitive = this._stack[i];
-    primitive.render(renderer);
-  }
-};
-
-module.exports = PrimitivesStack;
+export default PrimitivesStack;

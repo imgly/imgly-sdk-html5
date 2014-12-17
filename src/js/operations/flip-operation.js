@@ -8,8 +8,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var Operation = require("./operation");
-var Utils = require("../lib/utils");
+import Operation from "./operation";
+import Utils from "../lib/utils";
 
 /**
  * An operation that can flip the canvas
@@ -18,93 +18,97 @@ var Utils = require("../lib/utils");
  * @alias ImglyKit.Operations.FlipOperation
  * @extends ImglyKit.Operation
  */
-var FlipOperation = Operation.extend({
-  availableOptions: {
-    horizontal: { type: "boolean", default: false },
-    vertical: { type: "boolean", default: false }
+class FlipOperation extends Operation {
+  constructor (...args) {
+    this.availableOptions = {
+      horizontal: { type: "boolean", default: false },
+      vertical: { type: "boolean", default: false }
+    };
+
+    /**
+     * The fragment shader used for this operation
+     */
+    this.fragmentShader = `
+      precision mediump float;
+      uniform sampler2D u_image;
+      varying vec2 v_texCoord;
+      uniform bool u_flipVertical;
+      uniform bool u_flipHorizontal;
+
+      void main() {
+        vec2 texCoord = vec2(v_texCoord);
+        if (u_flipVertical) {
+          texCoord.y = 1.0 - texCoord.y;
+        }
+        if (u_flipHorizontal) {
+          texCoord.x = 1.0 - texCoord.x;
+        }
+        gl_FragColor = texture2D(u_image, texCoord);
+      }
+    `;
+
+    super(...args);
   }
-});
 
-/**
- * A unique string that identifies this operation. Can be used to select
- * operations.
- * @type {String}
- */
-FlipOperation.identifier = "flip";
+  /**
+   * A unique string that identifies this operation. Can be used to select
+   * operations.
+   * @type {String}
+   */
+  static get identifier () {
+    return "flip";
+  }
 
-/**
- * The fragment shader used for this operation
- */
-FlipOperation.fragmentShader = Utils.shaderString(function () {/**webgl
+  /**
+   * Crops this image using WebGL
+   * @param  {WebGLRenderer} renderer
+   */
+  /* istanbul ignore next */
+  _renderWebGL (renderer) {
+    renderer.runShader(null, FlipOperation.fragmentShader, {
+      uniforms: {
+        u_flipVertical: { type: "f", value: this._options.vertical },
+        u_flipHorizontal: { type: "f", value: this._options.horizontal }
+      }
+    });
+  }
 
-  precision mediump float;
-  uniform sampler2D u_image;
-  varying vec2 v_texCoord;
-  uniform bool u_flipVertical;
-  uniform bool u_flipHorizontal;
+  /**
+   * Crops the image using Canvas2D
+   * @param  {CanvasRenderer} renderer
+   */
+  _renderCanvas (renderer) {
+    var canvas = renderer.getCanvas();
+    var context = renderer.getContext();
 
-  void main() {
-    vec2 texCoord = vec2(v_texCoord);
-    if (u_flipVertical) {
-      texCoord.y = 1.0 - texCoord.y;
+    var scaleX = 1, scaleY = 1;
+    var translateX = 0, translateY = 0;
+
+    if (this._options.horizontal) {
+      scaleX = -1;
+      translateX = canvas.width;
     }
-    if (u_flipHorizontal) {
-      texCoord.x = 1.0 - texCoord.x;
+
+    if (this._options.vertical) {
+      scaleY = -1;
+      translateY = canvas.height;
     }
-    gl_FragColor = texture2D(u_image, texCoord);
+
+    // Save the current state
+    context.save();
+
+    // Apply the transformation
+    context.translate(translateX, translateY);
+    context.scale(scaleX, scaleY);
+
+    // Create a temporary canvas so that we can draw the image
+    // with the applied transformation
+    var tempCanvas = renderer.cloneCanvas();
+    context.drawImage(tempCanvas, 0, 0);
+
+    // Restore old transformation
+    context.restore();
   }
+}
 
-*/});
-
-/**
- * Crops this image using WebGL
- * @param  {WebGLRenderer} renderer
- */
-/* istanbul ignore next */
-FlipOperation.prototype._renderWebGL = function(renderer) {
-  renderer.runShader(null, FlipOperation.fragmentShader, {
-    uniforms: {
-      u_flipVertical: { type: "f", value: this._options.vertical },
-      u_flipHorizontal: { type: "f", value: this._options.horizontal }
-    }
-  });
-};
-
-/**
- * Crops the image using Canvas2D
- * @param  {CanvasRenderer} renderer
- */
-FlipOperation.prototype._renderCanvas = function(renderer) {
-  var canvas = renderer.getCanvas();
-  var context = renderer.getContext();
-
-  var scaleX = 1, scaleY = 1;
-  var translateX = 0, translateY = 0;
-
-  if (this._options.horizontal) {
-    scaleX = -1;
-    translateX = canvas.width;
-  }
-
-  if (this._options.vertical) {
-    scaleY = -1;
-    translateY = canvas.height;
-  }
-
-  // Save the current state
-  context.save();
-
-  // Apply the transformation
-  context.translate(translateX, translateY);
-  context.scale(scaleX, scaleY);
-
-  // Create a temporary canvas so that we can draw the image
-  // with the applied transformation
-  var tempCanvas = renderer.cloneCanvas();
-  context.drawImage(tempCanvas, 0, 0);
-
-  // Restore old transformation
-  context.restore();
-};
-
-module.exports = FlipOperation;
+export default FlipOperation;
