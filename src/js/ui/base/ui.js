@@ -43,12 +43,6 @@ class UI {
     this._layoutTemplate = null;
 
     /**
-     * A unique string that identifies this UI
-     * @type {String}
-     */
-    this.identifier = null;
-
-    /**
      * @type {ImglyKit}
      * @private
      */
@@ -71,6 +65,14 @@ class UI {
      * @type {HoganTemplate}
      */
     this._layout = null;
+  }
+
+  /**
+   * A unique string that identifies this UI
+   * @type {String}
+   */
+  get identifier () {
+    return null;
   }
 
   /**

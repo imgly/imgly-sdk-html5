@@ -32,7 +32,7 @@ var testOperation = ImglyKit.Operation.extend({
 });
 var operation;
 
-describe("foobarbaz", function () {
+describe("Operation", function () {
 
   describe("options", function () {
 

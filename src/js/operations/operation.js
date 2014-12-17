@@ -34,10 +34,19 @@ class Operation {
   }
 
   /**
+   * A unique string that identifies this operation. Can be used to select
+   * operations.
+   * @type {String}
+   */
+  get identifier () {
+    return null;
+  }
+
+  /**
    * Checks whether this Operation can be applied the way it is configured
    */
   validateSettings () {
-    var identifier = this.constructor.identifier;
+    var identifier = this.identifier;
 
     // Check for required options
     for (var optionName in this.availableOptions) {
@@ -150,7 +159,7 @@ class Operation {
    */
   _setOption (optionName, value) {
     var optionConfig = this.availableOptions[optionName];
-    var identifier = this.constructor.identifier;
+    var identifier = this.identifier;
 
     if (typeof optionConfig.validation !== "undefined") {
       optionConfig.validation(value);

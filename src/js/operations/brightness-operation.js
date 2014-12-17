@@ -31,7 +31,7 @@ class BrightnessOperation extends Operation {
    * operations.
    * @type {String}
    */
-  static get identifier () {
+  get identifier () {
     return "brightness";
   }
 

@@ -18,10 +18,12 @@ import SaturationPrimitive from "./filters/primitives/saturation";
  * @extends ImglyKit.Operation
  */
 class SaturationOperation extends Operation {
-  constructor () {
+  constructor (...args) {
     this.availableOptions = {
       saturation: { type: "number", default: 1.0 }
     };
+
+    super(...args);
   }
 
   /**
@@ -29,7 +31,7 @@ class SaturationOperation extends Operation {
    * operations.
    * @type {String}
    */
-  static get identifier () {
+  get identifier () {
     return "saturation";
   }
 

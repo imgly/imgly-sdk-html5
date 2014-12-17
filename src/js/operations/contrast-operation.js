@@ -19,7 +19,7 @@ import ContrastPrimitive from "./filters/primitives/contrast";
  */
 class ContrastOperation extends Operation {
   constructor (...args) {
-    this._availableOptions = {
+    this.availableOptions = {
       contrast: { type: "number", default: 1.0 }
     };
 
@@ -31,7 +31,7 @@ class ContrastOperation extends Operation {
    * operations.
    * @type {String}
    */
-  static get identifier () {
+  get identifier () {
     return "contrast";
   }
 

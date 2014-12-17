@@ -49,7 +49,7 @@ class CropOperation extends Operation {
    * operations.
    * @type {String}
    */
-  static get identifier () {
+  get identifier () {
     return "crop";
   }
 

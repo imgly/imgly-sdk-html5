@@ -76,7 +76,7 @@ class RadialBlurOperation extends Operation {
    * operations.
    * @type {String}
    */
-  static get identifier () {
+  get identifier () {
     return "radial-blur";
   }
 

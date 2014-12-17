@@ -31,17 +31,19 @@ class ImglyKitUI extends UI {
     this._partialTemplates.push(new CanvasPartial(kit, this));
 
     /**
-     * A unique string that identifies this UI
-     * @type {String}
-     */
-    this.identifier = "night";
-
-    /**
      * The layout template that will be compiled and rendered
      * @type {Template}
      * @private
      */
     this._layoutTemplate = new Layout();
+  }
+
+  /**
+   * A unique string that identifies this UI
+   * @type {String}
+   */
+  get identifier () {
+    return "night";
   }
 
   /**

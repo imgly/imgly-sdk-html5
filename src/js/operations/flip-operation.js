@@ -55,7 +55,7 @@ class FlipOperation extends Operation {
    * operations.
    * @type {String}
    */
-  static get identifier () {
+  get identifier () {
     return "flip";
   }
 
