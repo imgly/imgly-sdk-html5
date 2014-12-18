@@ -127,10 +127,12 @@ gulp.task("browserify", function () {
   args.debug = !isProduction;
   args.entries = [input];
   args.extensions = [".js"];
-  args.fullPaths = false;
+  args.fullPaths = !isProduction;
   var b = browserify(args);
 
-  b.transform(to5ify);
+  b.transform(to5ify.configure({
+    ignore: /vendor/
+  }));
   b.transform(brfs);
 
   // Make sure to use watchify in development
