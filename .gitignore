@@ -3,6 +3,5 @@
 *~
 Gemfile.lock
 node_modules
-build
 
 twistd.pid
