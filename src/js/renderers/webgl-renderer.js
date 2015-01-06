@@ -220,11 +220,11 @@ class WebGLRenderer extends Renderer {
     var shaders = [];
 
     // Use default vertex shader
-    vertexShader = this._createShader(gl.VERTEX_SHADER, vertexShader || WebGLRenderer.defaultVertexShader);
+    vertexShader = this._createShader(gl.VERTEX_SHADER, vertexShader || WebGLRenderer.prototype.defaultVertexShader);
     shaders.push(vertexShader);
 
     // Use default fragment shader
-    fragmentShader = this._createShader(gl.FRAGMENT_SHADER, fragmentShader || WebGLRenderer.defaultFragmentShader);
+    fragmentShader = this._createShader(gl.FRAGMENT_SHADER, fragmentShader || WebGLRenderer.prototype.defaultFragmentShader);
     shaders.push(fragmentShader);
 
     // Create the program

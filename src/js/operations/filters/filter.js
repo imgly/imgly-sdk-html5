@@ -41,18 +41,18 @@ class Filter {
 Filter.extend = require("../../lib/extend");
 
 // Exposed classes
-Filter.PrimitivesStack = require("./primitives-stack");
+Filter.PrimitivesStack = require("./primitives-stack").default;
 Filter.Primitives = {};
-Filter.Primitives.Saturation = require("./primitives/saturation");
-Filter.Primitives.LookupTable = require("./primitives/lookup-table");
-Filter.Primitives.ToneCurve = require("./primitives/tone-curve");
-Filter.Primitives.SoftColorOverlay = require("./primitives/soft-color-overlay");
-Filter.Primitives.Desaturation = require("./primitives/desaturation");
-Filter.Primitives.X400 = require("./primitives/x400");
-Filter.Primitives.Grayscale = require("./primitives/grayscale");
-Filter.Primitives.Contrast = require("./primitives/contrast");
-Filter.Primitives.Glow = require("./primitives/glow");
-Filter.Primitives.Gobblin = require("./primitives/gobblin");
-Filter.Primitives.Brightness = require("./primitives/brightness");
+Filter.Primitives.Saturation = require("./primitives/saturation").default;
+Filter.Primitives.LookupTable = require("./primitives/lookup-table").default;
+Filter.Primitives.ToneCurve = require("./primitives/tone-curve").default;
+Filter.Primitives.SoftColorOverlay = require("./primitives/soft-color-overlay").default;
+Filter.Primitives.Desaturation = require("./primitives/desaturation").default;
+Filter.Primitives.X400 = require("./primitives/x400").default;
+Filter.Primitives.Grayscale = require("./primitives/grayscale").default;
+Filter.Primitives.Contrast = require("./primitives/contrast").default;
+Filter.Primitives.Glow = require("./primitives/glow").default;
+Filter.Primitives.Gobblin = require("./primitives/gobblin").default;
+Filter.Primitives.Brightness = require("./primitives/brightness").default;
 
 export default Filter;

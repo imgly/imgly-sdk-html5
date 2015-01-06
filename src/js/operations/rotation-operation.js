@@ -100,7 +100,7 @@ class RotationOperation extends Operation {
     ];
 
     // Run the shader
-    renderer.runShader(RotationOperation.vertexShader, null, {
+    renderer.runShader(this.vertexShader, null, {
       uniforms: {
         u_matrix: { type: "mat3fv", value: rotationMatrix }
       }

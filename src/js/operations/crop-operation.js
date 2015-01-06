@@ -98,7 +98,7 @@ class CropOperation extends Operation {
     canvas.height = newDimensions.y;
 
     // Run the cropping shader
-    renderer.runShader(null, CropOperation.fragmentShader, {
+    renderer.runShader(null, this.fragmentShader, {
       uniforms: {
         u_cropStart: { type: "2f", value: [start.x, start.y] },
         u_cropEnd: { type: "2f", value: [end.x, end.y] }

@@ -15,7 +15,7 @@ import { RenderType, ImageFormat } from "./constants";
 import Utils from "./lib/utils";
 
 // Default UIs
-import NightUI from "./ui/night/ui";
+// import NightUI from "./ui/night/ui";
 
 /**
  * @class
@@ -61,11 +61,11 @@ class ImglyKit {
     this.operationsStack = [];
 
     // Register the default UIs
-    this._registerUIs();
+    // this._registerUIs();
 
-    if (this._options.ui) {
-      this._initUI();
-    }
+    // if (this._options.ui) {
+    //   this._initUI();
+    // }
 
   }
 
@@ -173,22 +173,22 @@ ImglyKit.RenderImage = RenderImage;
 ImglyKit.Color = require("./lib/color");
 ImglyKit.Operation = require("./operations/operation");
 ImglyKit.Operations = {};
-ImglyKit.Operations.FiltersOperation = require("./operations/filters-operation");
-ImglyKit.Operations.RotationOperation = require("./operations/rotation-operation");
-ImglyKit.Operations.CropOperation = require("./operations/crop-operation");
-ImglyKit.Operations.SaturationOperation = require("./operations/saturation-operation");
-ImglyKit.Operations.ContrastOperation = require("./operations/contrast-operation");
-ImglyKit.Operations.BrightnessOperation = require("./operations/brightness-operation");
-ImglyKit.Operations.FlipOperation = require("./operations/flip-operation");
-ImglyKit.Operations.TiltShiftOperation = require("./operations/tilt-shift-operation");
-ImglyKit.Operations.RadialBlurOperation = require("./operations/radial-blur-operation");
-ImglyKit.Operations.TextOperation = require("./operations/text-operation");
-ImglyKit.Operations.StickersOperation = require("./operations/stickers-operation");
-ImglyKit.Operations.FramesOperation = require("./operations/frames-operation");
+ImglyKit.Operations.FiltersOperation = require("./operations/filters-operation").default;
+ImglyKit.Operations.RotationOperation = require("./operations/rotation-operation").default;
+ImglyKit.Operations.CropOperation = require("./operations/crop-operation").default;
+ImglyKit.Operations.SaturationOperation = require("./operations/saturation-operation").default;
+ImglyKit.Operations.ContrastOperation = require("./operations/contrast-operation").default;
+ImglyKit.Operations.BrightnessOperation = require("./operations/brightness-operation").default;
+ImglyKit.Operations.FlipOperation = require("./operations/flip-operation").default;
+ImglyKit.Operations.TiltShiftOperation = require("./operations/tilt-shift-operation").default;
+ImglyKit.Operations.RadialBlurOperation = require("./operations/radial-blur-operation").default;
+ImglyKit.Operations.TextOperation = require("./operations/text-operation").default;
+ImglyKit.Operations.StickersOperation = require("./operations/stickers-operation").default;
+ImglyKit.Operations.FramesOperation = require("./operations/frames-operation").default;
 
 // Exposed constants
 ImglyKit.RenderType = RenderType;
 ImglyKit.ImageFormat = ImageFormat;
-ImglyKit.Vector2 = require("./lib/math/vector2");
+ImglyKit.Vector2 = require("./lib/math/vector2").default;
 
 export default ImglyKit;
