@@ -1,0 +1,170 @@
+/*!
+ * Copyright (c) 2013-2014 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+/*!
+ * Copyright (c) 2013-2014 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+/*!
+ * Copyright (c) 2013-2014 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+/* line 10, ../../src/css/night/_basics.sass */
+.imglykit-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #2B2B2B;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+/* line 40, ../../../../../.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0/gems/compass-core-1.0.1/stylesheets/compass/reset/_utilities.scss */
+.imglykit-container div, .imglykit-container span, .imglykit-container applet, .imglykit-container object, .imglykit-container iframe,
+.imglykit-container h1, .imglykit-container h2, .imglykit-container h3, .imglykit-container h4, .imglykit-container h5, .imglykit-container h6, .imglykit-container p, .imglykit-container blockquote, .imglykit-container pre,
+.imglykit-container a, .imglykit-container abbr, .imglykit-container acronym, .imglykit-container address, .imglykit-container big, .imglykit-container cite, .imglykit-container code,
+.imglykit-container del, .imglykit-container dfn, .imglykit-container em, .imglykit-container img, .imglykit-container ins, .imglykit-container kbd, .imglykit-container q, .imglykit-container s, .imglykit-container samp,
+.imglykit-container small, .imglykit-container strike, .imglykit-container strong, .imglykit-container sub, .imglykit-container sup, .imglykit-container tt, .imglykit-container var,
+.imglykit-container b, .imglykit-container u, .imglykit-container i, .imglykit-container center,
+.imglykit-container dl, .imglykit-container dt, .imglykit-container dd, .imglykit-container ol, .imglykit-container ul, .imglykit-container li,
+.imglykit-container fieldset, .imglykit-container form, .imglykit-container label, .imglykit-container legend,
+.imglykit-container table, .imglykit-container caption, .imglykit-container tbody, .imglykit-container tfoot, .imglykit-container thead, .imglykit-container tr, .imglykit-container th, .imglykit-container td,
+.imglykit-container article, .imglykit-container aside, .imglykit-container canvas, .imglykit-container details, .imglykit-container embed,
+.imglykit-container figure, .imglykit-container figcaption, .imglykit-container footer, .imglykit-container header, .imglykit-container hgroup,
+.imglykit-container menu, .imglykit-container nav, .imglykit-container output, .imglykit-container ruby, .imglykit-container section, .imglykit-container summary,
+.imglykit-container time, .imglykit-container mark, .imglykit-container audio, .imglykit-container video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  font-size: 100%;
+  vertical-align: baseline;
+}
+/* line 55, ../../../../../.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0/gems/compass-core-1.0.1/stylesheets/compass/reset/_utilities.scss */
+.imglykit-container table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+/* line 57, ../../../../../.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0/gems/compass-core-1.0.1/stylesheets/compass/reset/_utilities.scss */
+.imglykit-container caption, .imglykit-container th, .imglykit-container td {
+  text-align: left;
+  font-weight: normal;
+  vertical-align: middle;
+}
+/* line 59, ../../../../../.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0/gems/compass-core-1.0.1/stylesheets/compass/reset/_utilities.scss */
+.imglykit-container q, .imglykit-container blockquote {
+  quotes: none;
+}
+/* line 103, ../../../../../.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0/gems/compass-core-1.0.1/stylesheets/compass/reset/_utilities.scss */
+.imglykit-container q:before, .imglykit-container q:after, .imglykit-container blockquote:before, .imglykit-container blockquote:after {
+  content: "";
+  content: none;
+}
+/* line 61, ../../../../../.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0/gems/compass-core-1.0.1/stylesheets/compass/reset/_utilities.scss */
+.imglykit-container a img {
+  border: none;
+}
+
+/*!
+ * Copyright (c) 2013-2014 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+/* line 10, ../../src/css/night/_canvas.sass */
+.imglykit-canvas-container {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding-bottom: 80px;
+}
+
+/*!
+ * Copyright (c) 2013-2014 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+/* line 11, ../../src/css/night/_controls.sass */
+.imglykit-controls-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 80px;
+}
+
+/* line 20, ../../src/css/night/_controls.sass */
+ul.imglykit-controls-overview {
+  text-align: center;
+  height: 80px;
+  border-top: 1px solid #363636;
+  overflow: hidden;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+/* line 30, ../../src/css/night/_controls.sass */
+ul.imglykit-controls-overview li {
+  display: inline-block;
+  height: 80px;
+  width: 80px;
+  cursor: pointer;
+  border-left: 1px solid #363636;
+}
+/* line 37, ../../src/css/night/_controls.sass */
+ul.imglykit-controls-overview li:last-child {
+  border-right: 1px solid #363636;
+}
+/* line 40, ../../src/css/night/_controls.sass */
+ul.imglykit-controls-overview li img {
+  margin-top: 20px;
+}
+
+/*!
+ * Copyright (c) 2013-2014 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+/* line 11, ../../src/css/night/_scrollbars.sass */
+.imglykit-controls::-webkit-scrollbar {
+  background: transparent;
+  width: 11px;
+  height: 11px;
+}
+/* line 16, ../../src/css/night/_scrollbars.sass */
+.imglykit-controls::-webkit-scrollbar-track {
+  background: transparent;
+}
+/* line 19, ../../src/css/night/_scrollbars.sass */
+.imglykit-controls::-webkit-scrollbar-thumb {
+  background: #9FBDFF;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  width: 5px;
+  margin: 3px;
+  border: 3px solid #363636;
+}

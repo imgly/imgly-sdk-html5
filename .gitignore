@@ -2,7 +2,6 @@
 .sass-cache
 *~
 node_modules
-build
 coverage
 *.sublime-workspace
 .idea
