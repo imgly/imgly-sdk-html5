@@ -4,6 +4,5 @@
 node_modules
 build
 coverage
-doc
 *.sublime-workspace
 .idea

@@ -1,0 +1,1848 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Class: BrightnessOperation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
+    
+    
+    <script>
+    var config = {"default":{"outputSourceFiles":true},"monospaceLinks":false,"cleverLinks":false};
+    </script>
+    
+
+    
+</head>
+<body>
+<div id="wrap" class="clearfix">
+    
+<div class="navigation">
+    <h3 class="applicationName"><a href="index.html"></a></h3>
+
+    <div class="search">
+        <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentations">
+    </div>
+    <ul class="list">
+    
+        <li class="item" data-name="_">
+            <span class="title">
+                <a href="_.html">_</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="_.defaults"><a href="_.html#defaults">defaults</a></li>
+            
+                <li data-name="_.extend"><a href="_.html#extend">extend</a></li>
+            
+                <li data-name="_.isArray"><a href="_.html#isArray">isArray</a></li>
+            
+                <li data-name="_.keys"><a href="_.html#keys">keys</a></li>
+            
+                <li data-name="_.support"><a href="_.html#support">support</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="_.bind"><a href="_.html#bind">bind</a></li>
+            
+                <li data-name="_.identity"><a href="_.html#identity">identity</a></li>
+            
+                <li data-name="_.isArguments"><a href="_.html#isArguments">isArguments</a></li>
+            
+                <li data-name="_.isFunction"><a href="_.html#isFunction">isFunction</a></li>
+            
+                <li data-name="_.isObject"><a href="_.html#isObject">isObject</a></li>
+            
+                <li data-name="_.isString"><a href="_.html#isString">isString</a></li>
+            
+                <li data-name="_.noop"><a href="_.html#noop">noop</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit">
+            <span class="title">
+                <a href="ImglyKit.html">ImglyKit</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="ImglyKit.ImageFormat"><a href="ImglyKit.html#ImageFormat">ImageFormat</a></li>
+            
+                <li data-name="ImglyKit.RenderType"><a href="ImglyKit.html#RenderType">RenderType</a></li>
+            
+                <li data-name="ImglyKit.version"><a href="ImglyKit.html#version">version</a></li>
+            
+                <li data-name="ImglyKit#operationsStack"><a href="ImglyKit.html#operationsStack">operationsStack</a></li>
+            
+                <li data-name="ImglyKit#ui"><a href="ImglyKit.html#ui">ui</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit#getAssetPath"><a href="ImglyKit.html#getAssetPath">getAssetPath</a></li>
+            
+                <li data-name="ImglyKit#registerUI"><a href="ImglyKit.html#registerUI">registerUI</a></li>
+            
+                <li data-name="ImglyKit#render"><a href="ImglyKit.html#render">render</a></li>
+            
+                <li data-name="ImglyKit#reset"><a href="ImglyKit.html#reset">reset</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filter">
+            <span class="title">
+                <a href="ImglyKit.Filter.html">ImglyKit.Filter</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filter.extend"><a href="ImglyKit.Filter.html#extend">extend</a></li>
+            
+                <li data-name="ImglyKit.Filter#render"><a href="ImglyKit.Filter.html#render">render</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filter.Primitive">
+            <span class="title">
+                <a href="ImglyKit.Filter.Primitive.html">ImglyKit.Filter.Primitive</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filter.Primitive#render"><a href="ImglyKit.Filter.Primitive.html#render">render</a></li>
+            
+                <li data-name="ImglyKit.Filter.Primitive#renderCanvas"><a href="ImglyKit.Filter.Primitive.html#renderCanvas">renderCanvas</a></li>
+            
+                <li data-name="ImglyKit.Filter.Primitive#renderWebGL"><a href="ImglyKit.Filter.Primitive.html#renderWebGL">renderWebGL</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filter.Primitives.Brightness">
+            <span class="title">
+                <a href="ImglyKit.Filter.Primitives.Brightness.html">ImglyKit.Filter.Primitives.Brightness</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filter.Primitives.Brightness#render"><a href="ImglyKit.Filter.Primitives.Brightness.html#render">render</a></li>
+            
+                <li data-name="ImglyKit.Filter.Primitives.Brightness#renderCanvas"><a href="ImglyKit.Filter.Primitives.Brightness.html#renderCanvas">renderCanvas</a></li>
+            
+                <li data-name="ImglyKit.Filter.Primitives.Brightness#renderWebGL"><a href="ImglyKit.Filter.Primitives.Brightness.html#renderWebGL">renderWebGL</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filter.Primitives.Contrast">
+            <span class="title">
+                <a href="ImglyKit.Filter.Primitives.Contrast.html">ImglyKit.Filter.Primitives.Contrast</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filter.Primitives.Contrast#render"><a href="ImglyKit.Filter.Primitives.Contrast.html#render">render</a></li>
+            
+                <li data-name="ImglyKit.Filter.Primitives.Contrast#renderCanvas"><a href="ImglyKit.Filter.Primitives.Contrast.html#renderCanvas">renderCanvas</a></li>
+            
+                <li data-name="ImglyKit.Filter.Primitives.Contrast#renderWebGL"><a href="ImglyKit.Filter.Primitives.Contrast.html#renderWebGL">renderWebGL</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filter.Primitives.Desaturation">
+            <span class="title">
+                <a href="ImglyKit.Filter.Primitives.Desaturation.html">ImglyKit.Filter.Primitives.Desaturation</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filter.Primitives.Desaturation#render"><a href="ImglyKit.Filter.Primitives.Desaturation.html#render">render</a></li>
+            
+                <li data-name="ImglyKit.Filter.Primitives.Desaturation#renderCanvas"><a href="ImglyKit.Filter.Primitives.Desaturation.html#renderCanvas">renderCanvas</a></li>
+            
+                <li data-name="ImglyKit.Filter.Primitives.Desaturation#renderWebGL"><a href="ImglyKit.Filter.Primitives.Desaturation.html#renderWebGL">renderWebGL</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filter.Primitives.Glow">
+            <span class="title">
+                <a href="ImglyKit.Filter.Primitives.Glow.html">ImglyKit.Filter.Primitives.Glow</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filter.Primitives.Glow#render"><a href="ImglyKit.Filter.Primitives.Glow.html#render">render</a></li>
+            
+                <li data-name="ImglyKit.Filter.Primitives.Glow#renderCanvas"><a href="ImglyKit.Filter.Primitives.Glow.html#renderCanvas">renderCanvas</a></li>
+            
+                <li data-name="ImglyKit.Filter.Primitives.Glow#renderWebGL"><a href="ImglyKit.Filter.Primitives.Glow.html#renderWebGL">renderWebGL</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filter.Primitives.Gobblin">
+            <span class="title">
+                <a href="ImglyKit.Filter.Primitives.Gobblin.html">ImglyKit.Filter.Primitives.Gobblin</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filter.Primitives.Gobblin#render"><a href="ImglyKit.Filter.Primitives.Gobblin.html#render">render</a></li>
+            
+                <li data-name="ImglyKit.Filter.Primitives.Gobblin#renderCanvas"><a href="ImglyKit.Filter.Primitives.Gobblin.html#renderCanvas">renderCanvas</a></li>
+            
+                <li data-name="ImglyKit.Filter.Primitives.Gobblin#renderWebGL"><a href="ImglyKit.Filter.Primitives.Gobblin.html#renderWebGL">renderWebGL</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filter.Primitives.Grayscale">
+            <span class="title">
+                <a href="ImglyKit.Filter.Primitives.Grayscale.html">ImglyKit.Filter.Primitives.Grayscale</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filter.Primitives.Grayscale#render"><a href="ImglyKit.Filter.Primitives.Grayscale.html#render">render</a></li>
+            
+                <li data-name="ImglyKit.Filter.Primitives.Grayscale#renderCanvas"><a href="ImglyKit.Filter.Primitives.Grayscale.html#renderCanvas">renderCanvas</a></li>
+            
+                <li data-name="ImglyKit.Filter.Primitives.Grayscale#renderWebGL"><a href="ImglyKit.Filter.Primitives.Grayscale.html#renderWebGL">renderWebGL</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filter.Primitives.LookupTable">
+            <span class="title">
+                <a href="ImglyKit.Filter.Primitives.LookupTable.html">ImglyKit.Filter.Primitives.LookupTable</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filter.Primitives.LookupTable#render"><a href="ImglyKit.Filter.Primitives.LookupTable.html#render">render</a></li>
+            
+                <li data-name="ImglyKit.Filter.Primitives.LookupTable#renderCanvas"><a href="ImglyKit.Filter.Primitives.LookupTable.html#renderCanvas">renderCanvas</a></li>
+            
+                <li data-name="ImglyKit.Filter.Primitives.LookupTable#renderWebGL"><a href="ImglyKit.Filter.Primitives.LookupTable.html#renderWebGL">renderWebGL</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filter.Primitives.Saturation">
+            <span class="title">
+                <a href="ImglyKit.Filter.Primitives.Saturation.html">ImglyKit.Filter.Primitives.Saturation</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filter.Primitives.Saturation#render"><a href="ImglyKit.Filter.Primitives.Saturation.html#render">render</a></li>
+            
+                <li data-name="ImglyKit.Filter.Primitives.Saturation#renderCanvas"><a href="ImglyKit.Filter.Primitives.Saturation.html#renderCanvas">renderCanvas</a></li>
+            
+                <li data-name="ImglyKit.Filter.Primitives.Saturation#renderWebGL"><a href="ImglyKit.Filter.Primitives.Saturation.html#renderWebGL">renderWebGL</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filter.Primitives.SoftColorOverlay">
+            <span class="title">
+                <a href="ImglyKit.Filter.Primitives.SoftColorOverlay.html">ImglyKit.Filter.Primitives.SoftColorOverlay</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filter.Primitives.SoftColorOverlay#render"><a href="ImglyKit.Filter.Primitives.SoftColorOverlay.html#render">render</a></li>
+            
+                <li data-name="ImglyKit.Filter.Primitives.SoftColorOverlay#renderCanvas"><a href="ImglyKit.Filter.Primitives.SoftColorOverlay.html#renderCanvas">renderCanvas</a></li>
+            
+                <li data-name="ImglyKit.Filter.Primitives.SoftColorOverlay#renderWebGL"><a href="ImglyKit.Filter.Primitives.SoftColorOverlay.html#renderWebGL">renderWebGL</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filter.Primitives.ToneCurve">
+            <span class="title">
+                <a href="ImglyKit.Filter.Primitives.ToneCurve.html">ImglyKit.Filter.Primitives.ToneCurve</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filter.Primitives.ToneCurve#_calculateSplineCurve"><a href="ImglyKit.Filter.Primitives.ToneCurve.html#_calculateSplineCurve">_calculateSplineCurve</a></li>
+            
+                <li data-name="ImglyKit.Filter.Primitives.ToneCurve#render"><a href="ImglyKit.Filter.Primitives.ToneCurve.html#render">render</a></li>
+            
+                <li data-name="ImglyKit.Filter.Primitives.ToneCurve#renderCanvas"><a href="ImglyKit.Filter.Primitives.ToneCurve.html#renderCanvas">renderCanvas</a></li>
+            
+                <li data-name="ImglyKit.Filter.Primitives.ToneCurve#renderWebGL"><a href="ImglyKit.Filter.Primitives.ToneCurve.html#renderWebGL">renderWebGL</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filter.Primitives.X400">
+            <span class="title">
+                <a href="ImglyKit.Filter.Primitives.X400.html">ImglyKit.Filter.Primitives.X400</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filter.Primitives.X400#render"><a href="ImglyKit.Filter.Primitives.X400.html#render">render</a></li>
+            
+                <li data-name="ImglyKit.Filter.Primitives.X400#renderCanvas"><a href="ImglyKit.Filter.Primitives.X400.html#renderCanvas">renderCanvas</a></li>
+            
+                <li data-name="ImglyKit.Filter.Primitives.X400#renderWebGL"><a href="ImglyKit.Filter.Primitives.X400.html#renderWebGL">renderWebGL</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filter.PrimitivesStack">
+            <span class="title">
+                <a href="ImglyKit.Filter.PrimitivesStack.html">ImglyKit.Filter.PrimitivesStack</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filter.PrimitivesStack#add"><a href="ImglyKit.Filter.PrimitivesStack.html#add">add</a></li>
+            
+                <li data-name="ImglyKit.Filter.PrimitivesStack#render"><a href="ImglyKit.Filter.PrimitivesStack.html#render">render</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filters.A15Filter">
+            <span class="title">
+                <a href="ImglyKit.Filters.A15Filter.html">ImglyKit.Filters.A15Filter</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filters.A15Filter#render"><a href="ImglyKit.Filters.A15Filter.html#render">render</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filters.BreezeFilter">
+            <span class="title">
+                <a href="ImglyKit.Filters.BreezeFilter.html">ImglyKit.Filters.BreezeFilter</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filters.BreezeFilter#render"><a href="ImglyKit.Filters.BreezeFilter.html#render">render</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filters.BWFilter">
+            <span class="title">
+                <a href="ImglyKit.Filters.BWFilter.html">ImglyKit.Filters.BWFilter</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filters.BWFilter#render"><a href="ImglyKit.Filters.BWFilter.html#render">render</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filters.BWHardFilter">
+            <span class="title">
+                <a href="ImglyKit.Filters.BWHardFilter.html">ImglyKit.Filters.BWHardFilter</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filters.BWHardFilter#render"><a href="ImglyKit.Filters.BWHardFilter.html#render">render</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filters.CelsiusFilter">
+            <span class="title">
+                <a href="ImglyKit.Filters.CelsiusFilter.html">ImglyKit.Filters.CelsiusFilter</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filters.CelsiusFilter#render"><a href="ImglyKit.Filters.CelsiusFilter.html#render">render</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filters.ChestFilter">
+            <span class="title">
+                <a href="ImglyKit.Filters.ChestFilter.html">ImglyKit.Filters.ChestFilter</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filters.ChestFilter#render"><a href="ImglyKit.Filters.ChestFilter.html#render">render</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filters.FixieFilter">
+            <span class="title">
+                <a href="ImglyKit.Filters.FixieFilter.html">ImglyKit.Filters.FixieFilter</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filters.FixieFilter#render"><a href="ImglyKit.Filters.FixieFilter.html#render">render</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filters.FoodFilter">
+            <span class="title">
+                <a href="ImglyKit.Filters.FoodFilter.html">ImglyKit.Filters.FoodFilter</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filters.FoodFilter#render"><a href="ImglyKit.Filters.FoodFilter.html#render">render</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filters.FridgeFilter">
+            <span class="title">
+                <a href="ImglyKit.Filters.FridgeFilter.html">ImglyKit.Filters.FridgeFilter</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filters.FridgeFilter#render"><a href="ImglyKit.Filters.FridgeFilter.html#render">render</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filters.FrontFilter">
+            <span class="title">
+                <a href="ImglyKit.Filters.FrontFilter.html">ImglyKit.Filters.FrontFilter</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filters.FrontFilter#render"><a href="ImglyKit.Filters.FrontFilter.html#render">render</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filters.GlamFilter">
+            <span class="title">
+                <a href="ImglyKit.Filters.GlamFilter.html">ImglyKit.Filters.GlamFilter</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filters.GlamFilter#render"><a href="ImglyKit.Filters.GlamFilter.html#render">render</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filters.GobblinFilter">
+            <span class="title">
+                <a href="ImglyKit.Filters.GobblinFilter.html">ImglyKit.Filters.GobblinFilter</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filters.GobblinFilter#render"><a href="ImglyKit.Filters.GobblinFilter.html#render">render</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filters.K1Filter">
+            <span class="title">
+                <a href="ImglyKit.Filters.K1Filter.html">ImglyKit.Filters.K1Filter</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filters.K1Filter#render"><a href="ImglyKit.Filters.K1Filter.html#render">render</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filters.K2Filter">
+            <span class="title">
+                <a href="ImglyKit.Filters.K2Filter.html">ImglyKit.Filters.K2Filter</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filters.K2Filter#render"><a href="ImglyKit.Filters.K2Filter.html#render">render</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filters.K6Filter">
+            <span class="title">
+                <a href="ImglyKit.Filters.K6Filter.html">ImglyKit.Filters.K6Filter</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filters.K6Filter#render"><a href="ImglyKit.Filters.K6Filter.html#render">render</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filters.KDynamicFilter">
+            <span class="title">
+                <a href="ImglyKit.Filters.KDynamicFilter.html">ImglyKit.Filters.KDynamicFilter</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filters.KDynamicFilter#render"><a href="ImglyKit.Filters.KDynamicFilter.html#render">render</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filters.LeninFilter">
+            <span class="title">
+                <a href="ImglyKit.Filters.LeninFilter.html">ImglyKit.Filters.LeninFilter</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filters.LeninFilter#render"><a href="ImglyKit.Filters.LeninFilter.html#render">render</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filters.LomoFilter">
+            <span class="title">
+                <a href="ImglyKit.Filters.LomoFilter.html">ImglyKit.Filters.LomoFilter</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filters.LomoFilter#render"><a href="ImglyKit.Filters.LomoFilter.html#render">render</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filters.MellowFilter">
+            <span class="title">
+                <a href="ImglyKit.Filters.MellowFilter.html">ImglyKit.Filters.MellowFilter</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filters.MellowFilter#render"><a href="ImglyKit.Filters.MellowFilter.html#render">render</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filters.MorningFilter">
+            <span class="title">
+                <a href="ImglyKit.Filters.MorningFilter.html">ImglyKit.Filters.MorningFilter</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filters.MorningFilter#render"><a href="ImglyKit.Filters.MorningFilter.html#render">render</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filters.OrchidFilter">
+            <span class="title">
+                <a href="ImglyKit.Filters.OrchidFilter.html">ImglyKit.Filters.OrchidFilter</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filters.OrchidFilter#render"><a href="ImglyKit.Filters.OrchidFilter.html#render">render</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filters.Pola669Filter">
+            <span class="title">
+                <a href="ImglyKit.Filters.Pola669Filter.html">ImglyKit.Filters.Pola669Filter</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filters.Pola669Filter#render"><a href="ImglyKit.Filters.Pola669Filter.html#render">render</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filters.PolaFilter">
+            <span class="title">
+                <a href="ImglyKit.Filters.PolaFilter.html">ImglyKit.Filters.PolaFilter</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filters.PolaFilter#render"><a href="ImglyKit.Filters.PolaFilter.html#render">render</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filters.QuoziFilter">
+            <span class="title">
+                <a href="ImglyKit.Filters.QuoziFilter.html">ImglyKit.Filters.QuoziFilter</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filters.QuoziFilter#render"><a href="ImglyKit.Filters.QuoziFilter.html#render">render</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filters.SemiredFilter">
+            <span class="title">
+                <a href="ImglyKit.Filters.SemiredFilter.html">ImglyKit.Filters.SemiredFilter</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filters.SemiredFilter#render"><a href="ImglyKit.Filters.SemiredFilter.html#render">render</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filters.SunnyFilter">
+            <span class="title">
+                <a href="ImglyKit.Filters.SunnyFilter.html">ImglyKit.Filters.SunnyFilter</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filters.SunnyFilter#render"><a href="ImglyKit.Filters.SunnyFilter.html#render">render</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filters.TexasFilter">
+            <span class="title">
+                <a href="ImglyKit.Filters.TexasFilter.html">ImglyKit.Filters.TexasFilter</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filters.TexasFilter#render"><a href="ImglyKit.Filters.TexasFilter.html#render">render</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Filters.X400Filter">
+            <span class="title">
+                <a href="ImglyKit.Filters.X400Filter.html">ImglyKit.Filters.X400Filter</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Filters.X400Filter#render"><a href="ImglyKit.Filters.X400Filter.html#render">render</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Operation">
+            <span class="title">
+                <a href="ImglyKit.Operation.html">ImglyKit.Operation</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Operation#render"><a href="ImglyKit.Operation.html#render">render</a></li>
+            
+                <li data-name="ImglyKit.Operation#validateSettings"><a href="ImglyKit.Operation.html#validateSettings">validateSettings</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Operations.BrightnessOperation">
+            <span class="title">
+                <a href="ImglyKit.Operations.BrightnessOperation.html">ImglyKit.Operations.BrightnessOperation</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Operations.BrightnessOperation#render"><a href="ImglyKit.Operations.BrightnessOperation.html#render">render</a></li>
+            
+                <li data-name="ImglyKit.Operations.BrightnessOperation#validateSettings"><a href="ImglyKit.Operations.BrightnessOperation.html#validateSettings">validateSettings</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Operations.ContrastOperation">
+            <span class="title">
+                <a href="ImglyKit.Operations.ContrastOperation.html">ImglyKit.Operations.ContrastOperation</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Operations.ContrastOperation#render"><a href="ImglyKit.Operations.ContrastOperation.html#render">render</a></li>
+            
+                <li data-name="ImglyKit.Operations.ContrastOperation#validateSettings"><a href="ImglyKit.Operations.ContrastOperation.html#validateSettings">validateSettings</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Operations.CropOperation">
+            <span class="title">
+                <a href="ImglyKit.Operations.CropOperation.html">ImglyKit.Operations.CropOperation</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Operations.CropOperation#_renderCanvas"><a href="ImglyKit.Operations.CropOperation.html#_renderCanvas">_renderCanvas</a></li>
+            
+                <li data-name="ImglyKit.Operations.CropOperation#_renderWebGL"><a href="ImglyKit.Operations.CropOperation.html#_renderWebGL">_renderWebGL</a></li>
+            
+                <li data-name="ImglyKit.Operations.CropOperation#render"><a href="ImglyKit.Operations.CropOperation.html#render">render</a></li>
+            
+                <li data-name="ImglyKit.Operations.CropOperation#validateSettings"><a href="ImglyKit.Operations.CropOperation.html#validateSettings">validateSettings</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Operations.FiltersOperation">
+            <span class="title">
+                <a href="ImglyKit.Operations.FiltersOperation.html">ImglyKit.Operations.FiltersOperation</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Operations.FiltersOperation#render"><a href="ImglyKit.Operations.FiltersOperation.html#render">render</a></li>
+            
+                <li data-name="ImglyKit.Operations.FiltersOperation#validateSettings"><a href="ImglyKit.Operations.FiltersOperation.html#validateSettings">validateSettings</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Operations.FlipOperation">
+            <span class="title">
+                <a href="ImglyKit.Operations.FlipOperation.html">ImglyKit.Operations.FlipOperation</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Operations.FlipOperation#_renderCanvas"><a href="ImglyKit.Operations.FlipOperation.html#_renderCanvas">_renderCanvas</a></li>
+            
+                <li data-name="ImglyKit.Operations.FlipOperation#_renderWebGL"><a href="ImglyKit.Operations.FlipOperation.html#_renderWebGL">_renderWebGL</a></li>
+            
+                <li data-name="ImglyKit.Operations.FlipOperation#render"><a href="ImglyKit.Operations.FlipOperation.html#render">render</a></li>
+            
+                <li data-name="ImglyKit.Operations.FlipOperation#validateSettings"><a href="ImglyKit.Operations.FlipOperation.html#validateSettings">validateSettings</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Operations.FramesOperation">
+            <span class="title">
+                <a href="ImglyKit.Operations.FramesOperation.html">ImglyKit.Operations.FramesOperation</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Operations.FramesOperation#render"><a href="ImglyKit.Operations.FramesOperation.html#render">render</a></li>
+            
+                <li data-name="ImglyKit.Operations.FramesOperation#validateSettings"><a href="ImglyKit.Operations.FramesOperation.html#validateSettings">validateSettings</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Operations.RadialBlurOperation">
+            <span class="title">
+                <a href="ImglyKit.Operations.RadialBlurOperation.html">ImglyKit.Operations.RadialBlurOperation</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Operations.RadialBlurOperation#_renderCanvas"><a href="ImglyKit.Operations.RadialBlurOperation.html#_renderCanvas">_renderCanvas</a></li>
+            
+                <li data-name="ImglyKit.Operations.RadialBlurOperation#_renderWebGL"><a href="ImglyKit.Operations.RadialBlurOperation.html#_renderWebGL">_renderWebGL</a></li>
+            
+                <li data-name="ImglyKit.Operations.RadialBlurOperation#render"><a href="ImglyKit.Operations.RadialBlurOperation.html#render">render</a></li>
+            
+                <li data-name="ImglyKit.Operations.RadialBlurOperation#validateSettings"><a href="ImglyKit.Operations.RadialBlurOperation.html#validateSettings">validateSettings</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Operations.RotationOperation">
+            <span class="title">
+                <a href="ImglyKit.Operations.RotationOperation.html">ImglyKit.Operations.RotationOperation</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Operations.RotationOperation#_renderCanvas"><a href="ImglyKit.Operations.RotationOperation.html#_renderCanvas">_renderCanvas</a></li>
+            
+                <li data-name="ImglyKit.Operations.RotationOperation#_renderWebGL"><a href="ImglyKit.Operations.RotationOperation.html#_renderWebGL">_renderWebGL</a></li>
+            
+                <li data-name="ImglyKit.Operations.RotationOperation#render"><a href="ImglyKit.Operations.RotationOperation.html#render">render</a></li>
+            
+                <li data-name="ImglyKit.Operations.RotationOperation#validateSettings"><a href="ImglyKit.Operations.RotationOperation.html#validateSettings">validateSettings</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Operations.SaturationOperation">
+            <span class="title">
+                <a href="ImglyKit.Operations.SaturationOperation.html">ImglyKit.Operations.SaturationOperation</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Operations.SaturationOperation#render"><a href="ImglyKit.Operations.SaturationOperation.html#render">render</a></li>
+            
+                <li data-name="ImglyKit.Operations.SaturationOperation#validateSettings"><a href="ImglyKit.Operations.SaturationOperation.html#validateSettings">validateSettings</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Operations.StickersOperation">
+            <span class="title">
+                <a href="ImglyKit.Operations.StickersOperation.html">ImglyKit.Operations.StickersOperation</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Operations.StickersOperation#render"><a href="ImglyKit.Operations.StickersOperation.html#render">render</a></li>
+            
+                <li data-name="ImglyKit.Operations.StickersOperation#validateSettings"><a href="ImglyKit.Operations.StickersOperation.html#validateSettings">validateSettings</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Operations.TextOperation">
+            <span class="title">
+                <a href="ImglyKit.Operations.TextOperation.html">ImglyKit.Operations.TextOperation</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Operations.TextOperation#_renderCanvas"><a href="ImglyKit.Operations.TextOperation.html#_renderCanvas">_renderCanvas</a></li>
+            
+                <li data-name="ImglyKit.Operations.TextOperation#_renderWebGL"><a href="ImglyKit.Operations.TextOperation.html#_renderWebGL">_renderWebGL</a></li>
+            
+                <li data-name="ImglyKit.Operations.TextOperation#render"><a href="ImglyKit.Operations.TextOperation.html#render">render</a></li>
+            
+                <li data-name="ImglyKit.Operations.TextOperation#validateSettings"><a href="ImglyKit.Operations.TextOperation.html#validateSettings">validateSettings</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.Operations.TiltShiftOperation">
+            <span class="title">
+                <a href="ImglyKit.Operations.TiltShiftOperation.html">ImglyKit.Operations.TiltShiftOperation</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImglyKit.Operations.TiltShiftOperation#_renderCanvas"><a href="ImglyKit.Operations.TiltShiftOperation.html#_renderCanvas">_renderCanvas</a></li>
+            
+                <li data-name="ImglyKit.Operations.TiltShiftOperation#_renderWebGL"><a href="ImglyKit.Operations.TiltShiftOperation.html#_renderWebGL">_renderWebGL</a></li>
+            
+                <li data-name="ImglyKit.Operations.TiltShiftOperation#render"><a href="ImglyKit.Operations.TiltShiftOperation.html#render">render</a></li>
+            
+                <li data-name="ImglyKit.Operations.TiltShiftOperation#validateSettings"><a href="ImglyKit.Operations.TiltShiftOperation.html#validateSettings">validateSettings</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImglyKit.TypeDefs">
+            <span class="title">
+                <a href="ImglyKit.TypeDefs.html">ImglyKit.TypeDefs</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            <span class="subtitle">Typedefs</span>
+            
+                <li data-name="ImglyKit.TypeDefs~Selector"><a href="ImglyKit.TypeDefs.html#Selector">Selector</a></li>
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+    </ul>
+</div>
+    <div class="main">
+        <h1 class="page-title" data-filename="ImglyKit.Operations.BrightnessOperation.html">Class: BrightnessOperation</h1>
+        
+
+
+
+<section>
+    
+<header>
+    <h2>
+    BrightnessOperation
+    </h2>
+    
+</header>  
+
+<article>
+    <div class="container-overview">
+    
+    
+    
+        
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="BrightnessOperation">
+            
+            new ImglyKit.Operations.BrightnessOperation<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="brightness-operation.js.html">operations/brightness-operation.js</a>, <a href="brightness-operation.js.html#line50">line 50</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+    
+    </div>
+    
+    
+        <h3 class="subsection-title">Extends</h3>
+        
+        <ul>
+            <li><a href="ImglyKit.Operation.html">ImglyKit.Operation</a></li>
+        </ul>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        <h3 class="subsection-title">Methods</h3>
+        
+        <dl>
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="render">
+            
+            render<span class="signature">(renderer)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Promise}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="brightness-operation.js.html">operations/brightness-operation.js</a>, <a href="brightness-operation.js.html#line73">line 73</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Renders the filter
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>renderer</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Renderer</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                </td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="validateSettings">
+            
+                <span class="inherited"><a href="ImglyKit.Operation.html#validateSettings">inherited</a></span>
+            
+            validateSettings<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="operation.js.html">operations/operation.js</a>, <a href="operation.js.html#line55">line 55</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Checks whether this Operation can be applied the way it is configured
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        </dl>
+    
+    
+    
+    
+    
+</article>
+
+</section>  
+
+
+
+
+
+        
+
+        <footer>
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a> on Tue Jan 06 2015 19:44:33 GMT+0100 (CET)
+        </footer>
+    </div>
+</div>
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+<script src="scripts/main.js"></script>
+</body>
+</html>

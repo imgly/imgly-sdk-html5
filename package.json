@@ -16,6 +16,7 @@
     "canvas": "^1.1.6",
     "coveralls": "^2.11.2",
     "gulp": "^3.8.10",
+    "gulp-6to5": "^2.0.0",
     "gulp-clean": "~0.3.0",
     "gulp-compass": "^1.2.0",
     "gulp-cssmin": "~0.1.5",

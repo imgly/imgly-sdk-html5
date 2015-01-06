@@ -7,6 +7,7 @@ var browserSync = require("browser-sync");
 var browserify = require("browserify");
 var watchify = require("watchify");
 var to5ify = require("6to5ify");
+var to5 = require("gulp-6to5");
 var brfs = require("brfs");
 var reload = browserSync.reload;
 
@@ -104,7 +105,8 @@ gulp.task("cssmin:minify", function () {
  * Generates the documentation
  */
 gulp.task("jsdoc", function () {
-  gulp.src(["./src/js/**/*.js", "README.md"])
+  gulp.src(["./src/js/**/*.js"])
+    .pipe(to5())
     .pipe($.jsdoc.parser())
     .pipe($.jsdoc.generator("./doc", {
       path: "node_modules/jaguarjs-jsdoc"
