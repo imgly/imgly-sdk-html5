@@ -1459,6 +1459,10 @@
 .imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-frames {
   background-image: url("assets/option-frames.png");
 }
+/* line 5, ../sass/ui/controls/_overview.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-social-networks {
+  background-image: url("assets/option-social-networks.png");
+}
 /* line 5, ../sass/ui/controls/_orientation.sass */
 .imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-rotate-l {
   background-image: url("assets/option-rotate-l.png");
@@ -1602,4 +1606,24 @@
   margin-left: -25px;
   background-image: url("assets/frames/dia-preview.png");
   background-size: contain;
+}
+/* line 5, ../sass/ui/controls/_social_networks.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-facebook {
+  background-image: url("assets/option-social-networks-facebook.png");
+}
+/* line 5, ../sass/ui/controls/_social_networks.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-twitter {
+  background-image: url("assets/option-social-networks-twitter.png");
+}
+/* line 5, ../sass/ui/controls/_social_networks.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-linkedin {
+  background-image: url("assets/option-social-networks-linkedin.png");
+}
+/* line 5, ../sass/ui/controls/_social_networks.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-instagram {
+  background-image: url("assets/option-social-networks-instagram.png");
+}
+/* line 5, ../sass/ui/controls/_social_networks.sass */
+.imgly-container .imgly-controls-container .imgly-controls-item.imgly-controls-item-pinterest {
+  background-image: url("assets/option-social-networks-pinterest.png");
 }

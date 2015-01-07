@@ -6135,11 +6135,6 @@ UIControlsOverview = (function(_super) {
     UIControlsOverview.__super__.constructor.apply(this, arguments);
     this.listItems = [
       {
-        name: "Social Networks",
-        cssClass: "social-networks",
-        controls: require("./social_networks_resize.coffee"),
-        tooltip: "Social Networks"
-      }, {
         name: "Filters",
         cssClass: "filters",
         controls: require("./filters.coffee"),
@@ -6195,6 +6190,11 @@ UIControlsOverview = (function(_super) {
         controls: require("./frames.coffee"),
         operation: require("../../operations/frames.coffee"),
         tooltip: "Frames"
+      }, {
+        name: "Social Networks",
+        cssClass: "social-networks",
+        controls: require("./social_networks_resize.coffee"),
+        tooltip: "Social Networks"
       }
     ];
   }
