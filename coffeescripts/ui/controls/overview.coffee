@@ -14,6 +14,12 @@ class UIControlsOverview extends List
     super
     @listItems = [
       {
+        name: "Social Networks"
+        cssClass: "social-networks"
+        controls: require "./social_networks_resize.coffee"
+        tooltip: "Social Networks"
+      },
+      {
         name: "Filters"
         cssClass: "filters"
         controls: require "./filters.coffee"

@@ -17,14 +17,7 @@ class CropOperation extends Operation
     @options.ratio = ratio
     @setSize "custom"
 
-  setSize: (size) ->
-    {width, height} = @app.ui.getCanvas().getImageData()
-    @options.size = size
-
-    # Set the default values
-    @options.start.set 0.1, 0.1
-    @options.end.set   0.9, 0.9
-
+  calculateRatio: (size) ->
     switch size
       when "square"
         @options.ratio = 1
@@ -34,6 +27,17 @@ class CropOperation extends Operation
         @options.ratio = 16 / 9
       when "free"
         @options.ratio = 0
+    return
+
+  setSize: (size) ->
+    {width, height} = @app.ui.getCanvas().getImageData()
+    @options.size = size
+
+    # Set the default values
+    @options.start.set 0.1, 0.1
+    @options.end.set   0.9, 0.9
+
+    @calculateRatio(size)
 
     if @options.ratio
       if width / height <= @options.ratio
