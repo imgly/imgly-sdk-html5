@@ -69,6 +69,11 @@ class UIControlsOverview extends List
         controls: require "./frames.coffee"
         operation: require "../../operations/frames.coffee"
         tooltip: "Frames"
+      }, {
+        name: "Social Networks"
+        cssClass: "social-networks"
+        controls: require "./social_networks_resize.coffee"
+        tooltip: "Social Networks"
       }
     ]
 
