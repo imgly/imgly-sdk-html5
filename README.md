@@ -1,6 +1,8 @@
 ![img.ly](http://i.imgur.com/fgH1HRt.png)
 
 ## img.ly Photo Editor SDK for HTML5.
+
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/imgly/imgly-sdk-html5?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 The img.ly HTML5 SDK is a **fully customisable** photo editor which you can integrate into your HTML5 app within minutes.
 It contains the most important photo editing tools;
 Auto-Enhance, Crop, Rotate, Focus, Brightness, Contrast, Saturation, and more.
