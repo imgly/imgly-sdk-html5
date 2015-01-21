@@ -8,13 +8,18 @@
  */
 
 .imglykit-container
+  +nested-reset()
+  +border-radius(5px)
+
   position: absolute
   width: 100%
   height: 100%
 
   background: $backgroundColor
-  +border-radius(5px)
-
   overflow: hidden
 
-  +nested-reset()
+.imglykit-float-left
+  float: left
+
+.imglykit-float-right
+  float: right

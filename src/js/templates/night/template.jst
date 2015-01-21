@@ -1,0 +1,24 @@
+<div class="imglykit-container">
+  <div class="imglykit-canvas-container">
+    <canvas></canvas>
+    <div class="imglykit-canvas-controls-container"></div>
+  </div>
+
+  <div class="imglykit-controls-container">
+    <div class="imglykit-controls">
+
+      <div>
+        <div class="imglykit-controls-overview">
+          <ul class="imglykit-controls-list">
+          {{~it.operations :operation:index}}
+            <li data-identifier="{{= operation.prototype.identifier}}">
+              <img src="{{=it.helpers.assetPath('ui/night/operations/' + operation.prototype.identifier + '.png') }}" />
+            </li>
+          {{~}}
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,23 @@
+<div class="imglykit-controls-filters">
+  <div class="imglykit-controls-button imglykit-controls-back">
+    <img src="{{=it.helpers.assetPath('ui/night/buttons/back.png') }}" />
+  </div>
+
+  <div>
+    <ul class="imglykit-controls-list imgly-controls-list-with-buttons">
+      {{ for(var identifier in it.filters) { }}
+        {{ var filter = it.filters[identifier]; }}
+        {{ var enabled = it.activeFilter === identifier; }}
+        {{? identifier !== "identity"}}
+        <li data-identifier="{{= identifier}}"{{? enabled}} class="imglykit-controls-item-active"{{?}}>
+          <img src="{{=it.helpers.assetPath('ui/night/filters/' + identifier + '.png')}}" />
+        </li>
+        {{?}}
+      {{ } }}
+    </ul>
+  </div>
+
+  <div class="imglykit-controls-button imglykit-controls-done">
+    <img src="{{=it.helpers.assetPath('ui/night/buttons/done.png') }}" />
+  </div>
+</div>

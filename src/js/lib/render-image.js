@@ -7,7 +7,7 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-import * as bluebird from "bluebird";
+import bluebird from "bluebird";
 import ImageDimensions from "./image-dimensions";
 import Vector2 from "./math/vector2";
 import CanvasRenderer from "../renderers/canvas-renderer";

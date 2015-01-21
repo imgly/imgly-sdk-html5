@@ -24,13 +24,13 @@
  */
 /* line 10, ../../src/css/night/_basics.sass */
 .imglykit-container {
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
   position: absolute;
   width: 100%;
   height: 100%;
   background: #2B2B2B;
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  border-radius: 5px;
   overflow: hidden;
 }
 /* line 40, ../../../../../.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0/gems/compass-core-1.0.1/stylesheets/compass/reset/_utilities.scss */
@@ -79,6 +79,16 @@
   border: none;
 }
 
+/* line 21, ../../src/css/night/_basics.sass */
+.imglykit-float-left {
+  float: left;
+}
+
+/* line 24, ../../src/css/night/_basics.sass */
+.imglykit-float-right {
+  float: right;
+}
+
 /*!
  * Copyright (c) 2013-2014 9elements GmbH
  *
@@ -105,39 +115,95 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-/* line 11, ../../src/css/night/_controls.sass */
-.imglykit-controls-container {
+/* line 13, ../../src/css/night/_controls.sass */
+.imglykit-container .imglykit-controls-container {
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
   height: 80px;
+  border-top: 1px solid #363636;
 }
-
-/* line 20, ../../src/css/night/_controls.sass */
-ul.imglykit-controls-overview {
+/* line 23, ../../src/css/night/_controls.sass */
+.imglykit-container .imglykit-controls {
+  width: 100%;
   text-align: center;
   height: 80px;
-  border-top: 1px solid #363636;
+}
+/* line 27, ../../src/css/night/_controls.sass */
+.imglykit-container .imglykit-controls > div > * {
+  width: 100%;
+  display: table;
+  table-layout: fixed;
+}
+/* line 31, ../../src/css/night/_controls.sass */
+.imglykit-container .imglykit-controls > div > * > * {
+  display: table-cell;
+  vertical-align: top;
+}
+/* line 35, ../../src/css/night/_controls.sass */
+.imglykit-container .imglykit-controls .imglykit-controls-list {
   overflow: hidden;
   overflow-x: auto;
+  text-align: center;
   white-space: nowrap;
-}
-/* line 30, ../../src/css/night/_controls.sass */
-ul.imglykit-controls-overview li {
-  display: inline-block;
   height: 80px;
+  font-size: 0;
+}
+/* line 43, ../../src/css/night/_controls.sass */
+.imglykit-container .imglykit-controls li {
+  display: inline-block;
   width: 80px;
+  height: 80px;
   cursor: pointer;
   border-left: 1px solid #363636;
 }
-/* line 37, ../../src/css/night/_controls.sass */
-ul.imglykit-controls-overview li:last-child {
+/* line 49, ../../src/css/night/_controls.sass */
+.imglykit-container .imglykit-controls li.imglykit-controls-item-active {
+  background: rgba(0, 0, 0, 0.3);
+}
+/* line 53, ../../src/css/night/_controls.sass */
+.imglykit-container .imglykit-controls li:last-child {
   border-right: 1px solid #363636;
 }
-/* line 40, ../../src/css/night/_controls.sass */
-ul.imglykit-controls-overview li img {
+/* line 56, ../../src/css/night/_controls.sass */
+.imglykit-container .imglykit-controls li img {
   margin-top: 20px;
+}
+/* line 59, ../../src/css/night/_controls.sass */
+.imglykit-container .imglykit-controls .imglykit-controls-button {
+  width: 80px;
+  height: 80px;
+  line-height: 80px;
+  font-size: 0;
+  cursor: pointer;
+}
+/* line 65, ../../src/css/night/_controls.sass */
+.imglykit-container .imglykit-controls .imglykit-controls-button:first-child {
+  border-right: 1px solid #363636;
+}
+/* line 67, ../../src/css/night/_controls.sass */
+.imglykit-container .imglykit-controls .imglykit-controls-button:last-child {
+  border-left: 1px solid #363636;
+}
+/* line 70, ../../src/css/night/_controls.sass */
+.imglykit-container .imglykit-controls .imglykit-controls-button img {
+  vertical-align: middle;
+}
+
+/*!
+ * Copyright (c) 2013-2014 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+/* line 12, ../../src/css/night/controls/_filters.sass */
+.imglykit-container .imglykit-controls-filters ul.imglykit-controls-list li img {
+  width: 50px;
+  height: 50px;
+  margin-top: 10px;
 }
 
 /*!
@@ -149,17 +215,17 @@ ul.imglykit-controls-overview li img {
  * For commercial use, please contact us at contact@9elements.com
  */
 /* line 11, ../../src/css/night/_scrollbars.sass */
-.imglykit-controls::-webkit-scrollbar {
+.imglykit-controls::-webkit-scrollbar, .imglykit-controls *::-webkit-scrollbar {
   background: transparent;
   width: 11px;
   height: 11px;
 }
 /* line 16, ../../src/css/night/_scrollbars.sass */
-.imglykit-controls::-webkit-scrollbar-track {
+.imglykit-controls::-webkit-scrollbar-track, .imglykit-controls *::-webkit-scrollbar-track {
   background: transparent;
 }
 /* line 19, ../../src/css/night/_scrollbars.sass */
-.imglykit-controls::-webkit-scrollbar-thumb {
+.imglykit-controls::-webkit-scrollbar-thumb, .imglykit-controls *::-webkit-scrollbar-thumb {
   background: #9FBDFF;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;

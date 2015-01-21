@@ -11,7 +11,7 @@
 import Operation from "./operation";
 import Vector2 from "../lib/math/vector2";
 import Utils from "../lib/utils";
-import * as bluebird from "bluebird";
+import bluebird from "bluebird";
 
 /**
  * An operation that can draw text on the canvas

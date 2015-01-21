@@ -8,14 +8,18 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import * as _ from "lodash";
+import _ from "lodash";
+import bluebird from "bluebird";
 import RenderImage from "./lib/render-image";
 import ImageExporter from "./lib/image-exporter";
 import { RenderType, ImageFormat } from "./constants";
 import Utils from "./lib/utils";
 
 // Default UIs
-// import NightUI from "./ui/night/ui";
+import NightUI from "./ui/night/ui";
+
+// Don't catch errors
+bluebird.onPossiblyUnhandledRejection((error) => { throw error; });
 
 /**
  * @class
@@ -47,26 +51,34 @@ class ImglyKit {
     this._options = options;
 
     /**
-     * The registered UI types that can be selected via the `ui` option
-     * @type {Object.<String, UI>}
-     * @private
-     */
-    this._registeredUIs = {};
-
-    /**
      * The stack of {@link Operation} instances that will be used
      * to render the final Image
      * @type {Array.<ImglyKit.Operation>}
      */
     this.operationsStack = [];
 
+    /**
+     * The registered UI types that can be selected via the `ui` option
+     * @type {Object.<String, UI>}
+     * @private
+     */
+    this._registeredUIs = {};
+
     // Register the default UIs
-    // this._registerUIs();
+    this._registerUIs();
 
-    // if (this._options.ui) {
-    //   this._initUI();
-    // }
+    /**
+     * The registered operations
+     * @type {Object.<String, ImglyKit.Operation>}
+     */
+    this._registeredOperations = {};
 
+    // Register the default operations
+    this._registerOperations();
+
+    if (this._options.ui) {
+      this._initUI();
+    }
   }
 
   /**
@@ -125,6 +137,24 @@ class ImglyKit {
   }
 
   /**
+   * Registers all default operations
+   * @private
+   */
+  _registerOperations () {
+    for (let operationName in ImglyKit.Operations) {
+      this.registerOperation(ImglyKit.Operations[operationName]);
+    }
+  }
+
+  /**
+   * Registers the given operation
+   * @param {ImglyKit.Operation} operation - The operation class
+   */
+  registerOperation (operation) {
+    this._registeredOperations[operation.prototype.identifier] = operation;
+  }
+
+  /**
    * Registers the given UI
    * @param {UI} ui
    */
@@ -141,11 +171,14 @@ class ImglyKit {
     var UI;
 
     if (this._options.ui === true) {
+      // Select the first UI by default
       UI = Utils.values(this._registeredUIs)[0];
     } else {
+      // Select the UI with the given identifier
       UI = this._registeredUIs[this._options.ui];
     }
 
+    // Check if UI exists
     if (typeof UI === "undefined") {
       throw new Error("ImglyKit: Unknown UI: " + this._options.ui);
     }
@@ -153,11 +186,16 @@ class ImglyKit {
     /**
      * @type {ImglyKit.UI}
      */
-    this.ui = new UI(this, {
-      container: this._options.container,
-      assetsUrl: this._options.assetsUrl
-    });
-    this.ui.attach();
+    let { container, assetsUrl } = this._options;
+    this.ui = new UI(this, { container, assetsUrl });
+  }
+
+  get registeredOperations () {
+    return this._registeredOperations;
+  }
+
+  run () {
+    this.ui.run();
   }
 }
 
@@ -173,22 +211,22 @@ ImglyKit.RenderImage = RenderImage;
 ImglyKit.Color = require("./lib/color");
 ImglyKit.Operation = require("./operations/operation");
 ImglyKit.Operations = {};
-ImglyKit.Operations.FiltersOperation = require("./operations/filters-operation").default;
-ImglyKit.Operations.RotationOperation = require("./operations/rotation-operation").default;
-ImglyKit.Operations.CropOperation = require("./operations/crop-operation").default;
-ImglyKit.Operations.SaturationOperation = require("./operations/saturation-operation").default;
-ImglyKit.Operations.ContrastOperation = require("./operations/contrast-operation").default;
-ImglyKit.Operations.BrightnessOperation = require("./operations/brightness-operation").default;
-ImglyKit.Operations.FlipOperation = require("./operations/flip-operation").default;
-ImglyKit.Operations.TiltShiftOperation = require("./operations/tilt-shift-operation").default;
-ImglyKit.Operations.RadialBlurOperation = require("./operations/radial-blur-operation").default;
-ImglyKit.Operations.TextOperation = require("./operations/text-operation").default;
-ImglyKit.Operations.StickersOperation = require("./operations/stickers-operation").default;
-ImglyKit.Operations.FramesOperation = require("./operations/frames-operation").default;
+ImglyKit.Operations.FiltersOperation = require("./operations/filters-operation");
+ImglyKit.Operations.RotationOperation = require("./operations/rotation-operation");
+ImglyKit.Operations.CropOperation = require("./operations/crop-operation");
+ImglyKit.Operations.SaturationOperation = require("./operations/saturation-operation");
+ImglyKit.Operations.ContrastOperation = require("./operations/contrast-operation");
+ImglyKit.Operations.BrightnessOperation = require("./operations/brightness-operation");
+ImglyKit.Operations.FlipOperation = require("./operations/flip-operation");
+ImglyKit.Operations.TiltShiftOperation = require("./operations/tilt-shift-operation");
+ImglyKit.Operations.RadialBlurOperation = require("./operations/radial-blur-operation");
+ImglyKit.Operations.TextOperation = require("./operations/text-operation");
+ImglyKit.Operations.StickersOperation = require("./operations/stickers-operation");
+ImglyKit.Operations.FramesOperation = require("./operations/frames-operation");
 
 // Exposed constants
 ImglyKit.RenderType = RenderType;
 ImglyKit.ImageFormat = ImageFormat;
-ImglyKit.Vector2 = require("./lib/math/vector2").default;
+ImglyKit.Vector2 = require("./lib/math/vector2");
 
 export default ImglyKit;

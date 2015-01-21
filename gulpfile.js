@@ -21,7 +21,6 @@ var $ = gulpLoadPlugins();
 var config = {
   serverPort: 8080,
   externals: [
-    { require: "./src/js/vendor/bluebird", expose: "bluebird" },
     { require: "./src/js/vendor/lodash", expose: "lodash" }
   ]
 };
@@ -149,6 +148,7 @@ gulp.task("browserify", function () {
     bundler.require(external.require, options);
   });
 
+  // We don't need the canvas package in the frontend
   bundler.external("canvas");
 
   // Creates the bundle

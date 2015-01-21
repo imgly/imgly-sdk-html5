@@ -1,0 +1,142 @@
+/* global ImglyKit */
+"use strict";
+/*!
+ * Copyright (c) 2013-2014 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+
+let fs = require("fs");
+import UI from "../base/ui";
+
+class NightUI extends UI {
+  constructor (...args) {
+    super(...args);
+
+    this._template = fs.readFileSync(__dirname + "/../../templates/night/template.jst", "utf-8");
+    this._registeredControls = {};
+
+    // The `Night` UI has a fixed operation order
+    this._preferredOperationOrder = [
+      // First, all operations that affect the image dimensions
+      "crop",
+      "rotate",
+      "flip",
+
+      // Then color operations (first filters, then fine-tuning)
+      "filters",
+      "contrast",
+      "brightness",
+      "saturation",
+
+      // Then post-processing
+      "noise",
+
+      // Everything else on top
+      "text",
+      "stickers",
+      "frames"
+    ];
+  }
+
+  run () {
+    super();
+
+    let { container } = this._options;
+
+    this._controlsContainer = container.querySelector(".imglykit-controls");
+    this._canvasControlsContainer = container.querySelector(".imglykit-canvas-controls-container");
+    this._overviewControlsContainer = container.querySelector(".imglykit-controls-overview");
+
+    this._operationsMap = {};
+
+    this._initOperations();
+    this._registerControls();
+    this._handleOverview();
+  }
+
+  /**
+   * Initializes all operations
+   * @private
+   */
+  _initOperations () {
+    let { operationsStack, registeredOperations } = this._kit;
+    for (let operationIdentifier of this._preferredOperationOrder) {
+      if (this.isOperationSelected(operationIdentifier)) {
+        let Operation = registeredOperations[operationIdentifier];
+        let operationInstance = new Operation(this._kit);
+        this._operationsMap[operationIdentifier] = operationInstance;
+        operationsStack.push(operationInstance);
+      }
+    }
+  }
+
+  /**
+   * Registers all default operation controls
+   * @private
+   */
+  _registerControls () {
+    this.registerControl(this._operationsMap.filters, require("./controls/filters"));
+  }
+
+  /**
+   * Handles the overview button click events
+   * @private
+   */
+  _handleOverview () {
+    let listItems = this._overviewControlsContainer.querySelectorAll(":scope > ul > li");
+
+    // Turn NodeList into an Array
+    listItems = Array.prototype.slice.call(listItems);
+
+    // Add click events to all items
+    for (let listItem of listItems) {
+      let { identifier } = listItem.dataset;
+      listItem.addEventListener("click", () => {
+        this._onOverviewButtonClick(identifier);
+      });
+    }
+  }
+
+  /**
+   * Gets called when an overview button has been clicked
+   * @private
+   */
+  _onOverviewButtonClick (identifier) {
+    this._overviewControlsContainer.style.display = "none";
+
+    if (this._currentControl) {
+      this._currentControl.leave();
+    }
+
+    this._currentControl = this._registeredControls[identifier];
+    this._currentControl.enter();
+    this._currentControl.once("back", this._switchToOverview.bind(this));
+  }
+
+  /**
+   * Switches back to the overview controls
+   * @private
+   */
+  _switchToOverview () {
+    if (this._currentControl) {
+      this._currentControl.leave();
+    }
+
+    this._currentControl = null;
+    this._overviewControlsContainer.style.display = "block";
+  }
+
+  /**
+   * Registers the controls for an operation
+   */
+  registerControl (operation, Controls) {
+    let instance = new Controls(this._kit, this, operation, this._controlsContainer, this._canvasControlsContainer);
+    this._registeredControls[operation.identifier] = instance;
+  }
+}
+
+export default NightUI;

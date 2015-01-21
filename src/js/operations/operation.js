@@ -10,7 +10,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import * as _ from "lodash";
+import _ from "lodash";
 import Vector2 from "../lib/math/vector2";
 import Color from "../lib/color";
 

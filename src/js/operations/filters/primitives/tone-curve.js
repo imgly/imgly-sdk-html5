@@ -8,7 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import * as _ from "lodash";
+import _ from "lodash";
 import LookupTable from "./lookup-table";
 
 /**
