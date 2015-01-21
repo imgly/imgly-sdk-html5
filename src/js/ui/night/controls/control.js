@@ -69,7 +69,7 @@ class Control extends EventEmitter {
    */
   _renderCanvasControls () {
     if (typeof this._canvasControlsTemplate === "undefined") {
-      throw new Error("Control#_renderOverviewControls: Control needs to define this._canvasControlsTemplate.");
+      return; // Canvas controls are optional
     }
 
     // Render the template
