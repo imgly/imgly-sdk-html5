@@ -23,7 +23,7 @@ class NightUI extends UI {
     this._preferredOperationOrder = [
       // First, all operations that affect the image dimensions
       "crop",
-      "rotate",
+      "rotation",
       "flip",
 
       // Then color operations (first filters, then fine-tuning)
@@ -80,6 +80,7 @@ class NightUI extends UI {
    */
   _registerControls () {
     this.registerControl(this._operationsMap.filters, require("./controls/filters"));
+    this.registerControl(this._operationsMap.rotation, require("./controls/rotation"));
   }
 
   /**

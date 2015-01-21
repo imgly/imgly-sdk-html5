@@ -90,7 +90,37 @@ class Control extends EventEmitter {
    */
   _removeControls () {
     this._controls.parentNode.removeChild(this._controls);
-    this._canvasControls.parentNode.removeChild(this._canvasControls);
+    if (this._canvasControls) {
+      this._canvasControls.parentNode.removeChild(this._canvasControls);
+    }
+  }
+
+  _handleBackAndDoneButtons () {
+    // Back button
+    let backButton = this._controls.querySelector(".imglykit-controls-back");
+    backButton.addEventListener("click", this._onBackButtonClick.bind(this));
+
+    // Done button
+    let doneButton = this._controls.querySelector(".imglykit-controls-done");
+    doneButton.addEventListener("click", this._onDoneButtonClick.bind(this));
+  }
+
+  /**
+   * Gets called when the back button has been clicked
+   * @private
+   */
+  _onBackButtonClick () {
+    this._onBack();
+    this.emit("back");
+  }
+
+  /**
+   * Gets called when the done button has been clicked
+   * @private
+   */
+  _onDoneButtonClick () {
+    this._onDone();
+    this.emit("back");
   }
 
   /**
@@ -99,7 +129,8 @@ class Control extends EventEmitter {
    */
   enter () {
     this._renderAllControls();
-    this.onEnter();
+    this._handleBackAndDoneButtons();
+    this._onEnter();
   }
 
   /**
@@ -108,26 +139,34 @@ class Control extends EventEmitter {
    */
   leave () {
     this._removeControls();
-    this.onLeave();
+    this._onLeave();
   }
 
-  // Abstract methods
+  // Protected methods
 
   /**
    * Gets called when this control is activated.
-   * @abstract
+   * @protected
    */
-  onEnter () {
-    throw new Error("Control#onEnter is not implemented.");
-  }
+  _onEnter () {}
 
   /**
    * Gets called when this control is deactivated
-   * @abstract
+   * @protected
    */
-  onLeave () {
-    throw new Error("Control#onLeave is not implemented.");
-  }
+  _onLeave () {}
+
+  /**
+   * Gets called when the back button has been clicked
+   * @protected
+   */
+  _onBack () {}
+
+  /**
+   * Gets called when the done button has been clicked
+   * @protected
+   */
+  _onDone () {}
 
   /**
    * The data that is available to the template

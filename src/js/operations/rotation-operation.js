@@ -66,6 +66,8 @@ class RotationOperation extends Operation {
     var actualDegrees = this._options.degrees % 360;
     var lastTexture = renderer.getLastTexture();
 
+    // If we're not rotating by 180 degrees, we need to resize the canvas
+    // and the texture
     if (actualDegrees % 180 !== 0) {
       // Resize the canvas
       var width = canvas.width;
@@ -82,6 +84,8 @@ class RotationOperation extends Operation {
       var texture;
       for (var i = 0; i < textures.length; i++) {
         texture = textures[i];
+
+        // We resize the input texture at the end
         if (texture === lastTexture) continue;
 
         gl.bindTexture(gl.TEXTURE_2D, texture);

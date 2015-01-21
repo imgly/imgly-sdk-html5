@@ -25,8 +25,9 @@ class FiltersControls extends Control {
 
   /**
    * Gets called when this control is activated
+   * @override
    */
-  onEnter () {
+  _onEnter () {
     this._initialFilter = this._operation.getFilter();
 
     let listItems = this._controls.querySelectorAll("li");
@@ -49,22 +50,11 @@ class FiltersControls extends Control {
   }
 
   /**
-   * Gets called when the user hits the done button
-   * @private
-   */
-  _onDoneButtonClick () {
-    this.emit("back");
-  }
-
-  /**
    * Gets called when the user hits the back button
-   * @private
+   * @override
    */
-  _onBackButtonClick () {
-    // No new filter selected, reset filter to the initial one
+  _onBack () {
     this._operation.setFilter(this._initialFilter);
-
-    this.emit("back");
   }
 
   /**
@@ -91,15 +81,9 @@ class FiltersControls extends Control {
   }
 
   /**
-   * Gets called when this control is deactivated
-   */
-  onLeave () {
-
-  }
-
-  /**
    * The data that is available to the template
    * @type {Object}
+   * @override
    */
   get context () {
     let context = super.context;
