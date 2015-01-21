@@ -11,12 +11,12 @@
 import Control from "./control";
 let fs = require("fs");
 
-class RotationControls extends Control {
+class FlipControls extends Control {
   /**
    * Entry point for this control
    */
   init () {
-    let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/rotation_controls.jst", "utf-8");
+    let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/flip_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;
   }
 
@@ -24,7 +24,8 @@ class RotationControls extends Control {
    * Gets called when this control is activated
    */
   _onEnter () {
-    this._initialDegrees = this._operation.getDegrees();
+    this._initialHorizontal = this._operation.getHorizontal();
+    this._initialVertical = this._operation.getVertical();
 
     let listItems = this._controls.querySelectorAll("li");
     this._listItems = Array.prototype.slice.call(listItems);
@@ -38,11 +39,14 @@ class RotationControls extends Control {
   }
 
   _onListItemClick (item) {
-    let { degrees } = item.dataset;
-    degrees = parseInt(degrees);
-
-    let currentDegrees = this._operation.getDegrees();
-    this._operation.setDegrees(currentDegrees + degrees);
+    let { direction } = item.dataset;
+    if (direction === "horizontal") {
+      let currentHorizontal = this._operation.getHorizontal();
+      this._operation.setHorizontal(!currentHorizontal);
+    } else if (direction === "vertical") {
+      let currentVertical = this._operation.getVertical();
+      this._operation.setVertical(!currentVertical);
+    }
   }
 
   /**
@@ -50,8 +54,9 @@ class RotationControls extends Control {
    * @override
    */
   _onBack () {
-    this._operation.setDegrees(this._initialDegrees);
+    this._operation.setHorizontal(this._initialHorizontal);
+    this._operation.setVertical(this._initialVertical);
   }
 }
 
-export default RotationControls;
+export default FlipControls;

@@ -81,6 +81,7 @@ class NightUI extends UI {
   _registerControls () {
     this.registerControl(this._operationsMap.filters, require("./controls/filters"));
     this.registerControl(this._operationsMap.rotation, require("./controls/rotation"));
+    this.registerControl(this._operationsMap.flip, require("./controls/flip"));
   }
 
   /**
@@ -128,7 +129,7 @@ class NightUI extends UI {
     }
 
     this._currentControl = null;
-    this._overviewControlsContainer.style.display = "block";
+    this._overviewControlsContainer.style.display = "";
   }
 
   /**

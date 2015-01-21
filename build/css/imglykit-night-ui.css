@@ -78,13 +78,17 @@
 .imglykit-container a img {
   border: none;
 }
+/* line 20, ../../src/css/night/_basics.sass */
+.imglykit-container * {
+  box-sizing: border-box;
+}
 
-/* line 21, ../../src/css/night/_basics.sass */
+/* line 23, ../../src/css/night/_basics.sass */
 .imglykit-float-left {
   float: left;
 }
 
-/* line 24, ../../src/css/night/_basics.sass */
+/* line 26, ../../src/css/night/_basics.sass */
 .imglykit-float-right {
   float: right;
 }
@@ -195,6 +199,19 @@
 /* line 72, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-button img {
   vertical-align: middle;
+}
+
+/*!
+ * Copyright (c) 2013-2014 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+/* line 11, ../../src/css/night/controls/_overview.sass */
+.imglykit-container .imglykit-controls-overview ul.imglykit-controls-list {
+  display: block;
 }
 
 /*!
