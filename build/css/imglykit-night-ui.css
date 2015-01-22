@@ -237,6 +237,86 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
+/* line 10, ../../src/css/night/controls/_slider.sass */
+.imglykit-container .imglykit-slider {
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+  height: 80px;
+  line-height: 80px;
+}
+/* line 16, ../../src/css/night/controls/_slider.sass */
+.imglykit-container .imglykit-slider > * {
+  display: table-cell;
+}
+/* line 19, ../../src/css/night/controls/_slider.sass */
+.imglykit-container .imglykit-slider .imglykit-slider-minus, .imglykit-container .imglykit-slider .imglykit-slider-plus {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=20);
+  opacity: 0.2;
+  color: white;
+  font-size: 12px;
+  width: 40px;
+  text-align: center;
+}
+/* line 26, ../../src/css/night/controls/_slider.sass */
+.imglykit-container .imglykit-slider .imglykit-slider-slider {
+  width: auto;
+  position: relative;
+}
+/* line 30, ../../src/css/night/controls/_slider.sass */
+.imglykit-container .imglykit-slider .imglykit-slider-slider .imglykit-slider-background, .imglykit-container .imglykit-slider .imglykit-slider-slider .imglykit-slider-fill {
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+  border-radius: 6px;
+  background: #1A1A1A;
+  height: 12px;
+  top: 50%;
+  margin-top: -8px;
+}
+/* line 37, ../../src/css/night/controls/_slider.sass */
+.imglykit-container .imglykit-slider .imglykit-slider-slider .imglykit-slider-fill {
+  position: absolute;
+  background: #9FBDFF;
+}
+/* line 41, ../../src/css/night/controls/_slider.sass */
+.imglykit-container .imglykit-slider .imglykit-slider-slider .imglykit-slider-center-dot {
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  background: #9FBDFF;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: -14px 0 0 -12px;
+}
+/* line 52, ../../src/css/night/controls/_slider.sass */
+.imglykit-container .imglykit-slider .imglykit-slider-slider .imglykit-slider-dot {
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+  -moz-box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+  width: 30px;
+  height: 30px;
+  background: white;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: -17px 0 0 -15px;
+  cursor: pointer;
+}
+
+/*!
+ * Copyright (c) 2013-2014 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
 /* line 11, ../../src/css/night/_scrollbars.sass */
 .imglykit-controls::-webkit-scrollbar, .imglykit-controls *::-webkit-scrollbar {
   background: transparent;

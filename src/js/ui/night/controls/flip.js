@@ -9,6 +9,7 @@
  */
 
 import Control from "./control";
+import Symbol from "es6-symbol";
 let fs = require("fs");
 
 class FlipControls extends Control {
@@ -38,6 +39,10 @@ class FlipControls extends Control {
     }
   }
 
+  /**
+   * Gets called when the user clicked a list item
+   * @private
+   */
   _onListItemClick (item) {
     let { direction } = item.dataset;
     if (direction === "horizontal") {

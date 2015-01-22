@@ -10,6 +10,7 @@
  */
 
 let fs = require("fs");
+import Symbol from "es6-symbol";
 import UI from "../base/ui";
 
 class NightUI extends UI {
@@ -82,6 +83,7 @@ class NightUI extends UI {
     this.registerControl(this._operationsMap.filters, require("./controls/filters"));
     this.registerControl(this._operationsMap.rotation, require("./controls/rotation"));
     this.registerControl(this._operationsMap.flip, require("./controls/flip"));
+    this.registerControl(this._operationsMap.brightness, require("./controls/brightness"));
   }
 
   /**

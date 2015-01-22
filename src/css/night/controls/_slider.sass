@@ -1,0 +1,64 @@
+/*!
+ * Copyright (c) 2013-2014 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+
+.imglykit-container .imglykit-slider
+  display: table
+  table-layout: fixed
+  width: 100%
+  height: $controlsHeight
+  line-height: $controlsHeight
+  > *
+    display: table-cell
+
+  .imglykit-slider-minus, .imglykit-slider-plus
+    @include opacity(0.2)
+    color: white
+    font-size: 12px
+    width: 40px
+    text-align: center
+
+  .imglykit-slider-slider
+    width: auto
+    position: relative
+
+    .imglykit-slider-background, .imglykit-slider-fill
+      @include border-radius(6px)
+      background: $darkColor
+      height: 12px
+      top: 50%
+      margin-top: -8px
+
+    .imglykit-slider-fill
+      position: absolute
+      background: $primaryColor
+
+    .imglykit-slider-center-dot
+      @include border-radius(50%)
+      width: 24px
+      height: 24px
+      background: $primaryColor
+      position: absolute
+      left: 50%
+      top: 50%
+
+      margin: -14px 0 0 -12px
+
+    .imglykit-slider-dot
+      @include border-radius(50%)
+      @include box-shadow(0 2px 4px 0 rgba(black, 0.5))
+      width: 30px
+      height: 30px
+      background: white
+
+      position: absolute
+      left: 50%
+      top: 50%
+
+      margin: -17px 0 0 -15px
+      cursor: pointer

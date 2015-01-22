@@ -9,6 +9,7 @@
  */
 
 import Control from "./control";
+import Symbol from "es6-symbol";
 let fs = require("fs");
 
 class RotationControls extends Control {
