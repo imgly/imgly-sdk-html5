@@ -50,7 +50,8 @@ class SliderControl extends Control {
     this._currentValue = value;
 
     // Calculate the X position
-    let percentage = (this._maxValue + value) / (this._maxValue - this._minValue);
+    let valueRange = this._maxValue - this._minValue;
+    let percentage = (value - this._minValue) / valueRange;
     let sliderWidth = this._sliderSlider.offsetWidth;
     this._setSliderX(sliderWidth * percentage);
   }
