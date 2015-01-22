@@ -24,6 +24,10 @@ class SliderControl extends Control {
     this._bound_onMousedown = this._onMousedown.bind(this);
     this._bound_onMousemove = this._onMousemove.bind(this);
     this._bound_onMouseup = this._onMouseup.bind(this);
+
+    this._minValue = -1;
+    this._maxValue = 1;
+    this._currentValue = 0;
   }
 
   /**
@@ -36,6 +40,28 @@ class SliderControl extends Control {
 
     this._sliderDot.addEventListener("mousedown", this._bound_onMousedown);
     this._sliderDot.addEventListener("touchstart", this._bound_onMousedown);
+  }
+
+  /**
+   * Sets the current value, moves the slider
+   * @private
+   */
+  _setSliderValue (value) {
+    this._currentValue = value;
+
+    // Calculate the X position
+    let percentage = (this._maxValue + value) / (this._maxValue - this._minValue);
+    let sliderWidth = this._sliderSlider.offsetWidth;
+    this._setSliderX(sliderWidth * percentage);
+  }
+
+  /**
+   * Renders the controls
+   * @private
+   */
+  _renderControls () {
+    this._controlsTemplate = [this._sliderTemplate, this._controlsTemplate].join("\r\n");
+    super();
   }
 
   /**
@@ -90,6 +116,11 @@ class SliderControl extends Control {
     let newSliderX = Math.max(0, Math.min(newSliderX, sliderWidth));
 
     this._setSliderX(newSliderX);
+
+    // Calculate the new value
+    let percentage = newSliderX / sliderWidth;
+    let value = this._minValue + (this._maxValue - this._minValue) * percentage;
+    this._onUpdate(value);
   }
 
   /**
@@ -117,7 +148,7 @@ class SliderControl extends Control {
    * Gets called when the user does not press the mouse button anymore
    * @private
    */
-  _onMouseup (e) {
+  _onMouseup () {
     document.removeEventListener("mousemove", this._bound_onMousemove);
     document.removeEventListener("touchmove", this._bound_onMousemove);
 
@@ -126,16 +157,23 @@ class SliderControl extends Control {
   }
 
   /**
-   * Gets called when the back button has been clicked
+   * The data that is available to the template
+   * @type {Object}
    * @override
    */
-  _onBack () {
-
-  }
-
   get context () {
     let context = super.context;
     return context;
+  }
+
+  // Abstract methods
+
+  /**
+   * Gets called when the value has been updated
+   * @abstract
+   */
+  _onUpdate (value) {
+
   }
 }
 

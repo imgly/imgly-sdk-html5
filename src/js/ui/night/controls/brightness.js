@@ -19,14 +19,32 @@ class BrightnessControls extends SliderControl {
     super();
 
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/brightness_controls.jst", "utf-8");
-    this._controlsTemplate = [this._sliderTemplate, controlsTemplate].join("\r\n");
+    this._controlsTemplate = controlsTemplate;
+
+    // Value boundaries
+    this._minValue = -1;
+    this._maxValue = 1;
+  }
+
+  /**
+   * Gets called when the value has been updated
+   * @override
+   */
+  _onUpdate (value) {
+    this._operation.setBrightness(value);
   }
 
   /**
    * Gets called when this control is activated
+   * @override
    */
   _onEnter () {
     super();
+
+    // Initially set value
+    let brightness = this._operation.getBrightness();
+    this._initialBrightness = brightness;
+    this._setSliderValue(brightness);
   }
 
   /**
@@ -35,6 +53,7 @@ class BrightnessControls extends SliderControl {
    */
   _onBack () {
     super();
+    this._operation.setBrightness(this._initialBrightness);
   }
 }
 
