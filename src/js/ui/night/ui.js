@@ -85,6 +85,7 @@ class NightUI extends UI {
     this.registerControl(this._operationsMap.flip, require("./controls/flip"));
     this.registerControl(this._operationsMap.brightness, require("./controls/brightness"));
     this.registerControl(this._operationsMap.contrast, require("./controls/contrast"));
+    this.registerControl(this._operationsMap.saturation, require("./controls/saturation"));
   }
 
   /**
