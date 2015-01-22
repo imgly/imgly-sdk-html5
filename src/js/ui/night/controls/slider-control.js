@@ -43,9 +43,14 @@ class SliderControl extends Control {
    * @private
    */
   _onMousedown (e) {
-    if (e.button !== 0) return; // Not the left mouse button
+    if (e.type === "mousedown" && e.button !== 0) return; // Not the left mouse button\
     e.preventDefault();
     this._dragging = true;
+
+    let x = e.pageX;
+    if (e.type === "touchstart") {
+      x = e.touches[0].pageX;
+    }
 
     document.addEventListener("mousemove", this._bound_onMousemove);
     document.addEventListener("touchmove", this._bound_onMousemove);
@@ -58,7 +63,7 @@ class SliderControl extends Control {
     let sliderPosition = this._sliderSlider.getBoundingClientRect();
 
     this._initialSliderX = dotPosition.left - sliderPosition.left;
-    this._initialMouseX = e.pageX;
+    this._initialMouseX = x;
   }
 
   /**
@@ -68,7 +73,12 @@ class SliderControl extends Control {
   _onMousemove (e) {
     e.preventDefault();
 
-    let currentMouseX = e.pageX;
+    let x = e.pageX;
+    if (e.type === "touchmove") {
+      x = e.touches[0].pageX;
+    }
+
+    let currentMouseX = x;
     let differenceX = currentMouseX - this._initialMouseX;
 
     // Add half width of the dot for negative margin compensation
