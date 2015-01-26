@@ -21,13 +21,7 @@ class WebGLRenderer extends Renderer {
     super(...args);
 
     this._defaultProgram = this.setupGLSLProgram();
-    this._lastTexture = null;
-    this._textures = [];
-    this._framebuffers = [];
-    this._bufferIndex = 0;
-    this._inputTexture = null;
-
-    this._createFramebuffers();
+    this.reset();
   }
 
   /**
@@ -174,7 +168,6 @@ class WebGLRenderer extends Renderer {
           break;
         default:
           throw new Error("Unknown uniform type: " + uniform.type);
-          break;
       }
     }
 
@@ -432,6 +425,16 @@ class WebGLRenderer extends Renderer {
    */
   setLastTexture (texture) {
     this._lastTexture = texture;
+  }
+
+  reset () {
+    this._lastTexture = null;
+    this._textures = [];
+    this._framebuffers = [];
+    this._bufferIndex = 0;
+    this._inputTexture = null;
+
+    this._createFramebuffers();
   }
 }
 

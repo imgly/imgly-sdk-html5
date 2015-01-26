@@ -21,8 +21,8 @@ import Vector2 from "../lib/math/vector2";
 class CropOperation extends Operation {
   constructor (...args) {
     this.availableOptions = {
-      start: { type: "vector2", required: true },
-      end: { type: "vector2", required: true }
+      start: { type: "vector2", required: true, default: new Vector2(0, 0) },
+      end: { type: "vector2", required: true, default: new Vector2(1, 1) }
     };
 
     /**
@@ -118,7 +118,7 @@ class CropOperation extends Operation {
     var canvas = renderer.getCanvas();
     var dimensions = new Vector2(canvas.width, canvas.height);
 
-    var newDimensions = this._getNewDimensions(renderer);
+    var newDimensions = this.getNewDimensions(renderer);
 
     // Create a temporary canvas to draw to
     var newCanvas = renderer.createCanvas();
@@ -147,14 +147,16 @@ class CropOperation extends Operation {
 
   /**
    * Gets the new dimensions
+   * @param {Renderer} renderer
+   * @param {Vector2} [dimensions]
    * @return {Vector2}
    * @private
    */
-  _getNewDimensions (renderer) {
-    var canvas = renderer.getCanvas();
-    var dimensions = new Vector2(canvas.width, canvas.height);
+  getNewDimensions (renderer, dimensions) {
+    let canvas = renderer.getCanvas();
+    dimensions = dimensions || new Vector2(canvas.width, canvas.height);
 
-    var newDimensions = this._options.end
+    let newDimensions = this._options.end
       .clone()
       .subtract(this._options.start);
 

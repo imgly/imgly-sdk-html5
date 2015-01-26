@@ -49,7 +49,7 @@ class CanvasRenderer extends Renderer {
    * @param  {Image} image
    */
   drawImage (image) {
-    this._context.drawImage(image, 0, 0);
+    this._context.drawImage(image, 0, 0, image.width, image.height, 0, 0, this._canvas.width, this._canvas.height);
   }
 
   /**

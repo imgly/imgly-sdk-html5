@@ -13,14 +13,17 @@
 import _ from "lodash";
 import Vector2 from "../lib/math/vector2";
 import Color from "../lib/color";
+import EventEmitter from "../lib/event-emitter";
 
 /**
  * Base class for Operations. Extendable via {@link ImglyKit.Operation#extend}.
  * @class
  * @alias ImglyKit.Operation
  */
-class Operation {
+class Operation extends EventEmitter {
   constructor (kit, options) {
+    super();
+
     if (kit.constructor.name !== "ImglyKit") {
       throw new Error("Operation: First parameter for constructor has to be an ImglyKit instance.");
     }
@@ -218,6 +221,22 @@ class Operation {
         this._options[optionName] = value;
         break;
     }
+
+    this.emit("update");
+  }
+
+  /**
+   * Gets the new dimensions
+   * @param {Renderer} renderer
+   * @param {Vector2} [dimensions]
+   * @return {Vector2}
+   * @private
+   */
+  getNewDimensions (renderer, dimensions) {
+    let canvas = renderer.getCanvas();
+    dimensions = dimensions || new Vector2(canvas.width, canvas.height);
+
+    return dimensions;
   }
 }
 

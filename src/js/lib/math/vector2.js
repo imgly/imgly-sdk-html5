@@ -162,6 +162,17 @@ class Vector2 {
   }
 
   /**
+   * Flips the x and y values of this vector
+   * @return {Vector2}
+   */
+  flip () {
+    let tempX = this.x;
+    this.x = this.y;
+    this.y = tempX;
+    return this;
+  }
+
+  /**
    * Returns a string representation of this vector
    * @return {String}
    */

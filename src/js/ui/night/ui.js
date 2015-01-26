@@ -1,4 +1,3 @@
-/* global ImglyKit */
 "use strict";
 /*!
  * Copyright (c) 2013-2014 9elements GmbH
@@ -12,6 +11,7 @@
 let fs = require("fs");
 import Symbol from "es6-symbol";
 import UI from "../base/ui";
+import Canvas from "./lib/canvas";
 
 class NightUI extends UI {
   constructor (...args) {
@@ -34,12 +34,7 @@ class NightUI extends UI {
       "saturation",
 
       // Then post-processing
-      "noise",
-
-      // Everything else on top
-      "text",
-      "stickers",
-      "frames"
+      "noise"
     ];
   }
 
@@ -57,6 +52,17 @@ class NightUI extends UI {
     this._initOperations();
     this._registerControls();
     this._handleOverview();
+
+    this._initCanvas();
+  }
+
+  /**
+   * Inititializes the canvas
+   * @private
+   */
+  _initCanvas () {
+    this._canvas = new Canvas(this._kit, this, this._options);
+    this._canvas.run();
   }
 
   /**
@@ -69,6 +75,18 @@ class NightUI extends UI {
       if (this.isOperationSelected(operationIdentifier)) {
         let Operation = registeredOperations[operationIdentifier];
         let operationInstance = new Operation(this._kit);
+
+        // Skip per default
+        // This additional attribute is not part of the img.ly SDK,
+        // we only use it for the Night UI to check whether an operation
+        // needs to be rendered
+        operationInstance.isIdentity = true;
+
+        operationInstance.on("update", () => {
+          operationInstance.isIdentity = false;
+          this._canvas.render();
+        });
+
         this._operationsMap[operationIdentifier] = operationInstance;
         operationsStack.push(operationInstance);
       }
@@ -142,6 +160,14 @@ class NightUI extends UI {
   registerControl (operation, Controls) {
     let instance = new Controls(this._kit, this, operation, this._controlsContainer, this._canvasControlsContainer);
     this._registeredControls[operation.identifier] = instance;
+  }
+
+  /**
+   * An object containing all active operations
+   * @type {Object.<String,Operation>}
+   */
+  get operationsMap () {
+    return this._operationsMap;
   }
 }
 

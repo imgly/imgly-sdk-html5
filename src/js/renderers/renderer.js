@@ -18,14 +18,16 @@ import Vector2 from "../lib/math/vector2";
  * @private
  */
 class Renderer {
-  constructor (dimensions) {
+  constructor (dimensions, canvas) {
     /**
      * @type {Canvas}
      * @private
      */
-    this._canvas = this.createCanvas();
+    this._canvas = canvas || this.createCanvas();
 
-    this.setSize(dimensions);
+    if (!canvas) {
+      this.setSize(dimensions);
+    }
 
     /**
      * @type {RenderingContext}

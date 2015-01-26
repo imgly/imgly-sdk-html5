@@ -9,6 +9,7 @@
  */
 
 import Operation from "./operation";
+import Vector2 from "../lib/math/vector2";
 
 /**
  * An operation that can rotate the canvas
@@ -38,6 +39,7 @@ class RotationOperation extends Operation {
 
       void main() {
         gl_Position = vec4((u_matrix * vec3(a_position, 1)).xy, 0, 1);
+        // gl_Position = vec4(a_position, 0, 1);
         v_texCoord = a_texCoord;
       }
     `;
@@ -69,10 +71,11 @@ class RotationOperation extends Operation {
     // If we're not rotating by 180 degrees, we need to resize the canvas
     // and the texture
     if (actualDegrees % 180 !== 0) {
+      let newDimensions = this.getNewDimensions(renderer);
+
       // Resize the canvas
-      var width = canvas.width;
-      canvas.width = canvas.height;
-      canvas.height = width;
+      canvas.width = newDimensions.x;
+      canvas.height = newDimensions.y;
 
       // Resize the current texture
       var currentTexture = renderer.getCurrentTexture();
@@ -110,9 +113,11 @@ class RotationOperation extends Operation {
       }
     });
 
-    // Resize the input texture
-    gl.bindTexture(gl.TEXTURE_2D, lastTexture);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, canvas.width, canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    if (actualDegrees % 180 !== 0) {
+      // Resize the input texture
+      gl.bindTexture(gl.TEXTURE_2D, lastTexture);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, canvas.width, canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    }
   }
 
   /**
@@ -123,18 +128,12 @@ class RotationOperation extends Operation {
     var canvas = renderer.getCanvas();
 
     var actualDegrees = this._options.degrees % 360;
-    var width = canvas.width;
-    var height = canvas.height;
-
-    if (actualDegrees % 180 !== 0) {
-      width = canvas.height;
-      height = canvas.width;
-    }
+    let newDimensions = this.getNewDimensions(renderer);
 
     // Create a rotated canvas
     var newCanvas = renderer.createCanvas();
-    newCanvas.width = width;
-    newCanvas.height = height;
+    newCanvas.width = newDimensions.x;
+    newCanvas.height = newDimensions.y;
     var newContext = newCanvas.getContext("2d");
 
     newContext.save();
@@ -154,6 +153,28 @@ class RotationOperation extends Operation {
     newContext.restore();
 
     renderer.setCanvas(newCanvas);
+  }
+
+  /**
+   * Gets the new dimensions
+   * @param {Renderer} renderer
+   * @param {Vector2} [dimensions]
+   * @return {Vector2}
+   * @private
+   */
+  getNewDimensions (renderer, dimensions) {
+    let canvas = renderer.getCanvas();
+    dimensions = dimensions || new Vector2(canvas.width, canvas.height);
+
+    let actualDegrees = this._options.degrees % 360;
+
+    if (actualDegrees % 180 !== 0) {
+      let tempX = dimensions.x;
+      dimensions.x = dimensions.y;
+      dimensions.y = tempX;
+    }
+
+    return dimensions;
   }
 }
 

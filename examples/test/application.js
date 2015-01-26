@@ -20,5 +20,7 @@ window.onload = function() {
     // kit.ui.registerControl();
 
     kit.run();
+
+    window.kit = kit;
   };
 };

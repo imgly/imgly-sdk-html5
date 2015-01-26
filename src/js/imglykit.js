@@ -34,8 +34,6 @@ class ImglyKit {
 
     // `options` is required
     if (typeof options === "undefined") throw new Error("No options given.");
-    // `options.image` is required
-    if (typeof options.image === "undefined") throw new Error("`options.image` is undefined.");
 
     // Set default options
     options = _.defaults(options, {
@@ -89,6 +87,9 @@ class ImglyKit {
    * @return {Promise}
    */
   render (renderType, imageFormat, dimensions) {
+    // `options.image` is required
+    if (typeof this._options.image === "undefined") throw new Error("`options.image` is undefined.");
+
     var settings = ImageExporter.validateSettings(renderType, imageFormat);
 
     renderType = settings.renderType;
@@ -186,8 +187,7 @@ class ImglyKit {
     /**
      * @type {ImglyKit.UI}
      */
-    let { container, assetsUrl } = this._options;
-    this.ui = new UI(this, { container, assetsUrl });
+    this.ui = new UI(this, this._options);
   }
 
   get registeredOperations () {
