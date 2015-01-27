@@ -10,6 +10,8 @@
 .imglykit-container
 
   .imglykit-canvas-container
+    +border-radius(5px)
+
     width: 100%
     height: 100%
 
@@ -19,7 +21,11 @@
 
     padding: 10px
     padding-top: $topControlsHeight + 10px
+    overflow: hidden
 
   canvas
     background: black
     position: relative
+
+    &.imglykit-canvas-draggable
+      cursor: move

@@ -43,18 +43,24 @@ class TopControls extends EventEmitter {
 
   /**
    * Gets called when the user clicked the zoom in button
+   * @param {Event}
    * @private
    */
-  _onZoomInClick () {
+  _onZoomInClick (e) {
+    e.preventDefault();
+
     this.emit("zoom-in");
     this._updateZoomLevel();
   }
 
   /**
    * Gets called when the user clicked the zoom out button
+   * @param {Event}
    * @private
    */
-  _onZoomOutClick () {
+  _onZoomOutClick (e) {
+    e.preventDefault();
+
     this.emit("zoom-out");
     this._updateZoomLevel();
   }

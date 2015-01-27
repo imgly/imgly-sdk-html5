@@ -31,10 +31,15 @@ class Canvas {
    */
   run () {
     this._initRenderer();
+
+    // Calculate the initial zoom level
     this._zoomLevel = this._getInitialZoomLevel();
     this._initialZoomLevel = this._zoomLevel;
     this._isInitialZoom = true;
+
     this.render();
+    this._centerCanvas();
+    this._handleDrag();
   }
 
   /**
@@ -48,9 +53,9 @@ class Canvas {
 
     let imageSize = new Vector2(this._image.width, this._image.height);
     let initialSize = imageSize.multiply(this._zoomLevel);
+    let finalSize = this._finalDimensions;
 
-    this._canvas.width = initialSize.x;
-    this._canvas.height = initialSize.y;
+    this._setCanvasSize(initialSize);
 
     this._renderer.reset();
     this._renderer.drawImage(this._image);
@@ -86,7 +91,7 @@ class Canvas {
     }
 
     zoomLevel = Math.min(100, zoomLevel);
-    this._zoomLevel = zoomLevel / 100;
+    this._setZoomLevel(zoomLevel / 100);
 
     this.render();
   }
@@ -109,9 +114,57 @@ class Canvas {
     }
 
     zoomLevel = Math.max(initialZoomLevel, zoomLevel);
-    this._zoomLevel = zoomLevel / 100;
+    this._setZoomLevel(zoomLevel / 100);
+  }
 
+  /**
+   * Resizes and positions the canvas
+   * @param {Vector2} size
+   * @private
+   */
+  _setCanvasSize (size) {
+    this._canvas.width = size.x;
+    this._canvas.height = size.y;
+  }
+
+  /**
+   * Centers the canvas inside the container
+   * @private
+   */
+  _centerCanvas () {
+    let position = this._maxSize
+      .divide(2);
+
+    this._canvas.style.left = `${position.x}px`;
+    this._canvas.style.top = `${position.y}px`;
+
+    this._updateCanvasMargins();
+  }
+
+  /**
+   * Updates the canvas margins so that they are the negative half width
+   * and height of the canvas
+   * @private
+   */
+  _updateCanvasMargins () {
+    let canvasSize = new Vector2(this._canvas.width, this._canvas.height);
+    let margin = canvasSize
+      .divide(2)
+      .multiply(-1);
+    this._canvas.style.marginLeft = `${margin.x}px`;
+    this._canvas.style.marginTop = `${margin.y}px`;
+  }
+
+  /**
+   * Sets the zoom level, re-renders the canvas and
+   * repositions it
+   * @param {Number} zoomLevel
+   * @private
+   */
+  _setZoomLevel (zoomLevel) {
+    this._zoomLevel = zoomLevel;
     this.render();
+    this._updateCanvasMargins();
   }
 
   /**
@@ -166,6 +219,14 @@ class Canvas {
   }
 
   /**
+   * Handles the dragging
+   * @private
+   */
+  _handleDrag () {
+
+  }
+
+  /**
    * The maximum canvas size
    * @private
    */
@@ -204,12 +265,12 @@ class Canvas {
    * @private
    */
   get _finalDimensions () {
-    let initialDimensions = new Vector2(this._image.width, this._image.height);
+    let dimensions = new Vector2(this._image.width, this._image.height);
 
     let rotationOperation = this._ui.operationsMap.rotation;
-    initialDimensions = rotationOperation.getNewDimensions(this._renderer, initialDimensions);
+    dimensions = rotationOperation.getNewDimensions(this._renderer, dimensions);
 
-    return this._resizeVectorToFit(initialDimensions);
+    return this._resizeVectorToFit(dimensions);
   }
 
   /**
