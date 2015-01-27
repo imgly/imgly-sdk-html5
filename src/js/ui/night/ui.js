@@ -12,6 +12,7 @@ let fs = require("fs");
 import Symbol from "es6-symbol";
 import UI from "../base/ui";
 import Canvas from "./lib/canvas";
+import TopControls from "./lib/top-controls";
 
 class NightUI extends UI {
   constructor (...args) {
@@ -54,6 +55,26 @@ class NightUI extends UI {
     this._handleOverview();
 
     this._initCanvas();
+    this._initTopControls();
+  }
+
+  /**
+   * Initializes the top controls
+   * @private
+   */
+  _initTopControls () {
+    this._topControls = new TopControls(this._kit, this);
+    this._topControls.run();
+
+    // Pass zoom in event
+    this._topControls.on("zoom-in", () => {
+      this._canvas.zoomIn();
+    });
+
+    // Pass zoom out event
+    this._topControls.on("zoom-out", () => {
+      this._canvas.zoomOut();
+    });
   }
 
   /**
@@ -168,6 +189,14 @@ class NightUI extends UI {
    */
   get operationsMap () {
     return this._operationsMap;
+  }
+
+  /**
+   * The canvas object
+   * @type {Canvas}
+   */
+  get canvas () {
+    return this._canvas;
   }
 }
 

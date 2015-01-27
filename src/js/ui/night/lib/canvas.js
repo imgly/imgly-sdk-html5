@@ -22,6 +22,7 @@ class Canvas {
     this._canvasContainer = this._ui.container.querySelector(".imglykit-canvas-container");
     this._canvas = this._canvasContainer.querySelector("canvas");
     this._image = this._options.image;
+    this._roundZoomBy = 0.1;
   }
 
   /**
@@ -31,6 +32,7 @@ class Canvas {
   run () {
     this._initRenderer();
     this._zoomLevel = this._getInitialZoomLevel();
+    this._initialZoomLevel = this._zoomLevel;
     this._isInitialZoom = true;
     this.render();
   }
@@ -39,8 +41,9 @@ class Canvas {
    * Renders the current operations stack
    */
   render () {
+    this._initialZoomLevel = this._getInitialZoomLevel();
     if (this._isInitialZoom) {
-      this._zoomLevel = this._getInitialZoomLevel();
+      this._zoomLevel = this._initialZoomLevel;
     }
 
     let imageSize = new Vector2(this._image.width, this._image.height);
@@ -64,6 +67,51 @@ class Canvas {
           return this._renderer.renderFinal();
         });
       });
+  }
+
+  /**
+   * Increase zoom level
+   */
+  zoomIn () {
+    this._isInitialZoom = false;
+
+    let zoomLevel = Math.round(this._zoomLevel * 100);
+    let roundZoomBy = Math.round(this._roundZoomBy * 100);
+
+    // Round up if needed
+    if (zoomLevel % roundZoomBy !== 0) {
+      zoomLevel = Math.ceil(zoomLevel / roundZoomBy) * roundZoomBy;
+    } else {
+      zoomLevel += roundZoomBy;
+    }
+
+    zoomLevel = Math.min(100, zoomLevel);
+    this._zoomLevel = zoomLevel / 100;
+
+    this.render();
+  }
+
+  /**
+   * Decrease zoom level
+   */
+  zoomOut () {
+    this._isInitialZoom = false;
+
+    let zoomLevel = Math.round(this._zoomLevel * 100);
+    let roundZoomBy = Math.round(this._roundZoomBy * 100);
+    let initialZoomLevel = Math.round(this._initialZoomLevel * 100);
+
+    // Round up if needed
+    if (zoomLevel % roundZoomBy !== 0) {
+      zoomLevel = Math.floor(zoomLevel / roundZoomBy) * roundZoomBy;
+    } else {
+      zoomLevel -= roundZoomBy;
+    }
+
+    zoomLevel = Math.max(initialZoomLevel, zoomLevel);
+    this._zoomLevel = zoomLevel / 100;
+
+    this.render();
   }
 
   /**
@@ -162,6 +210,14 @@ class Canvas {
     initialDimensions = rotationOperation.getNewDimensions(this._renderer, initialDimensions);
 
     return this._resizeVectorToFit(initialDimensions);
+  }
+
+  /**
+   * The current zoom level
+   * @type {Number}
+   */
+  get zoomLevel () {
+    return this._zoomLevel;
   }
 }
 
