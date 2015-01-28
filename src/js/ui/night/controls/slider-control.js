@@ -70,7 +70,7 @@ class SliderControl extends Control {
    * @private
    */
   _onMousedown (e) {
-    if (e.type === "mousedown" && e.button !== 0) return; // Not the left mouse button\
+    if (e.type === "mousedown" && e.button !== 0) return;
     e.preventDefault();
     this._dragging = true;
 

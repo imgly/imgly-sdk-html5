@@ -136,6 +136,10 @@
  */
 /* line 12, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-top-controls {
+  -moz-user-select: -moz-none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
   position: absolute;
   top: 0;
   left: 0;
@@ -148,48 +152,48 @@
   z-index: 2;
   background: #2B2B2B;
 }
-/* line 24, ../../src/css/night/_top.sass */
+/* line 26, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-top-controls > * * {
   display: inline-block;
 }
-/* line 27, ../../src/css/night/_top.sass */
+/* line 29, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-top-controls, .imglykit-container .imglykit-top-controls * {
   line-height: 30px;
 }
-/* line 30, ../../src/css/night/_top.sass */
+/* line 32, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-top-controls-left, .imglykit-container .imglykit-top-controls-right {
   padding-top: 5px;
 }
-/* line 33, ../../src/css/night/_top.sass */
+/* line 35, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-top-controls-left {
   float: left;
 }
-/* line 36, ../../src/css/night/_top.sass */
+/* line 38, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-top-controls-right {
   float: right;
 }
-/* line 39, ../../src/css/night/_top.sass */
+/* line 41, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-top-controls-right .imglykit-zoom-in, .imglykit-container .imglykit-top-controls-right .imglykit-zoom-out {
   padding: 0 15px;
   cursor: pointer;
   border-left: 1px solid #363636;
 }
-/* line 44, ../../src/css/night/_top.sass */
+/* line 46, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-top-controls-right .imglykit-zoom-in img, .imglykit-container .imglykit-top-controls-right .imglykit-zoom-out img {
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
   opacity: 0.4;
   vertical-align: middle;
 }
-/* line 47, ../../src/css/night/_top.sass */
+/* line 49, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-top-controls-right .imglykit-zoom-in:hover img, .imglykit-container .imglykit-top-controls-right .imglykit-zoom-out:hover img {
   filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
   opacity: 1;
 }
-/* line 50, ../../src/css/night/_top.sass */
+/* line 52, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-top-controls-right .imglykit-zoom-out {
   padding-right: 0;
 }
-/* line 53, ../../src/css/night/_top.sass */
+/* line 55, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-top-controls-right .imglykit-zoom-level {
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
   opacity: 0.4;
@@ -206,6 +210,10 @@
  */
 /* line 13, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls-container {
+  -moz-user-select: -moz-none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
   position: absolute;
   bottom: 0;
   left: 0;
@@ -214,24 +222,24 @@
   border-top: 1px solid #363636;
   background: #2B2B2B;
 }
-/* line 25, ../../src/css/night/_controls.sass */
+/* line 27, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls {
   width: 100%;
   text-align: center;
   height: 80px;
 }
-/* line 29, ../../src/css/night/_controls.sass */
+/* line 31, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls > div > * {
   width: 100%;
   display: table;
   table-layout: fixed;
 }
-/* line 33, ../../src/css/night/_controls.sass */
+/* line 35, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls > div > * > * {
   display: table-cell;
   vertical-align: top;
 }
-/* line 37, ../../src/css/night/_controls.sass */
+/* line 39, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-list {
   overflow: hidden;
   overflow-x: auto;
@@ -240,7 +248,7 @@
   height: 80px;
   font-size: 0;
 }
-/* line 45, ../../src/css/night/_controls.sass */
+/* line 47, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls li {
   display: inline-block;
   width: 80px;
@@ -248,25 +256,25 @@
   cursor: pointer;
   border-left: 1px solid #363636;
 }
-/* line 50, ../../src/css/night/_controls.sass */
+/* line 52, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls li:hover {
   -moz-box-shadow: 0 -3px 0 0 #9FBDFF inset;
   -webkit-box-shadow: 0 -3px 0 0 #9FBDFF inset;
   box-shadow: 0 -3px 0 0 #9FBDFF inset;
 }
-/* line 53, ../../src/css/night/_controls.sass */
+/* line 55, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls li.imglykit-controls-item-active {
   background: rgba(0, 0, 0, 0.3);
 }
-/* line 57, ../../src/css/night/_controls.sass */
+/* line 59, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls li:last-child {
   border-right: 1px solid #363636;
 }
-/* line 60, ../../src/css/night/_controls.sass */
+/* line 62, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls li img {
   margin-top: 20px;
 }
-/* line 63, ../../src/css/night/_controls.sass */
+/* line 65, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-button {
   width: 80px;
   height: 80px;
@@ -274,15 +282,15 @@
   font-size: 0;
   cursor: pointer;
 }
-/* line 69, ../../src/css/night/_controls.sass */
+/* line 71, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-button:first-child {
   border-right: 1px solid #363636;
 }
-/* line 71, ../../src/css/night/_controls.sass */
+/* line 73, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-button:last-child {
   border-left: 1px solid #363636;
 }
-/* line 74, ../../src/css/night/_controls.sass */
+/* line 76, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-button img {
   vertical-align: middle;
 }

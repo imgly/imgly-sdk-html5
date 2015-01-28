@@ -23,6 +23,11 @@ class Canvas {
     this._canvas = this._canvasContainer.querySelector("canvas");
     this._image = this._options.image;
     this._roundZoomBy = 0.1;
+
+    // Mouse event callbacks bound to the class context
+    this._dragOnMousedown = this._dragOnMousedown.bind(this);
+    this._dragOnMousemove = this._dragOnMousemove.bind(this);
+    this._dragOnMouseup = this._dragOnMouseup.bind(this);
   }
 
   /**
@@ -82,6 +87,7 @@ class Canvas {
 
     let zoomLevel = Math.round(this._zoomLevel * 100);
     let roundZoomBy = Math.round(this._roundZoomBy * 100);
+    let initialZoomLevel = Math.round(this._initialZoomLevel * 100);
 
     // Round up if needed
     if (zoomLevel % roundZoomBy !== 0) {
@@ -90,7 +96,7 @@ class Canvas {
       zoomLevel += roundZoomBy;
     }
 
-    zoomLevel = Math.min(100, zoomLevel);
+    zoomLevel = Math.min(initialZoomLevel * 2, zoomLevel);
     this._setZoomLevel(zoomLevel / 100);
 
     this.render();
@@ -165,6 +171,7 @@ class Canvas {
     this._zoomLevel = zoomLevel;
     this.render();
     this._updateCanvasMargins();
+    this._applyBoundaries();
   }
 
   /**
@@ -223,7 +230,133 @@ class Canvas {
    * @private
    */
   _handleDrag () {
+    this._canvas.addEventListener("mousedown", this._dragOnMousedown);
+    this._canvas.addEventListener("touchstart", this._dragOnMousedown);
+  }
 
+  /**
+   * Gets called when the user started touching / clicking the canvas
+   * @param {Event} e
+   * @private
+   */
+  _dragOnMousedown (e) {
+    if (e.type === "mousedown" && e.button !== 0) return;
+    e.preventDefault();
+
+    // if (this._zoomLevel === this._initialZoomLevel) return;
+
+    let x = e.pageX, y = e.pageY;
+    if (e.type === "touchstart") {
+      x = e.touches[0].pageX;
+      y = e.touches[0].pageY;
+    }
+
+    let canvasX = parseInt(this._canvas.style.left);
+    let canvasY = parseInt(this._canvas.style.top);
+
+    document.addEventListener("mousemove", this._dragOnMousemove);
+    document.addEventListener("touchmove", this._dragOnMousemove);
+
+    document.addEventListener("mouseup", this._dragOnMouseup);
+    document.addEventListener("touchend", this._dragOnMouseup);
+
+    // Remember initial position
+    this._initialMousePosition = new Vector2(x, y);
+    this._initialCanvasPosition = new Vector2(canvasX, canvasY);
+  }
+
+  /**
+   * Gets called when the user drags the canvas
+   * @param {Event} e
+   * @private
+   */
+  _dragOnMousemove (e) {
+    e.preventDefault();
+
+    let x = e.pageX, y = e.pageY;
+    if (e.type === "touchmove") {
+      x = e.touches[0].pageX;
+      y = e.touches[0].pageY;
+    }
+
+    let newMousePosition = new Vector2(x, y);
+    let mouseDiff = newMousePosition
+      .clone()
+      .subtract(this._initialMousePosition);
+    let newPosition = this._initialCanvasPosition
+      .clone()
+      .add(mouseDiff);
+
+    this._canvas.style.left = `${newPosition.x}px`;
+    this._canvas.style.top = `${newPosition.y}px`;
+
+    this._applyBoundaries();
+  }
+
+  /**
+   * Makes sure the canvas positions are within the boundaries
+   * @private
+   */
+  _applyBoundaries () {
+    let x = parseInt(this._canvas.style.left);
+    let y = parseInt(this._canvas.style.top);
+    let canvasPosition = new Vector2(x, y);
+
+    // Boundaries
+    let boundaries = this._boundaries;
+    canvasPosition.x = Math.min(boundaries.max.x, Math.max(boundaries.min.x, canvasPosition.x));
+    canvasPosition.y = Math.min(boundaries.max.y, Math.max(boundaries.min.y, canvasPosition.y));
+
+    this._canvas.style.left = `${canvasPosition.x}px`;
+    this._canvas.style.top = `${canvasPosition.y}px`;
+  }
+
+  /**
+   * Gets called when the user stopped dragging the canvsa
+   * @param {Event} e
+   * @private
+   */
+  _dragOnMouseup (e) {
+    e.preventDefault();
+
+    document.removeEventListener("mousemove", this._dragOnMousemove);
+    document.removeEventListener("touchmove", this._dragOnMousemove);
+
+    document.removeEventListener("mouseup", this._dragOnMouseup);
+    document.removeEventListener("touchend", this._dragOnMouseup);
+  }
+
+  /**
+   * The position boundaries for the canvas inside the container
+   * @type {Object.<Vector2>}
+   * @private
+   */
+  get _boundaries () {
+    let canvasSize = new Vector2(this._canvas.width, this._canvas.height);
+    let maxSize = this._maxSize;
+
+    let diff = canvasSize.clone().subtract(maxSize).multiply(-1);
+
+
+    let boundaries = {
+      min: new Vector2(diff.x, diff.y),
+      max: new Vector2(0, 0)
+    };
+
+    if (canvasSize.x < maxSize.x) {
+      boundaries.min.x = diff.x / 2;
+      boundaries.max.x = diff.x / 2;
+    }
+
+    if (canvasSize.y < maxSize.y) {
+      boundaries.min.y = diff.y / 2;
+      boundaries.max.y = diff.y / 2;
+    }
+
+    let halfCanvasSize = canvasSize.clone().divide(2);
+    boundaries.min.add(halfCanvasSize);
+    boundaries.max.add(halfCanvasSize);
+    return boundaries;
   }
 
   /**
