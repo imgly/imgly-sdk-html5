@@ -112,12 +112,6 @@ class RotationOperation extends Operation {
         u_matrix: { type: "mat3fv", value: rotationMatrix }
       }
     });
-
-    if (actualDegrees % 180 !== 0) {
-      // Resize the input texture
-      gl.bindTexture(gl.TEXTURE_2D, lastTexture);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, canvas.width, canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-    }
   }
 
   /**
