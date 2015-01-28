@@ -98,8 +98,6 @@ class Canvas {
 
     zoomLevel = Math.min(initialZoomLevel * 2, zoomLevel);
     this._setZoomLevel(zoomLevel / 100);
-
-    this.render();
   }
 
   /**
