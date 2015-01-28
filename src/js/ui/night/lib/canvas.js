@@ -23,6 +23,7 @@ class Canvas {
     this._canvas = this._canvasContainer.querySelector("canvas");
     this._image = this._options.image;
     this._roundZoomBy = 0.1;
+    this._isFirstRender = true;
 
     // Mouse event callbacks bound to the class context
     this._dragOnMousedown = this._dragOnMousedown.bind(this);
@@ -52,30 +53,50 @@ class Canvas {
    */
   render () {
     this._initialZoomLevel = this._getInitialZoomLevel();
+
+    // Reset the zoom level to initial
+    // Some operations change the texture resolution (e.g. rotation)
+    // If we're on initial zoom level, we still want to make the canvas
+    // fit into the container. Find the new initial zoom level and set it.
     if (this._isInitialZoom) {
       this._zoomLevel = this._initialZoomLevel;
     }
 
+    // Calculate the initial size
     let imageSize = new Vector2(this._image.width, this._image.height);
     let initialSize = imageSize.multiply(this._zoomLevel);
-    let finalSize = this._finalDimensions;
-
     this._setCanvasSize(initialSize);
 
+    // Reset framebuffers
     this._renderer.reset();
-    this._renderer.drawImage(this._image);
 
+    // On first render, draw the image to the input texture
+    if (this._isFirstRender) {
+      this._renderer.drawImage(this._image);
+      this._isFirstRender = false;
+    }
+
+    // Run the operations stack
     let stack = this._actualStack;
     return bluebird
+      // Validate all settings
       .map(stack, (operation) => {
         return operation.validateSettings();
       })
+      // Render the operations stack
       .then(() => {
         return bluebird.map(stack, (operation) => {
           return operation.render(this._renderer);
-        }, { concurrency: 1 }).then(() => {
-          return this._renderer.renderFinal();
-        });
+        }, { concurrency: 1 });
+      })
+      // Render the final image
+      .then(() => {
+        return this._renderer.renderFinal();
+      })
+      // Update the margins and boundaries
+      .then(() => {
+        this._updateCanvasMargins();
+        this._applyBoundaries();
       });
   }
 
@@ -240,8 +261,6 @@ class Canvas {
   _dragOnMousedown (e) {
     if (e.type === "mousedown" && e.button !== 0) return;
     e.preventDefault();
-
-    // if (this._zoomLevel === this._initialZoomLevel) return;
 
     let x = e.pageX, y = e.pageY;
     if (e.type === "touchstart") {
