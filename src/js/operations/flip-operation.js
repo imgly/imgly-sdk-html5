@@ -9,7 +9,6 @@
  */
 
 import Operation from "./operation";
-import Utils from "../lib/utils";
 
 /**
  * An operation that can flip the canvas
@@ -65,7 +64,7 @@ class FlipOperation extends Operation {
    */
   /* istanbul ignore next */
   _renderWebGL (renderer) {
-    renderer.runShader(null, FlipOperation.fragmentShader, {
+    renderer.runShader(null, this.fragmentShader, {
       uniforms: {
         u_flipVertical: { type: "f", value: this._options.vertical },
         u_flipHorizontal: { type: "f", value: this._options.horizontal }
