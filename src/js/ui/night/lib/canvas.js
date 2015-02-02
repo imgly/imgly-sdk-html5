@@ -19,7 +19,9 @@ class Canvas {
     this._ui = ui;
     this._options = options;
 
-    this._canvasContainer = this._ui.container.querySelector(".imglykit-canvas-container");
+    let { container } = this._ui;
+    this._canvasContainer = container.querySelector(".imglykit-canvas-container");
+    this._canvasInnerContainer = container.querySelector(".imglykit-canvas-inner-container");
     this._canvas = this._canvasContainer.querySelector("canvas");
     this._image = this._options.image;
     this._roundZoomBy = 0.1;
@@ -150,6 +152,8 @@ class Canvas {
   _setCanvasSize (size) {
     this._canvas.width = size.x;
     this._canvas.height = size.y;
+    this._canvasInnerContainer.style.width = `${size.x}px`;
+    this._canvasInnerContainer.style.height = `${size.y}px`;
   }
 
   /**
@@ -160,8 +164,8 @@ class Canvas {
     let position = this._maxSize
       .divide(2);
 
-    this._canvas.style.left = `${position.x}px`;
-    this._canvas.style.top = `${position.y}px`;
+    this._canvasInnerContainer.style.left = `${position.x}px`;
+    this._canvasInnerContainer.style.top = `${position.y}px`;
 
     this._updateCanvasMargins();
   }
@@ -176,8 +180,8 @@ class Canvas {
     let margin = canvasSize
       .divide(2)
       .multiply(-1);
-    this._canvas.style.marginLeft = `${margin.x}px`;
-    this._canvas.style.marginTop = `${margin.y}px`;
+    this._canvasInnerContainer.style.marginLeft = `${margin.x}px`;
+    this._canvasInnerContainer.style.marginTop = `${margin.y}px`;
   }
 
   /**
@@ -268,8 +272,8 @@ class Canvas {
       y = e.touches[0].pageY;
     }
 
-    let canvasX = parseInt(this._canvas.style.left);
-    let canvasY = parseInt(this._canvas.style.top);
+    let canvasX = parseInt(this._canvasInnerContainer.style.left);
+    let canvasY = parseInt(this._canvasInnerContainer.style.top);
 
     document.addEventListener("mousemove", this._dragOnMousemove);
     document.addEventListener("touchmove", this._dragOnMousemove);
@@ -304,8 +308,8 @@ class Canvas {
       .clone()
       .add(mouseDiff);
 
-    this._canvas.style.left = `${newPosition.x}px`;
-    this._canvas.style.top = `${newPosition.y}px`;
+    this._canvasInnerContainer.style.left = `${newPosition.x}px`;
+    this._canvasInnerContainer.style.top = `${newPosition.y}px`;
 
     this._applyBoundaries();
   }
@@ -315,8 +319,8 @@ class Canvas {
    * @private
    */
   _applyBoundaries () {
-    let x = parseInt(this._canvas.style.left);
-    let y = parseInt(this._canvas.style.top);
+    let x = parseInt(this._canvasInnerContainer.style.left);
+    let y = parseInt(this._canvasInnerContainer.style.top);
     let canvasPosition = new Vector2(x, y);
 
     // Boundaries
@@ -324,8 +328,8 @@ class Canvas {
     canvasPosition.x = Math.min(boundaries.max.x, Math.max(boundaries.min.x, canvasPosition.x));
     canvasPosition.y = Math.min(boundaries.max.y, Math.max(boundaries.min.y, canvasPosition.y));
 
-    this._canvas.style.left = `${canvasPosition.x}px`;
-    this._canvas.style.top = `${canvasPosition.y}px`;
+    this._canvasInnerContainer.style.left = `${canvasPosition.x}px`;
+    this._canvasInnerContainer.style.top = `${canvasPosition.y}px`;
   }
 
   /**
@@ -429,6 +433,14 @@ class Canvas {
    */
   get zoomLevel () {
     return this._zoomLevel;
+  }
+
+  /**
+   * The canvas size in pixels
+   * @type {Vector2}
+   */
+  get size () {
+    return new Vector2(this._canvas.width, this._canvas.height);
   }
 }
 

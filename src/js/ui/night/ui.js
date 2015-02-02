@@ -45,7 +45,7 @@ class NightUI extends UI {
     let { container } = this._options;
 
     this._controlsContainer = container.querySelector(".imglykit-controls");
-    this._canvasControlsContainer = container.querySelector(".imglykit-canvas-controls-container");
+    this._canvasControlsContainer = container.querySelector(".imglykit-canvas-controls");
     this._overviewControlsContainer = container.querySelector(".imglykit-controls-overview");
 
     this._operationsMap = {};
@@ -125,6 +125,7 @@ class NightUI extends UI {
     this.registerControl(this._operationsMap.brightness, require("./controls/brightness"));
     this.registerControl(this._operationsMap.contrast, require("./controls/contrast"));
     this.registerControl(this._operationsMap.saturation, require("./controls/saturation"));
+    this.registerControl(this._operationsMap.crop, require("./controls/crop"));
   }
 
   /**
@@ -189,14 +190,6 @@ class NightUI extends UI {
    */
   get operationsMap () {
     return this._operationsMap;
-  }
-
-  /**
-   * The canvas object
-   * @type {Canvas}
-   */
-  get canvas () {
-    return this._canvas;
   }
 }
 

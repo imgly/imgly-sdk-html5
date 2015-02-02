@@ -8,6 +8,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+import Vector2 from "./math/vector2";
+
 /**
  * Provides utility functions for internal use
  * @class
@@ -87,6 +89,21 @@ class Utils {
       typeof HTMLElement === "object" ? o instanceof HTMLElement :
       o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string"
     );
+  }
+
+  /**
+   * Gets the x and y position for the given event.
+   * @param {Event} e
+   * @return {Vector2}
+   */
+  static getEventPosition (e) {
+    let x = e.pageX;
+    let y = e.pageY;
+    if (e.type.indexOf("touch") !== -1) {
+      x = e.touches[0].pageX;
+      y = e.touches[0].pageY;
+    }
+    return new Vector2(x, y);
   }
 
 }

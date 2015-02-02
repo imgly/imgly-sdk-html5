@@ -77,7 +77,7 @@ class CropOperation extends Operation {
     end.y = 1 - originalStartY;
 
     // The new size
-    var newDimensions = this._getNewDimensions(renderer);
+    var newDimensions = this.getNewDimensions(renderer);
 
     // Make sure we don't resize the input texture
     var lastTexture = renderer.getLastTexture();

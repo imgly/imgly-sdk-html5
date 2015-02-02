@@ -17,9 +17,6 @@ class FiltersControls extends Control {
    * Entry point for this control
    */
   init () {
-    let canvasTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/filters_canvas.jst", "utf-8");
-    this._canvasControlsTemplate = canvasTemplate;
-
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/filters_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;
   }

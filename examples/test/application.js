@@ -3,7 +3,7 @@
 window.onload = function() {
 
   var image = new Image();
-  image.src = "test2.jpg";
+  image.src = "test.jpg";
 
   image.onload = function () {
     /*

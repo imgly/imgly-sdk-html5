@@ -71,6 +71,11 @@ class BaseUI {
     });
   }
 
+  /**
+   * Checks whether the operation with the given identifier is selected
+   * @param {String} identifier
+   * @returns {Boolean}
+   */
   isOperationSelected (identifier) {
     let operationIdentifiers = this._operations.map((operation) => {
       return operation.prototype.identifier;
@@ -111,6 +116,14 @@ class BaseUI {
    */
   get options () {
     return this._options;
+  }
+
+  /**
+   * The canvas object
+   * @type {Canvas}
+   */
+  get canvas () {
+    return this._canvas;
   }
 }
 

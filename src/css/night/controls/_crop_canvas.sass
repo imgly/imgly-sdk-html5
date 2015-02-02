@@ -1,0 +1,59 @@
+/*!
+ * Copyright (c) 2013-2014 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+
+.imglykit-container .imglykit-canvas-crop-container
+  position: absolute
+  top: 0
+  left: 0
+
+  width: 100%
+  height: 100%
+
+  display: table
+  table-layout: fixed
+
+  > *
+    display: table-row
+    > *
+      display: table-cell
+      background: rgba(34, 34, 34, 0.9)
+
+  .imglykit-canvas-crop-center-center
+    background: transparent
+    cursor: move
+    border: 1px solid white
+
+  .imglykit-canvas-crop-knobs
+    position: relative
+    width: 100%
+    height: 100%
+    > *
+      @include border-radius(50%)
+      position: absolute
+      background: rgba(white, 0.5)
+      width: 20px
+      height: 20px
+      border: 2px solid rgba(black, 0.3)
+      cursor: pointer
+
+    [data-corner=top-left]
+      top: -10px
+      left: -10px
+
+    [data-corner=top-right]
+      top: -10px
+      right: -10px
+
+    [data-corner=bottom-left]
+      bottom: -10px
+      left: -10px
+
+    [data-corner=bottom-right]
+      bottom: -10px
+      right: -10px

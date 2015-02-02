@@ -130,6 +130,7 @@ class Control extends EventEmitter {
   enter () {
     this._renderAllControls();
     this._handleBackAndDoneButtons();
+    this._enableCanvasControls();
     this._onEnter();
   }
 
@@ -139,7 +140,16 @@ class Control extends EventEmitter {
    */
   leave () {
     this._removeControls();
+    this._disableCanvasControls();
     this._onLeave();
+  }
+
+  _enableCanvasControls ()  {
+    this._canvasControlsContainer.classList.remove("imglykit-canvas-controls-disabled");
+  }
+
+  _disableCanvasControls () {
+    this._canvasControlsContainer.classList.add("imglykit-canvas-controls-disabled");
   }
 
   // Protected methods

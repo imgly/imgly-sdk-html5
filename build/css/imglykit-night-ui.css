@@ -117,13 +117,24 @@
   overflow: hidden;
 }
 /* line 26, ../../src/css/night/_canvas.sass */
-.imglykit-container canvas {
-  background: black;
+.imglykit-container .imglykit-canvas-inner-container {
   position: relative;
 }
-/* line 30, ../../src/css/night/_canvas.sass */
-.imglykit-container canvas.imglykit-canvas-draggable {
+/* line 29, ../../src/css/night/_canvas.sass */
+.imglykit-container .imglykit-canvas-inner-container canvas {
   cursor: move;
+}
+/* line 32, ../../src/css/night/_canvas.sass */
+.imglykit-container .imglykit-canvas-inner-container .imglykit-canvas-controls {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+/* line 39, ../../src/css/night/_canvas.sass */
+.imglykit-container .imglykit-canvas-inner-container .imglykit-canvas-controls.imglykit-canvas-controls-disabled {
+  display: none;
 }
 
 /*!
@@ -401,6 +412,78 @@
   top: 50%;
   margin: -17px 0 0 -15px;
   cursor: pointer;
+}
+
+/*!
+ * Copyright (c) 2013-2014 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+/* line 10, ../../src/css/night/controls/_crop_canvas.sass */
+.imglykit-container .imglykit-canvas-crop-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: table;
+  table-layout: fixed;
+}
+/* line 21, ../../src/css/night/controls/_crop_canvas.sass */
+.imglykit-container .imglykit-canvas-crop-container > * {
+  display: table-row;
+}
+/* line 23, ../../src/css/night/controls/_crop_canvas.sass */
+.imglykit-container .imglykit-canvas-crop-container > * > * {
+  display: table-cell;
+  background: rgba(34, 34, 34, 0.9);
+}
+/* line 27, ../../src/css/night/controls/_crop_canvas.sass */
+.imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-center-center {
+  background: transparent;
+  cursor: move;
+  border: 1px solid white;
+}
+/* line 32, ../../src/css/night/controls/_crop_canvas.sass */
+.imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-knobs {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+/* line 36, ../../src/css/night/controls/_crop_canvas.sass */
+.imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-knobs > * {
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+  position: absolute;
+  background: rgba(255, 255, 255, 0.5);
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+/* line 45, ../../src/css/night/controls/_crop_canvas.sass */
+.imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-knobs [data-corner=top-left] {
+  top: -10px;
+  left: -10px;
+}
+/* line 49, ../../src/css/night/controls/_crop_canvas.sass */
+.imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-knobs [data-corner=top-right] {
+  top: -10px;
+  right: -10px;
+}
+/* line 53, ../../src/css/night/controls/_crop_canvas.sass */
+.imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-knobs [data-corner=bottom-left] {
+  bottom: -10px;
+  left: -10px;
+}
+/* line 57, ../../src/css/night/controls/_crop_canvas.sass */
+.imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-knobs [data-corner=bottom-right] {
+  bottom: -10px;
+  right: -10px;
 }
 
 /*!
