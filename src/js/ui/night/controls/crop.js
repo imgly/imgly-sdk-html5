@@ -32,6 +32,10 @@ class CropControls extends Control {
     this._defaultStart = new Vector2(0.1, 0.1);
     this._defaultEnd = new Vector2(0.9, 0.9);
 
+    // Minimum size in pixels
+    this._minimumSize = new Vector2(50, 50);
+
+    // Mouse event callbacks bound to the class context
     this._onKnobDown = this._onKnobDown.bind(this);
     this._onKnobDrag = this._onKnobDrag.bind(this);
     this._onKnobUp = this._onKnobUp.bind(this);
@@ -165,17 +169,27 @@ class CropControls extends Control {
     switch (corner) {
       case "top-left":
         absoluteStart.add(mouseDiff);
+        let maximum = absoluteEnd.clone()
+          .subtract(this._minimumSize);
+        absoluteStart.clamp(null, maximum);
         break;
       case "top-right":
         absoluteEnd.x += mouseDiff.x;
         absoluteStart.y += mouseDiff.y;
+        absoluteEnd.x = Math.max(absoluteStart.x + this._minimumSize.x, absoluteEnd.x);
+        absoluteStart.y = Math.min(absoluteEnd.y - this._minimumSize.y, absoluteStart.y);
         break;
       case "bottom-right":
         absoluteEnd.add(mouseDiff);
+        let minimum = absoluteStart.clone()
+          .add(this._minimumSize);
+        absoluteEnd.clamp(minimum);
         break;
       case "bottom-left":
         absoluteStart.x += mouseDiff.x;
         absoluteEnd.y += mouseDiff.y;
+        absoluteStart.x = Math.min(absoluteEnd.x - this._minimumSize.x, absoluteStart.x);
+        absoluteEnd.y = Math.max(absoluteStart.y + this._minimumSize.y, absoluteEnd.y);
         break;
     }
 

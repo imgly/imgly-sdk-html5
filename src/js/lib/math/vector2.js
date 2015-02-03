@@ -67,16 +67,27 @@ class Vector2 {
    * @return {Vector2}
    */
   clamp (minimum, maximum) {
+    let minimumSet = minimum !== null && typeof minimum !== "undefined";
+    let maximumSet = maximum !== null && typeof maximum !== "undefined";
+
     /* istanbul ignore else  */
-    if (!(minimum instanceof Vector2)) {
+    if (!(minimum instanceof Vector2) && minimumSet) {
       minimum = new Vector2(minimum, minimum);
     }
     /* istanbul ignore else  */
-    if (!(maximum instanceof Vector2)) {
+    if (!(maximum instanceof Vector2) && maximumSet) {
       maximum = new Vector2(maximum, maximum);
     }
-    this.x = Math.max(minimum.x, Math.min(maximum.x, this.x));
-    this.y = Math.max(minimum.y, Math.min(maximum.y, this.y));
+
+    if (minimumSet) {
+      this.x = Math.max(minimum.x, this.x);
+      this.y = Math.max(minimum.y, this.y);
+    }
+
+    if (maximumSet) {
+      this.x = Math.min(maximum.x, this.x);
+      this.y = Math.min(maximum.y, this.y);
+    }
     return this;
   }
 
