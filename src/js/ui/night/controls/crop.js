@@ -39,6 +39,9 @@ class CropControls extends Control {
     this._onKnobDown = this._onKnobDown.bind(this);
     this._onKnobDrag = this._onKnobDrag.bind(this);
     this._onKnobUp = this._onKnobUp.bind(this);
+    this._onCenterDown = this._onCenterDown.bind(this);
+    this._onCenterDrag = this._onCenterDrag.bind(this);
+    this._onCenterUp = this._onCenterUp.bind(this);
   }
 
   /**
@@ -82,6 +85,7 @@ class CropControls extends Control {
 
     this._updateCropping();
     this._handleKnobs();
+    this._handleCenter();
   }
 
   /**
@@ -134,6 +138,7 @@ class CropControls extends Control {
    */
   _onKnobDown (e, knob) {
     e.preventDefault();
+    e.stopPropagation();
 
     this._currentKnob = knob;
     this._initialMousePosition = Utils.getEventPosition(e);
@@ -216,11 +221,104 @@ class CropControls extends Control {
   }
 
   /**
+   * Handles the center dragging
+   * @private
+   */
+  _handleCenter () {
+    this._areas.centerCenter.addEventListener("mousedown", this._onCenterDown);
+    this._areas.centerCenter.addEventListener("touchstart", this._onCenterDown);
+  }
+
+  /**
+   * Gets called when the user presses the center area
+   * @param {Event} e
+   * @private
+   */
+  _onCenterDown (e) {
+    this._initialMousePosition = Utils.getEventPosition(e);
+
+    // Remember the current values
+    this._startBeforeDrag = this._start.clone();
+    this._endBeforeDrag = this._end.clone();
+
+    document.addEventListener("mousemove", this._onCenterDrag);
+    document.addEventListener("touchmove", this._onCenterDrag);
+    document.addEventListener("mouseup", this._onCenterUp);
+    document.addEventListener("touchend", this._onCenterUp);
+  }
+
+  /**
+   * Gets called when the user presses the center area and moves his mouse
+   * @param {Event} e
+   * @private
+   */
+  _onCenterDrag (e) {
+    let mousePosition = Utils.getEventPosition(e);
+    let mouseDiff = mousePosition.subtract(this._initialMousePosition);
+    let canvasSize = this._ui.canvas.size;
+
+    // Get the crop size
+    let cropSize = this._endBeforeDrag.clone()
+      .subtract(this._startBeforeDrag);
+    let absoluteCropSize = cropSize.clone()
+      .multiply(canvasSize);
+
+    // Get the absolute initial values
+    let absoluteStart = this._startBeforeDrag.clone().multiply(canvasSize);
+    let absoluteEnd = this._endBeforeDrag.clone().multiply(canvasSize);
+
+    // Add the mouse position difference
+    absoluteStart.add(mouseDiff);
+
+    // Clamp the value
+    let maxStart = canvasSize.clone()
+      .subtract(absoluteCropSize);
+    absoluteStart.clamp(new Vector2(0, 0), maxStart);
+
+    // End position does not change (relative to start)
+    absoluteEnd.copy(absoluteStart).add(absoluteCropSize);
+
+    // Set the final values
+    this._start.copy(absoluteStart).divide(canvasSize);
+    this._end.copy(absoluteEnd).divide(canvasSize);
+
+    this._updateCropping();
+  }
+
+  /**
+   * Gets called when the user releases the center area
+   * @param {Event} e
+   * @private
+   */
+  _onCenterUp (e) {
+    document.removeEventListener("mousemove", this._onCenterDrag);
+    document.removeEventListener("touchmove", this._onCenterDrag);
+    document.removeEventListener("mouseup", this._onCenterUp);
+    document.removeEventListener("touchend", this._onCenterUp);
+  }
+
+  /**
    * Gets called when the back button has been clicked
    * @override
    */
   _onBack () {
     super();
+
+    this._operation.set({
+      start: this._initialStart,
+      end: this._initialEnd
+    });
+  }
+
+  /**
+   * Gets called when the done button has been clicked
+   * @protected
+   */
+  _onDone () {
+    this._operation.set({
+      start: this._start,
+      end: this._end
+    });
   }
 }
 

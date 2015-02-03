@@ -104,8 +104,10 @@ class NightUI extends UI {
         operationInstance.isIdentity = true;
 
         operationInstance.on("update", () => {
+          if (this._paused) return;
+
           operationInstance.isIdentity = false;
-          this._canvas.render();
+          this.render();
         });
 
         this._operationsMap[operationIdentifier] = operationInstance;
@@ -182,6 +184,13 @@ class NightUI extends UI {
   registerControl (operation, Controls) {
     let instance = new Controls(this._kit, this, operation, this._controlsContainer, this._canvasControlsContainer);
     this._registeredControls[operation.identifier] = instance;
+  }
+
+  /**
+   * Re-renders the canvas
+   */
+  render () {
+    this._canvas.render();
   }
 
   /**

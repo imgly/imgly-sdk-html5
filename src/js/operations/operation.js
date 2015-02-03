@@ -145,6 +145,18 @@ class Operation extends EventEmitter {
   }
 
   /**
+   * Sets the given options
+   * @param {Object} options
+   */
+  set (options) {
+    for (let optionName in options) {
+      this._setOption(optionName, options[optionName], false);
+    }
+
+    this.emit("update");
+  }
+
+  /**
    * Returns the value for the given option
    * @param {String} optionName
    * @return {*}
@@ -158,9 +170,10 @@ class Operation extends EventEmitter {
    * Sets the value for the given option, validates it
    * @param {String} optionName
    * @param {*} value
+   * @param {Boolean} update
    * @private
    */
-  _setOption (optionName, value) {
+  _setOption (optionName, value, update=true) {
     var optionConfig = this.availableOptions[optionName];
     var identifier = this.identifier;
 
@@ -222,7 +235,9 @@ class Operation extends EventEmitter {
         break;
     }
 
-    this.emit("update");
+    if (update) {
+      this.emit("update");
+    }
   }
 
   /**

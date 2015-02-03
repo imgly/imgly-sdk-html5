@@ -106,8 +106,8 @@ class CropOperation extends Operation {
     });
 
     // Resize the input texture
-    gl.bindTexture(gl.TEXTURE_2D, lastTexture);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, newDimensions.x, newDimensions.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    // gl.bindTexture(gl.TEXTURE_2D, lastTexture);
+    // gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, newDimensions.x, newDimensions.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
   }
 
   /**
