@@ -51,6 +51,9 @@ class CropControls extends Control {
   _onEnter () {
     super();
 
+    this._initialZoomLevel = this._ui.canvas.zoomLevel;
+    this._ui.canvas.zoomToFit();
+
     let prefix = ".imglykit-canvas-crop";
     let container = this._canvasControls;
     let knobsContainer = container.querySelector(`${prefix}-knobs`);
@@ -303,6 +306,8 @@ class CropControls extends Control {
    */
   _onBack () {
     super();
+
+    this._ui.canvas.setZoomLevel(this._initialZoomLevel);
 
     this._operation.set({
       start: this._initialStart,

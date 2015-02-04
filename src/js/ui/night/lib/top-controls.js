@@ -38,7 +38,7 @@ class TopControls extends EventEmitter {
   _handleZoom () {
     this._zoomIn.addEventListener("click", this._onZoomInClick.bind(this));
     this._zoomOut.addEventListener("click", this._onZoomOutClick.bind(this));
-    this._updateZoomLevel();
+    this.updateZoomLevel();
   }
 
   /**
@@ -50,7 +50,7 @@ class TopControls extends EventEmitter {
     e.preventDefault();
 
     this.emit("zoom-in");
-    this._updateZoomLevel();
+    this.updateZoomLevel();
   }
 
   /**
@@ -62,14 +62,13 @@ class TopControls extends EventEmitter {
     e.preventDefault();
 
     this.emit("zoom-out");
-    this._updateZoomLevel();
+    this.updateZoomLevel();
   }
 
   /**
    * Updates the zoom level display
-   * @private
    */
-  _updateZoomLevel () {
+  updateZoomLevel () {
     let { zoomLevel } = this._canvas;
     this._zoomLevel.innerHTML = Math.round(zoomLevel * 100);
   }

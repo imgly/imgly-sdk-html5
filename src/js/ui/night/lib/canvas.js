@@ -12,9 +12,12 @@ import bluebird from "bluebird";
 import WebGLRenderer from "../../../renderers/webgl-renderer";
 import CanvasRenderer from "../../../renderers/canvas-renderer";
 import Vector2 from "../../../lib/math/vector2";
+import EventEmitter from "../../../lib/event-emitter";
 
-class Canvas {
+class Canvas extends EventEmitter {
   constructor (kit, ui, options) {
+    super();
+
     this._kit = kit;
     this._ui = ui;
     this._options = options;
@@ -61,7 +64,7 @@ class Canvas {
     // If we're on initial zoom level, we still want to make the canvas
     // fit into the container. Find the new initial zoom level and set it.
     if (this._isInitialZoom) {
-      this._zoomLevel = this._initialZoomLevel;
+      this._setZoomLevel(this._initialZoomLevel, false);
     }
 
     // Calculate the initial size
@@ -188,13 +191,15 @@ class Canvas {
    * Sets the zoom level, re-renders the canvas and
    * repositions it
    * @param {Number} zoomLevel
+   * @param {Boolean} render
    * @private
    */
-  _setZoomLevel (zoomLevel) {
+  _setZoomLevel (zoomLevel, render=true) {
     this._zoomLevel = zoomLevel;
-    this.render();
+    if (render) this.render();
     this._updateCanvasMargins();
     this._applyBoundaries();
+    this.emit("zoom"); // will be redirected to top controls
   }
 
   /**
@@ -422,9 +427,26 @@ class Canvas {
     let dimensions = new Vector2(this._image.width, this._image.height);
 
     let rotationOperation = this._ui.operationsMap.rotation;
-    dimensions = rotationOperation.getNewDimensions(this._renderer, dimensions);
+    let cropOperation = this._ui.operationsMap.crop;
 
-    return this._resizeVectorToFit(dimensions);
+    dimensions = rotationOperation.getNewDimensions(this._renderer, dimensions);
+    dimensions = this._resizeVectorToFit(dimensions);
+
+    let originalDimensions = dimensions.clone();
+    let newDimensions = cropOperation.getNewDimensions(this._renderer, dimensions);
+    let diff = originalDimensions.subtract(newDimensions);
+
+    dimensions.add(diff);
+
+    return dimensions;
+  }
+
+  /**
+   * Zooms the canvas so that it fits the container
+   */
+  zoomToFit () {
+    let initialZoomLevel = this._getInitialZoomLevel();
+    this._setZoomLevel(initialZoomLevel);
   }
 
   /**

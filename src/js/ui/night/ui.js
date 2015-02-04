@@ -84,6 +84,9 @@ class NightUI extends UI {
   _initCanvas () {
     this._canvas = new Canvas(this._kit, this, this._options);
     this._canvas.run();
+    this._canvas.on("zoom", () => {
+      this._topControls.updateZoomLevel();
+    });
   }
 
   /**
