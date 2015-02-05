@@ -494,6 +494,37 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
+/* line 10, ../../src/css/night/controls/_radial-blur_canvas.sass */
+.imglykit-container .imglykit-canvas-radial-blur-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+/* line 18, ../../src/css/night/controls/_radial-blur_canvas.sass */
+.imglykit-container .imglykit-canvas-radial-blur-container .imglykit-canvas-radial-blur-dot {
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+  position: absolute;
+  background: rgba(255, 255, 255, 0.5);
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  margin-left: -10px;
+  margin-top: -10px;
+}
+
+/*!
+ * Copyright (c) 2013-2014 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
 /* line 11, ../../src/css/night/_scrollbars.sass */
 .imglykit-controls::-webkit-scrollbar, .imglykit-controls *::-webkit-scrollbar {
   background: transparent;

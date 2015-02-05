@@ -8,10 +8,11 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import SliderControl from "./slider-control";
+import Control from "./control";
+import Slider from "../lib/slider";
 let fs = require("fs");
 
-class ContrastControls extends SliderControl {
+class ContrastControls extends Control {
   /**
    * Entry point for this control
    */
@@ -20,18 +21,7 @@ class ContrastControls extends SliderControl {
 
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/contrast_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;
-
-    // Value boundaries
-    this._minValue = 0;
-    this._maxValue = 2;
-  }
-
-  /**
-   * Gets called when the value has been updated
-   * @override
-   */
-  _onUpdate (value) {
-    this._operation.setContrast(value);
+    this._partialTemplates.push(Slider.template);
   }
 
   /**
@@ -41,10 +31,17 @@ class ContrastControls extends SliderControl {
   _onEnter () {
     super();
 
+    let sliderElement = this._controls.querySelector(".imglykit-slider");
+    this._slider = new Slider(sliderElement, {
+      minValue: 0,
+      maxValue: 2
+    });
+    this._slider.on("update", this._onUpdate.bind(this));
+
     // Initially set value
     let contrast = this._operation.getContrast();
     this._initialContrast = contrast;
-    this._setSliderValue(contrast);
+    this._slider.setValue(contrast);
   }
 
   /**
@@ -54,6 +51,14 @@ class ContrastControls extends SliderControl {
   _onBack () {
     super();
     this._operation.setContrast(this._initialContrast);
+  }
+
+  /**
+   * Gets called when the value has been updated
+   * @override
+   */
+  _onUpdate (value) {
+    this._operation.setContrast(value);
   }
 }
 

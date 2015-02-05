@@ -8,10 +8,11 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import SliderControl from "./slider-control";
+import Control from "./control";
+import Slider from "../lib/slider";
 let fs = require("fs");
 
-class BrightnessControls extends SliderControl {
+class BrightnessControls extends Control {
   /**
    * Entry point for this control
    */
@@ -20,18 +21,7 @@ class BrightnessControls extends SliderControl {
 
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/brightness_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;
-
-    // Value boundaries
-    this._minValue = -1;
-    this._maxValue = 1;
-  }
-
-  /**
-   * Gets called when the value has been updated
-   * @override
-   */
-  _onUpdate (value) {
-    this._operation.setBrightness(value);
+    this._partialTemplates.push(Slider.template);
   }
 
   /**
@@ -41,10 +31,17 @@ class BrightnessControls extends SliderControl {
   _onEnter () {
     super();
 
+    let sliderElement = this._controls.querySelector(".imglykit-slider");
+    this._slider = new Slider(sliderElement, {
+      minValue: -1,
+      maxValue: 1
+    });
+    this._slider.on("update", this._onUpdate.bind(this));
+
     // Initially set value
     let brightness = this._operation.getBrightness();
     this._initialBrightness = brightness;
-    this._setSliderValue(brightness);
+    this._slider.setValue(brightness);
   }
 
   /**
@@ -54,6 +51,14 @@ class BrightnessControls extends SliderControl {
   _onBack () {
     super();
     this._operation.setBrightness(this._initialBrightness);
+  }
+
+  /**
+   * Gets called when the value has been updated
+   * @override
+   */
+  _onUpdate (value) {
+    this._operation.setBrightness(value);
   }
 }
 

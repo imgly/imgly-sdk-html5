@@ -103,7 +103,7 @@ class CropControls extends Control {
           this._setRatio(item.dataset.ratio, false);
           this._selectRatio(item);
       } else {
-        this._updateCropping();
+        this._updateDOM();
       }
 
       item.addEventListener("click", (e) => {
@@ -177,14 +177,14 @@ class CropControls extends Control {
       }
     }
 
-    this._updateCropping();
+    this._updateDOM();
   }
 
   /**
    * Updates the cropping divs for the current operation settings
    * @private
    */
-  _updateCropping () {
+  _updateDOM () {
     let startAbsolute = this._start.clone()
       .multiply(this._ui.canvas.size);
     let endAbsolute = this._end.clone()
@@ -355,7 +355,7 @@ class CropControls extends Control {
       }
     }
 
-    this._updateCropping();
+    this._updateDOM();
   }
 
   /**
@@ -433,7 +433,7 @@ class CropControls extends Control {
     this._start.copy(absoluteStart).divide(canvasSize);
     this._end.copy(absoluteEnd).divide(canvasSize);
 
-    this._updateCropping();
+    this._updateDOM();
   }
 
   /**

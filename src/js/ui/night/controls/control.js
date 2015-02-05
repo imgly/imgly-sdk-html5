@@ -22,6 +22,7 @@ class Control extends EventEmitter {
     this._controlsContainer = controlsContainer;
     this._canvasControlsContainer = canvasControlsContainer;
     this._helpers = new Helpers(this._kit, this._ui, this._ui.options);
+    this._partialTemplates = [];
 
     this.init();
   }
@@ -51,8 +52,10 @@ class Control extends EventEmitter {
       throw new Error("Control#_renderOverviewControls: Control needs to define this._controlsTemplate.");
     }
 
+    let template = this._partialTemplates.concat([this._controlsTemplate]).join("\r\n");
+
     // Render the template
-    let renderFn = dot.template(this._controlsTemplate);
+    let renderFn = dot.template(template);
     let html = renderFn(this.context);
 
     // Create a wrapper
@@ -72,8 +75,10 @@ class Control extends EventEmitter {
       return; // Canvas controls are optional
     }
 
+    let template = this._partialTemplates.concat([this._canvasControlsTemplate]).join("\r\n");
+
     // Render the template
-    let renderFn = dot.template(this._canvasControlsTemplate);
+    let renderFn = dot.template(template);
     let html = renderFn(this.context);
 
     // Create a wrapper

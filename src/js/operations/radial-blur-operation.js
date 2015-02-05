@@ -90,7 +90,7 @@ class RadialBlurOperation extends Operation {
     var canvasSize = new Vector2(canvas.width, canvas.height);
 
     var position = this._options.position.clone();
-    position.y = canvasSize.y - position.y;
+    position.y = 1 - position.y;
 
     if (this._options.numberFormat === "relative") {
       position.multiply(canvasSize);
@@ -105,14 +105,14 @@ class RadialBlurOperation extends Operation {
     };
 
     // First pass
-    renderer.runShader(null, RadialBlurOperation.fragmentShader, {
+    renderer.runShader(null, this.fragmentShader, {
       uniforms: uniforms
     });
 
     // Update delta for second pass
     uniforms.delta.value = [-1, 1];
 
-    renderer.runShader(null, RadialBlurOperation.fragmentShader, {
+    renderer.runShader(null, this.fragmentShader, {
       uniforms: uniforms
     });
   }

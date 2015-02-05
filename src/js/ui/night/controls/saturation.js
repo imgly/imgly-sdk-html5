@@ -8,10 +8,11 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import SliderControl from "./slider-control";
+import Slider from "../lib/slider";
+import Control from "./control";
 let fs = require("fs");
 
-class SaturationControls extends SliderControl {
+class SaturationControls extends Control {
   /**
    * Entry point for this control
    */
@@ -20,18 +21,7 @@ class SaturationControls extends SliderControl {
 
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/saturation_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;
-
-    // Value boundaries
-    this._minValue = 0;
-    this._maxValue = 2;
-  }
-
-  /**
-   * Gets called when the value has been updated
-   * @override
-   */
-  _onUpdate (value) {
-    this._operation.setSaturation(value);
+    this._partialTemplates.push(Slider.template);
   }
 
   /**
@@ -41,10 +31,17 @@ class SaturationControls extends SliderControl {
   _onEnter () {
     super();
 
+    let sliderElement = this._controls.querySelector(".imglykit-slider");
+    this._slider = new Slider(sliderElement, {
+      minValue: 0,
+      maxValue: 2
+    });
+    this._slider.on("update", this._onUpdate.bind(this));
+
     // Initially set value
     let saturation = this._operation.getSaturation();
     this._initialSaturation = saturation;
-    this._setSliderValue(saturation);
+    this._slider.setValue(saturation);
   }
 
   /**
@@ -54,6 +51,14 @@ class SaturationControls extends SliderControl {
   _onBack () {
     super();
     this._operation.setSaturation(this._initialSaturation);
+  }
+
+  /**
+   * Gets called when the value has been updated
+   * @override
+   */
+  _onUpdate (value) {
+    this._operation.setSaturation(value);
   }
 }
 
