@@ -52,7 +52,7 @@ class CropControls extends Control {
     super();
 
     this._initialZoomLevel = this._ui.canvas.zoomLevel;
-    this._ui.canvas.zoomToFit();
+    this._ui.canvas.zoomToFit(false);
 
     let prefix = ".imglykit-canvas-crop";
     let container = this._canvasControls;

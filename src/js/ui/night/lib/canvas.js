@@ -57,6 +57,7 @@ class Canvas extends EventEmitter {
    * Renders the current operations stack
    */
   render () {
+    console.log("Canvas#render");
     this._initialZoomLevel = this._getInitialZoomLevel();
 
     // Reset the zoom level to initial
@@ -443,10 +444,11 @@ class Canvas extends EventEmitter {
 
   /**
    * Zooms the canvas so that it fits the container
+   * @param {Boolean} render
    */
-  zoomToFit () {
+  zoomToFit (render=true) {
     let initialZoomLevel = this._getInitialZoomLevel();
-    this.setZoomLevel(initialZoomLevel);
+    this.setZoomLevel(initialZoomLevel, render);
   }
 
   /**
