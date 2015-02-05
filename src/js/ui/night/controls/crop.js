@@ -62,10 +62,6 @@ class CropControls extends Control {
     this._initialStart = this._operation.getStart().clone();
     this._initialEnd = this._operation.getEnd().clone();
 
-    // Default cropping settings
-    if (this._start === null) this._start = this._defaultStart.clone();
-    if (this._end === null) this._end = this._defaultEnd.clone();
-
     // Make sure we see the whole input image
     this._operation.setStart(new Vector2(0, 0));
     this._operation.setEnd(new Vector2(1, 1));
@@ -86,9 +82,93 @@ class CropControls extends Control {
       centerCenter: this._canvasControls.querySelector(`${prefix}-center-center`)
     };
 
-    this._updateCropping();
+    this._handleControls();
     this._handleKnobs();
     this._handleCenter();
+  }
+
+  /**
+   * Handles the ratio controls
+   * @private
+   */
+  _handleControls () {
+    let listItems = this._controls.querySelectorAll("ul > li");
+    this._ratios = Array.prototype.slice.call(listItems);
+
+    for (let item of this._ratios) {
+      if (typeof item.dataset.selected !== "undefined") {
+        this._onRatioClick(item);
+      }
+
+      item.addEventListener("click", (e) => {
+        e.preventDefault();
+        this._onRatioClick(item);
+      });
+    }
+  }
+
+  /**
+   * Gets called when the given ratio has been selected
+   * @param {DOMElement} item
+   * @private
+   */
+  _onRatioClick (item) {
+    this._unselectAllRatios();
+    this._selectRatio(item);
+  }
+
+  /**
+   * Unselects all ratio control items
+   * @private
+   */
+  _unselectAllRatios () {
+    for (let item of this._ratios) {
+      item.classList.remove("imglykit-controls-item-active");
+    }
+  }
+
+  /**
+   * Activates the given ratio control item
+   * @param {DOMElement} item
+   * @private
+   */
+  _selectRatio (item) {
+    item.classList.add("imglykit-controls-item-active");
+    let { ratio } = item.dataset;
+    this._setRatio(ratio);
+  }
+
+  /**
+   * Sets the given ratio
+   * @param {String} ratio
+   * @private
+   */
+  _setRatio (ratio) {
+    let canvasSize = this._ui.canvas.size;
+    if (ratio === "*") {
+      this._ratio = null;
+      this._start = new Vector2(0.1, 0.1);
+      this._end = new Vector2(0.9, 0.9);
+    } else {
+      ratio = parseFloat(ratio);
+      this._ratio = ratio;
+
+      if (canvasSize.x / canvasSize.y <= this._ratio) {
+        this._start.x = 0.1;
+        this._end.x = 0.9;
+        let height = 1 / canvasSize.y * (canvasSize.x / this._ratio * 0.8);
+        this._start.y = (1 - height) / 2;
+        this._end.y = 1 - this._start.y;
+      } else {
+        this._start.y = 0.1;
+        this._end.y = 0.9;
+        let width = 1 / canvasSize.x * (this._ratio * canvasSize.y * 0.8);
+        this._start.x = (1 - width) / 2;
+        this._end.x = 1 - this._start.x;
+      }
+    }
+
+    this._updateCropping();
   }
 
   /**
@@ -173,6 +253,7 @@ class CropControls extends Control {
       .multiply(canvasSize);
     let absoluteEnd = this._endBeforeDrag.clone()
       .multiply(canvasSize);
+    let maxHeight = canvasSize.y;
 
     switch (corner) {
       case "top-left":
@@ -192,6 +273,7 @@ class CropControls extends Control {
         let minimum = absoluteStart.clone()
           .add(this._minimumSize);
         absoluteEnd.clamp(minimum);
+        maxHeight = canvasSize.y - absoluteStart.y;
         break;
       case "bottom-left":
         absoluteStart.x += mouseDiff.x;
@@ -206,6 +288,63 @@ class CropControls extends Control {
 
     this._start.clamp(0, 1);
     this._end.clamp(0, 1);
+
+    /**
+     * Calculate boundaries
+     */
+    if (this._ratio !== null) {
+      switch (corner) {
+        case "top-left":
+          let width = (this._end.x - this._start.x) * canvasSize.x;
+          let height = width / this._ratio;
+          this._start.y = this._end.y - height / canvasSize.y;
+
+          if (this._start.y <= 0) {
+            this._start.y = 0;
+            let height = (this._end.y - this._start.y) * canvasSize.y;
+            let width = height / this._ratio;
+            this._start.x = this._end.x - width / canvasSize.x;
+          }
+          break;
+        case "top-right":
+          let width = (this._end.x - this._start.x) * canvasSize.x;
+          let height = width / this._ratio;
+          this._start.y = this._end.y - height / canvasSize.y;
+
+          if (this._start.y <= 0) {
+            this._start.y = 0;
+            let height = (this._end.y - this._start.y) * canvasSize.y;
+            let width = height / this._ratio;
+            this._end.x = this._start.x + width / canvasSize.x;
+          }
+          break;
+        case "bottom-right":
+          let width = (this._end.x - this._start.x) * canvasSize.x;
+          let height = width / this._ratio;
+          this._end.y = this._start.y + height / canvasSize.y;
+
+          // If boundaries are exceeded, calculate width by maximum height
+          if (this._end.y >= 1) {
+            this._end.y = 1;
+            let height = (this._end.y - this._start.y) * canvasSize.y;
+            let width = height / this._ratio;
+            this._end.x = this._start.x + width / canvasSize.x;
+          }
+          break;
+        case "bottom-left":
+          let width = (this._end.x - this._start.x) * canvasSize.x;
+          let height = width / this._ratio;
+          this._end.y = this._start.y + height / canvasSize.y;
+
+          if (this._end.y >= 1) {
+            this._end.y = 1;
+            let height = (this._end.y - this._start.y) * canvasSize.y;
+            let width = height / this._ratio;
+            this._start.x = this._end.x - width / canvasSize.x;
+          }
+          break;
+      }
+    }
 
     this._updateCropping();
   }
