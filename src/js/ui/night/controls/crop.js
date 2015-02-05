@@ -63,8 +63,10 @@ class CropControls extends Control {
     this._initialEnd = this._operation.getEnd().clone();
 
     // Make sure we see the whole input image
-    this._operation.setStart(new Vector2(0, 0));
-    this._operation.setEnd(new Vector2(1, 1));
+    this._operation.set({
+      start: new Vector2(0, 0),
+      end: new Vector2(1, 1)
+    });
 
     // Find all 4 knobs
     this._knobs = {
@@ -453,8 +455,7 @@ class CropControls extends Control {
   _onBack () {
     super();
 
-    this._ui.canvas.setZoomLevel(this._initialZoomLevel);
-
+    this._ui.canvas.setZoomLevel(this._initialZoomLevel, false);
     this._operation.set({
       start: this._initialStart,
       end: this._initialEnd

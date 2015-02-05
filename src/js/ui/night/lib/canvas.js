@@ -64,7 +64,7 @@ class Canvas extends EventEmitter {
     // If we're on initial zoom level, we still want to make the canvas
     // fit into the container. Find the new initial zoom level and set it.
     if (this._isInitialZoom) {
-      this._setZoomLevel(this._initialZoomLevel, false);
+      this.setZoomLevel(this._initialZoomLevel, false);
     }
 
     // Calculate the initial size
@@ -123,7 +123,7 @@ class Canvas extends EventEmitter {
     }
 
     zoomLevel = Math.min(initialZoomLevel * 2, zoomLevel);
-    this._setZoomLevel(zoomLevel / 100);
+    this.setZoomLevel(zoomLevel / 100);
   }
 
   /**
@@ -144,7 +144,7 @@ class Canvas extends EventEmitter {
     }
 
     zoomLevel = Math.max(initialZoomLevel, zoomLevel);
-    this._setZoomLevel(zoomLevel / 100);
+    this.setZoomLevel(zoomLevel / 100);
   }
 
   /**
@@ -194,7 +194,7 @@ class Canvas extends EventEmitter {
    * @param {Boolean} render
    * @private
    */
-  _setZoomLevel (zoomLevel, render=true) {
+  setZoomLevel (zoomLevel, render=true) {
     this._zoomLevel = zoomLevel;
     if (render) this.render();
     this._updateCanvasMargins();
@@ -446,7 +446,7 @@ class Canvas extends EventEmitter {
    */
   zoomToFit () {
     let initialZoomLevel = this._getInitialZoomLevel();
-    this._setZoomLevel(initialZoomLevel);
+    this.setZoomLevel(initialZoomLevel);
   }
 
   /**
