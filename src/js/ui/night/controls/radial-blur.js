@@ -173,6 +173,7 @@ class RadialBlurControls extends Control {
     let position = this._operation.getPosition()
       .clone()
       .multiply(canvasSize);
+    position.clamp(new Vector2(0, 0), canvasSize);
 
     this._knob.style.left = `${position.x}px`;
     this._knob.style.top = `${position.y}px`;
@@ -184,6 +185,7 @@ class RadialBlurControls extends Control {
    */
   _onBack () {
     if (!this._initialIdentity) {
+      console.log(this._initialOptions);
       this._operation.set(this._initialOptions);
     } else {
       this._operation.isIdentity = this._initialIdentity;
