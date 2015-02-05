@@ -96,8 +96,12 @@ class CropControls extends Control {
     this._ratios = Array.prototype.slice.call(listItems);
 
     for (let item of this._ratios) {
-      if (typeof item.dataset.selected !== "undefined") {
-        this._onRatioClick(item);
+      if (typeof item.dataset.selected !== "undefined" &&
+        this._start === null && this._end === null) {
+          this._setRatio(item.dataset.ratio, false);
+          this._selectRatio(item);
+      } else {
+        this._updateCropping();
       }
 
       item.addEventListener("click", (e) => {
@@ -141,9 +145,10 @@ class CropControls extends Control {
   /**
    * Sets the given ratio
    * @param {String} ratio
+   * @param {Boolean} resize
    * @private
    */
-  _setRatio (ratio) {
+  _setRatio (ratio, resize=true) {
     let canvasSize = this._ui.canvas.size;
     if (ratio === "*") {
       this._ratio = null;
@@ -153,18 +158,20 @@ class CropControls extends Control {
       ratio = parseFloat(ratio);
       this._ratio = ratio;
 
-      if (canvasSize.x / canvasSize.y <= this._ratio) {
-        this._start.x = 0.1;
-        this._end.x = 0.9;
-        let height = 1 / canvasSize.y * (canvasSize.x / this._ratio * 0.8);
-        this._start.y = (1 - height) / 2;
-        this._end.y = 1 - this._start.y;
-      } else {
-        this._start.y = 0.1;
-        this._end.y = 0.9;
-        let width = 1 / canvasSize.x * (this._ratio * canvasSize.y * 0.8);
-        this._start.x = (1 - width) / 2;
-        this._end.x = 1 - this._start.x;
+      if (resize) {
+        if (canvasSize.x / canvasSize.y <= this._ratio) {
+          this._start.x = 0.1;
+          this._end.x = 0.9;
+          let height = 1 / canvasSize.y * (canvasSize.x / this._ratio * 0.8);
+          this._start.y = (1 - height) / 2;
+          this._end.y = 1 - this._start.y;
+        } else {
+          this._start.y = 0.1;
+          this._end.y = 0.9;
+          let width = 1 / canvasSize.x * (this._ratio * canvasSize.y * 0.8);
+          this._start.x = (1 - width) / 2;
+          this._end.x = 1 - this._start.x;
+        }
       }
     }
 
