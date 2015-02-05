@@ -54,6 +54,7 @@ class RadialBlurControls extends Control {
     this._onKnobUp = this._onKnobUp.bind(this);
 
     this._knob = this._canvasControls.querySelector(".imglykit-canvas-radial-blur-dot");
+    this._circle = this._canvasControls.querySelector(".imglykit-canvas-radial-blur-circle");
     this._handleKnob();
     this._updateDOM();
 
@@ -100,6 +101,7 @@ class RadialBlurControls extends Control {
    */
   _onGradientRadiusUpdate (value) {
     this._operation.setGradientRadius(value);
+    this._updateDOM();
   }
 
   /**
@@ -177,6 +179,14 @@ class RadialBlurControls extends Control {
 
     this._knob.style.left = `${position.x}px`;
     this._knob.style.top = `${position.y}px`;
+
+    let circleSize = this._operation.getGradientRadius() * 2;
+    this._circle.style.left = `${position.x}px`;
+    this._circle.style.top = `${position.y}px`;
+    this._circle.style.width = `${circleSize}px`;
+    this._circle.style.height = `${circleSize}px`;
+    this._circle.style.marginLeft = `-${circleSize / 2}px`;
+    this._circle.style.marginTop = `-${circleSize / 2}px`;
   }
 
   /**
