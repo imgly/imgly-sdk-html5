@@ -11,6 +11,7 @@
 import Control from "./control";
 import Vector2 from "../../../lib/math/vector2";
 import Utils from "../../../lib/utils";
+import Slider from "../lib/slider";
 let fs = require("fs");
 
 class RadialBlurControls extends Control {
@@ -25,6 +26,8 @@ class RadialBlurControls extends Control {
 
     let canvasControlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/radial-blur_canvas.jst", "utf-8");
     this._canvasControlsTemplate = canvasControlsTemplate;
+
+    this._partialTemplates.push(Slider.template);
   }
 
   /**
@@ -53,6 +56,50 @@ class RadialBlurControls extends Control {
     this._knob = this._canvasControls.querySelector(".imglykit-canvas-radial-blur-dot");
     this._handleKnob();
     this._updateDOM();
+
+    this._initSliders();
+  }
+
+  /**
+   * Initializes the slider controls
+   * @private
+   */
+  _initSliders () {
+    let canvasSize = this._ui.canvas.size;
+
+    let blurRadiusSlider = this._controls.querySelector("#imglykit-blur-radius-slider");
+    this._blurRadiusSlider = new Slider(blurRadiusSlider, {
+      minValue: 0,
+      maxValue: 40
+    });
+    this._blurRadiusSlider.on("update", this._onBlurRadiusUpdate.bind(this));
+    this._blurRadiusSlider.setValue(this._initialSettings.blurRadius);
+
+    let gradientRadiusSlider = this._controls.querySelector("#imglykit-gradient-radius-slider");
+    this._gradientRadiusSlider = new Slider(gradientRadiusSlider, {
+      minValue: 1,
+      maxValue: Math.max(canvasSize.y, canvasSize.x)
+    });
+    this._gradientRadiusSlider.on("update", this._onGradientRadiusUpdate.bind(this));
+    this._gradientRadiusSlider.setValue(this._initialSettings.gradientRadius);
+  }
+
+  /**
+   * Gets called when the value of the blur radius slider has been updated
+   * @param {Number} value
+   * @private
+   */
+  _onBlurRadiusUpdate (value) {
+    this._operation.setBlurRadius(value);
+  }
+
+  /**
+   * Gets called when the value of the gradient radius slider has been updated
+   * @param {Number} value
+   * @private
+   */
+  _onGradientRadiusUpdate (value) {
+    this._operation.setGradientRadius(value);
   }
 
   /**
