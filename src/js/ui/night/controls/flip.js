@@ -36,6 +36,13 @@ class FlipControls extends Control {
       listItem.addEventListener("click", () => {
         this._onListItemClick(listItem);
       });
+
+      let { direction }  = listItem.dataset;
+      if (direction === "horizontal" && this._operation.getHorizontal()) {
+        this._toggleItem(listItem, true);
+      } else if (direction === "vertical" && this._operation.getVertical()) {
+        this._toggleItem(listItem, true);
+      }
     }
   }
 
@@ -45,12 +52,33 @@ class FlipControls extends Control {
    */
   _onListItemClick (item) {
     let { direction } = item.dataset;
+    let active = false;
+
     if (direction === "horizontal") {
       let currentHorizontal = this._operation.getHorizontal();
       this._operation.setHorizontal(!currentHorizontal);
+      active = !currentHorizontal;
     } else if (direction === "vertical") {
       let currentVertical = this._operation.getVertical();
       this._operation.setVertical(!currentVertical);
+      active = !currentVertical;
+    }
+
+    this._toggleItem(item, active);
+  }
+
+  /**
+   * Toggles the active state of the given item
+   * @param {DOMElement} item
+   * @param {Boolean} active
+   * @private
+   */
+  _toggleItem (item, active) {
+    let activeClass = "imglykit-controls-item-active";
+    if (active) {
+      item.classList.add(activeClass);
+    } else {
+      item.classList.remove(activeClass);
     }
   }
 
