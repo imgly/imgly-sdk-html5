@@ -36,7 +36,8 @@ class NightUI extends UI {
 
       // Then post-processing
       "noise",
-      "radial-blur"
+      "radial-blur",
+      "tilt-shift"
     ];
   }
 
@@ -133,6 +134,7 @@ class NightUI extends UI {
     this.registerControl(this._operationsMap.saturation, require("./controls/saturation"));
     this.registerControl(this._operationsMap.crop, require("./controls/crop"));
     this.registerControl(this._operationsMap["radial-blur"], require("./controls/radial-blur"));
+    this.registerControl(this._operationsMap["tilt-shift"], require("./controls/tilt-shift"));
   }
 
   /**

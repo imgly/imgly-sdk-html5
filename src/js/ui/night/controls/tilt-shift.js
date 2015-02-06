@@ -14,20 +14,21 @@ import Utils from "../../../lib/utils";
 import Slider from "../lib/slider";
 let fs = require("fs");
 
-class RadialBlurControls extends Control {
+class TiltShiftControls extends Control {
   /**
    * Entry point for this control
    */
   init () {
     super();
 
-    let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/radial-blur_controls.jst", "utf-8");
+    let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/tilt-shift_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;
 
-    let canvasControlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/radial-blur_canvas.jst", "utf-8");
+    let canvasControlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/tilt-shift_canvas.jst", "utf-8");
     this._canvasControlsTemplate = canvasControlsTemplate;
 
     this._partialTemplates.push(Slider.template);
+    this._currentKnob = null;
   }
 
   /**
@@ -40,7 +41,8 @@ class RadialBlurControls extends Control {
     // Remember initial identity state
     this._initialIdentity = this._operation.isIdentity;
     this._initialSettings = {
-      position: this._operation.getPosition().clone(),
+      start: this._operation.getStart().clone(),
+      end: this._operation.getEnd().clone(),
       gradientRadius: this._operation.getGradientRadius(),
       blurRadius: this._operation.getBlurRadius()
     };
@@ -53,9 +55,12 @@ class RadialBlurControls extends Control {
     this._onKnobDrag = this._onKnobDrag.bind(this);
     this._onKnobUp = this._onKnobUp.bind(this);
 
-    this._knob = this._canvasControls.querySelector(".imglykit-canvas-radial-blur-dot");
-    this._circle = this._canvasControls.querySelector(".imglykit-canvas-radial-blur-circle");
-    this._handleKnob();
+    let selector = ".imglykit-canvas-tilt-shift-dot";
+    this._startKnob = this._canvasControls.querySelector(`${selector}[data-option="start"]`);
+    this._endKnob = this._canvasControls.querySelector(`${selector}[data-option="end"]`);
+    this._knobs = [this._startKnob, this._endKnob];
+
+    this._handleKnobs();
     this._updateDOM();
 
     this._initSliders();
@@ -108,21 +113,32 @@ class RadialBlurControls extends Control {
    * Handles the knob dragging
    * @private
    */
-  _handleKnob () {
-    this._knob.addEventListener("mousedown", this._onKnobDown);
-    this._knob.addEventListener("touchstart", this._onKnobDown);
+  _handleKnobs () {
+    for (let knob of this._knobs) {
+      knob.addEventListener("mousedown", (e) => {
+        this._onKnobDown(knob, e);
+      });
+      knob.addEventListener("touchstart", (e) => {
+        this._onKnobDown(knob, e);
+      });
+    }
   }
 
   /**
    * Gets called when the user starts dragging the knob
+   * @param {DOMElement} knob
    * @param {Event} e
    * @private
    */
-  _onKnobDown (e) {
+  _onKnobDown (knob, e) {
     e.preventDefault();
 
+    this._currentKnob = knob;
     this._initialMousePosition = Utils.getEventPosition(e);
-    this._initialPosition = this._operation.getPosition().clone();
+
+    let { option } = knob.dataset;
+    let capitalized = option.charAt(0).toUpperCase() + option.slice(1);
+    this._valueBeforeDrag = this._operation[`get${capitalized}`]();
 
     document.addEventListener("mousemove", this._onKnobDrag);
     document.addEventListener("touchmove", this._onKnobDrag);
@@ -143,11 +159,15 @@ class RadialBlurControls extends Control {
     let mousePosition = Utils.getEventPosition(e);
     let diff = mousePosition.subtract(this._initialMousePosition);
 
-    let newPosition = this._initialPosition.clone()
+    let { option } = this._currentKnob.dataset;
+
+    let capitalized = option.charAt(0).toUpperCase() + option.slice(1);
+
+    let newPosition = this._valueBeforeDrag.clone()
       .multiply(canvasSize)
       .add(diff)
       .divide(canvasSize);
-    this._operation.setPosition(newPosition);
+    this._operation[`set${capitalized}`](newPosition);
     this._updateDOM();
   }
 
@@ -172,21 +192,21 @@ class RadialBlurControls extends Control {
    */
   _updateDOM () {
     let canvasSize = this._ui.canvas.size;
-    let position = this._operation.getPosition()
+    let start = this._operation.getStart()
       .clone()
       .multiply(canvasSize);
-    position.clamp(new Vector2(0, 0), canvasSize);
+    start.clamp(new Vector2(0, 0), canvasSize);
 
-    this._knob.style.left = `${position.x}px`;
-    this._knob.style.top = `${position.y}px`;
+    this._startKnob.style.left = `${start.x}px`;
+    this._startKnob.style.top = `${start.y}px`;
 
-    let circleSize = this._operation.getGradientRadius() * 2;
-    this._circle.style.left = `${position.x}px`;
-    this._circle.style.top = `${position.y}px`;
-    this._circle.style.width = `${circleSize}px`;
-    this._circle.style.height = `${circleSize}px`;
-    this._circle.style.marginLeft = `-${circleSize / 2}px`;
-    this._circle.style.marginTop = `-${circleSize / 2}px`;
+    let end = this._operation.getEnd()
+      .clone()
+      .multiply(canvasSize);
+    end.clamp(new Vector2(0, 0), canvasSize);
+
+    this._endKnob.style.left = `${end.x}px`;
+    this._endKnob.style.top = `${end.y}px`;
   }
 
   /**
@@ -203,4 +223,4 @@ class RadialBlurControls extends Control {
   }
 }
 
-export default RadialBlurControls;
+export default TiltShiftControls;

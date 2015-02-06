@@ -116,13 +116,13 @@ class TiltShiftOperation extends Operation {
       texSize: { type: "2f", value: [canvas.width, canvas.height] }
     };
 
-    renderer.runShader(null, TiltShiftOperation.fragmentShader, {
+    renderer.runShader(null, this.fragmentShader, {
       uniforms: uniforms
     });
 
     uniforms.delta.value = [-delta.y / d, delta.x / d];
 
-    renderer.runShader(null, TiltShiftOperation.fragmentShader, {
+    renderer.runShader(null, this.fragmentShader, {
       uniforms: uniforms
     });
   }
