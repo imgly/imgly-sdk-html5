@@ -10,6 +10,8 @@
 
 import Control from "./control";
 import Slider from "../lib/slider";
+import ColorPicker from "../lib/color-picker";
+import Color from "../../../lib/color";
 let fs = require("fs");
 
 class FramesControls extends Control {
@@ -22,6 +24,7 @@ class FramesControls extends Control {
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/frames_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;
     this._partialTemplates.push(Slider.template);
+    this._partialTemplates.push(ColorPicker.template);
   }
 
   /**
@@ -48,10 +51,14 @@ class FramesControls extends Control {
       minValue: 0.0,
       maxValue: 0.5
     });
-    this._slider.on("update", this._onUpdate.bind(this));
+    this._slider.on("update", this._onThicknessUpdate.bind(this));
     this._slider.setValue(this._initialOptions.thickness);
 
-    let color = this._operation.getColor();
+    // Init colorpicker
+    let colorPickerElement = this._controls.querySelector(".imglykit-color-picker");
+    this._colorPicker = new ColorPicker(this._ui, colorPickerElement);
+    this._colorPicker.on("update", this._onColorUpdate.bind(this));
+    this._colorPicker.setValue(this._initialOptions.color);
   }
 
   /**
@@ -68,11 +75,19 @@ class FramesControls extends Control {
   }
 
   /**
-   * Gets called when the value has been updated
+   * Gets called when the thickness has been changed
    * @override
    */
-  _onUpdate (value) {
+  _onThicknessUpdate (value) {
     this._operation.setThickness(value);
+  }
+
+  /**
+   * Gets called when the color has been changed
+   * @override
+   */
+  _onColorUpdate (value) {
+    this._operation.setColor(value);
   }
 }
 

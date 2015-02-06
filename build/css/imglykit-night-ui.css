@@ -422,6 +422,27 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
+/* line 10, ../../src/css/night/controls/_color-picker.sass */
+.imglykit-container .imglykit-color-picker {
+  padding-top: 15px;
+  border-left: 1px solid #363636;
+}
+/* line 13, ../../src/css/night/controls/_color-picker.sass */
+.imglykit-container .imglykit-color-picker .imglykit-color-picker-color {
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  background: black;
+}
+
+/*!
+ * Copyright (c) 2013-2014 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
 /* line 10, ../../src/css/night/controls/_crop_canvas.sass */
 .imglykit-container .imglykit-canvas-crop-container {
   position: absolute;

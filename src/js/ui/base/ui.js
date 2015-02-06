@@ -125,6 +125,14 @@ class BaseUI {
   get canvas () {
     return this._canvas;
   }
+
+  /**
+   * The helpers
+   * @type {Helpers}
+   */
+  get helpers () {
+    return this._helpers;
+  }
 }
 
 export default BaseUI;
