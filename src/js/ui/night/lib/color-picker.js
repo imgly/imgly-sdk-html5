@@ -22,9 +22,18 @@ class ColorPicker extends EventEmitter {
     this._element = element;
     this._currentColorCanvas = this._element.querySelector(".imglykit-color-picker-color");
 
+    this._alphaCanvas = this._element.querySelector("canvas.imglykit-color-picker-alpha");
+    this._alphaKnob = this._element.querySelector(".imglykit-color-picker-alpha-container .imglykit-transparent-knob");
+
     this._transparencyImage = new Image();
     this._transparencyImage.src = ui.helpers.assetPath("ui/night/transparency.png");
-    this._transparencyImage.addEventListener("load", this._renderCurrentColor.bind(this));
+    this._transparencyImage.addEventListener("load", this._render.bind(this));
+
+    this._onAlphaKnobDown = this._onAlphaKnobDown.bind(this);
+    this._onAlphaKnobDrag = this._onAlphaKnobDrag.bind(this);
+    this._onAlphaKnobUp = this._onAlphaKnobUp.bind(this);
+
+    this._handleAlphaKnob();
   }
 
   /**
@@ -41,7 +50,16 @@ class ColorPicker extends EventEmitter {
    */
   setValue (value) {
     this._value = value;
+    this._render();
+  }
+
+  /**
+   * Updates and renders all controls to represent the current value
+   * @private
+   */
+  _render () {
     this._renderCurrentColor();
+    this._renderTransparency();
   }
 
   /**
@@ -53,13 +71,104 @@ class ColorPicker extends EventEmitter {
     let context = canvas.getContext("2d");
 
     let pattern = context.createPattern(this._transparencyImage, "repeat");
-
     context.rect(0, 0, canvas.width, canvas.height);
     context.fillStyle = pattern;
     context.fill();
 
     context.fillStyle = this._value.toRGBA();
     context.fill();
+  }
+
+  /**
+   * Renders the transparency canvas with the current color
+   * @private
+   */
+  _renderTransparency () {
+    let canvas = this._alphaCanvas;
+    let context = canvas.getContext("2d");
+
+    let pattern = context.createPattern(this._transparencyImage, "repeat");
+    context.rect(0, 0, canvas.width, canvas.height);
+    context.fillStyle = pattern;
+    context.fill();
+
+    let gradient = context.createLinearGradient(0, 0, canvas.width, canvas.height);
+    gradient.addColorStop(0, "rgba(0, 0, 0, 0)");
+    gradient.addColorStop(1, this._value.toHex());
+    context.fillStyle = gradient;
+    context.fill();
+
+    this._updateAlphaKnob();
+  }
+
+  /**
+   * Handles the dragging of the alpha knob
+   * @private
+   */
+  _handleAlphaKnob () {
+    this._alphaKnob.addEventListener("mousedown", this._onAlphaKnobDown);
+    this._alphaKnob.addEventListener("touchstart", this._onAlphaKnobDown);
+  }
+
+  /**
+   * Gets called when the user clicks the alpha knob
+   * @param {Event} e
+   * @private
+   */
+  _onAlphaKnobDown (e) {
+    this._initialMousePosition = Utils.getEventPosition(e);
+    this._alphaBeforeDrag = this._value.a;
+
+    document.addEventListener("mousemove", this._onAlphaKnobDrag);
+    document.addEventListener("touchmove", this._onAlphaKnobDrag);
+
+    document.addEventListener("mouseup", this._onAlphaKnobUp);
+    document.addEventListener("touchend", this._onAlphaKnobUp);
+  }
+
+  /**
+   * Gets called when the user drags the alpha knob
+   * @param {Event} e
+   * @private
+   */
+  _onAlphaKnobDrag (e) {
+    let mousePosition = Utils.getEventPosition(e);
+    let diff = mousePosition.clone()
+      .subtract(this._initialMousePosition);
+
+    let alphaWidth = this._alphaCanvas.width;
+    let alphaPerPixel = 1 / alphaWidth;
+
+    let newAlpha = this._alphaBeforeDrag + alphaPerPixel * diff.x;
+    this._value.a = newAlpha;
+
+    let knobX = alphaWidth * newAlpha;
+    knobX = Math.max(0, Math.min(knobX, alphaWidth));
+    this._alphaKnob.style.left = `${knobX}px`;
+
+    this._renderCurrentColor();
+  }
+
+  /**
+   * Gets called when the user stops dragging the alpha knob
+   * @param {Event} e
+   * @private
+   */
+  _onAlphaKnobUp (e) {
+    document.removeEventListener("mousemove", this._onAlphaKnobDrag);
+    document.removeEventListener("touchmove", this._onAlphaKnobDrag);
+
+    document.removeEventListener("mouseup", this._onAlphaKnobUp);
+    document.removeEventListener("touchend", this._onAlphaKnobUp);
+  }
+
+  /**
+   * Updates the alpha knob position
+   * @private
+   */
+  _updateAlphaKnob () {
+    let left = (this._value.a * 100).toFixed(2);
+    this._alphaKnob.style.left = `${left}%`;
   }
 }
 

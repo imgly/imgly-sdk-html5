@@ -7,9 +7,34 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-.imglykit-container .imglykit-color-picker
-  padding-top: 15px
-  border-left: 1px solid $borderColor
-  .imglykit-color-picker-color
-    @include border-radius(3px)
-    background: black
+.imglykit-container
+  .imglykit-color-picker
+    position: relative
+    padding-top: 15px
+    border-left: 1px solid $borderColor
+    .imglykit-color-picker-color
+      @include border-radius(3px)
+      background: black
+
+  .imglykit-color-picker-overlay
+    position: absolute
+    cursor: default
+    background: $lightBackgroundColor
+    width: 240px
+    height: 240px
+
+    bottom: $controlsHeight + 30px
+    right: $controlsWidth / 2 - 120px
+
+    .imglykit-color-picker-alpha-container
+      width: 200px
+      height: 30px
+      position: relative
+      canvas
+        background: black
+        position: absolute
+        left: 0
+        top: 0
+
+      .imglykit-transparent-knob
+        top: 50%
