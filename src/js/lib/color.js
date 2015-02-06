@@ -72,6 +72,14 @@ class Color {
   }
 
   /**
+   * Returns a clone of the current color
+   * @return {Color}
+   */
+  clone () {
+    return new Color(this.r, this.g, this.b, this.a);
+  }
+
+  /**
    * Returns the given number as hex
    * @param  {Number} component
    * @return {String}

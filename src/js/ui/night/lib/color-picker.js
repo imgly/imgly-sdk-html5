@@ -49,7 +49,7 @@ class ColorPicker extends EventEmitter {
    * @param {Number} value
    */
   setValue (value) {
-    this._value = value;
+    this._value = value.clone();
     this._render();
   }
 
@@ -116,6 +116,8 @@ class ColorPicker extends EventEmitter {
    * @private
    */
   _onAlphaKnobDown (e) {
+    e.preventDefault();
+
     this._initialMousePosition = Utils.getEventPosition(e);
     this._alphaBeforeDrag = this._value.a;
 
@@ -132,18 +134,22 @@ class ColorPicker extends EventEmitter {
    * @private
    */
   _onAlphaKnobDrag (e) {
+    e.preventDefault();
+
     let mousePosition = Utils.getEventPosition(e);
     let diff = mousePosition.clone()
       .subtract(this._initialMousePosition);
 
-    let alphaWidth = this._alphaCanvas.width;
-    let alphaPerPixel = 1 / alphaWidth;
+    let canvasWidth = this._alphaCanvas.width;
+    let alphaPerPixel = 1 / canvasWidth;
 
     let newAlpha = this._alphaBeforeDrag + alphaPerPixel * diff.x;
     this._value.a = newAlpha;
 
-    let knobX = alphaWidth * newAlpha;
-    knobX = Math.max(0, Math.min(knobX, alphaWidth));
+    this.emit("update", this._value);
+
+    let knobX = canvasWidth * newAlpha;
+    knobX = Math.max(0, Math.min(knobX, canvasWidth));
     this._alphaKnob.style.left = `${knobX}px`;
 
     this._renderCurrentColor();
