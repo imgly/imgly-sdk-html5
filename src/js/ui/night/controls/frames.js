@@ -58,7 +58,8 @@ class FramesControls extends Control {
     let colorPickerElement = this._controls.querySelector(".imglykit-color-picker");
     this._colorPicker = new ColorPicker(this._ui, colorPickerElement);
     this._colorPicker.on("update", this._onColorUpdate.bind(this));
-    this._colorPicker.setValue(this._initialOptions.color);
+    // this._colorPicker.setValue(this._initialOptions.color);
+    this._colorPicker.setValue(new Color(1, 0, 0, 1));
   }
 
   /**

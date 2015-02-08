@@ -487,6 +487,23 @@
 .imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-alpha-container .imglykit-transparent-knob {
   top: 50%;
 }
+/* line 42, ../../src/css/night/controls/_color-picker.sass */
+.imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-hue-container {
+  width: 30px;
+  height: 160px;
+  position: relative;
+}
+/* line 46, ../../src/css/night/controls/_color-picker.sass */
+.imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-hue-container canvas {
+  background: black;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+/* line 52, ../../src/css/night/controls/_color-picker.sass */
+.imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-hue-container .imglykit-transparent-knob {
+  left: 50%;
+}
 
 /*!
  * Copyright (c) 2013-2014 9elements GmbH

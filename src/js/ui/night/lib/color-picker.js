@@ -10,6 +10,7 @@
 
 import EventEmitter from "../../../lib/event-emitter";
 import Utils from "../../../lib/utils";
+import Color from "../../../lib/color";
 import _ from "lodash";
 
 let fs = require("fs");
@@ -25,6 +26,9 @@ class ColorPicker extends EventEmitter {
     this._alphaCanvas = this._element.querySelector("canvas.imglykit-color-picker-alpha");
     this._alphaKnob = this._element.querySelector(".imglykit-color-picker-alpha-container .imglykit-transparent-knob");
 
+    this._hueCanvas = this._element.querySelector("canvas.imglykit-color-picker-hue");
+    this._hueKnob = this._element.querySelector(".imglykit-color-picker-hue-container .imglykit-transparent-knob");
+
     this._transparencyImage = new Image();
     this._transparencyImage.src = ui.helpers.assetPath("ui/night/transparency.png");
     this._transparencyImage.addEventListener("load", this._render.bind(this));
@@ -32,8 +36,12 @@ class ColorPicker extends EventEmitter {
     this._onAlphaKnobDown = this._onAlphaKnobDown.bind(this);
     this._onAlphaKnobDrag = this._onAlphaKnobDrag.bind(this);
     this._onAlphaKnobUp = this._onAlphaKnobUp.bind(this);
+    this._onHueKnobDown = this._onHueKnobDown.bind(this);
+    this._onHueKnobDrag = this._onHueKnobDrag.bind(this);
+    this._onHueKnobUp = this._onHueKnobUp.bind(this);
 
     this._handleAlphaKnob();
+    this._handleHueKnob();
   }
 
   /**
@@ -60,6 +68,7 @@ class ColorPicker extends EventEmitter {
   _render () {
     this._renderCurrentColor();
     this._renderTransparency();
+    this._renderHue();
   }
 
   /**
@@ -99,6 +108,28 @@ class ColorPicker extends EventEmitter {
     context.fill();
 
     this._updateAlphaKnob();
+  }
+
+  /**
+   * Renders the hue canvas
+   * @private
+   */
+  _renderHue () {
+    let canvas = this._hueCanvas;
+    let context = canvas.getContext("2d");
+
+    for (let y = 0; y < canvas.height; y++) {
+      let ratio = y / canvas.height;
+      let hue = Math.floor(360 * ratio);
+
+      context.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+      context.beginPath();
+      context.moveTo(0, y);
+      context.lineTo(canvas.width, y);
+      context.stroke();
+    }
+
+    this._updateHueKnob();
   }
 
   /**
@@ -146,12 +177,11 @@ class ColorPicker extends EventEmitter {
     let newAlpha = this._alphaBeforeDrag + alphaPerPixel * diff.x;
     this._value.a = newAlpha;
 
-    this.emit("update", this._value);
-
     let knobX = canvasWidth * newAlpha;
     knobX = Math.max(0, Math.min(knobX, canvasWidth));
     this._alphaKnob.style.left = `${knobX}px`;
 
+    this.emit("update", this._value);
     this._renderCurrentColor();
   }
 
@@ -175,6 +205,78 @@ class ColorPicker extends EventEmitter {
   _updateAlphaKnob () {
     let left = (this._value.a * 100).toFixed(2);
     this._alphaKnob.style.left = `${left}%`;
+  }
+
+  /**
+   * Handles the dragging of the hue knob
+   * @private
+   */
+  _handleHueKnob () {
+    this._hueKnob.addEventListener("mousedown", this._onHueKnobDown);
+    this._hueKnob.addEventListener("touchstart", this._onHueKnobDown);
+  }
+
+  /**
+   * Gets called when the user clicks the hue knob
+   * @param {Event} e
+   * @private
+   */
+  _onHueKnobDown (e) {
+    e.preventDefault();
+
+    this._initialMousePosition = Utils.getEventPosition(e);
+    this._hueBeforeDrag = this._value.toHSL()[0];
+
+    document.addEventListener("mousemove", this._onHueKnobDrag);
+    document.addEventListener("touchmove", this._onHueKnobDrag);
+
+    document.addEventListener("mouseup", this._onHueKnobUp);
+    document.addEventListener("touchend", this._onHueKnobUp);
+  }
+
+  /**
+   * Gets called when the user drags the hue knob
+   * @param {Event} e
+   * @private
+   */
+  _onHueKnobDrag (e) {
+    e.preventDefault();
+
+    let mousePosition = Utils.getEventPosition(e);
+    let diff = mousePosition.clone()
+      .subtract(this._initialMousePosition);
+
+    let canvasHeight = this._hueCanvas.height;
+    let huePerPixel = 360 / canvasHeight;
+
+    let hue = (this._hueBeforeDrag * 360) + huePerPixel * diff.y;
+    hue = Math.max(0, Math.min(359.9, hue));
+
+    this._value.setHue(hue);
+    this.emit("update", this._value);
+    this._render();
+  }
+
+  /**
+   * Gets called when the user stops dragging the alpha knob
+   * @param {Event} e
+   * @private
+   */
+  _onHueKnobUp (e) {
+    document.removeEventListener("mousemove", this._onHueKnobDrag);
+    document.removeEventListener("touchmove", this._onHueKnobDrag);
+
+    document.removeEventListener("mouseup", this._onHueKnobUp);
+    document.removeEventListener("touchend", this._onHueKnobUp);
+  }
+
+  /**
+   * Updates the spectrum knob position
+   * @private
+   */
+  _updateHueKnob () {
+    let [hue, saturation, luminance] = this._value.toHSL();
+    this._hueKnob.style.top = `${hue * 100}%`;
   }
 }
 
