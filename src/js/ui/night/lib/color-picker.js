@@ -30,6 +30,7 @@ class ColorPicker extends EventEmitter {
     this._hueKnob = this._element.querySelector(".imglykit-color-picker-hue-container .imglykit-transparent-knob");
 
     this._saturationCanvas = this._element.querySelector("canvas.imglykit-color-picker-saturation");
+    this._saturationKnob = this._element.querySelector(".imglykit-color-picker-saturation-container .imglykit-transparent-knob");
 
     this._transparencyImage = new Image();
     this._transparencyImage.src = ui.helpers.assetPath("ui/night/transparency.png");
@@ -41,9 +42,13 @@ class ColorPicker extends EventEmitter {
     this._onHueKnobDown = this._onHueKnobDown.bind(this);
     this._onHueKnobDrag = this._onHueKnobDrag.bind(this);
     this._onHueKnobUp = this._onHueKnobUp.bind(this);
+    this._onSaturationKnobDown = this._onSaturationKnobDown.bind(this);
+    this._onSaturationKnobDrag = this._onSaturationKnobDrag.bind(this);
+    this._onSaturationKnobUp = this._onSaturationKnobUp.bind(this);
 
     this._handleAlphaKnob();
     this._handleHueKnob();
+    this._handleSaturationKnob();
   }
 
   /**
@@ -69,7 +74,7 @@ class ColorPicker extends EventEmitter {
    */
   _render () {
     this._renderCurrentColor();
-    this._renderTransparency();
+    this._renderAlpha();
     this._renderHue();
     this._renderSaturation();
   }
@@ -95,7 +100,7 @@ class ColorPicker extends EventEmitter {
    * Renders the transparency canvas with the current color
    * @private
    */
-  _renderTransparency () {
+  _renderAlpha () {
     let canvas = this._alphaCanvas;
     let context = canvas.getContext("2d");
 
@@ -105,7 +110,10 @@ class ColorPicker extends EventEmitter {
     context.fill();
 
     let gradient = context.createLinearGradient(0, 0, canvas.width, canvas.height);
-    gradient.addColorStop(0, "rgba(0, 0, 0, 0)");
+
+    let color = this._value.clone();
+    color.a = 0;
+    gradient.addColorStop(0, color.toRGBA());
     gradient.addColorStop(1, this._value.toHex());
     context.fillStyle = gradient;
     context.fill();
@@ -165,6 +173,8 @@ class ColorPicker extends EventEmitter {
     }
 
     context.putImageData(imageData, 0, 0);
+
+    this._updateSaturationKnob();
   }
 
   /**
@@ -209,10 +219,11 @@ class ColorPicker extends EventEmitter {
     let canvasWidth = this._alphaCanvas.width;
     let alphaPerPixel = 1 / canvasWidth;
 
-    let newAlpha = this._alphaBeforeDrag + alphaPerPixel * diff.x;
-    this._value.a = newAlpha;
+    let alpha = this._alphaBeforeDrag + alphaPerPixel * diff.x;
+    alpha = Math.max(0, Math.min(alpha, 1));
+    this._value.a = alpha;
 
-    let knobX = canvasWidth * newAlpha;
+    let knobX = canvasWidth * alpha;
     knobX = Math.max(0, Math.min(knobX, canvasWidth));
     this._alphaKnob.style.left = `${knobX}px`;
 
@@ -311,8 +322,89 @@ class ColorPicker extends EventEmitter {
    * @private
    */
   _updateHueKnob () {
-    let [hue, saturation, luminance] = this._value.toHSV();
+    let [hue, saturation, value] = this._value.toHSV();
     this._hueKnob.style.top = `${hue * 100}%`;
+  }
+
+  /**
+   * Handles the dragging of the saturation knob
+   * @private
+   */
+  _handleSaturationKnob () {
+    this._saturationKnob.addEventListener("mousedown", this._onSaturationKnobDown);
+    this._saturationKnob.addEventListener("touchstart", this._onSaturationKnobDown);
+  }
+
+  /**
+   * Gets called when the user clicks the saturation knob
+   * @param {Event} e
+   * @private
+   */
+  _onSaturationKnobDown (e) {
+    e.preventDefault();
+
+    this._initialMousePosition = Utils.getEventPosition(e);
+    let [h, s, v] = this._value.toHSV();
+    this._saturationBeforeDrag = s;
+    this._valueBeforeDrag = v;
+
+    document.addEventListener("mousemove", this._onSaturationKnobDrag);
+    document.addEventListener("touchmove", this._onSaturationKnobDrag);
+
+    document.addEventListener("mouseup", this._onSaturationKnobUp);
+    document.addEventListener("touchend", this._onSaturationKnobUp);
+  }
+
+  /**
+   * Gets called when the user drags the saturation knob
+   * @param {Event} e
+   * @private
+   */
+  _onSaturationKnobDrag (e) {
+    e.preventDefault();
+
+    let mousePosition = Utils.getEventPosition(e);
+    let diff = mousePosition.clone()
+      .subtract(this._initialMousePosition);
+
+    let canvas = this._saturationCanvas;
+    let saturationPerPixel = 1 / canvas.width;
+    let brightnessPerPixel = 1 / canvas.height;
+
+    let saturation = this._saturationBeforeDrag + diff.x * saturationPerPixel;
+    let brightness = this._valueBeforeDrag - diff.y * brightnessPerPixel;
+
+    saturation = Math.max(0.01, Math.min(saturation, 1));
+    brightness = Math.max(0.01, Math.min(brightness, 1));
+
+    let [h, s, v] = this._value.toHSV();
+    this._value.fromHSV(h, saturation, brightness);
+
+    this.emit("update", this._value);
+    this._render();
+  }
+
+  /**
+   * Gets called when the user stops dragging the saturation knob
+   * @param {Event} e
+   * @private
+   */
+  _onSaturationKnobUp (e) {
+    document.removeEventListener("mousemove", this._onSaturationKnobDrag);
+    document.removeEventListener("touchmove", this._onSaturationKnobDrag);
+
+    document.removeEventListener("mouseup", this._onSaturationKnobUp);
+    document.removeEventListener("touchend", this._onSaturationKnobUp);
+  }
+
+  /**
+   * Updates the saturation knob position
+   * @private
+   */
+  _updateSaturationKnob () {
+    let [hue, saturation, value] = this._value.toHSV();
+    this._saturationKnob.style.left = `${saturation * 100}%`;
+    this._saturationKnob.style.top = `${100 - value * 100}%`;
   }
 }
 
