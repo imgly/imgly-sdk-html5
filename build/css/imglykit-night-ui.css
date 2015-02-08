@@ -492,17 +492,32 @@
   width: 30px;
   height: 160px;
   position: relative;
+  float: left;
 }
-/* line 46, ../../src/css/night/controls/_color-picker.sass */
+/* line 47, ../../src/css/night/controls/_color-picker.sass */
 .imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-hue-container canvas {
   background: black;
   position: absolute;
   top: 0;
   left: 0;
 }
-/* line 52, ../../src/css/night/controls/_color-picker.sass */
+/* line 53, ../../src/css/night/controls/_color-picker.sass */
 .imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-hue-container .imglykit-transparent-knob {
   left: 50%;
+}
+/* line 56, ../../src/css/night/controls/_color-picker.sass */
+.imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-saturation-container {
+  width: 160px;
+  height: 160px;
+  position: relative;
+  float: left;
+}
+/* line 61, ../../src/css/night/controls/_color-picker.sass */
+.imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-saturation-container canvas {
+  background: black;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 /*!

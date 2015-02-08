@@ -72,19 +72,19 @@ class Color {
   }
 
   /**
-   * Converts the RGB value to HSL
+   * Converts the RGB value to HSV
    * @return {Array.<Number>}
    */
-  toHSL () {
+  toHSV () {
     let max = Math.max(this.r, this.g, this.b);
     let min = Math.min(this.r, this.g, this.b);
-    let h, s, l = (max + min) / 2;
+    let h, s, v = max;
+    let d = max - min;
+    s = max === 0 ? 0 : d / max;
 
     if (max == min) {
-      h = s = 0; // achromatic
+      h = 0; // achromatic
     } else {
-      let d = max - min;
-      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
       switch (max){
         case this.r:
           h = (this.g - this.b) / d + (this.g < this.b ? 6 : 0);
@@ -99,46 +99,36 @@ class Color {
       h /= 6;
     }
 
-    return [h, s, l];
+    return [h, s, v];
   }
 
   /**
-   * Changes the color so that the hue value matches the given one
-   * @param {Number} hue
+   * Sets the RGB values of this color to match the given HSV values
+   * @param {Number} h
+   * @param {Number} s
+   * @param {Number} v
    */
-  setHue (hue) {
-    let [h, s, l] = this.toHSL();
-    h = hue / 360;
-    s = 1.0;
-    l = 0.5;
-    this.fromHSL(h, s, l);
-  }
+  fromHSV (h, s, v) {
+    let {r, g, b} = this;
 
-  /**
-   * Sets the RGB values of this color to match the given HSL values
-   * @param {Number} hue
-   * @param {Number} saturation
-   * @param {Number} luminance
-   */
-  fromHSL (hue, saturation, luminance) {
-    if (saturation === 0){
-      this.r = this.g = this.b = luminance; // achromatic
-    } else {
-      let hue2rgb = function hue2rgb(p, q, t){
-        if(t < 0) t += 1;
-        if(t > 1) t -= 1;
-        if(t < 1/6) return p + (q - p) * 6 * t;
-        if(t < 1/2) return q;
-        if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-        return p;
-      };
+    let i = Math.floor(h * 6);
+    let f = h * 6 - i;
+    let p = v * (1 - s);
+    let q = v * (1 - f * s);
+    let t = v * (1 - (1 - f) * s);
 
-      let q = luminance < 0.5 ? luminance * (1 + saturation) : luminance + saturation - luminance * saturation;
-      let p = 2 * luminance- q;
-      this.r = hue2rgb(p, q, hue + 1/3);
-      this.g = hue2rgb(p, q, hue);
-      this.b = hue2rgb(p, q, hue - 1/3);
+    switch(i % 6){
+        case 0: r = v, g = t, b = p; break;
+        case 1: r = q, g = v, b = p; break;
+        case 2: r = p, g = v, b = t; break;
+        case 3: r = p, g = q, b = v; break;
+        case 4: r = t, g = p, b = v; break;
+        case 5: r = v, g = p, b = q; break;
     }
+
+    this.r = r;
+    this.g = g;
+    this.b = b;
   }
 
   /**

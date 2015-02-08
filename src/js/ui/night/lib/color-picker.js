@@ -29,6 +29,8 @@ class ColorPicker extends EventEmitter {
     this._hueCanvas = this._element.querySelector("canvas.imglykit-color-picker-hue");
     this._hueKnob = this._element.querySelector(".imglykit-color-picker-hue-container .imglykit-transparent-knob");
 
+    this._saturationCanvas = this._element.querySelector("canvas.imglykit-color-picker-saturation");
+
     this._transparencyImage = new Image();
     this._transparencyImage.src = ui.helpers.assetPath("ui/night/transparency.png");
     this._transparencyImage.addEventListener("load", this._render.bind(this));
@@ -69,6 +71,7 @@ class ColorPicker extends EventEmitter {
     this._renderCurrentColor();
     this._renderTransparency();
     this._renderHue();
+    this._renderSaturation();
   }
 
   /**
@@ -118,11 +121,12 @@ class ColorPicker extends EventEmitter {
     let canvas = this._hueCanvas;
     let context = canvas.getContext("2d");
 
+    let color = new Color();
     for (let y = 0; y < canvas.height; y++) {
       let ratio = y / canvas.height;
-      let hue = Math.floor(360 * ratio);
+      color.fromHSV(ratio, 1, 1);
 
-      context.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+      context.strokeStyle = color.toRGBA();
       context.beginPath();
       context.moveTo(0, y);
       context.lineTo(canvas.width, y);
@@ -130,6 +134,37 @@ class ColorPicker extends EventEmitter {
     }
 
     this._updateHueKnob();
+  }
+
+  /**
+   * Renders the saturation canvas
+   * @private
+   */
+  _renderSaturation () {
+    let canvas = this._saturationCanvas;
+    let context = canvas.getContext("2d");
+    let [h, s, v] = this._value.toHSV();
+
+    let imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+
+    let color = new Color(1, 0, 0, 1);
+    for (let y = 0; y < canvas.height; y++) {
+      let value = (canvas.height - y) / canvas.height;
+      for (let x = 0; x < canvas.width; x++) {
+        let saturation = x / canvas.width;
+        color.fromHSV(h, saturation, value);
+        let {r, g, b, a} = color;
+
+        let index = (y * canvas.width + x) * 4;
+
+        imageData.data[index] = r * 255;
+        imageData.data[index + 1] = g * 255;
+        imageData.data[index + 2] = b * 255;
+        imageData.data[index + 3] = a * 255;
+      }
+    }
+
+    context.putImageData(imageData, 0, 0);
   }
 
   /**
@@ -225,7 +260,7 @@ class ColorPicker extends EventEmitter {
     e.preventDefault();
 
     this._initialMousePosition = Utils.getEventPosition(e);
-    this._hueBeforeDrag = this._value.toHSL()[0];
+    this._hueBeforeDrag = this._value.toHSV()[0];
 
     document.addEventListener("mousemove", this._onHueKnobDrag);
     document.addEventListener("touchmove", this._onHueKnobDrag);
@@ -247,12 +282,13 @@ class ColorPicker extends EventEmitter {
       .subtract(this._initialMousePosition);
 
     let canvasHeight = this._hueCanvas.height;
-    let huePerPixel = 360 / canvasHeight;
+    let huePerPixel = 1 / canvasHeight;
 
-    let hue = (this._hueBeforeDrag * 360) + huePerPixel * diff.y;
-    hue = Math.max(0, Math.min(359.9, hue));
+    let hue = this._hueBeforeDrag + huePerPixel * diff.y;
+    hue = Math.max(0, Math.min(hue, 0.99));
 
-    this._value.setHue(hue);
+    let [h, s, v] = this._value.toHSV();
+    this._value.fromHSV(hue, s, v);
     this.emit("update", this._value);
     this._render();
   }
@@ -275,7 +311,7 @@ class ColorPicker extends EventEmitter {
    * @private
    */
   _updateHueKnob () {
-    let [hue, saturation, luminance] = this._value.toHSL();
+    let [hue, saturation, luminance] = this._value.toHSV();
     this._hueKnob.style.top = `${hue * 100}%`;
   }
 }
