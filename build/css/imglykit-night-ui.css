@@ -219,6 +219,14 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
+/*!
+ * Copyright (c) 2013-2014 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
 /* line 11, ../../src/css/night/generics/_transparent-knob.sass */
 .imglykit-container .imglykit-transparent-knob {
   -moz-border-radius: 50%;
@@ -467,52 +475,73 @@
   background: #353535;
   width: 240px;
   height: 240px;
-  bottom: 110px;
+  padding: 20px;
+  bottom: 115px;
   right: -80px;
+  position: absolute;
+  border-color: #353535;
 }
-/* line 29, ../../src/css/night/controls/_color-picker.sass */
+/* line 14, ../../src/css/night/_mixins.sass */
+.imglykit-container .imglykit-color-picker-overlay:before {
+  position: absolute;
+  content: "";
+  width: 0;
+  height: 0;
+  border-color: #353535;
+  top: 100%;
+  left: 50%;
+  margin-top: -1px;
+  margin-left: -15px;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-top: 15px solid #353535;
+  border-top-color: inherit;
+}
+/* line 32, ../../src/css/night/controls/_color-picker.sass */
 .imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-alpha-container {
   width: 200px;
   height: 30px;
   position: relative;
+  margin-bottom: 10px;
 }
-/* line 33, ../../src/css/night/controls/_color-picker.sass */
+/* line 37, ../../src/css/night/controls/_color-picker.sass */
 .imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-alpha-container canvas {
   background: black;
   position: absolute;
   left: 0;
   top: 0;
 }
-/* line 39, ../../src/css/night/controls/_color-picker.sass */
+/* line 43, ../../src/css/night/controls/_color-picker.sass */
 .imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-alpha-container .imglykit-transparent-knob {
   top: 50%;
 }
-/* line 42, ../../src/css/night/controls/_color-picker.sass */
+/* line 46, ../../src/css/night/controls/_color-picker.sass */
 .imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-hue-container {
   width: 30px;
   height: 160px;
   position: relative;
   float: left;
 }
-/* line 47, ../../src/css/night/controls/_color-picker.sass */
+/* line 51, ../../src/css/night/controls/_color-picker.sass */
 .imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-hue-container canvas {
   background: black;
   position: absolute;
   top: 0;
   left: 0;
 }
-/* line 53, ../../src/css/night/controls/_color-picker.sass */
+/* line 57, ../../src/css/night/controls/_color-picker.sass */
 .imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-hue-container .imglykit-transparent-knob {
   left: 50%;
 }
-/* line 56, ../../src/css/night/controls/_color-picker.sass */
+/* line 60, ../../src/css/night/controls/_color-picker.sass */
 .imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-saturation-container {
   width: 160px;
   height: 160px;
   position: relative;
   float: left;
+  margin-right: 10px;
 }
-/* line 61, ../../src/css/night/controls/_color-picker.sass */
+/* line 66, ../../src/css/night/controls/_color-picker.sass */
 .imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-saturation-container canvas {
   background: black;
   position: absolute;
