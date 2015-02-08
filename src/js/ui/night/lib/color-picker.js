@@ -21,6 +21,9 @@ class ColorPicker extends EventEmitter {
 
     this._ui = ui;
     this._element = element;
+    this._visible = false;
+
+    this._overlay = this._element.querySelector(".imglykit-color-picker-overlay");
     this._currentColorCanvas = this._element.querySelector(".imglykit-color-picker-color");
 
     this._alphaCanvas = this._element.querySelector("canvas.imglykit-color-picker-alpha");
@@ -45,7 +48,9 @@ class ColorPicker extends EventEmitter {
     this._onSaturationKnobDown = this._onSaturationKnobDown.bind(this);
     this._onSaturationKnobDrag = this._onSaturationKnobDrag.bind(this);
     this._onSaturationKnobUp = this._onSaturationKnobUp.bind(this);
+    this._onElementClick = this._onElementClick.bind(this);
 
+    this._handleToggle();
     this._handleAlphaKnob();
     this._handleHueKnob();
     this._handleSaturationKnob();
@@ -57,6 +62,31 @@ class ColorPicker extends EventEmitter {
    */
   static get template () {
     return fs.readFileSync(__dirname + "/../../../templates/night/generics/color-picker_control.jst", "utf-8");
+  }
+
+  /**
+   * Handles the toggling of the overlay
+   * @private
+   */
+  _handleToggle () {
+    this._element.addEventListener("click", this._onElementClick);
+  }
+
+  /**
+   * Gets called when the element has been clicked
+   * @param {Event} e
+   * @private
+   */
+  _onElementClick (e) {
+    if (e.target === this._element ||
+      e.target === this._currentColorCanvas) {
+        if (this._visible) {
+          this._overlay.classList.remove("imglykit-visible");
+        } else {
+          this._overlay.classList.add("imglykit-visible");
+        }
+        this._visible = !this._visible;
+    }
   }
 
   /**

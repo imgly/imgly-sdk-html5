@@ -28,6 +28,9 @@
     right: $controlsWidth / 2 - 120px
 
     @include arrow-lazy($direction: down, $size: 15px, $color: $lightBackgroundColor, $center: 50%, $margin: -1px, $pseudo: before)
+    display: none
+    &.imglykit-visible
+      display: block
 
     .imglykit-color-picker-alpha-container
       width: 200px
