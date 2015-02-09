@@ -469,6 +469,14 @@
   background: black;
 }
 /* line 19, ../../src/css/night/controls/_color-picker.sass */
+.imglykit-container .imglykit-color-picker .imglykit-transparent-knob {
+  pointer-events: none;
+}
+/* line 22, ../../src/css/night/controls/_color-picker.sass */
+.imglykit-container .imglykit-color-picker canvas {
+  cursor: pointer;
+}
+/* line 25, ../../src/css/night/controls/_color-picker.sass */
 .imglykit-container .imglykit-color-picker-overlay {
   position: absolute;
   cursor: default;
@@ -498,47 +506,47 @@
   border-top: 15px solid #353535;
   border-top-color: inherit;
 }
-/* line 32, ../../src/css/night/controls/_color-picker.sass */
+/* line 38, ../../src/css/night/controls/_color-picker.sass */
 .imglykit-container .imglykit-color-picker-overlay.imglykit-visible {
   display: block;
 }
-/* line 35, ../../src/css/night/controls/_color-picker.sass */
+/* line 41, ../../src/css/night/controls/_color-picker.sass */
 .imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-alpha-container {
   width: 200px;
   height: 30px;
   position: relative;
   margin-bottom: 10px;
 }
-/* line 40, ../../src/css/night/controls/_color-picker.sass */
+/* line 46, ../../src/css/night/controls/_color-picker.sass */
 .imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-alpha-container canvas {
   background: black;
   position: absolute;
   left: 0;
   top: 0;
 }
-/* line 46, ../../src/css/night/controls/_color-picker.sass */
+/* line 52, ../../src/css/night/controls/_color-picker.sass */
 .imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-alpha-container .imglykit-transparent-knob {
   top: 50%;
 }
-/* line 49, ../../src/css/night/controls/_color-picker.sass */
+/* line 55, ../../src/css/night/controls/_color-picker.sass */
 .imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-hue-container {
   width: 30px;
   height: 160px;
   position: relative;
   float: left;
 }
-/* line 54, ../../src/css/night/controls/_color-picker.sass */
+/* line 60, ../../src/css/night/controls/_color-picker.sass */
 .imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-hue-container canvas {
   background: black;
   position: absolute;
   top: 0;
   left: 0;
 }
-/* line 60, ../../src/css/night/controls/_color-picker.sass */
+/* line 66, ../../src/css/night/controls/_color-picker.sass */
 .imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-hue-container .imglykit-transparent-knob {
   left: 50%;
 }
-/* line 63, ../../src/css/night/controls/_color-picker.sass */
+/* line 69, ../../src/css/night/controls/_color-picker.sass */
 .imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-saturation-container {
   width: 160px;
   height: 160px;
@@ -546,7 +554,7 @@
   float: left;
   margin-right: 10px;
 }
-/* line 69, ../../src/css/night/controls/_color-picker.sass */
+/* line 75, ../../src/css/night/controls/_color-picker.sass */
 .imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-saturation-container canvas {
   background: black;
   position: absolute;

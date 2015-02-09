@@ -11,6 +11,7 @@
 import EventEmitter from "../../../lib/event-emitter";
 import Utils from "../../../lib/utils";
 import Color from "../../../lib/color";
+import Vector2 from "../../../lib/math/vector2";
 import _ from "lodash";
 
 let fs = require("fs");
@@ -39,15 +40,17 @@ class ColorPicker extends EventEmitter {
     this._transparencyImage.src = ui.helpers.assetPath("ui/night/transparency.png");
     this._transparencyImage.addEventListener("load", this._render.bind(this));
 
-    this._onAlphaKnobDown = this._onAlphaKnobDown.bind(this);
-    this._onAlphaKnobDrag = this._onAlphaKnobDrag.bind(this);
-    this._onAlphaKnobUp = this._onAlphaKnobUp.bind(this);
-    this._onHueKnobDown = this._onHueKnobDown.bind(this);
-    this._onHueKnobDrag = this._onHueKnobDrag.bind(this);
-    this._onHueKnobUp = this._onHueKnobUp.bind(this);
-    this._onSaturationKnobDown = this._onSaturationKnobDown.bind(this);
-    this._onSaturationKnobDrag = this._onSaturationKnobDrag.bind(this);
-    this._onSaturationKnobUp = this._onSaturationKnobUp.bind(this);
+    this._onAlphaCanvasDown = this._onAlphaCanvasDown.bind(this);
+    this._onAlphaCanvasDrag = this._onAlphaCanvasDrag.bind(this);
+    this._onAlphaCanvasUp = this._onAlphaCanvasUp.bind(this);
+    this._onHueCanvasDown = this._onHueCanvasDown.bind(this);
+    this._onHueCanvasDrag = this._onHueCanvasDrag.bind(this);
+    this._onHueCanvasUp = this._onHueCanvasUp.bind(this);
+
+    this._onSaturationCanvasDown = this._onSaturationCanvasDown.bind(this);
+    this._onSaturationCanvasDrag = this._onSaturationCanvasDrag.bind(this);
+    this._onSaturationCanvasUp = this._onSaturationCanvasUp.bind(this);
+
     this._onElementClick = this._onElementClick.bind(this);
 
     this._handleToggle();
@@ -95,6 +98,8 @@ class ColorPicker extends EventEmitter {
    */
   setValue (value) {
     this._value = value.clone();
+    let [h, s, v] = this._value.toHSV();
+    this._hsvColor = {h, s, v};
     this._render();
   }
 
@@ -147,8 +152,6 @@ class ColorPicker extends EventEmitter {
     gradient.addColorStop(1, this._value.toHex());
     context.fillStyle = gradient;
     context.fill();
-
-    this._updateAlphaKnob();
   }
 
   /**
@@ -170,8 +173,6 @@ class ColorPicker extends EventEmitter {
       context.lineTo(canvas.width, y);
       context.stroke();
     }
-
-    this._updateHueKnob();
   }
 
   /**
@@ -181,7 +182,6 @@ class ColorPicker extends EventEmitter {
   _renderSaturation () {
     let canvas = this._saturationCanvas;
     let context = canvas.getContext("2d");
-    let [h, s, v] = this._value.toHSV();
 
     let imageData = context.getImageData(0, 0, canvas.width, canvas.height);
 
@@ -190,7 +190,7 @@ class ColorPicker extends EventEmitter {
       let value = (canvas.height - y) / canvas.height;
       for (let x = 0; x < canvas.width; x++) {
         let saturation = x / canvas.width;
-        color.fromHSV(h, saturation, value);
+        color.fromHSV(this._hsvColor.h, saturation, value);
         let {r, g, b, a} = color;
 
         let index = (y * canvas.width + x) * 4;
@@ -203,8 +203,6 @@ class ColorPicker extends EventEmitter {
     }
 
     context.putImageData(imageData, 0, 0);
-
-    this._updateSaturationKnob();
   }
 
   /**
@@ -212,8 +210,8 @@ class ColorPicker extends EventEmitter {
    * @private
    */
   _handleAlphaKnob () {
-    this._alphaKnob.addEventListener("mousedown", this._onAlphaKnobDown);
-    this._alphaKnob.addEventListener("touchstart", this._onAlphaKnobDown);
+    this._alphaCanvas.addEventListener("mousedown", this._onAlphaCanvasDown);
+    this._alphaCanvas.addEventListener("touchstart", this._onAlphaCanvasDown);
   }
 
   /**
@@ -221,17 +219,16 @@ class ColorPicker extends EventEmitter {
    * @param {Event} e
    * @private
    */
-  _onAlphaKnobDown (e) {
+  _onAlphaCanvasDown (e) {
     e.preventDefault();
 
-    this._initialMousePosition = Utils.getEventPosition(e);
-    this._alphaBeforeDrag = this._value.a;
+    this._onAlphaCanvasDrag(e);
 
-    document.addEventListener("mousemove", this._onAlphaKnobDrag);
-    document.addEventListener("touchmove", this._onAlphaKnobDrag);
+    document.addEventListener("mousemove", this._onAlphaCanvasDrag);
+    document.addEventListener("touchmove", this._onAlphaCanvasDrag);
 
-    document.addEventListener("mouseup", this._onAlphaKnobUp);
-    document.addEventListener("touchend", this._onAlphaKnobUp);
+    document.addEventListener("mouseup", this._onAlphaCanvasUp);
+    document.addEventListener("touchend", this._onAlphaCanvasUp);
   }
 
   /**
@@ -239,26 +236,24 @@ class ColorPicker extends EventEmitter {
    * @param {Event} e
    * @private
    */
-  _onAlphaKnobDrag (e) {
+  _onAlphaCanvasDrag (e) {
     e.preventDefault();
 
+    // Calculate relative mouse position on canvas
+    let canvas = this._alphaCanvas;
+    let canvasSize = new Vector2(canvas.width, canvas.height);
     let mousePosition = Utils.getEventPosition(e);
-    let diff = mousePosition.clone()
-      .subtract(this._initialMousePosition);
+    let { left, top } = canvas.getBoundingClientRect();
+    let offset = new Vector2(left, top);
+    let relativePosition = mousePosition.subtract(offset);
+    relativePosition.clamp(new Vector2(0, 0), canvasSize);
 
-    let canvasWidth = this._alphaCanvas.width;
-    let alphaPerPixel = 1 / canvasWidth;
+    // Update knob css positioning
+    this._alphaKnob.style.left = `${relativePosition.x}px`;
 
-    let alpha = this._alphaBeforeDrag + alphaPerPixel * diff.x;
-    alpha = Math.max(0, Math.min(alpha, 1));
-    this._value.a = alpha;
-
-    let knobX = canvasWidth * alpha;
-    knobX = Math.max(0, Math.min(knobX, canvasWidth));
-    this._alphaKnob.style.left = `${knobX}px`;
-
-    this.emit("update", this._value);
-    this._renderCurrentColor();
+    // Update alpha value
+    this._value.a = relativePosition.x / canvasSize.x;
+    this._updateColor();
   }
 
   /**
@@ -266,21 +261,12 @@ class ColorPicker extends EventEmitter {
    * @param {Event} e
    * @private
    */
-  _onAlphaKnobUp (e) {
-    document.removeEventListener("mousemove", this._onAlphaKnobDrag);
-    document.removeEventListener("touchmove", this._onAlphaKnobDrag);
+  _onAlphaCanvasUp (e) {
+    document.removeEventListener("mousemove", this._onAlphaCanvasDrag);
+    document.removeEventListener("touchmove", this._onAlphaCanvasDrag);
 
-    document.removeEventListener("mouseup", this._onAlphaKnobUp);
-    document.removeEventListener("touchend", this._onAlphaKnobUp);
-  }
-
-  /**
-   * Updates the alpha knob position
-   * @private
-   */
-  _updateAlphaKnob () {
-    let left = (this._value.a * 100).toFixed(2);
-    this._alphaKnob.style.left = `${left}%`;
+    document.removeEventListener("mouseup", this._onAlphaCanvasUp);
+    document.removeEventListener("touchend", this._onAlphaCanvasUp);
   }
 
   /**
@@ -288,26 +274,25 @@ class ColorPicker extends EventEmitter {
    * @private
    */
   _handleHueKnob () {
-    this._hueKnob.addEventListener("mousedown", this._onHueKnobDown);
-    this._hueKnob.addEventListener("touchstart", this._onHueKnobDown);
+    this._hueCanvas.addEventListener("mousedown", this._onHueCanvasDown);
+    this._hueCanvas.addEventListener("touchstart", this._onHueCanvasDown);
   }
 
   /**
-   * Gets called when the user clicks the hue knob
+   * Gets called when the user clicks the canvas knob
    * @param {Event} e
    * @private
    */
-  _onHueKnobDown (e) {
+  _onHueCanvasDown (e) {
     e.preventDefault();
 
-    this._initialMousePosition = Utils.getEventPosition(e);
-    this._hueBeforeDrag = this._value.toHSV()[0];
+    this._onHueCanvasDrag(e);
 
-    document.addEventListener("mousemove", this._onHueKnobDrag);
-    document.addEventListener("touchmove", this._onHueKnobDrag);
+    document.addEventListener("mousemove", this._onHueCanvasDrag);
+    document.addEventListener("touchmove", this._onHueCanvasDrag);
 
-    document.addEventListener("mouseup", this._onHueKnobUp);
-    document.addEventListener("touchend", this._onHueKnobUp);
+    document.addEventListener("mouseup", this._onHueCanvasUp);
+    document.addEventListener("touchend", this._onHueCanvasUp);
   }
 
   /**
@@ -315,23 +300,26 @@ class ColorPicker extends EventEmitter {
    * @param {Event} e
    * @private
    */
-  _onHueKnobDrag (e) {
+  _onHueCanvasDrag (e) {
     e.preventDefault();
 
+    let canvas = this._hueCanvas;
+    let canvasSize = new Vector2(canvas.width, canvas.height);
+
+    // Calculate relative mouse position on canvas
     let mousePosition = Utils.getEventPosition(e);
-    let diff = mousePosition.clone()
-      .subtract(this._initialMousePosition);
+    let { left, top } = canvas.getBoundingClientRect();
+    let offset = new Vector2(left, top);
+    let relativePosition = mousePosition.subtract(offset);
+    relativePosition.clamp(new Vector2(0, 0), canvasSize);
 
-    let canvasHeight = this._hueCanvas.height;
-    let huePerPixel = 1 / canvasHeight;
+    // Update saturaiton knob css positioning
+    this._hueKnob.style.top = `${relativePosition.y}px`;
 
-    let hue = this._hueBeforeDrag + huePerPixel * diff.y;
-    hue = Math.max(0, Math.min(hue, 0.99));
-
-    let [h, s, v] = this._value.toHSV();
-    this._value.fromHSV(hue, s, v);
-    this.emit("update", this._value);
-    this._render();
+    // Update saturation and value
+    relativePosition.divide(canvasSize);
+    this._hsvColor.h = relativePosition.y;
+    this._updateColor();
   }
 
   /**
@@ -339,21 +327,12 @@ class ColorPicker extends EventEmitter {
    * @param {Event} e
    * @private
    */
-  _onHueKnobUp (e) {
-    document.removeEventListener("mousemove", this._onHueKnobDrag);
-    document.removeEventListener("touchmove", this._onHueKnobDrag);
+  _onHueCanvasUp (e) {
+    document.removeEventListener("mousemove", this._onHueCanvasDrag);
+    document.removeEventListener("touchmove", this._onHueCanvasDrag);
 
-    document.removeEventListener("mouseup", this._onHueKnobUp);
-    document.removeEventListener("touchend", this._onHueKnobUp);
-  }
-
-  /**
-   * Updates the spectrum knob position
-   * @private
-   */
-  _updateHueKnob () {
-    let [hue, saturation, value] = this._value.toHSV();
-    this._hueKnob.style.top = `${hue * 100}%`;
+    document.removeEventListener("mouseup", this._onHueCanvasUp);
+    document.removeEventListener("touchend", this._onHueCanvasUp);
   }
 
   /**
@@ -361,28 +340,25 @@ class ColorPicker extends EventEmitter {
    * @private
    */
   _handleSaturationKnob () {
-    this._saturationKnob.addEventListener("mousedown", this._onSaturationKnobDown);
-    this._saturationKnob.addEventListener("touchstart", this._onSaturationKnobDown);
+    this._saturationCanvas.addEventListener("mousedown", this._onSaturationCanvasDown);
+    this._saturationCanvas.addEventListener("touchstart", this._onSaturationCanvasDown);
   }
 
   /**
-   * Gets called when the user clicks the saturation knob
+   * Gets called when the user clicks the saturation canvas
    * @param {Event} e
    * @private
    */
-  _onSaturationKnobDown (e) {
+  _onSaturationCanvasDown (e) {
     e.preventDefault();
 
-    this._initialMousePosition = Utils.getEventPosition(e);
-    let [h, s, v] = this._value.toHSV();
-    this._saturationBeforeDrag = s;
-    this._valueBeforeDrag = v;
+    this._onSaturationCanvasDrag(e);
 
-    document.addEventListener("mousemove", this._onSaturationKnobDrag);
-    document.addEventListener("touchmove", this._onSaturationKnobDrag);
+    document.addEventListener("mousemove", this._onSaturationCanvasDrag);
+    document.addEventListener("touchmove", this._onSaturationCanvasDrag);
 
-    document.addEventListener("mouseup", this._onSaturationKnobUp);
-    document.addEventListener("touchend", this._onSaturationKnobUp);
+    document.addEventListener("mouseup", this._onSaturationCanvasUp);
+    document.addEventListener("touchend", this._onSaturationCanvasUp);
   }
 
   /**
@@ -390,28 +366,28 @@ class ColorPicker extends EventEmitter {
    * @param {Event} e
    * @private
    */
-  _onSaturationKnobDrag (e) {
+  _onSaturationCanvasDrag (e) {
     e.preventDefault();
 
-    let mousePosition = Utils.getEventPosition(e);
-    let diff = mousePosition.clone()
-      .subtract(this._initialMousePosition);
-
     let canvas = this._saturationCanvas;
-    let saturationPerPixel = 1 / canvas.width;
-    let brightnessPerPixel = 1 / canvas.height;
+    let canvasSize = new Vector2(canvas.width, canvas.height);
 
-    let saturation = this._saturationBeforeDrag + diff.x * saturationPerPixel;
-    let brightness = this._valueBeforeDrag - diff.y * brightnessPerPixel;
+    // Calculate relative mouse position on canvas
+    let mousePosition = Utils.getEventPosition(e);
+    let { left, top } = canvas.getBoundingClientRect();
+    let offset = new Vector2(left, top);
+    let relativePosition = mousePosition.subtract(offset);
+    relativePosition.clamp(0, canvas.width);
 
-    saturation = Math.max(0.01, Math.min(saturation, 1));
-    brightness = Math.max(0.01, Math.min(brightness, 1));
+    // Update saturaiton knob css positioning
+    this._saturationKnob.style.left = `${relativePosition.x}px`;
+    this._saturationKnob.style.top = `${relativePosition.y}px`;
 
-    let [h, s, v] = this._value.toHSV();
-    this._value.fromHSV(h, saturation, brightness);
-
-    this.emit("update", this._value);
-    this._render();
+    // Update saturation and value
+    relativePosition.divide(canvasSize);
+    this._hsvColor.s = relativePosition.x;
+    this._hsvColor.v = 1 - relativePosition.y;
+    this._updateColor();
   }
 
   /**
@@ -419,22 +395,23 @@ class ColorPicker extends EventEmitter {
    * @param {Event} e
    * @private
    */
-  _onSaturationKnobUp (e) {
-    document.removeEventListener("mousemove", this._onSaturationKnobDrag);
-    document.removeEventListener("touchmove", this._onSaturationKnobDrag);
+  _onSaturationCanvasUp (e) {
+    document.removeEventListener("mousemove", this._onSaturationCanvasDrag);
+    document.removeEventListener("touchmove", this._onSaturationCanvasDrag);
 
-    document.removeEventListener("mouseup", this._onSaturationKnobUp);
-    document.removeEventListener("touchend", this._onSaturationKnobUp);
+    document.removeEventListener("mouseup", this._onSaturationCanvasUp);
+    document.removeEventListener("touchend", this._onSaturationCanvasUp);
   }
 
   /**
-   * Updates the saturation knob position
+   * Updates the attached color, emits the `update` event and triggers
+   * a render
    * @private
    */
-  _updateSaturationKnob () {
-    let [hue, saturation, value] = this._value.toHSV();
-    this._saturationKnob.style.left = `${saturation * 100}%`;
-    this._saturationKnob.style.top = `${100 - value * 100}%`;
+  _updateColor () {
+    this._value.fromHSV(this._hsvColor.h, this._hsvColor.s, this._hsvColor.v);
+    this.emit("update", this._value);
+    this._render();
   }
 }
 
