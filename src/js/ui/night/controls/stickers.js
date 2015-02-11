@@ -41,9 +41,11 @@ class StickersControl extends Control {
     // we're editing
     this._operation.isIdentity = true;
 
+    // Remember zoom level and zoom to fit the canvas
     this._initialZoomLevel = this._ui.canvas.zoomLevel;
     this._ui.canvas.zoomToFit();
 
+    // Find DOM elements
     this._container = this._canvasControls.querySelector(".imglykit-canvas-stickers");
     this._stickerImage = this._canvasControls.querySelector("img");
     this._stickerImage.addEventListener("load", () => {
@@ -51,6 +53,28 @@ class StickersControl extends Control {
     });
     this._knob = this._canvasControls.querySelector("div.imglykit-knob");
 
+    // Mouse event callbacks bound to the class context
+    this._onImageDown = this._onImageDown.bind(this);
+    this._onImageDrag = this._onImageDrag.bind(this);
+    this._onImageUp = this._onImageUp.bind(this);
+    this._onKnobDown = this._onKnobDown.bind(this);
+    this._onKnobDrag = this._onKnobDrag.bind(this);
+    this._onKnobUp = this._onKnobUp.bind(this);
+
+    if (!this._initialIdentity) {
+      this._applyInitialSettings();
+    }
+
+    this._handleListItems();
+    this._handleImage();
+    this._handleKnob();
+  }
+
+  /**
+   * Handles the list item click events
+   * @private
+   */
+  _handleListItems () {
     let listItems = this._controls.querySelectorAll("li");
     this._listItems = Array.prototype.slice.call(listItems);
 
@@ -67,22 +91,6 @@ class StickersControl extends Control {
           this._onListItemClick(listItem);
       }
       i++;
-    }
-
-    this._onImageDown = this._onImageDown.bind(this);
-    this._onImageDrag = this._onImageDrag.bind(this);
-    this._onImageUp = this._onImageUp.bind(this);
-
-    this._handleImage();
-
-    this._onKnobDown = this._onKnobDown.bind(this);
-    this._onKnobDrag = this._onKnobDrag.bind(this);
-    this._onKnobUp = this._onKnobUp.bind(this);
-
-    this._handleKnob();
-
-    if (!this._initialIdentity) {
-      this._applyInitialSettings();
     }
   }
 
