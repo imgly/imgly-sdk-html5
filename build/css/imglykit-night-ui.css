@@ -375,6 +375,21 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
+/* line 11, ../../src/css/night/controls/_stickers.sass */
+.imglykit-container .imglykit-controls-stickers ul.imglykit-controls-list li {
+  background-size: 42px;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+/*!
+ * Copyright (c) 2013-2014 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
 /* line 10, ../../src/css/night/controls/_slider.sass */
 .imglykit-container .imglykit-slider {
   display: table;
