@@ -227,6 +227,27 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
+/* line 11, ../../src/css/night/generics/_knob.sass */
+.imglykit-container .imglykit-knob {
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+  position: absolute;
+  background: white;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+/*!
+ * Copyright (c) 2013-2014 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
 /* line 11, ../../src/css/night/generics/_transparent-knob.sass */
 .imglykit-container .imglykit-transparent-knob {
   -moz-border-radius: 50%;
@@ -380,6 +401,26 @@
   background-size: 42px;
   background-repeat: no-repeat;
   background-position: center center;
+}
+
+/*!
+ * Copyright (c) 2013-2014 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+/* line 10, ../../src/css/night/controls/_stickers_canvas.sass */
+.imglykit-container .imglykit-canvas-stickers {
+  position: relative;
+  display: inline-block;
+  cursor: move;
+}
+/* line 15, ../../src/css/night/controls/_stickers_canvas.sass */
+.imglykit-container .imglykit-canvas-stickers .imglykit-knob {
+  bottom: 0;
+  right: 0;
 }
 
 /*!

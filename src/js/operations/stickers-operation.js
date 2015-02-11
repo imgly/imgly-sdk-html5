@@ -25,7 +25,7 @@ class StickersOperation extends Operation {
     this.availableOptions = {
       sticker: { type: "string", required: true },
       position: { type: "vector2", default: new Vector2(0, 0) },
-      size: { type: "vector2" }
+      size: { type: "vector2", default: new Vector2(0, 0) }
     }
 
     /**
@@ -229,8 +229,7 @@ class StickersOperation extends Operation {
    */
   _loadSticker () {
     var isBrowser = typeof window !== "undefined";
-    let sticker = this._stickers[this._options.sticker];
-    let stickerPath = this._kit.getAssetPath(sticker);
+    let stickerPath = this._stickers[this._options.sticker];
     if (isBrowser) {
       return this._loadImageBrowser(stickerPath);
     } else {

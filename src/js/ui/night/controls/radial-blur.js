@@ -195,7 +195,7 @@ class RadialBlurControls extends Control {
    */
   _onBack () {
     if (!this._initialIdentity) {
-      this._operation.set(this._initialOptions);
+      this._operation.set(this._initialSettings);
     } else {
       this._operation.isIdentity = this._initialIdentity;
       this._ui.canvas.render();

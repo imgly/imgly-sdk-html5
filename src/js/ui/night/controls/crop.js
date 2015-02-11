@@ -453,8 +453,6 @@ class CropControls extends Control {
    * @override
    */
   _onBack () {
-    super();
-
     this._ui.canvas.setZoomLevel(this._initialZoomLevel, false);
     this._operation.set({
       start: this._initialStart,
