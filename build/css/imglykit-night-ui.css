@@ -412,13 +412,22 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 /* line 10, ../../src/css/night/controls/_stickers_canvas.sass */
-.imglykit-container .imglykit-canvas-stickers {
+.imglykit-container .imglykit-canvas-stickers-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+/* line 18, ../../src/css/night/controls/_stickers_canvas.sass */
+.imglykit-container .imglykit-canvas-stickers-container .imglykit-canvas-stickers {
   position: relative;
   display: inline-block;
   cursor: move;
 }
-/* line 15, ../../src/css/night/controls/_stickers_canvas.sass */
-.imglykit-container .imglykit-canvas-stickers .imglykit-knob {
+/* line 23, ../../src/css/night/controls/_stickers_canvas.sass */
+.imglykit-container .imglykit-canvas-stickers-container .imglykit-canvas-stickers .imglykit-knob {
   bottom: 0;
   right: 0;
 }

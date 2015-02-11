@@ -201,12 +201,6 @@ class StickersControl extends Control {
     size.x += diff.x;
     size.y = size.x * ratio;
 
-    let minSize = new Vector2(100, ratio * 100);
-    let maxSize = this._ui.canvas.size.clone()
-      .subtract(this._position);
-    maxSize.y = maxSize.x * ratio;
-    size.clamp(minSize, maxSize);
-
     this._size.copy(size);
 
     this._applySettings();
@@ -266,10 +260,6 @@ class StickersControl extends Control {
 
     let position = this._initialPosition.clone();
     position.add(diff);
-
-    let maxPosition = this._ui.canvas.size.clone()
-      .subtract(this._size);
-    position.clamp(new Vector2(0, 0), maxPosition);
 
     this._position.copy(position);
 
