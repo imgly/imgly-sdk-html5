@@ -100,7 +100,56 @@ class ColorPicker extends EventEmitter {
     this._value = value.clone();
     let [h, s, v] = this._value.toHSV();
     this._hsvColor = {h, s, v};
+    this._positionKnobs();
     this._render();
+  }
+
+  /**
+   * Updates the knob positions to represent the current HSV color
+   * @private
+   */
+  _positionKnobs () {
+    this._positionAlphaKnob();
+    this._positionHueKnob();
+    this._positionSaturationKnob();
+  }
+
+  /**
+   * Positions the alpha knob according to the current alpha value
+   * @private
+   */
+  _positionAlphaKnob () {
+    let canvas = this._alphaCanvas;
+    let canvasSize = new Vector2(canvas.width, canvas.height);
+
+    let left = this._value.a * canvasSize.x;
+    this._alphaKnob.style.left = `${left}px`;
+  }
+
+  /**
+   * Positions the hue knob according to the current hue value
+   * @private
+   */
+  _positionHueKnob () {
+    let canvas = this._hueCanvas;
+    let canvasSize = new Vector2(canvas.width, canvas.height);
+
+    let top = this._hsvColor.h * canvasSize.y;
+    this._hueKnob.style.top = `${top}px`;
+  }
+
+  /**
+   * Positions the saturation knob according to the current saturation value
+   * @private
+   */
+  _positionSaturationKnob () {
+    let canvas = this._saturationCanvas;
+    let canvasSize = new Vector2(canvas.width, canvas.height);
+
+    let left = this._hsvColor.s * canvasSize.x;
+    this._saturationKnob.style.left = `${left}px`;
+    let top = (1 - this._hsvColor.v) * canvasSize.y;
+    this._saturationKnob.style.top = `${top}px`;
   }
 
   /**
