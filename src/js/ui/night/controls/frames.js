@@ -9,9 +9,8 @@
  */
 
 import Control from "./control";
-import Slider from "../lib/slider";
+import SimpleSlider from "../lib/simple-slider";
 import ColorPicker from "../lib/color-picker";
-import Color from "../../../lib/color";
 let fs = require("fs");
 
 class FramesControls extends Control {
@@ -23,7 +22,7 @@ class FramesControls extends Control {
 
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/frames_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;
-    this._partialTemplates.push(Slider.template);
+    this._partialTemplates.push(SimpleSlider.template);
     this._partialTemplates.push(ColorPicker.template);
   }
 
@@ -47,7 +46,7 @@ class FramesControls extends Control {
 
     // Init slider
     let sliderElement = this._controls.querySelector(".imglykit-slider");
-    this._slider = new Slider(sliderElement, {
+    this._slider = new SimpleSlider(sliderElement, {
       minValue: 0.0,
       maxValue: 0.5
     });
