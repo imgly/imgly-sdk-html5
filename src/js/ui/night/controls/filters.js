@@ -37,14 +37,6 @@ class FiltersControls extends Control {
         this._onListItemClick(listItem);
       });
     }
-
-    // Back button
-    let backButton = this._controls.querySelector(".imglykit-controls-back");
-    backButton.addEventListener("click", this._onBackButtonClick.bind(this));
-
-    // Done button
-    let doneButton = this._controls.querySelector(".imglykit-controls-done");
-    doneButton.addEventListener("click", this._onDoneButtonClick.bind(this));
   }
 
   /**

@@ -65,35 +65,35 @@ class FiltersOperation extends Operation {
    * @private
    */
   _registerFilters () {
-    this._registerFilter(require("./filters/identity-filter"));
-    this._registerFilter(require("./filters/k1-filter"));
-    this._registerFilter(require("./filters/k2-filter"));
-    this._registerFilter(require("./filters/k6-filter"));
-    this._registerFilter(require("./filters/kdynamic-filter"));
-    this._registerFilter(require("./filters/fridge-filter"));
-    this._registerFilter(require("./filters/breeze-filter"));
-    this._registerFilter(require("./filters/orchid-filter"));
-    this._registerFilter(require("./filters/chest-filter"));
-    this._registerFilter(require("./filters/front-filter"));
-    this._registerFilter(require("./filters/fixie-filter"));
-    this._registerFilter(require("./filters/x400-filter"));
-    this._registerFilter(require("./filters/bw-filter"));
-    this._registerFilter(require("./filters/bwhard-filter"));
-    this._registerFilter(require("./filters/lenin-filter"));
-    this._registerFilter(require("./filters/quozi-filter"));
-    this._registerFilter(require("./filters/pola669-filter"));
-    this._registerFilter(require("./filters/pola-filter"));
-    this._registerFilter(require("./filters/food-filter"));
-    this._registerFilter(require("./filters/glam-filter"));
-    this._registerFilter(require("./filters/celsius-filter"));
-    this._registerFilter(require("./filters/texas-filter"));
-    this._registerFilter(require("./filters/morning-filter"));
-    this._registerFilter(require("./filters/lomo-filter"));
-    this._registerFilter(require("./filters/gobblin-filter"));
-    this._registerFilter(require("./filters/mellow-filter"));
-    this._registerFilter(require("./filters/sunny-filter"));
-    this._registerFilter(require("./filters/a15-filter"));
-    this._registerFilter(require("./filters/semired-filter"));
+    this.registerFilter(require("./filters/identity-filter"));
+    this.registerFilter(require("./filters/k1-filter"));
+    this.registerFilter(require("./filters/k2-filter"));
+    this.registerFilter(require("./filters/k6-filter"));
+    this.registerFilter(require("./filters/kdynamic-filter"));
+    this.registerFilter(require("./filters/fridge-filter"));
+    this.registerFilter(require("./filters/breeze-filter"));
+    this.registerFilter(require("./filters/orchid-filter"));
+    this.registerFilter(require("./filters/chest-filter"));
+    this.registerFilter(require("./filters/front-filter"));
+    this.registerFilter(require("./filters/fixie-filter"));
+    this.registerFilter(require("./filters/x400-filter"));
+    this.registerFilter(require("./filters/bw-filter"));
+    this.registerFilter(require("./filters/bwhard-filter"));
+    this.registerFilter(require("./filters/lenin-filter"));
+    this.registerFilter(require("./filters/quozi-filter"));
+    this.registerFilter(require("./filters/pola669-filter"));
+    this.registerFilter(require("./filters/pola-filter"));
+    this.registerFilter(require("./filters/food-filter"));
+    this.registerFilter(require("./filters/glam-filter"));
+    this.registerFilter(require("./filters/celsius-filter"));
+    this.registerFilter(require("./filters/texas-filter"));
+    this.registerFilter(require("./filters/morning-filter"));
+    this.registerFilter(require("./filters/lomo-filter"));
+    this.registerFilter(require("./filters/gobblin-filter"));
+    this.registerFilter(require("./filters/mellow-filter"));
+    this.registerFilter(require("./filters/sunny-filter"));
+    this.registerFilter(require("./filters/a15-filter"));
+    this.registerFilter(require("./filters/semired-filter"));
   }
 
   /**
@@ -101,7 +101,7 @@ class FiltersOperation extends Operation {
    * @param  {class} filter
    * @private
    */
-  _registerFilter (filter) {
+  registerFilter (filter) {
     this._filters[filter.identifier] = filter;
   }
 
