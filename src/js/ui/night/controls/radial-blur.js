@@ -11,7 +11,7 @@
 import Control from "./control";
 import Vector2 from "../../../lib/math/vector2";
 import Utils from "../../../lib/utils";
-import Slider from "../lib/slider";
+import SimpleSlider from "../lib/simple-slider";
 let fs = require("fs");
 
 class RadialBlurControls extends Control {
@@ -27,7 +27,7 @@ class RadialBlurControls extends Control {
     let canvasControlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/radial-blur_canvas.jst", "utf-8");
     this._canvasControlsTemplate = canvasControlsTemplate;
 
-    this._partialTemplates.push(Slider.template);
+    this._partialTemplates.push(SimpleSlider.template);
   }
 
   /**
@@ -69,7 +69,7 @@ class RadialBlurControls extends Control {
     let canvasSize = this._ui.canvas.size;
 
     let blurRadiusSlider = this._controls.querySelector("#imglykit-blur-radius-slider");
-    this._blurRadiusSlider = new Slider(blurRadiusSlider, {
+    this._blurRadiusSlider = new SimpleSlider(blurRadiusSlider, {
       minValue: 0,
       maxValue: 40
     });
@@ -77,7 +77,7 @@ class RadialBlurControls extends Control {
     this._blurRadiusSlider.setValue(this._initialSettings.blurRadius);
 
     let gradientRadiusSlider = this._controls.querySelector("#imglykit-gradient-radius-slider");
-    this._gradientRadiusSlider = new Slider(gradientRadiusSlider, {
+    this._gradientRadiusSlider = new SimpleSlider(gradientRadiusSlider, {
       minValue: 1,
       maxValue: Math.max(canvasSize.y, canvasSize.x)
     });
