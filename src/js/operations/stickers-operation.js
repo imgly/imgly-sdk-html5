@@ -29,6 +29,13 @@ class StickersOperation extends Operation {
     }
 
     /**
+     * The registered stickers
+     * @type {Object.<string, class>}
+     */
+    this._stickers = {};
+    this._registerStickers();
+
+    /**
      * The texture index used for the sticker
      * @type {Number}
      * @private
@@ -93,6 +100,39 @@ class StickersOperation extends Operation {
           return self._renderCanvas(renderer, image);
         }
       });
+  }
+
+  /**
+   * Registers the default stickers
+   * @private
+   */
+  _registerStickers () {
+    this.registerSticker("glasses-nerd", "stickers/sticker-glasses-nerd.png");
+    this.registerSticker("glasses-normal", "stickers/sticker-glasses-normal.png");
+    this.registerSticker("glasses-normal", "stickers/sticker-glasses-normal.png");
+    this.registerSticker("glasses-shutter-green", "stickers/sticker-glasses-shutter-green.png");
+    this.registerSticker("glasses-shutter-yellow", "stickers/sticker-glasses-shutter-yellow.png");
+    this.registerSticker("glasses-sun", "stickers/sticker-glasses-sun.png");
+    this.registerSticker("hat-cap", "stickers/sticker-hat-cap.png");
+    this.registerSticker("hat-cylinder", "stickers/sticker-hat-cylinder.png");
+    this.registerSticker("hat-party", "stickers/sticker-hat-party.png");
+    this.registerSticker("hat-sheriff", "stickers/sticker-hat-sheriff.png");
+    this.registerSticker("heart", "stickers/sticker-heart.png");
+    this.registerSticker("mustache-long", "stickers/sticker-mustache-long.png");
+    this.registerSticker("mustache1", "stickers/sticker-mustache1.png");
+    this.registerSticker("mustache2", "stickers/sticker-mustache2.png");
+    this.registerSticker("mustache3", "stickers/sticker-mustache3.png");
+    this.registerSticker("pipe", "stickers/sticker-pipe.png");
+    this.registerSticker("snowflake", "stickers/sticker-snowflake.png");
+    this.registerSticker("star", "stickers/sticker-star.png");
+  }
+
+  /**
+   * Registers the sticker with the given identifier and path
+   * @private
+   */
+  registerSticker (identifier, path) {
+    this._stickers[identifier] = path;
   }
 
   /**
@@ -189,11 +229,12 @@ class StickersOperation extends Operation {
    */
   _loadSticker () {
     var isBrowser = typeof window !== "undefined";
-    var stickerFileName = "stickers/sticker-" + this._options.sticker + ".png";
+    let sticker = this._stickers[this._options.sticker];
+    let stickerPath = this._kit.getAssetPath(sticker);
     if (isBrowser) {
-      return this._loadImageBrowser(stickerFileName);
+      return this._loadImageBrowser(stickerPath);
     } else {
-      return this._loadImageNode(stickerFileName);
+      return this._loadImageNode(stickerPath);
     }
   }
 
@@ -238,6 +279,14 @@ class StickersOperation extends Operation {
         image.src = buffer;
         return image;
       });
+  }
+
+  /**
+   * The registered stickers
+   * @type {Object.<String,String>}
+   */
+  get stickers () {
+    return this._stickers;
   }
 }
 
