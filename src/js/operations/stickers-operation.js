@@ -33,7 +33,7 @@ class StickersOperation extends Operation {
      * @type {Object.<string, class>}
      */
     this._stickers = {};
-    this._registerStickers();
+    this._addStickers();
 
     /**
      * The texture index used for the sticker
@@ -106,32 +106,32 @@ class StickersOperation extends Operation {
    * Registers the default stickers
    * @private
    */
-  _registerStickers () {
-    this.registerSticker("glasses-nerd", "stickers/sticker-glasses-nerd.png");
-    this.registerSticker("glasses-normal", "stickers/sticker-glasses-normal.png");
-    this.registerSticker("glasses-normal", "stickers/sticker-glasses-normal.png");
-    this.registerSticker("glasses-shutter-green", "stickers/sticker-glasses-shutter-green.png");
-    this.registerSticker("glasses-shutter-yellow", "stickers/sticker-glasses-shutter-yellow.png");
-    this.registerSticker("glasses-sun", "stickers/sticker-glasses-sun.png");
-    this.registerSticker("hat-cap", "stickers/sticker-hat-cap.png");
-    this.registerSticker("hat-cylinder", "stickers/sticker-hat-cylinder.png");
-    this.registerSticker("hat-party", "stickers/sticker-hat-party.png");
-    this.registerSticker("hat-sheriff", "stickers/sticker-hat-sheriff.png");
-    this.registerSticker("heart", "stickers/sticker-heart.png");
-    this.registerSticker("mustache-long", "stickers/sticker-mustache-long.png");
-    this.registerSticker("mustache1", "stickers/sticker-mustache1.png");
-    this.registerSticker("mustache2", "stickers/sticker-mustache2.png");
-    this.registerSticker("mustache3", "stickers/sticker-mustache3.png");
-    this.registerSticker("pipe", "stickers/sticker-pipe.png");
-    this.registerSticker("snowflake", "stickers/sticker-snowflake.png");
-    this.registerSticker("star", "stickers/sticker-star.png");
+  _addStickers () {
+    this.addSticker("glasses-nerd", "stickers/sticker-glasses-nerd.png");
+    this.addSticker("glasses-normal", "stickers/sticker-glasses-normal.png");
+    this.addSticker("glasses-normal", "stickers/sticker-glasses-normal.png");
+    this.addSticker("glasses-shutter-green", "stickers/sticker-glasses-shutter-green.png");
+    this.addSticker("glasses-shutter-yellow", "stickers/sticker-glasses-shutter-yellow.png");
+    this.addSticker("glasses-sun", "stickers/sticker-glasses-sun.png");
+    this.addSticker("hat-cap", "stickers/sticker-hat-cap.png");
+    this.addSticker("hat-cylinder", "stickers/sticker-hat-cylinder.png");
+    this.addSticker("hat-party", "stickers/sticker-hat-party.png");
+    this.addSticker("hat-sheriff", "stickers/sticker-hat-sheriff.png");
+    this.addSticker("heart", "stickers/sticker-heart.png");
+    this.addSticker("mustache-long", "stickers/sticker-mustache-long.png");
+    this.addSticker("mustache1", "stickers/sticker-mustache1.png");
+    this.addSticker("mustache2", "stickers/sticker-mustache2.png");
+    this.addSticker("mustache3", "stickers/sticker-mustache3.png");
+    this.addSticker("pipe", "stickers/sticker-pipe.png");
+    this.addSticker("snowflake", "stickers/sticker-snowflake.png");
+    this.addSticker("star", "stickers/sticker-star.png");
   }
 
   /**
    * Registers the sticker with the given identifier and path
    * @private
    */
-  registerSticker (identifier, path) {
+  addSticker (identifier, path) {
     this._stickers[identifier] = path;
   }
 
