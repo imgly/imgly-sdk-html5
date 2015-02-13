@@ -28,9 +28,10 @@ class TextOperation extends Operation {
       fontWeight: { type: "string", default: "normal" },
       alignment: { type: "string", default: "left", available: ["left", "center", "right"] },
       verticalAlignment: { type: "string", default: "top", available: ["top", "center", "bottom"] },
-      color: { type: "color", default: new Color(0, 0, 0, 1) },
+      color: { type: "color", default: new Color(1, 1, 1, 1) },
       position: { type: "vector2", default: new Vector2(0, 0) },
-      text: { type: "string", required: true }
+      text: { type: "string", required: true },
+      maxWidth: { type: "number", default: 1.0 }
     };
 
     /**
@@ -188,6 +189,10 @@ class TextOperation extends Operation {
     var maxWidth = this._options.maxWidth;
     var actualLineHeight = this._options.lineHeight * this._options.fontSize;
 
+    if (this._options.numberFormat === "relative") {
+      maxWidth *= renderer.getCanvas().width;
+    }
+
     // Apply text options
     this._applyTextOptions(context);
 
@@ -196,7 +201,7 @@ class TextOperation extends Operation {
     var lines = this._options.text.split("\n");
     if (typeof maxWidth !== "undefined") {
       // Calculate the bounding box
-      boundingBox.x = this._options.maxWidth;
+      boundingBox.x = maxWidth;
       lines = this._buildOutputLines(context, maxWidth);
     } else {
       for (lineNum = 0; lineNum < lines.length; lineNum++) {

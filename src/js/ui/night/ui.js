@@ -38,7 +38,8 @@ class NightUI extends UI {
       "radial-blur",
       "tilt-shift",
       "frames",
-      "stickers"
+      "stickers",
+      "text"
     ];
   }
 
@@ -138,6 +139,7 @@ class NightUI extends UI {
     this.registerControl(this._operationsMap["tilt-shift"], require("./controls/tilt-shift"));
     this.registerControl(this._operationsMap.frames, require("./controls/frames"));
     this.registerControl(this._operationsMap.stickers, require("./controls/stickers"));
+    this.registerControl(this._operationsMap.text, require("./controls/text"));
   }
 
   /**

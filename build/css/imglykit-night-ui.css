@@ -248,6 +248,22 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
+/* line 11, ../../src/css/night/generics/_crosshair.sass */
+.imglykit-container .imglykit-crosshair {
+  width: 34px;
+  height: 34px;
+  cursor: pointer;
+  float: left;
+}
+
+/*!
+ * Copyright (c) 2013-2014 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
 /* line 11, ../../src/css/night/generics/_transparent-knob.sass */
 .imglykit-container .imglykit-transparent-knob {
   -moz-border-radius: 50%;
@@ -430,6 +446,60 @@
 .imglykit-container .imglykit-canvas-stickers-container .imglykit-canvas-stickers .imglykit-knob {
   bottom: 0;
   right: 0;
+}
+
+/*!
+ * Copyright (c) 2013-2014 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+/* line 11, ../../src/css/night/controls/_text.sass */
+.imglykit-container .imglykit-controls-text ul.imglykit-controls-list li {
+  color: white;
+  font-size: 32px;
+  line-height: 80px;
+}
+
+/*!
+ * Copyright (c) 2013-2014 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+/* line 10, ../../src/css/night/controls/_text_canvas.sass */
+.imglykit-container .imglykit-canvas-text-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+/* line 18, ../../src/css/night/controls/_text_canvas.sass */
+.imglykit-container .imglykit-canvas-text-container .imglykit-canvas-text {
+  position: relative;
+  display: inline-block;
+}
+/* line 22, ../../src/css/night/controls/_text_canvas.sass */
+.imglykit-container .imglykit-canvas-text-container .imglykit-canvas-text .imglykit-canvas-text-textarea {
+  position: relative;
+  display: inline-block;
+}
+/* line 26, ../../src/css/night/controls/_text_canvas.sass */
+.imglykit-container .imglykit-canvas-text-container .imglykit-canvas-text .imglykit-canvas-text-textarea textarea {
+  background: transparent;
+  border: 2px solid white;
+  resize: none;
+}
+/* line 31, ../../src/css/night/controls/_text_canvas.sass */
+.imglykit-container .imglykit-canvas-text-container .imglykit-canvas-text .imglykit-canvas-text-textarea .imglykit-knob {
+  bottom: -2px;
+  right: -8px;
 }
 
 /*!

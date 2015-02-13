@@ -1,0 +1,22 @@
+<div class="imglykit-controls-text">
+  <div class="imglykit-controls-button imglykit-controls-back">
+    <img src="{{=it.helpers.assetPath('ui/night/buttons/back.png') }}" />
+  </div>
+
+  <div>
+    <ul class="imglykit-controls-list imgly-controls-list-with-buttons">
+      {{~it.fonts :value:index}}
+        <li data-name="{{= value.name}}" data-weight="{{= value.weight}}" style="font-family: {{= value.name}}; font-weight: {{= value.weight}}">{{= value.name.substr(0, 2)}}</li>
+      {{~}}
+    </ul>
+  </div>
+
+  <div class="imglykit-controls-button">
+    {{var colorpickerId = "imglykit-text-foreground-color-picker";}}
+    {{#def.colorpicker}}
+  </div>
+
+  <div class="imglykit-controls-button imglykit-controls-done">
+    <img src="{{=it.helpers.assetPath('ui/night/buttons/done.png') }}" />
+  </div>
+</div>
