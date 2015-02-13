@@ -91,6 +91,8 @@ class TextOperation extends Operation {
   _renderWebGL (renderer) {
     var textCanvas = this._renderTextCanvas(renderer);
 
+    document.body.appendChild(textCanvas);
+
     var canvas = renderer.getCanvas();
     var gl = renderer.getContext();
 
@@ -239,7 +241,7 @@ class TextOperation extends Operation {
     context.font = this._options.fontWeight + " " +
       this._options.fontSize + "px " +
       this._options.fontFamily;
-    context.textBaseline = "hanging";
+    context.textBaseline = "top";
     context.textAlign = this._options.alignment;
     context.fillStyle = this._options.color.toRGBA();
   }

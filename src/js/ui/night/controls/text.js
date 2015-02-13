@@ -40,6 +40,7 @@ class TextControl extends Control {
 
     this._initialIdentity = this._operation.isIdentity;
     this._initialSettings = {
+      lineHeight: this._operation.getLineHeight(),
       fontSize: this._operation.getFontSize(),
       fontFamily: this._operation.getFontFamily(),
       fontWeight: this._operation.getFontWeight(),
@@ -50,6 +51,7 @@ class TextControl extends Control {
     };
 
     this._settings = {
+      lineHeight: this._initialSettings.lineHeight,
       fontSize: this._initialSettings.fontSize,
       fontFamily: this._initialSettings.fontFamily,
       fontWeight: this._initialSettings.fontWeight,
@@ -312,6 +314,7 @@ class TextControl extends Control {
     textarea.style.fontFamily = settings.fontFamily;
     textarea.style.fontSize = `${settings.fontSize}px`;
     textarea.style.fontWeight = settings.fontWeight;
+    textarea.style.lineHeight = settings.lineHeight;
     textarea.style.color = settings.color.toRGBA();
     // textarea.style.left = `${settings.position.x}px`;
     // textarea.style.top = `${settings.position.x}px`;
@@ -369,12 +372,17 @@ class TextControl extends Control {
    */
   _onDone () {
     let canvasSize = this._ui.canvas.size;
+    let padding = new Vector2(this._moveKnobWidth + 2, 2);
+    let position = this._settings.position.clone()
+      .add(padding)
+      .divide(canvasSize);
+
     this._operation.set({
       fontSize: this._settings.fontSize,
       fontFamily: this._settings.fontFamily,
       fontWeight: this._settings.fontWeight,
       color: this._settings.color,
-      position: this._settings.position.clone().divide(canvasSize),
+      position: position,
       text: this._textarea.value,
       maxWidth: this._settings.maxWidth / canvasSize.x
     });

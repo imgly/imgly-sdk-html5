@@ -495,8 +495,9 @@
   background: transparent;
   border: 2px solid white;
   resize: none;
+  padding: 0;
 }
-/* line 31, ../../src/css/night/controls/_text_canvas.sass */
+/* line 32, ../../src/css/night/controls/_text_canvas.sass */
 .imglykit-container .imglykit-canvas-text-container .imglykit-canvas-text .imglykit-canvas-text-textarea .imglykit-knob {
   bottom: -2px;
   right: -8px;
