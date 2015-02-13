@@ -63,6 +63,14 @@ class TextControl extends Control {
       backgroundColor: this._initialSettings.backgroundColor.clone()
     };
 
+    // Don't render an already existing text as long as
+    // we're editing
+    this._operation.isIdentity = true;
+
+    // Remember zoom level and zoom to fit the canvas
+    this._initialZoomLevel = this._ui.canvas.zoomLevel;
+    this._ui.canvas.zoomToFit();
+
     this._container = this._canvasControls.querySelector(".imglykit-canvas-text");
     this._textarea = this._canvasControls.querySelector("textarea");
     this._textarea.focus();
@@ -327,6 +335,7 @@ class TextControl extends Control {
   _applySettings () {
     let textarea = this._textarea;
     let settings = this._settings;
+    textarea.value = settings.text;
     textarea.style.fontFamily = settings.fontFamily;
     textarea.style.fontSize = `${settings.fontSize}px`;
     textarea.style.fontWeight = settings.fontWeight;
@@ -392,6 +401,8 @@ class TextControl extends Control {
       .add(padding)
       .divide(canvasSize);
 
+    this._ui.canvas.setZoomLevel(this._initialZoomLevel, false);
+
     this._operation.set({
       fontSize: this._settings.fontSize,
       fontFamily: this._settings.fontFamily,
@@ -415,6 +426,8 @@ class TextControl extends Control {
       this._operation.isIdentity = this._initialIdentity;
       this._ui.canvas.render();
     }
+
+    this._ui.canvas.setZoomLevel(this._initialZoomLevel, false);
   }
 
   /**
