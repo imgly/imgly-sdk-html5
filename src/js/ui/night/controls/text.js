@@ -47,7 +47,8 @@ class TextControl extends Control {
       color: this._operation.getColor(),
       position: this._operation.getPosition(),
       text: this._operation.getText() || "",
-      maxWidth: this._operation.getMaxWidth()
+      maxWidth: this._operation.getMaxWidth(),
+      backgroundColor: this._operation.getBackgroundColor()
     };
 
     this._settings = {
@@ -58,7 +59,8 @@ class TextControl extends Control {
       color: this._initialSettings.color.clone(),
       position: this._initialSettings.position.clone().multiply(canvasSize),
       text: this._initialSettings.text,
-      maxWidth: this._initialSettings.maxWidth * canvasSize.x
+      maxWidth: this._initialSettings.maxWidth * canvasSize.x,
+      backgroundColor: this._initialSettings.backgroundColor.clone()
     };
 
     this._container = this._canvasControls.querySelector(".imglykit-canvas-text");
@@ -72,9 +74,6 @@ class TextControl extends Control {
     // Subtract knob width from maxWidth
     this._settings.maxWidth -= this._moveKnobWidth;
 
-    // let backgroundColorPicker = this._controls.querySelector("#imglykit-text-background-color-picker");
-    // this._backgroundColorPicker = new ColorPicker(this._ui, backgroundColorPicker);
-
     this._onTextareaKeyUp = this._onTextareaKeyUp.bind(this);
     this._onResizeKnobDown = this._onResizeKnobDown.bind(this);
     this._onResizeKnobDrag = this._onResizeKnobDrag.bind(this);
@@ -83,6 +82,7 @@ class TextControl extends Control {
     this._onMoveKnobDrag = this._onMoveKnobDrag.bind(this);
     this._onMoveKnobUp = this._onMoveKnobUp.bind(this);
     this._onForegroundColorUpdate = this._onForegroundColorUpdate.bind(this);
+    this._onBackgroundColorUpdate = this._onBackgroundColorUpdate.bind(this);
 
     this._initColorPickers();
     this._handleListItems();
@@ -101,6 +101,11 @@ class TextControl extends Control {
     this._foregroundColorPicker = new ColorPicker(this._ui, foregroundColorPicker);
     this._foregroundColorPicker.setValue(this._operation.getColor());
     this._foregroundColorPicker.on("update", this._onForegroundColorUpdate);
+
+    let backgroundColorPicker = this._controls.querySelector("#imglykit-text-background-color-picker");
+    this._backgroundColorPicker = new ColorPicker(this._ui, backgroundColorPicker);
+    this._backgroundColorPicker.setValue(this._operation.getBackgroundColor());
+    this._backgroundColorPicker.on("update", this._onBackgroundColorUpdate);
   }
 
   /**
@@ -305,6 +310,17 @@ class TextControl extends Control {
   }
 
   /**
+   * Gets called when the user selects another color using
+   * the color picker.
+   * @param {Color} value
+   * @private
+   */
+  _onBackgroundColorUpdate (value) {
+    this._settings.backgroundColor = value;
+    this._applySettings();
+  }
+
+  /**
    * Styles the textarea to represent the current settings
    * @private
    */
@@ -316,8 +332,7 @@ class TextControl extends Control {
     textarea.style.fontWeight = settings.fontWeight;
     textarea.style.lineHeight = settings.lineHeight;
     textarea.style.color = settings.color.toRGBA();
-    // textarea.style.left = `${settings.position.x}px`;
-    // textarea.style.top = `${settings.position.x}px`;
+    textarea.style.backgroundColor = settings.backgroundColor.toRGBA();
     textarea.style.width = `${settings.maxWidth}px`;
   }
 
@@ -382,6 +397,7 @@ class TextControl extends Control {
       fontFamily: this._settings.fontFamily,
       fontWeight: this._settings.fontWeight,
       color: this._settings.color,
+      backgroundColor: this._settings.backgroundColor,
       position: position,
       text: this._textarea.value,
       maxWidth: this._settings.maxWidth / canvasSize.x

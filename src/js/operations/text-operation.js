@@ -29,6 +29,7 @@ class TextOperation extends Operation {
       alignment: { type: "string", default: "left", available: ["left", "center", "right"] },
       verticalAlignment: { type: "string", default: "top", available: ["top", "center", "bottom"] },
       color: { type: "color", default: new Color(1, 1, 1, 1) },
+      backgroundColor: { type: "color", default: new Color(0, 0, 0, 0) },
       position: { type: "vector2", default: new Vector2(0, 0) },
       text: { type: "string", required: true },
       maxWidth: { type: "number", default: 1.0 }
@@ -219,9 +220,16 @@ class TextOperation extends Operation {
     canvas.width = boundingBox.x;
     canvas.height = boundingBox.y;
 
-    // Get the context again, apply text options
+    // Get the context again
     context = canvas.getContext("2d");
+
+    // Render background color
+    context.fillStyle = this._options.backgroundColor.toRGBA();
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Apply text options
     this._applyTextOptions(context);
+
 
     // Draw lines
     for (lineNum = 0; lineNum < lines.length; lineNum++) {
