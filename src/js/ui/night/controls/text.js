@@ -153,6 +153,7 @@ class TextControl extends Control {
    */
   _onTextareaKeyUp () {
     this._resizeTextarea();
+    this._settings.text = this._textarea.value;
   }
 
   /**
@@ -410,7 +411,7 @@ class TextControl extends Control {
       color: this._settings.color,
       backgroundColor: this._settings.backgroundColor,
       position: position,
-      text: this._textarea.value,
+      text: this._settings.text,
       maxWidth: this._settings.maxWidth / canvasSize.x
     });
   }

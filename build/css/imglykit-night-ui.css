@@ -356,6 +356,17 @@
   margin-top: 20px;
 }
 /* line 65, ../../src/css/night/_controls.sass */
+.imglykit-container .imglykit-controls .imglykit-controls-icon {
+  width: 80px;
+  height: 80px;
+  line-height: 80px;
+  font-size: 0;
+}
+/* line 71, ../../src/css/night/_controls.sass */
+.imglykit-container .imglykit-controls .imglykit-controls-icon img {
+  vertical-align: middle;
+}
+/* line 74, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-button {
   width: 80px;
   height: 80px;
@@ -363,15 +374,15 @@
   font-size: 0;
   cursor: pointer;
 }
-/* line 71, ../../src/css/night/_controls.sass */
+/* line 80, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-button:first-child {
   border-right: 1px solid #363636;
 }
-/* line 73, ../../src/css/night/_controls.sass */
+/* line 82, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-button:last-child {
   border-left: 1px solid #363636;
 }
-/* line 76, ../../src/css/night/_controls.sass */
+/* line 85, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-button img {
   vertical-align: middle;
 }
