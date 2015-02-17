@@ -194,6 +194,8 @@ class NightUI extends UI {
    * Registers the controls for an operation
    */
   registerControl (operation, Controls) {
+    if (!operation) return;
+
     let instance = new Controls(this._kit, this, operation, this._controlsContainer, this._canvasControlsContainer);
     this._registeredControls[operation.identifier] = instance;
   }

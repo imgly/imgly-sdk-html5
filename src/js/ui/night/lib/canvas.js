@@ -213,7 +213,7 @@ class Canvas extends EventEmitter {
 
     // Take rotation into account when needed
     let rotation = this._ui.operationsMap.rotation;
-    if (rotation.getDegrees() % 180 !== 0) {
+    if (rotation && rotation.getDegrees() % 180 !== 0) {
       finalDimensions.flip();
     }
 
@@ -429,14 +429,17 @@ class Canvas extends EventEmitter {
     let rotationOperation = this._ui.operationsMap.rotation;
     let cropOperation = this._ui.operationsMap.crop;
 
-    dimensions = rotationOperation.getNewDimensions(this._renderer, dimensions);
+    if (rotationOperation) {
+      dimensions = rotationOperation.getNewDimensions(this._renderer, dimensions);
+    }
     dimensions = this._resizeVectorToFit(dimensions);
 
-    let originalDimensions = dimensions.clone();
-    let newDimensions = cropOperation.getNewDimensions(this._renderer, dimensions);
-    let diff = originalDimensions.subtract(newDimensions);
-
-    dimensions.add(diff);
+    if (cropOperation) {
+      let originalDimensions = dimensions.clone();
+      let newDimensions = cropOperation.getNewDimensions(this._renderer, dimensions);
+      let diff = originalDimensions.subtract(newDimensions);
+      dimensions.add(diff);
+    }
 
     return dimensions;
   }
