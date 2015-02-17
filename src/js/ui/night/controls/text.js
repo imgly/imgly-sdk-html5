@@ -98,6 +98,7 @@ class TextControl extends Control {
     this._handleResizeKnob();
     this._handleMoveKnob();
     this._applySettings();
+    this._resizeTextarea();
   }
 
   /**
