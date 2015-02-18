@@ -19,6 +19,9 @@ class FiltersControls extends Control {
   init () {
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/filters_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;
+
+    this._filters = {};
+    this._addDefaultFilters();
   }
 
   /**
@@ -55,7 +58,7 @@ class FiltersControls extends Control {
     this._deactivateAllItems();
 
     let { identifier } = item.dataset;
-    this._operation.setFilter(identifier);
+    this._operation.setFilter(this._filters[identifier]);
 
     item.classList.add("imglykit-controls-item-active");
   }
@@ -71,13 +74,58 @@ class FiltersControls extends Control {
   }
 
   /**
+   * Registers all the known filters
+   * @private
+   */
+  _addDefaultFilters () {
+    this.addFilter(require("../../../operations/filters/identity-filter"));
+    this.addFilter(require("../../../operations/filters/k1-filter"));
+    this.addFilter(require("../../../operations/filters/k2-filter"));
+    this.addFilter(require("../../../operations/filters/k6-filter"));
+    this.addFilter(require("../../../operations/filters/kdynamic-filter"));
+    this.addFilter(require("../../../operations/filters/fridge-filter"));
+    this.addFilter(require("../../../operations/filters/breeze-filter"));
+    this.addFilter(require("../../../operations/filters/orchid-filter"));
+    this.addFilter(require("../../../operations/filters/chest-filter"));
+    this.addFilter(require("../../../operations/filters/front-filter"));
+    this.addFilter(require("../../../operations/filters/fixie-filter"));
+    this.addFilter(require("../../../operations/filters/x400-filter"));
+    this.addFilter(require("../../../operations/filters/bw-filter"));
+    this.addFilter(require("../../../operations/filters/bwhard-filter"));
+    this.addFilter(require("../../../operations/filters/lenin-filter"));
+    this.addFilter(require("../../../operations/filters/quozi-filter"));
+    this.addFilter(require("../../../operations/filters/pola669-filter"));
+    this.addFilter(require("../../../operations/filters/pola-filter"));
+    this.addFilter(require("../../../operations/filters/food-filter"));
+    this.addFilter(require("../../../operations/filters/glam-filter"));
+    this.addFilter(require("../../../operations/filters/celsius-filter"));
+    this.addFilter(require("../../../operations/filters/texas-filter"));
+    this.addFilter(require("../../../operations/filters/morning-filter"));
+    this.addFilter(require("../../../operations/filters/lomo-filter"));
+    this.addFilter(require("../../../operations/filters/gobblin-filter"));
+    this.addFilter(require("../../../operations/filters/mellow-filter"));
+    this.addFilter(require("../../../operations/filters/sunny-filter"));
+    this.addFilter(require("../../../operations/filters/a15-filter"));
+    this.addFilter(require("../../../operations/filters/semired-filter"));
+  }
+
+  /**
+   * Registers the given filter
+   * @param  {class} filter
+   * @private
+   */
+  addFilter (filter) {
+    this._filters[filter.identifier] = filter;
+  }
+
+  /**
    * The data that is available to the template
    * @type {Object}
    * @override
    */
   get context () {
     let context = super.context;
-    context.filters = this._operation.filters;
+    context.filters = this._filters;
     context.activeFilter = this._operation.getFilter();
     return context;
   }

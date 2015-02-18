@@ -105,17 +105,11 @@ class Operation extends EventEmitter {
     var optionName, option, capitalized;
     var self = this;
     for (optionName in this.availableOptions) {
+      let capitalized = optionName.charAt(0).toUpperCase() + optionName.slice(1);
       option = this.availableOptions[optionName];
-
-      // Set default if available
-      if (typeof option.default !== "undefined") {
-        this._options[optionName] = option.default;
-      }
 
       // Create setter and getter
       (function (optionName, option) {
-        capitalized = optionName.charAt(0).toUpperCase() + optionName.slice(1);
-
         self["set" + capitalized] = function (value) {
           if (typeof option.setter !== "undefined") {
             value = option.setter.call(this, value);
@@ -129,6 +123,10 @@ class Operation extends EventEmitter {
         };
       })(optionName, option);
 
+      // Set default if available
+      if (typeof option.default !== "undefined") {
+        this["set" + capitalized](option.default);
+      }
     }
 
     // Overwrite options with the ones given by user
@@ -231,6 +229,11 @@ class Operation extends EventEmitter {
           throw new Error("Operation `" + identifier + "`: Option `" + optionName + "` has to be an instance of ImglyKit.Color.");
         }
 
+        this._options[optionName] = value;
+        break;
+
+      // Object options
+      case "object":
         this._options[optionName] = value;
         break;
     }
