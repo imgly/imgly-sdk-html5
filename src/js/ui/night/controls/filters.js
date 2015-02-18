@@ -10,6 +10,7 @@
 
 import Symbol from "es6-symbol";
 import Control from "./control";
+import Utils from "../../../lib/utils";
 let fs = require("fs");
 
 class FiltersControls extends Control {
@@ -20,8 +21,13 @@ class FiltersControls extends Control {
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/filters_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;
 
+    this._availableFilters = {};
     this._filters = {};
+
     this._addDefaultFilters();
+
+    // Select all filters per default
+    this.selectFilters(null);
   }
 
   /**
@@ -115,7 +121,23 @@ class FiltersControls extends Control {
    * @private
    */
   addFilter (filter) {
-    this._filters[filter.identifier] = filter;
+    this._availableFilters[filter.identifier] = filter;
+  }
+
+  /**
+   * Selects the filters
+   */
+  selectFilters (selector) {
+    this._filters = {};
+
+    let filterIdentifiers = Object.keys(this._availableFilters);
+
+    let selectedFilters = Utils.select(filterIdentifiers, selector);
+    for (let identifier of selectedFilters) {
+      this._filters[identifier] = this._availableFilters[identifier];
+    }
+
+    this._renderControls();
   }
 
   /**

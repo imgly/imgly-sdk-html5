@@ -214,6 +214,14 @@ class NightUI extends UI {
   get operationsMap () {
     return this._operationsMap;
   }
+
+  /**
+   * An object containing all registered controls
+   * @type {Object.<String,Control>}
+   */
+  get controls () {
+    return this._registeredControls;
+  }
 }
 
 export default NightUI;

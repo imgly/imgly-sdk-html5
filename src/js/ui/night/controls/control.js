@@ -58,6 +58,10 @@ class Control extends EventEmitter {
     let renderFn = dot.template(template);
     let html = renderFn(this.context);
 
+    if (typeof this._controls !== "undefined") {
+      this._controls.parentNode.removeChild(this._controls);
+    }
+
     // Create a wrapper
     this._controls = document.createElement("div");
     this._controls.innerHTML = html;
