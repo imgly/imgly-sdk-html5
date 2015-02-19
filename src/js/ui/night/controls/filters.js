@@ -126,6 +126,7 @@ class FiltersControls extends Control {
 
   /**
    * Selects the filters
+   * @param {Selector} selector
    */
   selectFilters (selector) {
     this._filters = {};
@@ -137,7 +138,9 @@ class FiltersControls extends Control {
       this._filters[identifier] = this._availableFilters[identifier];
     }
 
-    this._renderControls();
+    if (this._active) {
+      this._renderControls();
+    }
   }
 
   /**

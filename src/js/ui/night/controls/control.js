@@ -23,6 +23,7 @@ class Control extends EventEmitter {
     this._canvasControlsContainer = canvasControlsContainer;
     this._helpers = new Helpers(this._kit, this._ui, this._ui.options);
     this._partialTemplates = [];
+    this._active = false;
 
     this.init();
   }
@@ -58,8 +59,9 @@ class Control extends EventEmitter {
     let renderFn = dot.template(template);
     let html = renderFn(this.context);
 
-    if (typeof this._controls !== "undefined") {
-      this._controls.parentNode.removeChild(this._controls);
+    if (typeof this._controls !== "undefined" &&
+      typeof this._controls.parentNode !== "undefined") {
+        this._controls.parentNode.removeChild(this._controls);
     }
 
     // Create a wrapper
@@ -137,6 +139,8 @@ class Control extends EventEmitter {
    * @internal Used by the SDK, don't override.
    */
   enter () {
+    this._active = true;
+
     this._renderAllControls();
     this._handleBackAndDoneButtons();
     this._enableCanvasControls();
@@ -148,6 +152,8 @@ class Control extends EventEmitter {
    * @internal Used by the SDK, don't override.
    */
   leave () {
+    this._active = false;
+
     this._removeControls();
     this._disableCanvasControls();
     this._onLeave();

@@ -23,6 +23,66 @@ class StickersControl extends Control {
 
     let canvasControlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/stickers_canvas.jst", "utf-8");
     this._canvasControlsTemplate = canvasControlsTemplate;
+
+    /**
+     * The registered stickers
+     * @type {Object.<string, class>}
+     */
+    this._availableStickers = {};
+    this._stickers = {};
+    this._addDefaultStickers();
+    this.selectStickers(null);
+  }
+
+  /**
+   * Registers the default stickers
+   * @private
+   */
+  _addDefaultStickers () {
+    this.addSticker("glasses-nerd", "stickers/sticker-glasses-nerd.png");
+    this.addSticker("glasses-normal", "stickers/sticker-glasses-normal.png");
+    this.addSticker("glasses-shutter-green", "stickers/sticker-glasses-shutter-green.png");
+    this.addSticker("glasses-shutter-yellow", "stickers/sticker-glasses-shutter-yellow.png");
+    this.addSticker("glasses-sun", "stickers/sticker-glasses-sun.png");
+    this.addSticker("hat-cap", "stickers/sticker-hat-cap.png");
+    this.addSticker("hat-cylinder", "stickers/sticker-hat-cylinder.png");
+    this.addSticker("hat-party", "stickers/sticker-hat-party.png");
+    this.addSticker("hat-sheriff", "stickers/sticker-hat-sheriff.png");
+    this.addSticker("heart", "stickers/sticker-heart.png");
+    this.addSticker("mustache-long", "stickers/sticker-mustache-long.png");
+    this.addSticker("mustache1", "stickers/sticker-mustache1.png");
+    this.addSticker("mustache2", "stickers/sticker-mustache2.png");
+    this.addSticker("mustache3", "stickers/sticker-mustache3.png");
+    this.addSticker("pipe", "stickers/sticker-pipe.png");
+    this.addSticker("snowflake", "stickers/sticker-snowflake.png");
+    this.addSticker("star", "stickers/sticker-star.png");
+  }
+
+  /**
+   * Registers the sticker with the given identifier and path
+   * @private
+   */
+  addSticker (identifier, path) {
+    this._availableStickers[identifier] = path;
+  }
+
+  /**
+   * Selects the stickers
+   * @param {Selector} selector
+   */
+  selectStickers (selector) {
+    this._stickers = {};
+
+    let stickerIdentifiers = Object.keys(this._availableStickers);
+
+    let selectedStickers = Utils.select(stickerIdentifiers, selector);
+    for (let identifier of selectedStickers) {
+      this._stickers[identifier] = this._availableStickers[identifier];
+    }
+
+    if (this._active) {
+      this._renderControls();
+    }
   }
 
   /**
@@ -151,7 +211,7 @@ class StickersControl extends Control {
     this._ui.canvas.setZoomLevel(this._initialZoomLevel, false);
 
     this._operation.set({
-      sticker: this._sticker,
+      sticker: this._availableStickers[this._sticker],
       position: position,
       size: size
     });
@@ -301,7 +361,7 @@ class StickersControl extends Control {
     this._deactivateAllItems();
 
     let { identifier } = item.dataset;
-    let stickerPath = this._operation.stickers[identifier];
+    let stickerPath = this._availableStickers[identifier];
     stickerPath = this._kit.getAssetPath(stickerPath);
 
     try {
@@ -331,7 +391,7 @@ class StickersControl extends Control {
    */
   get context () {
     let context = super.context;
-    context.stickers = this._operation.stickers;
+    context.stickers = this._stickers;
     return context;
   }
 }
