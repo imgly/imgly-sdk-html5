@@ -13,19 +13,35 @@ import Helpers from "../../base/helpers";
 import EventEmitter from "../../../lib/event-emitter";
 
 class Control extends EventEmitter {
-  constructor (kit, ui, operation, controlsContainer, canvasControlsContainer) {
+  constructor (kit, ui, operation) {
     super();
 
     this._kit = kit;
     this._ui = ui;
     this._operation = operation;
-    this._controlsContainer = controlsContainer;
-    this._canvasControlsContainer = canvasControlsContainer;
     this._helpers = new Helpers(this._kit, this._ui, this._ui.options);
     this._partialTemplates = [];
     this._active = false;
 
     this.init();
+  }
+
+  /**
+   * A unique string that identifies this control.
+   * @type {String}
+   */
+  get identifier () {
+    return null;
+  }
+
+  /**
+   * Sets the containers that the control will be rendered to
+   * @param {DOMElement} controlsContainer
+   * @param {DOMElement} canvasControlsContainer
+   */
+  setContainers (controlsContainer, canvasControlsContainer) {
+    this._controlsContainer = controlsContainer;
+    this._canvasControlsContainer = canvasControlsContainer;
   }
 
   /**
