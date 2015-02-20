@@ -16,7 +16,6 @@ class BaseUI {
     this._kit = kit;
     this._options = options;
     this._operations = [];
-    this._controls = [];
     this._helpers = new Helpers(this.kit, this, options);
     this.selectOperations(null);
   }

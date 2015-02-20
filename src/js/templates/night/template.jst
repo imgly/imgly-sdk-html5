@@ -28,11 +28,12 @@
       <div>
         <div class="imglykit-controls-overview">
           <ul class="imglykit-controls-list">
-          {{~it.operations :operation:index}}
-            <li data-identifier="{{= operation.prototype.identifier}}">
-              <img src="{{=it.helpers.assetPath('ui/night/operations/' + operation.prototype.identifier + '.png') }}" />
+          {{ for (var identifier in it.controls) { }}
+            {{ var control = it.controls[identifier]; }}
+            <li data-identifier="{{= control.identifier}}">
+              <img src="{{=it.helpers.assetPath('ui/night/operations/' + control.identifier + '.png') }}" />
             </li>
-          {{~}}
+          {{ } }}
           </ul>
         </div>
       </div>

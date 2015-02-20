@@ -24,8 +24,7 @@ class NightUI extends UI {
     // The `Night` UI has a fixed operation order
     this._preferredOperationOrder = [
       // First, all operations that affect the image dimensions
-      "crop",
-      "rotation",
+      "crop-rotation",
       "flip",
 
       // Then color operations (first filters, then fine-tuning)
@@ -44,6 +43,9 @@ class NightUI extends UI {
   }
 
   run () {
+    this._operationsMap = {};
+    this._registerControls();
+
     super();
 
     let { container } = this._options;
@@ -52,14 +54,12 @@ class NightUI extends UI {
     this._canvasControlsContainer = container.querySelector(".imglykit-canvas-controls");
     this._overviewControlsContainer = container.querySelector(".imglykit-controls-overview");
 
-    this._operationsMap = {};
-
     this._initOperations();
-    this._registerControls();
     this._handleOverview();
 
     this._initCanvas();
     this._initTopControls();
+    this._initControls();
   }
 
   /**
@@ -100,26 +100,28 @@ class NightUI extends UI {
   _initOperations () {
     let { operationsStack, registeredOperations } = this._kit;
     for (let operationIdentifier of this._preferredOperationOrder) {
-      if (this.isOperationSelected(operationIdentifier)) {
-        let Operation = registeredOperations[operationIdentifier];
-        let operationInstance = new Operation(this._kit);
-
-        // Skip per default
-        // This additional attribute is not part of the img.ly SDK,
-        // we only use it for the Night UI to check whether an operation
-        // needs to be rendered
-        operationInstance.isIdentity = true;
-
-        operationInstance.on("update", () => {
-          if (this._paused) return;
-
-          operationInstance.isIdentity = false;
-          this.render();
-        });
-
-        this._operationsMap[operationIdentifier] = operationInstance;
-        operationsStack.push(operationInstance);
+      if (!this.isOperationSelected(operationIdentifier)) {
+        continue;
       }
+
+      let Operation = registeredOperations[operationIdentifier];
+      let operationInstance = new Operation(this._kit);
+
+      // Skip per default
+      // This additional attribute is not part of the img.ly SDK,
+      // we only use it for the Night UI to check whether an operation
+      // needs to be rendered
+      operationInstance.isIdentity = true;
+
+      operationInstance.on("update", () => {
+        if (this._paused) return;
+
+        operationInstance.isIdentity = false;
+        this.render();
+      });
+
+      this._operationsMap[operationIdentifier] = operationInstance;
+      operationsStack.push(operationInstance);
     }
   }
 
@@ -128,18 +130,18 @@ class NightUI extends UI {
    * @private
    */
   _registerControls () {
-    this.registerControl(this._operationsMap.filters, require("./controls/filters"));
-    this.registerControl(this._operationsMap.rotation, require("./controls/rotation"));
-    this.registerControl(this._operationsMap.flip, require("./controls/flip"));
-    this.registerControl(this._operationsMap.brightness, require("./controls/brightness"));
-    this.registerControl(this._operationsMap.contrast, require("./controls/contrast"));
-    this.registerControl(this._operationsMap.saturation, require("./controls/saturation"));
-    this.registerControl(this._operationsMap.crop, require("./controls/crop"));
-    this.registerControl(this._operationsMap["radial-blur"], require("./controls/radial-blur"));
-    this.registerControl(this._operationsMap["tilt-shift"], require("./controls/tilt-shift"));
-    this.registerControl(this._operationsMap.frames, require("./controls/frames"));
-    this.registerControl(this._operationsMap.stickers, require("./controls/stickers"));
-    this.registerControl(this._operationsMap.text, require("./controls/text"));
+    this.registerControl("filters", "filters", require("./controls/filters"));
+    this.registerControl("rotation", "crop-rotation", require("./controls/rotation"));
+    this.registerControl("flip", "flip", require("./controls/flip"));
+    this.registerControl("brightness", "brightness", require("./controls/brightness"));
+    this.registerControl("contrast", "contrast", require("./controls/contrast"));
+    this.registerControl("saturation", "saturation", require("./controls/saturation"));
+    this.registerControl("crop", "crop-rotation", require("./controls/crop"));
+    this.registerControl("radial-blur", "radial-blur", require("./controls/radial-blur"));
+    this.registerControl("tilt-shift", "tilt-shift", require("./controls/tilt-shift"));
+    this.registerControl("frames", "frames", require("./controls/frames"));
+    this.registerControl("stickers", "stickers", require("./controls/stickers"));
+    this.registerControl("text", "text", require("./controls/text"));
   }
 
   /**
@@ -192,12 +194,27 @@ class NightUI extends UI {
 
   /**
    * Registers the controls for an operation
+   * @param {String} identifier
+   * @param {String} operationIdentifier
+   * @param {Control} ControlClass
    */
-  registerControl (operation, Controls) {
-    if (!operation) return;
+  registerControl (identifier, operationIdentifier, ControlClass) {
+    if (!this.isOperationSelected(operationIdentifier)) return;
 
-    let instance = new Controls(this._kit, this, operation, this._controlsContainer, this._canvasControlsContainer);
-    this._registeredControls[operation.identifier] = instance;
+    let instance = new ControlClass(this._kit, this);
+    this._registeredControls[identifier] = instance;
+  }
+
+  /**
+   * Initializes the registered controls
+   * @private
+   */
+  _initControls () {
+    for (let identifier in this._registeredControls) {
+      let control = this._registeredControls[identifier];
+      control.setContainers(this._controlsContainer, this._canvasControlsContainer);
+      control.init();
+    }
   }
 
   /**
@@ -221,6 +238,16 @@ class NightUI extends UI {
    */
   get controls () {
     return this._registeredControls;
+  }
+
+  /**
+   * The data that is passed to the template renderer
+   * @type {Object}
+   */
+  get context () {
+    let context = super.context;
+    context.controls = this._registeredControls;
+    return context;
   }
 }
 
