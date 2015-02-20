@@ -21,28 +21,10 @@ import Vector2 from "../lib/math/vector2";
 class RotationOperation extends Operation {
   constructor (...args) {
     this.availableOptions = {
-      degrees: { type: "number", default: 0, validation: function (value) {
-        if (value % 90 !== 0) {
-          throw new Error("RotationOperation: `rotation` has to be a multiple of 90.");
-        }
-      }}
+
     };
 
-    /**
-     * The fragment shader used for this operation
-     */
-    this.vertexShader = `
-      attribute vec2 a_position;
-      attribute vec2 a_texCoord;
-      varying vec2 v_texCoord;
-      uniform mat3 u_matrix;
 
-      void main() {
-        gl_Position = vec4((u_matrix * vec3(a_position, 1)).xy, 0, 1);
-        // gl_Position = vec4(a_position, 0, 1);
-        v_texCoord = a_texCoord;
-      }
-    `;
 
     super(...args);
   }
@@ -62,56 +44,7 @@ class RotationOperation extends Operation {
    */
   /* istanbul ignore next */
   _renderWebGL (renderer) {
-    var canvas = renderer.getCanvas();
-    var gl = renderer.getContext();
 
-    var actualDegrees = this._options.degrees % 360;
-    var lastTexture = renderer.getLastTexture();
-
-    // If we're not rotating by 180 degrees, we need to resize the canvas
-    // and the texture
-    if (actualDegrees % 180 !== 0) {
-      let newDimensions = this.getNewDimensions(renderer);
-
-      // Resize the canvas
-      canvas.width = newDimensions.x;
-      canvas.height = newDimensions.y;
-
-      // Resize the current texture
-      var currentTexture = renderer.getCurrentTexture();
-      gl.bindTexture(gl.TEXTURE_2D, currentTexture);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, canvas.width, canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-
-      // Resize all other textures except the input texture
-      var textures = renderer.getTextures();
-      var texture;
-      for (var i = 0; i < textures.length; i++) {
-        texture = textures[i];
-
-        // We resize the input texture at the end
-        if (texture === lastTexture) continue;
-
-        gl.bindTexture(gl.TEXTURE_2D, texture);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, canvas.width, canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-      }
-    }
-
-    // Build the rotation matrix
-    var radians = actualDegrees * (Math.PI / 180);
-    var c = Math.cos(radians);
-    var s = Math.sin(radians);
-    var rotationMatrix = [
-      c,-s, 0,
-      s, c, 0,
-      0, 0, 1
-    ];
-
-    // Run the shader
-    renderer.runShader(this.vertexShader, null, {
-      uniforms: {
-        u_matrix: { type: "mat3fv", value: rotationMatrix }
-      }
-    });
   }
 
   /**
