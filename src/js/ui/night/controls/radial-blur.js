@@ -16,10 +16,18 @@ let fs = require("fs");
 
 class RadialBlurControls extends Control {
   /**
+   * A unique string that identifies this control.
+   * @type {String}
+   */
+  get identifier () {
+    return "radial-blur";
+  }
+
+  /**
    * Entry point for this control
    */
   init () {
-    super();
+    this._operation = this._ui.operationsMap["radial-blur"];
 
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/radial-blur_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;

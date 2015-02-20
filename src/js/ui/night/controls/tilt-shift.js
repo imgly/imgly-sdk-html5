@@ -16,10 +16,18 @@ let fs = require("fs");
 
 class TiltShiftControls extends Control {
   /**
+   * A unique string that identifies this control.
+   * @type {String}
+   */
+  get identifier () {
+    return "tilt-shift";
+  }
+
+  /**
    * Entry point for this control
    */
   init () {
-    super();
+    this._operation = this._ui.operationsMap["tilt-shift"];
 
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/tilt-shift_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;

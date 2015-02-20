@@ -14,10 +14,18 @@ let fs = require("fs");
 
 class ContrastControls extends Control {
   /**
+   * A unique string that identifies this control.
+   * @type {String}
+   */
+  get identifier () {
+    return "contrast";
+  }
+
+  /**
    * Entry point for this control
    */
   init () {
-    super();
+    this._operation = this._ui.operationsMap.contrast;
 
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/contrast_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;

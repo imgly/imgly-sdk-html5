@@ -15,10 +15,18 @@ let fs = require("fs");
 
 class CropControls extends Control {
   /**
+   * A unique string that identifies this control.
+   * @type {String}
+   */
+  get identifier () {
+    return "crop";
+  }
+
+  /**
    * Entry point for this control
    */
   init () {
-    super();
+    this._operation = this._ui.operationsMap["crop-rotation"];
 
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/crop_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;

@@ -15,10 +15,18 @@ let fs = require("fs");
 
 class FramesControls extends Control {
   /**
+   * A unique string that identifies this control.
+   * @type {String}
+   */
+  get identifier () {
+    return "frames";
+  }
+
+  /**
    * Entry point for this control
    */
   init () {
-    super();
+    this._operation = this._ui.operationsMap.frames;
 
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/frames_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;

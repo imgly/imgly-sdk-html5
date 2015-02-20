@@ -15,9 +15,19 @@ let fs = require("fs");
 
 class FiltersControls extends Control {
   /**
+   * A unique string that identifies this control.
+   * @type {String}
+   */
+  get identifier () {
+    return "filters";
+  }
+
+  /**
    * Entry point for this control
    */
   init () {
+    this._operation = this._ui.operationsMap.filters;
+
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/filters_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;
 

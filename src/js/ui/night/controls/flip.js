@@ -14,9 +14,19 @@ let fs = require("fs");
 
 class FlipControls extends Control {
   /**
+   * A unique string that identifies this control.
+   * @type {String}
+   */
+  get identifier () {
+    return "flip";
+  }
+
+  /**
    * Entry point for this control
    */
   init () {
+    this._operation = this._ui.operationsMap.flip;
+
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/flip_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;
   }
