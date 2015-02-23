@@ -70,6 +70,10 @@ class CropControls extends Control {
     this._initialStart = this._operation.getStart().clone();
     this._initialEnd = this._operation.getEnd().clone();
 
+    // Make sure we don't trigger another render until we have everything
+    // set up
+    this._ui.pause();
+
     // Make sure we see the whole input image
     this._operation.set({
       start: new Vector2(0, 0),
@@ -95,6 +99,9 @@ class CropControls extends Control {
     this._handleControls();
     this._handleKnobs();
     this._handleCenter();
+
+    // Resume the rendering
+    this._ui.resume();
   }
 
   /**

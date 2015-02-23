@@ -47,6 +47,7 @@ class Canvas extends EventEmitter {
     this._zoomLevel = this._getInitialZoomLevel();
     this._initialZoomLevel = this._zoomLevel;
     this._isInitialZoom = true;
+    this._size = null;
 
     this.render();
     this._centerCanvas();
@@ -91,7 +92,7 @@ class Canvas extends EventEmitter {
       // Render the operations stack
       .then(() => {
         return bluebird.map(stack, (operation) => {
-          return operation.render(this._renderer);
+          operation.render(this._renderer);
         }, { concurrency: 1 });
       })
       // Render the final image
@@ -100,6 +101,7 @@ class Canvas extends EventEmitter {
       })
       // Update the margins and boundaries
       .then(() => {
+        this._setCanvasSize();
         this._updateCanvasMargins();
         this._applyBoundaries();
       });
@@ -149,14 +151,17 @@ class Canvas extends EventEmitter {
 
   /**
    * Resizes and positions the canvas
-   * @param {Vector2} size
+   * @param {Vector2} [size]
    * @private
    */
   _setCanvasSize (size) {
+    size = size || new Vector2(this._canvas.width, this._canvas.height);
     this._canvas.width = size.x;
     this._canvas.height = size.y;
     this._canvasInnerContainer.style.width = `${size.x}px`;
     this._canvasInnerContainer.style.height = `${size.y}px`;
+
+    this._size = size.clone();
   }
 
   /**
@@ -466,7 +471,7 @@ class Canvas extends EventEmitter {
    * @type {Vector2}
    */
   get size () {
-    return new Vector2(this._canvas.width, this._canvas.height);
+    return this._size;
   }
 }
 

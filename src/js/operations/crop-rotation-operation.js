@@ -108,7 +108,7 @@ class CropRotationOperation extends Operation {
     end.y = 1 - originalStartY;
 
     // The new size
-    var newDimensions = this.getNewDimensions(renderer);
+    var newDimensions = this.getNewCropDimensions(renderer);
 
     // Make sure we don't resize the input texture
     var lastTexture = renderer.getLastTexture();
@@ -151,7 +151,7 @@ class CropRotationOperation extends Operation {
     // If we're not rotating by 180 degrees, we need to resize the canvas
     // and the texture
     if (actualDegrees % 180 !== 0) {
-      let newDimensions = this.getNewDimensions(renderer);
+      let newDimensions = this.getNewRotationDimensions(renderer);
 
       // Resize the canvas
       canvas.width = newDimensions.x;
@@ -234,7 +234,6 @@ class CropRotationOperation extends Operation {
    * @param {Renderer} renderer
    * @param {Vector2} [dimensions]
    * @return {Vector2}
-   * @private
    */
   getNewDimensions (renderer, dimensions) {
     let canvas = renderer.getCanvas();
@@ -249,7 +248,45 @@ class CropRotationOperation extends Operation {
     }
 
     let actualDegrees = this._options.degrees % 360;
+    if (actualDegrees % 180 !== 0) {
+      let tempX = newDimensions.x;
+      newDimensions.x = newDimensions.y;
+      newDimensions.y = tempX;
+    }
 
+    return newDimensions;
+  }
+
+  /**
+   * Gets the new dimensions after cropping
+   * @param {Renderer} renderer
+   * @returns {Vector2}
+   */
+  getNewCropDimensions (renderer) {
+    let canvas = renderer.getCanvas();
+    let newDimensions = new Vector2(canvas.width, canvas.height);
+
+    let size = this._options.end
+      .clone()
+      .subtract(this._options.start);
+
+    if (this._options.numberFormat === "relative") {
+      size.multiply(newDimensions);
+    }
+
+    return size;
+  }
+
+  /**
+   * Gets the new dimensions after rotating
+   * @param {Renderer} renderer
+   * @returns {Vector2}
+   */
+  getNewRotationDimensions (renderer) {
+    let canvas = renderer.getCanvas();
+    let newDimensions = new Vector2(canvas.width, canvas.height);
+
+    let actualDegrees = this._options.degrees % 360;
     if (actualDegrees % 180 !== 0) {
       let tempX = newDimensions.x;
       newDimensions.x = newDimensions.y;

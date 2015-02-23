@@ -40,6 +40,8 @@ class NightUI extends UI {
       "stickers",
       "text"
     ];
+
+    this._paused = false;
   }
 
   run () {
@@ -248,6 +250,25 @@ class NightUI extends UI {
     let context = super.context;
     context.controls = this._registeredControls;
     return context;
+  }
+
+  /**
+   * Pauses the UI. Operation updates will not cause a re-rendering
+   * of the canvas.
+   */
+  pause () {
+    this._paused = true;
+  }
+
+  /**
+   * Resumes the UI and re-renders the canvas
+   * @param {Boolean} rerender = true
+   */
+  resume (rerender=true) {
+    this._paused = false;
+    if (rerender) {
+      this.render();
+    }
   }
 }
 
