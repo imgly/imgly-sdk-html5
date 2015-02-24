@@ -76,8 +76,19 @@ class RotationControls extends Control {
     // Resume the rendering
     this._ui.canvas.render()
       .then(() => {
+        this._showCropContainer();
         this._updateCropDOM();
       });
+  }
+
+  /**
+   * Shows the crop container which is hidden initially to avoid flickering
+   * when resizing after the rendering
+   * @private
+   */
+  _showCropContainer () {
+    let container = this._canvasControls.querySelector(".imglykit-canvas-crop-container");
+    container.classList.remove("imglykit-canvas-crop-container-hidden");
   }
 
   /**

@@ -728,31 +728,35 @@
   table-layout: fixed;
 }
 /* line 21, ../../src/css/night/controls/_crop_canvas.sass */
+.imglykit-container .imglykit-canvas-crop-container.imglykit-canvas-crop-container-hidden {
+  display: none;
+}
+/* line 24, ../../src/css/night/controls/_crop_canvas.sass */
 .imglykit-container .imglykit-canvas-crop-container > * {
   display: table-row;
 }
-/* line 23, ../../src/css/night/controls/_crop_canvas.sass */
+/* line 26, ../../src/css/night/controls/_crop_canvas.sass */
 .imglykit-container .imglykit-canvas-crop-container > * > * {
   display: table-cell;
   background: rgba(34, 34, 34, 0.9);
 }
-/* line 27, ../../src/css/night/controls/_crop_canvas.sass */
+/* line 30, ../../src/css/night/controls/_crop_canvas.sass */
 .imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-center-center {
   background: transparent;
   cursor: move;
   border: 1px solid white;
 }
-/* line 32, ../../src/css/night/controls/_crop_canvas.sass */
+/* line 35, ../../src/css/night/controls/_crop_canvas.sass */
 .imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-center-center.imglykit-canvas-crop-center-center-nomove {
   cursor: auto;
 }
-/* line 35, ../../src/css/night/controls/_crop_canvas.sass */
+/* line 38, ../../src/css/night/controls/_crop_canvas.sass */
 .imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-knobs {
   position: relative;
   width: 100%;
   height: 100%;
 }
-/* line 39, ../../src/css/night/controls/_crop_canvas.sass */
+/* line 42, ../../src/css/night/controls/_crop_canvas.sass */
 .imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-knobs > * {
   -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
@@ -764,22 +768,22 @@
   border: 2px solid rgba(0, 0, 0, 0.3);
   cursor: pointer;
 }
-/* line 48, ../../src/css/night/controls/_crop_canvas.sass */
+/* line 51, ../../src/css/night/controls/_crop_canvas.sass */
 .imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-knobs [data-corner=top-left] {
   top: -10px;
   left: -10px;
 }
-/* line 52, ../../src/css/night/controls/_crop_canvas.sass */
+/* line 55, ../../src/css/night/controls/_crop_canvas.sass */
 .imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-knobs [data-corner=top-right] {
   top: -10px;
   right: -10px;
 }
-/* line 56, ../../src/css/night/controls/_crop_canvas.sass */
+/* line 59, ../../src/css/night/controls/_crop_canvas.sass */
 .imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-knobs [data-corner=bottom-left] {
   bottom: -10px;
   left: -10px;
 }
-/* line 60, ../../src/css/night/controls/_crop_canvas.sass */
+/* line 63, ../../src/css/night/controls/_crop_canvas.sass */
 .imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-knobs [data-corner=bottom-right] {
   bottom: -10px;
   right: -10px;
