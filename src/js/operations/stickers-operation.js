@@ -120,6 +120,10 @@ class StickersOperation extends Operation {
       if (this._options.numberFormat === "relative") {
         size.multiply(canvasSize);
       }
+
+      // Calculate image ratio, scale by width
+      let ratio = image.height / image.width;
+      size.y = size.x * ratio;
     }
     size.divide(canvasSize);
 
