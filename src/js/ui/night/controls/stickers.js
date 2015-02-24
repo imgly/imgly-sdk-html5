@@ -221,12 +221,6 @@ class StickersControl extends Control {
 
     this._ui.canvas.setZoomLevel(this._initialZoomLevel, false);
 
-    console.log({
-      sticker: this._availableStickers[this._sticker],
-      position: position,
-      size: size
-    });
-
     this._operation.set({
       sticker: this._availableStickers[this._sticker],
       position: position,
