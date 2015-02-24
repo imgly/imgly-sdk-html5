@@ -219,10 +219,24 @@ class Canvas extends EventEmitter {
 
     let inputSize = new Vector2(this._image.width, this._image.height);
     let croppedSize = inputSize.clone().multiply(cropSize);
+
+    // Has the image been rotated?
+    if (cropRotationOperation.getDegrees() % 180 !== 0) {
+      let tempX = croppedSize.x;
+      croppedSize.x = croppedSize.y;
+      croppedSize.y = tempX;
+    }
+
     let finalSize = this._resizeVectorToFit(croppedSize);
 
-    let initialSize = finalSize.clone().divide(cropSize);
+    // Rotate back to be able to find the final size
+    if (cropRotationOperation.getDegrees() % 180 !== 0) {
+      let tempX = finalSize.x;
+      finalSize.x = finalSize.y;
+      finalSize.y = tempX;
+    }
 
+    let initialSize = finalSize.clone().divide(cropSize);
     return initialSize.x / inputSize.x;
   }
 

@@ -743,12 +743,16 @@
   border: 1px solid white;
 }
 /* line 32, ../../src/css/night/controls/_crop_canvas.sass */
+.imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-center-center.imglykit-canvas-crop-center-center-nomove {
+  cursor: auto;
+}
+/* line 35, ../../src/css/night/controls/_crop_canvas.sass */
 .imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-knobs {
   position: relative;
   width: 100%;
   height: 100%;
 }
-/* line 36, ../../src/css/night/controls/_crop_canvas.sass */
+/* line 39, ../../src/css/night/controls/_crop_canvas.sass */
 .imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-knobs > * {
   -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
@@ -760,22 +764,22 @@
   border: 2px solid rgba(0, 0, 0, 0.3);
   cursor: pointer;
 }
-/* line 45, ../../src/css/night/controls/_crop_canvas.sass */
+/* line 48, ../../src/css/night/controls/_crop_canvas.sass */
 .imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-knobs [data-corner=top-left] {
   top: -10px;
   left: -10px;
 }
-/* line 49, ../../src/css/night/controls/_crop_canvas.sass */
+/* line 52, ../../src/css/night/controls/_crop_canvas.sass */
 .imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-knobs [data-corner=top-right] {
   top: -10px;
   right: -10px;
 }
-/* line 53, ../../src/css/night/controls/_crop_canvas.sass */
+/* line 56, ../../src/css/night/controls/_crop_canvas.sass */
 .imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-knobs [data-corner=bottom-left] {
   bottom: -10px;
   left: -10px;
 }
-/* line 57, ../../src/css/night/controls/_crop_canvas.sass */
+/* line 60, ../../src/css/night/controls/_crop_canvas.sass */
 .imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-knobs [data-corner=bottom-right] {
   bottom: -10px;
   right: -10px;

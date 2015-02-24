@@ -9,6 +9,7 @@
  */
 
 import Control from "./control";
+import Vector2 from "../../../lib/math/vector2";
 import Symbol from "es6-symbol";
 let fs = require("fs");
 
@@ -29,12 +30,28 @@ class RotationControls extends Control {
 
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/rotation_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;
+
+    let canvasControlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/rotation_canvas.jst", "utf-8");
+    this._canvasControlsTemplate = canvasControlsTemplate;
   }
 
   /**
    * Gets called when this control is activated
    */
   _onEnter () {
+    this._initialZoomLevel = this._ui.canvas.zoomLevel;
+    this._ui.canvas.zoomToFit(false);
+
+    // Store initial settings for "back" and "done" buttons
+    this._initialStart = this._operation.getStart().clone();
+    this._initialEnd = this._operation.getEnd().clone();
+
+    // Make sure we see the whole input image
+    this._operation.set({
+      start: new Vector2(0, 0),
+      end: new Vector2(1, 1)
+    });
+
     this._initialDegrees = this._operation.getDegrees();
 
     let listItems = this._controls.querySelectorAll("li");
@@ -46,14 +63,65 @@ class RotationControls extends Control {
         this._onListItemClick(listItem);
       });
     }
+
+    // Find the div areas that affect the displayed crop size
+    let prefix = ".imglykit-canvas-crop";
+    this._cropAreas = {
+      topLeft: this._canvasControls.querySelector(`${prefix}-top-left`),
+      topCenter: this._canvasControls.querySelector(`${prefix}-top-center`),
+      centerLeft: this._canvasControls.querySelector(`${prefix}-center-left`),
+      centerCenter: this._canvasControls.querySelector(`${prefix}-center-center`)
+    };
+
+    // Resume the rendering
+    this._ui.canvas.render()
+      .then(() => {
+        this._updateCropDOM();
+      });
   }
 
+  /**
+   * Gets called when the given item has been clicked
+   * @param {DOMObject} item
+   * @private
+   */
   _onListItemClick (item) {
     let { degrees } = item.dataset;
     degrees = parseInt(degrees);
 
     let currentDegrees = this._operation.getDegrees();
     this._operation.setDegrees(currentDegrees + degrees);
+    this._ui.canvas.render()
+      .then(() => {
+        this._updateCropDOM();
+      });
+  }
+
+  /**
+   * Updates the cropping divs for the current operation settings
+   * @private
+   */
+  _updateCropDOM () {
+    let start = this._initialStart.clone();
+    let end = this._initialEnd.clone();
+    let canvasSize = new Vector2(this._ui.canvas._canvas.width, this._ui.canvas._canvas.height);
+
+    let startAbsolute = start.multiply(canvasSize);
+    let endAbsolute = end.multiply(canvasSize);
+    let size = endAbsolute.clone().subtract(startAbsolute);
+
+    let top = Math.max(1, startAbsolute.y);
+    let left = Math.max(1, startAbsolute.x);
+    let width = Math.max(1, size.x);
+    let height = Math.max(1, size.y);
+
+    // widths are defined by top left and top center areas
+    this._cropAreas.topLeft.style.width = `${left}px`;
+    this._cropAreas.topCenter.style.width = `${width}px`;
+
+    // heights are defined by top left and center left areas
+    this._cropAreas.topLeft.style.height = `${top}px`;
+    this._cropAreas.centerLeft.style.height = `${height}px`;
   }
 
   /**
@@ -61,7 +129,24 @@ class RotationControls extends Control {
    * @override
    */
   _onBack () {
-    this._operation.setDegrees(this._initialDegrees);
+    this._operation.set({
+      degrees: this._initialDegrees,
+      start: this._initialStart,
+      end: this._initialEnd
+    });
+    this._ui.canvas.render();
+  }
+
+  /**
+   * Gets called when the done button has been clicked
+   * @override
+   */
+  _onDone () {
+    this._operation.set({
+      start: this._initialStart,
+      end: this._initialEnd
+    });
+    this._ui.canvas.render();
   }
 }
 

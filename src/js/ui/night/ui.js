@@ -116,10 +116,7 @@ class NightUI extends UI {
       operationInstance.isIdentity = true;
 
       operationInstance.on("update", () => {
-        if (this._paused) return;
-
         operationInstance.isIdentity = false;
-        this.render();
       });
 
       this._operationsMap[operationIdentifier] = operationInstance;
