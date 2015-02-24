@@ -157,7 +157,7 @@ class StickersControl extends Control {
       });
 
       if ((this._initialIdentity && i === 0) ||
-        (!this._initialIdentity && identifier === this._initialSettings.sticker)) {
+        (!this._initialIdentity && this._stickers[identifier] === this._initialSettings.sticker)) {
           this._onListItemClick(listItem);
       }
       i++;
