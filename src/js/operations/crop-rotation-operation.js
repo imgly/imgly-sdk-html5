@@ -260,18 +260,19 @@ class CropRotationOperation extends Operation {
   /**
    * Gets the new dimensions after cropping
    * @param {Renderer} renderer
+   * @param {Vector2} [dimensions]
    * @returns {Vector2}
    */
-  getNewCropDimensions (renderer) {
+  getNewCropDimensions (renderer, dimensions) {
     let canvas = renderer.getCanvas();
-    let newDimensions = new Vector2(canvas.width, canvas.height);
+    dimensions = dimensions || new Vector2(canvas.width, canvas.height);
 
     let size = this._options.end
       .clone()
       .subtract(this._options.start);
 
     if (this._options.numberFormat === "relative") {
-      size.multiply(newDimensions);
+      size.multiply(dimensions);
     }
 
     return size;

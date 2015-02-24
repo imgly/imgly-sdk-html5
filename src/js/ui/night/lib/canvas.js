@@ -213,16 +213,17 @@ class Canvas extends EventEmitter {
    * @private
    */
   _getInitialZoomLevel () {
-    let initialDimensions = new Vector2(this._image.width, this._image.height);
-    let finalDimensions = this._finalDimensions;
+    let cropRotationOperation = this._ui.operationsMap["crop-rotation"];
+    let cropSize = cropRotationOperation.getEnd().clone()
+      .subtract(cropRotationOperation.getStart());
 
-    // Take rotation into account when needed
-    let rotation = this._ui.operationsMap.rotation;
-    if (rotation && rotation.getDegrees() % 180 !== 0) {
-      finalDimensions.flip();
-    }
+    let inputSize = new Vector2(this._image.width, this._image.height);
+    let croppedSize = inputSize.clone().multiply(cropSize);
+    let finalSize = this._resizeVectorToFit(croppedSize);
 
-    return finalDimensions.x / initialDimensions.x;
+    let initialSize = finalSize.clone().divide(cropSize);
+
+    return initialSize.x / inputSize.x;
   }
 
   /**
@@ -422,31 +423,6 @@ class Canvas extends EventEmitter {
     return this._kit.operationsStack.filter((op) => {
       return !op.isIdentity;
     });
-  }
-
-  /**
-   * Calculates the final image dimensions
-   * @private
-   */
-  get _finalDimensions () {
-    let dimensions = new Vector2(this._image.width, this._image.height);
-
-    let rotationOperation = this._ui.operationsMap.rotation;
-    let cropOperation = this._ui.operationsMap.crop;
-
-    if (rotationOperation) {
-      dimensions = rotationOperation.getNewDimensions(this._renderer, dimensions);
-    }
-    dimensions = this._resizeVectorToFit(dimensions);
-
-    if (cropOperation) {
-      let originalDimensions = dimensions.clone();
-      let newDimensions = cropOperation.getNewDimensions(this._renderer, dimensions);
-      let diff = originalDimensions.subtract(newDimensions);
-      dimensions.add(diff);
-    }
-
-    return dimensions;
   }
 
   /**
