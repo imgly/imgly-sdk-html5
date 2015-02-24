@@ -59,6 +59,7 @@ class BrightnessControls extends Control {
   _onBack () {
     super();
     this._operation.setBrightness(this._initialBrightness);
+    this._ui.canvas.render();
   }
 
   /**
@@ -67,6 +68,7 @@ class BrightnessControls extends Control {
    */
   _onUpdate (value) {
     this._operation.setBrightness(value);
+    this._ui.canvas.render();
   }
 }
 

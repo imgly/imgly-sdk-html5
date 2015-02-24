@@ -59,6 +59,7 @@ class SaturationControls extends Control {
   _onBack () {
     super();
     this._operation.setSaturation(this._initialSaturation);
+    this._ui.canvas.render();
   }
 
   /**
@@ -67,6 +68,7 @@ class SaturationControls extends Control {
    */
   _onUpdate (value) {
     this._operation.setSaturation(value);
+    this._ui.canvas.render();
   }
 }
 

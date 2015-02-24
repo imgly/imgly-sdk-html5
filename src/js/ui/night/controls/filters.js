@@ -64,6 +64,7 @@ class FiltersControls extends Control {
    */
   _onBack () {
     this._operation.setFilter(this._initialFilter);
+    this._ui.canvas.render();
   }
 
   /**
@@ -75,6 +76,7 @@ class FiltersControls extends Control {
 
     let { identifier } = item.dataset;
     this._operation.setFilter(this._filters[identifier]);
+    this._ui.canvas.render();
 
     item.classList.add("imglykit-controls-item-active");
   }

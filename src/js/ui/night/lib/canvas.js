@@ -92,7 +92,7 @@ class Canvas extends EventEmitter {
       // Render the operations stack
       .then(() => {
         return bluebird.map(stack, (operation) => {
-          operation.render(this._renderer);
+          return operation.render(this._renderer);
         }, { concurrency: 1 });
       })
       // Render the final image

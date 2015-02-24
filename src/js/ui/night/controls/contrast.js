@@ -59,6 +59,7 @@ class ContrastControls extends Control {
   _onBack () {
     super();
     this._operation.setContrast(this._initialContrast);
+    this._ui.canvas.render();
   }
 
   /**
@@ -67,6 +68,7 @@ class ContrastControls extends Control {
    */
   _onUpdate (value) {
     this._operation.setContrast(value);
+    this._ui.canvas.render();
   }
 }
 

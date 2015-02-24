@@ -105,6 +105,7 @@ class TiltShiftControls extends Control {
    */
   _onBlurRadiusUpdate (value) {
     this._operation.setBlurRadius(value);
+    this._ui.canvas.render();
   }
 
   /**
@@ -114,6 +115,7 @@ class TiltShiftControls extends Control {
    */
   _onGradientRadiusUpdate (value) {
     this._operation.setGradientRadius(value);
+    this._ui.canvas.render();
     this._updateDOM();
   }
 
@@ -224,6 +226,7 @@ class TiltShiftControls extends Control {
   _onBack () {
     if (!this._initialIdentity) {
       this._operation.set(this._initialOptions);
+      this._ui.canvas.render();
     } else {
       this._operation.isIdentity = this._initialIdentity;
       this._ui.canvas.render();

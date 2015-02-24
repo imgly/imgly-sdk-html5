@@ -100,6 +100,7 @@ class RadialBlurControls extends Control {
    */
   _onBlurRadiusUpdate (value) {
     this._operation.setBlurRadius(value);
+    this._ui.canvas.render();
   }
 
   /**
@@ -109,6 +110,7 @@ class RadialBlurControls extends Control {
    */
   _onGradientRadiusUpdate (value) {
     this._operation.setGradientRadius(value);
+    this._ui.canvas.render();
     this._updateDOM();
   }
 
@@ -156,6 +158,7 @@ class RadialBlurControls extends Control {
       .add(diff)
       .divide(canvasSize);
     this._operation.setPosition(newPosition);
+    this._ui.canvas.render();
     this._updateDOM();
   }
 
@@ -204,6 +207,7 @@ class RadialBlurControls extends Control {
   _onBack () {
     if (!this._initialIdentity) {
       this._operation.set(this._initialSettings);
+      this._ui.canvas.render();
     } else {
       this._operation.isIdentity = this._initialIdentity;
       this._ui.canvas.render();

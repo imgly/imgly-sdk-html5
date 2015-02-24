@@ -26,7 +26,7 @@ class StickersOperation extends Operation {
       sticker: { type: "string", required: true },
       position: { type: "vector2", default: new Vector2(0, 0) },
       size: { type: "vector2", default: new Vector2(0, 0) }
-    }
+    };
 
     /**
      * The texture index used for the sticker

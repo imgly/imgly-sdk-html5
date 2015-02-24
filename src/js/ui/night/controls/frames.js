@@ -75,6 +75,7 @@ class FramesControls extends Control {
   _onBack () {
     if (!this._initialIdentity) {
       this._operation.set(this._initialOptions);
+      this._ui.canvas.render();
     } else {
       this._operation.isIdentity = this._initialIdentity;
       this._ui.canvas.render();
@@ -87,6 +88,7 @@ class FramesControls extends Control {
    */
   _onThicknessUpdate (value) {
     this._operation.setThickness(value);
+    this._ui.canvas.render();
   }
 
   /**
@@ -95,6 +97,7 @@ class FramesControls extends Control {
    */
   _onColorUpdate (value) {
     this._operation.setColor(value);
+    this._ui.canvas.render();
   }
 }
 

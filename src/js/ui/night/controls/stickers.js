@@ -200,6 +200,7 @@ class StickersControl extends Control {
   _onBack () {
     if (!this._initialIdentity) {
       this._operation.set(this._initialSettings);
+      this._ui.canvas.render();
     } else {
       this._operation.isIdentity = this._initialIdentity;
       this._ui.canvas.render();
@@ -220,11 +221,18 @@ class StickersControl extends Control {
 
     this._ui.canvas.setZoomLevel(this._initialZoomLevel, false);
 
+    console.log({
+      sticker: this._availableStickers[this._sticker],
+      position: position,
+      size: size
+    });
+
     this._operation.set({
       sticker: this._availableStickers[this._sticker],
       position: position,
       size: size
     });
+    this._ui.canvas.render();
   }
 
   /**

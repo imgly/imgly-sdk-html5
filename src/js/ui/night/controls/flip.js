@@ -67,10 +67,12 @@ class FlipControls extends Control {
     if (direction === "horizontal") {
       let currentHorizontal = this._operation.getHorizontal();
       this._operation.setHorizontal(!currentHorizontal);
+      this._ui.canvas.render();
       active = !currentHorizontal;
     } else if (direction === "vertical") {
       let currentVertical = this._operation.getVertical();
       this._operation.setVertical(!currentVertical);
+      this._ui.canvas.render();
       active = !currentVertical;
     }
 
@@ -99,6 +101,7 @@ class FlipControls extends Control {
   _onBack () {
     this._operation.setHorizontal(this._initialHorizontal);
     this._operation.setVertical(this._initialVertical);
+    this._ui.canvas.render();
   }
 }
 
