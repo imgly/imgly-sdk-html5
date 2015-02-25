@@ -54,7 +54,6 @@ class RadialBlurControls extends Control {
     };
 
     this._operation.isIdentity = false;
-    this._ui.canvas.render();
 
     // Mouse event callbacks bound to the class context
     this._onKnobDown = this._onKnobDown.bind(this);
@@ -64,9 +63,12 @@ class RadialBlurControls extends Control {
     this._knob = this._canvasControls.querySelector(".imglykit-canvas-radial-blur-dot");
     this._circle = this._canvasControls.querySelector(".imglykit-canvas-radial-blur-circle");
     this._handleKnob();
-    this._updateDOM();
-
     this._initSliders();
+
+    this._ui.canvas.render()
+      .then(() => {
+        this._updateDOM();
+      });
   }
 
   /**
@@ -110,8 +112,8 @@ class RadialBlurControls extends Control {
    */
   _onGradientRadiusUpdate (value) {
     this._operation.setGradientRadius(value);
-    this._ui.canvas.render();
     this._updateDOM();
+    this._ui.canvas.render();
   }
 
   /**
@@ -157,9 +159,10 @@ class RadialBlurControls extends Control {
       .multiply(canvasSize)
       .add(diff)
       .divide(canvasSize);
+
     this._operation.setPosition(newPosition);
-    this._ui.canvas.render();
     this._updateDOM();
+    this._ui.canvas.render();
   }
 
   /**
