@@ -56,7 +56,6 @@ class TiltShiftControls extends Control {
     };
 
     this._operation.isIdentity = false;
-    this._ui.canvas.render();
 
     // Mouse event callbacks bound to the class context
     this._onKnobDown = this._onKnobDown.bind(this);
@@ -69,9 +68,11 @@ class TiltShiftControls extends Control {
     this._knobs = [this._startKnob, this._endKnob];
 
     this._handleKnobs();
-    this._updateDOM();
-
     this._initSliders();
+
+    this._ui.canvas.render().then(() => {
+      this._updateDOM();
+    });
   }
 
   /**
@@ -115,8 +116,8 @@ class TiltShiftControls extends Control {
    */
   _onGradientRadiusUpdate (value) {
     this._operation.setGradientRadius(value);
-    this._ui.canvas.render();
     this._updateDOM();
+    this._ui.canvas.render();
   }
 
   /**
@@ -179,6 +180,7 @@ class TiltShiftControls extends Control {
       .divide(canvasSize);
     this._operation[`set${capitalized}`](newPosition);
     this._updateDOM();
+    this._ui.canvas.render();
   }
 
   /**
