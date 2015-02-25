@@ -26,7 +26,8 @@ class RotationControls extends Control {
    * Entry point for this control
    */
   init () {
-    this._operation = this._ui.operationsMap["crop-rotation"];
+    this._operation = this._ui.operationsMap.rotation;
+    this._cropOperation = this._ui.operationsMap.crop;
 
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/rotation_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;
@@ -43,11 +44,11 @@ class RotationControls extends Control {
     this._ui.canvas.zoomToFit(false);
 
     // Store initial settings for "back" and "done" buttons
-    this._initialStart = this._operation.getStart().clone();
-    this._initialEnd = this._operation.getEnd().clone();
+    this._initialStart = this._cropOperation.getStart().clone();
+    this._initialEnd = this._cropOperation.getEnd().clone();
 
     // Make sure we see the whole input image
-    this._operation.set({
+    this._cropOperation.set({
       start: new Vector2(0, 0),
       end: new Vector2(1, 1)
     });
@@ -140,8 +141,8 @@ class RotationControls extends Control {
    * @override
    */
   _onBack () {
-    this._operation.set({
-      degrees: this._initialDegrees,
+    this._operation.setDegrees(this._initialDegrees);
+    this._cropOperation.set({
       start: this._initialStart,
       end: this._initialEnd
     });
@@ -153,7 +154,7 @@ class RotationControls extends Control {
    * @override
    */
   _onDone () {
-    this._operation.set({
+    this._cropOperation.set({
       start: this._initialStart,
       end: this._initialEnd
     });

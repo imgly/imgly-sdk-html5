@@ -58,6 +58,7 @@ class Canvas extends EventEmitter {
    * Renders the current operations stack
    */
   render () {
+    console.debug("Canvas#render");
     this._initialZoomLevel = this._getInitialZoomLevel();
 
     // Reset the zoom level to initial
@@ -213,15 +214,16 @@ class Canvas extends EventEmitter {
    * @private
    */
   _getInitialZoomLevel () {
-    let cropRotationOperation = this._ui.operationsMap["crop-rotation"];
-    let cropSize = cropRotationOperation.getEnd().clone()
-      .subtract(cropRotationOperation.getStart());
+    let cropOperation = this._ui.operationsMap.crop;
+    let rotationOperation = this._ui.operationsMap.rotation;
+    let cropSize = cropOperation.getEnd().clone()
+      .subtract(cropOperation.getStart());
 
     let inputSize = new Vector2(this._image.width, this._image.height);
     let croppedSize = inputSize.clone().multiply(cropSize);
 
     // Has the image been rotated?
-    if (cropRotationOperation.getDegrees() % 180 !== 0) {
+    if (rotationOperation.getDegrees() % 180 !== 0) {
       let tempX = croppedSize.x;
       croppedSize.x = croppedSize.y;
       croppedSize.y = tempX;
@@ -230,7 +232,7 @@ class Canvas extends EventEmitter {
     let finalSize = this._resizeVectorToFit(croppedSize);
 
     // Rotate back to be able to find the final size
-    if (cropRotationOperation.getDegrees() % 180 !== 0) {
+    if (rotationOperation.getDegrees() % 180 !== 0) {
       let tempX = finalSize.x;
       finalSize.x = finalSize.y;
       finalSize.y = tempX;

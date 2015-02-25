@@ -26,7 +26,7 @@ class CropControls extends Control {
    * Entry point for this control
    */
   init () {
-    this._operation = this._ui.operationsMap["crop-rotation"];
+    this._operation = this._ui.operationsMap.crop;
 
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/crop_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;

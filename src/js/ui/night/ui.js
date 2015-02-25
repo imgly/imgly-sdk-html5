@@ -24,7 +24,8 @@ class NightUI extends UI {
     // The `Night` UI has a fixed operation order
     this._preferredOperationOrder = [
       // First, all operations that affect the image dimensions
-      "crop-rotation",
+      "crop",
+      "rotation",
       "flip",
 
       // Then color operations (first filters, then fine-tuning)
@@ -130,12 +131,12 @@ class NightUI extends UI {
    */
   _registerControls () {
     this.registerControl("filters", "filters", require("./controls/filters"));
-    this.registerControl("rotation", "crop-rotation", require("./controls/rotation"));
+    this.registerControl("rotation", "rotation", require("./controls/rotation"));
     this.registerControl("flip", "flip", require("./controls/flip"));
     this.registerControl("brightness", "brightness", require("./controls/brightness"));
     this.registerControl("contrast", "contrast", require("./controls/contrast"));
     this.registerControl("saturation", "saturation", require("./controls/saturation"));
-    this.registerControl("crop", "crop-rotation", require("./controls/crop"));
+    this.registerControl("crop", "crop", require("./controls/crop"));
     this.registerControl("radial-blur", "radial-blur", require("./controls/radial-blur"));
     this.registerControl("tilt-shift", "tilt-shift", require("./controls/tilt-shift"));
     this.registerControl("frames", "frames", require("./controls/frames"));

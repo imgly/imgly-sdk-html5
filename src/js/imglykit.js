@@ -195,7 +195,10 @@ class ImglyKit {
   }
 
   run () {
-    this.ui.run();
+    if (typeof this.ui !== "undefined") {
+      this.ui.run();
+    }
+
   }
 }
 
@@ -212,7 +215,8 @@ ImglyKit.Color = require("./lib/color");
 ImglyKit.Operation = require("./operations/operation");
 ImglyKit.Operations = {};
 ImglyKit.Operations.FiltersOperation = require("./operations/filters-operation");
-ImglyKit.Operations.CropRotationOperation = require("./operations/crop-rotation-operation");
+ImglyKit.Operations.CropOperation = require("./operations/crop-operation");
+ImglyKit.Operations.RotationOperation = require("./operations/rotation-operation");
 ImglyKit.Operations.SaturationOperation = require("./operations/saturation-operation");
 ImglyKit.Operations.ContrastOperation = require("./operations/contrast-operation");
 ImglyKit.Operations.BrightnessOperation = require("./operations/brightness-operation");
@@ -222,6 +226,10 @@ ImglyKit.Operations.RadialBlurOperation = require("./operations/radial-blur-oper
 ImglyKit.Operations.TextOperation = require("./operations/text-operation");
 ImglyKit.Operations.StickersOperation = require("./operations/stickers-operation");
 ImglyKit.Operations.FramesOperation = require("./operations/frames-operation");
+
+ImglyKit.Filters = {};
+ImglyKit.Filters.A15 = require("./operations/filters/a15-filter");
+ImglyKit.Filters.Breeze = require("./operations/filters/breeze-filter");
 
 // Exposed constants
 ImglyKit.RenderType = RenderType;

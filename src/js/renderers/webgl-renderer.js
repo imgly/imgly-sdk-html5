@@ -128,7 +128,7 @@ class WebGLRenderer extends Renderer {
     gl.useProgram(program);
 
     var fbo = this.getCurrentFramebuffer();
-    var texture = this.getCurrentTexture();
+    var currentTexture = this.getCurrentTexture();
 
     // Select the current framebuffer
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
@@ -174,7 +174,7 @@ class WebGLRenderer extends Renderer {
     // Draw the rectangle
     gl.drawArrays(gl.TRIANGLES, 0, 6);
 
-    this.setLastTexture(texture);
+    this.setLastTexture(currentTexture);
     this.selectNextBuffer();
   }
 
