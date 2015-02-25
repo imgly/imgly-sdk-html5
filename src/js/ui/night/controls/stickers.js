@@ -100,6 +100,7 @@ class StickersControl extends Control {
    * @override
    */
   _onEnter () {
+    console.debug("------------- #onEnter");
     this._initialIdentity = this._operation.isIdentity;
     this._initialSettings = {
       sticker: this._operation.getSticker(),
@@ -107,13 +108,16 @@ class StickersControl extends Control {
       size: this._operation.getSize().clone()
     };
 
+    this._size = this._initialSettings.size.clone();
+    this._position = this._initialSettings.position.clone();
+
     // Don't render an already existing sticker as long as
     // we're editing
     this._operation.isIdentity = true;
 
     // Remember zoom level and zoom to fit the canvas
     this._initialZoomLevel = this._ui.canvas.zoomLevel;
-    this._ui.canvas.zoomToFit();
+    this._ui.canvas.zoomToFit(false);
 
     // Find DOM elements
     this._container = this._canvasControls.querySelector(".imglykit-canvas-stickers");
@@ -131,9 +135,15 @@ class StickersControl extends Control {
     this._onKnobDrag = this._onKnobDrag.bind(this);
     this._onKnobUp = this._onKnobUp.bind(this);
 
-    if (!this._initialIdentity) {
-      this._applyInitialSettings();
-    }
+    this._ui.canvas.render()
+      .then(() => {
+        let canvasSize = this._ui.canvas.size;
+        this._size.multiply(canvasSize);
+        this._position.multiply(canvasSize);
+        if (!this._initialIdentity) {
+          this._applySettings();
+        }
+      });
 
     this._handleListItems();
     this._handleImage();
@@ -169,28 +179,13 @@ class StickersControl extends Control {
    * @private
    */
   _applySettings () {
+    let ratio = this._sticker.height / this._sticker.width;
+    this._size.y = this._size.x * ratio;
+
     this._stickerImage.style.width = `${this._size.x}px`;
     this._stickerImage.style.height = `${this._size.y}px`;
-
     this._container.style.left = `${this._position.x}px`;
     this._container.style.top = `${this._position.y}px`;
-  }
-
-  /**
-   * Resizes and positions the image according to the initial settings
-   * @private
-   */
-  _applyInitialSettings () {
-    let canvasSize = this._ui.canvas.size;
-    let position = this._initialSettings.position.clone()
-      .multiply(canvasSize);
-    this._container.style.left = `${position.x}px`;
-    this._container.style.top = `${position.y}px`;
-
-    let size = this._initialSettings.size.clone()
-      .multiply(canvasSize);
-    this._stickerImage.style.width = `${size.x}px`;
-    this._stickerImage.style.height = `${size.y}px`;
   }
 
   /**
@@ -362,7 +357,9 @@ class StickersControl extends Control {
       this._position = new Vector2(0, 0);
     }
 
-    this._applySettings();
+    if (this._initialIdentity) {
+      this._applySettings();
+    }
   }
 
   /**
