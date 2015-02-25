@@ -58,7 +58,6 @@ class Canvas extends EventEmitter {
    * Renders the current operations stack
    */
   render () {
-    console.debug("Canvas#render");
     this._initialZoomLevel = this._getInitialZoomLevel();
 
     // Reset the zoom level to initial
