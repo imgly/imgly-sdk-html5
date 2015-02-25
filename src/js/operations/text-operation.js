@@ -22,7 +22,7 @@ import Color from "../lib/color";
 class TextOperation extends Operation {
   constructor (...args) {
     this.availableOptions = {
-      fontSize: { type: "number", default: 30 },
+      fontSize: { type: "number", default: 0.1 },
       lineHeight: { type: "number", default: 1.1 },
       fontFamily: { type: "string", default: "Times New Roman" },
       fontWeight: { type: "string", default: "normal" },
@@ -186,22 +186,27 @@ class TextOperation extends Operation {
    * @private
    */
   _renderTextCanvas (renderer) {
-    var line, lineNum;
-    var canvas = renderer.createCanvas();
-    var context = canvas.getContext("2d");
-    var maxWidth = this._options.maxWidth;
-    var actualLineHeight = this._options.lineHeight * this._options.fontSize;
+    let line, lineNum;
+    let canvas = renderer.createCanvas();
+    let context = canvas.getContext("2d");
+
+    let outputCanvas = renderer.getCanvas();
+    let canvasSize = new Vector2(outputCanvas.width, outputCanvas.height);
+
+    let maxWidth = this._options.maxWidth;
+    let actualFontSize = this._options.fontSize * canvasSize.y;
+    let actualLineHeight = this._options.lineHeight * actualFontSize;
 
     if (this._options.numberFormat === "relative") {
       maxWidth *= renderer.getCanvas().width;
     }
 
     // Apply text options
-    this._applyTextOptions(context);
+    this._applyTextOptions(renderer, context);
 
-    var boundingBox = new Vector2();
+    let boundingBox = new Vector2();
 
-    var lines = this._options.text.split("\n");
+    let lines = this._options.text.split("\n");
     if (typeof maxWidth !== "undefined") {
       // Calculate the bounding box
       boundingBox.x = maxWidth;
@@ -228,7 +233,7 @@ class TextOperation extends Operation {
     context.fillRect(0, 0, canvas.width, canvas.height);
 
     // Apply text options
-    this._applyTextOptions(context);
+    this._applyTextOptions(renderer, context);
 
 
     // Draw lines
@@ -242,12 +247,17 @@ class TextOperation extends Operation {
 
   /**
    * Applies the text options on the given context
+   * @param  {Renderer} renderer
    * @param  {RenderingContext2D} context
    * @private
    */
-  _applyTextOptions (context) {
+  _applyTextOptions (renderer, context) {
+    let canvas = renderer.getCanvas();
+    let canvasSize = new Vector2(canvas.width, canvas.height);
+    let actualFontSize = this._options.fontSize * canvasSize.y;
+
     context.font = this._options.fontWeight + " " +
-      this._options.fontSize + "px " +
+      actualFontSize + "px " +
       this._options.fontFamily;
     context.textBaseline = "top";
     context.textAlign = this._options.alignment;

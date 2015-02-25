@@ -347,9 +347,13 @@ class TextControl extends Control {
   _applySettings () {
     let textarea = this._textarea;
     let settings = this._settings;
+
+    let canvasSize = this._ui.canvas.size;
+    let actualFontSize = settings.fontSize * canvasSize.y;
+
     textarea.value = settings.text;
     textarea.style.fontFamily = settings.fontFamily;
-    textarea.style.fontSize = `${settings.fontSize}px`;
+    textarea.style.fontSize = `${actualFontSize}px`;
     textarea.style.fontWeight = settings.fontWeight;
     textarea.style.lineHeight = settings.lineHeight;
     textarea.style.color = settings.color.toRGBA();
@@ -425,6 +429,7 @@ class TextControl extends Control {
       text: this._settings.text,
       maxWidth: this._settings.maxWidth / canvasSize.x
     });
+    this._ui.canvas.render();
   }
 
   /**
