@@ -39,6 +39,7 @@ class RotationOperation extends Operation {
 
       void main() {
         gl_Position = vec4((u_matrix * vec3(a_position, 1)).xy, 0, 1);
+        // gl_Position = vec4(a_position, 0, 1);
         v_texCoord = a_texCoord;
       }
     `;
@@ -111,6 +112,10 @@ class RotationOperation extends Operation {
         u_matrix: { type: "mat3fv", value: rotationMatrix }
       }
     });
+
+    // Resize input texture
+    gl.bindTexture(gl.TEXTURE_2D, lastTexture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, canvas.width, canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
   }
 
   /**
