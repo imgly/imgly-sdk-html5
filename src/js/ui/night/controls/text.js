@@ -232,7 +232,7 @@ class TextControl extends Control {
       this._container.offsetWidth,
       this._container.offsetHeight
     );
-    let maxPosition = canvasSize.subtract(containerSize);
+    let maxPosition = canvasSize.clone().subtract(containerSize);
     let position = this._initialPosition.clone()
       .add(diff)
       .clamp(minPosition, maxPosition);
