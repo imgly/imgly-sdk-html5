@@ -178,7 +178,7 @@ class StickersControl extends Control {
    * @private
    */
   _applySettings () {
-    let ratio = this._sticker.height / this._sticker.width;
+    let ratio = this._stickerImage.height / this._stickerImage.width;
     this._size.y = this._size.x * ratio;
 
     this._stickerImage.style.width = `${this._size.x}px`;
