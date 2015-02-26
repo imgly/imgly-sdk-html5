@@ -77,7 +77,7 @@ class Canvas extends EventEmitter {
     this._renderer.reset();
 
     // On first render, draw the image to the input texture
-    if (this._isFirstRender) {
+    if (this._isFirstRender || this._renderer.constructor.identifier === "canvas") {
       this._renderer.drawImage(this._image);
       this._isFirstRender = false;
     }
@@ -101,7 +101,8 @@ class Canvas extends EventEmitter {
       })
       // Update the margins and boundaries
       .then(() => {
-        this._setCanvasSize();
+        this._storeCanvasSize();
+        this._updateContainerSize();
         this._updateCanvasMargins();
         this._applyBoundaries();
       });
@@ -156,12 +157,33 @@ class Canvas extends EventEmitter {
    */
   _setCanvasSize (size) {
     size = size || new Vector2(this._canvas.width, this._canvas.height);
+
     this._canvas.width = size.x;
     this._canvas.height = size.y;
+
+    this._storeCanvasSize();
+    this._updateContainerSize();
+  }
+
+  /**
+   * Updates the canvas container size
+   * @private
+   */
+  _updateContainerSize () {
+    let size = this._size;
     this._canvasInnerContainer.style.width = `${size.x}px`;
     this._canvasInnerContainer.style.height = `${size.y}px`;
+  }
 
-    this._size = size.clone();
+  /**
+   * Remembers the canvas size
+   * @comment This was introduced because the canvas size was not always
+   *          correct due to some race conditions. Now that promises work
+   *          properly, do we still need this?
+   * @private
+   */
+  _storeCanvasSize () {
+    this._size = new Vector2(this._canvas.width, this._canvas.height);
   }
 
   /**
@@ -272,6 +294,26 @@ class Canvas extends EventEmitter {
     if (this._renderer === null) {
       throw new Error("Neither Canvas nor WebGL renderer are supported.");
     }
+
+    this._renderer.on("new-canvas", (canvas) => {
+      this._setCanvas(canvas);
+    });
+  }
+
+  /**
+   * Replaces the canvas with the given canvas, updates margins etc
+   * @param {DOMElement} canvas
+   * @private
+   */
+  _setCanvas (canvas) {
+    let canvasParent = this._canvas.parentNode;
+    canvasParent.removeChild(this._canvas);
+    this._canvas = canvas;
+    canvasParent.appendChild(this._canvas);
+
+    this._updateCanvasMargins();
+    this._applyBoundaries();
+    this._updateContainerSize();
   }
 
   /**

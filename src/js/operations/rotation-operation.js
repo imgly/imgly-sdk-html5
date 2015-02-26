@@ -119,6 +119,41 @@ class RotationOperation extends Operation {
   }
 
   /**
+   * Crops the image using Canvas2D
+   * @param  {CanvasRenderer} renderer
+   */
+  _renderCanvas (renderer) {
+    var canvas = renderer.getCanvas();
+
+    var actualDegrees = this._options.degrees % 360;
+    let newDimensions = this.getNewDimensions(renderer);
+
+    // Create a rotated canvas
+    var newCanvas = renderer.createCanvas();
+    newCanvas.width = newDimensions.x;
+    newCanvas.height = newDimensions.y;
+    var newContext = newCanvas.getContext("2d");
+
+    newContext.save();
+
+    // Translate the canvas
+    newContext.translate(newCanvas.width / 2, newCanvas.height / 2);
+
+    // Rotate the canvas
+    newContext.rotate(actualDegrees * (Math.PI / 180));
+
+    // Create a temporary canvas so that we can draw the image
+    // with the applied transformation
+    var tempCanvas = renderer.cloneCanvas();
+    newContext.drawImage(tempCanvas, -canvas.width / 2, -canvas.height / 2);
+
+    // Restore old transformation
+    newContext.restore();
+
+    renderer.setCanvas(newCanvas);
+  }
+
+  /**
    * Gets the new dimensions
    * @param {Renderer} renderer
    * @param {Vector2} [dimensions]

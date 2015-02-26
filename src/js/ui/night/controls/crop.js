@@ -97,7 +97,10 @@ class CropControls extends Control {
     this._handleCenter();
 
     // Resume the rendering
-    this._ui.canvas.render();
+    this._ui.canvas.render()
+      .then(() => {
+        this._updateDOM();
+      });
   }
 
   /**
@@ -113,8 +116,6 @@ class CropControls extends Control {
         this._start === null && this._end === null) {
           this._setRatio(item.dataset.ratio, false);
           this._selectRatio(item);
-      } else {
-        this._updateDOM();
       }
 
       item.addEventListener("click", (e) => {
@@ -196,10 +197,11 @@ class CropControls extends Control {
    * @private
    */
   _updateDOM () {
+    let canvasSize = this._ui.canvas.size;
     let startAbsolute = this._start.clone()
-      .multiply(this._ui.canvas.size);
+      .multiply(canvasSize);
     let endAbsolute = this._end.clone()
-      .multiply(this._ui.canvas.size);
+      .multiply(canvasSize);
     let size = endAbsolute.clone()
       .subtract(startAbsolute);
 
@@ -207,6 +209,8 @@ class CropControls extends Control {
     let left = Math.max(1, startAbsolute.x);
     let width = Math.max(1, size.x);
     let height = Math.max(1, size.y);
+
+    console.log({ top, left, width, height });
 
     // widths are defined by top left and top center areas
     this._areas.topLeft.style.width = `${left}px`;

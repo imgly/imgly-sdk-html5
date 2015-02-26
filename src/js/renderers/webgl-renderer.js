@@ -427,6 +427,10 @@ class WebGLRenderer extends Renderer {
     this._lastTexture = texture;
   }
 
+  /**
+   * Resets the renderer
+   * @override
+   */
   reset () {
     this._lastTexture = null;
     this._textures = [];

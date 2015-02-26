@@ -10,6 +10,7 @@
  */
 
 import Vector2 from "../lib/math/vector2";
+import EventEmitter from "../lib/event-emitter";
 
 /**
  * @class
@@ -17,8 +18,10 @@ import Vector2 from "../lib/math/vector2";
  * @param {Vector2} dimensions
  * @private
  */
-class Renderer {
+class Renderer extends EventEmitter {
   constructor (dimensions, canvas) {
+    super();
+
     /**
      * @type {Canvas}
      * @private
@@ -162,6 +165,8 @@ class Renderer {
   setCanvas (canvas) {
     this._canvas = canvas;
     this._context = this._getContext();
+
+    this.emit("new-canvas", this._canvas);
   }
 
   /**
@@ -170,6 +175,13 @@ class Renderer {
    */
   setContext (context) {
     this._context = context;
+  }
+
+  /**
+   * Resets the renderer
+   */
+  reset () {
+
   }
 }
 

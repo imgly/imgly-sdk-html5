@@ -56,6 +56,8 @@ class CropOperation extends Operation {
   /**
    * Rotates and crops the image using WebGL
    * @param  {WebGLRenderer} renderer
+   * @override
+   * @private
    */
   /* istanbul ignore next */
   _renderWebGL (renderer) {
@@ -104,6 +106,43 @@ class CropOperation extends Operation {
         u_cropEnd: { type: "2f", value: [end.x, end.y] }
       }
     });
+  }
+
+  /**
+   * Crops the image using Canvas
+   * @param {CanvasRenderer} renderer
+   * @override
+   * @private
+   */
+  _renderCanvas (renderer) {
+    var canvas = renderer.getCanvas();
+    var dimensions = new Vector2(canvas.width, canvas.height);
+
+    var newDimensions = this.getNewDimensions(renderer);
+
+    // Create a temporary canvas to draw to
+    var newCanvas = renderer.createCanvas();
+    newCanvas.width = newDimensions.x;
+    newCanvas.height = newDimensions.y;
+    var newContext = newCanvas.getContext("2d");
+
+    // The upper left corner of the cropped area on the original image
+    var startPosition = this._options.start.clone();
+
+    if (this._options.numberFormat === "relative") {
+      startPosition.multiply(dimensions);
+    }
+
+    // Draw the source canvas onto the new one
+    newContext.drawImage(canvas,
+      startPosition.x, startPosition.y, // source x, y
+      newDimensions.x, newDimensions.y, // source dimensions
+      0, 0, // destination x, y
+      newDimensions.x, newDimensions.y // destination dimensions
+      );
+
+    // Set the new canvas
+    renderer.setCanvas(newCanvas);
   }
 
   /**
