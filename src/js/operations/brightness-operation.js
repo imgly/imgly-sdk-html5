@@ -36,11 +36,29 @@ class BrightnessOperation extends Operation {
   }
 
   /**
-   * Renders the filter
-   * @param  {Renderer} renderer
-   * @return {Promise}
+   * Renders the brightness using WebGL
+   * @param  {WebGLRenderer} renderer
+   * @override
    */
-  render (renderer) {
+  _renderWebGL (renderer) {
+    this._render(renderer);
+  }
+
+  /**
+   * Renders the brightness using Canvas2D
+   * @param {CanvasRenderer} renderer
+   * @override
+   */
+  _renderCanvas (renderer) {
+    this._render(renderer);
+  }
+
+  /**
+   * Renders the brightness (all renderers supported)
+   * @param {Renderer} renderer
+   * @private
+   */
+  _render (renderer) {
     var stack = new PrimitivesStack();
 
     stack.add(new BrightnessPrimitive({

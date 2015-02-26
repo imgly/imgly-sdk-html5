@@ -32,6 +32,7 @@ class Operation extends EventEmitter {
     this.availableOptions = _.extend(this.availableOptions || {}, {
       numberFormat: { type: "string", default: "relative", available: ["absolute", "relative"] }
     });
+    this._dirty = true;
 
     this._initOptions(options || {});
   }
@@ -71,7 +72,13 @@ class Operation extends EventEmitter {
       /* istanbul ignore next */
       this._renderWebGL(renderer);
     } else {
-      this._renderCanvas(renderer);
+      if (this._dirty) {
+        this._renderCanvas(renderer);
+        this._cacheOutputImageData(renderer);
+        this._dirty = false;
+      } else {
+        this._renderCanvasCached(renderer);
+      }
     }
   }
 
@@ -91,6 +98,26 @@ class Operation extends EventEmitter {
    */
   _renderCanvas () {
     throw new Error("Operation#_renderCanvas is abstract and not implemented in inherited class.");
+  }
+
+  /**
+   * Caches the renderer's current canvas content
+   * @param {CanvasRenderer} renderer
+   * @private
+   */
+  _cacheOutputImageData (renderer) {
+    let canvas = renderer.getCanvas();
+    let context = renderer.getContext();
+    this._cachedImageData = context.getImageData(0, 0, canvas.width, canvas.height);
+  }
+
+  /**
+   * Renders the cached image data to the renderer's canvas
+   * @param {CanvasRenderer} renderer
+   * @private
+   */
+  _renderCanvasCached (renderer) {
+    renderer.getContext().putImageData(this._cachedImageData, 0, 0);
   }
 
   /**
@@ -239,6 +266,7 @@ class Operation extends EventEmitter {
     }
 
     if (update) {
+      this._dirty = true;
       this.emit("update");
     }
   }
@@ -255,6 +283,22 @@ class Operation extends EventEmitter {
     dimensions = dimensions || new Vector2(canvas.width, canvas.height);
 
     return dimensions;
+  }
+
+  /**
+   * Sets this operation to dirty, so that it will re-render next time
+   * @param {Boolean} dirty = true
+   */
+  set dirty (dirty) {
+    this._dirty = dirty;
+  }
+
+  /**
+   * Returns the dirty state
+   * @type {Boolean}
+   */
+  get dirty () {
+    return this._dirty;
   }
 }
 

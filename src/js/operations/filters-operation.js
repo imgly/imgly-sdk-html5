@@ -42,11 +42,29 @@ class FiltersOperation extends Operation {
   }
 
   /**
-   * Renders the filter
-   * @param  {Renderer} renderer
-   * @return {Promise}
+   * Renders the filter using WebGL
+   * @param  {WebGLRenderer} renderer
+   * @override
    */
-  render (renderer) {
+  _renderWebGL (renderer) {
+    this._render(renderer);
+  }
+
+  /**
+   * Renders the filter using Canvas2D
+   * @param {CanvasRenderer} renderer
+   * @override
+   */
+  _renderCanvas (renderer) {
+    this._render(renderer);
+  }
+
+  /**
+   * Renders the filter (all renderers supported)
+   * @param {Renderer} renderer
+   * @private
+   */
+  _render (renderer) {
     this._selectedFilter.render(renderer);
   }
 }

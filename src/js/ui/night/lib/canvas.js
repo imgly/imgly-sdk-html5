@@ -84,6 +84,8 @@ class Canvas extends EventEmitter {
 
     // Run the operations stack
     let stack = this._actualStack;
+    this._updateStackDirtyStates(stack);
+
     return bluebird
       // Validate all settings
       .map(stack, (operation) => {
@@ -477,9 +479,29 @@ class Canvas extends EventEmitter {
    * @private
    */
   get _actualStack () {
-    return this._kit.operationsStack.filter((op) => {
+    let stack = this._kit.operationsStack.filter((op) => {
       return !op.isIdentity;
     });
+    return stack;
+  }
+
+  /**
+   * Find the first dirty operation of the stack and sets all following
+   * operations to dirty
+   * @param {Array.<Operation>} stack
+   * @private
+   */
+  _updateStackDirtyStates (stack) {
+    let dirtyFound = false;
+    for (let operation of stack) {
+      if (operation.dirty) {
+        dirtyFound = true;
+      }
+
+      if (dirtyFound) {
+        operation.dirty = true;
+      }
+    }
   }
 
   /**
