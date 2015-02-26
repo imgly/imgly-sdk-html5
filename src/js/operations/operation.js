@@ -74,10 +74,10 @@ class Operation extends EventEmitter {
     } else {
       if (this._dirty) {
         this._renderCanvas(renderer);
-        this._cacheOutputImageData(renderer);
+        this._cacheCanvas(renderer);
         this._dirty = false;
       } else {
-        this._renderCanvasCached(renderer);
+        this._renderCachedCanvas(renderer);
       }
     }
   }
@@ -105,10 +105,12 @@ class Operation extends EventEmitter {
    * @param {CanvasRenderer} renderer
    * @private
    */
-  _cacheOutputImageData (renderer) {
+  _cacheCanvas (renderer) {
     let canvas = renderer.getCanvas();
     let context = renderer.getContext();
-    this._cachedImageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    let canvasSize = new Vector2(canvas.width, canvas.height);
+    this._cachedImageData = context.getImageData(0, 0, canvasSize.x, canvasSize.y);
+    this._cachedCanvasSize = canvasSize;
   }
 
   /**
@@ -116,8 +118,12 @@ class Operation extends EventEmitter {
    * @param {CanvasRenderer} renderer
    * @private
    */
-  _renderCanvasCached (renderer) {
-    renderer.getContext().putImageData(this._cachedImageData, 0, 0);
+  _renderCachedCanvas (renderer) {
+    let canvas = renderer.getCanvas();
+    let context = renderer.getContext();
+    canvas.width = this._cachedCanvasSize.x;
+    canvas.height = this._cachedCanvasSize.y;
+    context.putImageData(this._cachedImageData, 0, 0);
   }
 
   /**
@@ -265,8 +271,8 @@ class Operation extends EventEmitter {
         break;
     }
 
+    this._dirty = true;
     if (update) {
-      this._dirty = true;
       this.emit("update");
     }
   }
