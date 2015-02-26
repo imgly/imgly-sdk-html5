@@ -210,8 +210,6 @@ class CropControls extends Control {
     let width = Math.max(1, size.x);
     let height = Math.max(1, size.y);
 
-    console.log({ top, left, width, height });
-
     // widths are defined by top left and top center areas
     this._areas.topLeft.style.width = `${left}px`;
     this._areas.topCenter.style.width = `${width}px`;
