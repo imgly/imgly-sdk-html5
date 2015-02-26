@@ -100,7 +100,6 @@ class StickersControl extends Control {
    * @override
    */
   _onEnter () {
-    console.debug("------------- #onEnter");
     this._initialIdentity = this._operation.isIdentity;
     this._initialSettings = {
       sticker: this._operation.getSticker(),
