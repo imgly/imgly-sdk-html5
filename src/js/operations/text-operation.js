@@ -92,8 +92,6 @@ class TextOperation extends Operation {
   _renderWebGL (renderer) {
     var textCanvas = this._renderTextCanvas(renderer);
 
-    document.body.appendChild(textCanvas);
-
     var canvas = renderer.getCanvas();
     var gl = renderer.getContext();
 
