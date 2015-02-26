@@ -64,6 +64,8 @@ class StickersOperation extends Operation {
       }
     `;
 
+    this._loadedStickers = {};
+
     super(...args);
   }
 
@@ -208,13 +210,19 @@ class StickersOperation extends Operation {
    */
   _loadImageBrowser (fileName) {
     var self = this;
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
+      // Return preloaded sticker if available
+      if (self._loadedStickers[fileName]) {
+        return resolve(self._loadedStickers[fileName]);
+      }
+
       var image = new Image();
 
-      image.addEventListener("load", function () {
+      image.addEventListener("load", () => {
+        self._loadedStickers[fileName] = image;
         resolve(image);
       });
-      image.addEventListener("error", function () {
+      image.addEventListener("error", () => {
         reject(new Error("Could not load sticker: " + fileName));
       });
 
