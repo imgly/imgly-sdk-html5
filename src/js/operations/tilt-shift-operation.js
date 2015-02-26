@@ -73,6 +73,10 @@ class TiltShiftOperation extends Operation {
     `;
 
     super(...args);
+
+    this._cachedBlurredCanvas = null;
+    this._lastBlurRadius = this._options.blurRadius;
+    this._lastGradientRadius = this._options.gradientRadius;
   }
 
   /**
@@ -134,7 +138,20 @@ class TiltShiftOperation extends Operation {
   _renderCanvas (renderer) {
     var canvas = renderer.getCanvas();
 
-    var blurryCanvas = this._blurCanvas(renderer);
+    let optionsChanged = this._options.blurRadius !== this._lastBlurRadius ||
+      this._options.gradientRadius !== this._lastGradientRadius;
+    let blurryCanvas;
+    if (optionsChanged || this._cachedBlurredCanvas === null) {
+      // Blur and cache canvas
+      blurryCanvas = this._blurCanvas(renderer);
+      this._cachedBlurredCanvas = blurryCanvas;
+      this._lastBlurRadius = this._options.blurRadius;
+      this._lastGradientRadius = this._options.gradientRadius;
+    } else {
+      // Use cached canvas
+      blurryCanvas = this._cachedBlurredCanvas;
+    }
+
     var maskCanvas = this._createMask(renderer);
 
     this._applyMask(canvas, blurryCanvas, maskCanvas);
@@ -179,15 +196,16 @@ class TiltShiftOperation extends Operation {
       end.multiply(canvasSize);
     }
 
-    var rad = Math.atan((end.y - start.y) / (end.x - start.x));
+    let dist = end.clone().subtract(start);
+    let middle = start.clone().add(dist.clone().divide(2));
 
-    var gradientStart = start.clone();
-    gradientStart.x += Math.sin(rad * Math.PI / 2) * gradientRadius;
-    gradientStart.y -= Math.cos(rad * Math.PI / 2) * gradientRadius;
+    let totalDist = Math.sqrt(Math.pow(dist.x, 2) + Math.pow(dist.y, 2));
+    let factor = dist.clone().divide(totalDist);
 
-    var gradientEnd = start.clone();
-    gradientEnd.x -= Math.sin(rad * Math.PI / 2) * gradientRadius;
-    gradientEnd.y += Math.cos(rad * Math.PI / 2) * gradientRadius;
+    let gradientStart = middle.clone()
+      .add(gradientRadius * factor.y, -gradientRadius * factor.x);
+    let gradientEnd = middle.clone()
+      .add(-gradientRadius * factor.y, gradientRadius * factor.x);
 
     // Build gradient
     var gradient = maskContext.createLinearGradient(
@@ -222,16 +240,9 @@ class TiltShiftOperation extends Operation {
     var blurryPixels = blurryContext.getImageData(0, 0, inputCanvas.width, inputCanvas.height).data;
     var maskPixels = maskContext.getImageData(0, 0, inputCanvas.width, inputCanvas.height).data;
 
-    var index, alpha;
-    for (var y = 0; y < inputCanvas.height; y++) {
-      for (var x = 0; x < inputCanvas.width; x++) {
-        index = (y * inputCanvas.width + x) * 4;
-        alpha = maskPixels[index] / 255;
-
-        pixels[index] = alpha * pixels[index] + (1 - alpha) * blurryPixels[index];
-        pixels[index + 1] = alpha * pixels[index + 1] + (1 - alpha) * blurryPixels[index + 1];
-        pixels[index + 2] = alpha * pixels[index + 2] + (1 - alpha) * blurryPixels[index + 2];
-      }
+    for (let i = 0; i < maskPixels.length; i++) {
+      let alpha = maskPixels[i] / 255;
+      pixels[i] = alpha * pixels[i] + (1 - alpha) * blurryPixels[i];
     }
 
     inputContext.putImageData(inputImageData, 0, 0);

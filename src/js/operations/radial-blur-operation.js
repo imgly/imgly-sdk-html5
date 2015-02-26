@@ -69,6 +69,10 @@ class RadialBlurOperation extends Operation {
     `;
 
     super(...args);
+
+    this._cachedBlurredCanvas = null;
+    this._lastBlurRadius = this._options.blurRadius;
+    this._lastGradientRadius = this._options.gradientRadius;
   }
 
   /**
@@ -124,7 +128,20 @@ class RadialBlurOperation extends Operation {
   _renderCanvas (renderer) {
     var canvas = renderer.getCanvas();
 
-    var blurryCanvas = this._blurCanvas(renderer);
+    let optionsChanged = this._options.blurRadius !== this._lastBlurRadius ||
+      this._options.gradientRadius !== this._lastGradientRadius;
+    let blurryCanvas;
+    if (optionsChanged || this._cachedBlurredCanvas === null) {
+      // Blur and cache canvas
+      blurryCanvas = this._blurCanvas(renderer);
+      this._cachedBlurredCanvas = blurryCanvas;
+      this._lastBlurRadius = this._options.blurRadius;
+      this._lastGradientRadius = this._options.gradientRadius;
+    } else {
+      // Use cached canvas
+      blurryCanvas = this._cachedBlurredCanvas;
+    }
+
     var maskCanvas = this._createMask(renderer);
 
     this._applyMask(canvas, blurryCanvas, maskCanvas);
@@ -173,7 +190,6 @@ class RadialBlurOperation extends Operation {
       position.x, position.y, gradientRadius
     );
     gradient.addColorStop(0, "#FFFFFF");
-    gradient.addColorStop(0.5, "#000000");
     gradient.addColorStop(1, "#000000");
 
     // Draw gradient
