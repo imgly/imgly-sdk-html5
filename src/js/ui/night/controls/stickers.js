@@ -122,6 +122,7 @@ class StickersControl extends Control {
     this._container = this._canvasControls.querySelector(".imglykit-canvas-stickers");
     this._stickerImage = this._canvasControls.querySelector("img");
     this._stickerImage.addEventListener("load", () => {
+      this._stickerSize = new Vector2(this._stickerImage.width, this._stickerImage.height);
       this._onStickerLoad();
     });
     this._knob = this._canvasControls.querySelector("div.imglykit-knob");
@@ -178,7 +179,7 @@ class StickersControl extends Control {
    * @private
    */
   _applySettings () {
-    let ratio = this._stickerImage.height / this._stickerImage.width;
+    let ratio = this._stickerSize.y / this._stickerSize.x;
     this._size.y = this._size.x * ratio;
 
     this._stickerImage.style.width = `${this._size.x}px`;
@@ -263,7 +264,7 @@ class StickersControl extends Control {
       .subtract(this._initialMousePosition);
 
     let size = this._initialSize.clone();
-    let ratio = size.y / size.x;
+    let ratio = this._stickerImage.height / this._stickerImage.width;
     size.x += diff.x;
     size.y = size.x * ratio;
 
