@@ -92,9 +92,9 @@ class Glow extends Primitive {
         d = 1 - (scalarX + scalarY);
         d = Math.min(Math.max(d, 0.1), 1.0);
 
-        imageData.data[index] = imageData.data[index] * (d * color[0] / 255);
-        imageData.data[index + 1] = imageData.data[index + 1] * (d * color[1] / 255);
-        imageData.data[index + 2] = imageData.data[index + 2] * (d * color[2] / 255);
+        imageData.data[index] = imageData.data[index] * (d * color.r);
+        imageData.data[index + 1] = imageData.data[index + 1] * (d * color.g);
+        imageData.data[index + 2] = imageData.data[index + 2] * (d * color.b);
         imageData.data[index + 3] = 255;
       }
     }
