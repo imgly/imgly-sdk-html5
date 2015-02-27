@@ -9,6 +9,7 @@
  */
 
 import Renderer from "./renderer";
+import Vector2 from "../lib/math/vector2";
 
 /**
  * @class
@@ -30,6 +31,110 @@ class WebGLRenderer extends Renderer {
    */
   get identifier () {
     return "webgl";
+  }
+
+  /**
+   * Caches the current canvas content for the given identifier
+   * @param {String} identifier
+   */
+  cache (identifier) {
+    let size = new Vector2(this._canvas.width, this._canvas.height);
+
+    // Re-use FBO and textures
+    let fbo, texture, cacheObject;
+    if (!this._cache[identifier]) {
+      cacheObject = this._createFramebuffer();
+    } else {
+      cacheObject = this._cache[identifier];
+    }
+
+    // Extract FBO and texture
+    fbo = cacheObject.fbo;
+    texture = cacheObject.texture;
+
+    // Resize output texture
+    let gl = this._context;
+    gl.useProgram(this._defaultProgram);
+
+    // Resize cached texture
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size.x, size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+
+    // Render to FBO
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    gl.viewport(0, 0, size.x, size.y);
+
+    // Use last fbo texture as input
+    gl.bindTexture(gl.TEXTURE_2D, this._lastTexture);
+
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+    this._cache[identifier] = { fbo, texture, size };
+  }
+
+  drawCachedFinal (identifier) {
+    let { texture, size } = this._cache[identifier];
+
+    let fbo = this.getCurrentFramebuffer();
+    let currentTexture = this.getCurrentTexture();
+
+    let gl = this._context;
+    gl.useProgram(this._defaultProgram);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+    // Use the cached texture as input
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+
+    // Resize the canvas
+    this._canvas.width = size.x;
+    this._canvas.height = size.y;
+
+    gl.viewport(0, 0, size.x, size.y);
+
+    // Draw the rectangle
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+  }
+
+  /**
+   * Draws the stored texture / image data for the given identifier
+   * @param {String} identifier
+   */
+  drawCached (identifier) {
+    let { texture, size } = this._cache[identifier];
+
+    let fbo = this.getCurrentFramebuffer();
+    let currentTexture = this.getCurrentTexture();
+
+    let gl = this._context;
+    gl.useProgram(this._defaultProgram);
+
+    // Resize the canvas
+    this._canvas.width = size.x;
+    this._canvas.height = size.y;
+
+    // Resize all textures
+    for (let otherTexture of this._textures) {
+      gl.bindTexture(gl.TEXTURE_2D, otherTexture);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size.x, size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    }
+
+    // Select the current framebuffer to draw to
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+
+    // Resize the texture we're drawing to
+    gl.bindTexture(gl.TEXTURE_2D, currentTexture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size.x, size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+
+    // Use the cached texture as input
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+
+    gl.viewport(0, 0, size.x, size.y);
+
+    // Draw the rectangle
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+    this.setLastTexture(currentTexture);
+    this.selectNextBuffer();
   }
 
   /**
@@ -333,23 +438,33 @@ class WebGLRenderer extends Renderer {
    */
   /* istanbul ignore next */
   _createFramebuffers () {
-    var gl = this._context;
-
     for(var i = 0; i < 2; i++) {
-      // Create texture
-      var texture = this.createTexture();
+      let { fbo, texture } = this._createFramebuffer();
       this._textures.push(texture);
-
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._canvas.width, this._canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-
-      // Create framebuffer
-      var fbo = gl.createFramebuffer();
       this._framebuffers.push(fbo);
-      gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
-
-      // Attach the texture
-      gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
     }
+  }
+
+  /**
+   * Creates and returns a frame buffer and texture
+   * @return {Object}
+   * @private
+   */
+  _createFramebuffer () {
+    let gl = this._context;
+
+    // Create texture
+    let texture = this.createTexture();
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._canvas.width, this._canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+
+    // Create framebuffer
+    let fbo = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+
+    // Attach the texture
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+
+    return { fbo, texture };
   }
 
   /**

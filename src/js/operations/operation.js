@@ -34,6 +34,12 @@ class Operation extends EventEmitter {
     });
     this._dirty = true;
 
+    this._uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+      let r = Math.random()*16|0;
+      let v = c == "x" ? r : (r&0x3|0x8);
+      return v.toString(16);
+    });
+
     this._initOptions(options || {});
   }
 
@@ -68,17 +74,21 @@ class Operation extends EventEmitter {
    * @abstract
    */
   render (renderer) {
+    let renderFn;
     if (renderer.identifier === "webgl") {
       /* istanbul ignore next */
-      this._renderWebGL(renderer);
+      renderFn = this._renderWebGL.bind(this);
     } else {
-      if (this._dirty) {
-        this._renderCanvas(renderer);
-        this._cacheCanvas(renderer);
-        this._dirty = false;
-      } else {
-        this._renderCachedCanvas(renderer);
-      }
+      renderFn = this._renderCanvas.bind(this);
+    }
+
+    // Handle caching
+    if (this._dirty) {
+      renderFn(renderer);
+      renderer.cache(this._uuid);
+      this._dirty = false;
+    } else {
+      renderer.drawCached(this._uuid);
     }
   }
 
@@ -98,32 +108,6 @@ class Operation extends EventEmitter {
    */
   _renderCanvas () {
     throw new Error("Operation#_renderCanvas is abstract and not implemented in inherited class.");
-  }
-
-  /**
-   * Caches the renderer's current canvas content
-   * @param {CanvasRenderer} renderer
-   * @private
-   */
-  _cacheCanvas (renderer) {
-    let canvas = renderer.getCanvas();
-    let context = renderer.getContext();
-    let canvasSize = new Vector2(canvas.width, canvas.height);
-    this._cachedImageData = context.getImageData(0, 0, canvasSize.x, canvasSize.y);
-    this._cachedCanvasSize = canvasSize;
-  }
-
-  /**
-   * Renders the cached image data to the renderer's canvas
-   * @param {CanvasRenderer} renderer
-   * @private
-   */
-  _renderCachedCanvas (renderer) {
-    let canvas = renderer.getCanvas();
-    let context = renderer.getContext();
-    canvas.width = this._cachedCanvasSize.x;
-    canvas.height = this._cachedCanvasSize.y;
-    context.putImageData(this._cachedImageData, 0, 0);
   }
 
   /**

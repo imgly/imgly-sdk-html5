@@ -8,6 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 import Renderer from "./renderer";
+import Vector2 from "../lib/math/vector2";
 
 /**
  * @class
@@ -22,6 +23,28 @@ class CanvasRenderer extends Renderer {
    */
   static get identifier () {
     return "canvas";
+  }
+
+  /**
+   * Caches the current canvas content for the given identifier
+   * @param {String} identifier
+   */
+  cache (identifier) {
+    this._cache[identifier] = {
+      data: this._context.getImageData(0, 0, this._canvas.width, this._canvas.height),
+      size: new Vector2(this._canvas.width, this._canvas.height)
+    };
+  }
+
+  /**
+   * Draws the stored texture / image data for the given identifier
+   * @param {String} identifier
+   */
+  drawCached (identifier) {
+    let { data, size } = this._cache[identifier];
+    this._canvas.width = size.x;
+    this._canvas.height = size.y;
+    this._context.putImageData(data, 0, 0);
   }
 
   /**

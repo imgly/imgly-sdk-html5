@@ -37,6 +37,12 @@ class Renderer extends EventEmitter {
      * @private
      */
     this._context = this._getContext();
+
+    /**
+     * The texture / image data cache
+     * @type {Object.<String, *>}
+     */
+    this._cache = {};
   }
 
   /**
@@ -56,6 +62,18 @@ class Renderer extends EventEmitter {
     /* istanbul ignore next */
     throw new Error("Renderer#isSupported is abstract and not implemented in inherited class.");
   }
+
+  /**
+   * Caches the current canvas content for the given identifier
+   * @param {String} identifier
+   */
+  cache (identifier) {}
+
+  /**
+   * Draws the stored texture / image data for the given identifier
+   * @param {String} identifier
+   */
+  drawCached (identifier) {}
 
   /**
    * Creates a new canvas
