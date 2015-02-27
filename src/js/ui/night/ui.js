@@ -74,6 +74,10 @@ class NightUI extends UI {
     this._topControls = new TopControls(this._kit, this);
     this._topControls.run();
 
+    this._topControls.on("undo", () => {
+      this.undo();
+    });
+
     // Pass zoom in event
     this._topControls.on("zoom-in", () => {
       this._canvas.zoomIn();
@@ -278,13 +282,13 @@ class NightUI extends UI {
    */
   addHistory (operation, options, identity) {
     this._history.push({ operation, options, identity });
-    this._updateBackButton();
+    this._topControls.updateUndoButton();
   }
 
   /**
-   * Takes the last history item and applies the options
+   * Takes the last history item and applies its options
    */
-  historyBack () {
+  undo () {
     let lastItem = this._history.pop();
     if (lastItem) {
       let { operation, identity, options } = lastItem;
@@ -295,15 +299,15 @@ class NightUI extends UI {
       operationInstance.isIdentity = identity;
       this.render();
     }
-    this._updateBackButton();
+    this._topControls.updateUndoButton();
   }
 
   /**
-   * Updates the back button state
-   * @private
+   * The undo history
+   * @type {Array.<Object>}
    */
-  _updateBackButton () {
-
+  get history () {
+    return this._history;
   }
 }
 

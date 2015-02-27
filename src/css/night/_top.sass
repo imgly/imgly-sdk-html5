@@ -55,3 +55,15 @@
     .imglykit-zoom-level
       @include opacity(0.4)
       padding: 0 10px
+
+  .imglykit-undo
+    cursor: pointer
+    border-right: 1px solid $borderColor
+    color: rgba(white, 0.4)
+    padding-right: 10px
+    img
+      @include opacity(0.4)
+    &.imglykit-inactive
+      color: rgba(white, 0.2)
+      img
+        @include opacity(0.2)

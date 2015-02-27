@@ -210,6 +210,27 @@
   opacity: 0.4;
   padding: 0 10px;
 }
+/* line 59, ../../src/css/night/_top.sass */
+.imglykit-container .imglykit-undo {
+  cursor: pointer;
+  border-right: 1px solid #363636;
+  color: rgba(255, 255, 255, 0.4);
+  padding-right: 10px;
+}
+/* line 64, ../../src/css/night/_top.sass */
+.imglykit-container .imglykit-undo img {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
+  opacity: 0.4;
+}
+/* line 66, ../../src/css/night/_top.sass */
+.imglykit-container .imglykit-undo.imglykit-inactive {
+  color: rgba(255, 255, 255, 0.2);
+}
+/* line 68, ../../src/css/night/_top.sass */
+.imglykit-container .imglykit-undo.imglykit-inactive img {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=20);
+  opacity: 0.2;
+}
 
 /*!
  * Copyright (c) 2013-2014 9elements GmbH

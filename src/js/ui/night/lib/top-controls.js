@@ -25,10 +25,12 @@ class TopControls extends EventEmitter {
   run () {
     let { container } = this._ui;
 
+    this._undoButton = container.querySelector(".imglykit-undo");
     this._zoomIn = container.querySelector(".imglykit-zoom-in");
     this._zoomOut = container.querySelector(".imglykit-zoom-out");
     this._zoomLevel = container.querySelector(".imglykit-zoom-level-num");
     this._handleZoom();
+    this._handleUndo();
   }
 
   /**
@@ -39,6 +41,35 @@ class TopControls extends EventEmitter {
     this._zoomIn.addEventListener("click", this._onZoomInClick.bind(this));
     this._zoomOut.addEventListener("click", this._onZoomOutClick.bind(this));
     this.updateZoomLevel();
+  }
+
+  /**
+   * Handles the undo control
+   * @private
+   */
+  _handleUndo () {
+    this._undoButton.addEventListener("click", this._undo.bind(this));
+    this._undo();
+  }
+
+  /**
+   * Gets called when the user clicks the undo button
+   * @private
+   */
+  _undo () {
+    this.emit("undo");
+  }
+
+  /**
+   * Updates the undo button active state
+   */
+  updateUndoButton () {
+    let { history } = this._ui;
+    if (history.length === 0) {
+      this._undoButton.classList.add("imglykit-inactive");
+    } else {
+      this._undoButton.classList.remove("imglykit-inactive");
+    }
   }
 
   /**
