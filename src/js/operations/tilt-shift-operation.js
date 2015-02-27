@@ -247,6 +247,18 @@ class TiltShiftOperation extends Operation {
 
     inputContext.putImageData(inputImageData, 0, 0);
   }
+
+  /**
+   * Sets the dirty state of this operation
+   * @param {Boolean} dirty
+   * @comment Since blur operations do seperate caching of the
+   *          blurred canvas, we need to invalidate the cache when the
+   *          dirty state changes.
+   */
+  set dirty (dirty) {
+    this._dirty = dirty;
+    this._cachedBlurredCanvas = null;
+  }
 }
 
 export default TiltShiftOperation;

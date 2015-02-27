@@ -122,7 +122,7 @@ class Operation extends EventEmitter {
     var optionName, option, capitalized;
     var self = this;
     for (optionName in this.availableOptions) {
-      let capitalized = optionName.charAt(0).toUpperCase() + optionName.slice(1);
+      capitalized = optionName.charAt(0).toUpperCase() + optionName.slice(1);
       option = this.availableOptions[optionName];
 
       // Create setter and getter
