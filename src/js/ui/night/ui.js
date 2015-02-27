@@ -289,7 +289,9 @@ class NightUI extends UI {
     if (lastItem) {
       let { operation, identity, options } = lastItem;
       let operationInstance = this.operationsMap[operation.identifier];
-      operationInstance.set(options);
+      if (!identity) {
+        operationInstance.set(options);
+      }
       operationInstance.isIdentity = identity;
       this.render();
     }

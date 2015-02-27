@@ -430,6 +430,16 @@ class TextControl extends Control {
       maxWidth: this._settings.maxWidth / canvasSize.x
     });
     this._ui.canvas.render();
+
+    this._ui.addHistory(this, {
+      fontFamily: this._initialSettings.fontFamily,
+      fontWeight: this._initialSettings.fontWeight,
+      color: this._initialSettings.color.clone(),
+      backgroundColor: this._initialSettings.backgroundColor.clone(),
+      position: this._initialSettings.position.clone(),
+      text: this._initialSettings.text,
+      maxWidth: this._initialSettings.maxWidth
+    }, this._initialIdentity);
   }
 
   /**

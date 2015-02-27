@@ -222,6 +222,12 @@ class StickersControl extends Control {
       size: size
     });
     this._ui.canvas.render();
+
+    this._ui.addHistory(this, {
+      sticker: this._initialSettings.sticker,
+      position: this._initialSettings.position.clone(),
+      size: this._initialSettings.size.clone()
+    }, this._initialIdentity);
   }
 
   /**
