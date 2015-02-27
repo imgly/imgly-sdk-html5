@@ -227,12 +227,25 @@ class TiltShiftControls extends Control {
    */
   _onBack () {
     if (!this._initialIdentity) {
-      this._operation.set(this._initialOptions);
+      this._operation.set(this._initialSettings);
       this._ui.canvas.render();
     } else {
       this._operation.isIdentity = this._initialIdentity;
       this._ui.canvas.render();
     }
+  }
+
+  /**
+   * Gets called when the done button has been clicked
+   * @override
+   */
+  _onDone () {
+    this._ui.addHistory(this._operation, {
+      start: this._initialSettings.start.clone(),
+      end: this._initialSettings.end.clone(),
+      blurRadius: this._initialSettings.blurRadius,
+      gradientRadius: this._initialSettings.gradientRadius
+    }, this._initialIdentity);
   }
 }
 

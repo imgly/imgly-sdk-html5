@@ -216,6 +216,18 @@ class RadialBlurControls extends Control {
       this._ui.canvas.render();
     }
   }
+
+  /**
+   * Gets called when the done button has been clicked
+   * @override
+   */
+  _onDone () {
+    this._ui.addHistory(this._operation, {
+      position: this._initialSettings.position.clone(),
+      gradientRadius: this._initialSettings.gradientRadius,
+      blurRadius: this._initialSettings.blurRadius
+    }, this._initialIdentity);
+  }
 }
 
 export default RadialBlurControls;

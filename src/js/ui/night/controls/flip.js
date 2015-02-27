@@ -37,6 +37,7 @@ class FlipControls extends Control {
   _onEnter () {
     this._initialHorizontal = this._operation.getHorizontal();
     this._initialVertical = this._operation.getVertical();
+    this._initialIdentity = this._operation.isIdentity;
 
     let listItems = this._controls.querySelectorAll("li");
     this._listItems = Array.prototype.slice.call(listItems);
@@ -102,6 +103,17 @@ class FlipControls extends Control {
     this._operation.setHorizontal(this._initialHorizontal);
     this._operation.setVertical(this._initialVertical);
     this._ui.canvas.render();
+  }
+
+  /**
+   * Gets called when the done button has been clicked
+   * @override
+   */
+  _onDone () {
+    this._ui.addHistory(this._operation, {
+      vertical: this._initialVertical,
+      horizontal: this._initialHorizontal
+    }, this._initialIdentity);
   }
 }
 

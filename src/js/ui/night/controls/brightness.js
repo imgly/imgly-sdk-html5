@@ -50,6 +50,8 @@ class BrightnessControls extends Control {
     let brightness = this._operation.getBrightness();
     this._initialBrightness = brightness;
     this._slider.setValue(brightness);
+
+    this._initialIdentity = this._operation.isIdentity;
   }
 
   /**
@@ -69,6 +71,16 @@ class BrightnessControls extends Control {
   _onUpdate (value) {
     this._operation.setBrightness(value);
     this._ui.canvas.render();
+  }
+
+  /**
+   * Gets called when the done button has been clicked
+   * @override
+   */
+  _onDone () {
+    this._ui.addHistory(this._operation, {
+      brightness: this._initialBrightness
+    }, this._initialIdentity);
   }
 }
 

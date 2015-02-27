@@ -99,6 +99,17 @@ class FramesControls extends Control {
     this._operation.setColor(value);
     this._ui.canvas.render();
   }
+
+  /**
+   * Gets called when the done button has been clicked
+   * @override
+   */
+  _onDone () {
+    this._ui.addHistory(this._operation, {
+      color: this._initialOptions.color,
+      thickness: this._initialOptions.thickness
+    }, this._initialIdentity);
+  }
 }
 
 export default FramesControls;

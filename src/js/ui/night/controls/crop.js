@@ -101,6 +101,8 @@ class CropControls extends Control {
       .then(() => {
         this._updateDOM();
       });
+
+    this._initialIdentity = this._operation.isIdentity;
   }
 
   /**
@@ -486,6 +488,11 @@ class CropControls extends Control {
       end: this._end
     });
     this._ui.canvas.render();
+
+    this._ui.addHistory(this._operation, {
+      start: this._initialStart.clone(),
+      end: this._initialEnd.clone()
+    }, this._initialIdentity);
   }
 }
 

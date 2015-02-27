@@ -20,6 +20,7 @@ class NightUI extends UI {
 
     this._template = fs.readFileSync(__dirname + "/../../templates/night/template.jst", "utf-8");
     this._registeredControls = {};
+    this._history = [];
 
     // The `Night` UI has a fixed operation order
     this._preferredOperationOrder = [
@@ -267,6 +268,40 @@ class NightUI extends UI {
     if (rerender) {
       this.render();
     }
+  }
+
+  /**
+   * Adds the given operation and options to the history stack
+   * @param {Operation} operation
+   * @param {Object.<String, *>} options
+   * @param {Boolean} identity
+   */
+  addHistory (operation, options, identity) {
+    this._history.push({ operation, options, identity });
+    this._updateBackButton();
+  }
+
+  /**
+   * Takes the last history item and applies the options
+   */
+  historyBack () {
+    let lastItem = this._history.pop();
+    if (lastItem) {
+      let { operation, identity, options } = lastItem;
+      let operationInstance = this.operationsMap[operation.identifier];
+      operationInstance.set(options);
+      operationInstance.isIdentity = identity;
+      this.render();
+    }
+    this._updateBackButton();
+  }
+
+  /**
+   * Updates the back button state
+   * @private
+   */
+  _updateBackButton () {
+
   }
 }
 

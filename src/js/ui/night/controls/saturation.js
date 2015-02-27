@@ -50,6 +50,8 @@ class SaturationControls extends Control {
     let saturation = this._operation.getSaturation();
     this._initialSaturation = saturation;
     this._slider.setValue(saturation);
+
+    this._initialIdentity = this._operation.isIdentity;
   }
 
   /**
@@ -69,6 +71,16 @@ class SaturationControls extends Control {
   _onUpdate (value) {
     this._operation.setSaturation(value);
     this._ui.canvas.render();
+  }
+
+  /**
+   * Gets called when the done button has been clicked
+   * @override
+   */
+  _onDone () {
+    this._ui.addHistory(this._operation, {
+      saturation: this._initialSaturation
+    }, this._initialIdentity);
   }
 }
 

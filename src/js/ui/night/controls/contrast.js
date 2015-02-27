@@ -50,6 +50,8 @@ class ContrastControls extends Control {
     let contrast = this._operation.getContrast();
     this._initialContrast = contrast;
     this._slider.setValue(contrast);
+
+    this._initialIdentity = this._operation.isIdentity;
   }
 
   /**
@@ -69,6 +71,16 @@ class ContrastControls extends Control {
   _onUpdate (value) {
     this._operation.setContrast(value);
     this._ui.canvas.render();
+  }
+
+  /**
+   * Gets called when the done button has been clicked
+   * @override
+   */
+  _onDone () {
+    this._ui.addHistory(this._operation, {
+      contrast: this._initialContrast
+    }, this._initialIdentity);
   }
 }
 
