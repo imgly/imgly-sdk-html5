@@ -256,8 +256,16 @@ class TiltShiftOperation extends Operation {
    *          dirty state changes.
    */
   set dirty (dirty) {
-    this._dirty = dirty;
+    super.dirty = dirty;
     this._cachedBlurredCanvas = null;
+  }
+
+  /**
+   * Returns the dirty state
+   * @type {Boolean}
+   */
+  get dirty () {
+    return super.dirty;
   }
 }
 

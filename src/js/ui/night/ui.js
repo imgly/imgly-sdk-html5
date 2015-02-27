@@ -49,7 +49,7 @@ class NightUI extends UI {
     this._operationsMap = {};
     this._registerControls();
 
-    super();
+    super.run();
 
     let { container } = this._options;
 

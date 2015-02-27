@@ -132,7 +132,7 @@ class Slider extends EventEmitter {
 
     // X boundaries
     let sliderWidth = this._sliderElement.offsetWidth;
-    let newSliderX = Math.max(0, Math.min(newSliderX, sliderWidth));
+    newSliderX = Math.max(0, Math.min(newSliderX, sliderWidth));
 
     this._setX(newSliderX);
 

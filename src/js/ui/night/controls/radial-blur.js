@@ -43,7 +43,7 @@ class RadialBlurControls extends Control {
    * @override
    */
   _onEnter () {
-    super();
+    super._onEnter();
 
     // Remember initial identity state
     this._initialIdentity = this._operation.isIdentity;

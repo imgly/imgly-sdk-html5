@@ -6,8 +6,7 @@ var runSequence = require("run-sequence");
 var browserSync = require("browser-sync");
 var browserify = require("browserify");
 var watchify = require("watchify");
-var to5ify = require("6to5ify");
-var to5 = require("gulp-6to5");
+var babelify = require("babelify");
 var brfs = require("brfs");
 var reload = browserSync.reload;
 
@@ -105,7 +104,7 @@ gulp.task("cssmin:minify", function () {
  */
 gulp.task("jsdoc", function () {
   gulp.src(["./src/js/**/*.js"])
-    .pipe(to5())
+    .pipe($.babel())
     .pipe($.jsdoc.parser())
     .pipe($.jsdoc.generator("./doc", {
       path: "node_modules/jaguarjs-jsdoc"
@@ -131,9 +130,7 @@ gulp.task("browserify", function () {
   args.fullPaths = !isProduction;
   var b = browserify(args);
 
-  b.transform(to5ify.configure({
-    ignore: /vendor/
-  }));
+  b.transform(babelify);
   b.transform(brfs);
 
   // Make sure to use watchify in development

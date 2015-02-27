@@ -37,7 +37,7 @@ class ContrastControls extends Control {
    * @override
    */
   _onEnter () {
-    super();
+    super._onEnter();
 
     let sliderElement = this._controls.querySelector(".imglykit-slider");
     this._slider = new Slider(sliderElement, {
@@ -57,7 +57,7 @@ class ContrastControls extends Control {
    * @override
    */
   _onBack () {
-    super();
+    super._onBack();
     this._operation.setContrast(this._initialContrast);
     this._ui.canvas.render();
   }

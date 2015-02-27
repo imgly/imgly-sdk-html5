@@ -57,7 +57,7 @@ class CropControls extends Control {
    * @override
    */
   _onEnter () {
-    super();
+    super._onEnter();
 
     this._initialZoomLevel = this._ui.canvas.zoomLevel;
     this._ui.canvas.zoomToFit(false);
@@ -277,10 +277,12 @@ class CropControls extends Control {
       .multiply(canvasSize);
     let maxHeight = canvasSize.y;
 
+    let width, height, maximum, minimum
+
     switch (corner) {
       case "top-left":
         absoluteStart.add(mouseDiff);
-        let maximum = absoluteEnd.clone()
+        maximum = absoluteEnd.clone()
           .subtract(this._minimumSize);
         absoluteStart.clamp(null, maximum);
         break;
@@ -292,7 +294,7 @@ class CropControls extends Control {
         break;
       case "bottom-right":
         absoluteEnd.add(mouseDiff);
-        let minimum = absoluteStart.clone()
+        minimum = absoluteStart.clone()
           .add(this._minimumSize);
         absoluteEnd.clamp(minimum);
         maxHeight = canvasSize.y - absoluteStart.y;
@@ -317,51 +319,51 @@ class CropControls extends Control {
     if (this._ratio !== null) {
       switch (corner) {
         case "top-left":
-          let width = (this._end.x - this._start.x) * canvasSize.x;
-          let height = width / this._ratio;
+          width = (this._end.x - this._start.x) * canvasSize.x;
+          height = width / this._ratio;
           this._start.y = this._end.y - height / canvasSize.y;
 
           if (this._start.y <= 0) {
             this._start.y = 0;
-            let height = (this._end.y - this._start.y) * canvasSize.y;
-            let width = height / this._ratio;
+            height = (this._end.y - this._start.y) * canvasSize.y;
+            width = height / this._ratio;
             this._start.x = this._end.x - width / canvasSize.x;
           }
           break;
         case "top-right":
-          let width = (this._end.x - this._start.x) * canvasSize.x;
-          let height = width / this._ratio;
+          width = (this._end.x - this._start.x) * canvasSize.x;
+          height = width / this._ratio;
           this._start.y = this._end.y - height / canvasSize.y;
 
           if (this._start.y <= 0) {
             this._start.y = 0;
-            let height = (this._end.y - this._start.y) * canvasSize.y;
-            let width = height / this._ratio;
+            height = (this._end.y - this._start.y) * canvasSize.y;
+            width = height / this._ratio;
             this._end.x = this._start.x + width / canvasSize.x;
           }
           break;
         case "bottom-right":
-          let width = (this._end.x - this._start.x) * canvasSize.x;
-          let height = width / this._ratio;
+          width = (this._end.x - this._start.x) * canvasSize.x;
+          height = width / this._ratio;
           this._end.y = this._start.y + height / canvasSize.y;
 
           // If boundaries are exceeded, calculate width by maximum height
           if (this._end.y >= 1) {
             this._end.y = 1;
-            let height = (this._end.y - this._start.y) * canvasSize.y;
-            let width = height / this._ratio;
+            height = (this._end.y - this._start.y) * canvasSize.y;
+            width = height / this._ratio;
             this._end.x = this._start.x + width / canvasSize.x;
           }
           break;
         case "bottom-left":
-          let width = (this._end.x - this._start.x) * canvasSize.x;
-          let height = width / this._ratio;
+          width = (this._end.x - this._start.x) * canvasSize.x;
+          height = width / this._ratio;
           this._end.y = this._start.y + height / canvasSize.y;
 
           if (this._end.y >= 1) {
             this._end.y = 1;
-            let height = (this._end.y - this._start.y) * canvasSize.y;
-            let width = height / this._ratio;
+            height = (this._end.y - this._start.y) * canvasSize.y;
+            width = height / this._ratio;
             this._start.x = this._end.x - width / canvasSize.x;
           }
           break;

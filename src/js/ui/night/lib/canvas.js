@@ -225,10 +225,23 @@ class Canvas extends EventEmitter {
    */
   setZoomLevel (zoomLevel, render=true) {
     this._zoomLevel = zoomLevel;
-    if (render) this.render();
+    if (render) {
+      this._setAllOperationsToDirty();
+      this.render();
+    }
     this._updateCanvasMargins();
     this._applyBoundaries();
     this.emit("zoom"); // will be redirected to top controls
+  }
+
+  /**
+   * Sets all operations to dirty
+   * @private
+   */
+  _setAllOperationsToDirty () {
+    for (let operation of this._kit.operationsStack) {
+      operation.dirty = true;
+    }
   }
 
   /**
