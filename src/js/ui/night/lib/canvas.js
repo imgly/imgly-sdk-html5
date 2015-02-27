@@ -246,7 +246,7 @@ class Canvas extends EventEmitter {
     let croppedSize = inputSize.clone().multiply(cropSize);
 
     // Has the image been rotated?
-    if (rotationOperation.getDegrees() % 180 !== 0) {
+    if (rotationOperation && rotationOperation.getDegrees() % 180 !== 0) {
       let tempX = croppedSize.x;
       croppedSize.x = croppedSize.y;
       croppedSize.y = tempX;
@@ -255,7 +255,7 @@ class Canvas extends EventEmitter {
     let finalSize = this._resizeVectorToFit(croppedSize);
 
     // Rotate back to be able to find the final size
-    if (rotationOperation.getDegrees() % 180 !== 0) {
+    if (rotationOperation && rotationOperation.getDegrees() % 180 !== 0) {
       let tempX = finalSize.x;
       finalSize.x = finalSize.y;
       finalSize.y = tempX;
