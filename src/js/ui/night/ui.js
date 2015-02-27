@@ -297,6 +297,8 @@ class NightUI extends UI {
         operationInstance.set(options);
       }
       operationInstance.isIdentity = identity;
+
+      this.canvas.setAllOperationsToDirty();
       this.render();
     }
     this._topControls.updateUndoButton();

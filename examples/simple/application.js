@@ -6,15 +6,6 @@ window.onload = function() {
   var container = document.getElementById("container");
 
   /*
-   * Globally register some custom operations, in this case
-   * the stickers operation. See the documentation on how to
-   * create a custom operation.
-   */
-
-  var StickersOperation = Operation.extend({});
-  ImglyKit.operations.register(StickersOperation);
-
-  /*
    * Initialize ImglyKit
    */
   var kit = new ImglyKit(container);
@@ -23,21 +14,6 @@ window.onload = function() {
    * Make sure only the filters operation is active
    */
   kit.operations.select({ only: "filters" });
-
-  /*
-   * Operations can be customized. See the API reference for information
-   * on their specific APIs
-   *
-   * Here we make sure that the "filters" operation only shows
-   * the "A15" and "Goblin" filters.
-   */
-
-  var operation = kit.operations.find("filters");
-  filtersOperation.selectFilters({ only: "a15,goblin" });
-
-  kit.operations.configure("filters", function (filtersOperation) {
-    filtersOperation.selectFilters({ only: "a15,goblin" });
-  });
 
   /*
    * Run the kit
