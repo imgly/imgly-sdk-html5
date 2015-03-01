@@ -13,6 +13,7 @@ import WebGLRenderer from "../../../renderers/webgl-renderer";
 import CanvasRenderer from "../../../renderers/canvas-renderer";
 import Vector2 from "../../../lib/math/vector2";
 import EventEmitter from "../../../lib/event-emitter";
+import Symbol from "es6-symbol";
 
 class Canvas extends EventEmitter {
   constructor (kit, ui, options) {

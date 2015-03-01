@@ -9,6 +9,7 @@
  */
 
 import Renderer from "./renderer";
+import Symbol from "es6-symbol";
 import Vector2 from "../lib/math/vector2";
 
 /**

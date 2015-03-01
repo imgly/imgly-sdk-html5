@@ -8,6 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+import Symbol from "es6-symbol";
 import Control from "./control";
 import Vector2 from "../../../lib/math/vector2";
 import Utils from "../../../lib/utils";

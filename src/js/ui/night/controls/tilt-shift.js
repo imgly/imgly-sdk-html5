@@ -12,6 +12,7 @@ import Control from "./control";
 import Vector2 from "../../../lib/math/vector2";
 import Utils from "../../../lib/utils";
 import SimpleSlider from "../lib/simple-slider";
+import Symbol from "es6-symbol";
 let fs = require("fs");
 
 class TiltShiftControls extends Control {

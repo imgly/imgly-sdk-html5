@@ -12,6 +12,7 @@ import Control from "./control";
 import ColorPicker from "../lib/color-picker";
 import Vector2 from "../../../lib/math/vector2";
 import Utils from "../../../lib/utils";
+import Symbol from "es6-symbol";
 let fs = require("fs");
 
 class TextControl extends Control {
