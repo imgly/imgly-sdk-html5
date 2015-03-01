@@ -12,7 +12,7 @@ window.onload = function() {
     var kit = new ImglyKit({
       image: image, // Has to be an instance of Image!
       renderer: "canvas", // Defaults to "webgl", uses "canvas" as fallback
-      assetsUrl: "/build/assets", // The URL / path where all assets are
+      assetsUrl: "../../build/assets", // The URL / path where all assets are
       container: document.querySelector("#container"),
       ui: true // Disable the UI, we use the low level API here
     });
