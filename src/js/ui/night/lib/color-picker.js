@@ -23,6 +23,7 @@ class ColorPicker extends EventEmitter {
     this._ui = ui;
     this._element = element;
     this._visible = false;
+    this._loaded = false;
 
     this._overlay = this._element.querySelector(".imglykit-color-picker-overlay");
     this._currentColorCanvas = this._element.querySelector(".imglykit-color-picker-color");
@@ -38,7 +39,7 @@ class ColorPicker extends EventEmitter {
 
     this._transparencyImage = new Image();
     this._transparencyImage.src = ui.helpers.assetPath("ui/night/transparency.png");
-    this._transparencyImage.addEventListener("load", this._render.bind(this));
+    this._transparencyImage.addEventListener("load", this._onTransparencyImageLoad.bind(this));
 
     this._onAlphaCanvasDown = this._onAlphaCanvasDown.bind(this);
     this._onAlphaCanvasDrag = this._onAlphaCanvasDrag.bind(this);
@@ -57,6 +58,11 @@ class ColorPicker extends EventEmitter {
     this._handleAlphaKnob();
     this._handleHueKnob();
     this._handleSaturationKnob();
+  }
+
+  _onTransparencyImageLoad () {
+    this._loaded = true;
+    this._render();
   }
 
   /**
@@ -157,6 +163,7 @@ class ColorPicker extends EventEmitter {
    * @private
    */
   _render () {
+    if (!this._loaded) return;
     this._renderCurrentColor();
     this._renderAlpha();
     this._renderHue();
