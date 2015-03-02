@@ -27,6 +27,8 @@ class CropControls extends Control {
    * Entry point for this control
    */
   init () {
+    this._availableRatios = {};
+    this._ratios = {};
     this._operation = this._ui.operationsMap.crop;
 
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/crop_controls.jst", "utf-8");
@@ -51,6 +53,50 @@ class CropControls extends Control {
     this._onCenterDown = this._onCenterDown.bind(this);
     this._onCenterDrag = this._onCenterDrag.bind(this);
     this._onCenterUp = this._onCenterUp.bind(this);
+
+    this._addDefaultRatios();
+
+    // Select all ratios per default
+    this.selectFilters(null);
+  }
+
+  /**
+   * Selects the ratios
+   * @param {Selector} selector
+   */
+  selectFilters (selector) {
+    this._filters = {};
+
+    let ratioIdentifiers = Object.keys(this._availableRatios);
+
+    let selectedRatios = Utils.select(ratioIdentifiers, selector);
+    for (let identifier of selectedRatios) {
+      this._ratios[identifier] = this._availableRatios[identifier];
+    }
+
+    if (this._active) {
+      this._renderControls();
+    }
+  }
+
+  /**
+   * Adds the default ratios
+   * @private
+   */
+  _addDefaultRatios () {
+    this.addRatio("custom", "*");
+    this.addRatio("square", "1");
+    this.addRatio("4-3", "1.33");
+    this.addRatio("16-9", "1.77");
+  }
+
+  /**
+   * Adds a ratio with the given identifier
+   * @param {String} identifier
+   * @param {Number} ratio
+   */
+  addRatio (identifier, ratio) {
+    this._availableRatios[identifier] = ratio;
   }
 
   /**
@@ -494,6 +540,18 @@ class CropControls extends Control {
       start: this._initialStart.clone(),
       end: this._initialEnd.clone()
     }, this._initialIdentity);
+  }
+
+  /**
+   * The data that is available to the template
+   * @type {Object}
+   * @override
+   */
+  get context () {
+    let context = super.context;
+    context.ratios = this._ratios;
+    context.activeRatio = Object.keys(this._ratios)[0];
+    return context;
   }
 }
 

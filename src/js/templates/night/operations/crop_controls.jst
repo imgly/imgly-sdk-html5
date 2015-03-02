@@ -5,18 +5,13 @@
 
   <div>
     <ul class="imglykit-controls-list imgly-controls-list-with-buttons">
-      <li data-ratio="*" data-selected>
-        <img src="{{=it.helpers.assetPath('ui/night/crop/custom.png')}}" />
-      </li>
-      <li data-ratio="1">
-        <img src="{{=it.helpers.assetPath('ui/night/crop/square.png')}}" />
-      </li>
-      <li data-ratio="1.33">
-        <img src="{{=it.helpers.assetPath('ui/night/crop/4-3.png')}}" />
-      </li>
-      <li data-ratio="1.77">
-        <img src="{{=it.helpers.assetPath('ui/night/crop/16-9.png')}}" />
-      </li>
+      {{ for(var identifier in it.ratios) { }}
+        {{ var ratio = it.ratios[identifier]; }}
+        {{ var enabled = it.activeRatio === identifier; }}
+        <li data-ratio="{{= ratio}}"{{? enabled}} data-selected{{?}}>
+          <img src="{{=it.helpers.assetPath('ui/night/crop/' + identifier + '.png')}}" />
+        </li>
+      {{ } }}
     </ul>
   </div>
 
