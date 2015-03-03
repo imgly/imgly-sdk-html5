@@ -132,6 +132,14 @@ class BaseUI {
   get helpers () {
     return this._helpers;
   }
+
+  /**
+   * The image
+   * @type {Image}
+   */
+  get image () {
+    return this._options.image;
+  }
 }
 
 export default BaseUI;

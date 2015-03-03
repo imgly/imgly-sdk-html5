@@ -80,12 +80,22 @@ class NightUI extends UI {
 
     // Pass zoom in event
     this._topControls.on("zoom-in", () => {
-      this._canvas.zoomIn();
+      this._canvas.zoomIn()
+        .then(() => {
+          if (this._currentControl) {
+            this._currentControl.onZoom();
+          }
+        });
     });
 
     // Pass zoom out event
     this._topControls.on("zoom-out", () => {
-      this._canvas.zoomOut();
+      this._canvas.zoomOut()
+        .then(() => {
+          if (this._currentControl) {
+            this._currentControl.onZoom();
+          }
+        });
     });
   }
 

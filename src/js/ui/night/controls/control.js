@@ -209,6 +209,12 @@ class Control extends EventEmitter {
   _onDone () {}
 
   /**
+   * Gets called when the zoom level has been changed while
+   * this control is active
+   */
+  onZoom () {}
+
+  /**
    * The data that is available to the template
    * @type {Object}
    */

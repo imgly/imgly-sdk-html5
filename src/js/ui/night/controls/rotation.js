@@ -104,10 +104,18 @@ class RotationControls extends Control {
 
     let currentDegrees = this._operation.getDegrees();
     this._operation.setDegrees(currentDegrees + degrees);
-    this._ui.canvas.render()
+    this._ui.canvas.zoomToFit()
       .then(() => {
         this._updateCropDOM();
       });
+  }
+
+  /**
+   * Gets called when the zoom level has been changed while
+   * this control is active
+   */
+  onZoom () {
+    this._updateCropDOM();
   }
 
   /**
@@ -117,7 +125,7 @@ class RotationControls extends Control {
   _updateCropDOM () {
     let start = this._initialStart.clone();
     let end = this._initialEnd.clone();
-    let canvasSize = new Vector2(this._ui.canvas._canvas.width, this._ui.canvas._canvas.height);
+    let canvasSize = this._ui.canvas.size;
 
     let startAbsolute = start.multiply(canvasSize);
     let endAbsolute = end.multiply(canvasSize);

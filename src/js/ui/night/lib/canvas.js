@@ -129,7 +129,7 @@ class Canvas extends EventEmitter {
     }
 
     zoomLevel = Math.min(initialZoomLevel * 2, zoomLevel);
-    this.setZoomLevel(zoomLevel / 100);
+    return this.setZoomLevel(zoomLevel / 100);
   }
 
   /**
@@ -150,7 +150,7 @@ class Canvas extends EventEmitter {
     }
 
     zoomLevel = Math.max(initialZoomLevel, zoomLevel);
-    this.setZoomLevel(zoomLevel / 100);
+    return this.setZoomLevel(zoomLevel / 100);
   }
 
   /**
@@ -228,11 +228,17 @@ class Canvas extends EventEmitter {
     this._zoomLevel = zoomLevel;
     if (render) {
       this.setAllOperationsToDirty();
-      this.render();
+      return this.render()
+        .then(() => {
+          this._updateCanvasMargins();
+          this._applyBoundaries();
+          this.emit("zoom"); // will be redirected to top controls
+        });
+    } else {
+      this._updateCanvasMargins();
+      this._applyBoundaries();
+      this.emit("zoom"); // will be redirected to top controls
     }
-    this._updateCanvasMargins();
-    this._applyBoundaries();
-    this.emit("zoom"); // will be redirected to top controls
   }
 
   /**
@@ -523,7 +529,7 @@ class Canvas extends EventEmitter {
    */
   zoomToFit (render=true) {
     let initialZoomLevel = this._getInitialZoomLevel();
-    this.setZoomLevel(initialZoomLevel, render);
+    return this.setZoomLevel(initialZoomLevel, render);
   }
 
   /**
