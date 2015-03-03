@@ -90,6 +90,13 @@ class TextControl extends Control {
     this._moveKnobWidth = this._moveKnob.offsetWidth;
     this._resizeKnob = this._canvasControls.querySelector(".imglykit-knob");
 
+    // If the text has been edited before, subtract the knob width and padding
+    if (!this._initialIdentity) {
+      this._settings.position.x -= this._moveKnobWidth;
+      this._settings.position.x -= 2;
+      this._settings.position.y -= 2;
+    }
+
     // Subtract knob width from maxWidth
     this._settings.maxWidth -= this._moveKnobWidth;
 
