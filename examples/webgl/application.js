@@ -21,6 +21,14 @@ window.onload = function() {
 
     kit.run();
 
+    var button = document.body.querySelector("#render-button");
+    button.addEventListener("click", function () {
+      kit.render()
+        .then(function (image) {
+          document.body.appendChild(image);
+        });
+    });
+
     // kit.operationsStack.push(new ImglyKit.Operations.FiltersOperation(kit, {
     //   filter: ImglyKit.Filters.Breeze
     // }));
