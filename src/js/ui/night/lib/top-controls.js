@@ -25,6 +25,9 @@ class TopControls extends EventEmitter {
   run () {
     let { container } = this._ui;
 
+    this._rightControls = container.querySelector(".imglykit-top-controls-right");
+    this._leftControls = container.querySelector(".imglykit-top-controls-left");
+
     this._undoButton = container.querySelector(".imglykit-undo");
     this._zoomIn = container.querySelector(".imglykit-zoom-in");
     this._zoomOut = container.querySelector(".imglykit-zoom-out");
@@ -66,9 +69,9 @@ class TopControls extends EventEmitter {
   updateUndoButton () {
     let { history } = this._ui;
     if (history.length === 0) {
-      this._undoButton.classList.add("imglykit-inactive");
+      this._leftControls.style.display = "none";
     } else {
-      this._undoButton.classList.remove("imglykit-inactive");
+      this._leftControls.style.display = "block";
     }
   }
 
@@ -94,6 +97,20 @@ class TopControls extends EventEmitter {
 
     this.emit("zoom-out");
     this.updateZoomLevel();
+  }
+
+  /**
+   * Shows the zoom control
+   */
+  showZoom () {
+    this._rightControls.style.display = "block";
+  }
+
+  /**
+   * Hides the zoom control
+   */
+  hideZoom () {
+    this._rightControls.style.display = "none";
   }
 
   /**

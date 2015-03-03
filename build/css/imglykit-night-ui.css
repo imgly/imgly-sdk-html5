@@ -178,58 +178,50 @@
 /* line 35, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-top-controls-left {
   float: left;
+  display: none;
 }
-/* line 38, ../../src/css/night/_top.sass */
+/* line 39, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-top-controls-right {
   float: right;
 }
-/* line 41, ../../src/css/night/_top.sass */
+/* line 42, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-top-controls-right .imglykit-zoom-in, .imglykit-container .imglykit-top-controls-right .imglykit-zoom-out {
   padding: 0 15px;
   cursor: pointer;
   border-left: 1px solid #363636;
 }
-/* line 46, ../../src/css/night/_top.sass */
+/* line 47, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-top-controls-right .imglykit-zoom-in img, .imglykit-container .imglykit-top-controls-right .imglykit-zoom-out img {
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
   opacity: 0.4;
   vertical-align: middle;
 }
-/* line 49, ../../src/css/night/_top.sass */
+/* line 50, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-top-controls-right .imglykit-zoom-in:hover img, .imglykit-container .imglykit-top-controls-right .imglykit-zoom-out:hover img {
   filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
   opacity: 1;
 }
-/* line 52, ../../src/css/night/_top.sass */
+/* line 53, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-top-controls-right .imglykit-zoom-out {
   padding-right: 0;
 }
-/* line 55, ../../src/css/night/_top.sass */
+/* line 56, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-top-controls-right .imglykit-zoom-level {
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
   opacity: 0.4;
   padding: 0 10px;
 }
-/* line 59, ../../src/css/night/_top.sass */
+/* line 60, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-undo {
   cursor: pointer;
   border-right: 1px solid #363636;
   color: rgba(255, 255, 255, 0.4);
   padding-right: 10px;
 }
-/* line 64, ../../src/css/night/_top.sass */
+/* line 65, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-undo img {
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
   opacity: 0.4;
-}
-/* line 66, ../../src/css/night/_top.sass */
-.imglykit-container .imglykit-undo.imglykit-inactive {
-  color: rgba(255, 255, 255, 0.2);
-}
-/* line 68, ../../src/css/night/_top.sass */
-.imglykit-container .imglykit-undo.imglykit-inactive img {
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=20);
-  opacity: 0.2;
 }
 
 /*!

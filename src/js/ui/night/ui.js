@@ -25,8 +25,8 @@ class NightUI extends UI {
     // The `Night` UI has a fixed operation order
     this._preferredOperationOrder = [
       // First, all operations that affect the image dimensions
-      "crop",
       "rotation",
+      "crop",
       "flip",
 
       // Then color operations (first filters, then fine-tuning)
@@ -293,6 +293,20 @@ class NightUI extends UI {
   addHistory (operation, options, identity) {
     this._history.push({ operation, options, identity });
     this._topControls.updateUndoButton();
+  }
+
+  /**
+   * Hides the zoom control
+   */
+  hideZoom () {
+    this._topControls.hideZoom();
+  }
+
+  /**
+   * Hides the zoom control
+   */
+  showZoom () {
+    this._topControls.showZoom();
   }
 
   /**

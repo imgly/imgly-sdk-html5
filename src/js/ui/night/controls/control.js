@@ -156,6 +156,8 @@ class Control extends EventEmitter {
   enter () {
     this._active = true;
 
+    this._ui.hideZoom();
+
     this._renderAllControls();
     this._handleBackAndDoneButtons();
     this._enableCanvasControls();
@@ -168,6 +170,8 @@ class Control extends EventEmitter {
    */
   leave () {
     this._active = false;
+
+    this._ui.showZoom();
 
     this._removeControls();
     this._disableCanvasControls();
