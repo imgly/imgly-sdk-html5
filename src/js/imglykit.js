@@ -39,7 +39,8 @@ class ImglyKit {
     options = _.defaults(options, {
       assetsUrl: "assets",
       container: null,
-      ui: true
+      ui: true,
+      renderOnWindowResize: false
     });
 
     /**
@@ -76,6 +77,9 @@ class ImglyKit {
 
     if (this._options.ui) {
       this._initUI();
+      if (this._options.renderOnWindowResize) {
+        this._handleWindowResize();
+      }
     }
   }
 
@@ -127,6 +131,26 @@ class ImglyKit {
       var path = require("path");
       return path.resolve(this._options.assetsUrl, asset);
     }
+  }
+
+  /**
+   * If `options.renderOnWindowResize` is set to true, this function
+   * will re-render the canvas with a slight delay so that it won't
+   * cause lagging of the resize
+   * @private
+   */
+  _handleWindowResize () {
+    let timer = null;
+    window.addEventListener("resize", () => {
+      if (timer !== null) {
+        clearTimeout(timer);
+      }
+
+      timer = setTimeout(() => {
+        timer = null;
+        this.ui.render();
+      }, 300);
+    });
   }
 
   /**
