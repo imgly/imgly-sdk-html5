@@ -233,7 +233,6 @@ class TextOperation extends Operation {
     // Apply text options
     this._applyTextOptions(renderer, context);
 
-
     // Draw lines
     for (lineNum = 0; lineNum < lines.length; lineNum++) {
       line = lines[lineNum];
@@ -273,42 +272,46 @@ class TextOperation extends Operation {
   _buildOutputLines (context, maxWidth) {
     var inputLines = this._options.text.split("\n");
     var outputLines = [];
-    var currentWords = [];
+    var currentChars = [];
 
     for (var lineNum = 0; lineNum < inputLines.length; lineNum++) {
       var inputLine = inputLines[lineNum];
-      var lineWords = inputLine.split(" ");
+      var lineChars = inputLine.split("");
 
-      for (var wordNum = 0; wordNum < lineWords.length; wordNum++) {
-        var currentWord = lineWords[wordNum];
-        currentWords.push(currentWord);
-        var currentLine = currentWords.join(" ");
+      if (lineChars.length === 0) {
+        outputLines.push("");
+      }
+
+      for (var charNum = 0; charNum < lineChars.length; charNum++) {
+        var currentChar = lineChars[charNum];
+        currentChars.push(currentChar);
+        var currentLine = currentChars.join("");
         var lineWidth = context.measureText(currentLine).width;
 
-        if (lineWidth > maxWidth && currentWords.length === 1) {
-          outputLines.push(currentWords[0]);
-          currentWords = [];
+        if (lineWidth > maxWidth && currentChars.length === 1) {
+          outputLines.push(currentChars[0]);
+          currentChars = [];
         } else if (lineWidth > maxWidth) {
           // Remove the last word
-          var lastWord = currentWords.pop();
+          var lastWord = currentChars.pop();
 
           // Add the line, clear the words
-          outputLines.push(currentWords.join(" "));
-          currentWords = [];
+          outputLines.push(currentChars.join(""));
+          currentChars = [];
 
           // Make sure to use the last word for the next line
-          currentWords = [lastWord];
-        } else if (wordNum === lineWords.length - 1) {
+          currentChars = [lastWord];
+        } else if (charNum === lineChars.length - 1) {
           // Add the line, clear the words
-          outputLines.push(currentWords.join(" "));
-          currentWords = [];
+          outputLines.push(currentChars.join(""));
+          currentChars = [];
         }
       }
 
       // Line ended, but there's words left
-      if (currentWords.length) {
-        outputLines.push(currentWords.join(" "));
-        currentWords = [];
+      if (currentChars.length) {
+        outputLines.push(currentChars.join(""));
+        currentChars = [];
       }
 
     }

@@ -39,7 +39,6 @@ class RotationOperation extends Operation {
 
       void main() {
         gl_Position = vec4((u_matrix * vec3(a_position, 1)).xy, 0, 1);
-        // gl_Position = vec4(a_position, 0, 1);
         v_texCoord = a_texCoord;
       }
     `;
