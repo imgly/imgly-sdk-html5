@@ -25,7 +25,7 @@ class FlipControls extends Control {
    * Entry point for this control
    */
   init () {
-    this._operation = this._ui.operationsMap.flip;
+    this._operation = this._ui.operations.flip;
 
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/flip_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;

@@ -25,7 +25,7 @@ class SaturationControls extends Control {
    * Entry point for this control
    */
   init () {
-    this._operation = this._ui.operationsMap.saturation;
+    this._operation = this._ui.operations.saturation;
 
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/saturation_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;

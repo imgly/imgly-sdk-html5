@@ -29,7 +29,7 @@ class CropControls extends Control {
   init () {
     this._availableRatios = {};
     this._ratios = {};
-    this._operation = this._ui.operationsMap.crop;
+    this._operation = this._ui.operations.crop;
 
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/crop_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;
@@ -57,15 +57,15 @@ class CropControls extends Control {
     this._addDefaultRatios();
 
     // Select all ratios per default
-    this.selectFilters(null);
+    this.selectRatios(null);
   }
 
   /**
    * Selects the ratios
    * @param {Selector} selector
    */
-  selectFilters (selector) {
-    this._filters = {};
+  selectRatios (selector) {
+    this._ratios = {};
 
     let ratioIdentifiers = Object.keys(this._availableRatios);
 

@@ -26,7 +26,7 @@ class FramesControls extends Control {
    * Entry point for this control
    */
   init () {
-    this._operation = this._ui.operationsMap.frames;
+    this._operation = this._ui.operations.frames;
 
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/frames_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;

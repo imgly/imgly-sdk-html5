@@ -25,7 +25,7 @@ class ContrastControls extends Control {
    * Entry point for this control
    */
   init () {
-    this._operation = this._ui.operationsMap.contrast;
+    this._operation = this._ui.operations.contrast;
 
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/contrast_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;

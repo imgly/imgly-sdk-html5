@@ -26,7 +26,7 @@ class FiltersControls extends Control {
    * Entry point for this control
    */
   init () {
-    this._operation = this._ui.operationsMap.filters;
+    this._operation = this._ui.operations.filters;
 
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/filters_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;

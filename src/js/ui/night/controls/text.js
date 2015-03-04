@@ -28,7 +28,7 @@ class TextControl extends Control {
    * Entry point for this control
    */
   init () {
-    this._operation = this._ui.operationsMap.text;
+    this._operation = this._ui.operations.text;
 
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/text_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;

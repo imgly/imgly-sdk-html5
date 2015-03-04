@@ -256,8 +256,8 @@ class Canvas extends EventEmitter {
    * @private
    */
   _getInitialZoomLevel () {
-    let cropOperation = this._ui.operationsMap.crop;
-    let rotationOperation = this._ui.operationsMap.rotation;
+    let cropOperation = this._ui.operations.crop;
+    let rotationOperation = this._ui.operations.rotation;
     let cropSize = cropOperation.getEnd().clone()
       .subtract(cropOperation.getStart());
 

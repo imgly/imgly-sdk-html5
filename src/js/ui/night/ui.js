@@ -243,7 +243,7 @@ class NightUI extends UI {
    * An object containing all active operations
    * @type {Object.<String,Operation>}
    */
-  get operationsMap () {
+  get operations () {
     return this._operationsMap;
   }
 
@@ -316,7 +316,7 @@ class NightUI extends UI {
     let lastItem = this._history.pop();
     if (lastItem) {
       let { operation, identity, options } = lastItem;
-      let operationInstance = this.operationsMap[operation.identifier];
+      let operationInstance = this.operations[operation.identifier];
       if (!identity) {
         operationInstance.set(options);
       }

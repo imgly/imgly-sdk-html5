@@ -25,7 +25,7 @@ class BrightnessControls extends Control {
    * The entry point for this control
    */
   init () {
-    this._operation = this._ui.operationsMap.brightness;
+    this._operation = this._ui.operations.brightness;
 
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/brightness_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;
