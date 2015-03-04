@@ -221,13 +221,18 @@ class CropControls extends Control {
   _setRatio (identifier, ratio, resize=true) {
     let canvasSize = this._ui.canvas.size;
     this._selectedRatio = identifier;
+
     if (ratio === "*") {
       this._ratio = null;
       this._start = new Vector2(0.1, 0.1);
       this._end = new Vector2(0.9, 0.9);
     } else {
-      ratio = parseFloat(ratio);
-      this._ratio = ratio;
+      if (ratio === "original") {
+        this._ratio = canvasSize.x / canvasSize.y;
+      } else {
+        ratio = parseFloat(ratio);
+        this._ratio = ratio;
+      }
 
       if (resize) {
         if (canvasSize.x / canvasSize.y <= this._ratio) {
@@ -383,7 +388,7 @@ class CropControls extends Control {
           if (this._start.y <= 0) {
             this._start.y = 0;
             height = (this._end.y - this._start.y) * canvasSize.y;
-            width = height / this._ratio;
+            width = height * this._ratio;
             this._start.x = this._end.x - width / canvasSize.x;
           }
           break;
@@ -395,7 +400,7 @@ class CropControls extends Control {
           if (this._start.y <= 0) {
             this._start.y = 0;
             height = (this._end.y - this._start.y) * canvasSize.y;
-            width = height / this._ratio;
+            width = height * this._ratio;
             this._end.x = this._start.x + width / canvasSize.x;
           }
           break;
@@ -408,7 +413,7 @@ class CropControls extends Control {
           if (this._end.y >= 1) {
             this._end.y = 1;
             height = (this._end.y - this._start.y) * canvasSize.y;
-            width = height / this._ratio;
+            width = height * this._ratio;
             this._end.x = this._start.x + width / canvasSize.x;
           }
           break;
@@ -420,7 +425,7 @@ class CropControls extends Control {
           if (this._end.y >= 1) {
             this._end.y = 1;
             height = (this._end.y - this._start.y) * canvasSize.y;
-            width = height / this._ratio;
+            width = height * this._ratio;
             this._start.x = this._end.x - width / canvasSize.x;
           }
           break;
