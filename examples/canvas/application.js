@@ -14,7 +14,8 @@ window.onload = function() {
       renderer: "canvas", // Defaults to "webgl", uses "canvas" as fallback
       assetsUrl: "../../build/assets", // The URL / path where all assets are
       container: document.querySelector("#container"),
-      ui: true // Disable the UI, we use the low level API here
+      ui: true, // Disable the UI, we use the low level API here
+      renderOnWindowResize: true // Our editor's size is relative to the window size
     });
 
     // kit.ui.selectOperations({ only: "filters,crop" });
