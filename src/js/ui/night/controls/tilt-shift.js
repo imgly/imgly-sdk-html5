@@ -28,7 +28,7 @@ class TiltShiftControls extends Control {
    * Entry point for this control
    */
   init () {
-    this._operation = this._ui.operationsMap["tilt-shift"];
+    this._operation = this._ui.operations["tilt-shift"];
 
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/tilt-shift_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;

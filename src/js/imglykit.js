@@ -102,6 +102,11 @@ class ImglyKit {
     // Create a RenderImage
     var renderImage = new RenderImage(this._options.image, this.operationsStack, dimensions, this._options.renderer);
 
+    // Set all operations to dirty, since we have another webgl renderer
+    for (let operation of this.operationsStack) {
+      operation.dirty = true;
+    }
+
     // Initiate image rendering
     return renderImage.render()
       .then(function () {

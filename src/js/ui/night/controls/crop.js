@@ -37,11 +37,16 @@ class CropControls extends Control {
     let canvasControlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/crop_canvas.jst", "utf-8");
     this._canvasControlsTemplate = canvasControlsTemplate;
 
-    this._start = null;
-    this._end = null;
-
     this._defaultStart = new Vector2(0.1, 0.1);
     this._defaultEnd = new Vector2(0.9, 0.9);
+
+    this._initialOptions = {
+      start: this._operation.getStart(),
+      end: this._operation.getEnd()
+    };
+
+    this._start = this._initialOptions.start || this._defaultStart;
+    this._end = this._initialOptions.end || this._defaultEnd;
 
     // Minimum size in pixels
     this._minimumSize = new Vector2(50, 50);
@@ -161,9 +166,10 @@ class CropControls extends Control {
     this._ratios = Array.prototype.slice.call(listItems);
 
     for (let item of this._ratios) {
-      if (typeof item.dataset.selected !== "undefined" &&
+      let { selected, ratio, identifier } = item.dataset;
+      if (typeof selected !== "undefined" &&
         this._start === null && this._end === null) {
-          this._setRatio(item.dataset.ratio, false);
+          this._setRatio(identifier, ratio, false);
           this._selectRatio(item);
       }
 
@@ -201,18 +207,20 @@ class CropControls extends Control {
    */
   _selectRatio (item) {
     item.classList.add("imglykit-controls-item-active");
-    let { ratio } = item.dataset;
-    this._setRatio(ratio);
+    let { ratio, identifier } = item.dataset;
+    this._setRatio(identifier, ratio);
   }
 
   /**
    * Sets the given ratio
+   * @param {String} identifier
    * @param {String} ratio
    * @param {Boolean} resize
    * @private
    */
-  _setRatio (ratio, resize=true) {
+  _setRatio (identifier, ratio, resize=true) {
     let canvasSize = this._ui.canvas.size;
+    this._selectedRatio = identifier;
     if (ratio === "*") {
       this._ratio = null;
       this._start = new Vector2(0.1, 0.1);
@@ -326,7 +334,7 @@ class CropControls extends Control {
       .multiply(canvasSize);
     let maxHeight = canvasSize.y;
 
-    let width, height, maximum, minimum
+    let width, height, maximum, minimum;
 
     switch (corner) {
       case "top-left":
@@ -552,6 +560,14 @@ class CropControls extends Control {
     context.ratios = this._ratios;
     context.activeRatio = Object.keys(this._ratios)[0];
     return context;
+  }
+
+  /**
+   * The selected ratio identifier
+   * @type {String}
+   */
+  get selectedRatio () {
+    return this._selectedRatio;
   }
 }
 

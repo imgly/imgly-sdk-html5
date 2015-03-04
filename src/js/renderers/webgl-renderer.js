@@ -73,11 +73,13 @@ class WebGLRenderer extends Renderer {
     this._cache[identifier] = { fbo, texture, size };
   }
 
-  drawCachedFinal (identifier) {
+  /**
+   * Debugging method to draw a cached texture to the canvas instead
+   * to an FBO
+   * @private
+   */
+  _drawCachedFinal (identifier) {
     let { texture, size } = this._cache[identifier];
-
-    let fbo = this.getCurrentFramebuffer();
-    let currentTexture = this.getCurrentTexture();
 
     let gl = this._context;
     gl.useProgram(this._defaultProgram);

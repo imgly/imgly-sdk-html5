@@ -16,8 +16,7 @@ import TopControls from "./lib/top-controls";
 
 class NightUI extends UI {
   constructor (...args) {
-    super(...args);
-
+    this._operationsMap = {};
     this._template = fs.readFileSync(__dirname + "/../../templates/night/template.jst", "utf-8");
     this._registeredControls = {};
     this._history = [];
@@ -44,10 +43,11 @@ class NightUI extends UI {
     ];
 
     this._paused = false;
+
+    super(...args);
   }
 
   run () {
-    this._operationsMap = {};
     this._registerControls();
 
     super.run();
@@ -112,11 +112,22 @@ class NightUI extends UI {
   }
 
   /**
+   * Selects the enabled operations
+   * @param {ImglyKit.Selector}
+   */
+  selectOperations (selector) {
+    super.selectOperations(selector);
+
+    this._initOperations();
+  }
+
+  /**
    * Initializes all operations
    * @private
    */
   _initOperations () {
     let { operationsStack, registeredOperations } = this._kit;
+    operationsStack.splice(0, operationsStack.length); // Clear the array in-place
     for (let operationIdentifier of this._preferredOperationOrder) {
       if (!this.isOperationSelected(operationIdentifier)) {
         continue;
