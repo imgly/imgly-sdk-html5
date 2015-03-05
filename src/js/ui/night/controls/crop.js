@@ -546,7 +546,7 @@ class CropControls extends Control {
       start: this._start,
       end: this._end
     });
-    this._ui.canvas.render();
+    this._ui.canvas.zoomToFit(true);
 
     this._ui.addHistory(this._operation, {
       start: this._initialStart.clone(),
