@@ -114,7 +114,7 @@ describe("StickersOperation", function () {
       it("should succeed", function (done) {
 
         stickersOperation = new StickersOperation(kit, {
-          sticker: "glasses-nerd",
+          sticker: "stickers/sticker-glasses-nerd.png",
           position: new ImglyKit.Vector2(0, 0)
         });
         kit.operationsStack.push(stickersOperation);

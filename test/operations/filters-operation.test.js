@@ -34,14 +34,10 @@ describe("FiltersOperation", function () {
 
   describe("with no selected filter", function () {
 
-    it("rendering should fail", function (done) {
+    it("rendering should pass (default filter is identity)", function (done) {
 
       kit.render()
         .then(function () {
-          done(new Error("Rendering succeeded while it shouldn't succeed."));
-        })
-        .catch(function (err) {
-          err.should.be.an.instanceOf(Error);
           done();
         });
 

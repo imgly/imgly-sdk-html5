@@ -31,7 +31,6 @@ bluebird.onPossiblyUnhandledRejection((error) => { throw error; });
  */
 class ImglyKit {
   constructor (options) {
-
     // `options` is required
     if (typeof options === "undefined") throw new Error("No options given.");
 
@@ -48,6 +47,9 @@ class ImglyKit {
      * @private
      */
     this._options = options;
+
+    // `options.image` is required
+    if (typeof this._options.image === "undefined") throw new Error("`options.image` is undefined.");
 
     /**
      * The stack of {@link Operation} instances that will be used
@@ -91,9 +93,6 @@ class ImglyKit {
    * @return {Promise}
    */
   render (renderType, imageFormat, dimensions) {
-    // `options.image` is required
-    if (typeof this._options.image === "undefined") throw new Error("`options.image` is undefined.");
-
     var settings = ImageExporter.validateSettings(renderType, imageFormat);
 
     renderType = settings.renderType;

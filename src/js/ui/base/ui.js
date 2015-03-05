@@ -28,6 +28,14 @@ class BaseUI {
   }
 
   /**
+   * A unique string that represents this UI
+   * @type {String}
+   */
+  get identifier () {
+    return null;
+  }
+
+  /**
    * Renders and attaches the UI HTML
    * @private
    */

@@ -60,15 +60,6 @@ describe("ImglyKit", function () {
 
       });
 
-      describe("when `options.ui` is not set", function () {
-
-        it("should initialize the default (night) UI", function () {
-          kit = new ImglyKit({ image: null, container: stubContainer });
-          kit.ui.should.be.an.instanceOf(NightUI);
-        });
-
-      });
-
       describe("when `options.ui` is set to an invalid identifier", function () {
 
         it("should throw an error", function () {
