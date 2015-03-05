@@ -87,18 +87,13 @@ class TextControl extends Control {
     this._textarea.focus();
 
     this._moveKnob = this._canvasControls.querySelector(".imglykit-crosshair");
-    this._moveKnobWidth = this._moveKnob.offsetWidth;
     this._resizeKnob = this._canvasControls.querySelector(".imglykit-knob");
 
     // If the text has been edited before, subtract the knob width and padding
     if (!this._initialIdentity) {
-      this._settings.position.x -= this._moveKnobWidth;
       this._settings.position.x -= 2;
       this._settings.position.y -= 2;
     }
-
-    // Subtract knob width from maxWidth
-    this._settings.maxWidth -= this._moveKnobWidth;
 
     this._onTextareaKeyUp = this._onTextareaKeyUp.bind(this);
     this._onResizeKnobDown = this._onResizeKnobDown.bind(this);
@@ -303,7 +298,7 @@ class TextControl extends Control {
     let diff = mousePosition.subtract(this._initialMousePosition);
 
     let position = this._settings.position.clone();
-    let maxWidthAllowed = canvasSize.x - position.x - this._moveKnobWidth;
+    let maxWidthAllowed = canvasSize.x - position.x;
 
     let maxWidth = this._initialMaxWidth + diff.x;
     maxWidth = Math.max(100, Math.min(maxWidthAllowed, maxWidth));
@@ -420,7 +415,7 @@ class TextControl extends Control {
    */
   _onDone () {
     let canvasSize = this._ui.canvas.size;
-    let padding = new Vector2(this._moveKnobWidth + 2, 2);
+    let padding = new Vector2(2, 2);
     let position = this._settings.position.clone()
       .add(padding)
       .divide(canvasSize);

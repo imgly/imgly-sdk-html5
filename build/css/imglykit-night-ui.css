@@ -503,26 +503,32 @@
   left: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden;
 }
-/* line 18, ../../src/css/night/controls/_text_canvas.sass */
+/* line 17, ../../src/css/night/controls/_text_canvas.sass */
 .imglykit-container .imglykit-canvas-text-container .imglykit-canvas-text {
   position: relative;
   display: inline-block;
 }
-/* line 22, ../../src/css/night/controls/_text_canvas.sass */
+/* line 21, ../../src/css/night/controls/_text_canvas.sass */
+.imglykit-container .imglykit-canvas-text-container .imglykit-canvas-text .imglykit-crosshair {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  left: -34px;
+}
+/* line 27, ../../src/css/night/controls/_text_canvas.sass */
 .imglykit-container .imglykit-canvas-text-container .imglykit-canvas-text .imglykit-canvas-text-textarea {
   position: relative;
   display: inline-block;
 }
-/* line 26, ../../src/css/night/controls/_text_canvas.sass */
+/* line 31, ../../src/css/night/controls/_text_canvas.sass */
 .imglykit-container .imglykit-canvas-text-container .imglykit-canvas-text .imglykit-canvas-text-textarea textarea {
   background: transparent;
   border: 2px solid white;
   resize: none;
   padding: 0;
 }
-/* line 32, ../../src/css/night/controls/_text_canvas.sass */
+/* line 37, ../../src/css/night/controls/_text_canvas.sass */
 .imglykit-container .imglykit-canvas-text-container .imglykit-canvas-text .imglykit-canvas-text-textarea .imglykit-knob {
   bottom: -2px;
   right: -8px;
