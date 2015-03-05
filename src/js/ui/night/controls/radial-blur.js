@@ -140,7 +140,7 @@ class RadialBlurControls extends Control {
     document.addEventListener("touchmove", this._onKnobDrag);
 
     document.addEventListener("mouseup", this._onKnobUp);
-    document.addEventListener("touchend", this._onKnoUp);
+    document.addEventListener("touchend", this._onKnobUp);
   }
 
   /**
