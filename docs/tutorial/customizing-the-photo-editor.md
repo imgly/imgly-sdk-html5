@@ -53,11 +53,11 @@ specifies whether the ratio should be pre-selected when entering the crop operat
 
 ```js
 var cropControl = kit.ui.controls.crop;
-cropControl.addRatio("facebook-cover", 851 / 315, true); // ratio 1:1, selected set to true
+cropControl.addRatio("facebook-cover", 851 / 315, true); // selected set to true
 cropControl.addRatio("twitter-cover", 1500 / 500);
 ```
 
-To select the available ratios, call `selectRatios` the same way you do with
+To select the ratios available to the user, call `selectRatios` the same way you do with
 filters. The 4 default ratios are `custom`, `square`, `4-3` and `16-9`.
 
 ```js
