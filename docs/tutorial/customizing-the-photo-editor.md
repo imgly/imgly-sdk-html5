@@ -42,4 +42,28 @@ var filtersControl = kit.ui.controls.filters;
 filtersControl.selectFilters({ only: ["semired, k1, k2, k6"] });
 ```
 
+## Adding custom filters
+
 Since adding custom filters is more complicated, [we moved this to a separate page](creating-custom-filters.md).
+
+## Adding and selecting available crop ratios
+
+Using the `addRatio` function of the `CropControl`, you can register custom ratios.
+A ratio has an `identifier`, a `ratio` value and a `selected` state. The `identifier`
+is a unique string that you will use to select available ratios. The `ratio`
+is either a number value (e.g. 1.33 for 4:3 ratio) or a special string (`*` for
+free crop or `original` for the ratio of the original image). The `selected` state
+specifies whether the ratio should be pre-selected when entering the crop operation.
+
+```js
+var cropControl = kit.ui.controls.crop;
+cropControl.addRatio("facebook-cover", 851 / 315, true); // ratio 1:1, selected set to true
+cropControl.addRatio("twitter-cover", 1500 / 500);
+```
+
+To select the available ratios, call `selectRatios` the same way you do with
+filters. The 4 default ratios are `custom`, `square`, `4-3` and `16-9`.
+
+```js
+cropControl.selectRatios({ only: "facebook-cover,twitter-cover" });
+```
