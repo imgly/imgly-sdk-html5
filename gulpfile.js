@@ -79,11 +79,13 @@ gulp.task("copy", function () {
  * Uglifies the compiled JS files
  */
 gulp.task("uglify:js", function () {
-  return gulp.src("./build/*.js")
+  return gulp.src("./build/js/imglykit.js")
     .pipe($.plumber())
-    .pipe($.uglify())
+    .pipe($.uglifyjs({
+      mangle: false
+    }))
     .pipe($.rename({ suffix: ".min" }))
-    .pipe(gulp.dest("./build"));
+    .pipe(gulp.dest("./build/js"));
 });
 
 /**
