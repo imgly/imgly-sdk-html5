@@ -163,9 +163,9 @@ class CropControls extends Control {
    */
   _handleControls () {
     let listItems = this._controls.querySelectorAll("ul > li");
-    this._ratios = Array.prototype.slice.call(listItems);
+    this._ratioItems = Array.prototype.slice.call(listItems);
 
-    for (let item of this._ratios) {
+    for (let item of this._ratioItems) {
       let { selected, ratio, identifier } = item.dataset;
       if (typeof selected !== "undefined" && this._initialIdentity) {
         this._setRatio(identifier, ratio, false);
@@ -194,7 +194,7 @@ class CropControls extends Control {
    * @private
    */
   _unselectAllRatios () {
-    for (let item of this._ratios) {
+    for (let item of this._ratioItems) {
       item.classList.remove("imglykit-controls-item-active");
     }
   }
