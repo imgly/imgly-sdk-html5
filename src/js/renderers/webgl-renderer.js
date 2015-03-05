@@ -242,6 +242,10 @@ class WebGLRenderer extends Renderer {
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
     gl.viewport(0, 0, this._canvas.width, this._canvas.height);
 
+    // Resize the texture to canvas size
+    gl.bindTexture(gl.TEXTURE_2D, currentTexture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._canvas.width, this._canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+
     // Make sure we select the current texture
     gl.bindTexture(gl.TEXTURE_2D, this._lastTexture);
 

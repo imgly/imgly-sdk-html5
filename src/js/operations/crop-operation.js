@@ -62,7 +62,6 @@ class CropOperation extends Operation {
   /* istanbul ignore next */
   _renderWebGL (renderer) {
     var canvas = renderer.getCanvas();
-    var gl = renderer.getContext();
     var canvasSize = new Vector2(canvas.width, canvas.height);
 
     var start = this._options.start.clone();
@@ -80,20 +79,6 @@ class CropOperation extends Operation {
 
     // The new size
     var newDimensions = this.getNewDimensions(renderer);
-
-    // Make sure we don't resize the input texture
-    var lastTexture = renderer.getLastTexture();
-
-    // Resize all textures except the one we use as input
-    var textures = renderer.getTextures();
-    var texture;
-    for (var i = 0; i < textures.length; i++) {
-      texture = textures[i];
-      if (texture === lastTexture) continue;
-
-      gl.bindTexture(gl.TEXTURE_2D, texture);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, newDimensions.x, newDimensions.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-    }
 
     // Resize the canvas
     canvas.width = newDimensions.x;

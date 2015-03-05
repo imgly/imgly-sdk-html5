@@ -62,10 +62,8 @@ class RotationOperation extends Operation {
   /* istanbul ignore next */
   _renderWebGL (renderer) {
     var canvas = renderer.getCanvas();
-    var gl = renderer.getContext();
 
     var actualDegrees = this._options.degrees % 360;
-    var lastTexture = renderer.getLastTexture();
 
     // If we're not rotating by 180 degrees, we need to resize the canvas
     // and the texture
@@ -75,24 +73,6 @@ class RotationOperation extends Operation {
       // Resize the canvas
       canvas.width = newDimensions.x;
       canvas.height = newDimensions.y;
-
-      // Resize the current texture
-      var currentTexture = renderer.getCurrentTexture();
-      gl.bindTexture(gl.TEXTURE_2D, currentTexture);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, canvas.width, canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-
-      // Resize all other textures except the input texture
-      var textures = renderer.getTextures();
-      var texture;
-      for (var i = 0; i < textures.length; i++) {
-        texture = textures[i];
-
-        // We resize the input texture at the end
-        if (texture === lastTexture) continue;
-
-        gl.bindTexture(gl.TEXTURE_2D, texture);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, canvas.width, canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-      }
     }
 
     // Build the rotation matrix
@@ -111,10 +91,6 @@ class RotationOperation extends Operation {
         u_matrix: { type: "mat3fv", value: rotationMatrix }
       }
     });
-
-    // Resize input texture
-    gl.bindTexture(gl.TEXTURE_2D, lastTexture);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, canvas.width, canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
   }
 
   /**
