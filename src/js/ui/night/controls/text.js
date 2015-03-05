@@ -80,7 +80,6 @@ class TextControl extends Control {
 
     // Remember zoom level and zoom to fit the canvas
     this._initialZoomLevel = this._ui.canvas.zoomLevel;
-    this._ui.canvas.zoomToFit();
 
     this._container = this._canvasControls.querySelector(".imglykit-canvas-text");
     this._textarea = this._canvasControls.querySelector("textarea");
@@ -110,8 +109,12 @@ class TextControl extends Control {
     this._handleTextarea();
     this._handleResizeKnob();
     this._handleMoveKnob();
-    this._applySettings();
     this._resizeTextarea();
+
+    this._ui.canvas.zoomToFit()
+      .then(() => {
+        this._applySettings();
+      });
   }
 
   /**
