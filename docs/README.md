@@ -7,3 +7,4 @@
 * [Photo editor integration](tutorial/photo-editor-integration.md)
 * [Customizing the photo editor](tutorial/customizing-the-photo-editor.md)
 * [Rendering images using the backend](tutorial/rendering-images-using-the-backend.md)
+* [Uploading images to a server](tutorial/uploading-images-to-a-server.md)
