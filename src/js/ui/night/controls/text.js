@@ -354,6 +354,9 @@ class TextControl extends Control {
     let canvasSize = this._ui.canvas.size;
     let actualFontSize = settings.fontSize * canvasSize.y;
 
+    this._container.style.left = `${settings.position.x}px`;
+    this._container.style.top = `${settings.position.y}px`;
+
     textarea.value = settings.text;
     textarea.style.fontFamily = settings.fontFamily;
     textarea.style.fontSize = `${actualFontSize}px`;
