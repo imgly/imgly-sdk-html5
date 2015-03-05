@@ -42,15 +42,11 @@ var filtersControl = kit.ui.controls.filters;
 filtersControl.selectFilters({ only: ["semired, k1, k2, k6"] });
 ```
 
-## Adding custom filters
-
-Since adding custom filters is more complicated, [we moved this to a separate page](creating-custom-filters.md).
-
 ## Adding and selecting available crop ratios
 
 Using the `addRatio` function of the `CropControl`, you can register custom ratios.
 A ratio has an `identifier`, a `ratio` value and a `selected` state. The `identifier`
-is a unique string that you will use to select available ratios. The `ratio`
+is a unique string that you will use to select the ratios available to the user. The `ratio`
 is either a number value (e.g. 1.33 for 4:3 ratio) or a special string (`*` for
 free crop or `original` for the ratio of the original image). The `selected` state
 specifies whether the ratio should be pre-selected when entering the crop operation.
@@ -67,3 +63,31 @@ filters. The 4 default ratios are `custom`, `square`, `4-3` and `16-9`.
 ```js
 cropControl.selectRatios({ only: "facebook-cover,twitter-cover" });
 ```
+
+## Adding and selecting stickers
+
+Using the `addSticker` function of the `StickersControl`, you can register
+custom stickers. A sticker has an `identifier` and a `path`. The `identifier`
+is a unique string that you will use to select the stickers available to
+the user.
+
+```js
+var stickersControl = kit.ui.controls.stickers;
+stickersControl.addSticker("bird", "stickers/bird.png");
+```
+
+To select the stickers available to the user, call `selectStickers` the same
+way you do with filters. See the [list of default sticker identifiers](misc/sticker-identifiers.md).
+
+```js
+stickersControl.selectStickers({ only: "glasses-nerd, bird" });
+```
+
+## Adding and selecting fonts
+
+:construction: Not implemented, yet! :construction:
+
+# Advanced customizations
+
+* [Creating custom filters](creating-custom-filters.md)
+* [Creating custom operations](creating-custom-operations.md)
