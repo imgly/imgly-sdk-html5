@@ -63,15 +63,15 @@ loaded. Let's initialize the SDK and pass some additional information:
 </script>
 ```
 
-Et voilà - we can now see the editor and can start editing your photo.
+Et voilà - we can now see the editor and start editing our photo.
 
 ![](http://fs1.directupload.net/images/150305/yo2vpug4.png)
 
 ## Rendering to an image or DataURL
 
-Since the photo editor is always rendering to a canvas, you can't simply
+Since the photo editor is always rendering to a canvas, we can't simply
 right-click the canvas and "Save image as...". What a bummer!
-But luckily we have added a render function that will allow you to render
+But luckily we have added a render function that will allow us to render
 the canvas to an image or to a DataURL.
 
 Let's add a render button to our website:
