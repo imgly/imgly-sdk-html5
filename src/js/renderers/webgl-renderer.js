@@ -9,7 +9,6 @@
  */
 
 import Renderer from "./renderer";
-import Symbol from "es6-symbol";
 import Vector2 from "../lib/math/vector2";
 
 /**
@@ -116,7 +115,8 @@ class WebGLRenderer extends Renderer {
     this._canvas.height = size.y;
 
     // Resize all textures
-    for (let otherTexture of this._textures) {
+    for (let i = 0; i < this._textures.length; i++) {
+      let otherTexture = this._textures[i];
       gl.bindTexture(gl.TEXTURE_2D, otherTexture);
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size.x, size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
     }

@@ -11,7 +11,6 @@
 import Control from "./control";
 import Vector2 from "../../../lib/math/vector2";
 import Utils from "../../../lib/utils";
-import Symbol from "es6-symbol";
 let fs = require("fs");
 
 class StickersControl extends Control {
@@ -87,7 +86,8 @@ class StickersControl extends Control {
     let stickerIdentifiers = Object.keys(this._availableStickers);
 
     let selectedStickers = Utils.select(stickerIdentifiers, selector);
-    for (let identifier of selectedStickers) {
+    for (let i = 0; i < selectedStickers.length; i++) {
+      let identifier = selectedStickers[i];
       this._stickers[identifier] = this._availableStickers[identifier];
     }
 
@@ -160,8 +160,8 @@ class StickersControl extends Control {
     this._listItems = Array.prototype.slice.call(listItems);
 
     // Listen to click events
-    let i = 0;
-    for (let listItem of this._listItems) {
+    for (let i = 0; i < this._listItems.length; i++) {
+      let listItem = this._listItems[i];
       let { identifier } = listItem.dataset;
       listItem.addEventListener("click", () => {
         this._onListItemClick(listItem);
@@ -171,7 +171,6 @@ class StickersControl extends Control {
         (!this._initialIdentity && this._stickers[identifier] === this._initialSettings.sticker)) {
           this._onListItemClick(listItem);
       }
-      i++;
     }
   }
 

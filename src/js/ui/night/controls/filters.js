@@ -8,7 +8,6 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Symbol from "es6-symbol";
 import Control from "./control";
 import Utils from "../../../lib/utils";
 let fs = require("fs");
@@ -52,7 +51,8 @@ class FiltersControls extends Control {
     this._listItems = Array.prototype.slice.call(listItems);
 
     // Listen to click events
-    for (let listItem of this._listItems) {
+    for (let i = 0; i < this._listItems.length; i++) {
+      let listItem = this._listItems[i];
       listItem.addEventListener("click", () => {
         this._onListItemClick(listItem);
       });
@@ -97,7 +97,8 @@ class FiltersControls extends Control {
    * @private
    */
   _deactivateAllItems () {
-    for (let listItem of this._listItems) {
+    for (let i = 0; i < this._listItems.length; i++) {
+      let listItem = this._listItems[i];
       listItem.classList.remove("imglykit-controls-item-active");
     }
   }
@@ -157,7 +158,8 @@ class FiltersControls extends Control {
     let filterIdentifiers = Object.keys(this._availableFilters);
 
     let selectedFilters = Utils.select(filterIdentifiers, selector);
-    for (let identifier of selectedFilters) {
+    for (let i = 0; i < selectedFilters.length; i++) {
+      let identifier = selectedFilters[i];
       this._filters[identifier] = this._availableFilters[identifier];
     }
 

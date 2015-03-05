@@ -9,7 +9,6 @@
  */
 
 let fs = require("fs");
-import Symbol from "es6-symbol";
 import UI from "../base/ui";
 import Canvas from "./lib/canvas";
 import TopControls from "./lib/top-controls";
@@ -47,6 +46,17 @@ class NightUI extends UI {
     super(...args);
   }
 
+  /**
+   * A unique string that represents this UI
+   * @type {String}
+   */
+  get identifier () {
+    return "night";
+  }
+
+  /**
+   * Prepares the UI for use
+   */
   run () {
     this._registerControls();
 
@@ -128,7 +138,9 @@ class NightUI extends UI {
   _initOperations () {
     let { operationsStack, registeredOperations } = this._kit;
     operationsStack.splice(0, operationsStack.length); // Clear the array in-place
-    for (let operationIdentifier of this._preferredOperationOrder) {
+
+    for (var i = 0; i < this._preferredOperationOrder.length; i++) {
+      let operationIdentifier = this._preferredOperationOrder[i];
       if (!this.isOperationSelected(operationIdentifier)) {
         continue;
       }

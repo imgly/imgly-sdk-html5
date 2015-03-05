@@ -10,7 +10,6 @@
 
 import Control from "./control";
 import Vector2 from "../../../lib/math/vector2";
-import Symbol from "es6-symbol";
 let fs = require("fs");
 
 class RotationControls extends Control {
@@ -60,7 +59,8 @@ class RotationControls extends Control {
     this._listItems = Array.prototype.slice.call(listItems);
 
     // Listen to click events
-    for (let listItem of this._listItems) {
+    for (let i = 0; i < this._listItems.length; i++) {
+      let listItem = this._listItems[i];
       listItem.addEventListener("click", () => {
         this._onListItemClick(listItem);
       });

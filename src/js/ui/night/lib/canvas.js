@@ -13,7 +13,6 @@ import WebGLRenderer from "../../../renderers/webgl-renderer";
 import CanvasRenderer from "../../../renderers/canvas-renderer";
 import Vector2 from "../../../lib/math/vector2";
 import EventEmitter from "../../../lib/event-emitter";
-import Symbol from "es6-symbol";
 
 class Canvas extends EventEmitter {
   constructor (kit, ui, options) {
@@ -245,7 +244,9 @@ class Canvas extends EventEmitter {
    * Sets all operations to dirty
    */
   setAllOperationsToDirty () {
-    for (let operation of this._kit.operationsStack) {
+    let { operationsStack } = this._kit;
+    for (let i = 0; i < operationsStack.length; i++) {
+      let operation = operationsStack[i];
       operation.dirty = true;
     }
   }
@@ -520,7 +521,8 @@ class Canvas extends EventEmitter {
    */
   _updateStackDirtyStates (stack) {
     let dirtyFound = false;
-    for (let operation of stack) {
+    for (let i = 0; i < stack.length; i++) {
+      let operation = stack[i];
       if (operation.dirty) {
         dirtyFound = true;
       }

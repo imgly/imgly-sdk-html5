@@ -12,7 +12,6 @@ import Control from "./control";
 import ColorPicker from "../lib/color-picker";
 import Vector2 from "../../../lib/math/vector2";
 import Utils from "../../../lib/utils";
-import Symbol from "es6-symbol";
 let fs = require("fs");
 
 class TextControl extends Control {
@@ -142,8 +141,8 @@ class TextControl extends Control {
     this._listItems = Array.prototype.slice.call(listItems);
 
     // Listen to click events
-    let i = 0;
-    for (let listItem of this._listItems) {
+    for (let i = 0; i < this._listItems.length; i++) {
+      let listItem = this._listItems[i];
       listItem.addEventListener("click", () => {
         this._onListItemClick(listItem);
       });
@@ -152,7 +151,6 @@ class TextControl extends Control {
         (!this._initialIdentity && name === this._initialSettings.fontFamily)) {
           this._onListItemClick(listItem);
       }
-      i++;
     }
   }
 
@@ -391,7 +389,8 @@ class TextControl extends Control {
    * @private
    */
   _deactivateAllItems () {
-    for (let listItem of this._listItems) {
+    for (let i = 0; i < this._listItems.length; i++) {
+      let listItem = this._listItems[i];
       listItem.classList.remove("imglykit-controls-item-active");
     }
   }

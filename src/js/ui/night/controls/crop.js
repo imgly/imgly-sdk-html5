@@ -8,7 +8,6 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Symbol from "es6-symbol";
 import Control from "./control";
 import Vector2 from "../../../lib/math/vector2";
 import Utils from "../../../lib/utils";
@@ -75,7 +74,8 @@ class CropControls extends Control {
     let ratioIdentifiers = Object.keys(this._availableRatios);
 
     let selectedRatios = Utils.select(ratioIdentifiers, selector);
-    for (let identifier of selectedRatios) {
+    for (let i = 0; i < selectedRatios.length; i++) {
+      let identifier = selectedRatios[i];
       this._ratios[identifier] = this._availableRatios[identifier];
     }
 
@@ -165,7 +165,8 @@ class CropControls extends Control {
     let listItems = this._controls.querySelectorAll("ul > li");
     this._ratioItems = Array.prototype.slice.call(listItems);
 
-    for (let item of this._ratioItems) {
+    for (let i = 0; i < this._ratioItems.length; i++) {
+      let item = this._ratioItems[i];
       let { selected, ratio, identifier } = item.dataset;
       if (typeof selected !== "undefined" && this._initialIdentity) {
         this._setRatio(identifier, ratio, false);
@@ -194,7 +195,8 @@ class CropControls extends Control {
    * @private
    */
   _unselectAllRatios () {
-    for (let item of this._ratioItems) {
+    for (let i = 0; i < this._ratioItems.length; i++) {
+      let item = this._ratioItems[i];
       item.classList.remove("imglykit-controls-item-active");
     }
   }
