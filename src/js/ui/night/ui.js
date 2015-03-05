@@ -333,8 +333,7 @@ class NightUI extends UI {
       }
       operationInstance.isIdentity = identity;
 
-      this.canvas.setAllOperationsToDirty();
-      this.render();
+      this.canvas.zoomToFit(true);
     }
     this._topControls.updateUndoButton();
   }

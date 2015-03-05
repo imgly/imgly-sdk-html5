@@ -89,7 +89,7 @@ class CropControls extends Control {
    * @private
    */
   _addDefaultRatios () {
-    this.addRatio("custom", "*");
+    this.addRatio("custom", "*", true);
     this.addRatio("square", "1");
     this.addRatio("4-3", "1.33");
     this.addRatio("16-9", "1.77");
@@ -99,9 +99,10 @@ class CropControls extends Control {
    * Adds a ratio with the given identifier
    * @param {String} identifier
    * @param {Number} ratio
+   * @param {Boolean} selected
    */
-  addRatio (identifier, ratio) {
-    this._availableRatios[identifier] = ratio;
+  addRatio (identifier, ratio, selected) {
+    this._availableRatios[identifier] = { ratio, selected };
   }
 
   /**
@@ -121,6 +122,7 @@ class CropControls extends Control {
     // Store initial settings for "back" button
     this._initialStart = this._operation.getStart().clone();
     this._initialEnd = this._operation.getEnd().clone();
+    this._initialIdentity = this._operation.isIdentity;
 
     // Make sure we see the whole input image
     this._operation.set({
@@ -153,8 +155,6 @@ class CropControls extends Control {
       .then(() => {
         this._updateDOM();
       });
-
-    this._initialIdentity = this._operation.isIdentity;
   }
 
   /**
@@ -167,10 +167,9 @@ class CropControls extends Control {
 
     for (let item of this._ratios) {
       let { selected, ratio, identifier } = item.dataset;
-      if (typeof selected !== "undefined" &&
-        this._start === null && this._end === null) {
-          this._setRatio(identifier, ratio, false);
-          this._selectRatio(item);
+      if (typeof selected !== "undefined" && this._initialIdentity) {
+        this._setRatio(identifier, ratio, false);
+        this._selectRatio(item);
       }
 
       item.addEventListener("click", (e) => {
@@ -563,7 +562,6 @@ class CropControls extends Control {
   get context () {
     let context = super.context;
     context.ratios = this._ratios;
-    context.activeRatio = Object.keys(this._ratios)[0];
     return context;
   }
 
