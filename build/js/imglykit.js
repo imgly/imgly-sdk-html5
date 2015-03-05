@@ -27,7 +27,7 @@ var ImglyKit = _interopRequire(require("./src/js/imglykit"));
 })();
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./src/js/imglykit":59}],2:[function(require,module,exports){
+},{"./src/js/imglykit":43}],2:[function(require,module,exports){
 "use strict";
 module.exports = function(Promise) {
 var SomePromiseArray = Promise._SomePromiseArray;
@@ -5360,285 +5360,6 @@ InstallDots.prototype.compileAll = function() {
 };
 
 },{"./doT":40,"fs":37}],42:[function(require,module,exports){
-'use strict';
-
-module.exports = require('./is-implemented')() ? Symbol : require('./polyfill');
-
-},{"./is-implemented":43,"./polyfill":57}],43:[function(require,module,exports){
-'use strict';
-
-module.exports = function () {
-	var symbol;
-	if (typeof Symbol !== 'function') return false;
-	symbol = Symbol('test symbol');
-	try { String(symbol); } catch (e) { return false; }
-	if (typeof Symbol.iterator === 'symbol') return true;
-
-	// Return 'true' for polyfills
-	if (typeof Symbol.isConcatSpreadable !== 'object') return false;
-	if (typeof Symbol.isRegExp !== 'object') return false;
-	if (typeof Symbol.iterator !== 'object') return false;
-	if (typeof Symbol.toPrimitive !== 'object') return false;
-	if (typeof Symbol.toStringTag !== 'object') return false;
-	if (typeof Symbol.unscopables !== 'object') return false;
-
-	return true;
-};
-
-},{}],44:[function(require,module,exports){
-'use strict';
-
-var assign        = require('es5-ext/object/assign')
-  , normalizeOpts = require('es5-ext/object/normalize-options')
-  , isCallable    = require('es5-ext/object/is-callable')
-  , contains      = require('es5-ext/string/#/contains')
-
-  , d;
-
-d = module.exports = function (dscr, value/*, options*/) {
-	var c, e, w, options, desc;
-	if ((arguments.length < 2) || (typeof dscr !== 'string')) {
-		options = value;
-		value = dscr;
-		dscr = null;
-	} else {
-		options = arguments[2];
-	}
-	if (dscr == null) {
-		c = w = true;
-		e = false;
-	} else {
-		c = contains.call(dscr, 'c');
-		e = contains.call(dscr, 'e');
-		w = contains.call(dscr, 'w');
-	}
-
-	desc = { value: value, configurable: c, enumerable: e, writable: w };
-	return !options ? desc : assign(normalizeOpts(options), desc);
-};
-
-d.gs = function (dscr, get, set/*, options*/) {
-	var c, e, options, desc;
-	if (typeof dscr !== 'string') {
-		options = set;
-		set = get;
-		get = dscr;
-		dscr = null;
-	} else {
-		options = arguments[3];
-	}
-	if (get == null) {
-		get = undefined;
-	} else if (!isCallable(get)) {
-		options = get;
-		get = set = undefined;
-	} else if (set == null) {
-		set = undefined;
-	} else if (!isCallable(set)) {
-		options = set;
-		set = undefined;
-	}
-	if (dscr == null) {
-		c = true;
-		e = false;
-	} else {
-		c = contains.call(dscr, 'c');
-		e = contains.call(dscr, 'e');
-	}
-
-	desc = { get: get, set: set, configurable: c, enumerable: e };
-	return !options ? desc : assign(normalizeOpts(options), desc);
-};
-
-},{"es5-ext/object/assign":45,"es5-ext/object/is-callable":48,"es5-ext/object/normalize-options":52,"es5-ext/string/#/contains":54}],45:[function(require,module,exports){
-'use strict';
-
-module.exports = require('./is-implemented')()
-	? Object.assign
-	: require('./shim');
-
-},{"./is-implemented":46,"./shim":47}],46:[function(require,module,exports){
-'use strict';
-
-module.exports = function () {
-	var assign = Object.assign, obj;
-	if (typeof assign !== 'function') return false;
-	obj = { foo: 'raz' };
-	assign(obj, { bar: 'dwa' }, { trzy: 'trzy' });
-	return (obj.foo + obj.bar + obj.trzy) === 'razdwatrzy';
-};
-
-},{}],47:[function(require,module,exports){
-'use strict';
-
-var keys  = require('../keys')
-  , value = require('../valid-value')
-
-  , max = Math.max;
-
-module.exports = function (dest, src/*, …srcn*/) {
-	var error, i, l = max(arguments.length, 2), assign;
-	dest = Object(value(dest));
-	assign = function (key) {
-		try { dest[key] = src[key]; } catch (e) {
-			if (!error) error = e;
-		}
-	};
-	for (i = 1; i < l; ++i) {
-		src = arguments[i];
-		keys(src).forEach(assign);
-	}
-	if (error !== undefined) throw error;
-	return dest;
-};
-
-},{"../keys":49,"../valid-value":53}],48:[function(require,module,exports){
-// Deprecated
-
-'use strict';
-
-module.exports = function (obj) { return typeof obj === 'function'; };
-
-},{}],49:[function(require,module,exports){
-'use strict';
-
-module.exports = require('./is-implemented')()
-	? Object.keys
-	: require('./shim');
-
-},{"./is-implemented":50,"./shim":51}],50:[function(require,module,exports){
-'use strict';
-
-module.exports = function () {
-	try {
-		Object.keys('primitive');
-		return true;
-	} catch (e) { return false; }
-};
-
-},{}],51:[function(require,module,exports){
-'use strict';
-
-var keys = Object.keys;
-
-module.exports = function (object) {
-	return keys(object == null ? object : Object(object));
-};
-
-},{}],52:[function(require,module,exports){
-'use strict';
-
-var assign = require('./assign')
-
-  , forEach = Array.prototype.forEach
-  , create = Object.create, getPrototypeOf = Object.getPrototypeOf
-
-  , process;
-
-process = function (src, obj) {
-	var proto = getPrototypeOf(src);
-	return assign(proto ? process(proto, obj) : obj, src);
-};
-
-module.exports = function (options/*, …options*/) {
-	var result = create(null);
-	forEach.call(arguments, function (options) {
-		if (options == null) return;
-		process(Object(options), result);
-	});
-	return result;
-};
-
-},{"./assign":45}],53:[function(require,module,exports){
-'use strict';
-
-module.exports = function (value) {
-	if (value == null) throw new TypeError("Cannot use null or undefined");
-	return value;
-};
-
-},{}],54:[function(require,module,exports){
-'use strict';
-
-module.exports = require('./is-implemented')()
-	? String.prototype.contains
-	: require('./shim');
-
-},{"./is-implemented":55,"./shim":56}],55:[function(require,module,exports){
-'use strict';
-
-var str = 'razdwatrzy';
-
-module.exports = function () {
-	if (typeof str.contains !== 'function') return false;
-	return ((str.contains('dwa') === true) && (str.contains('foo') === false));
-};
-
-},{}],56:[function(require,module,exports){
-'use strict';
-
-var indexOf = String.prototype.indexOf;
-
-module.exports = function (searchString/*, position*/) {
-	return indexOf.call(this, searchString, arguments[1]) > -1;
-};
-
-},{}],57:[function(require,module,exports){
-'use strict';
-
-var d = require('d')
-
-  , create = Object.create, defineProperties = Object.defineProperties
-  , generateName, Symbol;
-
-generateName = (function () {
-	var created = create(null);
-	return function (desc) {
-		var postfix = 0;
-		while (created[desc + (postfix || '')]) ++postfix;
-		desc += (postfix || '');
-		created[desc] = true;
-		return '@@' + desc;
-	};
-}());
-
-module.exports = Symbol = function (description) {
-	var symbol;
-	if (this instanceof Symbol) {
-		throw new TypeError('TypeError: Symbol is not a constructor');
-	}
-	symbol = create(Symbol.prototype);
-	description = (description === undefined ? '' : String(description));
-	return defineProperties(symbol, {
-		__description__: d('', description),
-		__name__: d('', generateName(description))
-	});
-};
-
-Object.defineProperties(Symbol, {
-	create: d('', Symbol('create')),
-	hasInstance: d('', Symbol('hasInstance')),
-	isConcatSpreadable: d('', Symbol('isConcatSpreadable')),
-	isRegExp: d('', Symbol('isRegExp')),
-	iterator: d('', Symbol('iterator')),
-	toPrimitive: d('', Symbol('toPrimitive')),
-	toStringTag: d('', Symbol('toStringTag')),
-	unscopables: d('', Symbol('unscopables'))
-});
-
-defineProperties(Symbol.prototype, {
-	properToString: d(function () {
-		return 'Symbol (' + this.__description__ + ')';
-	}),
-	toString: d('', function () { return this.__name__; })
-});
-Object.defineProperty(Symbol.prototype, Symbol.toPrimitive, d('',
-	function (hint) {
-		throw new TypeError("Conversion of symbol objects is not allowed");
-	}));
-Object.defineProperty(Symbol.prototype, Symbol.toStringTag, d('c', 'Symbol'));
-
-},{"d":44}],58:[function(require,module,exports){
 "use strict";
 
 /*!
@@ -5673,7 +5394,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{}],59:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -5745,6 +5466,9 @@ var ImglyKit = (function () {
      */
     this._options = options;
 
+    // `options.image` is required
+    if (typeof this._options.image === "undefined") throw new Error("`options.image` is undefined.");
+
     /**
      * The stack of {@link Operation} instances that will be used
      * to render the final Image
@@ -5791,9 +5515,6 @@ var ImglyKit = (function () {
        */
 
       value: function render(renderType, imageFormat, dimensions) {
-        // `options.image` is required
-        if (typeof this._options.image === "undefined") throw new Error("`options.image` is undefined.");
-
         var settings = ImageExporter.validateSettings(renderType, imageFormat);
 
         renderType = settings.renderType;
@@ -6006,7 +5727,7 @@ var ImglyKit = (function () {
  * @name ImglyKit.version
  * @internal Keep in sync with package.json
  */
-ImglyKit.version = "0.0.1";
+ImglyKit.version = "2.0.0";
 
 // Exposed classes
 ImglyKit.RenderImage = RenderImage;
@@ -6037,7 +5758,7 @@ ImglyKit.Vector2 = require("./lib/math/vector2");
 
 module.exports = ImglyKit;
 
-},{"./constants":58,"./lib/color":60,"./lib/image-exporter":64,"./lib/math/vector2":65,"./lib/render-image":66,"./lib/utils":67,"./operations/brightness-operation":68,"./operations/contrast-operation":69,"./operations/crop-operation":70,"./operations/filters-operation":71,"./operations/filters/a15-filter":72,"./operations/filters/breeze-filter":73,"./operations/flip-operation":115,"./operations/frames-operation":116,"./operations/operation":117,"./operations/radial-blur-operation":118,"./operations/rotation-operation":119,"./operations/saturation-operation":120,"./operations/stickers-operation":121,"./operations/text-operation":122,"./operations/tilt-shift-operation":123,"./ui/night/ui":147,"bluebird":4,"lodash":"lodash","path":38}],60:[function(require,module,exports){
+},{"./constants":42,"./lib/color":44,"./lib/image-exporter":48,"./lib/math/vector2":49,"./lib/render-image":50,"./lib/utils":51,"./operations/brightness-operation":52,"./operations/contrast-operation":53,"./operations/crop-operation":54,"./operations/filters-operation":55,"./operations/filters/a15-filter":56,"./operations/filters/breeze-filter":57,"./operations/flip-operation":99,"./operations/frames-operation":100,"./operations/operation":101,"./operations/radial-blur-operation":102,"./operations/rotation-operation":103,"./operations/saturation-operation":104,"./operations/stickers-operation":105,"./operations/text-operation":106,"./operations/tilt-shift-operation":107,"./ui/night/ui":131,"bluebird":4,"lodash":"lodash","path":38}],44:[function(require,module,exports){
 "use strict";
 
 var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
@@ -6262,7 +5983,7 @@ var Color = (function () {
 
 module.exports = Color;
 
-},{}],61:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 "use strict";
 
 var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
@@ -6395,7 +6116,7 @@ var EventEmitter = (function () {
 
 module.exports = EventEmitter;
 
-},{}],62:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 "use strict";
 
 /*!
@@ -6465,7 +6186,7 @@ module.exports = function (prototypeProperties, classProperties) {
   return child;
 };
 
-},{}],63:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 "use strict";
 
 var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
@@ -6615,7 +6336,7 @@ var ImageDimensions = (function () {
 
 module.exports = ImageDimensions;
 
-},{}],64:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -6717,7 +6438,7 @@ var ImageExporter = (function () {
 
 module.exports = ImageExporter;
 
-},{"../constants":58,"./utils":67,"canvas":"canvas"}],65:[function(require,module,exports){
+},{"../constants":42,"./utils":51,"canvas":"canvas"}],49:[function(require,module,exports){
 "use strict";
 
 var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
@@ -6982,7 +6703,7 @@ var Vector2 = (function () {
 
 module.exports = Vector2;
 
-},{}],66:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -7154,7 +6875,7 @@ var RenderImage = (function () {
 
 module.exports = RenderImage;
 
-},{"../renderers/canvas-renderer":124,"../renderers/webgl-renderer":126,"./image-dimensions":63,"./math/vector2":65,"bluebird":4}],67:[function(require,module,exports){
+},{"../renderers/canvas-renderer":108,"../renderers/webgl-renderer":110,"./image-dimensions":47,"./math/vector2":49,"bluebird":4}],51:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -7314,7 +7035,7 @@ var Utils = (function () {
 
 module.exports = Utils;
 
-},{"./math/vector2":65}],68:[function(require,module,exports){
+},{"./math/vector2":49}],52:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -7434,7 +7155,7 @@ var BrightnessOperation = (function (Operation) {
 
 module.exports = BrightnessOperation;
 
-},{"./filters/primitives-stack":97,"./filters/primitives/brightness":98,"./operation":117}],69:[function(require,module,exports){
+},{"./filters/primitives-stack":81,"./filters/primitives/brightness":82,"./operation":101}],53:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -7554,7 +7275,7 @@ var ContrastOperation = (function (Operation) {
 
 module.exports = ContrastOperation;
 
-},{"./filters/primitives-stack":97,"./filters/primitives/contrast":99,"./operation":117}],70:[function(require,module,exports){
+},{"./filters/primitives-stack":81,"./filters/primitives/contrast":83,"./operation":101}],54:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -7742,7 +7463,7 @@ var CropOperation = (function (Operation) {
 
 module.exports = CropOperation;
 
-},{"../lib/math/vector2":65,"./operation":117}],71:[function(require,module,exports){
+},{"../lib/math/vector2":49,"./operation":101}],55:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -7861,7 +7582,7 @@ var FiltersOperation = (function (Operation) {
 
 module.exports = FiltersOperation;
 
-},{"./filters/identity-filter":85,"./operation":117}],72:[function(require,module,exports){
+},{"./filters/identity-filter":69,"./operation":101}],56:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -7954,7 +7675,7 @@ var A15Filter = (function (Filter) {
 
 module.exports = A15Filter;
 
-},{"./filter":78}],73:[function(require,module,exports){
+},{"./filter":62}],57:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -8046,7 +7767,7 @@ var BreezeFilter = (function (Filter) {
 
 module.exports = BreezeFilter;
 
-},{"./filter":78}],74:[function(require,module,exports){
+},{"./filter":62}],58:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -8125,7 +7846,7 @@ var BWFilter = (function (Filter) {
 
 module.exports = BWFilter;
 
-},{"./filter":78}],75:[function(require,module,exports){
+},{"./filter":62}],59:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -8207,7 +7928,7 @@ var BWHardFilter = (function (Filter) {
 
 module.exports = BWHardFilter;
 
-},{"./filter":78}],76:[function(require,module,exports){
+},{"./filter":62}],60:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -8292,7 +8013,7 @@ var CelsiusFilter = (function (Filter) {
 
 module.exports = CelsiusFilter;
 
-},{"./filter":78}],77:[function(require,module,exports){
+},{"./filter":62}],61:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -8378,7 +8099,7 @@ var ChestFilter = (function (Filter) {
 
 module.exports = ChestFilter;
 
-},{"./filter":78}],78:[function(require,module,exports){
+},{"./filter":62}],62:[function(require,module,exports){
 "use strict";
 
 var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
@@ -8464,7 +8185,7 @@ Filter.Primitives.Brightness = require("./primitives/brightness");
 module.exports = Filter;
 /* jshint unused: false */
 
-},{"../../lib/extend":62,"./primitives-stack":97,"./primitives/brightness":98,"./primitives/contrast":99,"./primitives/desaturation":100,"./primitives/glow":101,"./primitives/gobblin":102,"./primitives/grayscale":103,"./primitives/lookup-table":104,"./primitives/saturation":106,"./primitives/soft-color-overlay":107,"./primitives/tone-curve":108,"./primitives/x400":109}],79:[function(require,module,exports){
+},{"../../lib/extend":46,"./primitives-stack":81,"./primitives/brightness":82,"./primitives/contrast":83,"./primitives/desaturation":84,"./primitives/glow":85,"./primitives/gobblin":86,"./primitives/grayscale":87,"./primitives/lookup-table":88,"./primitives/saturation":90,"./primitives/soft-color-overlay":91,"./primitives/tone-curve":92,"./primitives/x400":93}],63:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -8550,7 +8271,7 @@ var FixieFilter = (function (Filter) {
 
 module.exports = FixieFilter;
 
-},{"./filter":78}],80:[function(require,module,exports){
+},{"./filter":62}],64:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -8635,7 +8356,7 @@ var FoodFilter = (function (Filter) {
 
 module.exports = FoodFilter;
 
-},{"./filter":78}],81:[function(require,module,exports){
+},{"./filter":62}],65:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -8721,7 +8442,7 @@ var FridgeFilter = (function (Filter) {
 
 module.exports = FridgeFilter;
 
-},{"./filter":78}],82:[function(require,module,exports){
+},{"./filter":62}],66:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -8807,7 +8528,7 @@ var FrontFilter = (function (Filter) {
 
 module.exports = FrontFilter;
 
-},{"./filter":78}],83:[function(require,module,exports){
+},{"./filter":62}],67:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -8896,7 +8617,7 @@ var GlamFilter = (function (Filter) {
 
 module.exports = GlamFilter;
 
-},{"./filter":78}],84:[function(require,module,exports){
+},{"./filter":62}],68:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -8975,7 +8696,7 @@ var GobblinFilter = (function (Filter) {
 
 module.exports = GobblinFilter;
 
-},{"./filter":78}],85:[function(require,module,exports){
+},{"./filter":62}],69:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -9050,7 +8771,7 @@ module.exports = IdentityFilter;
 
 // This is the identity filter, it doesn't have any effect.
 
-},{"./filter":78}],86:[function(require,module,exports){
+},{"./filter":62}],70:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -9137,7 +8858,7 @@ var K1Filter = (function (Filter) {
 
 module.exports = K1Filter;
 
-},{"./filter":78}],87:[function(require,module,exports){
+},{"./filter":62}],71:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -9226,7 +8947,7 @@ var K2Filter = (function (Filter) {
 
 module.exports = K2Filter;
 
-},{"../../lib/color":60,"./filter":78}],88:[function(require,module,exports){
+},{"../../lib/color":44,"./filter":62}],72:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -9308,7 +9029,7 @@ var K6Filter = (function (Filter) {
 
 module.exports = K6Filter;
 
-},{"./filter":78}],89:[function(require,module,exports){
+},{"./filter":62}],73:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -9395,7 +9116,7 @@ var KDynamicFilter = (function (Filter) {
 
 module.exports = KDynamicFilter;
 
-},{"./filter":78}],90:[function(require,module,exports){
+},{"./filter":62}],74:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -9486,7 +9207,7 @@ var LeninFilter = (function (Filter) {
 
 module.exports = LeninFilter;
 
-},{"./filter":78}],91:[function(require,module,exports){
+},{"./filter":62}],75:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -9568,7 +9289,7 @@ var LomoFilter = (function (Filter) {
 
 module.exports = LomoFilter;
 
-},{"./filter":78}],92:[function(require,module,exports){
+},{"./filter":62}],76:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -9653,7 +9374,7 @@ var MellowFilter = (function (Filter) {
 
 module.exports = MellowFilter;
 
-},{"./filter":78}],93:[function(require,module,exports){
+},{"./filter":62}],77:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -9740,7 +9461,7 @@ var MorningFilter = (function (Filter) {
 
 module.exports = MorningFilter;
 
-},{"./filter":78}],94:[function(require,module,exports){
+},{"./filter":62}],78:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -9836,7 +9557,7 @@ var OrchidFilter = (function (Filter) {
 
 module.exports = OrchidFilter;
 
-},{"./filter":78}],95:[function(require,module,exports){
+},{"./filter":62}],79:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -9929,7 +9650,7 @@ var PolaFilter = (function (Filter) {
 
 module.exports = PolaFilter;
 
-},{"./filter":78}],96:[function(require,module,exports){
+},{"./filter":62}],80:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -10022,7 +9743,7 @@ var Pola669Filter = (function (Filter) {
 
 module.exports = Pola669Filter;
 
-},{"./filter":78}],97:[function(require,module,exports){
+},{"./filter":62}],81:[function(require,module,exports){
 "use strict";
 
 var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
@@ -10102,7 +9823,7 @@ var PrimitivesStack = (function () {
 
 module.exports = PrimitivesStack;
 
-},{}],98:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -10212,7 +9933,7 @@ var Brightness = (function (Primitive) {
 
 module.exports = Brightness;
 
-},{"./primitive":105,"lodash":"lodash"}],99:[function(require,module,exports){
+},{"./primitive":89,"lodash":"lodash"}],83:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -10322,7 +10043,7 @@ var Contrast = (function (Primitive) {
 
 module.exports = Contrast;
 
-},{"./primitive":105,"lodash":"lodash"}],100:[function(require,module,exports){
+},{"./primitive":89,"lodash":"lodash"}],84:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -10434,7 +10155,7 @@ var Desaturation = (function (Primitive) {
 
 module.exports = Desaturation;
 
-},{"./primitive":105,"lodash":"lodash"}],101:[function(require,module,exports){
+},{"./primitive":89,"lodash":"lodash"}],85:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -10561,7 +10282,7 @@ var Glow = (function (Primitive) {
 
 module.exports = Glow;
 
-},{"../../../lib/color":60,"./primitive":105,"lodash":"lodash"}],102:[function(require,module,exports){
+},{"../../../lib/color":44,"./primitive":89,"lodash":"lodash"}],86:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -10663,7 +10384,7 @@ var Gobblin = (function (Primitive) {
 
 module.exports = Gobblin;
 
-},{"./primitive":105}],103:[function(require,module,exports){
+},{"./primitive":89}],87:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -10765,7 +10486,7 @@ var Grayscale = (function (Primitive) {
 
 module.exports = Grayscale;
 
-},{"./primitive":105}],104:[function(require,module,exports){
+},{"./primitive":89}],88:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -10905,7 +10626,7 @@ var LookupTable = (function (Primitive) {
 
 module.exports = LookupTable;
 
-},{"./primitive":105}],105:[function(require,module,exports){
+},{"./primitive":89}],89:[function(require,module,exports){
 "use strict";
 
 var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
@@ -10992,7 +10713,7 @@ var Primitive = (function () {
 module.exports = Primitive;
 /* jshint unused: false */
 
-},{}],106:[function(require,module,exports){
+},{}],90:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -11105,7 +10826,7 @@ var Saturation = (function (Primitive) {
 
 module.exports = Saturation;
 
-},{"./primitive":105,"lodash":"lodash"}],107:[function(require,module,exports){
+},{"./primitive":89,"lodash":"lodash"}],91:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -11216,7 +10937,7 @@ var SoftColorOverlay = (function (Primitive) {
 
 module.exports = SoftColorOverlay;
 
-},{"../../../lib/color":60,"./primitive":105,"lodash":"lodash"}],108:[function(require,module,exports){
+},{"../../../lib/color":44,"./primitive":89,"lodash":"lodash"}],92:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -11469,7 +11190,7 @@ var ToneCurve = (function (LookupTable) {
 
 module.exports = ToneCurve;
 
-},{"./lookup-table":104,"lodash":"lodash"}],109:[function(require,module,exports){
+},{"./lookup-table":88,"lodash":"lodash"}],93:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -11575,7 +11296,7 @@ var X400 = (function (Primitive) {
 
 module.exports = X400;
 
-},{"./primitive":105}],110:[function(require,module,exports){
+},{"./primitive":89}],94:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -11666,7 +11387,7 @@ var QuoziFilter = (function (Filter) {
 
 module.exports = QuoziFilter;
 
-},{"./filter":78}],111:[function(require,module,exports){
+},{"./filter":62}],95:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -11753,7 +11474,7 @@ var SemiredFilter = (function (Filter) {
 
 module.exports = SemiredFilter;
 
-},{"./filter":78}],112:[function(require,module,exports){
+},{"./filter":62}],96:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -11842,7 +11563,7 @@ var SunnyFilter = (function (Filter) {
 
 module.exports = SunnyFilter;
 
-},{"./filter":78}],113:[function(require,module,exports){
+},{"./filter":62}],97:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -11927,7 +11648,7 @@ var TexasFilter = (function (Filter) {
 
 module.exports = TexasFilter;
 
-},{"./filter":78}],114:[function(require,module,exports){
+},{"./filter":62}],98:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -12006,7 +11727,7 @@ var X400Filter = (function (Filter) {
 
 module.exports = X400Filter;
 
-},{"./filter":78}],115:[function(require,module,exports){
+},{"./filter":62}],99:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -12145,7 +11866,7 @@ var FlipOperation = (function (Operation) {
 
 module.exports = FlipOperation;
 
-},{"./operation":117}],116:[function(require,module,exports){
+},{"./operation":101}],100:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -12282,7 +12003,7 @@ var FramesOperation = (function (Operation) {
 
 module.exports = FramesOperation;
 
-},{"../lib/color":60,"./operation":117}],117:[function(require,module,exports){
+},{"../lib/color":44,"./operation":101}],101:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -12668,7 +12389,7 @@ module.exports = Operation;
 /* jshint unused:false */
 /* jshint -W083 */
 
-},{"../lib/color":60,"../lib/event-emitter":61,"../lib/extend":62,"../lib/math/vector2":65,"lodash":"lodash"}],118:[function(require,module,exports){
+},{"../lib/color":44,"../lib/event-emitter":45,"../lib/extend":46,"../lib/math/vector2":49,"lodash":"lodash"}],102:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -12949,7 +12670,7 @@ var RadialBlurOperation = (function (Operation) {
 
 module.exports = RadialBlurOperation;
 
-},{"../lib/math/vector2":65,"../vendor/stack-blur":148,"./operation":117}],119:[function(require,module,exports){
+},{"../lib/math/vector2":49,"../vendor/stack-blur":132,"./operation":101}],103:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -13134,7 +12855,7 @@ var RotationOperation = (function (Operation) {
 
 module.exports = RotationOperation;
 
-},{"../lib/math/vector2":65,"./operation":117}],120:[function(require,module,exports){
+},{"../lib/math/vector2":49,"./operation":101}],104:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -13254,7 +12975,7 @@ var SaturationOperation = (function (Operation) {
 
 module.exports = SaturationOperation;
 
-},{"./filters/primitives-stack":97,"./filters/primitives/saturation":106,"./operation":117}],121:[function(require,module,exports){
+},{"./filters/primitives-stack":81,"./filters/primitives/saturation":90,"./operation":101}],105:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -13555,7 +13276,7 @@ var StickersOperation = (function (Operation) {
 
 module.exports = StickersOperation;
 
-},{"../lib/math/vector2":65,"../lib/utils":67,"./operation":117,"bluebird":4,"canvas":"canvas"}],122:[function(require,module,exports){
+},{"../lib/math/vector2":49,"../lib/utils":51,"./operation":101,"bluebird":4,"canvas":"canvas"}],106:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -13931,7 +13652,7 @@ var TextOperation = (function (Operation) {
 
 module.exports = TextOperation;
 
-},{"../lib/color":60,"../lib/math/vector2":65,"./operation":117}],123:[function(require,module,exports){
+},{"../lib/color":44,"../lib/math/vector2":49,"./operation":101}],107:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -14224,7 +13945,7 @@ var TiltShiftOperation = (function (Operation) {
 
 module.exports = TiltShiftOperation;
 
-},{"../lib/math/vector2":65,"../vendor/stack-blur":148,"./operation":117}],124:[function(require,module,exports){
+},{"../lib/math/vector2":49,"../vendor/stack-blur":132,"./operation":101}],108:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -14411,7 +14132,7 @@ var CanvasRenderer = (function (Renderer) {
 
 module.exports = CanvasRenderer;
 
-},{"../lib/math/vector2":65,"./renderer":125}],125:[function(require,module,exports){
+},{"../lib/math/vector2":49,"./renderer":109}],109:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -14719,7 +14440,7 @@ var Renderer = (function (EventEmitter) {
 module.exports = Renderer;
 /*jshint unused:false */
 
-},{"../lib/event-emitter":61,"../lib/math/vector2":65,"canvas":"canvas"}],126:[function(require,module,exports){
+},{"../lib/event-emitter":45,"../lib/math/vector2":49,"canvas":"canvas"}],110:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -14742,8 +14463,6 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
  */
 
 var Renderer = _interopRequire(require("./renderer"));
-
-var Symbol = _interopRequire(require("es6-symbol"));
 
 var Vector2 = _interopRequire(require("../lib/math/vector2"));
 
@@ -14899,30 +14618,10 @@ var WebGLRenderer = (function (Renderer) {
         this._canvas.height = size.y;
 
         // Resize all textures
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-          for (var _iterator = this._textures[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var otherTexture = _step.value;
-
-            gl.bindTexture(gl.TEXTURE_2D, otherTexture);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size.x, size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator["return"]) {
-              _iterator["return"]();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
+        for (var i = 0; i < this._textures.length; i++) {
+          var otherTexture = this._textures[i];
+          gl.bindTexture(gl.TEXTURE_2D, otherTexture);
+          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size.x, size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
         }
 
         // Select the current framebuffer to draw to
@@ -15441,7 +15140,7 @@ var WebGLRenderer = (function (Renderer) {
 
 module.exports = WebGLRenderer;
 
-},{"../lib/math/vector2":65,"./renderer":125,"es6-symbol":42}],127:[function(require,module,exports){
+},{"../lib/math/vector2":49,"./renderer":109}],111:[function(require,module,exports){
 "use strict";
 
 var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
@@ -15481,7 +15180,7 @@ var Helpers = (function () {
 
 module.exports = Helpers;
 
-},{}],128:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -15527,6 +15226,18 @@ var BaseUI = (function () {
         this._attach();
       },
       writable: true,
+      configurable: true
+    },
+    identifier: {
+
+      /**
+       * A unique string that represents this UI
+       * @type {String}
+       */
+
+      get: function () {
+        return null;
+      },
       configurable: true
     },
     _attach: {
@@ -15699,7 +15410,7 @@ var BaseUI = (function () {
 
 module.exports = BaseUI;
 
-},{"../../lib/utils":67,"./helpers":127,"dot":41}],129:[function(require,module,exports){
+},{"../../lib/utils":51,"./helpers":111,"dot":41}],113:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -15844,7 +15555,7 @@ var BrightnessControls = (function (Control) {
 
 module.exports = BrightnessControls;
 
-},{"../lib/slider":145,"./control":131}],130:[function(require,module,exports){
+},{"../lib/slider":129,"./control":115}],114:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -15989,7 +15700,7 @@ var ContrastControls = (function (Control) {
 
 module.exports = ContrastControls;
 
-},{"../lib/slider":145,"./control":131}],131:[function(require,module,exports){
+},{"../lib/slider":129,"./control":115}],115:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -16335,7 +16046,7 @@ var Control = (function (EventEmitter) {
 
 module.exports = Control;
 
-},{"../../../lib/event-emitter":61,"../../base/helpers":127,"dot":41}],132:[function(require,module,exports){
+},{"../../../lib/event-emitter":45,"../../base/helpers":111,"dot":41}],116:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -16356,8 +16067,6 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-
-var Symbol = _interopRequire(require("es6-symbol"));
 
 var Control = _interopRequire(require("./control"));
 
@@ -16450,29 +16159,9 @@ var CropControls = (function (Control) {
         var ratioIdentifiers = Object.keys(this._availableRatios);
 
         var selectedRatios = Utils.select(ratioIdentifiers, selector);
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-          for (var _iterator = selectedRatios[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var identifier = _step.value;
-
-            this._ratios[identifier] = this._availableRatios[identifier];
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator["return"]) {
-              _iterator["return"]();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
+        for (var i = 0; i < selectedRatios.length; i++) {
+          var identifier = selectedRatios[i];
+          this._ratios[identifier] = this._availableRatios[identifier];
         }
 
         if (this._active) {
@@ -16584,45 +16273,26 @@ var CropControls = (function (Control) {
         var listItems = this._controls.querySelectorAll("ul > li");
         this._ratioItems = Array.prototype.slice.call(listItems);
 
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
+        for (var i = 0; i < this._ratioItems.length; i++) {
+          var _item$dataset;
 
-        try {
-          for (var _iterator = this._ratioItems[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var _item$dataset;
+          (function (i) {
+            var item = _this._ratioItems[i];
+            _item$dataset = item.dataset;
+            var selected = _item$dataset.selected;
+            var ratio = _item$dataset.ratio;
+            var identifier = _item$dataset.identifier;
 
-            (function () {
-              var item = _step.value;
-              _item$dataset = item.dataset;
-              var selected = _item$dataset.selected;
-              var ratio = _item$dataset.ratio;
-              var identifier = _item$dataset.identifier;
-
-              if (typeof selected !== "undefined" && _this._initialIdentity) {
-                _this._setRatio(identifier, ratio, false);
-                _this._selectRatio(item);
-              }
-
-              item.addEventListener("click", function (e) {
-                e.preventDefault();
-                _this._onRatioClick(item);
-              });
-            })();
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator["return"]) {
-              _iterator["return"]();
+            if (typeof selected !== "undefined" && _this._initialIdentity) {
+              _this._setRatio(identifier, ratio, false);
+              _this._selectRatio(item);
             }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
+
+            item.addEventListener("click", function (e) {
+              e.preventDefault();
+              _this._onRatioClick(item);
+            });
+          })(i);
         }
       },
       writable: true,
@@ -16651,29 +16321,9 @@ var CropControls = (function (Control) {
        */
 
       value: function _unselectAllRatios() {
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-          for (var _iterator = this._ratioItems[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var item = _step.value;
-
-            item.classList.remove("imglykit-controls-item-active");
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator["return"]) {
-              _iterator["return"]();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
+        for (var i = 0; i < this._ratioItems.length; i++) {
+          var item = this._ratioItems[i];
+          item.classList.remove("imglykit-controls-item-active");
         }
       },
       writable: true,
@@ -17135,7 +16785,7 @@ var CropControls = (function (Control) {
 
 module.exports = CropControls;
 
-},{"../../../lib/math/vector2":65,"../../../lib/utils":67,"./control":131,"es6-symbol":42}],133:[function(require,module,exports){
+},{"../../../lib/math/vector2":49,"../../../lib/utils":51,"./control":115}],117:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -17156,8 +16806,6 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-
-var Symbol = _interopRequire(require("es6-symbol"));
 
 var Control = _interopRequire(require("./control"));
 
@@ -17228,33 +16876,13 @@ var FiltersControls = (function (Control) {
         this._listItems = Array.prototype.slice.call(listItems);
 
         // Listen to click events
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-          for (var _iterator = this._listItems[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            (function () {
-              var listItem = _step.value;
-
-              listItem.addEventListener("click", function () {
-                _this._onListItemClick(listItem);
-              });
-            })();
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator["return"]) {
-              _iterator["return"]();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
+        for (var i = 0; i < this._listItems.length; i++) {
+          (function (i) {
+            var listItem = _this._listItems[i];
+            listItem.addEventListener("click", function () {
+              _this._onListItemClick(listItem);
+            });
+          })(i);
         }
       },
       writable: true,
@@ -17317,29 +16945,9 @@ var FiltersControls = (function (Control) {
        */
 
       value: function _deactivateAllItems() {
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-          for (var _iterator = this._listItems[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var listItem = _step.value;
-
-            listItem.classList.remove("imglykit-controls-item-active");
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator["return"]) {
-              _iterator["return"]();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
+        for (var i = 0; i < this._listItems.length; i++) {
+          var listItem = this._listItems[i];
+          listItem.classList.remove("imglykit-controls-item-active");
         }
       },
       writable: true,
@@ -17413,29 +17021,9 @@ var FiltersControls = (function (Control) {
         var filterIdentifiers = Object.keys(this._availableFilters);
 
         var selectedFilters = Utils.select(filterIdentifiers, selector);
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-          for (var _iterator = selectedFilters[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var identifier = _step.value;
-
-            this._filters[identifier] = this._availableFilters[identifier];
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator["return"]) {
-              _iterator["return"]();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
+        for (var i = 0; i < selectedFilters.length; i++) {
+          var identifier = selectedFilters[i];
+          this._filters[identifier] = this._availableFilters[identifier];
         }
 
         if (this._active) {
@@ -17468,7 +17056,7 @@ var FiltersControls = (function (Control) {
 
 module.exports = FiltersControls;
 
-},{"../../../lib/utils":67,"../../../operations/filters/a15-filter":72,"../../../operations/filters/breeze-filter":73,"../../../operations/filters/bw-filter":74,"../../../operations/filters/bwhard-filter":75,"../../../operations/filters/celsius-filter":76,"../../../operations/filters/chest-filter":77,"../../../operations/filters/fixie-filter":79,"../../../operations/filters/food-filter":80,"../../../operations/filters/fridge-filter":81,"../../../operations/filters/front-filter":82,"../../../operations/filters/glam-filter":83,"../../../operations/filters/gobblin-filter":84,"../../../operations/filters/identity-filter":85,"../../../operations/filters/k1-filter":86,"../../../operations/filters/k2-filter":87,"../../../operations/filters/k6-filter":88,"../../../operations/filters/kdynamic-filter":89,"../../../operations/filters/lenin-filter":90,"../../../operations/filters/lomo-filter":91,"../../../operations/filters/mellow-filter":92,"../../../operations/filters/morning-filter":93,"../../../operations/filters/orchid-filter":94,"../../../operations/filters/pola-filter":95,"../../../operations/filters/pola669-filter":96,"../../../operations/filters/quozi-filter":110,"../../../operations/filters/semired-filter":111,"../../../operations/filters/sunny-filter":112,"../../../operations/filters/texas-filter":113,"../../../operations/filters/x400-filter":114,"./control":131,"es6-symbol":42}],134:[function(require,module,exports){
+},{"../../../lib/utils":51,"../../../operations/filters/a15-filter":56,"../../../operations/filters/breeze-filter":57,"../../../operations/filters/bw-filter":58,"../../../operations/filters/bwhard-filter":59,"../../../operations/filters/celsius-filter":60,"../../../operations/filters/chest-filter":61,"../../../operations/filters/fixie-filter":63,"../../../operations/filters/food-filter":64,"../../../operations/filters/fridge-filter":65,"../../../operations/filters/front-filter":66,"../../../operations/filters/glam-filter":67,"../../../operations/filters/gobblin-filter":68,"../../../operations/filters/identity-filter":69,"../../../operations/filters/k1-filter":70,"../../../operations/filters/k2-filter":71,"../../../operations/filters/k6-filter":72,"../../../operations/filters/kdynamic-filter":73,"../../../operations/filters/lenin-filter":74,"../../../operations/filters/lomo-filter":75,"../../../operations/filters/mellow-filter":76,"../../../operations/filters/morning-filter":77,"../../../operations/filters/orchid-filter":78,"../../../operations/filters/pola-filter":79,"../../../operations/filters/pola669-filter":80,"../../../operations/filters/quozi-filter":94,"../../../operations/filters/semired-filter":95,"../../../operations/filters/sunny-filter":96,"../../../operations/filters/texas-filter":97,"../../../operations/filters/x400-filter":98,"./control":115}],118:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -17489,8 +17077,6 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
  */
 
 var Control = _interopRequire(require("./control"));
-
-var Symbol = _interopRequire(require("es6-symbol"));
 
 
 
@@ -17549,41 +17135,21 @@ var FlipControls = (function (Control) {
         this._listItems = Array.prototype.slice.call(listItems);
 
         // Listen to click events
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
+        for (var i = 0; i < this._listItems.length; i++) {
+          (function (i) {
+            var listItem = _this._listItems[i];
+            listItem.addEventListener("click", function () {
+              _this._onListItemClick(listItem);
+            });
 
-        try {
-          for (var _iterator = this._listItems[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            (function () {
-              var listItem = _step.value;
+            var direction = listItem.dataset.direction;
 
-              listItem.addEventListener("click", function () {
-                _this._onListItemClick(listItem);
-              });
-
-              var direction = listItem.dataset.direction;
-
-              if (direction === "horizontal" && _this._operation.getHorizontal()) {
-                _this._toggleItem(listItem, true);
-              } else if (direction === "vertical" && _this._operation.getVertical()) {
-                _this._toggleItem(listItem, true);
-              }
-            })();
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator["return"]) {
-              _iterator["return"]();
+            if (direction === "horizontal" && _this._operation.getHorizontal()) {
+              _this._toggleItem(listItem, true);
+            } else if (direction === "vertical" && _this._operation.getVertical()) {
+              _this._toggleItem(listItem, true);
             }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
+          })(i);
         }
       },
       writable: true,
@@ -17676,7 +17242,7 @@ var FlipControls = (function (Control) {
 
 module.exports = FlipControls;
 
-},{"./control":131,"es6-symbol":42}],135:[function(require,module,exports){
+},{"./control":115}],119:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -17855,7 +17421,7 @@ var FramesControls = (function (Control) {
 
 module.exports = FramesControls;
 
-},{"../lib/color-picker":143,"../lib/simple-slider":144,"./control":131}],136:[function(require,module,exports){
+},{"../lib/color-picker":127,"../lib/simple-slider":128,"./control":115}],120:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -18179,7 +17745,7 @@ var RadialBlurControls = (function (Control) {
 
 module.exports = RadialBlurControls;
 
-},{"../../../lib/math/vector2":65,"../../../lib/utils":67,"../lib/simple-slider":144,"./control":131}],137:[function(require,module,exports){
+},{"../../../lib/math/vector2":49,"../../../lib/utils":51,"../lib/simple-slider":128,"./control":115}],121:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -18202,8 +17768,6 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
 var Control = _interopRequire(require("./control"));
 
 var Vector2 = _interopRequire(require("../../../lib/math/vector2"));
-
-var Symbol = _interopRequire(require("es6-symbol"));
 
 
 
@@ -18278,33 +17842,13 @@ var RotationControls = (function (Control) {
         this._listItems = Array.prototype.slice.call(listItems);
 
         // Listen to click events
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-          for (var _iterator = this._listItems[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            (function () {
-              var listItem = _step.value;
-
-              listItem.addEventListener("click", function () {
-                _this._onListItemClick(listItem);
-              });
-            })();
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator["return"]) {
-              _iterator["return"]();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
+        for (var i = 0; i < this._listItems.length; i++) {
+          (function (i) {
+            var listItem = _this._listItems[i];
+            listItem.addEventListener("click", function () {
+              _this._onListItemClick(listItem);
+            });
+          })(i);
         }
 
         // Find the div areas that affect the displayed crop size
@@ -18455,7 +17999,7 @@ var RotationControls = (function (Control) {
 
 module.exports = RotationControls;
 
-},{"../../../lib/math/vector2":65,"./control":131,"es6-symbol":42}],138:[function(require,module,exports){
+},{"../../../lib/math/vector2":49,"./control":115}],122:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -18600,7 +18144,7 @@ var SaturationControls = (function (Control) {
 
 module.exports = SaturationControls;
 
-},{"../lib/slider":145,"./control":131}],139:[function(require,module,exports){
+},{"../lib/slider":129,"./control":115}],123:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -18627,8 +18171,6 @@ var Control = _interopRequire(require("./control"));
 var Vector2 = _interopRequire(require("../../../lib/math/vector2"));
 
 var Utils = _interopRequire(require("../../../lib/utils"));
-
-var Symbol = _interopRequire(require("es6-symbol"));
 
 
 
@@ -18737,29 +18279,9 @@ var StickersControl = (function (Control) {
         var stickerIdentifiers = Object.keys(this._availableStickers);
 
         var selectedStickers = Utils.select(stickerIdentifiers, selector);
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-          for (var _iterator = selectedStickers[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var identifier = _step.value;
-
-            this._stickers[identifier] = this._availableStickers[identifier];
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator["return"]) {
-              _iterator["return"]();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
+        for (var i = 0; i < selectedStickers.length; i++) {
+          var identifier = selectedStickers[i];
+          this._stickers[identifier] = this._availableStickers[identifier];
         }
 
         if (this._active) {
@@ -18844,40 +18366,19 @@ var StickersControl = (function (Control) {
         this._listItems = Array.prototype.slice.call(listItems);
 
         // Listen to click events
-        var i = 0;
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
+        for (var i = 0; i < this._listItems.length; i++) {
+          (function (i) {
+            var listItem = _this._listItems[i];
+            var identifier = listItem.dataset.identifier;
 
-        try {
-          for (var _iterator = this._listItems[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            (function () {
-              var listItem = _step.value;
-              var identifier = listItem.dataset.identifier;
+            listItem.addEventListener("click", function () {
+              _this._onListItemClick(listItem);
+            });
 
-              listItem.addEventListener("click", function () {
-                _this._onListItemClick(listItem);
-              });
-
-              if (_this._initialIdentity && i === 0 || !_this._initialIdentity && _this._stickers[identifier] === _this._initialSettings.sticker) {
-                _this._onListItemClick(listItem);
-              }
-              i++;
-            })();
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator["return"]) {
-              _iterator["return"]();
+            if (_this._initialIdentity && i === 0 || !_this._initialIdentity && _this._stickers[identifier] === _this._initialSettings.sticker) {
+              _this._onListItemClick(listItem);
             }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
+          })(i);
         }
       },
       writable: true,
@@ -19220,7 +18721,7 @@ var StickersControl = (function (Control) {
 
 module.exports = StickersControl;
 
-},{"../../../lib/math/vector2":65,"../../../lib/utils":67,"./control":131,"es6-symbol":42}],140:[function(require,module,exports){
+},{"../../../lib/math/vector2":49,"../../../lib/utils":51,"./control":115}],124:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -19249,8 +18750,6 @@ var ColorPicker = _interopRequire(require("../lib/color-picker"));
 var Vector2 = _interopRequire(require("../../../lib/math/vector2"));
 
 var Utils = _interopRequire(require("../../../lib/utils"));
-
-var Symbol = _interopRequire(require("es6-symbol"));
 
 
 
@@ -19416,39 +18915,17 @@ var TextControl = (function (Control) {
         this._listItems = Array.prototype.slice.call(listItems);
 
         // Listen to click events
-        var i = 0;
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
+        for (var i = 0; i < this._listItems.length; i++) {
+          (function (i) {
+            var listItem = _this._listItems[i];
+            listItem.addEventListener("click", function () {
+              _this._onListItemClick(listItem);
+            });
 
-        try {
-          for (var _iterator = this._listItems[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            (function () {
-              var listItem = _step.value;
-
-              listItem.addEventListener("click", function () {
-                _this._onListItemClick(listItem);
-              });
-
-              if (_this._initialIdentity && i === 0 || !_this._initialIdentity && name === _this._initialSettings.fontFamily) {
-                _this._onListItemClick(listItem);
-              }
-              i++;
-            })();
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator["return"]) {
-              _iterator["return"]();
+            if (_this._initialIdentity && i === 0 || !_this._initialIdentity && name === _this._initialSettings.fontFamily) {
+              _this._onListItemClick(listItem);
             }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
+          })(i);
         }
       },
       writable: true,
@@ -19764,29 +19241,9 @@ var TextControl = (function (Control) {
        */
 
       value: function _deactivateAllItems() {
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-          for (var _iterator = this._listItems[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var listItem = _step.value;
-
-            listItem.classList.remove("imglykit-controls-item-active");
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator["return"]) {
-              _iterator["return"]();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
+        for (var i = 0; i < this._listItems.length; i++) {
+          var listItem = this._listItems[i];
+          listItem.classList.remove("imglykit-controls-item-active");
         }
       },
       writable: true,
@@ -19902,7 +19359,7 @@ var TextControl = (function (Control) {
 
 module.exports = TextControl;
 
-},{"../../../lib/math/vector2":65,"../../../lib/utils":67,"../lib/color-picker":143,"./control":131,"es6-symbol":42}],141:[function(require,module,exports){
+},{"../../../lib/math/vector2":49,"../../../lib/utils":51,"../lib/color-picker":127,"./control":115}],125:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -19931,8 +19388,6 @@ var Vector2 = _interopRequire(require("../../../lib/math/vector2"));
 var Utils = _interopRequire(require("../../../lib/utils"));
 
 var SimpleSlider = _interopRequire(require("../lib/simple-slider"));
-
-var Symbol = _interopRequire(require("es6-symbol"));
 
 
 
@@ -20093,36 +19548,16 @@ var TiltShiftControls = (function (Control) {
       value: function _handleKnobs() {
         var _this = this;
 
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-          for (var _iterator = this._knobs[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            (function () {
-              var knob = _step.value;
-
-              knob.addEventListener("mousedown", function (e) {
-                _this._onKnobDown(knob, e);
-              });
-              knob.addEventListener("touchstart", function (e) {
-                _this._onKnobDown(knob, e);
-              });
-            })();
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator["return"]) {
-              _iterator["return"]();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
+        for (var i = 0; i < this._knobs.length; i++) {
+          (function (i) {
+            var knob = _this._knobs[i];
+            knob.addEventListener("mousedown", function (e) {
+              _this._onKnobDown(knob, e);
+            });
+            knob.addEventListener("touchstart", function (e) {
+              _this._onKnobDown(knob, e);
+            });
+          })(i);
         }
       },
       writable: true,
@@ -20272,7 +19707,7 @@ var TiltShiftControls = (function (Control) {
 
 module.exports = TiltShiftControls;
 
-},{"../../../lib/math/vector2":65,"../../../lib/utils":67,"../lib/simple-slider":144,"./control":131,"es6-symbol":42}],142:[function(require,module,exports){
+},{"../../../lib/math/vector2":49,"../../../lib/utils":51,"../lib/simple-slider":128,"./control":115}],126:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -20303,8 +19738,6 @@ var CanvasRenderer = _interopRequire(require("../../../renderers/canvas-renderer
 var Vector2 = _interopRequire(require("../../../lib/math/vector2"));
 
 var EventEmitter = _interopRequire(require("../../../lib/event-emitter"));
-
-var Symbol = _interopRequire(require("es6-symbol"));
 
 var Canvas = (function (EventEmitter) {
   function Canvas(kit, ui, options) {
@@ -20597,29 +20030,11 @@ var Canvas = (function (EventEmitter) {
        */
 
       value: function setAllOperationsToDirty() {
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
+        var operationsStack = this._kit.operationsStack;
 
-        try {
-          for (var _iterator = this._kit.operationsStack[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var operation = _step.value;
-
-            operation.dirty = true;
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator["return"]) {
-              _iterator["return"]();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
+        for (var i = 0; i < operationsStack.length; i++) {
+          var operation = operationsStack[i];
+          operation.dirty = true;
         }
       },
       writable: true,
@@ -20949,34 +20364,14 @@ var Canvas = (function (EventEmitter) {
 
       value: function _updateStackDirtyStates(stack) {
         var dirtyFound = false;
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-          for (var _iterator = stack[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var operation = _step.value;
-
-            if (operation.dirty) {
-              dirtyFound = true;
-            }
-
-            if (dirtyFound) {
-              operation.dirty = true;
-            }
+        for (var i = 0; i < stack.length; i++) {
+          var operation = stack[i];
+          if (operation.dirty) {
+            dirtyFound = true;
           }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator["return"]) {
-              _iterator["return"]();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
+
+          if (dirtyFound) {
+            operation.dirty = true;
           }
         }
       },
@@ -21030,7 +20425,7 @@ var Canvas = (function (EventEmitter) {
 
 module.exports = Canvas;
 
-},{"../../../lib/event-emitter":61,"../../../lib/math/vector2":65,"../../../renderers/canvas-renderer":124,"../../../renderers/webgl-renderer":126,"bluebird":4,"es6-symbol":42}],143:[function(require,module,exports){
+},{"../../../lib/event-emitter":45,"../../../lib/math/vector2":49,"../../../renderers/canvas-renderer":108,"../../../renderers/webgl-renderer":110,"bluebird":4}],127:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -21691,7 +21086,7 @@ var ColorPicker = (function (EventEmitter) {
 
 module.exports = ColorPicker;
 
-},{"../../../lib/color":60,"../../../lib/event-emitter":61,"../../../lib/math/vector2":65,"../../../lib/utils":67,"lodash":"lodash"}],144:[function(require,module,exports){
+},{"../../../lib/color":44,"../../../lib/event-emitter":45,"../../../lib/math/vector2":49,"../../../lib/utils":51,"lodash":"lodash"}],128:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -21761,7 +21156,7 @@ var SimpleSlider = (function (Slider) {
 
 module.exports = SimpleSlider;
 
-},{"./slider":145}],145:[function(require,module,exports){
+},{"./slider":129}],129:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -21985,7 +21380,7 @@ var Slider = (function (EventEmitter) {
 
 module.exports = Slider;
 
-},{"../../../lib/event-emitter":61,"../../../lib/utils":67,"lodash":"lodash"}],146:[function(require,module,exports){
+},{"../../../lib/event-emitter":45,"../../../lib/utils":51,"lodash":"lodash"}],130:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -22184,7 +21579,7 @@ var TopControls = (function (EventEmitter) {
 
 module.exports = TopControls;
 
-},{"../../../lib/event-emitter":61}],147:[function(require,module,exports){
+},{"../../../lib/event-emitter":45}],131:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -22207,8 +21602,6 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
  */
 
 
-
-var Symbol = _interopRequire(require("es6-symbol"));
 
 var UI = _interopRequire(require("../base/ui"));
 
@@ -22248,7 +21641,24 @@ var NightUI = (function (UI) {
   _inherits(NightUI, UI);
 
   _prototypeProperties(NightUI, null, {
+    identifier: {
+
+      /**
+       * A unique string that represents this UI
+       * @type {String}
+       */
+
+      get: function () {
+        return "night";
+      },
+      configurable: true
+    },
     run: {
+
+      /**
+       * Prepares the UI for use
+       */
+
       value: function run() {
         this._registerControls();
 
@@ -22357,51 +21767,32 @@ var NightUI = (function (UI) {
         var registeredOperations = _kit.registeredOperations;
 
         operationsStack.splice(0, operationsStack.length); // Clear the array in-place
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
 
-        try {
-          for (var _iterator = this._preferredOperationOrder[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var _ret = (function () {
-              var operationIdentifier = _step.value;
-
-              if (!_this.isOperationSelected(operationIdentifier)) {
-                return "continue";
-              }
-
-              var Operation = registeredOperations[operationIdentifier];
-              var operationInstance = new Operation(_this._kit);
-
-              // Skip per default
-              // This additional attribute is not part of the img.ly SDK,
-              // we only use it for the Night UI to check whether an operation
-              // needs to be rendered
-              operationInstance.isIdentity = true;
-
-              operationInstance.on("update", function () {
-                operationInstance.isIdentity = false;
-              });
-
-              _this._operationsMap[operationIdentifier] = operationInstance;
-              operationsStack.push(operationInstance);
-            })();
-
-            if (_ret === "continue") continue;
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator["return"]) {
-              _iterator["return"]();
+        for (var i = 0; i < this._preferredOperationOrder.length; i++) {
+          var _ret = (function () {
+            var operationIdentifier = _this._preferredOperationOrder[i];
+            if (!_this.isOperationSelected(operationIdentifier)) {
+              return "continue";
             }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
+
+            var Operation = registeredOperations[operationIdentifier];
+            var operationInstance = new Operation(_this._kit);
+
+            // Skip per default
+            // This additional attribute is not part of the img.ly SDK,
+            // we only use it for the Night UI to check whether an operation
+            // needs to be rendered
+            operationInstance.isIdentity = true;
+
+            operationInstance.on("update", function () {
+              operationInstance.isIdentity = false;
+            });
+
+            _this._operationsMap[operationIdentifier] = operationInstance;
+            operationsStack.push(operationInstance);
+          })();
+
+          if (_ret === "continue") continue;
         }
       },
       writable: true,
@@ -22720,7 +22111,7 @@ var NightUI = (function (UI) {
 
 module.exports = NightUI;
 
-},{"../base/ui":128,"./controls/brightness":129,"./controls/contrast":130,"./controls/crop":132,"./controls/filters":133,"./controls/flip":134,"./controls/frames":135,"./controls/radial-blur":136,"./controls/rotation":137,"./controls/saturation":138,"./controls/stickers":139,"./controls/text":140,"./controls/tilt-shift":141,"./lib/canvas":142,"./lib/top-controls":146,"es6-symbol":42}],148:[function(require,module,exports){
+},{"../base/ui":112,"./controls/brightness":113,"./controls/contrast":114,"./controls/crop":116,"./controls/filters":117,"./controls/flip":118,"./controls/frames":119,"./controls/radial-blur":120,"./controls/rotation":121,"./controls/saturation":122,"./controls/stickers":123,"./controls/text":124,"./controls/tilt-shift":125,"./lib/canvas":126,"./lib/top-controls":130}],132:[function(require,module,exports){
 "use strict";
 
 /*
