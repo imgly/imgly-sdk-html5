@@ -8,6 +8,9 @@
   <a href="https://coveralls.io/r/imgly/imgly-sdk-html5?branch=master">
     <img src="http://img.shields.io/coveralls/imgly/imgly-sdk-html5/master.svg?cb=2" alt="Coverage Status" />
   </a>
+  <a href="https://gitter.im/imgly/imgly-sdk-html5">
+    <img src="https://img.shields.io/badge/gitter-join%20chat%20%E2%86%92-brightgreen.svg" alt="join gitter" />
+  </a>
 </p>
 
 ## img.ly Photo Editor SDK for HTML5.
