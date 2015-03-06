@@ -124,7 +124,6 @@ class CropControls extends Control {
     // Store initial settings for "back" button
     this._initialStart = this._operation.getStart().clone();
     this._initialEnd = this._operation.getEnd().clone();
-    this._initialIdentity = this._operation.isIdentity;
 
     // Make sure we see the whole input image
     this._operation.set({
@@ -170,7 +169,7 @@ class CropControls extends Control {
     for (let i = 0; i < this._ratioItems.length; i++) {
       let item = this._ratioItems[i];
       let { selected, ratio, identifier } = item.dataset;
-      if (typeof selected !== "undefined" && this._initialIdentity) {
+      if (typeof selected !== "undefined" && !this._operationExistedBefore) {
         this._setRatio(identifier, ratio, false);
         this._selectRatio(item);
       }
