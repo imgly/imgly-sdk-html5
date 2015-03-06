@@ -15,7 +15,7 @@ var fs = require("fs");
 var should = require("should");
 var canvas = require("canvas");
 var ImglyKit = require("../..");
-var BrightnessOperation = ImglyKit.Operations.BrightnessOperation;
+var BrightnessOperation = ImglyKit.Operations.Brightness;
 var kit, image, brightnessOperation;
 
 beforeEach(function () {

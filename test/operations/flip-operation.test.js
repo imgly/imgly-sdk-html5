@@ -14,7 +14,7 @@ var path = require("path");
 var fs = require("fs");
 var canvas = require("canvas");
 var ImglyKit = require("../..");
-var FlipOperation = ImglyKit.Operations.FlipOperation;
+var FlipOperation = ImglyKit.Operations.Flip;
 var kit, image, flipOperation;
 
 beforeEach(function () {

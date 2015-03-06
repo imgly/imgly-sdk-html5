@@ -14,7 +14,7 @@ var path = require("path");
 var fs = require("fs");
 var canvas = require("canvas");
 var ImglyKit = require("../..");
-var TextOperation = ImglyKit.Operations.TextOperation;
+var TextOperation = ImglyKit.Operations.Text;
 var kit, image, textOperation;
 
 beforeEach(function () {

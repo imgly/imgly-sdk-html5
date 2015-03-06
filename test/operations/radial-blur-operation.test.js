@@ -14,7 +14,7 @@ var path = require("path");
 var fs = require("fs");
 var canvas = require("canvas");
 var ImglyKit = require("../..");
-var RadialBlurOperation = ImglyKit.Operations.RadialBlurOperation;
+var RadialBlurOperation = ImglyKit.Operations.RadialBlur;
 var kit, image, radialBlurOperation;
 
 beforeEach(function () {

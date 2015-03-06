@@ -14,7 +14,7 @@ var path = require("path");
 var fs = require("fs");
 var canvas = require("canvas");
 var ImglyKit = require("../..");
-var TiltShiftOperation = ImglyKit.Operations.TiltShiftOperation;
+var TiltShiftOperation = ImglyKit.Operations.TiltShift;
 var kit, image, tiltShiftOperation;
 
 beforeEach(function () {

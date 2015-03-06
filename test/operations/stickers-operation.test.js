@@ -15,7 +15,7 @@ var fs = require("fs");
 var should = require("should");
 var canvas = require("canvas");
 var ImglyKit = require("../..");
-var StickersOperation = ImglyKit.Operations.StickersOperation;
+var StickersOperation = ImglyKit.Operations.Stickers;
 var kit, image, stickersOperation;
 
 beforeEach(function () {

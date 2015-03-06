@@ -15,7 +15,7 @@ var fs = require("fs");
 var should = require("should");
 var canvas = require("canvas");
 var ImglyKit = require("../..");
-var FramesOperation = ImglyKit.Operations.FramesOperation;
+var FramesOperation = ImglyKit.Operations.Frames;
 var kit, image, framesOperation;
 
 beforeEach(function () {

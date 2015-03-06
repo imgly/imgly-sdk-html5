@@ -15,7 +15,7 @@ var fs = require("fs");
 var should = require("should");
 var canvas = require("canvas");
 var ImglyKit = require("../..");
-var ContrastOperation = ImglyKit.Operations.ContrastOperation;
+var ContrastOperation = ImglyKit.Operations.Contrast;
 var kit, image, contrastOperation;
 
 beforeEach(function () {

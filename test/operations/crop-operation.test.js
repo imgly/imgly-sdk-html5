@@ -15,7 +15,7 @@ var fs = require("fs");
 var should = require("should");
 var canvas = require("canvas");
 var ImglyKit = require("../..");
-var CropOperation = ImglyKit.Operations.CropOperation;
+var CropOperation = ImglyKit.Operations.Crop;
 var kit, image, cropOperation;
 
 beforeEach(function () {

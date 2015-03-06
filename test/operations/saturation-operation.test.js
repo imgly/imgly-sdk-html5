@@ -15,7 +15,7 @@ var fs = require("fs");
 var should = require("should");
 var canvas = require("canvas");
 var ImglyKit = require("../..");
-var SaturationOperation = ImglyKit.Operations.SaturationOperation;
+var SaturationOperation = ImglyKit.Operations.Saturation;
 var kit, image, saturationOperation;
 
 beforeEach(function () {

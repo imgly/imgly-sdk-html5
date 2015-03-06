@@ -14,7 +14,7 @@ var path = require("path");
 var fs = require("fs");
 var canvas = require("canvas");
 var ImglyKit = require("../..");
-var FiltersOperation = ImglyKit.Operations.FiltersOperation;
+var FiltersOperation = ImglyKit.Operations.Filters;
 var dummyFiltersOperation = new FiltersOperation(new ImglyKit({ image: null, ui: false }));
 var kit, image, filtersOperation;
 
