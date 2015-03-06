@@ -18,13 +18,13 @@ window.onload = function() {
       renderOnWindowResize: true // Our editor's size is relative to the window size
     });
 
-    // kit.ui.selectOperations({ only: "filters,crop" });
+    // kit.ui.selectOperations({ only: "stickers" });
 
     kit.run();
 
     var button = document.body.querySelector("#render-button");
     button.addEventListener("click", function () {
-      kit.render()
+      kit.render("image")
         .then(function (image) {
           document.body.appendChild(image);
         });
