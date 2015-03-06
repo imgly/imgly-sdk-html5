@@ -83,7 +83,7 @@ class Canvas extends EventEmitter {
     }
 
     // Run the operations stack
-    let stack = this._actualStack;
+    let stack = this.sanitizedStack;
     this._updateStackDirtyStates(stack);
 
     return bluebird
@@ -507,18 +507,6 @@ class Canvas extends EventEmitter {
   }
 
   /**
-   * Filters the operation stack so that only the operations that are not
-   * set to the default settings are used.
-   * @private
-   */
-  get _actualStack () {
-    let stack = this._kit.operationsStack.filter((op) => {
-      return !op.isIdentity;
-    });
-    return stack;
-  }
-
-  /**
    * Find the first dirty operation of the stack and sets all following
    * operations to dirty
    * @param {Array.<Operation>} stack
@@ -528,6 +516,7 @@ class Canvas extends EventEmitter {
     let dirtyFound = false;
     for (let i = 0; i < stack.length; i++) {
       let operation = stack[i];
+      if (!operation) continue;
       if (operation.dirty) {
         dirtyFound = true;
       }
@@ -545,6 +534,19 @@ class Canvas extends EventEmitter {
   zoomToFit (render=true) {
     let initialZoomLevel = this._getInitialZoomLevel();
     return this.setZoomLevel(initialZoomLevel, render);
+  }
+
+  /**
+   * Returns the operations stack without falsy values
+   * @type {Array.<Operation>}
+   */
+  get sanitizedStack () {
+    let sanitizedStack = [];
+    for (let operation of this._kit.operationsStack) {
+      if (!operation) continue;
+      sanitizedStack.push(operation);
+    }
+    return sanitizedStack;
   }
 
   /**

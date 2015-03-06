@@ -99,18 +99,23 @@ class StickersControl extends Control {
    * @override
    */
   _onEnter () {
-    this._operationExistedBefore = !!this._ui.operations["stickers"];
+    this._operationExistedBefore = !!this._ui.operations.stickers;
     this._operation = this._ui.getOrCreateOperation("stickers");
 
-    this._initialIdentity = this._operation.isIdentity;
+    // Don't render initially
+    this._ui.removeOperation("stickers");
+
     this._initialSettings = {
       sticker: this._operation.getSticker(),
       position: this._operation.getPosition().clone(),
       size: this._operation.getSize().clone()
     };
 
+    let canvasSize = this._ui.canvas.size;
+
     this._size = this._initialSettings.size.clone();
-    this._position = this._initialSettings.position.clone();
+    this._position = this._initialSettings.position.clone()
+      .multiply(canvasSize);
 
     // Don't render an already existing sticker as long as
     // we're editing
@@ -118,7 +123,7 @@ class StickersControl extends Control {
 
     // Remember zoom level and zoom to fit the canvas
     this._initialZoomLevel = this._ui.canvas.zoomLevel;
-    this._ui.canvas.zoomToFit(false);
+    this._ui.canvas.zoomToFit();
 
     // Find DOM elements
     this._container = this._canvasControls.querySelector(".imglykit-canvas-stickers");
@@ -136,16 +141,6 @@ class StickersControl extends Control {
     this._onKnobDown = this._onKnobDown.bind(this);
     this._onKnobDrag = this._onKnobDrag.bind(this);
     this._onKnobUp = this._onKnobUp.bind(this);
-
-    this._ui.canvas.render()
-      .then(() => {
-        let canvasSize = this._ui.canvas.size;
-        this._size.multiply(canvasSize);
-        this._position.multiply(canvasSize);
-        if (!this._initialIdentity) {
-          this._applySettings();
-        }
-      });
 
     this._handleListItems();
     this._handleImage();
@@ -168,8 +163,8 @@ class StickersControl extends Control {
         this._onListItemClick(listItem);
       });
 
-      if ((this._initialIdentity && i === 0) ||
-        (!this._initialIdentity && this._stickers[identifier] === this._initialSettings.sticker)) {
+      if ((!this._operationExistedBefore && i === 0) ||
+        (this._operationExistedBefore && this._stickers[identifier] === this._initialSettings.sticker)) {
           this._onListItemClick(listItem);
       }
     }
@@ -195,6 +190,7 @@ class StickersControl extends Control {
    */
   _onBack () {
     if (this._operationExistedBefore) {
+      this._operation = this._ui.getOrCreateOperation("stickers");
       this._operation.set(this._initialSettings);
     } else {
       this._ui.removeOperation("stickers");
@@ -214,6 +210,8 @@ class StickersControl extends Control {
 
     this._ui.canvas.setZoomLevel(this._initialZoomLevel, false);
 
+    // Create a new operation and render it
+    this._operation = this._ui.getOrCreateOperation("stickers");
     this._operation.set({
       sticker: this._availableStickers[this._sticker],
       position: position,
@@ -361,9 +359,7 @@ class StickersControl extends Control {
       this._position = new Vector2(0, 0);
     }
 
-    if (this._initialIdentity) {
-      this._applySettings();
-    }
+    this._applySettings();
   }
 
   /**
