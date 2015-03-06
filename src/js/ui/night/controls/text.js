@@ -44,12 +44,14 @@ class TextControl extends Control {
    * @override
    */
   _onEnter () {
-    this._operationExistedBefore = !!this._ui.operations["text"];
+    this._operationExistedBefore = !!this._ui.operations.text;
     this._operation = this._ui.getOrCreateOperation("text");
+
+    // Don't render initially
+    this._ui.removeOperation("text");
 
     let canvasSize = this._ui.canvas.size;
 
-    this._initialIdentity = this._operation.isIdentity;
     this._initialSettings = {
       lineHeight: this._operation.getLineHeight(),
       fontSize: this._operation.getFontSize(),
@@ -74,10 +76,6 @@ class TextControl extends Control {
       backgroundColor: this._initialSettings.backgroundColor.clone()
     };
 
-    // Don't render an already existing text as long as
-    // we're editing
-    this._operation.isIdentity = true;
-
     // Remember zoom level and zoom to fit the canvas
     this._initialZoomLevel = this._ui.canvas.zoomLevel;
 
@@ -89,7 +87,7 @@ class TextControl extends Control {
     this._resizeKnob = this._canvasControls.querySelector(".imglykit-knob");
 
     // If the text has been edited before, subtract the knob width and padding
-    if (!this._initialIdentity) {
+    if (this._operationExistedBefore) {
       this._settings.position.x -= 2;
       this._settings.position.y -= 2;
     }
@@ -148,8 +146,8 @@ class TextControl extends Control {
         this._onListItemClick(listItem);
       });
 
-      if ((this._initialIdentity && i === 0) ||
-        (!this._initialIdentity && name === this._initialSettings.fontFamily)) {
+      if ((!this._operationExistedBefore && i === 0) ||
+        (this._operationExistedBefore && name === this._initialSettings.fontFamily)) {
           this._onListItemClick(listItem);
       }
     }
@@ -428,6 +426,7 @@ class TextControl extends Control {
 
     this._ui.canvas.setZoomLevel(this._initialZoomLevel, false);
 
+    this._operation = this._ui.getOrCreateOperation("text");
     this._operation.set({
       fontSize: this._settings.fontSize,
       fontFamily: this._settings.fontFamily,
@@ -457,6 +456,7 @@ class TextControl extends Control {
    */
   _onBack () {
     if (this._operationExistedBefore) {
+      this._operation = this._ui.getOrCreateOperation("text");
       this._operation.set(this._initialSettings);
     } else {
       this._ui.removeOperation("text");
