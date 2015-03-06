@@ -10,19 +10,15 @@
   </a>
 </p>
 
-## img.ly HTML5 SDK - Rewrite
+## img.ly Photo Editor SDK for HTML5.
+The img.ly HTML5 SDK is a **fully customisable** photo editor which you can integrate into your HTML5 app within minutes.
+It contains the most important photo editing tools;
+Auto-Enhance, Crop, Rotate, Focus, Brightness, Contrast, Saturation, and more.
+It also features state-of-the-art photo filters, designed and calibrated with a lot of love.
+A Text editor with an elegant and simple to use interface allows adding text instantly to the picture.
 
-This branch of the img.ly SDK repository will contain the rewrite of the SDK.
-
-## Roadmap for 1.0
-
-Here's what we're planning for img.ly HTML5 SDK 1.0:
-
-* Sophisticated and easy to use JavaScript API that allows the user to modify and extend the SDK
-* Decoupled rendering mechanisms with WebGL support
-* Test suite
-* An all-new design
-* Tutorials and advanced documentation
+### Examples
+See the examples folder for implementation examples or play with the [demo on our website](http://sdk.img.ly/).
 
 ## Setting up the development environment
 
@@ -44,3 +40,12 @@ $ gulp jsdocs
 ```
 
 The documentation will be in the `doc` directory.
+
+### License
+Please see [LICENSE](https://github.com/imgly/imgly-sdk-html5/blob/master/LICENSE.md) for licensing details.
+
+### Authors and Contributors
+Made 2013-2015 by @9elements: Sascha Gehlich ([@saschagehlich](https://github.com/saschagehlich)), Johannes Emerich ([@knuton](https://github.com/knuton)), Carsten Przyluczky ([@K4stor](https://github.com/K4stor)), Sebastian Deutsch ([@sebastiandeutsch](https://github.com/sebastiandeutsch))
+
+### Support or Contact
+Contact contact@9elements.com for support requests or to upgrade to an enterprise licence.
