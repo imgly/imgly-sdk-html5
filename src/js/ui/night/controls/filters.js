@@ -25,8 +25,6 @@ class FiltersControls extends Control {
    * Entry point for this control
    */
   init () {
-    this._operation = this._ui.operations.filters;
-
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/filters_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;
 
@@ -37,6 +35,19 @@ class FiltersControls extends Control {
 
     // Select all filters per default
     this.selectFilters(null);
+  }
+
+  /**
+   * Renders the controls
+   * @private
+   * @internal We need to access information from the operation when
+   *           rendering, which is why we have to override this function
+   */
+  _renderAllControls (...args) {
+    this._operationExistedBefore = !!this._ui.operations.filters;
+    this._operation = this._ui.getOrCreateOperation("filters");
+
+    super._renderAllControls(...args);
   }
 
   /**
@@ -64,7 +75,11 @@ class FiltersControls extends Control {
    * @override
    */
   _onBack () {
-    this._operation.setFilter(this._initialFilter);
+    if (this._operationExistedBefore) {
+      this._operation.setFilter(this._initialFilter);
+    } else {
+      this._ui.removeOperation("filters");
+    }
     this._ui.canvas.render();
   }
 
@@ -75,7 +90,7 @@ class FiltersControls extends Control {
   _onDone () {
     this._ui.addHistory(this._operation, {
       filter: this._initialFilter
-    }, this._initialIdentity);
+    }, this._operationExistedBefore);
   }
 
   /**

@@ -23,7 +23,7 @@ import bluebird from "bluebird";
 class StickersOperation extends Operation {
   constructor (...args) {
     this.availableOptions = {
-      sticker: { type: "string", required: true },
+      sticker: { type: "string" },
       position: { type: "vector2", default: new Vector2(0, 0) },
       size: { type: "vector2", default: new Vector2(0, 0) }
     };

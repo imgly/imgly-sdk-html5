@@ -247,6 +247,7 @@ class Canvas extends EventEmitter {
     let { operationsStack } = this._kit;
     for (let i = 0; i < operationsStack.length; i++) {
       let operation = operationsStack[i];
+      if (!operation) continue;
       operation.dirty = true;
     }
   }
@@ -257,17 +258,21 @@ class Canvas extends EventEmitter {
    * @private
    */
   _getInitialZoomLevel () {
+    let inputSize = new Vector2(this._image.width, this._image.height);
+
     let cropOperation = this._ui.operations.crop;
     let rotationOperation = this._ui.operations.rotation;
-    let cropSize = cropOperation.getEnd().clone()
-      .subtract(cropOperation.getStart());
 
-    if (cropOperation.isIdentity) {
-      cropSize.set(1, 1);
+    let cropSize, croppedSize, finalSize, initialSize;
+
+    if (cropOperation) {
+      cropSize = cropOperation.getEnd().clone()
+        .subtract(cropOperation.getStart());
+    } else {
+      cropSize = new Vector2(1.0, 1.0);
     }
 
-    let inputSize = new Vector2(this._image.width, this._image.height);
-    let croppedSize = inputSize.clone().multiply(cropSize);
+    croppedSize = inputSize.clone().multiply(cropSize);
 
     // Has the image been rotated?
     if (rotationOperation &&
@@ -278,7 +283,7 @@ class Canvas extends EventEmitter {
         croppedSize.y = tempX;
     }
 
-    let finalSize = this._resizeVectorToFit(croppedSize);
+    finalSize = this._resizeVectorToFit(croppedSize);
 
     // Rotate back to be able to find the final size
     if (rotationOperation &&
@@ -289,7 +294,7 @@ class Canvas extends EventEmitter {
         finalSize.y = tempX;
     }
 
-    let initialSize = finalSize.clone().divide(cropSize);
+    initialSize = finalSize.clone().divide(cropSize);
     return initialSize.x / inputSize.x;
   }
 

@@ -27,8 +27,6 @@ class TextControl extends Control {
    * Entry point for this control
    */
   init () {
-    this._operation = this._ui.operations.text;
-
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/text_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;
 
@@ -46,6 +44,9 @@ class TextControl extends Control {
    * @override
    */
   _onEnter () {
+    this._operationExistedBefore = !!this._ui.operations["text"];
+    this._operation = this._ui.getOrCreateOperation("text");
+
     let canvasSize = this._ui.canvas.size;
 
     this._initialIdentity = this._operation.isIdentity;
@@ -447,7 +448,7 @@ class TextControl extends Control {
       position: this._initialSettings.position.clone(),
       text: this._initialSettings.text,
       maxWidth: this._initialSettings.maxWidth
-    }, this._initialIdentity);
+    }, this._operationExistedBefore);
   }
 
   /**
@@ -455,14 +456,12 @@ class TextControl extends Control {
    * @override
    */
   _onBack () {
-    if (!this._initialIdentity) {
+    if (this._operationExistedBefore) {
       this._operation.set(this._initialSettings);
     } else {
-      this._operation.isIdentity = this._initialIdentity;
-      this._ui.canvas.render();
+      this._ui.removeOperation("text");
     }
-
-    this._ui.canvas.setZoomLevel(this._initialZoomLevel, false);
+    this._ui.canvas.setZoomLevel(this._initialZoomLevel);
   }
 
   /**

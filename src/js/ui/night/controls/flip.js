@@ -24,8 +24,6 @@ class FlipControls extends Control {
    * Entry point for this control
    */
   init () {
-    this._operation = this._ui.operations.flip;
-
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/flip_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;
   }
@@ -34,6 +32,9 @@ class FlipControls extends Control {
    * Gets called when this control is activated
    */
   _onEnter () {
+    this._operationExistedBefore = !!this._ui.operations.flip;
+    this._operation = this._ui.getOrCreateOperation("flip");
+
     this._initialHorizontal = this._operation.getHorizontal();
     this._initialVertical = this._operation.getVertical();
     this._initialIdentity = this._operation.isIdentity;
@@ -100,8 +101,12 @@ class FlipControls extends Control {
    * @override
    */
   _onBack () {
-    this._operation.setHorizontal(this._initialHorizontal);
-    this._operation.setVertical(this._initialVertical);
+    if (this._operationExistedBefore) {
+      this._operation.setHorizontal(this._initialHorizontal);
+      this._operation.setVertical(this._initialVertical);
+    } else {
+      this._ui.removeOperation("flip");
+    }
     this._ui.canvas.render();
   }
 
@@ -113,7 +118,7 @@ class FlipControls extends Control {
     this._ui.addHistory(this._operation, {
       vertical: this._initialVertical,
       horizontal: this._initialHorizontal
-    }, this._initialIdentity);
+    }, this._operationExistedBefore);
   }
 }
 

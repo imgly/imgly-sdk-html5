@@ -26,8 +26,6 @@ class StickersControl extends Control {
    * Entry point for this control
    */
   init () {
-    this._operation = this._ui.operations.stickers;
-
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/stickers_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;
 
@@ -101,6 +99,9 @@ class StickersControl extends Control {
    * @override
    */
   _onEnter () {
+    this._operationExistedBefore = !!this._ui.operations["stickers"];
+    this._operation = this._ui.getOrCreateOperation("stickers");
+
     this._initialIdentity = this._operation.isIdentity;
     this._initialSettings = {
       sticker: this._operation.getSticker(),
@@ -193,15 +194,12 @@ class StickersControl extends Control {
    * @override
    */
   _onBack () {
-    if (!this._initialIdentity) {
+    if (this._operationExistedBefore) {
       this._operation.set(this._initialSettings);
-      this._ui.canvas.render();
     } else {
-      this._operation.isIdentity = this._initialIdentity;
-      this._ui.canvas.render();
+      this._ui.removeOperation("stickers");
     }
-
-    this._ui.canvas.setZoomLevel(this._initialZoomLevel, false);
+    this._ui.canvas.setZoomLevel(this._initialZoomLevel);
   }
 
   /**
@@ -227,7 +225,7 @@ class StickersControl extends Control {
       sticker: this._initialSettings.sticker,
       position: this._initialSettings.position.clone(),
       size: this._initialSettings.size.clone()
-    }, this._initialIdentity);
+    }, this._operationExistedBefore);
   }
 
   /**

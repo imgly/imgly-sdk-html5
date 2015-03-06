@@ -28,27 +28,12 @@ class CropControls extends Control {
   init () {
     this._availableRatios = {};
     this._ratios = {};
-    this._operation = this._ui.operations.crop;
 
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/crop_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;
 
     let canvasControlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/crop_canvas.jst", "utf-8");
     this._canvasControlsTemplate = canvasControlsTemplate;
-
-    this._defaultStart = new Vector2(0.1, 0.1);
-    this._defaultEnd = new Vector2(0.9, 0.9);
-
-    this._initialOptions = {
-      start: this._operation.getStart(),
-      end: this._operation.getEnd()
-    };
-
-    this._start = this._initialOptions.start || this._defaultStart;
-    this._end = this._initialOptions.end || this._defaultEnd;
-
-    // Minimum size in pixels
-    this._minimumSize = new Vector2(50, 50);
 
     // Mouse event callbacks bound to the class context
     this._onKnobDown = this._onKnobDown.bind(this);
@@ -111,6 +96,23 @@ class CropControls extends Control {
    */
   _onEnter () {
     super._onEnter();
+
+    this._operationExistedBefore = !!this._ui.operations.crop;
+    this._operation = this._ui.getOrCreateOperation("crop");
+
+    this._defaultStart = new Vector2(0.1, 0.1);
+    this._defaultEnd = new Vector2(0.9, 0.9);
+
+    this._initialOptions = {
+      start: this._operation.getStart(),
+      end: this._operation.getEnd()
+    };
+
+    this._start = this._initialOptions.start || this._defaultStart;
+    this._end = this._initialOptions.end || this._defaultEnd;
+
+    // Minimum size in pixels
+    this._minimumSize = new Vector2(50, 50);
 
     this._initialZoomLevel = this._ui.canvas.zoomLevel;
     this._ui.canvas.zoomToFit(false);
@@ -532,10 +534,15 @@ class CropControls extends Control {
    */
   _onBack () {
     this._ui.canvas.setZoomLevel(this._initialZoomLevel, false);
-    this._operation.set({
-      start: this._initialStart,
-      end: this._initialEnd
-    });
+
+    if (this._operationExistedBefore) {
+      this._operation.set({
+        start: this._initialStart,
+        end: this._initialEnd
+      });
+    } else {
+      this._ui.removeOperation("crop");
+    }
     this._ui.canvas.render();
   }
 
@@ -553,7 +560,7 @@ class CropControls extends Control {
     this._ui.addHistory(this._operation, {
       start: this._initialStart.clone(),
       end: this._initialEnd.clone()
-    }, this._initialIdentity);
+    }, this._operationExistedBefore);
   }
 
   /**

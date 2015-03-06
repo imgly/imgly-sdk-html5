@@ -101,13 +101,15 @@ class RenderImage {
    * @return {Promise}
    */
   render () {
+    let stack = this.sanitizedStack;
+
     var self = this;
     return bluebird
-      .map(this._stack, function (operation) {
+      .map(stack, function (operation) {
         return operation.validateSettings();
       })
       .then(function () {
-        return bluebird.map(self._stack, function (operation) {
+        return bluebird.map(stack, function (operation) {
           return operation.render(self._renderer);
         }, { concurrency: 1 }).then(function () {
           return self._renderer.renderFinal();
@@ -132,6 +134,19 @@ class RenderImage {
    */
   getRenderer () {
     return this._renderer;
+  }
+
+  /**
+   * Returns the operations stack without falsy values
+   * @type {Array.<Operation>}
+   */
+  get sanitizedStack () {
+    let sanitizedStack = [];
+    for (let operation of this._stack) {
+      if (!operation) continue;
+      sanitizedStack.push(operation);
+    }
+    return sanitizedStack;
   }
 }
 

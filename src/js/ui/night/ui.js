@@ -68,7 +68,6 @@ class NightUI extends UI {
     this._canvasControlsContainer = container.querySelector(".imglykit-canvas-controls");
     this._overviewControlsContainer = container.querySelector(".imglykit-controls-overview");
 
-    this._initOperations();
     this._handleOverview();
 
     this._initCanvas();
@@ -127,40 +126,43 @@ class NightUI extends UI {
    */
   selectOperations (selector) {
     super.selectOperations(selector);
-
-    this._initOperations();
   }
 
   /**
-   * Initializes all operations
-   * @private
+   * Returns or creates an instance of the operation with the given identifier
+   * @param {String} identifier
    */
-  _initOperations () {
+  getOrCreateOperation (identifier) {
     let { operationsStack, registeredOperations } = this._kit;
-    operationsStack.splice(0, operationsStack.length); // Clear the array in-place
+    let Operation = registeredOperations[identifier];
 
-    for (var i = 0; i < this._preferredOperationOrder.length; i++) {
-      let operationIdentifier = this._preferredOperationOrder[i];
-      if (!this.isOperationSelected(operationIdentifier)) {
-        continue;
-      }
-
-      let Operation = registeredOperations[operationIdentifier];
+    if (typeof this._operationsMap[identifier] === "undefined") {
+      // Create operation
       let operationInstance = new Operation(this._kit);
+      this._operationsMap[identifier] = operationInstance;
 
-      // Skip per default
-      // This additional attribute is not part of the img.ly SDK,
-      // we only use it for the Night UI to check whether an operation
-      // needs to be rendered
-      operationInstance.isIdentity = true;
+      // Find index in preferred operatino order
+      let index = this._preferredOperationOrder.indexOf(identifier);
+      operationsStack[index] = operationInstance;
 
-      operationInstance.on("update", () => {
-        operationInstance.isIdentity = false;
-      });
-
-      this._operationsMap[operationIdentifier] = operationInstance;
-      operationsStack.push(operationInstance);
+      return operationInstance;
+    } else {
+      return this._operationsMap[identifier];
     }
+  }
+
+  /**
+   * Removes the operation with the given identifier from the stack
+   * @param {String} identifier
+   */
+  removeOperation (identifier) {
+    if (!this._operationsMap[identifier]) return;
+
+    let operation = this._operationsMap[identifier];
+    delete this._operationsMap[identifier];
+
+    let index = this._kit.operationsStack.indexOf(operation);
+    this._kit.operationsStack.splice(index, 1);
   }
 
   /**
@@ -311,10 +313,10 @@ class NightUI extends UI {
    * Adds the given operation and options to the history stack
    * @param {Operation} operation
    * @param {Object.<String, *>} options
-   * @param {Boolean} identity
+   * @param {Boolean} existent
    */
-  addHistory (operation, options, identity) {
-    this._history.push({ operation, options, identity });
+  addHistory (operation, options, existent) {
+    this._history.push({ operation, options, existent });
     this._topControls.updateUndoButton();
   }
 
@@ -338,13 +340,10 @@ class NightUI extends UI {
   undo () {
     let lastItem = this._history.pop();
     if (lastItem) {
-      let { operation, identity, options } = lastItem;
-      let operationInstance = this.operations[operation.identifier];
-      if (!identity) {
-        operationInstance.set(options);
+      let { operation, existent, options } = lastItem;
+      if (!existent) {
+        this.removeOperation(operation.identifier);
       }
-      operationInstance.isIdentity = identity;
-
       this.canvas.zoomToFit(true);
     }
     this._topControls.updateUndoButton();

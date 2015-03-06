@@ -26,8 +26,6 @@ class FramesControls extends Control {
    * Entry point for this control
    */
   init () {
-    this._operation = this._ui.operations.frames;
-
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/frames_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;
     this._partialTemplates.push(SimpleSlider.template);
@@ -39,7 +37,8 @@ class FramesControls extends Control {
    * @override
    */
   _onEnter () {
-    super._onEnter();
+    this._operationExistedBefore = !!this._ui.operations.frames;
+    this._operation = this._ui.getOrCreateOperation("frames");
 
     // Remember initial identity state
     this._initialIdentity = this._operation.isIdentity;
@@ -73,13 +72,12 @@ class FramesControls extends Control {
    * @override
    */
   _onBack () {
-    if (!this._initialIdentity) {
+    if (this._operationExistedBefore) {
       this._operation.set(this._initialOptions);
-      this._ui.canvas.render();
     } else {
-      this._operation.isIdentity = this._initialIdentity;
-      this._ui.canvas.render();
+      this._ui.removeOperation("frames");
     }
+    this._ui.canvas.render();
   }
 
   /**
@@ -108,7 +106,7 @@ class FramesControls extends Control {
     this._ui.addHistory(this._operation, {
       color: this._initialOptions.color,
       thickness: this._initialOptions.thickness
-    }, this._initialIdentity);
+    }, this._operationExistedBefore);
   }
 }
 

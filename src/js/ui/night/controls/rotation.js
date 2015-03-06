@@ -25,9 +25,6 @@ class RotationControls extends Control {
    * Entry point for this control
    */
   init () {
-    this._operation = this._ui.operations.rotation;
-    this._cropOperation = this._ui.operations.crop;
-
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/rotation_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;
 
@@ -39,19 +36,26 @@ class RotationControls extends Control {
    * Gets called when this control is activated
    */
   _onEnter () {
+    this._operationExistedBefore = !!this._ui.operations.rotation;
+    this._operation = this._ui.getOrCreateOperation("rotation");
+
+    this._cropOperation = this._ui.operations.crop;
+
     this._initialZoomLevel = this._ui.canvas.zoomLevel;
     this._ui.canvas.zoomToFit(false);
 
-    // Store initial settings for "back" and "done" buttons
-    this._initialStart = this._cropOperation.getStart().clone();
-    this._initialEnd = this._cropOperation.getEnd().clone();
-    this._initialIdentity = this._operation.isIdentity;
+    if (this._cropOperation) {
+      // Store initial settings for "back" and "done" buttons
+      this._initialStart = this._cropOperation.getStart().clone();
+      this._initialEnd = this._cropOperation.getEnd().clone();
+      this._initialIdentity = this._operation.isIdentity;
 
-    // Make sure we see the whole input image
-    this._cropOperation.set({
-      start: new Vector2(0, 0),
-      end: new Vector2(1, 1)
-    });
+      // Make sure we see the whole input image
+      this._cropOperation.set({
+        start: new Vector2(0, 0),
+        end: new Vector2(1, 1)
+      });
+    }
 
     this._initialDegrees = this._operation.getDegrees();
 
@@ -123,8 +127,15 @@ class RotationControls extends Control {
    * @private
    */
   _updateCropDOM () {
-    let start = this._initialStart.clone();
-    let end = this._initialEnd.clone();
+    let start, end;
+    if (this._cropOperation) {
+      start = this._initialStart.clone();
+      end = this._initialEnd.clone();
+    } else {
+      start = new Vector2(0, 0);
+      end = new Vector2(1, 1);
+    }
+
     let canvasSize = this._ui.canvas.size;
 
     let startAbsolute = start.multiply(canvasSize);
@@ -150,11 +161,18 @@ class RotationControls extends Control {
    * @override
    */
   _onBack () {
-    this._operation.setDegrees(this._initialDegrees);
-    this._cropOperation.set({
-      start: this._initialStart,
-      end: this._initialEnd
-    });
+    if (this._operationExistedBefore) {
+      this._operation.setDegrees(this._initialDegrees);
+    } else {
+      this._ui.removeOperation("rotation");
+    }
+
+    if (this._cropOperation) {
+      this._cropOperation.set({
+        start: this._initialStart,
+        end: this._initialEnd
+      });
+    }
     this._ui.canvas.render();
   }
 
@@ -163,15 +181,18 @@ class RotationControls extends Control {
    * @override
    */
   _onDone () {
-    this._cropOperation.set({
-      start: this._initialStart,
-      end: this._initialEnd
-    });
+
+    if (this._cropOperation) {
+      this._cropOperation.set({
+        start: this._initialStart,
+        end: this._initialEnd
+      });
+    }
     this._ui.canvas.render();
 
     this._ui.addHistory(this._operation, {
       degrees: this._initialDegrees
-    }, this._initialIdentity);
+    }, this._operationExistedBefore);
   }
 }
 

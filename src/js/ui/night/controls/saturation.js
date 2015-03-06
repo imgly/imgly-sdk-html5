@@ -25,8 +25,6 @@ class SaturationControls extends Control {
    * Entry point for this control
    */
   init () {
-    this._operation = this._ui.operations.saturation;
-
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/saturation_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;
     this._partialTemplates.push(Slider.template);
@@ -38,6 +36,9 @@ class SaturationControls extends Control {
    */
   _onEnter () {
     super._onEnter();
+
+    this._operationExistedBefore = !!this._ui.operations.saturation;
+    this._operation = this._ui.getOrCreateOperation("saturation");
 
     let sliderElement = this._controls.querySelector(".imglykit-slider");
     this._slider = new Slider(sliderElement, {
@@ -60,7 +61,11 @@ class SaturationControls extends Control {
    */
   _onBack () {
     super._onBack();
-    this._operation.setSaturation(this._initialSaturation);
+    if (this._operationExistedBefore) {
+      this._operation.setSaturation(this._initialSaturation);
+    } else {
+      this._ui.removeOperation("saturation");
+    }
     this._ui.canvas.render();
   }
 
@@ -80,7 +85,7 @@ class SaturationControls extends Control {
   _onDone () {
     this._ui.addHistory(this._operation, {
       saturation: this._initialSaturation
-    }, this._initialIdentity);
+    }, this._operationExistedBefore);
   }
 }
 

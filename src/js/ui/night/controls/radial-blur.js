@@ -27,8 +27,6 @@ class RadialBlurControls extends Control {
    * Entry point for this control
    */
   init () {
-    this._operation = this._ui.operations["radial-blur"];
-
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/radial-blur_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;
 
@@ -43,7 +41,8 @@ class RadialBlurControls extends Control {
    * @override
    */
   _onEnter () {
-    super._onEnter();
+    this._operationExistedBefore = !!this._ui.operations["radial-blur"];
+    this._operation = this._ui.getOrCreateOperation("radial-blur");
 
     // Remember initial identity state
     this._initialIdentity = this._operation.isIdentity;
@@ -208,13 +207,12 @@ class RadialBlurControls extends Control {
    * @override
    */
   _onBack () {
-    if (!this._initialIdentity) {
+    if (this._operationExistedBefore) {
       this._operation.set(this._initialSettings);
-      this._ui.canvas.render();
     } else {
-      this._operation.isIdentity = this._initialIdentity;
-      this._ui.canvas.render();
+      this._ui.removeOperation("radial-blur");
     }
+    this._ui.canvas.render();
   }
 
   /**
@@ -226,7 +224,7 @@ class RadialBlurControls extends Control {
       position: this._initialSettings.position.clone(),
       gradientRadius: this._initialSettings.gradientRadius,
       blurRadius: this._initialSettings.blurRadius
-    }, this._initialIdentity);
+    }, this._operationExistedBefore);
   }
 }
 

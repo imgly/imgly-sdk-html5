@@ -25,8 +25,6 @@ class ContrastControls extends Control {
    * Entry point for this control
    */
   init () {
-    this._operation = this._ui.operations.contrast;
-
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/contrast_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;
     this._partialTemplates.push(Slider.template);
@@ -37,7 +35,8 @@ class ContrastControls extends Control {
    * @override
    */
   _onEnter () {
-    super._onEnter();
+    this._operationExistedBefore = !!this._ui.operations.contrast;
+    this._operation = this._ui.getOrCreateOperation("contrast");
 
     let sliderElement = this._controls.querySelector(".imglykit-slider");
     this._slider = new Slider(sliderElement, {
@@ -60,7 +59,13 @@ class ContrastControls extends Control {
    */
   _onBack () {
     super._onBack();
-    this._operation.setContrast(this._initialContrast);
+
+    if (this._operationExistedBefore) {
+      this._operation.setContrast(this._initialContrast);
+    } else {
+      this._ui.removeOperation("contrast");
+    }
+
     this._ui.canvas.render();
   }
 
@@ -80,7 +85,7 @@ class ContrastControls extends Control {
   _onDone () {
     this._ui.addHistory(this._operation, {
       contrast: this._initialContrast
-    }, this._initialIdentity);
+    }, this._operationExistedBefore);
   }
 }
 

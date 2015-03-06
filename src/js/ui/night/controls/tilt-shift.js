@@ -27,8 +27,6 @@ class TiltShiftControls extends Control {
    * Entry point for this control
    */
   init () {
-    this._operation = this._ui.operations["tilt-shift"];
-
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/tilt-shift_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;
 
@@ -44,7 +42,8 @@ class TiltShiftControls extends Control {
    * @override
    */
   _onEnter () {
-    super._onEnter();
+    this._operationExistedBefore = !!this._ui.operations["tilt-shift"];
+    this._operation = this._ui.getOrCreateOperation("tilt-shift");
 
     // Remember initial identity state
     this._initialIdentity = this._operation.isIdentity;
@@ -227,13 +226,12 @@ class TiltShiftControls extends Control {
    * @override
    */
   _onBack () {
-    if (!this._initialIdentity) {
+    if (this._operationExistedBefore) {
       this._operation.set(this._initialSettings);
-      this._ui.canvas.render();
     } else {
-      this._operation.isIdentity = this._initialIdentity;
-      this._ui.canvas.render();
+      this._ui.removeOperation("radial-blur");
     }
+    this._ui.canvas.render();
   }
 
   /**
@@ -246,7 +244,7 @@ class TiltShiftControls extends Control {
       end: this._initialSettings.end.clone(),
       blurRadius: this._initialSettings.blurRadius,
       gradientRadius: this._initialSettings.gradientRadius
-    }, this._initialIdentity);
+    }, this._operationExistedBefore);
   }
 }
 

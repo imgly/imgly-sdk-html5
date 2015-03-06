@@ -25,8 +25,6 @@ class BrightnessControls extends Control {
    * The entry point for this control
    */
   init () {
-    this._operation = this._ui.operations.brightness;
-
     let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/brightness_controls.jst", "utf-8");
     this._controlsTemplate = controlsTemplate;
     this._partialTemplates.push(Slider.template);
@@ -37,7 +35,8 @@ class BrightnessControls extends Control {
    * @override
    */
   _onEnter () {
-    super._onEnter();
+    this._operationExistedBefore = !!this._ui.operations.brightness;
+    this._operation = this._ui.getOrCreateOperation("brightness");
 
     let sliderElement = this._controls.querySelector(".imglykit-slider");
     this._slider = new Slider(sliderElement, {
@@ -60,7 +59,13 @@ class BrightnessControls extends Control {
    */
   _onBack () {
     super._onBack();
-    this._operation.setBrightness(this._initialBrightness);
+
+    if (this._operationExistedBefore) {
+      this._operation.setBrightness(this._initialBrightness);
+    } else {
+      this._ui.removeOperation("brightness");
+    }
+
     this._ui.canvas.render();
   }
 
@@ -80,7 +85,7 @@ class BrightnessControls extends Control {
   _onDone () {
     this._ui.addHistory(this._operation, {
       brightness: this._initialBrightness
-    }, this._initialIdentity);
+    }, this._operationExistedBefore);
   }
 }
 
