@@ -33,5 +33,5 @@ kit.render("image", "image/png")
   });
 ```
 
-See the [documentation](http://sdk.img.ly/docs/latest) for information on all
+See the [documentation](http://sdk.img.ly/docs) for information on all
 operations and their available options.
