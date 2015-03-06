@@ -20,6 +20,8 @@ Auto-Enhance, Crop, Rotate, Focus, Brightness, Contrast, Saturation, and more.
 It also features state-of-the-art photo filters, designed and calibrated with a lot of love.
 A Text editor with an elegant and simple to use interface allows adding text instantly to the picture.
 
+See the [docs folder](/docs) for tutorials on how to integrate and customize the editor.
+
 ### Examples
 See the examples folder for implementation examples or play with the [demo on our website](http://sdk.img.ly/).
 
