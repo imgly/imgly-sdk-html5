@@ -28,6 +28,8 @@ beforeEach(function () {
 
 describe("TiltShiftOperation", function () {
 
+  this.timeout(10000);
+
   describe("#render", function () {
 
     describe("if `start` is not a Vector2", function () {
