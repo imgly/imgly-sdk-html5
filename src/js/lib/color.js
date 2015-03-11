@@ -155,7 +155,7 @@ class Color {
    * @returns {String}
    */
   toString () {
-    return `Color(${this.r},${this.g},${this.b},${this.a})`;
+    return `Color(${this.r}, ${this.g}, ${this.b}, ${this.a})`;
   }
 }
 
