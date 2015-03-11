@@ -53,6 +53,7 @@ class EventEmitter {
   off (type, ...args) {
     if (args.length === 0) {
       this._events[type] = null;
+      return this;
     }
 
     let listener = args[0];
