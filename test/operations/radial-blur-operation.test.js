@@ -28,6 +28,8 @@ beforeEach(function () {
 
 describe("RadialBlurOperation", function () {
 
+  this.timeout(10000);
+
   describe("#render", function () {
 
     describe("if `position` is not a Vector2", function () {
