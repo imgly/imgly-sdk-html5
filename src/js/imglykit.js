@@ -241,6 +241,7 @@ ImglyKit.version = "2.0.0-beta2";
 // Exposed classes
 ImglyKit.RenderImage = RenderImage;
 ImglyKit.Color = require("./lib/color");
+ImglyKit.Filter = require("./operations/filters/filter");
 ImglyKit.Operation = require("./operations/operation");
 ImglyKit.Operations = {};
 ImglyKit.Operations.Filters = require("./operations/filters-operation");
