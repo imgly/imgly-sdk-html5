@@ -229,7 +229,7 @@ class TiltShiftControls extends Control {
     if (this._operationExistedBefore) {
       this._operation.set(this._initialSettings);
     } else {
-      this._ui.removeOperation("radial-blur");
+      this._ui.removeOperation("tilt-shift");
     }
     this._ui.canvas.render();
   }
