@@ -97,6 +97,7 @@ class Operation extends EventEmitter {
    * @return {WebGLRenderer} renderer
    * @private
    */
+  /* istanbul ignore next */
   _renderWebGL () {
     throw new Error("Operation#_renderWebGL is abstract and not implemented in inherited class.");
   }

@@ -40,6 +40,7 @@ class BrightnessOperation extends Operation {
    * @param  {WebGLRenderer} renderer
    * @override
    */
+  /* istanbul ignore next */
   _renderWebGL (renderer) {
     this._render(renderer);
   }
