@@ -62,10 +62,10 @@ describe("FiltersOperation", function () {
 
   describe("#render", function () {
 
-    for (var id in dummyFiltersOperation._filters) {
-      (function (identifier) {
-        it("should work with " + identifier + " filter", function(done) {
-          filtersOperation.setFilter(identifier);
+    for (var name in ImglyKit.Filters) {
+      (function (name) {
+        it("should work with " + name + " filter", function(done) {
+          filtersOperation.setFilter(ImglyKit.Filters[name]);
 
           kit.render()
             .then(function () {
@@ -75,7 +75,7 @@ describe("FiltersOperation", function () {
               throw err;
             });
         });
-      })(id);
+      })(name);
     }
 
   });
