@@ -105,7 +105,7 @@ gulp.task("cssmin:minify", function () {
  * Generates the documentation
  */
 gulp.task("jsdoc", function () {
-  gulp.src(["./src/js/**/*.js"])
+  gulp.src(["./src/js/**/*.js", "!src/js/vendor/**/*.js"])
     .pipe($.babel())
     .pipe($.jsdoc.parser())
     .pipe($.jsdoc.generator("./doc", {
