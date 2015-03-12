@@ -33,7 +33,7 @@ class Utils {
    * @param  {ImglyKit~Selector} selector - The selector
    * @return {Array} The selected items
    */
-  static select (items, selector) {
+  static select (items, selector=null) {
     if (selector === null) {
       return items;
     }
@@ -51,11 +51,23 @@ class Utils {
     }
 
     if (typeof selector.only !== "undefined") {
+      if (typeof selector.only === "string") {
+        selector.only = selector.only.split(",").map(function (identifier) {
+          return identifier.trim();
+        });
+      }
+
       // Select only the given identifiers
       return items.filter(function (item) {
         return selector.only.indexOf(item) !== -1;
       });
     } else if(typeof selector.except !== "undefined") {
+      if (typeof selector.except === "string") {
+        selector.except = selector.except.split(",").map(function (identifier) {
+          return identifier.trim();
+        });
+      }
+
       // Select all but the given identifiers
       return items.filter(function (item) {
         return selector.except.indexOf(item) === -1;
