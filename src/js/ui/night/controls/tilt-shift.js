@@ -64,6 +64,7 @@ class TiltShiftControls extends Control {
     let selector = ".imglykit-canvas-tilt-shift-dot";
     this._positionKnob = this._canvasControls.querySelector(`${selector}[data-option="position"]`);
     this._gradientKnob = this._canvasControls.querySelector(`${selector}[data-option="gradient"]`);
+    this._rect = this._canvasControls.querySelector(".imglykit-canvas-tilt-shift-rect");
 
     // Initialization
     this._initSliders();
@@ -289,9 +290,30 @@ class TiltShiftControls extends Control {
     this._positionKnob.style.left = `${position.x}px`;
     this._positionKnob.style.top = `${position.y}px`;
 
-    position = this._gradientKnobPosition;
-    this._gradientKnob.style.left = `${position.x}px`;
-    this._gradientKnob.style.top = `${position.y}px`;
+    let gradientPosition = this._gradientKnobPosition;
+    this._gradientKnob.style.left = `${gradientPosition.x}px`;
+    this._gradientKnob.style.top = `${gradientPosition.y}px`;
+
+    // Resize rectangle to worst case size
+    let canvasSize = this._ui.canvas.size;
+    let gradientRadius = this._operation.getGradientRadius();
+    let rectSize = new Vector2(
+      Math.sqrt(Math.pow(canvasSize.x, 2) + Math.pow(canvasSize.y, 2)) * 2,
+      gradientRadius
+    );
+
+    this._rect.style.width = `${rectSize.x}px`;
+    this._rect.style.height = `${rectSize.y}px`;
+    this._rect.style.marginLeft = `-${rectSize.x / 2}px`;
+    this._rect.style.marginTop = `-${rectSize.y / 2}px`;
+    this._rect.style.left = `${position.x}px`;
+    this._rect.style.top = `${position.y}px`;
+
+    // Rotate rectangle
+    let dist = gradientPosition.clone()
+      .subtract(position);
+    let degrees = Math.atan2(dist.x, dist.y) * (180 / Math.PI);
+    this._rect.style.transform = `rotate(${(-degrees).toFixed(2)}deg)`;
   }
 
   /**
