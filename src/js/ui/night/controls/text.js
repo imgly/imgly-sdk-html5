@@ -107,7 +107,11 @@ class TextControl extends Control {
     this._handleTextarea();
     this._handleResizeKnob();
     this._handleMoveKnob();
-    this._resizeTextarea();
+
+    // Resize asynchronously to render a frame
+    setTimeout(() => {
+      this._resizeTextarea();
+    }, 1);
 
     this._ui.canvas.zoomToFit()
       .then(() => {
