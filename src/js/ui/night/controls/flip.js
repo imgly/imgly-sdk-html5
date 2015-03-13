@@ -11,7 +11,7 @@
 import Control from "./control";
 let fs = require("fs");
 
-class FlipControls extends Control {
+class FlipControl extends Control {
   /**
    * A unique string that identifies this control.
    * @type {String}
@@ -121,4 +121,4 @@ class FlipControls extends Control {
   }
 }
 
-export default FlipControls;
+export default FlipControl;

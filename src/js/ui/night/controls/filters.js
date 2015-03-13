@@ -12,7 +12,7 @@ import Control from "./control";
 import Utils from "../../../lib/utils";
 let fs = require("fs");
 
-class FiltersControls extends Control {
+class FiltersControl extends Control {
   /**
    * A unique string that identifies this control.
    * @type {String}
@@ -195,4 +195,4 @@ class FiltersControls extends Control {
   }
 }
 
-export default FiltersControls;
+export default FiltersControl;

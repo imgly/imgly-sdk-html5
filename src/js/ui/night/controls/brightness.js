@@ -12,7 +12,7 @@ import Control from "./control";
 import Slider from "../lib/slider";
 let fs = require("fs");
 
-class BrightnessControls extends Control {
+class BrightnessControl extends Control {
   /**
    * A unique string that identifies this control.
    * @type {String}
@@ -87,4 +87,4 @@ class BrightnessControls extends Control {
   }
 }
 
-export default BrightnessControls;
+export default BrightnessControl;

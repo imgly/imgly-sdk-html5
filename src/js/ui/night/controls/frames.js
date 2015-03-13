@@ -13,7 +13,7 @@ import SimpleSlider from "../lib/simple-slider";
 import ColorPicker from "../lib/color-picker";
 let fs = require("fs");
 
-class FramesControls extends Control {
+class FramesControl extends Control {
   /**
    * A unique string that identifies this control.
    * @type {String}
@@ -106,4 +106,4 @@ class FramesControls extends Control {
   }
 }
 
-export default FramesControls;
+export default FramesControl;

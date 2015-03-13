@@ -12,7 +12,7 @@ import Control from "./control";
 import Vector2 from "../../../lib/math/vector2";
 let fs = require("fs");
 
-class RotationControls extends Control {
+class RotationControl extends Control {
   /**
    * A unique string that identifies this control.
    * @type {String}
@@ -195,4 +195,4 @@ class RotationControls extends Control {
   }
 }
 
-export default RotationControls;
+export default RotationControl;

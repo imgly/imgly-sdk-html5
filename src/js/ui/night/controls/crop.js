@@ -13,7 +13,7 @@ import Vector2 from "../../../lib/math/vector2";
 import Utils from "../../../lib/utils";
 let fs = require("fs");
 
-class CropControls extends Control {
+class CropControl extends Control {
   /**
    * A unique string that identifies this control.
    * @type {String}
@@ -582,4 +582,4 @@ class CropControls extends Control {
   }
 }
 
-export default CropControls;
+export default CropControl;

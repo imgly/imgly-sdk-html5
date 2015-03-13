@@ -14,7 +14,7 @@ import Utils from "../../../lib/utils";
 import SimpleSlider from "../lib/simple-slider";
 let fs = require("fs");
 
-class RadialBlurControls extends Control {
+class RadialBlurControl extends Control {
   /**
    * A unique string that identifies this control.
    * @type {String}
@@ -293,4 +293,4 @@ class RadialBlurControls extends Control {
   }
 }
 
-export default RadialBlurControls;
+export default RadialBlurControl;

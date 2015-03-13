@@ -12,7 +12,7 @@ import Control from "./control";
 import Slider from "../lib/slider";
 let fs = require("fs");
 
-class ContrastControls extends Control {
+class ContrastControl extends Control {
   /**
    * A unique string that identifies this control.
    * @type {String}
@@ -87,4 +87,4 @@ class ContrastControls extends Control {
   }
 }
 
-export default ContrastControls;
+export default ContrastControl;

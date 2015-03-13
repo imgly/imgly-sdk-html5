@@ -14,7 +14,7 @@ import Utils from "../../../lib/utils";
 import SimpleSlider from "../lib/simple-slider";
 let fs = require("fs");
 
-class TiltShiftControls extends Control {
+class TiltShiftControl extends Control {
   /**
    * A unique string that identifies this control.
    * @type {String}
@@ -343,4 +343,4 @@ class TiltShiftControls extends Control {
   }
 }
 
-export default TiltShiftControls;
+export default TiltShiftControl;
