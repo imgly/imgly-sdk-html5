@@ -26,6 +26,13 @@ class A15Filter extends Filter {
     return "a15";
   }
 
+  /**
+   * The name that is displayed in the UI
+   * @type {String}
+   */
+  get name () {
+    return "15";
+  }
 
   /**
    * Renders the filter

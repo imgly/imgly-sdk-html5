@@ -27,6 +27,14 @@ class OrchidFilter extends Filter {
   }
 
   /**
+   * The name that is displayed in the UI
+   * @type {String}
+   */
+  get name () {
+    return "Orchid";
+  }
+
+  /**
    * Renders the filter
    * @param  {Renderer} renderer
    * @return {Promise}

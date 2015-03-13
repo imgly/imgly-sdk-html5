@@ -27,6 +27,14 @@ class K6Filter extends Filter {
   }
 
   /**
+   * The name that is displayed in the UI
+   * @type {String}
+   */
+  get name () {
+    return "K6";
+  }
+
+  /**
    * Renders the filter
    * @param  {Renderer} renderer
    * @return {Promise}

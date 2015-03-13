@@ -27,6 +27,14 @@ class GlamFilter extends Filter {
   }
 
   /**
+   * The name that is displayed in the UI
+   * @type {String}
+   */
+  get name () {
+    return "Glam";
+  }
+
+  /**
    * Renders the filter
    * @param  {Renderer} renderer
    * @return {Promise}
