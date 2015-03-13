@@ -5,7 +5,7 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
 /*!
- * Copyright (c) 2013-2014 9elements GmbH
+ * Copyright (c) 2013-2015 9elements GmbH
  *
  * Released under Attribution-NonCommercial 3.0 Unported
  * http://creativecommons.org/licenses/by-nc/3.0/
@@ -5439,10 +5439,19 @@ bluebird.onPossiblyUnhandledRejection(function (error) {
 /**
  * @class
  * @param {Object} options
+ * @param {Image} options.image - The source image
  * @param {HTMLElement} [options.container] - Specifies where the UI should be
  *                                          added to. If none is given, the UI
  *                                          will automatically be disabled.
- * @param {Image} options.image - The source image
+ * @param {Boolean|String} [options.ui=true] - Specifies which UI style to use.
+ *                                           `false` disables the UI, `true`
+ *                                           enables the default UI.
+ * @param {Boolean} [options.renderOnWindowResize] - Specifies whether the canvas
+ *                                                 should re-render itself when
+ *                                                 the window is being resized.
+ * @param {String} [options.assetsUrl="assets"] - The base path for all external assets.
+ * @param {String} [options.renderer="webgl"] - The renderer identifier. Can either
+ *                                            be "webgl" or "canvas".
  */
 
 var ImglyKit = (function () {
@@ -5728,11 +5737,12 @@ var ImglyKit = (function () {
  * @name ImglyKit.version
  * @internal Keep in sync with package.json
  */
-ImglyKit.version = "2.0.0-beta2";
+ImglyKit.version = "2.0.0-beta3";
 
 // Exposed classes
 ImglyKit.RenderImage = RenderImage;
 ImglyKit.Color = require("./lib/color");
+ImglyKit.Filter = require("./operations/filters/filter");
 ImglyKit.Operation = require("./operations/operation");
 ImglyKit.Operations = {};
 ImglyKit.Operations.Filters = require("./operations/filters-operation");
@@ -5785,7 +5795,7 @@ ImglyKit.Vector2 = require("./lib/math/vector2");
 
 module.exports = ImglyKit;
 
-},{"./constants":42,"./lib/color":44,"./lib/image-exporter":48,"./lib/math/vector2":49,"./lib/render-image":50,"./lib/utils":51,"./operations/brightness-operation":52,"./operations/contrast-operation":53,"./operations/crop-operation":54,"./operations/filters-operation":55,"./operations/filters/a15-filter":56,"./operations/filters/breeze-filter":57,"./operations/filters/bw-filter":58,"./operations/filters/bwhard-filter":59,"./operations/filters/celsius-filter":60,"./operations/filters/chest-filter":61,"./operations/filters/fixie-filter":63,"./operations/filters/food-filter":64,"./operations/filters/fridge-filter":65,"./operations/filters/front-filter":66,"./operations/filters/glam-filter":67,"./operations/filters/gobblin-filter":68,"./operations/filters/k1-filter":70,"./operations/filters/k2-filter":71,"./operations/filters/k6-filter":72,"./operations/filters/kdynamic-filter":73,"./operations/filters/lenin-filter":74,"./operations/filters/lomo-filter":75,"./operations/filters/mellow-filter":76,"./operations/filters/morning-filter":77,"./operations/filters/orchid-filter":78,"./operations/filters/pola-filter":79,"./operations/filters/pola669-filter":80,"./operations/filters/quozi-filter":94,"./operations/filters/semired-filter":95,"./operations/filters/sunny-filter":96,"./operations/filters/texas-filter":97,"./operations/filters/x400-filter":98,"./operations/flip-operation":99,"./operations/frames-operation":100,"./operations/operation":101,"./operations/radial-blur-operation":102,"./operations/rotation-operation":103,"./operations/saturation-operation":104,"./operations/stickers-operation":105,"./operations/text-operation":106,"./operations/tilt-shift-operation":107,"./ui/night/ui":131,"bluebird":4,"lodash":"lodash","path":38}],44:[function(require,module,exports){
+},{"./constants":42,"./lib/color":44,"./lib/image-exporter":48,"./lib/math/vector2":49,"./lib/render-image":50,"./lib/utils":51,"./operations/brightness-operation":52,"./operations/contrast-operation":53,"./operations/crop-operation":54,"./operations/filters-operation":55,"./operations/filters/a15-filter":56,"./operations/filters/breeze-filter":57,"./operations/filters/bw-filter":58,"./operations/filters/bwhard-filter":59,"./operations/filters/celsius-filter":60,"./operations/filters/chest-filter":61,"./operations/filters/filter":62,"./operations/filters/fixie-filter":63,"./operations/filters/food-filter":64,"./operations/filters/fridge-filter":65,"./operations/filters/front-filter":66,"./operations/filters/glam-filter":67,"./operations/filters/gobblin-filter":68,"./operations/filters/k1-filter":70,"./operations/filters/k2-filter":71,"./operations/filters/k6-filter":72,"./operations/filters/kdynamic-filter":73,"./operations/filters/lenin-filter":74,"./operations/filters/lomo-filter":75,"./operations/filters/mellow-filter":76,"./operations/filters/morning-filter":77,"./operations/filters/orchid-filter":78,"./operations/filters/pola-filter":79,"./operations/filters/pola669-filter":80,"./operations/filters/quozi-filter":94,"./operations/filters/semired-filter":95,"./operations/filters/sunny-filter":96,"./operations/filters/texas-filter":97,"./operations/filters/x400-filter":98,"./operations/flip-operation":99,"./operations/frames-operation":100,"./operations/operation":101,"./operations/radial-blur-operation":102,"./operations/rotation-operation":103,"./operations/saturation-operation":104,"./operations/stickers-operation":105,"./operations/text-operation":106,"./operations/tilt-shift-operation":107,"./ui/night/ui":131,"bluebird":4,"lodash":"lodash","path":38}],44:[function(require,module,exports){
 "use strict";
 
 var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
@@ -5941,17 +5951,35 @@ var Color = (function () {
 
         switch (i % 6) {
           case 0:
-            r = v, g = t, b = p;break;
+            r = v;
+            g = t;
+            b = p;
+            break;
           case 1:
-            r = q, g = v, b = p;break;
+            r = q;
+            g = v;
+            b = p;
+            break;
           case 2:
-            r = p, g = v, b = t;break;
+            r = p;
+            g = v;
+            b = t;
+            break;
           case 3:
-            r = p, g = q, b = v;break;
+            r = p;
+            g = q;
+            b = v;
+            break;
           case 4:
-            r = t, g = p, b = v;break;
+            r = t;
+            g = p;
+            b = v;
+            break;
           case 5:
-            r = v, g = p, b = q;break;
+            r = v;
+            g = p;
+            b = q;
+            break;
         }
 
         this.r = r;
@@ -5998,7 +6026,7 @@ var Color = (function () {
        */
 
       value: function toString() {
-        return "Color(" + this.r + "," + this.g + "," + this.b + "," + this.a + ")";
+        return "Color(" + this.r + ", " + this.g + ", " + this.b + ", " + this.a + ")";
       },
       writable: true,
       configurable: true
@@ -6082,6 +6110,7 @@ var EventEmitter = (function () {
 
         if (args.length === 0) {
           this._events[type] = null;
+          return this;
         }
 
         var listener = arguments[1];
@@ -6999,7 +7028,9 @@ var Utils = (function () {
        * @return {Array} The selected items
        */
 
-      value: function select(items, selector) {
+      value: function select(items) {
+        var selector = arguments[1] === undefined ? null : arguments[1];
+
         if (selector === null) {
           return items;
         }
@@ -7017,11 +7048,23 @@ var Utils = (function () {
         }
 
         if (typeof selector.only !== "undefined") {
+          if (typeof selector.only === "string") {
+            selector.only = selector.only.split(",").map(function (identifier) {
+              return identifier.trim();
+            });
+          }
+
           // Select only the given identifiers
           return items.filter(function (item) {
             return selector.only.indexOf(item) !== -1;
           });
         } else if (typeof selector.except !== "undefined") {
+          if (typeof selector.except === "string") {
+            selector.except = selector.except.split(",").map(function (identifier) {
+              return identifier.trim();
+            });
+          }
+
           // Select all but the given identifiers
           return items.filter(function (item) {
             return selector.except.indexOf(item) === -1;
@@ -7175,6 +7218,7 @@ var BrightnessOperation = (function (Operation) {
        * @param  {WebGLRenderer} renderer
        * @override
        */
+      /* istanbul ignore next */
 
       value: function _renderWebGL(renderer) {
         this._render(renderer);
@@ -7295,6 +7339,7 @@ var ContrastOperation = (function (Operation) {
        * @param  {WebGLRenderer} renderer
        * @override
        */
+      /* istanbul ignore next */
 
       value: function _renderWebGL(renderer) {
         this._render(renderer);
@@ -7608,6 +7653,7 @@ var FiltersOperation = (function (Operation) {
        * @param  {WebGLRenderer} renderer
        * @override
        */
+      /* istanbul ignore next */
 
       value: function _renderWebGL(renderer) {
         this._render(renderer);
@@ -7704,6 +7750,18 @@ var A15Filter = (function (Filter) {
       configurable: true
     }
   }, {
+    name: {
+
+      /**
+       * The name that is displayed in the UI
+       * @type {String}
+       */
+
+      get: function () {
+        return "15";
+      },
+      configurable: true
+    },
     render: {
 
       /**
@@ -7798,6 +7856,18 @@ var BreezeFilter = (function (Filter) {
       configurable: true
     }
   }, {
+    name: {
+
+      /**
+       * The name that is displayed in the UI
+       * @type {String}
+       */
+
+      get: function () {
+        return "Breeze";
+      },
+      configurable: true
+    },
     render: {
 
       /**
@@ -7889,6 +7959,18 @@ var BWFilter = (function (Filter) {
       configurable: true
     }
   }, {
+    name: {
+
+      /**
+       * The name that is displayed in the UI
+       * @type {String}
+       */
+
+      get: function () {
+        return "B&W";
+      },
+      configurable: true
+    },
     render: {
 
       /**
@@ -7968,6 +8050,18 @@ var BWHardFilter = (function (Filter) {
       configurable: true
     }
   }, {
+    name: {
+
+      /**
+       * The name that is displayed in the UI
+       * @type {String}
+       */
+
+      get: function () {
+        return "1920";
+      },
+      configurable: true
+    },
     render: {
 
       /**
@@ -8050,6 +8144,18 @@ var CelsiusFilter = (function (Filter) {
       configurable: true
     }
   }, {
+    name: {
+
+      /**
+       * The name that is displayed in the UI
+       * @type {String}
+       */
+
+      get: function () {
+        return "Celsius";
+      },
+      configurable: true
+    },
     render: {
 
       /**
@@ -8135,6 +8241,18 @@ var ChestFilter = (function (Filter) {
       configurable: true
     }
   }, {
+    name: {
+
+      /**
+       * The name that is displayed in the UI
+       * @type {String}
+       */
+
+      get: function () {
+        return "Chest";
+      },
+      configurable: true
+    },
     render: {
 
       /**
@@ -8307,6 +8425,18 @@ var FixieFilter = (function (Filter) {
       configurable: true
     }
   }, {
+    name: {
+
+      /**
+       * The name that is displayed in the UI
+       * @type {String}
+       */
+
+      get: function () {
+        return "Fixie";
+      },
+      configurable: true
+    },
     render: {
 
       /**
@@ -8393,6 +8523,18 @@ var FoodFilter = (function (Filter) {
       configurable: true
     }
   }, {
+    name: {
+
+      /**
+       * The name that is displayed in the UI
+       * @type {String}
+       */
+
+      get: function () {
+        return "Food";
+      },
+      configurable: true
+    },
     render: {
 
       /**
@@ -8478,6 +8620,18 @@ var FridgeFilter = (function (Filter) {
       configurable: true
     }
   }, {
+    name: {
+
+      /**
+       * The name that is displayed in the UI
+       * @type {String}
+       */
+
+      get: function () {
+        return "Fridge";
+      },
+      configurable: true
+    },
     render: {
 
       /**
@@ -8564,6 +8718,18 @@ var FrontFilter = (function (Filter) {
       configurable: true
     }
   }, {
+    name: {
+
+      /**
+       * The name that is displayed in the UI
+       * @type {String}
+       */
+
+      get: function () {
+        return "Front";
+      },
+      configurable: true
+    },
     render: {
 
       /**
@@ -8650,6 +8816,18 @@ var GlamFilter = (function (Filter) {
       configurable: true
     }
   }, {
+    name: {
+
+      /**
+       * The name that is displayed in the UI
+       * @type {String}
+       */
+
+      get: function () {
+        return "Glam";
+      },
+      configurable: true
+    },
     render: {
 
       /**
@@ -8739,6 +8917,18 @@ var GobblinFilter = (function (Filter) {
       configurable: true
     }
   }, {
+    name: {
+
+      /**
+       * The name that is displayed in the UI
+       * @type {String}
+       */
+
+      get: function () {
+        return "Gobblin";
+      },
+      configurable: true
+    },
     render: {
 
       /**
@@ -8818,6 +9008,18 @@ var IdentityFilter = (function (Filter) {
       configurable: true
     }
   }, {
+    name: {
+
+      /**
+       * The name that is displayed in the UI
+       * @type {String}
+       */
+
+      get: function () {
+        return "Original";
+      },
+      configurable: true
+    },
     render: {
 
       /**
@@ -8893,6 +9095,18 @@ var K1Filter = (function (Filter) {
       configurable: true
     }
   }, {
+    name: {
+
+      /**
+       * The name that is displayed in the UI
+       * @type {String}
+       */
+
+      get: function () {
+        return "K1";
+      },
+      configurable: true
+    },
     render: {
 
       /**
@@ -8982,6 +9196,18 @@ var K2Filter = (function (Filter) {
       configurable: true
     }
   }, {
+    name: {
+
+      /**
+       * The name that is displayed in the UI
+       * @type {String}
+       */
+
+      get: function () {
+        return "K2";
+      },
+      configurable: true
+    },
     render: {
 
       /**
@@ -9069,6 +9295,18 @@ var K6Filter = (function (Filter) {
       configurable: true
     }
   }, {
+    name: {
+
+      /**
+       * The name that is displayed in the UI
+       * @type {String}
+       */
+
+      get: function () {
+        return "K6";
+      },
+      configurable: true
+    },
     render: {
 
       /**
@@ -9151,6 +9389,18 @@ var KDynamicFilter = (function (Filter) {
       configurable: true
     }
   }, {
+    name: {
+
+      /**
+       * The name that is displayed in the UI
+       * @type {String}
+       */
+
+      get: function () {
+        return "KDynamic";
+      },
+      configurable: true
+    },
     render: {
 
       /**
@@ -9238,6 +9488,18 @@ var LeninFilter = (function (Filter) {
       configurable: true
     }
   }, {
+    name: {
+
+      /**
+       * The name that is displayed in the UI
+       * @type {String}
+       */
+
+      get: function () {
+        return "Lenin";
+      },
+      configurable: true
+    },
     render: {
 
       /**
@@ -9330,6 +9592,18 @@ var LomoFilter = (function (Filter) {
       configurable: true
     }
   }, {
+    name: {
+
+      /**
+       * The name that is displayed in the UI
+       * @type {String}
+       */
+
+      get: function () {
+        return "Lomo";
+      },
+      configurable: true
+    },
     render: {
 
       /**
@@ -9411,6 +9685,18 @@ var MellowFilter = (function (Filter) {
       configurable: true
     }
   }, {
+    name: {
+
+      /**
+       * The name that is displayed in the UI
+       * @type {String}
+       */
+
+      get: function () {
+        return "Mellow";
+      },
+      configurable: true
+    },
     render: {
 
       /**
@@ -9496,6 +9782,18 @@ var MorningFilter = (function (Filter) {
       configurable: true
     }
   }, {
+    name: {
+
+      /**
+       * The name that is displayed in the UI
+       * @type {String}
+       */
+
+      get: function () {
+        return "Morning";
+      },
+      configurable: true
+    },
     render: {
 
       /**
@@ -9583,6 +9881,18 @@ var OrchidFilter = (function (Filter) {
       configurable: true
     }
   }, {
+    name: {
+
+      /**
+       * The name that is displayed in the UI
+       * @type {String}
+       */
+
+      get: function () {
+        return "Orchid";
+      },
+      configurable: true
+    },
     render: {
 
       /**
@@ -9679,6 +9989,18 @@ var PolaFilter = (function (Filter) {
       configurable: true
     }
   }, {
+    name: {
+
+      /**
+       * The name that is displayed in the UI
+       * @type {String}
+       */
+
+      get: function () {
+        return "Pola SX";
+      },
+      configurable: true
+    },
     render: {
 
       /**
@@ -9772,6 +10094,18 @@ var Pola669Filter = (function (Filter) {
       configurable: true
     }
   }, {
+    name: {
+
+      /**
+       * The name that is displayed in the UI
+       * @type {String}
+       */
+
+      get: function () {
+        return "Pola 669";
+      },
+      configurable: true
+    },
     render: {
 
       /**
@@ -11418,6 +11752,18 @@ var QuoziFilter = (function (Filter) {
       configurable: true
     }
   }, {
+    name: {
+
+      /**
+       * The name that is displayed in the UI
+       * @type {String}
+       */
+
+      get: function () {
+        return "Quozi";
+      },
+      configurable: true
+    },
     render: {
 
       /**
@@ -11509,6 +11855,18 @@ var SemiredFilter = (function (Filter) {
       configurable: true
     }
   }, {
+    name: {
+
+      /**
+       * The name that is displayed in the UI
+       * @type {String}
+       */
+
+      get: function () {
+        return "Semi Red";
+      },
+      configurable: true
+    },
     render: {
 
       /**
@@ -11596,6 +11954,18 @@ var SunnyFilter = (function (Filter) {
       configurable: true
     }
   }, {
+    name: {
+
+      /**
+       * The name that is displayed in the UI
+       * @type {String}
+       */
+
+      get: function () {
+        return "Sunny";
+      },
+      configurable: true
+    },
     render: {
 
       /**
@@ -11685,6 +12055,18 @@ var TexasFilter = (function (Filter) {
       configurable: true
     }
   }, {
+    name: {
+
+      /**
+       * The name that is displayed in the UI
+       * @type {String}
+       */
+
+      get: function () {
+        return "Texas";
+      },
+      configurable: true
+    },
     render: {
 
       /**
@@ -11770,6 +12152,18 @@ var X400Filter = (function (Filter) {
       configurable: true
     }
   }, {
+    name: {
+
+      /**
+       * The name that is displayed in the UI
+       * @type {String}
+       */
+
+      get: function () {
+        return "X400";
+      },
+      configurable: true
+    },
     render: {
 
       /**
@@ -12205,6 +12599,7 @@ var Operation = (function (EventEmitter) {
        * @return {WebGLRenderer} renderer
        * @private
        */
+      /* istanbul ignore next */
 
       value: function _renderWebGL() {
         throw new Error("Operation#_renderWebGL is abstract and not implemented in inherited class.");
@@ -12995,6 +13390,7 @@ var SaturationOperation = (function (Operation) {
        * @param  {WebGLRenderer} renderer
        * @override
        */
+      /* istanbul ignore next */
 
       value: function _renderWebGL(renderer) {
         this._render(renderer);
@@ -15506,18 +15902,18 @@ var Slider = _interopRequire(require("../lib/slider"));
 
 
 
-var BrightnessControls = (function (Control) {
-  function BrightnessControls() {
-    _classCallCheck(this, BrightnessControls);
+var BrightnessControl = (function (Control) {
+  function BrightnessControl() {
+    _classCallCheck(this, BrightnessControl);
 
     if (Control != null) {
       Control.apply(this, arguments);
     }
   }
 
-  _inherits(BrightnessControls, Control);
+  _inherits(BrightnessControl, Control);
 
-  _prototypeProperties(BrightnessControls, null, {
+  _prototypeProperties(BrightnessControl, null, {
     identifier: {
       /**
        * A unique string that identifies this control.
@@ -15554,19 +15950,17 @@ var BrightnessControls = (function (Control) {
         this._operationExistedBefore = !!this._ui.operations.brightness;
         this._operation = this._ui.getOrCreateOperation("brightness");
 
-        var sliderElement = this._controls.querySelector(".imglykit-slider");
-        this._slider = new Slider(sliderElement, {
-          minValue: -1,
-          maxValue: 1
-        });
-        this._slider.on("update", this._onUpdate.bind(this));
-
         // Initially set value
         var brightness = this._operation.getBrightness();
         this._initialBrightness = brightness;
-        this._slider.setValue(brightness);
 
-        this._initialIdentity = this._operation.isIdentity;
+        var sliderElement = this._controls.querySelector(".imglykit-slider");
+        this._slider = new Slider(sliderElement, {
+          minValue: -1,
+          maxValue: 1,
+          defaultValue: brightness
+        });
+        this._slider.on("update", this._onUpdate.bind(this));
       },
       writable: true,
       configurable: true
@@ -15579,7 +15973,7 @@ var BrightnessControls = (function (Control) {
        */
 
       value: function _onBack() {
-        _get(Object.getPrototypeOf(BrightnessControls.prototype), "_onBack", this).call(this);
+        _get(Object.getPrototypeOf(BrightnessControl.prototype), "_onBack", this).call(this);
 
         if (this._operationExistedBefore) {
           this._operation.setBrightness(this._initialBrightness);
@@ -15623,10 +16017,10 @@ var BrightnessControls = (function (Control) {
     }
   });
 
-  return BrightnessControls;
+  return BrightnessControl;
 })(Control);
 
-module.exports = BrightnessControls;
+module.exports = BrightnessControl;
 
 },{"../lib/slider":129,"./control":115}],114:[function(require,module,exports){
 "use strict";
@@ -15656,18 +16050,18 @@ var Slider = _interopRequire(require("../lib/slider"));
 
 
 
-var ContrastControls = (function (Control) {
-  function ContrastControls() {
-    _classCallCheck(this, ContrastControls);
+var ContrastControl = (function (Control) {
+  function ContrastControl() {
+    _classCallCheck(this, ContrastControl);
 
     if (Control != null) {
       Control.apply(this, arguments);
     }
   }
 
-  _inherits(ContrastControls, Control);
+  _inherits(ContrastControl, Control);
 
-  _prototypeProperties(ContrastControls, null, {
+  _prototypeProperties(ContrastControl, null, {
     identifier: {
       /**
        * A unique string that identifies this control.
@@ -15704,19 +16098,17 @@ var ContrastControls = (function (Control) {
         this._operationExistedBefore = !!this._ui.operations.contrast;
         this._operation = this._ui.getOrCreateOperation("contrast");
 
-        var sliderElement = this._controls.querySelector(".imglykit-slider");
-        this._slider = new Slider(sliderElement, {
-          minValue: 0,
-          maxValue: 2
-        });
-        this._slider.on("update", this._onUpdate.bind(this));
-
         // Initially set value
         var contrast = this._operation.getContrast();
         this._initialContrast = contrast;
-        this._slider.setValue(contrast);
 
-        this._initialIdentity = this._operation.isIdentity;
+        var sliderElement = this._controls.querySelector(".imglykit-slider");
+        this._slider = new Slider(sliderElement, {
+          minValue: 0,
+          maxValue: 2,
+          defaultValue: contrast
+        });
+        this._slider.on("update", this._onUpdate.bind(this));
       },
       writable: true,
       configurable: true
@@ -15729,7 +16121,7 @@ var ContrastControls = (function (Control) {
        */
 
       value: function _onBack() {
-        _get(Object.getPrototypeOf(ContrastControls.prototype), "_onBack", this).call(this);
+        _get(Object.getPrototypeOf(ContrastControl.prototype), "_onBack", this).call(this);
 
         if (this._operationExistedBefore) {
           this._operation.setContrast(this._initialContrast);
@@ -15773,10 +16165,10 @@ var ContrastControls = (function (Control) {
     }
   });
 
-  return ContrastControls;
+  return ContrastControl;
 })(Control);
 
-module.exports = ContrastControls;
+module.exports = ContrastControl;
 
 },{"../lib/slider":129,"./control":115}],115:[function(require,module,exports){
 "use strict";
@@ -16154,18 +16546,18 @@ var Utils = _interopRequire(require("../../../lib/utils"));
 
 
 
-var CropControls = (function (Control) {
-  function CropControls() {
-    _classCallCheck(this, CropControls);
+var CropControl = (function (Control) {
+  function CropControl() {
+    _classCallCheck(this, CropControl);
 
     if (Control != null) {
       Control.apply(this, arguments);
     }
   }
 
-  _inherits(CropControls, Control);
+  _inherits(CropControl, Control);
 
-  _prototypeProperties(CropControls, null, {
+  _prototypeProperties(CropControl, null, {
     identifier: {
       /**
        * A unique string that identifies this control.
@@ -16275,7 +16667,7 @@ var CropControls = (function (Control) {
       value: function _onEnter() {
         var _this = this;
 
-        _get(Object.getPrototypeOf(CropControls.prototype), "_onEnter", this).call(this);
+        _get(Object.getPrototypeOf(CropControl.prototype), "_onEnter", this).call(this);
 
         this._operationExistedBefore = !!this._ui.operations.crop;
         this._operation = this._ui.getOrCreateOperation("crop");
@@ -16844,7 +17236,7 @@ var CropControls = (function (Control) {
        */
 
       get: function () {
-        var context = _get(Object.getPrototypeOf(CropControls.prototype), "context", this);
+        var context = _get(Object.getPrototypeOf(CropControl.prototype), "context", this);
         context.ratios = this._ratios;
         return context;
       },
@@ -16864,10 +17256,10 @@ var CropControls = (function (Control) {
     }
   });
 
-  return CropControls;
+  return CropControl;
 })(Control);
 
-module.exports = CropControls;
+module.exports = CropControl;
 
 },{"../../../lib/math/vector2":49,"../../../lib/utils":51,"./control":115}],117:[function(require,module,exports){
 "use strict";
@@ -16897,18 +17289,18 @@ var Utils = _interopRequire(require("../../../lib/utils"));
 
 
 
-var FiltersControls = (function (Control) {
-  function FiltersControls() {
-    _classCallCheck(this, FiltersControls);
+var FiltersControl = (function (Control) {
+  function FiltersControl() {
+    _classCallCheck(this, FiltersControl);
 
     if (Control != null) {
       Control.apply(this, arguments);
     }
   }
 
-  _inherits(FiltersControls, Control);
+  _inherits(FiltersControl, Control);
 
-  _prototypeProperties(FiltersControls, null, {
+  _prototypeProperties(FiltersControl, null, {
     identifier: {
       /**
        * A unique string that identifies this control.
@@ -16927,7 +17319,7 @@ var FiltersControls = (function (Control) {
        */
 
       value: function init() {
-        var controlsTemplate = "<div class=\"imglykit-controls-filters\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div>\n    <ul class=\"imglykit-controls-list imgly-controls-list-with-buttons\">\n      {{ for(var identifier in it.filters) { }}\n        {{ var filter = it.filters[identifier]; }}\n        {{ var enabled = it.activeFilter.identifier === identifier; }}\n        {{? identifier !== \"identity\"}}\n        <li data-identifier=\"{{= identifier}}\"{{? enabled}} class=\"imglykit-controls-item-active\"{{?}}>\n          <img src=\"{{=it.helpers.assetPath('ui/night/filters/' + identifier + '.png')}}\" />\n        </li>\n        {{?}}\n      {{ } }}\n    </ul>\n  </div>\n\n  <div class=\"imglykit-controls-button imglykit-controls-done\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done.png') }}\" />\n  </div>\n</div>\n";
+        var controlsTemplate = "<div class=\"imglykit-controls-filters\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div>\n    <ul class=\"imglykit-controls-list imgly-controls-list-with-buttons\">\n      {{ for(var identifier in it.filters) { }}\n        {{ var filter = it.filters[identifier]; }}\n        {{ var name = filter.prototype.name; }}\n        {{ var enabled = it.activeFilter.identifier === identifier; }}\n        {{? identifier !== \"identity\"}}\n        <li data-identifier=\"{{= identifier}}\" class=\"imglykit-controls-item-with-label{{? enabled}} imglykit-controls-item-active{{?}}\">\n          <img src=\"{{=it.helpers.assetPath('ui/night/filters/' + identifier + '.png')}}\" />\n          <div class=\"imglykit-controls-item-label\">{{= name }}</div>\n        </li>\n        {{?}}\n      {{ } }}\n    </ul>\n  </div>\n\n  <div class=\"imglykit-controls-button imglykit-controls-done\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done.png') }}\" />\n  </div>\n</div>\n";
         this._controlsTemplate = controlsTemplate;
 
         this._availableFilters = {};
@@ -16958,7 +17350,7 @@ var FiltersControls = (function (Control) {
         this._operationExistedBefore = !!this._ui.operations.filters;
         this._operation = this._ui.getOrCreateOperation("filters");
 
-        _get(Object.getPrototypeOf(FiltersControls.prototype), "_renderAllControls", this).apply(this, args);
+        _get(Object.getPrototypeOf(FiltersControl.prototype), "_renderAllControls", this).apply(this, args);
       },
       writable: true,
       configurable: true
@@ -16974,7 +17366,6 @@ var FiltersControls = (function (Control) {
         var _this = this;
 
         this._initialFilter = this._operation.getFilter();
-        this._initialIdentity = this._operation.isIdentity;
 
         var listItems = this._controls.querySelectorAll("li");
         this._listItems = Array.prototype.slice.call(listItems);
@@ -17150,7 +17541,7 @@ var FiltersControls = (function (Control) {
        */
 
       get: function () {
-        var context = _get(Object.getPrototypeOf(FiltersControls.prototype), "context", this);
+        var context = _get(Object.getPrototypeOf(FiltersControl.prototype), "context", this);
         context.filters = this._filters;
         context.activeFilter = this._operation.getFilter();
         return context;
@@ -17159,10 +17550,10 @@ var FiltersControls = (function (Control) {
     }
   });
 
-  return FiltersControls;
+  return FiltersControl;
 })(Control);
 
-module.exports = FiltersControls;
+module.exports = FiltersControl;
 
 },{"../../../lib/utils":51,"../../../operations/filters/a15-filter":56,"../../../operations/filters/breeze-filter":57,"../../../operations/filters/bw-filter":58,"../../../operations/filters/bwhard-filter":59,"../../../operations/filters/celsius-filter":60,"../../../operations/filters/chest-filter":61,"../../../operations/filters/fixie-filter":63,"../../../operations/filters/food-filter":64,"../../../operations/filters/fridge-filter":65,"../../../operations/filters/front-filter":66,"../../../operations/filters/glam-filter":67,"../../../operations/filters/gobblin-filter":68,"../../../operations/filters/identity-filter":69,"../../../operations/filters/k1-filter":70,"../../../operations/filters/k2-filter":71,"../../../operations/filters/k6-filter":72,"../../../operations/filters/kdynamic-filter":73,"../../../operations/filters/lenin-filter":74,"../../../operations/filters/lomo-filter":75,"../../../operations/filters/mellow-filter":76,"../../../operations/filters/morning-filter":77,"../../../operations/filters/orchid-filter":78,"../../../operations/filters/pola-filter":79,"../../../operations/filters/pola669-filter":80,"../../../operations/filters/quozi-filter":94,"../../../operations/filters/semired-filter":95,"../../../operations/filters/sunny-filter":96,"../../../operations/filters/texas-filter":97,"../../../operations/filters/x400-filter":98,"./control":115}],118:[function(require,module,exports){
 "use strict";
@@ -17188,18 +17579,18 @@ var Control = _interopRequire(require("./control"));
 
 
 
-var FlipControls = (function (Control) {
-  function FlipControls() {
-    _classCallCheck(this, FlipControls);
+var FlipControl = (function (Control) {
+  function FlipControl() {
+    _classCallCheck(this, FlipControl);
 
     if (Control != null) {
       Control.apply(this, arguments);
     }
   }
 
-  _inherits(FlipControls, Control);
+  _inherits(FlipControl, Control);
 
-  _prototypeProperties(FlipControls, null, {
+  _prototypeProperties(FlipControl, null, {
     identifier: {
       /**
        * A unique string that identifies this control.
@@ -17238,7 +17629,6 @@ var FlipControls = (function (Control) {
 
         this._initialHorizontal = this._operation.getHorizontal();
         this._initialVertical = this._operation.getVertical();
-        this._initialIdentity = this._operation.isIdentity;
 
         var listItems = this._controls.querySelectorAll("li");
         this._listItems = Array.prototype.slice.call(listItems);
@@ -17350,10 +17740,10 @@ var FlipControls = (function (Control) {
     }
   });
 
-  return FlipControls;
+  return FlipControl;
 })(Control);
 
-module.exports = FlipControls;
+module.exports = FlipControl;
 
 },{"./control":115}],119:[function(require,module,exports){
 "use strict";
@@ -17383,18 +17773,18 @@ var ColorPicker = _interopRequire(require("../lib/color-picker"));
 
 
 
-var FramesControls = (function (Control) {
-  function FramesControls() {
-    _classCallCheck(this, FramesControls);
+var FramesControl = (function (Control) {
+  function FramesControl() {
+    _classCallCheck(this, FramesControl);
 
     if (Control != null) {
       Control.apply(this, arguments);
     }
   }
 
-  _inherits(FramesControls, Control);
+  _inherits(FramesControl, Control);
 
-  _prototypeProperties(FramesControls, null, {
+  _prototypeProperties(FramesControl, null, {
     identifier: {
       /**
        * A unique string that identifies this control.
@@ -17413,7 +17803,7 @@ var FramesControls = (function (Control) {
        */
 
       value: function init() {
-        var controlsTemplate = "<div class=\"imglykit-controls-filters\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div>\n    {{#def.simpleSlider}}\n  </div>\n\n  <div class=\"imglykit-controls-button\">\n    {{#def.colorpicker}}\n  </div>\n\n  <div class=\"imglykit-controls-button imglykit-controls-done\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done.png') }}\" />\n  </div>\n</div>\n";
+        var controlsTemplate = "<div class=\"imglykit-controls-filters\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div>\n    {{#def.simpleSlider}}\n  </div>\n\n  <div class=\"imglykit-controls-button\">\n    {{var colorpickerLabel = \"Color\";}}\n    {{#def.colorpicker}}\n  </div>\n\n  <div class=\"imglykit-controls-button imglykit-controls-done\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done.png') }}\" />\n  </div>\n</div>\n";
         this._controlsTemplate = controlsTemplate;
         this._partialTemplates.push(SimpleSlider.template);
         this._partialTemplates.push(ColorPicker.template);
@@ -17432,15 +17822,11 @@ var FramesControls = (function (Control) {
         this._operationExistedBefore = !!this._ui.operations.frames;
         this._operation = this._ui.getOrCreateOperation("frames");
 
-        // Remember initial identity state
-        this._initialIdentity = this._operation.isIdentity;
-
         this._initialOptions = {
           thickness: this._operation.getThickness(),
           color: this._operation.getColor()
         };
 
-        this._operation.isIdentity = false;
         this._ui.canvas.render();
 
         // Init slider
@@ -17525,10 +17911,10 @@ var FramesControls = (function (Control) {
     }
   });
 
-  return FramesControls;
+  return FramesControl;
 })(Control);
 
-module.exports = FramesControls;
+module.exports = FramesControl;
 
 },{"../lib/color-picker":127,"../lib/simple-slider":128,"./control":115}],120:[function(require,module,exports){
 "use strict";
@@ -17560,18 +17946,18 @@ var SimpleSlider = _interopRequire(require("../lib/simple-slider"));
 
 
 
-var RadialBlurControls = (function (Control) {
-  function RadialBlurControls() {
-    _classCallCheck(this, RadialBlurControls);
+var RadialBlurControl = (function (Control) {
+  function RadialBlurControl() {
+    _classCallCheck(this, RadialBlurControl);
 
     if (Control != null) {
       Control.apply(this, arguments);
     }
   }
 
-  _inherits(RadialBlurControls, Control);
+  _inherits(RadialBlurControl, Control);
 
-  _prototypeProperties(RadialBlurControls, null, {
+  _prototypeProperties(RadialBlurControl, null, {
     identifier: {
       /**
        * A unique string that identifies this control.
@@ -17590,10 +17976,10 @@ var RadialBlurControls = (function (Control) {
        */
 
       value: function init() {
-        var controlsTemplate = "<div class=\"imglykit-controls-radial-blur\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div class=\"imglykit-controls-icon\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/blur/blur.png')}}\" />\n  </div>\n\n  <div>\n    {{var sliderId = \"imglykit-blur-radius-slider\";}}\n    {{#def.simpleSlider}}\n  </div>\n\n  <div class=\"imglykit-controls-icon\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/blur/radius.png')}}\" />\n  </div>\n\n  <div>\n    {{var sliderId = \"imglykit-gradient-radius-slider\";}}\n    {{#def.simpleSlider}}\n  </div>\n\n  <div class=\"imglykit-controls-button imglykit-controls-done\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done.png') }}\" />\n  </div>\n</div>\n";
+        var controlsTemplate = "<div class=\"imglykit-controls-radial-blur\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div class=\"imglykit-controls-icon\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/blur/blur.png')}}\" />\n  </div>\n\n  <div>\n    {{var sliderId = \"imglykit-blur-radius-slider\";}}\n    {{#def.simpleSlider}}\n  </div>\n\n  <div class=\"imglykit-controls-button imglykit-controls-done\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done.png') }}\" />\n  </div>\n</div>\n";
         this._controlsTemplate = controlsTemplate;
 
-        var canvasControlsTemplate = "<div class=\"imglykit-canvas-radial-blur-container\">\n  <div class=\"imglykit-canvas-radial-blur-dot\"></div>\n  <div class=\"imglykit-canvas-radial-blur-circle-container\">\n    <div class=\"imglykit-canvas-radial-blur-circle\"></div>\n  </div>\n</div>\n";
+        var canvasControlsTemplate = "<div class=\"imglykit-canvas-radial-blur-container\">\n  <div class=\"imglykit-canvas-radial-blur-dot\" id=\"imglykit-radial-blur-position\"></div>\n  <div class=\"imglykit-canvas-radial-blur-dot\" id=\"imglykit-radial-blur-gradient\"></div>\n  <div class=\"imglykit-canvas-radial-blur-circle-container\">\n    <div class=\"imglykit-canvas-radial-blur-circle\"></div>\n  </div>\n</div>\n";
         this._canvasControlsTemplate = canvasControlsTemplate;
 
         this._partialTemplates.push(SimpleSlider.template);
@@ -17615,23 +18001,24 @@ var RadialBlurControls = (function (Control) {
         this._operation = this._ui.getOrCreateOperation("radial-blur");
 
         // Remember initial identity state
-        this._initialIdentity = this._operation.isIdentity;
         this._initialSettings = {
           position: this._operation.getPosition().clone(),
           gradientRadius: this._operation.getGradientRadius(),
           blurRadius: this._operation.getBlurRadius()
         };
 
-        this._operation.isIdentity = false;
-
         // Mouse event callbacks bound to the class context
-        this._onKnobDown = this._onKnobDown.bind(this);
-        this._onKnobDrag = this._onKnobDrag.bind(this);
-        this._onKnobUp = this._onKnobUp.bind(this);
+        this._onPositionKnobDown = this._onPositionKnobDown.bind(this);
+        this._onPositionKnobDrag = this._onPositionKnobDrag.bind(this);
+        this._onPositionKnobUp = this._onPositionKnobUp.bind(this);
+        this._onGradientKnobDown = this._onGradientKnobDown.bind(this);
+        this._onGradientKnobDrag = this._onGradientKnobDrag.bind(this);
+        this._onGradientKnobUp = this._onGradientKnobUp.bind(this);
 
-        this._knob = this._canvasControls.querySelector(".imglykit-canvas-radial-blur-dot");
+        this._positionKnob = this._canvasControls.querySelector("#imglykit-radial-blur-position");
+        this._gradientKnob = this._canvasControls.querySelector("#imglykit-radial-blur-gradient");
         this._circle = this._canvasControls.querySelector(".imglykit-canvas-radial-blur-circle");
-        this._handleKnob();
+        this._handleKnobs();
         this._initSliders();
 
         this._ui.canvas.render().then(function () {
@@ -17649,8 +18036,6 @@ var RadialBlurControls = (function (Control) {
        */
 
       value: function _initSliders() {
-        var canvasSize = this._ui.canvas.size;
-
         var blurRadiusSlider = this._controls.querySelector("#imglykit-blur-radius-slider");
         this._blurRadiusSlider = new SimpleSlider(blurRadiusSlider, {
           minValue: 0,
@@ -17658,14 +18043,6 @@ var RadialBlurControls = (function (Control) {
         });
         this._blurRadiusSlider.on("update", this._onBlurRadiusUpdate.bind(this));
         this._blurRadiusSlider.setValue(this._initialSettings.blurRadius);
-
-        var gradientRadiusSlider = this._controls.querySelector("#imglykit-gradient-radius-slider");
-        this._gradientRadiusSlider = new SimpleSlider(gradientRadiusSlider, {
-          minValue: 1,
-          maxValue: Math.max(canvasSize.y, canvasSize.x)
-        });
-        this._gradientRadiusSlider.on("update", this._onGradientRadiusUpdate.bind(this));
-        this._gradientRadiusSlider.setValue(this._initialSettings.gradientRadius);
       },
       writable: true,
       configurable: true
@@ -17685,75 +18062,77 @@ var RadialBlurControls = (function (Control) {
       writable: true,
       configurable: true
     },
-    _onGradientRadiusUpdate: {
-
-      /**
-       * Gets called when the value of the gradient radius slider has been updated
-       * @param {Number} value
-       * @private
-       */
-
-      value: function _onGradientRadiusUpdate(value) {
-        this._operation.setGradientRadius(value);
-        this._updateDOM();
-        this._ui.canvas.render();
-      },
-      writable: true,
-      configurable: true
-    },
-    _handleKnob: {
+    _handleKnobs: {
 
       /**
        * Handles the knob dragging
        * @private
        */
 
-      value: function _handleKnob() {
-        this._knob.addEventListener("mousedown", this._onKnobDown);
-        this._knob.addEventListener("touchstart", this._onKnobDown);
+      value: function _handleKnobs() {
+        // Initially set gradient knob position
+        var canvasSize = this._ui.canvas.size;
+        var position = this._operation.getPosition().clone().multiply(canvasSize);
+        this._gradientKnobPosition = position.clone().add(this._initialSettings.gradientRadius, 0);
+
+        this._positionKnob.addEventListener("mousedown", this._onPositionKnobDown);
+        this._positionKnob.addEventListener("touchstart", this._onPositionKnobDown);
+        this._gradientKnob.addEventListener("mousedown", this._onGradientKnobDown);
+        this._gradientKnob.addEventListener("touchstart", this._onGradientKnobDown);
       },
       writable: true,
       configurable: true
     },
-    _onKnobDown: {
+    _onPositionKnobDown: {
 
       /**
-       * Gets called when the user starts dragging the knob
+       * Gets called when the user starts dragging the position knob
        * @param {Event} e
        * @private
        */
 
-      value: function _onKnobDown(e) {
+      value: function _onPositionKnobDown(e) {
         e.preventDefault();
+
+        var canvasSize = this._ui.canvas.size;
 
         this._initialMousePosition = Utils.getEventPosition(e);
         this._initialPosition = this._operation.getPosition().clone();
+        this._gradientKnobDistance = this._gradientKnobPosition.clone().subtract(this._initialPosition.clone().multiply(canvasSize));
 
-        document.addEventListener("mousemove", this._onKnobDrag);
-        document.addEventListener("touchmove", this._onKnobDrag);
+        document.addEventListener("mousemove", this._onPositionKnobDrag);
+        document.addEventListener("touchmove", this._onPositionKnobDrag);
 
-        document.addEventListener("mouseup", this._onKnobUp);
-        document.addEventListener("touchend", this._onKnobUp);
+        document.addEventListener("mouseup", this._onPositionKnobUp);
+        document.addEventListener("touchend", this._onPositionKnobUp);
       },
       writable: true,
       configurable: true
     },
-    _onKnobDrag: {
+    _onPositionKnobDrag: {
 
       /**
-       * Gets called while the user starts drags the knob
+       * Gets called while the user starts drags the position knob
        * @param {Event} e
        * @private
        */
 
-      value: function _onKnobDrag(e) {
+      value: function _onPositionKnobDrag(e) {
         e.preventDefault();
 
         var canvasSize = this._ui.canvas.size;
         var mousePosition = Utils.getEventPosition(e);
         var diff = mousePosition.subtract(this._initialMousePosition);
 
-        var newPosition = this._initialPosition.clone().multiply(canvasSize).add(diff).divide(canvasSize);
+        var newPosition = this._initialPosition.clone().multiply(canvasSize).add(diff);
+
+        var maxPosition = canvasSize.clone().subtract(this._gradientKnobDistance);
+        newPosition.clamp(new Vector2(0, 0), maxPosition);
+
+        this._gradientKnobPosition.copy(newPosition).add(this._gradientKnobDistance);
+
+        // Translate to 0...1
+        newPosition.divide(canvasSize);
 
         this._operation.setPosition(newPosition);
         this._updateDOM();
@@ -17762,22 +18141,97 @@ var RadialBlurControls = (function (Control) {
       writable: true,
       configurable: true
     },
-    _onKnobUp: {
+    _onPositionKnobUp: {
 
       /**
-       * Gets called when the user stops dragging the knob
+       * Gets called when the user stops dragging the position knob
        * @param {Event} e
        * @private
        */
 
-      value: function _onKnobUp(e) {
+      value: function _onPositionKnobUp(e) {
         e.preventDefault();
 
-        document.removeEventListener("mousemove", this._onKnobDrag);
-        document.removeEventListener("touchmove", this._onKnobDrag);
+        document.removeEventListener("mousemove", this._onPositionKnobDrag);
+        document.removeEventListener("touchmove", this._onPositionKnobDrag);
 
-        document.removeEventListener("mouseup", this._onKnobUp);
-        document.removeEventListener("touchend", this._onKnobUp);
+        document.removeEventListener("mouseup", this._onPositionKnobUp);
+        document.removeEventListener("touchend", this._onPositionKnobUp);
+      },
+      writable: true,
+      configurable: true
+    },
+    _onGradientKnobDown: {
+
+      /**
+       * Gets called when the user starts dragging the position knob
+       * @param {Event} e
+       * @private
+       */
+
+      value: function _onGradientKnobDown(e) {
+        e.preventDefault();
+
+        this._initialMousePosition = Utils.getEventPosition(e);
+        this._initialGradientKnobPosition = this._gradientKnobPosition.clone();
+
+        document.addEventListener("mousemove", this._onGradientKnobDrag);
+        document.addEventListener("touchmove", this._onGradientKnobDrag);
+
+        document.addEventListener("mouseup", this._onGradientKnobUp);
+        document.addEventListener("touchend", this._onGradientKnobUp);
+      },
+      writable: true,
+      configurable: true
+    },
+    _onGradientKnobDrag: {
+
+      /**
+       * Gets called while the user starts drags the position knob
+       * @param {Event} e
+       * @private
+       */
+
+      value: function _onGradientKnobDrag(e) {
+        e.preventDefault();
+
+        var canvasSize = this._ui.canvas.size;
+        var mousePosition = Utils.getEventPosition(e);
+        var diff = mousePosition.subtract(this._initialMousePosition);
+
+        // Calculate new gradient knob position
+        this._gradientKnobPosition = this._initialGradientKnobPosition.clone().add(diff);
+        this._gradientKnobPosition.clamp(new Vector2(0, 0), canvasSize);
+
+        // Calculate distance to position
+        var position = this._operation.getPosition().clone().multiply(canvasSize);
+        var distance = this._gradientKnobPosition.clone().subtract(position);
+        var gradientRadius = Math.sqrt(Math.pow(distance.x, 2) + Math.pow(distance.y, 2));
+
+        // Update operation
+        this._operation.setGradientRadius(gradientRadius);
+        this._updateDOM();
+        this._ui.canvas.render();
+      },
+      writable: true,
+      configurable: true
+    },
+    _onGradientKnobUp: {
+
+      /**
+       * Gets called when the user stops dragging the position knob
+       * @param {Event} e
+       * @private
+       */
+
+      value: function _onGradientKnobUp(e) {
+        e.preventDefault();
+
+        document.removeEventListener("mousemove", this._onGradientKnobDrag);
+        document.removeEventListener("touchmove", this._onGradientKnobDrag);
+
+        document.removeEventListener("mouseup", this._onGradientKnobUp);
+        document.removeEventListener("touchend", this._onGradientKnobUp);
       },
       writable: true,
       configurable: true
@@ -17792,10 +18246,12 @@ var RadialBlurControls = (function (Control) {
       value: function _updateDOM() {
         var canvasSize = this._ui.canvas.size;
         var position = this._operation.getPosition().clone().multiply(canvasSize);
-        position.clamp(new Vector2(0, 0), canvasSize);
 
-        this._knob.style.left = "" + position.x + "px";
-        this._knob.style.top = "" + position.y + "px";
+        this._positionKnob.style.left = "" + position.x + "px";
+        this._positionKnob.style.top = "" + position.y + "px";
+
+        this._gradientKnob.style.left = "" + this._gradientKnobPosition.x + "px";
+        this._gradientKnob.style.top = "" + this._gradientKnobPosition.y + "px";
 
         var circleSize = this._operation.getGradientRadius() * 2;
         this._circle.style.left = "" + position.x + "px";
@@ -17845,10 +18301,10 @@ var RadialBlurControls = (function (Control) {
     }
   });
 
-  return RadialBlurControls;
+  return RadialBlurControl;
 })(Control);
 
-module.exports = RadialBlurControls;
+module.exports = RadialBlurControl;
 
 },{"../../../lib/math/vector2":49,"../../../lib/utils":51,"../lib/simple-slider":128,"./control":115}],121:[function(require,module,exports){
 "use strict";
@@ -17876,18 +18332,18 @@ var Vector2 = _interopRequire(require("../../../lib/math/vector2"));
 
 
 
-var RotationControls = (function (Control) {
-  function RotationControls() {
-    _classCallCheck(this, RotationControls);
+var RotationControl = (function (Control) {
+  function RotationControl() {
+    _classCallCheck(this, RotationControl);
 
     if (Control != null) {
       Control.apply(this, arguments);
     }
   }
 
-  _inherits(RotationControls, Control);
+  _inherits(RotationControl, Control);
 
-  _prototypeProperties(RotationControls, null, {
+  _prototypeProperties(RotationControl, null, {
     identifier: {
       /**
        * A unique string that identifies this control.
@@ -17936,7 +18392,6 @@ var RotationControls = (function (Control) {
           // Store initial settings for "back" and "done" buttons
           this._initialStart = this._cropOperation.getStart().clone();
           this._initialEnd = this._cropOperation.getEnd().clone();
-          this._initialIdentity = this._operation.isIdentity;
 
           // Make sure we see the whole input image
           this._cropOperation.set({
@@ -18121,10 +18576,10 @@ var RotationControls = (function (Control) {
     }
   });
 
-  return RotationControls;
+  return RotationControl;
 })(Control);
 
-module.exports = RotationControls;
+module.exports = RotationControl;
 
 },{"../../../lib/math/vector2":49,"./control":115}],122:[function(require,module,exports){
 "use strict";
@@ -18154,18 +18609,18 @@ var Control = _interopRequire(require("./control"));
 
 
 
-var SaturationControls = (function (Control) {
-  function SaturationControls() {
-    _classCallCheck(this, SaturationControls);
+var SaturationControl = (function (Control) {
+  function SaturationControl() {
+    _classCallCheck(this, SaturationControl);
 
     if (Control != null) {
       Control.apply(this, arguments);
     }
   }
 
-  _inherits(SaturationControls, Control);
+  _inherits(SaturationControl, Control);
 
-  _prototypeProperties(SaturationControls, null, {
+  _prototypeProperties(SaturationControl, null, {
     identifier: {
       /**
        * A unique string that identifies this control.
@@ -18199,24 +18654,22 @@ var SaturationControls = (function (Control) {
        */
 
       value: function _onEnter() {
-        _get(Object.getPrototypeOf(SaturationControls.prototype), "_onEnter", this).call(this);
+        _get(Object.getPrototypeOf(SaturationControl.prototype), "_onEnter", this).call(this);
 
         this._operationExistedBefore = !!this._ui.operations.saturation;
         this._operation = this._ui.getOrCreateOperation("saturation");
 
-        var sliderElement = this._controls.querySelector(".imglykit-slider");
-        this._slider = new Slider(sliderElement, {
-          minValue: 0,
-          maxValue: 2
-        });
-        this._slider.on("update", this._onUpdate.bind(this));
-
         // Initially set value
         var saturation = this._operation.getSaturation();
         this._initialSaturation = saturation;
-        this._slider.setValue(saturation);
 
-        this._initialIdentity = this._operation.isIdentity;
+        var sliderElement = this._controls.querySelector(".imglykit-slider");
+        this._slider = new Slider(sliderElement, {
+          minValue: 0,
+          maxValue: 2,
+          defaultValue: saturation
+        });
+        this._slider.on("update", this._onUpdate.bind(this));
       },
       writable: true,
       configurable: true
@@ -18229,7 +18682,7 @@ var SaturationControls = (function (Control) {
        */
 
       value: function _onBack() {
-        _get(Object.getPrototypeOf(SaturationControls.prototype), "_onBack", this).call(this);
+        _get(Object.getPrototypeOf(SaturationControl.prototype), "_onBack", this).call(this);
         if (this._operationExistedBefore) {
           this._operation.setSaturation(this._initialSaturation);
         } else {
@@ -18271,10 +18724,10 @@ var SaturationControls = (function (Control) {
     }
   });
 
-  return SaturationControls;
+  return SaturationControl;
 })(Control);
 
-module.exports = SaturationControls;
+module.exports = SaturationControl;
 
 },{"../lib/slider":129,"./control":115}],123:[function(require,module,exports){
 "use strict";
@@ -18447,10 +18900,6 @@ var StickersControl = (function (Control) {
 
         this._size = this._initialSettings.size.clone();
         this._position = this._initialSettings.position.clone().multiply(canvasSize);
-
-        // Don't render an already existing sticker as long as
-        // we're editing
-        this._operation.isIdentity = true;
 
         // Remember zoom level and zoom to fit the canvas
         this._initialZoomLevel = this._ui.canvas.zoomLevel;
@@ -18909,7 +19358,7 @@ var TextControl = (function (Control) {
        */
 
       value: function init() {
-        var controlsTemplate = "<div class=\"imglykit-controls-text\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div>\n    <ul class=\"imglykit-controls-list imgly-controls-list-with-buttons\">\n      {{~it.fonts :value:index}}\n        <li data-name=\"{{= value.name}}\" data-weight=\"{{= value.weight}}\" style=\"font-family: {{= value.name}}; font-weight: {{= value.weight}}\">{{= value.name.substr(0, 2)}}</li>\n      {{~}}\n    </ul>\n  </div>\n\n  <div class=\"imglykit-controls-button\">\n    {{var colorpickerId = \"imglykit-text-foreground-color-picker\";}}\n    {{#def.colorpicker}}\n  </div>\n\n  <div class=\"imglykit-controls-button\">\n    {{var colorpickerId = \"imglykit-text-background-color-picker\";}}\n    {{#def.colorpicker}}\n  </div>\n\n  <div class=\"imglykit-controls-button imglykit-controls-done\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done.png') }}\" />\n  </div>\n</div>\n";
+        var controlsTemplate = "<div class=\"imglykit-controls-text\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div>\n    <ul class=\"imglykit-controls-list imgly-controls-list-with-buttons\">\n      {{~it.fonts :value:index}}\n        <li data-name=\"{{= value.name}}\" data-weight=\"{{= value.weight}}\" style=\"font-family: {{= value.name}}; font-weight: {{= value.weight}}\">{{= value.name.substr(0, 2)}}</li>\n      {{~}}\n    </ul>\n  </div>\n\n  <div class=\"imglykit-controls-button\">\n    {{var colorpickerId = \"imglykit-text-foreground-color-picker\";}}\n    {{var colorpickerLabel = \"Foreground\";}}\n    {{#def.colorpicker}}\n  </div>\n\n  <div class=\"imglykit-controls-button\">\n    {{var colorpickerId = \"imglykit-text-background-color-picker\";}}\n    {{var colorpickerLabel = \"Background\";}}\n    {{#def.colorpicker}}\n  </div>\n\n  <div class=\"imglykit-controls-button imglykit-controls-done\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done.png') }}\" />\n  </div>\n</div>\n";
         this._controlsTemplate = controlsTemplate;
 
         var canvasControlsTemplate = "<div class=\"imglykit-canvas-text-container\">\n  <div class=\"imglykit-canvas-text\">\n    <div class=\"imglykit-crosshair\">\n      <img src=\"{{=it.helpers.assetPath('ui/night/crosshair.png')}}\" />\n    </div>\n    <div class=\"imglykit-canvas-text-textarea\">\n      <textarea></textarea>\n      <div class=\"imglykit-knob\"></div>\n    </div>\n  </div>\n</div>\n";
@@ -18996,7 +19445,11 @@ var TextControl = (function (Control) {
         this._handleTextarea();
         this._handleResizeKnob();
         this._handleMoveKnob();
-        this._resizeTextarea();
+
+        // Resize asynchronously to render a frame
+        setTimeout(function () {
+          _this._resizeTextarea();
+        }, 1);
 
         this._ui.canvas.zoomToFit().then(function () {
           _this._applySettings();
@@ -19013,15 +19466,23 @@ var TextControl = (function (Control) {
        */
 
       value: function _initColorPickers() {
+        var _this = this;
+
         var foregroundColorPicker = this._controls.querySelector("#imglykit-text-foreground-color-picker");
         this._foregroundColorPicker = new ColorPicker(this._ui, foregroundColorPicker);
         this._foregroundColorPicker.setValue(this._operation.getColor());
         this._foregroundColorPicker.on("update", this._onForegroundColorUpdate);
+        this._foregroundColorPicker.on("show", function () {
+          _this._backgroundColorPicker.hide();
+        });
 
         var backgroundColorPicker = this._controls.querySelector("#imglykit-text-background-color-picker");
         this._backgroundColorPicker = new ColorPicker(this._ui, backgroundColorPicker);
         this._backgroundColorPicker.setValue(this._operation.getBackgroundColor());
         this._backgroundColorPicker.on("update", this._onBackgroundColorUpdate);
+        this._backgroundColorPicker.on("show", function () {
+          _this._foregroundColorPicker.hide();
+        });
       },
       writable: true,
       configurable: true
@@ -19514,18 +19975,18 @@ var SimpleSlider = _interopRequire(require("../lib/simple-slider"));
 
 
 
-var TiltShiftControls = (function (Control) {
-  function TiltShiftControls() {
-    _classCallCheck(this, TiltShiftControls);
+var TiltShiftControl = (function (Control) {
+  function TiltShiftControl() {
+    _classCallCheck(this, TiltShiftControl);
 
     if (Control != null) {
       Control.apply(this, arguments);
     }
   }
 
-  _inherits(TiltShiftControls, Control);
+  _inherits(TiltShiftControl, Control);
 
-  _prototypeProperties(TiltShiftControls, null, {
+  _prototypeProperties(TiltShiftControl, null, {
     identifier: {
       /**
        * A unique string that identifies this control.
@@ -19544,10 +20005,10 @@ var TiltShiftControls = (function (Control) {
        */
 
       value: function init() {
-        var controlsTemplate = "<div class=\"imglykit-controls-tilt-shift\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div class=\"imglykit-controls-icon\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/blur/blur.png')}}\" />\n  </div>\n\n  <div>\n    {{var sliderId = \"imglykit-blur-radius-slider\";}}\n    {{#def.simpleSlider}}\n  </div>\n\n  <div class=\"imglykit-controls-icon\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/blur/radius.png')}}\" />\n  </div>\n\n  <div>\n    {{var sliderId = \"imglykit-gradient-radius-slider\";}}\n    {{#def.simpleSlider}}\n  </div>\n\n  <div class=\"imglykit-controls-button imglykit-controls-done\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done.png') }}\" />\n  </div>\n</div>\n";
+        var controlsTemplate = "<div class=\"imglykit-controls-tilt-shift\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div class=\"imglykit-controls-icon\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/blur/blur.png')}}\" />\n  </div>\n\n  <div>\n    {{var sliderId = \"imglykit-blur-radius-slider\";}}\n    {{#def.simpleSlider}}\n  </div>\n\n  <div class=\"imglykit-controls-button imglykit-controls-done\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done.png') }}\" />\n  </div>\n</div>\n";
         this._controlsTemplate = controlsTemplate;
 
-        var canvasControlsTemplate = "<div class=\"imglykit-canvas-tilt-shift-container\">\n  <div class=\"imglykit-canvas-tilt-shift-dot\" data-option=\"start\"></div>\n  <div class=\"imglykit-canvas-tilt-shift-dot\" data-option=\"end\"></div>\n</div>\n";
+        var canvasControlsTemplate = "<div class=\"imglykit-canvas-tilt-shift-container\">\n  <div class=\"imglykit-canvas-tilt-shift-dot\" data-option=\"position\"></div>\n  <div class=\"imglykit-canvas-tilt-shift-dot\" data-option=\"gradient\"></div>\n  <div class=\"imglykit-canvas-tilt-shift-rect-container\">\n    <div class=\"imglykit-canvas-tilt-shift-rect\"></div>\n  </div>\n</div>\n";
         this._canvasControlsTemplate = canvasControlsTemplate;
 
         this._partialTemplates.push(SimpleSlider.template);
@@ -19569,8 +20030,6 @@ var TiltShiftControls = (function (Control) {
         this._operationExistedBefore = !!this._ui.operations["tilt-shift"];
         this._operation = this._ui.getOrCreateOperation("tilt-shift");
 
-        // Remember initial identity state
-        this._initialIdentity = this._operation.isIdentity;
         this._initialSettings = {
           start: this._operation.getStart().clone(),
           end: this._operation.getEnd().clone(),
@@ -19578,22 +20037,25 @@ var TiltShiftControls = (function (Control) {
           blurRadius: this._operation.getBlurRadius()
         };
 
-        this._operation.isIdentity = false;
-
         // Mouse event callbacks bound to the class context
-        this._onKnobDown = this._onKnobDown.bind(this);
-        this._onKnobDrag = this._onKnobDrag.bind(this);
-        this._onKnobUp = this._onKnobUp.bind(this);
+        this._onPositionKnobDown = this._onPositionKnobDown.bind(this);
+        this._onPositionKnobDrag = this._onPositionKnobDrag.bind(this);
+        this._onPositionKnobUp = this._onPositionKnobUp.bind(this);
+        this._onGradientKnobDown = this._onGradientKnobDown.bind(this);
+        this._onGradientKnobDrag = this._onGradientKnobDrag.bind(this);
+        this._onGradientKnobUp = this._onGradientKnobUp.bind(this);
 
+        // Find DOM elements
         var selector = ".imglykit-canvas-tilt-shift-dot";
-        this._startKnob = this._canvasControls.querySelector("" + selector + "[data-option=\"start\"]");
-        this._endKnob = this._canvasControls.querySelector("" + selector + "[data-option=\"end\"]");
-        this._knobs = [this._startKnob, this._endKnob];
+        this._positionKnob = this._canvasControls.querySelector("" + selector + "[data-option=\"position\"]");
+        this._gradientKnob = this._canvasControls.querySelector("" + selector + "[data-option=\"gradient\"]");
+        this._rect = this._canvasControls.querySelector(".imglykit-canvas-tilt-shift-rect");
 
-        this._handleKnobs();
+        // Initialization
         this._initSliders();
 
         this._ui.canvas.render().then(function () {
+          _this._handleKnobs();
           _this._updateDOM();
         });
       },
@@ -19608,8 +20070,6 @@ var TiltShiftControls = (function (Control) {
        */
 
       value: function _initSliders() {
-        var canvasSize = this._ui.canvas.size;
-
         var blurRadiusSlider = this._controls.querySelector("#imglykit-blur-radius-slider");
         this._blurRadiusSlider = new SimpleSlider(blurRadiusSlider, {
           minValue: 0,
@@ -19617,14 +20077,6 @@ var TiltShiftControls = (function (Control) {
         });
         this._blurRadiusSlider.on("update", this._onBlurRadiusUpdate.bind(this));
         this._blurRadiusSlider.setValue(this._initialSettings.blurRadius);
-
-        var gradientRadiusSlider = this._controls.querySelector("#imglykit-gradient-radius-slider");
-        this._gradientRadiusSlider = new SimpleSlider(gradientRadiusSlider, {
-          minValue: 1,
-          maxValue: Math.max(canvasSize.y, canvasSize.x)
-        });
-        this._gradientRadiusSlider.on("update", this._onGradientRadiusUpdate.bind(this));
-        this._gradientRadiusSlider.setValue(this._initialSettings.gradientRadius);
       },
       writable: true,
       configurable: true
@@ -19644,22 +20096,6 @@ var TiltShiftControls = (function (Control) {
       writable: true,
       configurable: true
     },
-    _onGradientRadiusUpdate: {
-
-      /**
-       * Gets called when the value of the gradient radius slider has been updated
-       * @param {Number} value
-       * @private
-       */
-
-      value: function _onGradientRadiusUpdate(value) {
-        this._operation.setGradientRadius(value);
-        this._updateDOM();
-        this._ui.canvas.render();
-      },
-      writable: true,
-      configurable: true
-    },
     _handleKnobs: {
 
       /**
@@ -19668,95 +20104,209 @@ var TiltShiftControls = (function (Control) {
        */
 
       value: function _handleKnobs() {
-        var _this = this;
+        // Add event listeners
+        this._positionKnob.addEventListener("mousedown", this._onPositionKnobDown);
+        this._positionKnob.addEventListener("touchstart", this._onPositionKnobDown);
+        this._gradientKnob.addEventListener("mousedown", this._onGradientKnobDown);
+        this._gradientKnob.addEventListener("touchstart", this._onGradientKnobDown);
 
-        for (var i = 0; i < this._knobs.length; i++) {
-          (function (i) {
-            var knob = _this._knobs[i];
-            knob.addEventListener("mousedown", function (e) {
-              _this._onKnobDown(knob, e);
-            });
-            knob.addEventListener("touchstart", function (e) {
-              _this._onKnobDown(knob, e);
-            });
-          })(i);
-        }
+        var canvasSize = this._ui.canvas.size;
+        var _initialSettings = this._initialSettings;
+        var start = _initialSettings.start;
+        var end = _initialSettings.end;
+
+        start = start.clone().multiply(canvasSize);
+        end = end.clone().multiply(canvasSize);
+
+        var dist = end.clone().subtract(start);
+        var middle = start.clone().add(dist.clone().divide(2));
+
+        var totalDist = Math.sqrt(Math.pow(dist.x, 2) + Math.pow(dist.y, 2));
+        var factor = dist.clone().divide(totalDist).divide(2);
+
+        // Calculate initial knob position (middle of start and end)
+        this._knobPosition = middle.clone();
+
+        // Calculate initial gradient knob position
+        var gradientRadius = this._initialSettings.gradientRadius;
+        this._gradientKnobPosition = middle.clone().add(-gradientRadius * factor.y, gradientRadius * factor.x);
+
+        this._updateStartAndEnd();
+        this._updateDOM();
+
+        this._ui.canvas.render();
       },
       writable: true,
       configurable: true
     },
-    _onKnobDown: {
+    _updateStartAndEnd: {
 
       /**
-       * Gets called when the user starts dragging the knob
-       * @param {DOMElement} knob
+       * Calculate start and end positions using the knob positions
+       * @private
+       */
+
+      value: function _updateStartAndEnd() {
+        var canvasSize = this._ui.canvas.size;
+
+        // Calculate distance between gradient and position knob
+        var diff = this._gradientKnobPosition.clone().subtract(this._knobPosition);
+
+        var start = this._knobPosition.clone().add(-diff.y, diff.x).divide(canvasSize);
+        var end = this._knobPosition.clone().add(diff.y, -diff.x).divide(canvasSize);
+
+        this._operation.set({ start: start, end: end });
+      },
+      writable: true,
+      configurable: true
+    },
+    _onPositionKnobDown: {
+
+      /**
+       * Gets called when the user starts dragging the position knob
        * @param {Event} e
        * @private
        */
 
-      value: function _onKnobDown(knob, e) {
+      value: function _onPositionKnobDown(e) {
         e.preventDefault();
 
-        this._currentKnob = knob;
         this._initialMousePosition = Utils.getEventPosition(e);
+        this._initialPosition = this._knobPosition.clone();
+        this._initialDistanceToGradientKnob = this._gradientKnobPosition.clone().subtract(this._initialPosition);
 
-        var option = knob.dataset.option;
+        document.addEventListener("mousemove", this._onPositionKnobDrag);
+        document.addEventListener("touchmove", this._onPositionKnobDrag);
 
-        var capitalized = option.charAt(0).toUpperCase() + option.slice(1);
-        this._valueBeforeDrag = this._operation["get" + capitalized]();
-
-        document.addEventListener("mousemove", this._onKnobDrag);
-        document.addEventListener("touchmove", this._onKnobDrag);
-
-        document.addEventListener("mouseup", this._onKnobUp);
-        document.addEventListener("touchend", this._onKnobUp);
+        document.addEventListener("mouseup", this._onPositionKnobUp);
+        document.addEventListener("touchend", this._onPositionKnobUp);
       },
       writable: true,
       configurable: true
     },
-    _onKnobDrag: {
+    _onPositionKnobDrag: {
 
       /**
-       * Gets called while the user starts drags the knob
+       * Gets called when the user drags the position knob
        * @param {Event} e
        * @private
        */
 
-      value: function _onKnobDrag(e) {
+      value: function _onPositionKnobDrag(e) {
         e.preventDefault();
 
         var canvasSize = this._ui.canvas.size;
         var mousePosition = Utils.getEventPosition(e);
         var diff = mousePosition.subtract(this._initialMousePosition);
 
-        var option = this._currentKnob.dataset.option;
+        var newPosition = this._initialPosition.clone().add(diff);
+        this._knobPosition.copy(newPosition);
 
-        var capitalized = option.charAt(0).toUpperCase() + option.slice(1);
+        var minPosition = new Vector2().subtract(this._initialDistanceToGradientKnob);
+        minPosition.clamp(new Vector2(0, 0));
 
-        var newPosition = this._valueBeforeDrag.clone().multiply(canvasSize).add(diff).divide(canvasSize);
-        this._operation["set" + capitalized](newPosition);
+        var maxPosition = canvasSize.clone().subtract(this._initialDistanceToGradientKnob);
+        maxPosition.clamp(null, canvasSize);
+
+        this._knobPosition.clamp(minPosition, maxPosition);
+
+        this._gradientKnobPosition.copy(this._knobPosition).add(this._initialDistanceToGradientKnob);
+
+        this._updateStartAndEnd();
         this._updateDOM();
         this._ui.canvas.render();
       },
       writable: true,
       configurable: true
     },
-    _onKnobUp: {
+    _onPositionKnobUp: {
 
       /**
-       * Gets called when the user stops dragging the knob
+       * Gets called when the user stops dragging the position knob
        * @param {Event} e
        * @private
        */
 
-      value: function _onKnobUp(e) {
+      value: function _onPositionKnobUp(e) {
         e.preventDefault();
 
-        document.removeEventListener("mousemove", this._onKnobDrag);
-        document.removeEventListener("touchmove", this._onKnobDrag);
+        document.removeEventListener("mousemove", this._onPositionKnobDrag);
+        document.removeEventListener("touchmove", this._onPositionKnobDrag);
 
-        document.removeEventListener("mouseup", this._onKnobUp);
-        document.removeEventListener("touchend", this._onKnobUp);
+        document.removeEventListener("mouseup", this._onPositionKnobUp);
+        document.removeEventListener("touchend", this._onPositionKnobUp);
+      },
+      writable: true,
+      configurable: true
+    },
+    _onGradientKnobDown: {
+
+      /**
+       * Gets called when the user starts dragging the gradient knob
+       * @param {Event} e
+       * @private
+       */
+
+      value: function _onGradientKnobDown(e) {
+        e.preventDefault();
+
+        this._initialMousePosition = Utils.getEventPosition(e);
+        this._initialGradientKnobPosition = this._gradientKnobPosition.clone();
+
+        document.addEventListener("mousemove", this._onGradientKnobDrag);
+        document.addEventListener("touchmove", this._onGradientKnobDrag);
+
+        document.addEventListener("mouseup", this._onGradientKnobUp);
+        document.addEventListener("touchend", this._onGradientKnobUp);
+      },
+      writable: true,
+      configurable: true
+    },
+    _onGradientKnobDrag: {
+
+      /**
+       * Gets called when the user drags the gradient knob
+       * @param {Event} e
+       * @private
+       */
+
+      value: function _onGradientKnobDrag(e) {
+        e.preventDefault();
+
+        var canvasSize = this._ui.canvas.size;
+        var mousePosition = Utils.getEventPosition(e);
+        var diff = mousePosition.subtract(this._initialMousePosition);
+
+        this._gradientKnobPosition.copy(this._initialGradientKnobPosition).add(diff);
+        this._gradientKnobPosition.clamp(new Vector2(0, 0), canvasSize);
+
+        var distance = this._gradientKnobPosition.clone().subtract(this._knobPosition);
+        var newGradientRadius = 2 * Math.sqrt(Math.pow(distance.x, 2) + Math.pow(distance.y, 2));
+
+        this._operation.setGradientRadius(newGradientRadius);
+        this._updateStartAndEnd();
+        this._updateDOM();
+        this._ui.canvas.render();
+      },
+      writable: true,
+      configurable: true
+    },
+    _onGradientKnobUp: {
+
+      /**
+       * Gets called when the user stops dragging the gradient knob
+       * @param {Event} e
+       * @private
+       */
+
+      value: function _onGradientKnobUp(e) {
+        e.preventDefault();
+
+        document.removeEventListener("mousemove", this._onGradientKnobDrag);
+        document.removeEventListener("touchmove", this._onGradientKnobDrag);
+
+        document.removeEventListener("mouseup", this._onGradientKnobUp);
+        document.removeEventListener("touchend", this._onGradientKnobUp);
       },
       writable: true,
       configurable: true
@@ -19769,18 +20319,30 @@ var TiltShiftControls = (function (Control) {
        */
 
       value: function _updateDOM() {
+        var position = this._knobPosition;
+        this._positionKnob.style.left = "" + position.x + "px";
+        this._positionKnob.style.top = "" + position.y + "px";
+
+        var gradientPosition = this._gradientKnobPosition;
+        this._gradientKnob.style.left = "" + gradientPosition.x + "px";
+        this._gradientKnob.style.top = "" + gradientPosition.y + "px";
+
+        // Resize rectangle to worst case size
         var canvasSize = this._ui.canvas.size;
-        var start = this._operation.getStart().clone().multiply(canvasSize);
-        start.clamp(new Vector2(0, 0), canvasSize);
+        var gradientRadius = this._operation.getGradientRadius();
+        var rectSize = new Vector2(Math.sqrt(Math.pow(canvasSize.x, 2) + Math.pow(canvasSize.y, 2)) * 2, gradientRadius);
 
-        this._startKnob.style.left = "" + start.x + "px";
-        this._startKnob.style.top = "" + start.y + "px";
+        this._rect.style.width = "" + rectSize.x + "px";
+        this._rect.style.height = "" + rectSize.y + "px";
+        this._rect.style.marginLeft = "-" + rectSize.x / 2 + "px";
+        this._rect.style.marginTop = "-" + rectSize.y / 2 + "px";
+        this._rect.style.left = "" + position.x + "px";
+        this._rect.style.top = "" + position.y + "px";
 
-        var end = this._operation.getEnd().clone().multiply(canvasSize);
-        end.clamp(new Vector2(0, 0), canvasSize);
-
-        this._endKnob.style.left = "" + end.x + "px";
-        this._endKnob.style.top = "" + end.y + "px";
+        // Rotate rectangle
+        var dist = gradientPosition.clone().subtract(position);
+        var degrees = Math.atan2(dist.x, dist.y) * (180 / Math.PI);
+        this._rect.style.transform = "rotate(" + (-degrees).toFixed(2) + "deg)";
       },
       writable: true,
       configurable: true
@@ -19796,7 +20358,7 @@ var TiltShiftControls = (function (Control) {
         if (this._operationExistedBefore) {
           this._operation.set(this._initialSettings);
         } else {
-          this._ui.removeOperation("radial-blur");
+          this._ui.removeOperation("tilt-shift");
         }
         this._ui.canvas.render();
       },
@@ -19823,10 +20385,10 @@ var TiltShiftControls = (function (Control) {
     }
   });
 
-  return TiltShiftControls;
+  return TiltShiftControl;
 })(Control);
 
-module.exports = TiltShiftControls;
+module.exports = TiltShiftControl;
 
 },{"../../../lib/math/vector2":49,"../../../lib/utils":51,"../lib/simple-slider":128,"./control":115}],126:[function(require,module,exports){
 "use strict";
@@ -20190,7 +20752,7 @@ var Canvas = (function (EventEmitter) {
         croppedSize = inputSize.clone().multiply(cropSize);
 
         // Has the image been rotated?
-        if (rotationOperation && !rotationOperation.isIdentity && rotationOperation.getDegrees() % 180 !== 0) {
+        if (rotationOperation && rotationOperation.getDegrees() % 180 !== 0) {
           var tempX = croppedSize.x;
           croppedSize.x = croppedSize.y;
           croppedSize.y = tempX;
@@ -20199,7 +20761,7 @@ var Canvas = (function (EventEmitter) {
         finalSize = this._resizeVectorToFit(croppedSize);
 
         // Rotate back to be able to find the final size
-        if (rotationOperation && !rotationOperation.isIdentity && rotationOperation.getDegrees() % 180 !== 0) {
+        if (rotationOperation && rotationOperation.getDegrees() % 180 !== 0) {
           var tempX = finalSize.x;
           finalSize.x = finalSize.y;
           finalSize.y = tempX;
@@ -20671,7 +21233,7 @@ var ColorPicker = (function (EventEmitter) {
        */
 
       get: function () {
-        return "{{##def.colorpicker:\n  <div class=\"imglykit-color-picker\" id=\"{{=(typeof colorpickerId === \"undefined\"?'':colorpickerId)}}\">\n    <canvas class=\"imglykit-color-picker-color\" width=\"34\" height=\"34\"></canvas>\n\n    <div class=\"imglykit-color-picker-overlay\">\n      <div class=\"imglykit-color-picker-alpha-container\">\n        <canvas class=\"imglykit-color-picker-alpha\" width=\"200\" height=\"30\"></canvas>\n        <div class=\"imglykit-transparent-knob\"></div>\n      </div>\n\n      <div class=\"imglykit-color-picker-saturation-container\">\n        <canvas class=\"imglykit-color-picker-saturation\" width=\"160\" height=\"160\"></canvas>\n        <div class=\"imglykit-transparent-knob\"></div>\n      </div>\n\n      <div class=\"imglykit-color-picker-hue-container\">\n        <canvas class=\"imglykit-color-picker-hue\" width=\"30\" height=\"160\"></canvas>\n        <div class=\"imglykit-transparent-knob\"></div>\n      </div>\n    </div>\n  </div>\n#}}\n";
+        return "{{##def.colorpicker:\n  <div class=\"imglykit-color-picker\" id=\"{{=(typeof colorpickerId === \"undefined\"?'':colorpickerId)}}\">\n    <canvas class=\"imglykit-color-picker-color\" width=\"34\" height=\"34\"></canvas>\n    <div class=\"imglykit-controls-item-label\">{{=(typeof colorpickerLabel === \"undefined\"?'':colorpickerLabel)}}</div>\n\n    <div class=\"imglykit-color-picker-overlay\">\n      <div class=\"imglykit-color-picker-alpha-container\">\n        <canvas class=\"imglykit-color-picker-alpha\" width=\"200\" height=\"30\"></canvas>\n        <div class=\"imglykit-transparent-knob\"></div>\n      </div>\n\n      <div class=\"imglykit-color-picker-saturation-container\">\n        <canvas class=\"imglykit-color-picker-saturation\" width=\"160\" height=\"160\"></canvas>\n        <div class=\"imglykit-transparent-knob\"></div>\n      </div>\n\n      <div class=\"imglykit-color-picker-hue-container\">\n        <canvas class=\"imglykit-color-picker-hue\" width=\"30\" height=\"160\"></canvas>\n        <div class=\"imglykit-transparent-knob\"></div>\n      </div>\n    </div>\n  </div>\n#}}\n";
       },
       configurable: true
     }
@@ -20708,12 +21270,39 @@ var ColorPicker = (function (EventEmitter) {
       value: function _onElementClick(e) {
         if (e.target === this._element || e.target === this._currentColorCanvas) {
           if (this._visible) {
-            this._overlay.classList.remove("imglykit-visible");
+            this.hide();
+            this.emit("hide");
           } else {
-            this._overlay.classList.add("imglykit-visible");
+            this.show();
+            this.emit("show");
           }
-          this._visible = !this._visible;
         }
+      },
+      writable: true,
+      configurable: true
+    },
+    hide: {
+
+      /**
+       * Hides the color picker
+       */
+
+      value: function hide() {
+        this._overlay.classList.remove("imglykit-visible");
+        this._visible = false;
+      },
+      writable: true,
+      configurable: true
+    },
+    show: {
+
+      /**
+       * Shows the color picker
+       */
+
+      value: function show() {
+        this._overlay.classList.add("imglykit-visible");
+        this._visible = true;
       },
       writable: true,
       configurable: true
@@ -21348,19 +21937,22 @@ var Slider = (function (EventEmitter) {
     this._element = element;
     this._options = _.defaults(options, {
       minValue: 0,
-      maxValue: 1
+      maxValue: 1,
+      defaultValue: 0
     });
 
-    this._value = 0;
+    this._value = this._options.defaultValue;
 
     this._sliderElement = this._element.querySelector(".imglykit-slider-slider");
     this._dotElement = this._element.querySelector(".imglykit-slider-dot");
+    this._centerDotElement = this._element.querySelector(".imglykit-slider-center-dot");
     this._fillElement = this._element.querySelector(".imglykit-slider-fill");
 
     // Mouse event callbacks bound to class context
     this._onMouseDown = this._onMouseDown.bind(this);
     this._onMouseMove = this._onMouseMove.bind(this);
     this._onMouseUp = this._onMouseUp.bind(this);
+    this._onCenterDotClick = this._onCenterDotClick.bind(this);
 
     this._handleDot();
   }
@@ -21440,6 +22032,25 @@ var Slider = (function (EventEmitter) {
       value: function _handleDot() {
         this._dotElement.addEventListener("mousedown", this._onMouseDown);
         this._dotElement.addEventListener("touchstart", this._onMouseDown);
+
+        if (this._centerDotElement) {
+          this._centerDotElement.addEventListener("click", this._onCenterDotClick);
+        }
+      },
+      writable: true,
+      configurable: true
+    },
+    _onCenterDotClick: {
+
+      /**
+       * Gets called when the user clicks the center button. Resets to default
+       * settings.
+       * @private
+       */
+
+      value: function _onCenterDotClick() {
+        this.setValue(this._options.defaultValue);
+        this.emit("update", this._value);
       },
       writable: true,
       configurable: true
