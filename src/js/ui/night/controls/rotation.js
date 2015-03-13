@@ -48,7 +48,6 @@ class RotationControls extends Control {
       // Store initial settings for "back" and "done" buttons
       this._initialStart = this._cropOperation.getStart().clone();
       this._initialEnd = this._cropOperation.getEnd().clone();
-      this._initialIdentity = this._operation.isIdentity;
 
       // Make sure we see the whole input image
       this._cropOperation.set({

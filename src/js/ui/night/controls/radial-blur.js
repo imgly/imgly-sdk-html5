@@ -45,14 +45,11 @@ class RadialBlurControls extends Control {
     this._operation = this._ui.getOrCreateOperation("radial-blur");
 
     // Remember initial identity state
-    this._initialIdentity = this._operation.isIdentity;
     this._initialSettings = {
       position: this._operation.getPosition().clone(),
       gradientRadius: this._operation.getGradientRadius(),
       blurRadius: this._operation.getBlurRadius()
     };
-
-    this._operation.isIdentity = false;
 
     // Mouse event callbacks bound to the class context
     this._onPositionKnobDown = this._onPositionKnobDown.bind(this);

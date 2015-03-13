@@ -56,7 +56,6 @@ class FiltersControls extends Control {
    */
   _onEnter () {
     this._initialFilter = this._operation.getFilter();
-    this._initialIdentity = this._operation.isIdentity;
 
     let listItems = this._controls.querySelectorAll("li");
     this._listItems = Array.prototype.slice.call(listItems);

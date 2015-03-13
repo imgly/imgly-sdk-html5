@@ -49,8 +49,6 @@ class ContrastControls extends Control {
       defaultValues: contrast
     });
     this._slider.on("update", this._onUpdate.bind(this));
-
-    this._initialIdentity = this._operation.isIdentity;
   }
 
   /**

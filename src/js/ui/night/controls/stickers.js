@@ -117,10 +117,6 @@ class StickersControl extends Control {
     this._position = this._initialSettings.position.clone()
       .multiply(canvasSize);
 
-    // Don't render an already existing sticker as long as
-    // we're editing
-    this._operation.isIdentity = true;
-
     // Remember zoom level and zoom to fit the canvas
     this._initialZoomLevel = this._ui.canvas.zoomLevel;
     this._ui.canvas.zoomToFit();

@@ -40,15 +40,11 @@ class FramesControls extends Control {
     this._operationExistedBefore = !!this._ui.operations.frames;
     this._operation = this._ui.getOrCreateOperation("frames");
 
-    // Remember initial identity state
-    this._initialIdentity = this._operation.isIdentity;
-
     this._initialOptions = {
       thickness: this._operation.getThickness(),
       color: this._operation.getColor()
     };
 
-    this._operation.isIdentity = false;
     this._ui.canvas.render();
 
     // Init slider

@@ -51,8 +51,6 @@ class SaturationControls extends Control {
       defaultValue: saturation
     });
     this._slider.on("update", this._onUpdate.bind(this));
-
-    this._initialIdentity = this._operation.isIdentity;
   }
 
   /**

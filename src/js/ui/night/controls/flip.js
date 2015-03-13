@@ -37,7 +37,6 @@ class FlipControls extends Control {
 
     this._initialHorizontal = this._operation.getHorizontal();
     this._initialVertical = this._operation.getVertical();
-    this._initialIdentity = this._operation.isIdentity;
 
     let listItems = this._controls.querySelectorAll("li");
     this._listItems = Array.prototype.slice.call(listItems);
