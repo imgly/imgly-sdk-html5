@@ -22,7 +22,13 @@ A Text editor with an elegant and simple to use interface allows adding text ins
 
 See the [docs folder](/docs) for tutorials on how to integrate and customize the editor.
 
-### Examples
+## Preview
+
+<p align="center">
+  <img src="http://i.imgur.com/IFpAsf7.gif" />
+</p>
+
+## Examples
 See the examples folder for implementation examples or play with the [demo on our website](http://sdk.img.ly/).
 
 ## Setting up the development environment
