@@ -38,17 +38,17 @@ class ContrastControls extends Control {
     this._operationExistedBefore = !!this._ui.operations.contrast;
     this._operation = this._ui.getOrCreateOperation("contrast");
 
-    let sliderElement = this._controls.querySelector(".imglykit-slider");
-    this._slider = new Slider(sliderElement, {
-      minValue: 0,
-      maxValue: 2
-    });
-    this._slider.on("update", this._onUpdate.bind(this));
-
     // Initially set value
     let contrast = this._operation.getContrast();
     this._initialContrast = contrast;
-    this._slider.setValue(contrast);
+
+    let sliderElement = this._controls.querySelector(".imglykit-slider");
+    this._slider = new Slider(sliderElement, {
+      minValue: 0,
+      maxValue: 2,
+      defaultValues: contrast
+    });
+    this._slider.on("update", this._onUpdate.bind(this));
 
     this._initialIdentity = this._operation.isIdentity;
   }

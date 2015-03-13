@@ -21,19 +21,22 @@ class Slider extends EventEmitter {
     this._element = element;
     this._options = _.defaults(options, {
       minValue: 0,
-      maxValue: 1
+      maxValue: 1,
+      defaultValue: 0
     });
 
-    this._value = 0;
+    this._value = this._options.defaultValue;
 
     this._sliderElement = this._element.querySelector(".imglykit-slider-slider");
     this._dotElement = this._element.querySelector(".imglykit-slider-dot");
+    this._centerDotElement = this._element.querySelector(".imglykit-slider-center-dot");
     this._fillElement = this._element.querySelector(".imglykit-slider-fill");
 
     // Mouse event callbacks bound to class context
     this._onMouseDown = this._onMouseDown.bind(this);
     this._onMouseMove = this._onMouseMove.bind(this);
     this._onMouseUp = this._onMouseUp.bind(this);
+    this._onCenterDotClick = this._onCenterDotClick.bind(this);
 
     this._handleDot();
   }
@@ -90,6 +93,20 @@ class Slider extends EventEmitter {
   _handleDot () {
     this._dotElement.addEventListener("mousedown", this._onMouseDown);
     this._dotElement.addEventListener("touchstart", this._onMouseDown);
+
+    if (this._centerDotElement) {
+      this._centerDotElement.addEventListener("click", this._onCenterDotClick);
+    }
+  }
+
+  /**
+   * Gets called when the user clicks the center button. Resets to default
+   * settings.
+   * @private
+   */
+  _onCenterDotClick () {
+    this.setValue(this._options.defaultValue);
+    this.emit("update", this._value);
   }
 
   /**

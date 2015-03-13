@@ -40,17 +40,17 @@ class SaturationControls extends Control {
     this._operationExistedBefore = !!this._ui.operations.saturation;
     this._operation = this._ui.getOrCreateOperation("saturation");
 
-    let sliderElement = this._controls.querySelector(".imglykit-slider");
-    this._slider = new Slider(sliderElement, {
-      minValue: 0,
-      maxValue: 2
-    });
-    this._slider.on("update", this._onUpdate.bind(this));
-
     // Initially set value
     let saturation = this._operation.getSaturation();
     this._initialSaturation = saturation;
-    this._slider.setValue(saturation);
+
+    let sliderElement = this._controls.querySelector(".imglykit-slider");
+    this._slider = new Slider(sliderElement, {
+      minValue: 0,
+      maxValue: 2,
+      defaultValue: saturation
+    });
+    this._slider.on("update", this._onUpdate.bind(this));
 
     this._initialIdentity = this._operation.isIdentity;
   }

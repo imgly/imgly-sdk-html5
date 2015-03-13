@@ -38,17 +38,17 @@ class BrightnessControls extends Control {
     this._operationExistedBefore = !!this._ui.operations.brightness;
     this._operation = this._ui.getOrCreateOperation("brightness");
 
-    let sliderElement = this._controls.querySelector(".imglykit-slider");
-    this._slider = new Slider(sliderElement, {
-      minValue: -1,
-      maxValue: 1
-    });
-    this._slider.on("update", this._onUpdate.bind(this));
-
     // Initially set value
     let brightness = this._operation.getBrightness();
     this._initialBrightness = brightness;
-    this._slider.setValue(brightness);
+
+    let sliderElement = this._controls.querySelector(".imglykit-slider");
+    this._slider = new Slider(sliderElement, {
+      minValue: -1,
+      maxValue: 1,
+      defaultValue: brightness
+    });
+    this._slider.on("update", this._onUpdate.bind(this));
 
     this._initialIdentity = this._operation.isIdentity;
   }
