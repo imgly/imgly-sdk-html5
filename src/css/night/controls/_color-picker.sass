@@ -10,11 +10,20 @@
 .imglykit-container
   .imglykit-color-picker
     position: relative
-    padding-top: 15px
     border-left: 1px solid $borderColor
+    height: $controlsHeight
+
     .imglykit-color-picker-color
       @include border-radius(3px)
       background: black
+      margin-top: 15px
+
+    .imglykit-controls-item-label
+      position: absolute
+      line-height: 11px
+      width: 100%
+      bottom: 10px
+      left: 0
 
     .imglykit-transparent-knob
       pointer-events: none
