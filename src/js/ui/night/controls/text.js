@@ -124,11 +124,17 @@ class TextControl extends Control {
     this._foregroundColorPicker = new ColorPicker(this._ui, foregroundColorPicker);
     this._foregroundColorPicker.setValue(this._operation.getColor());
     this._foregroundColorPicker.on("update", this._onForegroundColorUpdate);
+    this._foregroundColorPicker.on("show", () => {
+      this._backgroundColorPicker.hide();
+    });
 
     let backgroundColorPicker = this._controls.querySelector("#imglykit-text-background-color-picker");
     this._backgroundColorPicker = new ColorPicker(this._ui, backgroundColorPicker);
     this._backgroundColorPicker.setValue(this._operation.getBackgroundColor());
     this._backgroundColorPicker.on("update", this._onBackgroundColorUpdate);
+    this._backgroundColorPicker.on("show", () => {
+      this._foregroundColorPicker.hide();
+    });
   }
 
   /**

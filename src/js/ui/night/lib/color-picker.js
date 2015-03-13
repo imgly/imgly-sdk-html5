@@ -90,12 +90,29 @@ class ColorPicker extends EventEmitter {
     if (e.target === this._element ||
       e.target === this._currentColorCanvas) {
         if (this._visible) {
-          this._overlay.classList.remove("imglykit-visible");
+          this.hide();
+          this.emit("hide");
         } else {
-          this._overlay.classList.add("imglykit-visible");
+          this.show();
+          this.emit("show");
         }
-        this._visible = !this._visible;
     }
+  }
+
+  /**
+   * Hides the color picker
+   */
+  hide () {
+    this._overlay.classList.remove("imglykit-visible");
+    this._visible = false;
+  }
+
+  /**
+   * Shows the color picker
+   */
+  show () {
+    this._overlay.classList.add("imglykit-visible");
+    this._visible = true;
   }
 
   /**
