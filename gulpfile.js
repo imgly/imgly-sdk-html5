@@ -46,6 +46,19 @@ gulp.task("clean", function () {
 });
 
 /**
+ * `gulp jshint`
+ * Lints the JavaScript code
+ */
+gulp.task("jshint", function () {
+  return gulp.src(["./src/js/**/*.js", "!src/js/vendor/**/*.js"])
+    .pipe($.jshint({
+      esnext: true
+    }))
+    .pipe($.jshint.reporter(require("jshint-stylish")))
+    .pipe($.jshint.reporter("fail"));
+});
+
+/**
  * `gulp sass`
  * Compiles the main .sass file to .css
  */
@@ -213,7 +226,7 @@ gulp.task("build", function () {
       "build:js",
       "build:css"
     ]
-  )
+  );
 });
 
 /**
@@ -224,6 +237,7 @@ gulp.task("release", function () {
   return runSequence(
     "set-production",
     "clean",
+    "jshint",
     "build:copy",
     "build:js",
     "build:css",
