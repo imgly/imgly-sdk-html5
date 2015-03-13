@@ -44,7 +44,7 @@ $ npm test
 $ gulp jsdocs
 ```
 
-The documentation will be in the `doc` directory.
+The documentation will be in the `doc` directory. **Notice:** Since the img.ly SDK is written in ES6 and JSDoc currently does not support ES6, documentation is not 100% complete.
 
 ### License
 Please see [LICENSE](https://github.com/imgly/imgly-sdk-html5/blob/master/LICENSE.md) for licensing details.
