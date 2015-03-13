@@ -60,10 +60,14 @@ class TiltShiftControls extends Control {
     this._onKnobDown = this._onKnobDown.bind(this);
     this._onKnobDrag = this._onKnobDrag.bind(this);
     this._onKnobUp = this._onKnobUp.bind(this);
+    this._onGradientKnobDown = this._onGradientKnobDown.bind(this);
+    this._onGradientKnobDrag = this._onGradientKnobDrag.bind(this);
+    this._onGradientKnobUp = this._onGradientKnobUp.bind(this);
 
     let selector = ".imglykit-canvas-tilt-shift-dot";
     this._startKnob = this._canvasControls.querySelector(`${selector}[data-option="start"]`);
     this._endKnob = this._canvasControls.querySelector(`${selector}[data-option="end"]`);
+    this._gradientKnob = this._canvasControls.querySelector(`${selector}[data-option="gradient"]`);
     this._knobs = [this._startKnob, this._endKnob];
 
     this._handleKnobs();
@@ -79,8 +83,6 @@ class TiltShiftControls extends Control {
    * @private
    */
   _initSliders () {
-    let canvasSize = this._ui.canvas.size;
-
     let blurRadiusSlider = this._controls.querySelector("#imglykit-blur-radius-slider");
     this._blurRadiusSlider = new SimpleSlider(blurRadiusSlider, {
       minValue: 0,
@@ -88,14 +90,6 @@ class TiltShiftControls extends Control {
     });
     this._blurRadiusSlider.on("update", this._onBlurRadiusUpdate.bind(this));
     this._blurRadiusSlider.setValue(this._initialSettings.blurRadius);
-
-    let gradientRadiusSlider = this._controls.querySelector("#imglykit-gradient-radius-slider");
-    this._gradientRadiusSlider = new SimpleSlider(gradientRadiusSlider, {
-      minValue: 1,
-      maxValue: Math.max(canvasSize.y, canvasSize.x)
-    });
-    this._gradientRadiusSlider.on("update", this._onGradientRadiusUpdate.bind(this));
-    this._gradientRadiusSlider.setValue(this._initialSettings.gradientRadius);
   }
 
   /**
@@ -105,17 +99,6 @@ class TiltShiftControls extends Control {
    */
   _onBlurRadiusUpdate (value) {
     this._operation.setBlurRadius(value);
-    this._ui.canvas.render();
-  }
-
-  /**
-   * Gets called when the value of the gradient radius slider has been updated
-   * @param {Number} value
-   * @private
-   */
-  _onGradientRadiusUpdate (value) {
-    this._operation.setGradientRadius(value);
-    this._updateDOM();
     this._ui.canvas.render();
   }
 
@@ -133,6 +116,72 @@ class TiltShiftControls extends Control {
         this._onKnobDown(knob, e);
       });
     }
+
+    this._gradientKnob.addEventListener("mousedown", this._onGradientKnobDown);
+    this._gradientKnob.addEventListener("touchstart", this._onGradientKnobDown);
+  }
+
+  /**
+   * Gets called when the user starts dragging the gradient knob
+   * @param {Event} e
+   * @private
+   */
+  _onGradientKnobDown (e) {
+    e.preventDefault();
+
+    this._initialMousePosition = Utils.getEventPosition(e);
+    this._initialGradientRadius = this._operation.getGradientRadius();
+    this._initialKnobPosition = this._calculateGradientKnobPosition();
+
+    document.addEventListener("mousemove", this._onGradientKnobDrag);
+    document.addEventListener("touchmove", this._onGradientKnobDrag);
+
+    document.addEventListener("mouseup", this._onGradientKnobUp);
+    document.addEventListener("touchend", this._onGradientKnobUp);
+  }
+
+  /**
+   * Gets called when the user drags the gradient knob
+   * @param {Event} e
+   * @private
+   */
+  _onGradientKnobDrag (e) {
+    e.preventDefault();
+
+    let mousePosition = Utils.getEventPosition(e);
+    let diff = mousePosition.subtract(this._initialMousePosition);
+
+    let canvasSize = this._ui.canvas.size;
+    let start = this._operation.getStart().clone().multiply(canvasSize);
+    let end = this._operation.getEnd().clone().multiply(canvasSize);
+
+    let dist = end.clone().subtract(start);
+    let middle = start.clone().add(dist.clone().divide(2));
+
+    let newKnobPosition = this._initialKnobPosition.clone().add(diff);
+    let distFromMiddle = newKnobPosition.clone().subtract(middle);
+
+    let absoluteDist = Math.sqrt(Math.pow(distFromMiddle.x, 2) + Math.pow(distFromMiddle.y, 2));
+    let newGradientRadius = absoluteDist * 2;
+
+    this._operation.setGradientRadius(newGradientRadius);
+    this._updateDOM();
+    this._ui.canvas.render();
+  }
+
+  /**
+   * Gets called when the user stops dragging the gradient knob
+   * @param {Event} e
+   * @private
+   */
+  _onGradientKnobUp (e) {
+    e.preventDefault();
+
+    document.removeEventListener("mousemove", this._onGradientKnobDrag);
+    document.removeEventListener("touchmove", this._onGradientKnobDrag);
+
+    document.removeEventListener("mouseup", this._onGradientKnobUp);
+    document.removeEventListener("touchend", this._onGradientKnobUp);
   }
 
   /**
@@ -199,6 +248,28 @@ class TiltShiftControls extends Control {
   }
 
   /**
+   * Calculates the gradient knob position using the current start and end
+   * position
+   * @return {Vector2}
+   * @private
+   */
+  _calculateGradientKnobPosition () {
+    let canvasSize = this._ui.canvas.size;
+    let start = this._operation.getStart().clone().multiply(canvasSize);
+    let end = this._operation.getEnd().clone().multiply(canvasSize);
+
+    let gradientRadius = this._operation.getGradientRadius() / 2;
+    let dist = end.clone().subtract(start);
+    let middle = start.clone().add(dist.clone().divide(2));
+
+    let totalDist = Math.sqrt(Math.pow(dist.x, 2) + Math.pow(dist.y, 2));
+    let factor = dist.clone().divide(totalDist);
+
+    return middle.clone()
+      .add(-gradientRadius * factor.y, gradientRadius * factor.x);
+  }
+
+  /**
    * Updates the knob
    * @private
    */
@@ -219,6 +290,10 @@ class TiltShiftControls extends Control {
 
     this._endKnob.style.left = `${end.x}px`;
     this._endKnob.style.top = `${end.y}px`;
+
+    let gradientKnobPosition = this._calculateGradientKnobPosition();
+    this._gradientKnob.style.left = `${gradientKnobPosition.x}px`;
+    this._gradientKnob.style.top = `${gradientKnobPosition.y}px`;
   }
 
   /**
