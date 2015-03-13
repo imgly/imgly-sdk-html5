@@ -215,8 +215,8 @@ class RadialBlurControls extends Control {
     let diff = mousePosition.subtract(this._initialMousePosition);
 
     // Calculate new gradient knob position
-    this._gradientKnobPosition = this._initialGradientKnobPosition.clone()
-      .add(diff);
+    this._gradientKnobPosition = this._initialGradientKnobPosition.clone().add(diff);
+    this._gradientKnobPosition.clamp(new Vector2(0, 0), canvasSize);
 
     // Calculate distance to position
     let position = this._operation.getPosition().clone().multiply(canvasSize);
