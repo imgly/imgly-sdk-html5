@@ -183,12 +183,22 @@ class TiltShiftControls extends Control {
   _onPositionKnobDrag (e) {
     e.preventDefault();
 
+    let canvasSize = this._ui.canvas.size;
     let mousePosition = Utils.getEventPosition(e);
     let diff = mousePosition.subtract(this._initialMousePosition);
 
     let newPosition = this._initialPosition.clone().add(diff);
     this._knobPosition.copy(newPosition);
-    this._gradientKnobPosition.copy(newPosition)
+
+    let minPosition = new Vector2().subtract(this._initialDistanceToGradientKnob);
+    minPosition.clamp(new Vector2(0, 0));
+
+    let maxPosition = canvasSize.clone().subtract(this._initialDistanceToGradientKnob);
+    maxPosition.clamp(null, canvasSize);
+
+    this._knobPosition.clamp(minPosition, maxPosition);
+
+    this._gradientKnobPosition.copy(this._knobPosition)
       .add(this._initialDistanceToGradientKnob);
 
     this._updateStartAndEnd();
@@ -237,10 +247,12 @@ class TiltShiftControls extends Control {
   _onGradientKnobDrag (e) {
     e.preventDefault();
 
+    let canvasSize = this._ui.canvas.size;
     let mousePosition = Utils.getEventPosition(e);
     let diff = mousePosition.subtract(this._initialMousePosition);
 
     this._gradientKnobPosition.copy(this._initialGradientKnobPosition).add(diff);
+    this._gradientKnobPosition.clamp(new Vector2(0, 0), canvasSize);
 
     let distance = this._gradientKnobPosition.clone().subtract(this._knobPosition);
     let newGradientRadius = 2 * Math.sqrt(
