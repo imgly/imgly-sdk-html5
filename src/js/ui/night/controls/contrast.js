@@ -46,7 +46,7 @@ class ContrastControls extends Control {
     this._slider = new Slider(sliderElement, {
       minValue: 0,
       maxValue: 2,
-      defaultValues: contrast
+      defaultValue: contrast
     });
     this._slider.on("update", this._onUpdate.bind(this));
   }
