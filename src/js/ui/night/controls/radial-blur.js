@@ -103,6 +103,13 @@ class RadialBlurControls extends Control {
    * @private
    */
   _handleKnobs () {
+    // Initially set gradient knob position
+    let canvasSize = this._ui.canvas.size;
+    let position = this._operation.getPosition().clone()
+      .multiply(canvasSize);
+    this._gradientKnobPosition = position.clone()
+      .add(this._initialSettings.gradientRadius, 0);
+
     this._positionKnob.addEventListener("mousedown", this._onPositionKnobDown);
     this._positionKnob.addEventListener("touchstart", this._onPositionKnobDown);
     this._gradientKnob.addEventListener("mousedown", this._onGradientKnobDown);
@@ -117,8 +124,12 @@ class RadialBlurControls extends Control {
   _onPositionKnobDown (e) {
     e.preventDefault();
 
+    let canvasSize = this._ui.canvas.size;
+
     this._initialMousePosition = Utils.getEventPosition(e);
     this._initialPosition = this._operation.getPosition().clone();
+    this._gradientKnobDistance = this._gradientKnobPosition.clone()
+      .subtract(this._initialPosition.clone().multiply(canvasSize));
 
     document.addEventListener("mousemove", this._onPositionKnobDrag);
     document.addEventListener("touchmove", this._onPositionKnobDrag);
@@ -141,15 +152,16 @@ class RadialBlurControls extends Control {
 
     let newPosition = this._initialPosition.clone()
       .multiply(canvasSize)
-      .add(diff)
-      .divide(canvasSize);
+      .add(diff);
 
+    let maxPosition = canvasSize.clone()
+      .subtract(this._gradientKnobDistance);
+    newPosition.clamp(new Vector2(0, 0), maxPosition);
 
-    // Calculate maximum X position to make sure the gradient knob
-    // can not be moved outside the canvas
-    let maxPositionX = 1 - this._operation.getGradientRadius() / canvasSize.x;
+    this._gradientKnobPosition.copy(newPosition).add(this._gradientKnobDistance);
 
-    newPosition.clamp(new Vector2(0, 0), new Vector2(maxPositionX, 1));
+    // Translate to 0...1
+    newPosition.divide(canvasSize);
 
     this._operation.setPosition(newPosition);
     this._updateDOM();
@@ -181,7 +193,7 @@ class RadialBlurControls extends Control {
     e.preventDefault();
 
     this._initialMousePosition = Utils.getEventPosition(e);
-    this._initialGradientRadius = this._operation.getGradientRadius();
+    this._initialGradientKnobPosition = this._gradientKnobPosition.clone();
 
     document.addEventListener("mousemove", this._onGradientKnobDrag);
     document.addEventListener("touchmove", this._onGradientKnobDrag);
@@ -198,19 +210,22 @@ class RadialBlurControls extends Control {
   _onGradientKnobDrag (e) {
     e.preventDefault();
 
-    // let canvasSize = this._ui.canvas.size;
+    let canvasSize = this._ui.canvas.size;
     let mousePosition = Utils.getEventPosition(e);
     let diff = mousePosition.subtract(this._initialMousePosition);
-    let canvasSize = this._ui.canvas.size;
+
+    // Calculate new gradient knob position
+    this._gradientKnobPosition = this._initialGradientKnobPosition.clone()
+      .add(diff);
+
+    // Calculate distance to position
     let position = this._operation.getPosition().clone().multiply(canvasSize);
+    let distance = this._gradientKnobPosition.clone()
+      .subtract(position);
+    let gradientRadius = Math.sqrt(Math.pow(distance.x, 2) + Math.pow(distance.y, 2));
 
-    let newGradientRadius = this._initialGradientRadius + diff.x;
-    let maxGradientRadius = canvasSize.x - position.x;
-
-    newGradientRadius = Math.max(newGradientRadius, 10);
-    newGradientRadius = Math.min(newGradientRadius, maxGradientRadius);
-
-    this._operation.setGradientRadius(newGradientRadius);
+    // Update operation
+    this._operation.setGradientRadius(gradientRadius);
     this._updateDOM();
     this._ui.canvas.render();
   }
@@ -243,9 +258,8 @@ class RadialBlurControls extends Control {
     this._positionKnob.style.left = `${position.x}px`;
     this._positionKnob.style.top = `${position.y}px`;
 
-    let gradientKnobPosition = position.clone().add(this._operation.getGradientRadius(), 0);
-    this._gradientKnob.style.left = `${gradientKnobPosition.x}px`;
-    this._gradientKnob.style.top = `${gradientKnobPosition.y}px`;
+    this._gradientKnob.style.left = `${this._gradientKnobPosition.x}px`;
+    this._gradientKnob.style.top = `${this._gradientKnobPosition.y}px`;
 
     let circleSize = this._operation.getGradientRadius() * 2;
     this._circle.style.left = `${position.x}px`;
