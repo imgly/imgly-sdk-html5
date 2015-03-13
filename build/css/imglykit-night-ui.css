@@ -349,56 +349,91 @@
   width: 80px;
   height: 80px;
   cursor: pointer;
+  -moz-transition: background-color 0.2s ease-out;
+  -o-transition: background-color 0.2s ease-out;
+  -webkit-transition: background-color 0.2s ease-out;
+  transition: background-color 0.2s ease-out;
   border-left: 1px solid #363636;
 }
-/* line 52, ../../src/css/night/_controls.sass */
+/* line 54, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls li:hover {
   -moz-box-shadow: 0 -3px 0 0 #9FBDFF inset;
   -webkit-box-shadow: 0 -3px 0 0 #9FBDFF inset;
   box-shadow: 0 -3px 0 0 #9FBDFF inset;
+  background-color: rgba(0, 0, 0, 0.3);
 }
-/* line 55, ../../src/css/night/_controls.sass */
+/* line 58, ../../src/css/night/_controls.sass */
+.imglykit-container .imglykit-controls li:hover img {
+  -moz-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  -webkit-transform: scale(1.1);
+  transform: scale(1.1);
+}
+/* line 61, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls li.imglykit-controls-item-active {
   background: rgba(0, 0, 0, 0.3);
 }
-/* line 59, ../../src/css/night/_controls.sass */
+/* line 65, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls li:last-child {
   border-right: 1px solid #363636;
 }
-/* line 62, ../../src/css/night/_controls.sass */
+/* line 68, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls li img {
   margin-top: 20px;
+  -moz-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  -webkit-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
 }
-/* line 65, ../../src/css/night/_controls.sass */
+/* line 72, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-icon {
   width: 80px;
   height: 80px;
   line-height: 80px;
   font-size: 0;
 }
-/* line 71, ../../src/css/night/_controls.sass */
+/* line 78, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-icon img {
   vertical-align: middle;
 }
-/* line 74, ../../src/css/night/_controls.sass */
+/* line 81, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-button {
+  -moz-transition: background-color 0.2s ease-out;
+  -o-transition: background-color 0.2s ease-out;
+  -webkit-transition: background-color 0.2s ease-out;
+  transition: background-color 0.2s ease-out;
   width: 80px;
   height: 80px;
   line-height: 80px;
   font-size: 0;
   cursor: pointer;
 }
-/* line 80, ../../src/css/night/_controls.sass */
+/* line 90, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-button:first-child {
   border-right: 1px solid #363636;
 }
-/* line 82, ../../src/css/night/_controls.sass */
+/* line 92, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-button:last-child {
   border-left: 1px solid #363636;
 }
-/* line 85, ../../src/css/night/_controls.sass */
+/* line 95, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-button img {
   vertical-align: middle;
+  -moz-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  -webkit-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+/* line 99, ../../src/css/night/_controls.sass */
+.imglykit-container .imglykit-controls .imglykit-controls-button:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+/* line 101, ../../src/css/night/_controls.sass */
+.imglykit-container .imglykit-controls .imglykit-controls-button:hover img {
+  -moz-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  -webkit-transform: scale(1.1);
+  transform: scale(1.1);
 }
 
 /*!

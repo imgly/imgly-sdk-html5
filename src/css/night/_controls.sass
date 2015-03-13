@@ -49,8 +49,14 @@
       width: $controlsWidth
       height: $controlsHeight
       cursor: pointer
+      @include transition(background-color 0.2s ease-out)
+
       &:hover
         @include box-shadow(0 -3px 0 0 $primaryColor inset)
+        background-color: rgba(black, 0.3)
+
+        img
+          @include transform(scale(1.1))
 
       &.imglykit-controls-item-active
         background: rgba(black, 0.3)
@@ -61,6 +67,7 @@
 
       img
         margin-top: 20px
+        @include transition(all 0.2s ease-out)
 
     .imglykit-controls-icon
       width: $controlsWidth
@@ -72,11 +79,14 @@
         vertical-align: middle
 
     .imglykit-controls-button
+      @include transition(background-color 0.2s ease-out)
+
       width: $controlsWidth
       height: $controlsHeight
       line-height: $controlsHeight
       font-size: 0
       cursor: pointer
+
       &:first-child
         border-right: 1px solid $borderColor
       &:last-child
@@ -84,3 +94,9 @@
 
       img
         vertical-align: middle
+        @include transition(all 0.2s ease-out)
+
+      &:hover
+        background-color: rgba(black, 0.3)
+        img
+          @include transform(scale(1.1))
