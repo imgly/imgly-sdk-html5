@@ -20,11 +20,14 @@
     height: 100%
 
     padding: 30px
-    padding-top: $headerHeight + $topControlsHeight + 30px
+    padding-top: $topControlsHeight + 30px
     padding-bottom: $controlsHeight + 30px
 
     display: table
     table-layout: fixed
+
+    &.imglykit-header-padding
+      padding-top: $headerHeight + $topControlsHeight + 30px
 
     .imglykit-drop-area
       @include border-radius(5px)

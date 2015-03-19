@@ -29,7 +29,7 @@
       <div class="imglykit-canvas-controls imglykit-canvas-controls-disabled"></div>
     </div>
     {{? it.renderDropArea }}
-    <div class="imglykit-drop-area-container">
+    <div class="imglykit-drop-area-container{{? !it.options.ui.hideHeader }} imglykit-header-padding{{?}}">
       <div class="imglykit-drop-area"></div>
     </div>
     {{?}}
