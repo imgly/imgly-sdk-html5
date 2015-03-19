@@ -47,8 +47,11 @@ class ImglyKit {
     options = _.defaults(options, {
       assetsUrl: "assets",
       container: null,
-      ui: true,
       renderOnWindowResize: false
+    });
+    options.ui = _.defaults(options.ui, {
+      enabled: false,
+      showHeader: true
     });
 
     /**
@@ -86,7 +89,7 @@ class ImglyKit {
     // Register the default operations
     this._registerOperations();
 
-    if (this._options.ui) {
+    if (this._options.ui.enabled) {
       this._initUI();
       if (this._options.renderOnWindowResize) {
         this._handleWindowResize();
@@ -209,17 +212,13 @@ class ImglyKit {
   _initUI () {
     var UI;
 
-    if (this._options.ui === true) {
+    if (this._options.ui.enabled === true) {
       // Select the first UI by default
       UI = Utils.values(this._registeredUIs)[0];
-    } else {
-      // Select the UI with the given identifier
-      UI = this._registeredUIs[this._options.ui];
     }
 
-    // Check if UI exists
-    if (typeof UI === "undefined") {
-      throw new Error("ImglyKit: Unknown UI: " + this._options.ui);
+    if (!UI) {
+      return;
     }
 
     /**

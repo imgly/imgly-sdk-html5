@@ -60,26 +60,6 @@ describe("ImglyKit", function () {
 
       });
 
-      describe("when `options.ui` is set to an invalid identifier", function () {
-
-        it("should throw an error", function () {
-          var throwable = function () {
-            kit = new ImglyKit({ image: null, ui: "foo", container: stubContainer });
-          };
-          throwable.should.throw("ImglyKit: Unknown UI: foo");
-        });
-
-      });
-
-      describe("when `options.ui` is set to a valid identifier", function () {
-
-        it("should initialize the correct UI", function () {
-          kit = new ImglyKit({ image: null, ui: "night", container: stubContainer });
-          kit.ui.should.be.an.instanceOf(NightUI);
-        });
-
-      });
-
     }); // UI
 
   }); // #constructor
