@@ -15,6 +15,7 @@ class BaseUI {
   constructor (kit, options) {
     this._kit = kit;
     this._options = options;
+    this._options.ui = this._options.ui || {};
     this._operations = [];
     this._helpers = new Helpers(this.kit, this, options);
     this.selectOperations(null);
@@ -97,7 +98,8 @@ class BaseUI {
   get context () {
     return {
       operations: this._operations,
-      helpers: this._helpers
+      helpers: this._helpers,
+      options: this._options
     };
   }
 

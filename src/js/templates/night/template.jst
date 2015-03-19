@@ -1,5 +1,10 @@
 <div class="imglykit-container">
-  <div class="imglykit-top-controls">
+  {{? !it.options.ui.hideHeader }}
+  <div class="imglykit-header">
+    img.ly Photo Editor SDK
+  </div>
+  {{?}}
+  <div class="imglykit-top-controls{{? !it.options.ui.hideHeader }} imglykit-header-padding{{?}}">
     <div class="imglykit-top-controls-left">
       <div class="imglykit-undo">
         <img src="{{=it.helpers.assetPath('ui/night/top/undo.png')}}" />
@@ -18,7 +23,7 @@
     </div>
   </div>
 
-  <div class="imglykit-canvas-container">
+  <div class="imglykit-canvas-container{{? !it.options.ui.hideHeader }} imglykit-header-padding{{?}}">
     <div class="imglykit-canvas-inner-container">
       <canvas class="imglykit-canvas-draggable"></canvas>
       <div class="imglykit-canvas-controls imglykit-canvas-controls-disabled"></div>
