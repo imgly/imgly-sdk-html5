@@ -43,7 +43,6 @@ class TopControls extends EventEmitter {
   _handleZoom () {
     this._zoomIn.addEventListener("click", this._onZoomInClick.bind(this));
     this._zoomOut.addEventListener("click", this._onZoomOutClick.bind(this));
-    this.updateZoomLevel();
   }
 
   /**

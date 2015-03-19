@@ -70,7 +70,10 @@ class NightUI extends UI {
 
     this._handleOverview();
 
-    this._initCanvas();
+    if (this._options.image) {
+      this._initCanvas();
+    }
+
     this._initTopControls();
     this._initControls();
   }
@@ -287,6 +290,7 @@ class NightUI extends UI {
   get context () {
     let context = super.context;
     context.controls = this._registeredControls;
+    context.renderDropArea = !this._options.image;
     return context;
   }
 

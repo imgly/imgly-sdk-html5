@@ -1,0 +1,35 @@
+/*!
+ * Copyright (c) 2013-2015 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+
+.imglykit-container
+
+  .imglykit-drop-area-container
+    width: 100%
+
+    position: absolute
+    top: 0
+    left: 0
+
+    width: 100%
+    height: 100%
+
+    padding: 30px
+    padding-top: $headerHeight + $topControlsHeight + 30px
+    padding-bottom: $controlsHeight + 30px
+
+    display: table
+    table-layout: fixed
+
+    .imglykit-drop-area
+      @include border-radius(5px)
+      display: table-cell
+
+      border: 1px dashed $lightBorderColor
+      width: 100%
+      height: 100%

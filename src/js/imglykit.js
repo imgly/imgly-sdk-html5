@@ -60,9 +60,6 @@ class ImglyKit {
      */
     this._options = options;
 
-    // `options.image` is required
-    if (typeof this._options.image === "undefined") throw new Error("`options.image` is undefined.");
-
     /**
      * The stack of {@link Operation} instances that will be used
      * to render the final Image
