@@ -31,6 +31,7 @@
     {{? it.renderDropArea }}
     <div class="imglykit-drop-area-container{{? !it.options.ui.hideHeader }} imglykit-header-padding{{?}}">
       <div class="imglykit-drop-area">
+        <input type="file" class="imglykit-drop-area-hidden-input" />
         <img src="{{=it.helpers.assetPath('ui/night/upload.png')}}" />
 
         <div class="imglykit-drop-area-content">

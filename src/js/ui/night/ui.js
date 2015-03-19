@@ -11,6 +11,7 @@
 let fs = require("fs");
 import UI from "../base/ui";
 import Canvas from "./lib/canvas";
+import FileLoader from "./lib/file-loader";
 import TopControls from "./lib/top-controls";
 
 class NightUI extends UI {
@@ -72,10 +73,20 @@ class NightUI extends UI {
 
     if (this._options.image) {
       this._initCanvas();
+    } else {
+      this._initFileLoader();
     }
 
     this._initTopControls();
     this._initControls();
+  }
+
+  /**
+   * Initializes the file loader
+   * @private
+   */
+  _initFileLoader () {
+    this._fileLoader = new FileLoader(this._kit, this);
   }
 
   /**

@@ -40,7 +40,9 @@
 
       vertical-align: middle
 
-      &.active
+      cursor: pointer
+
+      &.imglykit-drop-area-active, &:hover
         background: rgba(white, 0.05)
 
       .imglykit-drop-area-content
@@ -58,3 +60,11 @@
         span
           color: $lightBorderColor
           font-size: 14px
+
+      .imglykit-drop-area-hidden-input
+        visibility: hidden
+        position: absolute
+        top: 0
+        left: 0
+        width: 0
+        height: 0
