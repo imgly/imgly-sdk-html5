@@ -21,6 +21,8 @@ class NightUI extends UI {
     this._registeredControls = {};
     this._history = [];
 
+    this._options.ui.showNewButton = !this._options.image;
+
     // The `Night` UI has a fixed operation order
     this._preferredOperationOrder = [
       // First, all operations that affect the image dimensions
@@ -87,6 +89,36 @@ class NightUI extends UI {
    */
   _initFileLoader () {
     this._fileLoader = new FileLoader(this._kit, this);
+    this._fileLoader.on("file", this._onFileLoaded.bind(this));
+  }
+
+  /**
+   * Gets called when the user loaded a file using the FileLoader
+   * @param {File} file
+   * @private
+   */
+  _onFileLoaded (file) {
+    let reader = new FileReader();
+    reader.onload = ((file) => {
+      return (e) => {
+        let data = e.target.result;
+        let image = new Image();
+        image.src = data;
+
+        this._setImage(image);
+      };
+    })(file);
+    reader.readAsDataURL(file);
+  }
+
+  /**
+   * Sets the image option and starts rendering
+   * @param {Image} image
+   * @private
+   */
+  _setImage (image) {
+    this._options.image = image;
+    this.run();
   }
 
   /**

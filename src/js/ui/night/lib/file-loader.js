@@ -8,9 +8,12 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+import EventEmitter from "../../../lib/event-emitter";
 
-class FileLoader {
+class FileLoader extends EventEmitter {
   constructor (kit, ui) {
+    super();
+
     this._kit = kit;
     this._ui = ui;
 
@@ -118,8 +121,13 @@ class FileLoader {
     this._handleFile(this._hiddenInputField.files[0]);
   }
 
+  /**
+   * Gets called when the user selected a file. Emits a `file` event.
+   * @param {File} file
+   * @private
+   */
   _handleFile (file) {
-    console.log(file);
+    this.emit("file", file);
   }
 }
 
