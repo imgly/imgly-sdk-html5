@@ -24,13 +24,11 @@ bluebird.onPossiblyUnhandledRejection((error) => { throw error; });
 /**
  * @class
  * @param {Object} options
- * @param {Image} options.image - The source image
+ * @param {Image} [options.image] - The source image
  * @param {HTMLElement} [options.container] - Specifies where the UI should be
  *                                          added to. If none is given, the UI
  *                                          will automatically be disabled.
- * @param {Boolean|String} [options.ui=true] - Specifies which UI style to use.
- *                                           `false` disables the UI, `true`
- *                                           enables the default UI.
+ * @param {Boolean} [options.ui.enabled=true] - Enables or disables the UI
  * @param {Boolean} [options.renderOnWindowResize] - Specifies whether the canvas
  *                                                 should re-render itself when
  *                                                 the window is being resized.
@@ -241,7 +239,7 @@ class ImglyKit {
  * @name ImglyKit.version
  * @internal Keep in sync with package.json
  */
-ImglyKit.version = "2.0.0-beta3";
+ImglyKit.version = "2.0.0-beta4";
 
 // Exposed classes
 ImglyKit.RenderImage = RenderImage;

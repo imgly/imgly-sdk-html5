@@ -117,14 +117,18 @@
   overflow: hidden;
 }
 /* line 25, ../../src/css/night/_canvas.sass */
+.imglykit-container .imglykit-canvas-container.imglykit-header-padding {
+  padding-top: 70px;
+}
+/* line 28, ../../src/css/night/_canvas.sass */
 .imglykit-container .imglykit-canvas-inner-container {
   position: relative;
 }
-/* line 28, ../../src/css/night/_canvas.sass */
+/* line 31, ../../src/css/night/_canvas.sass */
 .imglykit-container .imglykit-canvas-inner-container canvas {
   cursor: move;
 }
-/* line 31, ../../src/css/night/_canvas.sass */
+/* line 34, ../../src/css/night/_canvas.sass */
 .imglykit-container .imglykit-canvas-inner-container .imglykit-canvas-controls {
   position: absolute;
   top: 0;
@@ -132,9 +136,104 @@
   width: 100%;
   height: 100%;
 }
-/* line 38, ../../src/css/night/_canvas.sass */
+/* line 41, ../../src/css/night/_canvas.sass */
 .imglykit-container .imglykit-canvas-inner-container .imglykit-canvas-controls.imglykit-canvas-controls-disabled {
   display: none;
+}
+
+/*!
+ * Copyright (c) 2013-2015 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+/* line 12, ../../src/css/night/_drop-area.sass */
+.imglykit-container .imglykit-drop-area-container {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 30px;
+  padding-top: 70px;
+  padding-bottom: 110px;
+  display: table;
+  table-layout: fixed;
+}
+/* line 29, ../../src/css/night/_drop-area.sass */
+.imglykit-container .imglykit-drop-area-container.imglykit-header-padding {
+  padding-top: 100px;
+}
+/* line 32, ../../src/css/night/_drop-area.sass */
+.imglykit-container .imglykit-drop-area-container .imglykit-drop-area {
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  text-align: center;
+  display: table-cell;
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  width: 100%;
+  height: 100%;
+  vertical-align: middle;
+  cursor: pointer;
+}
+/* line 45, ../../src/css/night/_drop-area.sass */
+.imglykit-container .imglykit-drop-area-container .imglykit-drop-area.imglykit-drop-area-active, .imglykit-container .imglykit-drop-area-container .imglykit-drop-area:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+/* line 48, ../../src/css/night/_drop-area.sass */
+.imglykit-container .imglykit-drop-area-container .imglykit-drop-area .imglykit-drop-area-content {
+  width: 250px;
+  margin: auto;
+  margin-top: 10px;
+  font-family: Helvetica, Arial, Verdana;
+}
+/* line 54, ../../src/css/night/_drop-area.sass */
+.imglykit-container .imglykit-drop-area-container .imglykit-drop-area .imglykit-drop-area-content h1 {
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+  margin-bottom: 5px;
+}
+/* line 60, ../../src/css/night/_drop-area.sass */
+.imglykit-container .imglykit-drop-area-container .imglykit-drop-area .imglykit-drop-area-content span {
+  color: rgba(255, 255, 255, 0.2);
+  font-size: 14px;
+}
+/* line 64, ../../src/css/night/_drop-area.sass */
+.imglykit-container .imglykit-drop-area-container .imglykit-drop-area .imglykit-drop-area-hidden-input {
+  visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+}
+
+/*!
+ * Copyright (c) 2013-2015 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+/* line 11, ../../src/css/night/_header.sass */
+.imglykit-container .imglykit-header {
+  background: #1A1A1A;
+  text-align: center;
+  color: white;
+  font: bold 11px Helvetica, Arial, sans-serif;
+  line-height: 30px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 30px;
+  z-index: 2;
 }
 
 /*!
@@ -172,56 +271,75 @@
   line-height: 30px;
 }
 /* line 32, ../../src/css/night/_top.sass */
+.imglykit-container .imglykit-top-controls.imglykit-header-padding {
+  top: 30px;
+}
+/* line 35, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-top-controls-left, .imglykit-container .imglykit-top-controls-right {
   padding-top: 5px;
 }
-/* line 35, ../../src/css/night/_top.sass */
+/* line 38, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-top-controls-left {
   float: left;
-  display: none;
 }
-/* line 39, ../../src/css/night/_top.sass */
+/* line 41, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-top-controls-right {
   float: right;
+  display: none;
 }
-/* line 42, ../../src/css/night/_top.sass */
+/* line 45, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-top-controls-right .imglykit-zoom-in, .imglykit-container .imglykit-top-controls-right .imglykit-zoom-out {
   padding: 0 15px;
   cursor: pointer;
   border-left: 1px solid #363636;
 }
-/* line 47, ../../src/css/night/_top.sass */
+/* line 50, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-top-controls-right .imglykit-zoom-in img, .imglykit-container .imglykit-top-controls-right .imglykit-zoom-out img {
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
   opacity: 0.4;
   vertical-align: middle;
 }
-/* line 50, ../../src/css/night/_top.sass */
+/* line 53, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-top-controls-right .imglykit-zoom-in:hover img, .imglykit-container .imglykit-top-controls-right .imglykit-zoom-out:hover img {
   filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
   opacity: 1;
 }
-/* line 53, ../../src/css/night/_top.sass */
+/* line 56, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-top-controls-right .imglykit-zoom-out {
   padding-right: 0;
 }
-/* line 56, ../../src/css/night/_top.sass */
+/* line 59, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-top-controls-right .imglykit-zoom-level {
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
   opacity: 0.4;
   padding: 0 10px;
 }
-/* line 60, ../../src/css/night/_top.sass */
+/* line 63, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-undo {
   cursor: pointer;
   border-right: 1px solid #363636;
   color: rgba(255, 255, 255, 0.4);
   padding-right: 10px;
+  display: none;
 }
-/* line 65, ../../src/css/night/_top.sass */
+/* line 69, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-undo img {
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
   opacity: 0.4;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+/* line 74, ../../src/css/night/_top.sass */
+.imglykit-container .imglykit-new {
+  cursor: pointer;
+  border-right: 1px solid #363636;
+  color: rgba(255, 255, 255, 0.4);
+  padding-right: 10px;
+}
+/* line 79, ../../src/css/night/_top.sass */
+.imglykit-container .imglykit-new img {
+  margin-right: 5px;
+  vertical-align: middle;
 }
 
 /*!
@@ -364,44 +482,46 @@
   -webkit-transition: all 0.2s ease-out;
   transition: all 0.2s ease-out;
   margin-top: 20px;
+  width: 40px;
 }
-/* line 61, ../../src/css/night/_controls.sass */
+/* line 62, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls li.imglykit-controls-item-active {
   background: rgba(0, 0, 0, 0.3);
 }
-/* line 64, ../../src/css/night/_controls.sass */
+/* line 65, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-item-label {
   color: white;
-  font-size: 11px;
+  font-size: 10px;
   font-family: Helvetica, Arial, sans-serif;
-  margin-top: 8px;
+  font-weight: bold;
+  margin-top: 10px;
 }
-/* line 70, ../../src/css/night/_controls.sass */
+/* line 72, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-icon {
   width: 80px;
   height: 80px;
   line-height: 80px;
   font-size: 0;
 }
-/* line 76, ../../src/css/night/_controls.sass */
+/* line 78, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-icon img {
   vertical-align: middle;
 }
-/* line 79, ../../src/css/night/_controls.sass */
+/* line 81, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls li:hover, .imglykit-container .imglykit-controls .imglykit-controls-button:hover {
   -moz-box-shadow: 0 -3px 0 0 #9FBDFF inset;
   -webkit-box-shadow: 0 -3px 0 0 #9FBDFF inset;
   box-shadow: 0 -3px 0 0 #9FBDFF inset;
   background-color: rgba(0, 0, 0, 0.3);
 }
-/* line 83, ../../src/css/night/_controls.sass */
+/* line 85, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls li:hover img, .imglykit-container .imglykit-controls .imglykit-controls-button:hover img {
   -moz-transform: scale(1.1);
   -ms-transform: scale(1.1);
   -webkit-transform: scale(1.1);
   transform: scale(1.1);
 }
-/* line 86, ../../src/css/night/_controls.sass */
+/* line 88, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-button {
   -moz-transition: background-color 0.2s ease-out;
   -o-transition: background-color 0.2s ease-out;
@@ -413,17 +533,18 @@
   font-size: 0;
   cursor: pointer;
 }
-/* line 95, ../../src/css/night/_controls.sass */
+/* line 97, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-button:first-child {
   border-right: 1px solid #363636;
 }
-/* line 97, ../../src/css/night/_controls.sass */
+/* line 99, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-button:last-child {
   border-left: 1px solid #363636;
 }
-/* line 100, ../../src/css/night/_controls.sass */
+/* line 102, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-button img {
   vertical-align: middle;
+  width: 40px;
   -moz-transition: all 0.2s ease-out;
   -o-transition: all 0.2s ease-out;
   -webkit-transition: all 0.2s ease-out;

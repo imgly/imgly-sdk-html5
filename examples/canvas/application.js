@@ -2,40 +2,35 @@
 "use strict";
 window.onload = function() {
 
-  var image = new Image();
-  image.src = "test.jpg";
+  /*
+   * Initialize ImglyKit
+   */
+  var kit = new ImglyKit({
+    renderer: "canvas", // Defaults to "webgl", uses "canvas" as fallback
+    assetsUrl: "../../build/assets", // The URL / path where all assets are
+    container: document.querySelector("#container"),
+    ui: {
+      enabled: true
+    },
+    renderOnWindowResize: true // Our editor's size is relative to the window size
+  });
 
-  image.onload = function () {
-    /*
-     * Initialize ImglyKit
-     */
-    var kit = new ImglyKit({
-      image: image, // Has to be an instance of Image!
-      renderer: "canvas", // Defaults to "webgl", uses "canvas" as fallback
-      assetsUrl: "../../build/assets", // The URL / path where all assets are
-      container: document.querySelector("#container"),
-      ui: true, // Disable the UI, we use the low level API here
-      renderOnWindowResize: true // Our editor's size is relative to the window size
-    });
+  kit.run();
 
-    // kit.ui.selectOperations({ only: "filters,crop" });
+  /*
+   * We have a "Render" button which (on click) will request the rendered
+   * image from ImglyKit and add it to the DOM
+   */
+  var button = document.getElementById("render-button");
+  button.addEventListener("click", function (e) {
+    e.preventDefault();
 
-    kit.run();
-
-    // kit.operationsStack.push(new ImglyKit.Operations.FiltersOperation(kit, {
-    //   filter: ImglyKit.Filters.Breeze
-    // }));
-
-    // kit.operationsStack.push(new ImglyKit.Operations.CropRotationOperation(kit, {
-    //   start: new ImglyKit.Vector2(0.1, 0.1),
-    //   end: new ImglyKit.Vector2(0.9, 0.9)
-    // }));
-
-    // kit.render("image", null, "800x800")
-    //   .then(function (image) {
-    //     document.body.appendChild(image);
-    //   });
-
-    window.kit = kit;
-  };
+    // This will render the image with 100 pixels in width while
+    // respecting the aspect ratio
+    // Possible render types: image, data-url
+    var image = kit.render("image", "image/png")
+      .then(function (image) {
+        document.body.appendChild(image);
+      });
+  });
 };

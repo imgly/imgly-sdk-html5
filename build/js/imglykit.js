@@ -5439,13 +5439,11 @@ bluebird.onPossiblyUnhandledRejection(function (error) {
 /**
  * @class
  * @param {Object} options
- * @param {Image} options.image - The source image
+ * @param {Image} [options.image] - The source image
  * @param {HTMLElement} [options.container] - Specifies where the UI should be
  *                                          added to. If none is given, the UI
  *                                          will automatically be disabled.
- * @param {Boolean|String} [options.ui=true] - Specifies which UI style to use.
- *                                           `false` disables the UI, `true`
- *                                           enables the default UI.
+ * @param {Boolean} [options.ui.enabled=true] - Enables or disables the UI
  * @param {Boolean} [options.renderOnWindowResize] - Specifies whether the canvas
  *                                                 should re-render itself when
  *                                                 the window is being resized.
@@ -5465,8 +5463,11 @@ var ImglyKit = (function () {
     options = _.defaults(options, {
       assetsUrl: "assets",
       container: null,
-      ui: true,
       renderOnWindowResize: false
+    });
+    options.ui = _.defaults(options.ui, {
+      enabled: false,
+      showHeader: true
     });
 
     /**
@@ -5474,9 +5475,6 @@ var ImglyKit = (function () {
      * @private
      */
     this._options = options;
-
-    // `options.image` is required
-    if (typeof this._options.image === "undefined") throw new Error("`options.image` is undefined.");
 
     /**
      * The stack of {@link Operation} instances that will be used
@@ -5504,7 +5502,7 @@ var ImglyKit = (function () {
     // Register the default operations
     this._registerOperations();
 
-    if (this._options.ui) {
+    if (this._options.ui.enabled) {
       this._initUI();
       if (this._options.renderOnWindowResize) {
         this._handleWindowResize();
@@ -5691,17 +5689,13 @@ var ImglyKit = (function () {
       value: function _initUI() {
         var UI;
 
-        if (this._options.ui === true) {
+        if (this._options.ui.enabled === true) {
           // Select the first UI by default
           UI = Utils.values(this._registeredUIs)[0];
-        } else {
-          // Select the UI with the given identifier
-          UI = this._registeredUIs[this._options.ui];
         }
 
-        // Check if UI exists
-        if (typeof UI === "undefined") {
-          throw new Error("ImglyKit: Unknown UI: " + this._options.ui);
+        if (!UI) {
+          return;
         }
 
         /**
@@ -5737,7 +5731,7 @@ var ImglyKit = (function () {
  * @name ImglyKit.version
  * @internal Keep in sync with package.json
  */
-ImglyKit.version = "2.0.0-beta3";
+ImglyKit.version = "2.0.0-beta4";
 
 // Exposed classes
 ImglyKit.RenderImage = RenderImage;
@@ -5795,7 +5789,7 @@ ImglyKit.Vector2 = require("./lib/math/vector2");
 
 module.exports = ImglyKit;
 
-},{"./constants":42,"./lib/color":44,"./lib/image-exporter":48,"./lib/math/vector2":49,"./lib/render-image":50,"./lib/utils":51,"./operations/brightness-operation":52,"./operations/contrast-operation":53,"./operations/crop-operation":54,"./operations/filters-operation":55,"./operations/filters/a15-filter":56,"./operations/filters/breeze-filter":57,"./operations/filters/bw-filter":58,"./operations/filters/bwhard-filter":59,"./operations/filters/celsius-filter":60,"./operations/filters/chest-filter":61,"./operations/filters/filter":62,"./operations/filters/fixie-filter":63,"./operations/filters/food-filter":64,"./operations/filters/fridge-filter":65,"./operations/filters/front-filter":66,"./operations/filters/glam-filter":67,"./operations/filters/gobblin-filter":68,"./operations/filters/k1-filter":70,"./operations/filters/k2-filter":71,"./operations/filters/k6-filter":72,"./operations/filters/kdynamic-filter":73,"./operations/filters/lenin-filter":74,"./operations/filters/lomo-filter":75,"./operations/filters/mellow-filter":76,"./operations/filters/morning-filter":77,"./operations/filters/orchid-filter":78,"./operations/filters/pola-filter":79,"./operations/filters/pola669-filter":80,"./operations/filters/quozi-filter":94,"./operations/filters/semired-filter":95,"./operations/filters/sunny-filter":96,"./operations/filters/texas-filter":97,"./operations/filters/x400-filter":98,"./operations/flip-operation":99,"./operations/frames-operation":100,"./operations/operation":101,"./operations/radial-blur-operation":102,"./operations/rotation-operation":103,"./operations/saturation-operation":104,"./operations/stickers-operation":105,"./operations/text-operation":106,"./operations/tilt-shift-operation":107,"./ui/night/ui":131,"bluebird":4,"lodash":"lodash","path":38}],44:[function(require,module,exports){
+},{"./constants":42,"./lib/color":44,"./lib/image-exporter":48,"./lib/math/vector2":49,"./lib/render-image":50,"./lib/utils":51,"./operations/brightness-operation":52,"./operations/contrast-operation":53,"./operations/crop-operation":54,"./operations/filters-operation":55,"./operations/filters/a15-filter":56,"./operations/filters/breeze-filter":57,"./operations/filters/bw-filter":58,"./operations/filters/bwhard-filter":59,"./operations/filters/celsius-filter":60,"./operations/filters/chest-filter":61,"./operations/filters/filter":62,"./operations/filters/fixie-filter":63,"./operations/filters/food-filter":64,"./operations/filters/fridge-filter":65,"./operations/filters/front-filter":66,"./operations/filters/glam-filter":67,"./operations/filters/gobblin-filter":68,"./operations/filters/k1-filter":70,"./operations/filters/k2-filter":71,"./operations/filters/k6-filter":72,"./operations/filters/kdynamic-filter":73,"./operations/filters/lenin-filter":74,"./operations/filters/lomo-filter":75,"./operations/filters/mellow-filter":76,"./operations/filters/morning-filter":77,"./operations/filters/orchid-filter":78,"./operations/filters/pola-filter":79,"./operations/filters/pola669-filter":80,"./operations/filters/quozi-filter":94,"./operations/filters/semired-filter":95,"./operations/filters/sunny-filter":96,"./operations/filters/texas-filter":97,"./operations/filters/x400-filter":98,"./operations/flip-operation":99,"./operations/frames-operation":100,"./operations/operation":101,"./operations/radial-blur-operation":102,"./operations/rotation-operation":103,"./operations/saturation-operation":104,"./operations/stickers-operation":105,"./operations/text-operation":106,"./operations/tilt-shift-operation":107,"./ui/night/ui":132,"bluebird":4,"lodash":"lodash","path":38}],44:[function(require,module,exports){
 "use strict";
 
 var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
@@ -13133,7 +13127,7 @@ var RadialBlurOperation = (function (Operation) {
 
 module.exports = RadialBlurOperation;
 
-},{"../lib/math/vector2":49,"../vendor/stack-blur":132,"./operation":101}],103:[function(require,module,exports){
+},{"../lib/math/vector2":49,"../vendor/stack-blur":133,"./operation":101}],103:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -14409,7 +14403,7 @@ var TiltShiftOperation = (function (Operation) {
 
 module.exports = TiltShiftOperation;
 
-},{"../lib/math/vector2":49,"../vendor/stack-blur":132,"./operation":101}],108:[function(require,module,exports){
+},{"../lib/math/vector2":49,"../vendor/stack-blur":133,"./operation":101}],108:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -15674,6 +15668,7 @@ var BaseUI = (function () {
 
     this._kit = kit;
     this._options = options;
+    this._options.ui = this._options.ui || {};
     this._operations = [];
     this._helpers = new Helpers(this.kit, this, options);
     this.selectOperations(null);
@@ -15790,7 +15785,8 @@ var BaseUI = (function () {
       get: function () {
         return {
           operations: this._operations,
-          helpers: this._helpers
+          helpers: this._helpers,
+          options: this._options
         };
       },
       configurable: true
@@ -16022,7 +16018,7 @@ var BrightnessControl = (function (Control) {
 
 module.exports = BrightnessControl;
 
-},{"../lib/slider":129,"./control":115}],114:[function(require,module,exports){
+},{"../lib/slider":130,"./control":115}],114:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -16170,7 +16166,7 @@ var ContrastControl = (function (Control) {
 
 module.exports = ContrastControl;
 
-},{"../lib/slider":129,"./control":115}],115:[function(require,module,exports){
+},{"../lib/slider":130,"./control":115}],115:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -17916,7 +17912,7 @@ var FramesControl = (function (Control) {
 
 module.exports = FramesControl;
 
-},{"../lib/color-picker":127,"../lib/simple-slider":128,"./control":115}],120:[function(require,module,exports){
+},{"../lib/color-picker":127,"../lib/simple-slider":129,"./control":115}],120:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -18306,7 +18302,7 @@ var RadialBlurControl = (function (Control) {
 
 module.exports = RadialBlurControl;
 
-},{"../../../lib/math/vector2":49,"../../../lib/utils":51,"../lib/simple-slider":128,"./control":115}],121:[function(require,module,exports){
+},{"../../../lib/math/vector2":49,"../../../lib/utils":51,"../lib/simple-slider":129,"./control":115}],121:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -18729,7 +18725,7 @@ var SaturationControl = (function (Control) {
 
 module.exports = SaturationControl;
 
-},{"../lib/slider":129,"./control":115}],123:[function(require,module,exports){
+},{"../lib/slider":130,"./control":115}],123:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -20390,7 +20386,7 @@ var TiltShiftControl = (function (Control) {
 
 module.exports = TiltShiftControl;
 
-},{"../../../lib/math/vector2":49,"../../../lib/utils":51,"../lib/simple-slider":128,"./control":115}],126:[function(require,module,exports){
+},{"../../../lib/math/vector2":49,"../../../lib/utils":51,"../lib/simple-slider":129,"./control":115}],126:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -21835,6 +21831,214 @@ var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["defau
 
 var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
 
+var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+/*!
+ * Copyright (c) 2013-2015 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+
+var EventEmitter = _interopRequire(require("../../../lib/event-emitter"));
+
+var FileLoader = (function (EventEmitter) {
+  function FileLoader(kit, ui) {
+    _classCallCheck(this, FileLoader);
+
+    _get(Object.getPrototypeOf(FileLoader.prototype), "constructor", this).call(this);
+
+    this._kit = kit;
+    this._ui = ui;
+
+    // http://stackoverflow.com/questions/7110353/html5-dragleave-fired-when-hovering-a-child-element
+    this._dragCounter = 0;
+
+    this._onDropAreaDragEnter = this._onDropAreaDragEnter.bind(this);
+    this._onDropAreaDragOver = this._onDropAreaDragOver.bind(this);
+    this._onDropAreaDragLeave = this._onDropAreaDragLeave.bind(this);
+    this._onDropAreaDrop = this._onDropAreaDrop.bind(this);
+    this._onDropAreaClick = this._onDropAreaClick.bind(this);
+    this._onFileInputChange = this._onFileInputChange.bind(this);
+
+    this._hiddenInputField = this._ui.container.querySelector(".imglykit-drop-area .imglykit-drop-area-hidden-input");
+    this._hiddenInputField.addEventListener("change", this._onFileInputChange);
+
+    this._handleDropArea();
+  }
+
+  _inherits(FileLoader, EventEmitter);
+
+  _prototypeProperties(FileLoader, null, {
+    openFileDialog: {
+
+      /**
+       * Opens the file dialog
+       */
+
+      value: function openFileDialog() {
+        this._hiddenInputField.click();
+      },
+      writable: true,
+      configurable: true
+    },
+    _handleDropArea: {
+
+      /**
+       * Finds the drop area, adds event listeners
+       * @private
+       */
+
+      value: function _handleDropArea() {
+        var container = this._ui.container;
+
+        this._dropArea = container.querySelector(".imglykit-drop-area");
+        this._dropArea.addEventListener("dragenter", this._onDropAreaDragEnter);
+        this._dropArea.addEventListener("dragover", this._onDropAreaDragOver);
+        this._dropArea.addEventListener("dragleave", this._onDropAreaDragLeave);
+        this._dropArea.addEventListener("drop", this._onDropAreaDrop);
+        this._dropArea.addEventListener("dragdrop", this._onDropAreaDrop);
+        this._dropArea.addEventListener("click", this._onDropAreaClick);
+      },
+      writable: true,
+      configurable: true
+    },
+    _onDropAreaClick: {
+
+      /**
+       * Gets called when the user clicks on the drop area. Opens the file
+       * dialog by triggering a click on the hidden input field
+       * @param {Event} e
+       * @private
+       */
+
+      value: function _onDropAreaClick(e) {
+        this.openFileDialog();
+      },
+      writable: true,
+      configurable: true
+    },
+    _onDropAreaDragEnter: {
+
+      /**
+       * Gets called when the user drags a file over the drop area
+       * @param {Event} e
+       * @private
+       */
+
+      value: function _onDropAreaDragEnter(e) {
+        e.preventDefault();
+
+        this._dragCounter++;
+        this._dropArea.classList.add("imglykit-drop-area-active");
+      },
+      writable: true,
+      configurable: true
+    },
+    _onDropAreaDragOver: {
+
+      /**
+       * We need to cancel this event to get a drop event
+       * @param {Event} e
+       * @private
+       */
+
+      value: function _onDropAreaDragOver(e) {
+        e.preventDefault();
+      },
+      writable: true,
+      configurable: true
+    },
+    _onDropAreaDragLeave: {
+
+      /**
+       * Gets called when the user does no longer drag a file over the drop area
+       * @param {Event} e
+       * @private
+       */
+
+      value: function _onDropAreaDragLeave(e) {
+        e.preventDefault();
+
+        this._dragCounter--;
+
+        if (this._dragCounter === 0) {
+          this._dropArea.classList.remove("imglykit-drop-area-active");
+        }
+      },
+      writable: true,
+      configurable: true
+    },
+    _onDropAreaDrop: {
+
+      /**
+       * Gets called when the user drops a file on the drop area
+       * @param {Event} e
+       * @private
+       */
+
+      value: function _onDropAreaDrop(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        e.returnValue = false;
+
+        this._dropArea.classList.remove("imglykit-drop-area-active");
+
+        if (!e.dataTransfer) {
+          return;
+        }this._handleFile(e.dataTransfer.files[0]);
+      },
+      writable: true,
+      configurable: true
+    },
+    _onFileInputChange: {
+
+      /**
+       * Gets called when the user selected a file
+       * @param {Event} e
+       * @private
+       */
+
+      value: function _onFileInputChange(e) {
+        this._handleFile(this._hiddenInputField.files[0]);
+      },
+      writable: true,
+      configurable: true
+    },
+    _handleFile: {
+
+      /**
+       * Gets called when the user selected a file. Emits a `file` event.
+       * @param {File} file
+       * @private
+       */
+
+      value: function _handleFile(file) {
+        this.emit("file", file);
+      },
+      writable: true,
+      configurable: true
+    }
+  });
+
+  return FileLoader;
+})(EventEmitter);
+
+module.exports = FileLoader;
+
+},{"../../../lib/event-emitter":45}],129:[function(require,module,exports){
+"use strict";
+
+var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+
+var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
@@ -21898,7 +22102,7 @@ var SimpleSlider = (function (Slider) {
 
 module.exports = SimpleSlider;
 
-},{"./slider":129}],129:[function(require,module,exports){
+},{"./slider":130}],130:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -22144,7 +22348,7 @@ var Slider = (function (EventEmitter) {
 
 module.exports = Slider;
 
-},{"../../../lib/event-emitter":45,"../../../lib/utils":51,"lodash":"lodash"}],130:[function(require,module,exports){
+},{"../../../lib/event-emitter":45,"../../../lib/utils":51,"lodash":"lodash"}],131:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -22198,8 +22402,10 @@ var TopControls = (function (EventEmitter) {
         this._zoomIn = container.querySelector(".imglykit-zoom-in");
         this._zoomOut = container.querySelector(".imglykit-zoom-out");
         this._zoomLevel = container.querySelector(".imglykit-zoom-level-num");
+        this._newButton = container.querySelector(".imglykit-new");
         this._handleZoom();
         this._handleUndo();
+        this._handleNew();
       },
       writable: true,
       configurable: true
@@ -22214,7 +22420,6 @@ var TopControls = (function (EventEmitter) {
       value: function _handleZoom() {
         this._zoomIn.addEventListener("click", this._onZoomInClick.bind(this));
         this._zoomOut.addEventListener("click", this._onZoomOutClick.bind(this));
-        this.updateZoomLevel();
       },
       writable: true,
       configurable: true
@@ -22229,6 +22434,39 @@ var TopControls = (function (EventEmitter) {
       value: function _handleUndo() {
         this._undoButton.addEventListener("click", this._undo.bind(this));
         this._undo();
+      },
+      writable: true,
+      configurable: true
+    },
+    _handleNew: {
+
+      /**
+       * Handles the new button
+       * @private
+       */
+
+      value: function _handleNew() {
+        if (!this._newButton) {
+          return;
+        }this._newButton.addEventListener("click", this._onNewClick.bind(this));
+      },
+      writable: true,
+      configurable: true
+    },
+    _onNewClick: {
+
+      /**
+       * Gets called when the user clicks the new button
+       * @param {Event} e
+       * @private
+       */
+
+      value: function _onNewClick(e) {
+        e.preventDefault();
+
+        var fileLoader = this._ui.fileLoader;
+
+        fileLoader.openFileDialog();
       },
       writable: true,
       configurable: true
@@ -22256,9 +22494,9 @@ var TopControls = (function (EventEmitter) {
         var history = this._ui.history;
 
         if (history.length === 0) {
-          this._leftControls.style.display = "none";
+          this._undoButton.style.display = "none";
         } else {
-          this._leftControls.style.display = "block";
+          this._undoButton.style.display = "inline-block";
         }
       },
       writable: true,
@@ -22305,7 +22543,7 @@ var TopControls = (function (EventEmitter) {
        */
 
       value: function showZoom() {
-        this._rightControls.style.display = "block";
+        this._rightControls.style.display = "inline-block";
       },
       writable: true,
       configurable: true
@@ -22343,7 +22581,7 @@ var TopControls = (function (EventEmitter) {
 
 module.exports = TopControls;
 
-},{"../../../lib/event-emitter":45}],131:[function(require,module,exports){
+},{"../../../lib/event-emitter":45}],132:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -22371,6 +22609,8 @@ var UI = _interopRequire(require("../base/ui"));
 
 var Canvas = _interopRequire(require("./lib/canvas"));
 
+var FileLoader = _interopRequire(require("./lib/file-loader"));
+
 var TopControls = _interopRequire(require("./lib/top-controls"));
 
 var NightUI = (function (UI) {
@@ -22382,7 +22622,7 @@ var NightUI = (function (UI) {
     _classCallCheck(this, NightUI);
 
     this._operationsMap = {};
-    this._template = "<div class=\"imglykit-container\">\n  <div class=\"imglykit-top-controls\">\n    <div class=\"imglykit-top-controls-left\">\n      <div class=\"imglykit-undo\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/top/undo.png')}}\" />\n        Undo\n      </div>\n    </div>\n    <div class=\"imglykit-top-controls-right\">\n      <div class=\"imglykit-zoom-fit\"></div>\n      <div class=\"imglykit-zoom-level\">Zoom: <span class=\"imglykit-zoom-level-num\">100</span>%</div>\n      <div class=\"imglykit-zoom-in\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/top/zoom-in.png')}}\" />\n      </div>\n      <div class=\"imglykit-zoom-out\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/top/zoom-out.png')}}\" />\n      </div>\n    </div>\n  </div>\n\n  <div class=\"imglykit-canvas-container\">\n    <div class=\"imglykit-canvas-inner-container\">\n      <canvas class=\"imglykit-canvas-draggable\"></canvas>\n      <div class=\"imglykit-canvas-controls imglykit-canvas-controls-disabled\"></div>\n    </div>\n  </div>\n\n  <div class=\"imglykit-controls-container\">\n    <div class=\"imglykit-controls\">\n\n      <div>\n        <div class=\"imglykit-controls-overview\">\n          <ul class=\"imglykit-controls-list\">\n          {{ for (var identifier in it.controls) { }}\n            {{ var control = it.controls[identifier]; }}\n            <li data-identifier=\"{{= control.identifier}}\">\n              <img src=\"{{=it.helpers.assetPath('ui/night/operations/' + control.identifier + '.png') }}\" />\n            </li>\n          {{ } }}\n          </ul>\n        </div>\n      </div>\n\n    </div>\n  </div>\n</div>\n";
+    this._template = "<div class=\"imglykit-container\">\n  {{? !it.options.ui.hideHeader }}\n  <div class=\"imglykit-header\">\n    img.ly Photo Editor SDK\n  </div>\n  {{?}}\n  <div class=\"imglykit-top-controls{{? !it.options.ui.hideHeader }} imglykit-header-padding{{?}}\">\n    <div class=\"imglykit-top-controls-left\">\n      {{? it.options.ui.showNewButton }}\n      <div class=\"imglykit-new\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/top/new.png')}}\" />\n        New\n      </div>\n      {{?}}\n      <div class=\"imglykit-undo\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/top/undo.png')}}\" />\n        Undo\n      </div>\n    </div>\n    <div class=\"imglykit-top-controls-right\">\n      <div class=\"imglykit-zoom-fit\"></div>\n      <div class=\"imglykit-zoom-level\">Zoom: <span class=\"imglykit-zoom-level-num\">100</span>%</div>\n      <div class=\"imglykit-zoom-in\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/top/zoom-in.png')}}\" />\n      </div>\n      <div class=\"imglykit-zoom-out\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/top/zoom-out.png')}}\" />\n      </div>\n    </div>\n  </div>\n\n  <div class=\"imglykit-canvas-container{{? !it.options.ui.hideHeader }} imglykit-header-padding{{?}}\">\n    <div class=\"imglykit-canvas-inner-container\">\n      <canvas class=\"imglykit-canvas-draggable\"></canvas>\n      <div class=\"imglykit-canvas-controls imglykit-canvas-controls-disabled\"></div>\n    </div>\n    {{? it.renderDropArea }}\n    <div class=\"imglykit-drop-area-container{{? !it.options.ui.hideHeader }} imglykit-header-padding{{?}}\">\n      <div class=\"imglykit-drop-area\">\n        <input type=\"file\" class=\"imglykit-drop-area-hidden-input\" />\n        <img src=\"{{=it.helpers.assetPath('ui/night/upload.png')}}\" />\n\n        <div class=\"imglykit-drop-area-content\">\n          <h1>Upload a picture</h1>\n          <span>Click to upload a picture from your library or just drag and drop</span>\n        </div>\n      </div>\n    </div>\n    {{?}}\n  </div>\n\n  <div class=\"imglykit-controls-container\">\n    <div class=\"imglykit-controls\">\n\n      <div>\n        <div class=\"imglykit-controls-overview\">\n          <ul class=\"imglykit-controls-list\">\n          {{ for (var identifier in it.controls) { }}\n            {{ var control = it.controls[identifier]; }}\n            <li data-identifier=\"{{= control.identifier}}\">\n              <img src=\"{{=it.helpers.assetPath('ui/night/operations/' + control.identifier + '.png') }}\" />\n            </li>\n          {{ } }}\n          </ul>\n        </div>\n      </div>\n\n    </div>\n  </div>\n</div>\n";
     this._registeredControls = {};
     this._history = [];
 
@@ -22400,6 +22640,8 @@ var NightUI = (function (UI) {
     this._paused = false;
 
     _get(Object.getPrototypeOf(NightUI.prototype), "constructor", this).apply(this, args);
+
+    this._options.ui.showNewButton = !this._options.image;
   }
 
   _inherits(NightUI, UI);
@@ -22436,9 +22678,71 @@ var NightUI = (function (UI) {
 
         this._handleOverview();
 
-        this._initCanvas();
+        if (this._options.image) {
+          this._initCanvas();
+        } else {
+          this._initFileLoader();
+        }
+
         this._initTopControls();
         this._initControls();
+
+        if (this._options.image) this.showZoom();
+      },
+      writable: true,
+      configurable: true
+    },
+    _initFileLoader: {
+
+      /**
+       * Initializes the file loader
+       * @private
+       */
+
+      value: function _initFileLoader() {
+        this._fileLoader = new FileLoader(this._kit, this);
+        this._fileLoader.on("file", this._onFileLoaded.bind(this));
+      },
+      writable: true,
+      configurable: true
+    },
+    _onFileLoaded: {
+
+      /**
+       * Gets called when the user loaded a file using the FileLoader
+       * @param {File} file
+       * @private
+       */
+
+      value: function _onFileLoaded(file) {
+        var _this = this;
+
+        var reader = new FileReader();
+        reader.onload = (function (file) {
+          return function (e) {
+            var data = e.target.result;
+            var image = new Image();
+            image.src = data;
+
+            _this._setImage(image);
+          };
+        })(file);
+        reader.readAsDataURL(file);
+      },
+      writable: true,
+      configurable: true
+    },
+    _setImage: {
+
+      /**
+       * Sets the image option and starts rendering
+       * @param {Image} image
+       * @private
+       */
+
+      value: function _setImage(image) {
+        this._options.image = image;
+        this.run();
       },
       writable: true,
       configurable: true
@@ -22756,6 +23060,7 @@ var NightUI = (function (UI) {
       get: function () {
         var context = _get(Object.getPrototypeOf(NightUI.prototype), "context", this);
         context.controls = this._registeredControls;
+        context.renderDropArea = !this._options.image;
         return context;
       },
       configurable: true
@@ -22865,6 +23170,18 @@ var NightUI = (function (UI) {
         return this._history;
       },
       configurable: true
+    },
+    fileLoader: {
+
+      /**
+       * The file loader
+       * @type {FileLoader}
+       */
+
+      get: function () {
+        return this._fileLoader;
+      },
+      configurable: true
     }
   });
 
@@ -22873,7 +23190,7 @@ var NightUI = (function (UI) {
 
 module.exports = NightUI;
 
-},{"../base/ui":112,"./controls/brightness":113,"./controls/contrast":114,"./controls/crop":116,"./controls/filters":117,"./controls/flip":118,"./controls/frames":119,"./controls/radial-blur":120,"./controls/rotation":121,"./controls/saturation":122,"./controls/stickers":123,"./controls/text":124,"./controls/tilt-shift":125,"./lib/canvas":126,"./lib/top-controls":130}],132:[function(require,module,exports){
+},{"../base/ui":112,"./controls/brightness":113,"./controls/contrast":114,"./controls/crop":116,"./controls/filters":117,"./controls/flip":118,"./controls/frames":119,"./controls/radial-blur":120,"./controls/rotation":121,"./controls/saturation":122,"./controls/stickers":123,"./controls/text":124,"./controls/tilt-shift":125,"./lib/canvas":126,"./lib/file-loader":128,"./lib/top-controls":131}],133:[function(require,module,exports){
 "use strict";
 
 /*

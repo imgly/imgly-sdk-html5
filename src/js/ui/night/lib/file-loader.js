@@ -27,7 +27,7 @@ class FileLoader extends EventEmitter {
     this._onDropAreaClick = this._onDropAreaClick.bind(this);
     this._onFileInputChange = this._onFileInputChange.bind(this);
 
-    this._hiddenInputField = container.querySelector(".imglykit-drop-area .imglykit-drop-area-hidden-input");
+    this._hiddenInputField = this._ui.container.querySelector(".imglykit-drop-area .imglykit-drop-area-hidden-input");
     this._hiddenInputField.addEventListener("change", this._onFileInputChange);
 
     this._handleDropArea();
