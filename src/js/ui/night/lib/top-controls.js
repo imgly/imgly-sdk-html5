@@ -32,8 +32,10 @@ class TopControls extends EventEmitter {
     this._zoomIn = container.querySelector(".imglykit-zoom-in");
     this._zoomOut = container.querySelector(".imglykit-zoom-out");
     this._zoomLevel = container.querySelector(".imglykit-zoom-level-num");
+    this._newButton = container.querySelector(".imglykit-new");
     this._handleZoom();
     this._handleUndo();
+    this._handleNew();
   }
 
   /**
@@ -55,6 +57,28 @@ class TopControls extends EventEmitter {
   }
 
   /**
+   * Handles the new button
+   * @private
+   */
+  _handleNew () {
+    if (!this._newButton) return;
+
+    this._newButton.addEventListener("click", this._onNewClick.bind(this));
+  }
+
+  /**
+   * Gets called when the user clicks the new button
+   * @param {Event} e
+   * @private
+   */
+  _onNewClick (e) {
+    e.preventDefault();
+
+    let { fileLoader } = this._ui;
+    fileLoader.openFileDialog();
+  }
+
+  /**
    * Gets called when the user clicks the undo button
    * @private
    */
@@ -68,9 +92,9 @@ class TopControls extends EventEmitter {
   updateUndoButton () {
     let { history } = this._ui;
     if (history.length === 0) {
-      this._leftControls.style.display = "none";
+      this._undoButton.style.display = "none";
     } else {
-      this._leftControls.style.display = "block";
+      this._undoButton.style.display = "inline-block";
     }
   }
 
@@ -102,7 +126,7 @@ class TopControls extends EventEmitter {
    * Shows the zoom control
    */
   showZoom () {
-    this._rightControls.style.display = "block";
+    this._rightControls.style.display = "inline-block";
   }
 
   /**

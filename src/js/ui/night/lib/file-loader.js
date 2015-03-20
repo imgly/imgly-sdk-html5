@@ -34,6 +34,13 @@ class FileLoader extends EventEmitter {
   }
 
   /**
+   * Opens the file dialog
+   */
+  openFileDialog () {
+    this._hiddenInputField.click();
+  }
+
+  /**
    * Finds the drop area, adds event listeners
    * @private
    */
@@ -56,7 +63,7 @@ class FileLoader extends EventEmitter {
    * @private
    */
   _onDropAreaClick (e) {
-    this._hiddenInputField.click();
+    this.openFileDialog();
   }
 
   /**

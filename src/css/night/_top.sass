@@ -37,10 +37,10 @@
 
   .imglykit-top-controls-left
     float: left
-    display: none
 
   .imglykit-top-controls-right
     float: right
+    display: none
 
     .imglykit-zoom-in, .imglykit-zoom-out
       padding: 0 15px
@@ -65,5 +65,17 @@
     border-right: 1px solid $borderColor
     color: rgba(white, 0.4)
     padding-right: 10px
+    display: none
     img
       @include opacity(0.4)
+      margin-right: 5px
+      vertical-align: middle
+
+  .imglykit-new
+    cursor: pointer
+    border-right: 1px solid $borderColor
+    color: rgba(white, 0.4)
+    padding-right: 10px
+    img
+      margin-right: 5px
+      vertical-align: middle

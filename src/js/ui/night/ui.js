@@ -21,8 +21,6 @@ class NightUI extends UI {
     this._registeredControls = {};
     this._history = [];
 
-    this._options.ui.showNewButton = !this._options.image;
-
     // The `Night` UI has a fixed operation order
     this._preferredOperationOrder = [
       // First, all operations that affect the image dimensions
@@ -47,6 +45,8 @@ class NightUI extends UI {
     this._paused = false;
 
     super(...args);
+
+    this._options.ui.showNewButton = !this._options.image;
   }
 
   /**
@@ -81,6 +81,8 @@ class NightUI extends UI {
 
     this._initTopControls();
     this._initControls();
+
+    if (this._options.image) this.showZoom();
   }
 
   /**
@@ -402,6 +404,14 @@ class NightUI extends UI {
    */
   get history () {
     return this._history;
+  }
+
+  /**
+   * The file loader
+   * @type {FileLoader}
+   */
+  get fileLoader () {
+    return this._fileLoader;
   }
 }
 

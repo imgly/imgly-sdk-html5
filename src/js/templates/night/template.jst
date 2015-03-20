@@ -6,6 +6,12 @@
   {{?}}
   <div class="imglykit-top-controls{{? !it.options.ui.hideHeader }} imglykit-header-padding{{?}}">
     <div class="imglykit-top-controls-left">
+      {{? it.options.ui.showNewButton }}
+      <div class="imglykit-new">
+        <img src="{{=it.helpers.assetPath('ui/night/top/new.png')}}" />
+        New
+      </div>
+      {{?}}
       <div class="imglykit-undo">
         <img src="{{=it.helpers.assetPath('ui/night/top/undo.png')}}" />
         Undo
