@@ -9,6 +9,7 @@
  */
 
 let fs = require("fs");
+import _ from "lodash";
 import UI from "../base/ui";
 import Canvas from "./lib/canvas";
 import FileLoader from "./lib/file-loader";
@@ -314,7 +315,9 @@ class NightUI extends UI {
    * Re-renders the canvas
    */
   render () {
-    this._canvas.render();
+    if (this._canvas) {
+      this._canvas.render();
+    }
   }
 
   /**
