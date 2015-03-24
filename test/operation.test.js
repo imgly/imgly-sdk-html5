@@ -244,12 +244,13 @@ describe("Operation", function () {
 
       describe("#validateSettings", function () {
 
-        it("should throw an error", function () {
+        it("should return a rejected Promise", function (done) {
 
-          var throwable = function () {
-            operation.validateSettings();
-          };
-          throwable.should.throw("Operation `null`: Option `req` is required.");
+          operation.validateSettings()
+            .catch(function (err) {
+              err.message.should.equal("Operation `null`: Option `req` is required.");
+              done();
+            });
 
         });
 
@@ -261,14 +262,14 @@ describe("Operation", function () {
 
       describe("#validateSettings()", function () {
 
-        it("should not throw an error", function () {
+        it("should not throw an error", function (done) {
 
           operation.setReq("foo"); // skip the validation for `req` option
 
-          var throwable = function () {
-            operation.validateSettings();
-          };
-          throwable.should.not.throw();
+          operation.validateSettings()
+            .then(function () {
+              done();
+            });
 
         });
 
