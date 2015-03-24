@@ -8,8 +8,9 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+require("babel/polyfill");
+
 import _ from "lodash";
-import bluebird from "bluebird";
 import RenderImage from "./lib/render-image";
 import ImageExporter from "./lib/image-exporter";
 import { RenderType, ImageFormat } from "./constants";
@@ -17,9 +18,6 @@ import Utils from "./lib/utils";
 
 // Default UIs
 import NightUI from "./ui/night/ui";
-
-// Don't catch errors
-bluebird.onPossiblyUnhandledRejection((error) => { throw error; });
 
 /**
  * @class

@@ -11,7 +11,6 @@
 import Operation from "./operation";
 import Vector2 from "../lib/math/vector2";
 import Utils from "../lib/utils";
-import bluebird from "bluebird";
 
 /**
  * An operation that can draw text on the canvas
@@ -244,11 +243,12 @@ class StickersOperation extends Operation {
     var image = new Canvas.Image();
     var path = self._kit.getAssetPath(fileName);
 
-    return bluebird.promisify(fs.readFile)(path)
-      .then(function(buffer) {
+    return new Promise((resolve, reject) => {
+      fs.readFile(path, (buffer) => {
         image.src = buffer;
-        return image;
+        resolve(image);
       });
+    });
   }
 
   /**

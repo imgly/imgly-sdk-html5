@@ -42,7 +42,6 @@
   "dependencies": {
     "babel": "^4.6.0",
     "babelify": "^5.0.3",
-    "bluebird": "^2.8.0",
     "brfs": "^1.2.0",
     "browserify": "^7.0.2",
     "dot": "^1.0.3",

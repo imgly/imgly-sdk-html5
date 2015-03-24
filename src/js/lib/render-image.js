@@ -7,7 +7,6 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-import bluebird from "bluebird";
 import ImageDimensions from "./image-dimensions";
 import Vector2 from "./math/vector2";
 import CanvasRenderer from "../renderers/canvas-renderer";
@@ -103,28 +102,32 @@ class RenderImage {
   render () {
     let stack = this.sanitizedStack;
 
-    var self = this;
-    return bluebird
-      .map(stack, function (operation) {
-        return operation.validateSettings();
+    let validationPromises = [];
+    for (let operation of stack) {
+      validationPromises.push(operation.validateSettings());
+    };
+
+    return Promise.all(validationPromises)
+      .then(() => {
+        let promises = [];
+        for (let operation of stack) {
+          promises.push(operation.render(this._renderer));
+        }
+        return Promise.all(promises);
       })
-      .then(function () {
-        return bluebird.map(stack, function (operation) {
-          return operation.render(self._renderer);
-        }, { concurrency: 1 }).then(function () {
-          return self._renderer.renderFinal();
-        });
+      .then(() => {
+        return this._renderer.renderFinal();
       })
-      .then(function () {
-        var initialSize = self._renderer.getSize();
-        var finalDimensions = self._dimensions.calculateFinalDimensions(initialSize);
+      .then(() => {
+        let initialSize = this._renderer.getSize();
+        let finalDimensions = this._dimensions.calculateFinalDimensions(initialSize);
 
         if (finalDimensions.equals(initialSize)) {
           // No need to resize
           return;
         }
 
-        return self._renderer.resizeTo(finalDimensions);
+        return this._renderer.resizeTo(finalDimensions);
       });
   }
 

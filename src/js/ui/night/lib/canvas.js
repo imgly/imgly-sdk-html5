@@ -8,7 +8,6 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import bluebird from "bluebird";
 import WebGLRenderer from "../../../renderers/webgl-renderer";
 import CanvasRenderer from "../../../renderers/canvas-renderer";
 import Vector2 from "../../../lib/math/vector2";
@@ -86,16 +85,19 @@ class Canvas extends EventEmitter {
     let stack = this.sanitizedStack;
     this._updateStackDirtyStates(stack);
 
-    return bluebird
-      // Validate all settings
-      .map(stack, (operation) => {
-        return operation.validateSettings();
-      })
+    let validationPromises = [];
+    for (let operation of stack) {
+      validationPromises.push(operation.validateSettings());
+    };
+
+    return Promise.all(validationPromises)
       // Render the operations stack
       .then(() => {
-        return bluebird.map(stack, (operation) => {
-          return operation.render(this._renderer);
-        }, { concurrency: 1 });
+        let promises = [];
+        for (let operation of stack) {
+          promises.push(operation.render(this._renderer));
+        }
+        return Promise.all(promises);
       })
       // Render the final image
       .then(() => {
