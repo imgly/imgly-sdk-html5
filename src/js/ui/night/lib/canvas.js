@@ -88,7 +88,7 @@ class Canvas extends EventEmitter {
     let validationPromises = [];
     for (let operation of stack) {
       validationPromises.push(operation.validateSettings());
-    };
+    }
 
     return Promise.all(validationPromises)
       // Render the operations stack

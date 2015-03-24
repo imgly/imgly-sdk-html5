@@ -105,7 +105,7 @@ class RenderImage {
     let validationPromises = [];
     for (let operation of stack) {
       validationPromises.push(operation.validateSettings());
-    };
+    }
 
     return Promise.all(validationPromises)
       .then(() => {
