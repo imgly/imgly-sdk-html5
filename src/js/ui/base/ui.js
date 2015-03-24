@@ -9,10 +9,13 @@
  */
 import dot from "dot";
 import Utils from "../../lib/utils";
+import EventEmitter from "../../lib/event-emitter";
 import Helpers from "./helpers";
 
-class BaseUI {
+class BaseUI extends EventEmitter {
   constructor (kit, options) {
+    super();
+
     this._kit = kit;
     this._options = options;
     this._options.ui = this._options.ui || {};

@@ -2,6 +2,12 @@
   {{? !it.options.ui.hideHeader }}
   <div class="imglykit-header">
     img.ly Photo Editor SDK
+
+    {{? it.options.ui.showCloseButton }}
+    <div class="imglykit-close-button">
+      <img src="{{=it.helpers.assetPath('ui/night/close.png')}}" />
+    </div>
+    {{?}}
   </div>
   {{?}}
   <div class="imglykit-top-controls{{? !it.options.ui.hideHeader }} imglykit-header-padding{{?}}">

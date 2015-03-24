@@ -88,6 +88,10 @@ class NightUI extends UI {
     this._initControls();
 
     if (this._options.image) this.showZoom();
+
+    if (this._options.ui.showCloseButton) {
+      this._handleCloseButton();
+    }
   }
 
   /**
@@ -309,6 +313,19 @@ class NightUI extends UI {
       control.setContainers(this._controlsContainer, this._canvasControlsContainer);
       control.init();
     }
+  }
+
+  /**
+   * Handles the click event on the close button, emits a `close` event
+   * when clicking
+   * @private
+   */
+  _handleCloseButton () {
+    let closeButton = this._options.container.querySelector(".imglykit-close-button");
+    closeButton.addEventListener("click", (e) => {
+      e.preventDefault();
+      this.emit("close");
+    });
   }
 
   /**
