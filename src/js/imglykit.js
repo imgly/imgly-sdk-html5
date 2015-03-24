@@ -47,8 +47,9 @@ class ImglyKit {
       container: null,
       renderOnWindowResize: false
     });
+    options.ui = options.ui || {};
     options.ui = _.defaults(options.ui, {
-      enabled: false,
+      enabled: true,
       showHeader: true
     });
 
