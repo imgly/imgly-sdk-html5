@@ -57,7 +57,7 @@
           <ul class="imglykit-controls-list">
           {{ for (var identifier in it.controls) { }}
             {{ var control = it.controls[identifier]; }}
-            <li data-identifier="{{= control.identifier}}">
+            <li data-identifier="{{= control.identifier}}"{{? it.controlsDisabled }} data-disabled{{?}}>
               <img src="{{=it.helpers.assetPath('ui/night/operations/' + control.identifier + '.png') }}" />
             </li>
           {{ } }}

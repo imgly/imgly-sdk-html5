@@ -78,7 +78,11 @@
       img
         vertical-align: middle
 
-    li:hover, .imglykit-controls-button:hover
+    li[data-disabled]
+      @include opacity(0.5)
+
+
+    li:hover:not([data-disabled]), .imglykit-controls-button:hover:not([data-disabled])
       @include box-shadow(0 -3px 0 0 $primaryColor inset)
       background-color: rgba(black, 0.3)
 

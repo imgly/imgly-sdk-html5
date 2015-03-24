@@ -256,6 +256,7 @@ class NightUI extends UI {
    * @private
    */
   _onOverviewButtonClick (identifier) {
+    if (this.context.controlsDisabled) return;
     this._overviewControlsContainer.style.display = "none";
 
     if (this._currentControl) {
@@ -336,6 +337,7 @@ class NightUI extends UI {
     let context = super.context;
     context.controls = this._registeredControls;
     context.renderDropArea = !this._options.image;
+    context.controlsDisabled = !this._options.image;
     return context;
   }
 
