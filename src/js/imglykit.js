@@ -49,8 +49,7 @@ class ImglyKit {
     });
     options.ui = options.ui || {};
     options.ui = _.defaults(options.ui, {
-      enabled: true,
-      showHeader: true
+      enabled: true
     });
 
     if (typeof options.image === "undefined" && !options.ui.enabled) {

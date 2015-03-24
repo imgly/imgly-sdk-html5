@@ -46,9 +46,11 @@ class NightUI extends UI {
 
     super(...args);
 
-    if (typeof this._options.ui.showNewButton === "undefined") {
-      this._options.ui.showNewButton = !this._options.image;
-    }
+    this._options.ui = _.defaults(this._options.ui, {
+      showNewButton: !this._options.image,
+      showHeader: true,
+      showCloseButton: false
+    });
   }
 
   /**
