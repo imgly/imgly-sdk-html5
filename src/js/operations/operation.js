@@ -54,17 +54,21 @@ class Operation extends EventEmitter {
 
   /**
    * Checks whether this Operation can be applied the way it is configured
+   * @return {Promise}
    */
   validateSettings () {
-    var identifier = this.identifier;
-
-    // Check for required options
-    for (var optionName in this.availableOptions) {
-      var optionConfig = this.availableOptions[optionName];
-      if (optionConfig.required && typeof this._options[optionName] === "undefined") {
-        throw new Error("Operation `" + identifier + "`: Option `" + optionName + "` is required.");
+    let identifier = this.identifier;
+    return new Promise((resolve, reject) => {
+      // Check for required options
+      for (let optionName in this.availableOptions) {
+        let optionConfig = this.availableOptions[optionName];
+        if (optionConfig.required && typeof this._options[optionName] === "undefined") {
+          return reject(new Error("Operation `" + identifier + "`: Option `" + optionName + "` is required."));
+        }
       }
-    }
+
+      resolve();
+    });
   }
 
   /**
