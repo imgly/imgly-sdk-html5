@@ -143,6 +143,8 @@ gulp.task("browserify", function () {
   args.entries = [input];
   args.extensions = [".js"];
   args.fullPaths = !isProduction;
+  args.insertGlobals = false;
+
   var b = browserify(args);
 
   b.transform(babelify);
