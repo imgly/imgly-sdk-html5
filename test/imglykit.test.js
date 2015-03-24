@@ -38,11 +38,11 @@ describe("ImglyKit", function () {
 
     });
 
-    describe("when options.image is not given", function () {
+    describe("when options.image is not given and UI is disabled", function () {
 
       it("should throw an error", function () {
         var throwable = function () {
-          new ImglyKit({});
+          new ImglyKit({ ui: { enabled: false } });
         };
         throwable.should.throw();
       });
@@ -51,10 +51,10 @@ describe("ImglyKit", function () {
 
     describe("UI", function () {
 
-      describe("when `options.ui` is set to false", function () {
+      describe("when `options.ui.enabled` is set to false", function () {
 
         it("should not initialize the UI", function () {
-          kit = new ImglyKit({ image: null, ui: false });
+          kit = new ImglyKit({ image: null, ui: { enabled: false } });
           should.not.exist(kit.ui);
         });
 

@@ -53,6 +53,10 @@ class ImglyKit {
       showHeader: true
     });
 
+    if (typeof options.image === "undefined" && !options.ui.enabled) {
+      throw new Error("`options.image` needs to be set when UI is disabled.");
+    }
+
     /**
      * @type {Object}
      * @private
