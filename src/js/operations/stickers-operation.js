@@ -244,7 +244,9 @@ class StickersOperation extends Operation {
     var path = self._kit.getAssetPath(fileName);
 
     return new Promise((resolve, reject) => {
-      fs.readFile(path, (buffer) => {
+      fs.readFile(path, (err, buffer) => {
+        if (err) return reject(err);
+
         image.src = buffer;
         resolve(image);
       });
