@@ -551,14 +551,18 @@ class WebGLRenderer extends Renderer {
 
   /**
    * Resets the renderer
+   * @param {Boolean} resetCache = false
    * @override
    */
-  reset () {
+  reset (resetCache=false) {
     this._lastTexture = null;
     this._textures = [];
     this._framebuffers = [];
     this._bufferIndex = 0;
-    this._cache = [];
+
+    if (resetCache) {
+      this._cache = [];
+    }
 
     this._createFramebuffers();
     this.setLastTexture(this._inputTexture);

@@ -540,7 +540,7 @@ class Canvas extends EventEmitter {
    * Resets the renderer
    */
   reset () {
-    this._renderer.reset();
+    this._renderer.reset(true);
     this._kit.operationsStack = [];
   }
 

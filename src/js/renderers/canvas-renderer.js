@@ -117,6 +117,17 @@ class CanvasRenderer extends Renderer {
 
     return canvas;
   }
+
+  /**
+   * Resets the renderer
+   * @param {Boolean} resetCache = false
+   * @override
+   */
+  reset (resetCache=false) {
+    if (resetCache) {
+      this._cache = [];
+    }
+  }
 }
 
 export default CanvasRenderer;

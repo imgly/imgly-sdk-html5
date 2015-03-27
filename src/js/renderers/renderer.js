@@ -197,8 +197,9 @@ class Renderer extends EventEmitter {
 
   /**
    * Resets the renderer
+   * @param {Boolean} resetCache = false
    */
-  reset () {
+  reset (resetCache=false) {
 
   }
 }
