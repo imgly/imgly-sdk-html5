@@ -24,7 +24,7 @@ beforeEach(function () {
   var buffer = fs.readFileSync(imagePath);
   image.src = buffer;
 
-  kit = new ImglyKit({ image: image, ui: false });
+  kit = new ImglyKit({ image: image, ui: { enabled: false } });
 });
 
 describe("BrightnessOperation", function () {
