@@ -129,6 +129,9 @@ class NightUI extends UI {
    */
   _setImage (image) {
     this._options.image = image;
+    if (this._canvas) {
+      this._canvas.reset();
+    }
     this.run();
   }
 

@@ -558,6 +558,7 @@ class WebGLRenderer extends Renderer {
     this._textures = [];
     this._framebuffers = [];
     this._bufferIndex = 0;
+    this._cache = [];
 
     this._createFramebuffers();
     this.setLastTexture(this._inputTexture);
