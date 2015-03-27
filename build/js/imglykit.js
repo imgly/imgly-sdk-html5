@@ -27,4736 +27,2545 @@ var ImglyKit = _interopRequire(require("./src/js/imglykit"));
 })();
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./src/js/imglykit":43}],2:[function(require,module,exports){
+},{"./src/js/imglykit":12}],2:[function(require,module,exports){
+(function (global){
 "use strict";
-module.exports = function(Promise) {
-var SomePromiseArray = Promise._SomePromiseArray;
-function any(promises) {
-    var ret = new SomePromiseArray(promises);
-    var promise = ret.promise();
-    if (promise.isRejected()) {
-        return promise;
-    }
-    ret.setHowMany(1);
-    ret.setUnwrap();
-    ret.init();
-    return promise;
+
+if (global._babelPolyfill) {
+  throw new Error("only one instance of babel/polyfill is allowed");
+}
+global._babelPolyfill = true;
+
+require("core-js/shim");
+
+require("regenerator-babel/runtime");
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"core-js/shim":3,"regenerator-babel/runtime":4}],3:[function(require,module,exports){
+/**
+ * Core.js 0.6.1
+ * https://github.com/zloirock/core-js
+ * License: http://rock.mit-license.org
+ * © 2015 Denis Pushkarev
+ */
+!function(global, framework, undefined){
+'use strict';
+
+/******************************************************************************
+ * Module : common                                                            *
+ ******************************************************************************/
+
+  // Shortcuts for [[Class]] & property names
+var OBJECT          = 'Object'
+  , FUNCTION        = 'Function'
+  , ARRAY           = 'Array'
+  , STRING          = 'String'
+  , NUMBER          = 'Number'
+  , REGEXP          = 'RegExp'
+  , DATE            = 'Date'
+  , MAP             = 'Map'
+  , SET             = 'Set'
+  , WEAKMAP         = 'WeakMap'
+  , WEAKSET         = 'WeakSet'
+  , SYMBOL          = 'Symbol'
+  , PROMISE         = 'Promise'
+  , MATH            = 'Math'
+  , ARGUMENTS       = 'Arguments'
+  , PROTOTYPE       = 'prototype'
+  , CONSTRUCTOR     = 'constructor'
+  , TO_STRING       = 'toString'
+  , TO_STRING_TAG   = TO_STRING + 'Tag'
+  , TO_LOCALE       = 'toLocaleString'
+  , HAS_OWN         = 'hasOwnProperty'
+  , FOR_EACH        = 'forEach'
+  , ITERATOR        = 'iterator'
+  , FF_ITERATOR     = '@@' + ITERATOR
+  , PROCESS         = 'process'
+  , CREATE_ELEMENT  = 'createElement'
+  // Aliases global objects and prototypes
+  , Function        = global[FUNCTION]
+  , Object          = global[OBJECT]
+  , Array           = global[ARRAY]
+  , String          = global[STRING]
+  , Number          = global[NUMBER]
+  , RegExp          = global[REGEXP]
+  , Date            = global[DATE]
+  , Map             = global[MAP]
+  , Set             = global[SET]
+  , WeakMap         = global[WEAKMAP]
+  , WeakSet         = global[WEAKSET]
+  , Symbol          = global[SYMBOL]
+  , Math            = global[MATH]
+  , TypeError       = global.TypeError
+  , RangeError      = global.RangeError
+  , setTimeout      = global.setTimeout
+  , setImmediate    = global.setImmediate
+  , clearImmediate  = global.clearImmediate
+  , parseInt        = global.parseInt
+  , isFinite        = global.isFinite
+  , process         = global[PROCESS]
+  , nextTick        = process && process.nextTick
+  , document        = global.document
+  , html            = document && document.documentElement
+  , navigator       = global.navigator
+  , define          = global.define
+  , console         = global.console || {}
+  , ArrayProto      = Array[PROTOTYPE]
+  , ObjectProto     = Object[PROTOTYPE]
+  , FunctionProto   = Function[PROTOTYPE]
+  , Infinity        = 1 / 0
+  , DOT             = '.';
+
+// http://jsperf.com/core-js-isobject
+function isObject(it){
+  return it !== null && (typeof it == 'object' || typeof it == 'function');
+}
+function isFunction(it){
+  return typeof it == 'function';
+}
+// Native function?
+var isNative = ctx(/./.test, /\[native code\]\s*\}\s*$/, 1);
+
+// Object internal [[Class]] or toStringTag
+// http://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.prototype.tostring
+var toString = ObjectProto[TO_STRING];
+function setToStringTag(it, tag, stat){
+  if(it && !has(it = stat ? it : it[PROTOTYPE], SYMBOL_TAG))hidden(it, SYMBOL_TAG, tag);
+}
+function cof(it){
+  return toString.call(it).slice(8, -1);
+}
+function classof(it){
+  var O, T;
+  return it == undefined ? it === undefined ? 'Undefined' : 'Null'
+    : typeof (T = (O = Object(it))[SYMBOL_TAG]) == 'string' ? T : cof(O);
 }
 
-Promise.any = function (promises) {
-    return any(promises);
-};
-
-Promise.prototype.any = function () {
-    return any(this);
-};
-
-};
-
-},{}],3:[function(require,module,exports){
-(function (process){
-"use strict";
-var firstLineError;
-try {throw new Error(); } catch (e) {firstLineError = e;}
-var schedule = require("./schedule.js");
-var Queue = require("./queue.js");
-var _process = typeof process !== "undefined" ? process : undefined;
-
-function Async() {
-    this._isTickUsed = false;
-    this._lateQueue = new Queue(16);
-    this._normalQueue = new Queue(16);
-    var self = this;
-    this.drainQueues = function () {
-        self._drainQueues();
-    };
-    this._schedule =
-        schedule.isStatic ? schedule(this.drainQueues) : schedule;
+// Function
+var call  = FunctionProto.call
+  , apply = FunctionProto.apply
+  , REFERENCE_GET;
+// Partial apply
+function part(/* ...args */){
+  var fn     = assertFunction(this)
+    , length = arguments.length
+    , args   = Array(length)
+    , i      = 0
+    , _      = path._
+    , holder = false;
+  while(length > i)if((args[i] = arguments[i++]) === _)holder = true;
+  return function(/* ...args */){
+    var that    = this
+      , _length = arguments.length
+      , i = 0, j = 0, _args;
+    if(!holder && !_length)return invoke(fn, args, that);
+    _args = args.slice();
+    if(holder)for(;length > i; i++)if(_args[i] === _)_args[i] = arguments[j++];
+    while(_length > j)_args.push(arguments[j++]);
+    return invoke(fn, _args, that);
+  }
+}
+// Optional / simple context binding
+function ctx(fn, that, length){
+  assertFunction(fn);
+  if(~length && that === undefined)return fn;
+  switch(length){
+    case 1: return function(a){
+      return fn.call(that, a);
+    }
+    case 2: return function(a, b){
+      return fn.call(that, a, b);
+    }
+    case 3: return function(a, b, c){
+      return fn.call(that, a, b, c);
+    }
+  } return function(/* ...args */){
+      return fn.apply(that, arguments);
+  }
+}
+// Fast apply
+// http://jsperf.lnkit.com/fast-apply/5
+function invoke(fn, args, that){
+  var un = that === undefined;
+  switch(args.length | 0){
+    case 0: return un ? fn()
+                      : fn.call(that);
+    case 1: return un ? fn(args[0])
+                      : fn.call(that, args[0]);
+    case 2: return un ? fn(args[0], args[1])
+                      : fn.call(that, args[0], args[1]);
+    case 3: return un ? fn(args[0], args[1], args[2])
+                      : fn.call(that, args[0], args[1], args[2]);
+    case 4: return un ? fn(args[0], args[1], args[2], args[3])
+                      : fn.call(that, args[0], args[1], args[2], args[3]);
+    case 5: return un ? fn(args[0], args[1], args[2], args[3], args[4])
+                      : fn.call(that, args[0], args[1], args[2], args[3], args[4]);
+  } return              fn.apply(that, args);
 }
 
-Async.prototype.haveItemsQueued = function () {
-    return this._normalQueue.length() > 0;
-};
-
-Async.prototype._withDomain = function(fn) {
-    if (_process !== undefined &&
-        _process.domain != null &&
-        !fn.domain) {
-        fn = _process.domain.bind(fn);
-    }
-    return fn;
-};
-
-Async.prototype.throwLater = function(fn, arg) {
-    if (arguments.length === 1) {
-        arg = fn;
-        fn = function () { throw arg; };
-    }
-    fn = this._withDomain(fn);
-    if (typeof setTimeout !== "undefined") {
-        setTimeout(function() {
-            fn(arg);
-        }, 0);
-    } else try {
-        this._schedule(function() {
-            fn(arg);
-        });
-    } catch (e) {
-        throw new Error("No async scheduler available\u000a\u000a    See http://goo.gl/m3OTXk\u000a");
-    }
-};
-
-Async.prototype.invokeLater = function (fn, receiver, arg) {
-    fn = this._withDomain(fn);
-    this._lateQueue.push(fn, receiver, arg);
-    this._queueTick();
-};
-
-Async.prototype.invokeFirst = function (fn, receiver, arg) {
-    fn = this._withDomain(fn);
-    this._normalQueue.unshift(fn, receiver, arg);
-    this._queueTick();
-};
-
-Async.prototype.invoke = function (fn, receiver, arg) {
-    fn = this._withDomain(fn);
-    this._normalQueue.push(fn, receiver, arg);
-    this._queueTick();
-};
-
-Async.prototype.settlePromises = function(promise) {
-    this._normalQueue._pushOne(promise);
-    this._queueTick();
-};
-
-Async.prototype._drainQueue = function(queue) {
-    while (queue.length() > 0) {
-        var fn = queue.shift();
-        if (typeof fn !== "function") {
-            fn._settlePromises();
-            continue;
-        }
-        var receiver = queue.shift();
-        var arg = queue.shift();
-        fn.call(receiver, arg);
-    }
-};
-
-Async.prototype._drainQueues = function () {
-    this._drainQueue(this._normalQueue);
-    this._reset();
-    this._drainQueue(this._lateQueue);
-};
-
-Async.prototype._queueTick = function () {
-    if (!this._isTickUsed) {
-        this._isTickUsed = true;
-        this._schedule(this.drainQueues);
-    }
-};
-
-Async.prototype._reset = function () {
-    this._isTickUsed = false;
-};
-
-module.exports = new Async();
-module.exports.firstLineError = firstLineError;
-
-}).call(this,require('_process'))
-},{"./queue.js":26,"./schedule.js":29,"_process":39}],4:[function(require,module,exports){
-"use strict";
-var old;
-if (typeof Promise !== "undefined") old = Promise;
-function noConflict() {
-    try { if (Promise === bluebird) Promise = old; }
-    catch (e) {}
-    return bluebird;
+// Object:
+var create           = Object.create
+  , getPrototypeOf   = Object.getPrototypeOf
+  , setPrototypeOf   = Object.setPrototypeOf
+  , defineProperty   = Object.defineProperty
+  , defineProperties = Object.defineProperties
+  , getOwnDescriptor = Object.getOwnPropertyDescriptor
+  , getKeys          = Object.keys
+  , getNames         = Object.getOwnPropertyNames
+  , getSymbols       = Object.getOwnPropertySymbols
+  , isFrozen         = Object.isFrozen
+  , has              = ctx(call, ObjectProto[HAS_OWN], 2)
+  // Dummy, fix for not array-like ES3 string in es5 module
+  , ES5Object        = Object
+  , Dict;
+function toObject(it){
+  return ES5Object(assertDefined(it));
 }
-var bluebird = require("./promise.js")();
-bluebird.noConflict = noConflict;
-module.exports = bluebird;
-
-},{"./promise.js":21}],5:[function(require,module,exports){
-"use strict";
-var cr = Object.create;
-if (cr) {
-    var callerCache = cr(null);
-    var getterCache = cr(null);
-    callerCache[" size"] = getterCache[" size"] = 0;
+function returnIt(it){
+  return it;
+}
+function returnThis(){
+  return this;
+}
+function get(object, key){
+  if(has(object, key))return object[key];
+}
+function ownKeys(it){
+  assertObject(it);
+  return getSymbols ? getNames(it).concat(getSymbols(it)) : getNames(it);
+}
+// 19.1.2.1 Object.assign(target, source, ...)
+var assign = Object.assign || function(target, source){
+  var T = Object(assertDefined(target))
+    , l = arguments.length
+    , i = 1;
+  while(l > i){
+    var S      = ES5Object(arguments[i++])
+      , keys   = getKeys(S)
+      , length = keys.length
+      , j      = 0
+      , key;
+    while(length > j)T[key = keys[j++]] = S[key];
+  }
+  return T;
+}
+function keyOf(object, el){
+  var O      = toObject(object)
+    , keys   = getKeys(O)
+    , length = keys.length
+    , index  = 0
+    , key;
+  while(length > index)if(O[key = keys[index++]] === el)return key;
 }
 
-module.exports = function(Promise) {
-var util = require("./util.js");
-var canEvaluate = util.canEvaluate;
-var isIdentifier = util.isIdentifier;
-
-function makeMethodCaller (methodName) {
-    return new Function("obj", "                                             \n\
-        'use strict'                                                         \n\
-        var len = this.length;                                               \n\
-        switch(len) {                                                        \n\
-            case 1: return obj.methodName(this[0]);                          \n\
-            case 2: return obj.methodName(this[0], this[1]);                 \n\
-            case 3: return obj.methodName(this[0], this[1], this[2]);        \n\
-            case 0: return obj.methodName();                                 \n\
-            default: return obj.methodName.apply(obj, this);                 \n\
-        }                                                                    \n\
-        ".replace(/methodName/g, methodName));
+// Array
+// array('str1,str2,str3') => ['str1', 'str2', 'str3']
+function array(it){
+  return String(it).split(',');
+}
+var push    = ArrayProto.push
+  , unshift = ArrayProto.unshift
+  , slice   = ArrayProto.slice
+  , splice  = ArrayProto.splice
+  , indexOf = ArrayProto.indexOf
+  , forEach = ArrayProto[FOR_EACH];
+/*
+ * 0 -> forEach
+ * 1 -> map
+ * 2 -> filter
+ * 3 -> some
+ * 4 -> every
+ * 5 -> find
+ * 6 -> findIndex
+ */
+function createArrayMethod(type){
+  var isMap       = type == 1
+    , isFilter    = type == 2
+    , isSome      = type == 3
+    , isEvery     = type == 4
+    , isFindIndex = type == 6
+    , noholes     = type == 5 || isFindIndex;
+  return function(callbackfn/*, that = undefined */){
+    var O      = Object(assertDefined(this))
+      , that   = arguments[1]
+      , self   = ES5Object(O)
+      , f      = ctx(callbackfn, that, 3)
+      , length = toLength(self.length)
+      , index  = 0
+      , result = isMap ? Array(length) : isFilter ? [] : undefined
+      , val, res;
+    for(;length > index; index++)if(noholes || index in self){
+      val = self[index];
+      res = f(val, index, O);
+      if(type){
+        if(isMap)result[index] = res;             // map
+        else if(res)switch(type){
+          case 3: return true;                    // some
+          case 5: return val;                     // find
+          case 6: return index;                   // findIndex
+          case 2: result.push(val);               // filter
+        } else if(isEvery)return false;           // every
+      }
+    }
+    return isFindIndex ? -1 : isSome || isEvery ? isEvery : result;
+  }
+}
+function createArrayContains(isContains){
+  return function(el /*, fromIndex = 0 */){
+    var O      = toObject(this)
+      , length = toLength(O.length)
+      , index  = toIndex(arguments[1], length);
+    if(isContains && el != el){
+      for(;length > index; index++)if(sameNaN(O[index]))return isContains || index;
+    } else for(;length > index; index++)if(isContains || index in O){
+      if(O[index] === el)return isContains || index;
+    } return !isContains && -1;
+  }
+}
+function generic(A, B){
+  // strange IE quirks mode bug -> use typeof vs isFunction
+  return typeof A == 'function' ? A : B;
 }
 
-function makeGetter (propertyName) {
-    return new Function("obj", "                                             \n\
-        'use strict';                                                        \n\
-        return obj.propertyName;                                             \n\
-        ".replace("propertyName", propertyName));
+// Math
+var MAX_SAFE_INTEGER = 0x1fffffffffffff // pow(2, 53) - 1 == 9007199254740991
+  , pow    = Math.pow
+  , abs    = Math.abs
+  , ceil   = Math.ceil
+  , floor  = Math.floor
+  , max    = Math.max
+  , min    = Math.min
+  , random = Math.random
+  , trunc  = Math.trunc || function(it){
+      return (it > 0 ? floor : ceil)(it);
+    }
+// 20.1.2.4 Number.isNaN(number)
+function sameNaN(number){
+  return number != number;
+}
+// 7.1.4 ToInteger
+function toInteger(it){
+  return isNaN(it) ? 0 : trunc(it);
+}
+// 7.1.15 ToLength
+function toLength(it){
+  return it > 0 ? min(toInteger(it), MAX_SAFE_INTEGER) : 0;
+}
+function toIndex(index, length){
+  var index = toInteger(index);
+  return index < 0 ? max(index + length, 0) : min(index, length);
+}
+function lz(num){
+  return num > 9 ? num : '0' + num;
 }
 
-function getCompiled(name, compiler, cache) {
-    var ret = cache[name];
-    if (typeof ret !== "function") {
-        if (!isIdentifier(name)) {
-            return null;
-        }
-        ret = compiler(name);
-        cache[name] = ret;
-        cache[" size"]++;
-        if (cache[" size"] > 512) {
-            var keys = Object.keys(cache);
-            for (var i = 0; i < 256; ++i) delete cache[keys[i]];
-            cache[" size"] = keys.length - 256;
-        }
-    }
-    return ret;
+function createReplacer(regExp, replace, isStatic){
+  var replacer = isObject(replace) ? function(part){
+    return replace[part];
+  } : replace;
+  return function(it){
+    return String(isStatic ? it : this).replace(regExp, replacer);
+  }
+}
+function createPointAt(toString){
+  return function(pos){
+    var s = String(assertDefined(this))
+      , i = toInteger(pos)
+      , l = s.length
+      , a, b;
+    if(i < 0 || i >= l)return toString ? '' : undefined;
+    a = s.charCodeAt(i);
+    return a < 0xd800 || a > 0xdbff || i + 1 === l || (b = s.charCodeAt(i + 1)) < 0xdc00 || b > 0xdfff
+      ? toString ? s.charAt(i) : a
+      : toString ? s.slice(i, i + 2) : (a - 0xd800 << 10) + (b - 0xdc00) + 0x10000;
+  }
 }
 
-function getMethodCaller(name) {
-    return getCompiled(name, makeMethodCaller, callerCache);
+// Assertion & errors
+var REDUCE_ERROR = 'Reduce of empty object with no initial value';
+function assert(condition, msg1, msg2){
+  if(!condition)throw TypeError(msg2 ? msg1 + msg2 : msg1);
+}
+function assertDefined(it){
+  if(it == undefined)throw TypeError('Function called on null or undefined');
+  return it;
+}
+function assertFunction(it){
+  assert(isFunction(it), it, ' is not a function!');
+  return it;
+}
+function assertObject(it){
+  assert(isObject(it), it, ' is not an object!');
+  return it;
+}
+function assertInstance(it, Constructor, name){
+  assert(it instanceof Constructor, name, ": use the 'new' operator!");
 }
 
-function getGetter(name) {
-    return getCompiled(name, makeGetter, getterCache);
+// Property descriptors & Symbol
+function descriptor(bitmap, value){
+  return {
+    enumerable  : !(bitmap & 1),
+    configurable: !(bitmap & 2),
+    writable    : !(bitmap & 4),
+    value       : value
+  }
+}
+function simpleSet(object, key, value){
+  object[key] = value;
+  return object;
+}
+function createDefiner(bitmap){
+  return DESC ? function(object, key, value){
+    return defineProperty(object, key, descriptor(bitmap, value));
+  } : simpleSet;
+}
+function uid(key){
+  return SYMBOL + '(' + key + ')_' + (++sid + random())[TO_STRING](36);
+}
+function getWellKnownSymbol(name, setter){
+  return (Symbol && Symbol[name]) || (setter ? Symbol : safeSymbol)(SYMBOL + DOT + name);
+}
+// The engine works fine with descriptors? Thank's IE8 for his funny defineProperty.
+var DESC = !!function(){
+      try {
+        return defineProperty({}, 'a', {get: function(){ return 2 }}).a == 2;
+      } catch(e){}
+    }()
+  , sid    = 0
+  , hidden = createDefiner(1)
+  , set    = Symbol ? simpleSet : hidden
+  , safeSymbol = Symbol || uid;
+function assignHidden(target, src){
+  for(var key in src)hidden(target, key, src[key]);
+  return target;
 }
 
-function caller(obj) {
-    return obj[this.pop()].apply(obj, this);
-}
-Promise.prototype.call = function (methodName) {
-    var $_len = arguments.length;var args = new Array($_len - 1); for(var $_i = 1; $_i < $_len; ++$_i) {args[$_i - 1] = arguments[$_i];}
-    if (canEvaluate) {
-        var maybeCaller = getMethodCaller(methodName);
-        if (maybeCaller !== null) {
-            return this._then(
-                maybeCaller, undefined, undefined, args, undefined);
-        }
-    }
-    args.push(methodName);
-    return this._then(caller, undefined, undefined, args, undefined);
-};
-
-function namedGetter(obj) {
-    return obj[this];
-}
-function indexedGetter(obj) {
-    var index = +this;
-    if (index < 0) index = Math.max(0, index + obj.length);
-    return obj[index];
-}
-Promise.prototype.get = function (propertyName) {
-    var isIndex = (typeof propertyName === "number");
-    var getter;
-    if (!isIndex) {
-        if (canEvaluate) {
-            var maybeGetter = getGetter(propertyName);
-            getter = maybeGetter !== null ? maybeGetter : namedGetter;
-        } else {
-            getter = namedGetter;
-        }
-    } else {
-        getter = indexedGetter;
-    }
-    return this._then(getter, undefined, undefined, propertyName, undefined);
-};
-};
-
-},{"./util.js":36}],6:[function(require,module,exports){
-"use strict";
-module.exports = function(Promise, INTERNAL) {
-var errors = require("./errors.js");
-var async = require("./async.js");
-var CancellationError = errors.CancellationError;
-
-Promise.prototype._cancel = function (reason) {
-    if (!this.isCancellable()) return this;
-    var parent;
-    var promiseToReject = this;
-    while ((parent = promiseToReject._cancellationParent) !== undefined &&
-        parent.isCancellable()) {
-        promiseToReject = parent;
-    }
-    this._unsetCancellable();
-    var trace = errors.ensureErrorObject(reason);
-    promiseToReject._attachExtraTrace(trace);
-    promiseToReject._target()._rejectUnchecked(reason, trace);
-};
-
-Promise.prototype.cancel = function (reason) {
-    if (!this.isCancellable()) return this;
-    if (reason === undefined) reason = new CancellationError();
-    async.invokeLater(this._cancel, this, reason);
-    return this;
-};
-
-Promise.prototype.cancellable = function () {
-    if (this._cancellable()) return this;
-    this._setCancellable();
-    this._cancellationParent = undefined;
-    return this;
-};
-
-Promise.prototype.uncancellable = function () {
-    var ret = new Promise(INTERNAL);
-    ret._propagateFrom(this, 4);
-    ret._follow(this);
-    ret._unsetCancellable();
-    return ret;
-};
-
-Promise.prototype.fork = function (didFulfill, didReject, didProgress) {
-    var ret = this._then(didFulfill, didReject, didProgress,
-                         undefined, undefined);
-
-    ret._setCancellable();
-    ret._cancellationParent = undefined;
-    return ret;
-};
-};
-
-},{"./async.js":3,"./errors.js":11}],7:[function(require,module,exports){
-(function (process){
-"use strict";
-module.exports = function() {
-var async = require("./async.js");
-var inherits = require("./util.js").inherits;
-var bluebirdFramePattern = /[\\\/]bluebird[\\\/]js[\\\/](main|debug|zalgo)/;
-var stackFramePattern = null;
-var formatStack = null;
-
-function CapturedTrace(parent) {
-    this._parent = parent;
-    var length = this._length = 1 + (parent === undefined ? 0 : parent._length);
-    captureStackTrace(this, CapturedTrace);
-    if (length > 32) this.uncycle();
-}
-inherits(CapturedTrace, Error);
-
-CapturedTrace.prototype.uncycle = function() {
-    var length = this._length;
-    if (length < 2) return;
-    var nodes = [];
-    var stackToIndex = {};
-
-    for (var i = 0, node = this; node !== undefined; ++i) {
-        nodes.push(node);
-        node = node._parent;
-    }
-    length = this._length = i;
-    for (var i = length - 1; i >= 0; --i) {
-        var stack = nodes[i].stack;
-        if (stackToIndex[stack] === undefined) {
-            stackToIndex[stack] = i;
-        }
-    }
-    for (var i = 0; i < length; ++i) {
-        var currentStack = nodes[i].stack;
-        var index = stackToIndex[currentStack];
-        if (index !== undefined && index !== i) {
-            if (index > 0) {
-                nodes[index - 1]._parent = undefined;
-                nodes[index - 1]._length = 1;
-            }
-            nodes[i]._parent = undefined;
-            nodes[i]._length = 1;
-            var cycleEdgeNode = i > 0 ? nodes[i - 1] : this;
-
-            if (index < length - 1) {
-                cycleEdgeNode._parent = nodes[index + 1];
-                cycleEdgeNode._parent.uncycle();
-                cycleEdgeNode._length =
-                    cycleEdgeNode._parent._length + 1;
-            } else {
-                cycleEdgeNode._parent = undefined;
-                cycleEdgeNode._length = 1;
-            }
-            var currentChildLength = cycleEdgeNode._length + 1;
-            for (var j = i - 2; j >= 0; --j) {
-                nodes[j]._length = currentChildLength;
-                currentChildLength++;
-            }
-            return;
-        }
-    }
-};
-
-CapturedTrace.prototype.parent = function() {
-    return this._parent;
-};
-
-CapturedTrace.prototype.hasParent = function() {
-    return this._parent !== undefined;
-};
-
-CapturedTrace.prototype.attachExtraTrace = function(error) {
-    if (error.__stackCleaned__) return;
-    this.uncycle();
-    var trace = this;
-    var stack = CapturedTrace.cleanStack(error, false);
-    var headerLineCount = 1;
-    var combinedTraces = 1;
-    do {
-        stack = trace.combine(stack);
-        combinedTraces++;
-    } while ((trace = trace.parent()) != null);
-
-    stack = unProtectNewlines(stack);
-
-    if (stack.length <= headerLineCount) {
-        error.stack = "(No stack trace)";
-    } else {
-        error.stack = stack.join("\n");
-    }
-};
-
-CapturedTrace.prototype.combine = function(current) {
-    var prev = clean(this.stack.split("\n"), 0);
-    var currentLastIndex = current.length - 1;
-    var currentLastLine = current[currentLastIndex];
-    var commonRootMeetPoint = -1;
-    for (var i = prev.length - 1; i >= 0; --i) {
-        if (prev[i] === currentLastLine) {
-            commonRootMeetPoint = i;
-            break;
-        }
-    }
-
-    for (var i = commonRootMeetPoint; i >= 0; --i) {
-        var line = prev[i];
-        if (current[currentLastIndex] === line) {
-            current.pop();
-            currentLastIndex--;
-        } else {
-            break;
-        }
-    }
-
-    if (current[current.length - 1] !== "From previous event:") {
-        current.push("From previous event:");
-    }
-    return current.concat(prev);
-};
-
-function protectErrorMessageNewlines (stack) {
-    for (var i = 0; i < stack.length; ++i) {
-        var line = stack[i];
-        if ("    (No stack trace)" === line || stackFramePattern.test(line)) {
-            break;
-        }
-    }
-
-    if (i <= 1) return 1;
-
-    var errorMessageLines = [];
-    for (var j = 0; j < i; ++j) {
-        errorMessageLines.push(stack.shift());
-    }
-    stack.unshift(errorMessageLines.join("\u0002\u0000\u0001"));
-    return i;
+var SYMBOL_UNSCOPABLES = getWellKnownSymbol('unscopables')
+  , ArrayUnscopables   = ArrayProto[SYMBOL_UNSCOPABLES] || {}
+  , SYMBOL_TAG         = getWellKnownSymbol(TO_STRING_TAG)
+  , SYMBOL_SPECIES     = getWellKnownSymbol('species')
+  , SYMBOL_ITERATOR;
+function setSpecies(C){
+  if(DESC && (framework || !isNative(C)))defineProperty(C, SYMBOL_SPECIES, {
+    configurable: true,
+    get: returnThis
+  });
 }
 
-function unProtectNewlines(stack) {
-    if (stack.length > 0) {
-        stack[0] = stack[0].split("\u0002\u0000\u0001").join("\n");
-        if (stack[stack.length - 1] === "From previous event:") {
-            stack.pop();
-        }
+/******************************************************************************
+ * Module : common.export                                                     *
+ ******************************************************************************/
+
+var NODE = cof(process) == PROCESS
+  , core = {}
+  , path = framework ? global : core
+  , old  = global.core
+  , exportGlobal
+  // type bitmap
+  , FORCED = 1
+  , GLOBAL = 2
+  , STATIC = 4
+  , PROTO  = 8
+  , BIND   = 16
+  , WRAP   = 32;
+function $define(type, name, source){
+  var key, own, out, exp
+    , isGlobal = type & GLOBAL
+    , target   = isGlobal ? global : (type & STATIC)
+        ? global[name] : (global[name] || ObjectProto)[PROTOTYPE]
+    , exports  = isGlobal ? core : core[name] || (core[name] = {});
+  if(isGlobal)source = name;
+  for(key in source){
+    // there is a similar native
+    own = !(type & FORCED) && target && key in target
+      && (!isFunction(target[key]) || isNative(target[key]));
+    // export native or passed
+    out = (own ? target : source)[key];
+    // prevent global pollution for namespaces
+    if(!framework && isGlobal && !isFunction(target[key]))exp = source[key];
+    // bind timers to global for call from export context
+    else if(type & BIND && own)exp = ctx(out, global);
+    // wrap global constructors for prevent change them in library
+    else if(type & WRAP && !framework && target[key] == out){
+      exp = function(param){
+        return this instanceof out ? new out(param) : out(param);
+      }
+      exp[PROTOTYPE] = out[PROTOTYPE];
+    } else exp = type & PROTO && isFunction(out) ? ctx(call, out) : out;
+    // extend global
+    if(framework && target && !own){
+      if(isGlobal)target[key] = out;
+      else delete target[key] && hidden(target, key, out);
     }
-    return stack;
+    // export
+    if(exports[key] != out)hidden(exports, key, exp);
+  }
+}
+// CommonJS export
+if(typeof module != 'undefined' && module.exports)module.exports = core;
+// RequireJS export
+else if(isFunction(define) && define.amd)define(function(){return core});
+// Export to global object
+else exportGlobal = true;
+if(exportGlobal || framework){
+  core.noConflict = function(){
+    global.core = old;
+    return core;
+  }
+  global.core = core;
 }
 
-function clean(stack, initialIndex) {
-    var ret = stack.slice(0, initialIndex);
-    for (var i = initialIndex; i < stack.length; ++i) {
-        var line = stack[i];
-        var isTraceLine = stackFramePattern.test(line) ||
-            "    (No stack trace)" === line;
-        var isInternalFrame = isTraceLine && shouldIgnore(line);
-        if (isTraceLine && !isInternalFrame) {
-            ret.push(line);
-        }
-    }
-    return ret;
+/******************************************************************************
+ * Module : common.iterators                                                  *
+ ******************************************************************************/
+
+SYMBOL_ITERATOR = getWellKnownSymbol(ITERATOR);
+var ITER  = safeSymbol('iter')
+  , KEY   = 1
+  , VALUE = 2
+  , Iterators = {}
+  , IteratorPrototype = {}
+    // Safari has byggy iterators w/o `next`
+  , BUGGY_ITERATORS = 'keys' in ArrayProto && !('next' in [].keys());
+// 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
+setIterator(IteratorPrototype, returnThis);
+function setIterator(O, value){
+  hidden(O, SYMBOL_ITERATOR, value);
+  // Add iterator for FF iterator protocol
+  FF_ITERATOR in ArrayProto && hidden(O, FF_ITERATOR, value);
 }
-
-CapturedTrace.cleanStack = function(error, shouldUnProtectNewlines) {
-    if (error.__stackCleaned__) return;
-    error.__stackCleaned__ = true;
-    var stack = error.stack;
-    stack = typeof stack === "string"
-        ? stack.split("\n")
-        : [error.toString(), "    (No stack trace)"];
-    var initialIndex = protectErrorMessageNewlines(stack);
-    stack = clean(stack, initialIndex);
-    if (shouldUnProtectNewlines) stack = unProtectNewlines(stack);
-    error.stack = stack.join("\n");
-    return stack;
-};
-
-CapturedTrace.formatAndLogError = function(error, title) {
-    if (typeof console === "object") {
-        var message;
-        if (typeof error === "object" || typeof error === "function") {
-            var stack = error.stack;
-            message = title + formatStack(stack, error);
-        } else {
-            message = title + String(error);
-        }
-        if (typeof console.warn === "function" ||
-            typeof console.warn === "object") {
-            console.warn(message);
-        } else if (typeof console.log === "function" ||
-            typeof console.log === "object") {
-            console.log(message);
-        }
-    }
-};
-
-CapturedTrace.unhandledRejection = function (reason) {
-    CapturedTrace.formatAndLogError(reason, "^--- With additional stack trace: ");
-};
-
-CapturedTrace.isSupported = function () {
-    return typeof captureStackTrace === "function";
-};
-
-CapturedTrace.fireRejectionEvent =
-function(name, localHandler, reason, promise) {
-    var localEventFired = false;
-    try {
-        if (typeof localHandler === "function") {
-            localEventFired = true;
-            if (name === "rejectionHandled") {
-                localHandler(promise);
-            } else {
-                localHandler(reason, promise);
-            }
-        }
-    } catch (e) {
-        async.throwLater(e);
-    }
-
-    var globalEventFired = false;
-    try {
-        globalEventFired = fireGlobalEvent(name, reason, promise);
-    } catch (e) {
-        globalEventFired = true;
-        async.throwLater(e);
-    }
-
-    if (!globalEventFired && !localEventFired &&
-        name === "unhandledRejection") {
-        CapturedTrace.formatAndLogError(reason, "Possibly unhandled ");
-    }
-};
-
-function formatNonError(obj) {
-    var str;
-    if (typeof obj === "function") {
-        str = "[function " +
-            (obj.name || "anonymous") +
-            "]";
-    } else {
-        str = obj.toString();
-        var ruselessToString = /\[object [a-zA-Z0-9$_]+\]/;
-        if (ruselessToString.test(str)) {
-            try {
-                var newStr = JSON.stringify(obj);
-                str = newStr;
-            }
-            catch(e) {
-
-            }
-        }
-        if (str.length === 0) {
-            str = "(empty array)";
-        }
-    }
-    return ("(<" + snip(str) + ">, no stack trace)");
+function createIterator(Constructor, NAME, next, proto){
+  Constructor[PROTOTYPE] = create(proto || IteratorPrototype, {next: descriptor(1, next)});
+  setToStringTag(Constructor, NAME + ' Iterator');
 }
-
-function snip(str) {
-    var maxChars = 41;
-    if (str.length < maxChars) {
-        return str;
+function defineIterator(Constructor, NAME, value, DEFAULT){
+  var proto = Constructor[PROTOTYPE]
+    , iter  = get(proto, SYMBOL_ITERATOR) || get(proto, FF_ITERATOR) || (DEFAULT && get(proto, DEFAULT)) || value;
+  if(framework){
+    // Define iterator
+    setIterator(proto, iter);
+    if(iter !== value){
+      var iterProto = getPrototypeOf(iter.call(new Constructor));
+      // Set @@toStringTag to native iterators
+      setToStringTag(iterProto, NAME + ' Iterator', true);
+      // FF fix
+      has(proto, FF_ITERATOR) && setIterator(iterProto, returnThis);
     }
-    return str.substr(0, maxChars - 3) + "...";
+  }
+  // Plug for library
+  Iterators[NAME] = iter;
+  // FF & v8 fix
+  Iterators[NAME + ' Iterator'] = returnThis;
+  return iter;
 }
-
-var shouldIgnore = function() { return false; };
-var parseLineInfoRegex = /[\/<\(]([^:\/]+):(\d+):(?:\d+)\)?\s*$/;
-function parseLineInfo(line) {
-    var matches = line.match(parseLineInfoRegex);
-    if (matches) {
-        return {
-            fileName: matches[1],
-            line: parseInt(matches[2], 10)
-        };
+function defineStdIterators(Base, NAME, Constructor, next, DEFAULT, IS_SET){
+  function createIter(kind){
+    return function(){
+      return new Constructor(this, kind);
     }
-}
-CapturedTrace.setBounds = function(firstLineError, lastLineError) {
-    if (!CapturedTrace.isSupported()) return;
-    var firstStackLines = firstLineError.stack.split("\n");
-    var lastStackLines = lastLineError.stack.split("\n");
-    var firstIndex = -1;
-    var lastIndex = -1;
-    var firstFileName;
-    var lastFileName;
-    for (var i = 0; i < firstStackLines.length; ++i) {
-        var result = parseLineInfo(firstStackLines[i]);
-        if (result) {
-            firstFileName = result.fileName;
-            firstIndex = result.line;
-            break;
-        }
-    }
-    for (var i = 0; i < lastStackLines.length; ++i) {
-        var result = parseLineInfo(lastStackLines[i]);
-        if (result) {
-            lastFileName = result.fileName;
-            lastIndex = result.line;
-            break;
-        }
-    }
-    if (firstIndex < 0 || lastIndex < 0 || !firstFileName || !lastFileName ||
-        firstFileName !== lastFileName || firstIndex >= lastIndex) {
-        return;
-    }
-
-    shouldIgnore = function(line) {
-        if (bluebirdFramePattern.test(line)) return true;
-        var info = parseLineInfo(line);
-        if (info) {
-            if (info.fileName === firstFileName &&
-                (firstIndex <= info.line && info.line <= lastIndex)) {
-                return true;
-            }
-        }
-        return false;
-    };
-};
-
-var captureStackTrace = (function stackDetection() {
-    var v8stackFramePattern = /^\s*at\s*/;
-    var v8stackFormatter = function(stack, error) {
-        if (typeof stack === "string") return stack;
-
-        if (error.name !== undefined &&
-            error.message !== undefined) {
-            return error.name + ". " + error.message;
-        }
-        return formatNonError(error);
-    };
-
-    if (typeof Error.stackTraceLimit === "number" &&
-        typeof Error.captureStackTrace === "function") {
-        stackFramePattern = v8stackFramePattern;
-        formatStack = v8stackFormatter;
-        var captureStackTrace = Error.captureStackTrace;
-
-        shouldIgnore = function(line) {
-            return bluebirdFramePattern.test(line);
-        };
-        return function(receiver, ignoreUntil) {
-            captureStackTrace(receiver, ignoreUntil);
-        };
-    }
-    var err = new Error();
-
-    if (typeof err.stack === "string" &&
-        typeof "".startsWith === "function" &&
-        (err.stack.startsWith("stackDetection@")) &&
-        stackDetection.name === "stackDetection") {
-
-        stackFramePattern = /@/;
-        var rline = /[@\n]/;
-
-        formatStack = function(stack, error) {
-            if (typeof stack === "string") {
-                return (error.name + ". " + error.message + "\n" + stack);
-            }
-
-            if (error.name !== undefined &&
-                error.message !== undefined) {
-                return error.name + ". " + error.message;
-            }
-            return formatNonError(error);
-        };
-
-        return function captureStackTrace(o) {
-            var stack = new Error().stack;
-            var split = stack.split(rline);
-            var len = split.length;
-            var ret = "";
-            for (var i = 0; i < len; i += 2) {
-                ret += split[i];
-                ret += "@";
-                ret += split[i + 1];
-                ret += "\n";
-            }
-            o.stack = ret;
-        };
-    }
-
-    var hasStackAfterThrow;
-    try { throw new Error(); }
-    catch(e) {
-        hasStackAfterThrow = ("stack" in e);
-    }
-    if (!("stack" in err) && hasStackAfterThrow) {
-        stackFramePattern = v8stackFramePattern;
-        formatStack = v8stackFormatter;
-        return function captureStackTrace(o) {
-            try { throw new Error(); }
-            catch(e) { o.stack = e.stack; }
-        };
-    }
-
-    formatStack = function(stack, error) {
-        if (typeof stack === "string") return stack;
-
-        if ((typeof error === "object" ||
-            typeof error === "function") &&
-            error.name !== undefined &&
-            error.message !== undefined) {
-            return error.name + ". " + error.message;
-        }
-        return formatNonError(error);
-    };
-
-    return null;
-
-})();
-
-var fireGlobalEvent = (function() {
-    if (typeof process !== "undefined" &&
-        typeof process.version === "string" &&
-        typeof window === "undefined") {
-        return function(name, reason, promise) {
-            if (name === "rejectionHandled") {
-                return process.emit(name, promise);
-            } else {
-                return process.emit(name, reason, promise);
-            }
-        };
-    } else {
-        var toWindowMethodNameMap = {};
-        toWindowMethodNameMap["unhandledRejection"] = ("on" +
-            "unhandledRejection").toLowerCase();
-        toWindowMethodNameMap["rejectionHandled"] = ("on" +
-            "rejectionHandled").toLowerCase();
-
-        return function(name, reason, promise) {
-            var methodName = toWindowMethodNameMap[name];
-            var method = window[methodName];
-            if (!method) return false;
-            if (name === "rejectionHandled") {
-                method.call(window, promise);
-            } else {
-                method.call(window, reason, promise);
-            }
-            return true;
-        };
-    }
-})();
-
-return CapturedTrace;
-};
-
-}).call(this,require('_process'))
-},{"./async.js":3,"./util.js":36,"_process":39}],8:[function(require,module,exports){
-"use strict";
-module.exports = function(NEXT_FILTER) {
-var util = require("./util.js");
-var errors = require("./errors.js");
-var tryCatch1 = util.tryCatch1;
-var errorObj = util.errorObj;
-var keys = require("./es5.js").keys;
-var TypeError = errors.TypeError;
-
-function CatchFilter(instances, callback, promise) {
-    this._instances = instances;
-    this._callback = callback;
-    this._promise = promise;
-}
-
-function safePredicate(predicate, e) {
-    var safeObject = {};
-    var retfilter = tryCatch1(predicate, safeObject, e);
-
-    if (retfilter === errorObj) return retfilter;
-
-    var safeKeys = keys(safeObject);
-    if (safeKeys.length) {
-        errorObj.e = new TypeError("Catch filter must inherit from Error or be a simple predicate function\u000a\u000a    See http://goo.gl/o84o68\u000a");
-        return errorObj;
-    }
-    return retfilter;
-}
-
-CatchFilter.prototype.doFilter = function (e) {
-    var cb = this._callback;
-    var promise = this._promise;
-    var boundTo = promise._boundTo;
-    for (var i = 0, len = this._instances.length; i < len; ++i) {
-        var item = this._instances[i];
-        var itemIsErrorType = item === Error ||
-            (item != null && item.prototype instanceof Error);
-
-        if (itemIsErrorType && e instanceof item) {
-            var ret = tryCatch1(cb, boundTo, e);
-            if (ret === errorObj) {
-                NEXT_FILTER.e = ret.e;
-                return NEXT_FILTER;
-            }
-            return ret;
-        } else if (typeof item === "function" && !itemIsErrorType) {
-            var shouldHandle = safePredicate(item, e);
-            if (shouldHandle === errorObj) {
-                var trace = errors.canAttachTrace(errorObj.e)
-                    ? errorObj.e
-                    : new Error(util.toString(errorObj.e));
-                this._promise._attachExtraTrace(trace);
-                e = errorObj.e;
-                break;
-            } else if (shouldHandle) {
-                var ret = tryCatch1(cb, boundTo, e);
-                if (ret === errorObj) {
-                    NEXT_FILTER.e = ret.e;
-                    return NEXT_FILTER;
-                }
-                return ret;
-            }
-        }
-    }
-    NEXT_FILTER.e = e;
-    return NEXT_FILTER;
-};
-
-return CatchFilter;
-};
-
-},{"./errors.js":11,"./es5.js":13,"./util.js":36}],9:[function(require,module,exports){
-"use strict";
-var util = require("./util.js");
-var isPrimitive = util.isPrimitive;
-var wrapsPrimitiveReceiver = util.wrapsPrimitiveReceiver;
-
-module.exports = function(Promise) {
-var returner = function () {
-    return this;
-};
-var thrower = function () {
-    throw this;
-};
-
-var wrapper = function (value, action) {
-    if (action === 1) {
-        return function () {
-            throw value;
-        };
-    } else if (action === 2) {
-        return function () {
-            return value;
-        };
-    }
-};
-
-
-Promise.prototype["return"] =
-Promise.prototype.thenReturn = function (value) {
-    if (wrapsPrimitiveReceiver && isPrimitive(value)) {
-        return this._then(
-            wrapper(value, 2),
-            undefined,
-            undefined,
-            undefined,
-            undefined
-       );
-    }
-    return this._then(returner, undefined, undefined, value, undefined);
-};
-
-Promise.prototype["throw"] =
-Promise.prototype.thenThrow = function (reason) {
-    if (wrapsPrimitiveReceiver && isPrimitive(reason)) {
-        return this._then(
-            wrapper(reason, 1),
-            undefined,
-            undefined,
-            undefined,
-            undefined
-       );
-    }
-    return this._then(thrower, undefined, undefined, reason, undefined);
-};
-};
-
-},{"./util.js":36}],10:[function(require,module,exports){
-"use strict";
-module.exports = function(Promise, INTERNAL) {
-var PromiseReduce = Promise.reduce;
-
-Promise.prototype.each = function (fn) {
-    return PromiseReduce(this, fn, null, INTERNAL);
-};
-
-Promise.each = function (promises, fn) {
-    return PromiseReduce(promises, fn, null, INTERNAL);
-};
-};
-
-},{}],11:[function(require,module,exports){
-"use strict";
-var Objectfreeze = require("./es5.js").freeze;
-var propertyIsWritable = require("./es5.js").propertyIsWritable;
-var util = require("./util.js");
-var inherits = util.inherits;
-var notEnumerableProp = util.notEnumerableProp;
-
-function markAsOriginatingFromRejection(e) {
-    try {
-        notEnumerableProp(e, "isOperational", true);
-    }
-    catch(ignore) {}
-}
-
-function originatesFromRejection(e) {
-    if (e == null) return false;
-    return ((e instanceof OperationalError) ||
-        e["isOperational"] === true);
-}
-
-function isError(obj) {
-    return obj instanceof Error;
-}
-
-function canAttachTrace(obj) {
-    return isError(obj) && propertyIsWritable(obj, "stack");
-}
-
-function subError(nameProperty, defaultMessage) {
-    function SubError(message) {
-        if (!(this instanceof SubError)) return new SubError(message);
-        notEnumerableProp(this, "message",
-            typeof message === "string" ? message : defaultMessage);
-        notEnumerableProp(this, "name", nameProperty);
-        if (Error.captureStackTrace) {
-            Error.captureStackTrace(this, this.constructor);
-        }
-    }
-    inherits(SubError, Error);
-    return SubError;
-}
-
-var _TypeError, _RangeError;
-var CancellationError = subError("CancellationError", "cancellation error");
-var TimeoutError = subError("TimeoutError", "timeout error");
-var AggregateError = subError("AggregateError", "aggregate error");
-try {
-    _TypeError = TypeError;
-    _RangeError = RangeError;
-} catch(e) {
-    _TypeError = subError("TypeError", "type error");
-    _RangeError = subError("RangeError", "range error");
-}
-
-var methods = ("join pop push shift unshift slice filter forEach some " +
-    "every map indexOf lastIndexOf reduce reduceRight sort reverse").split(" ");
-
-for (var i = 0; i < methods.length; ++i) {
-    if (typeof Array.prototype[methods[i]] === "function") {
-        AggregateError.prototype[methods[i]] = Array.prototype[methods[i]];
-    }
-}
-
-AggregateError.prototype.length = 0;
-AggregateError.prototype["isOperational"] = true;
-var level = 0;
-AggregateError.prototype.toString = function() {
-    var indent = Array(level * 4 + 1).join(" ");
-    var ret = "\n" + indent + "AggregateError of:" + "\n";
-    level++;
-    indent = Array(level * 4 + 1).join(" ");
-    for (var i = 0; i < this.length; ++i) {
-        var str = this[i] === this ? "[Circular AggregateError]" : this[i] + "";
-        var lines = str.split("\n");
-        for (var j = 0; j < lines.length; ++j) {
-            lines[j] = indent + lines[j];
-        }
-        str = lines.join("\n");
-        ret += str + "\n";
-    }
-    level--;
-    return ret;
-};
-
-function OperationalError(message) {
-    notEnumerableProp(this, "name", "OperationalError");
-    notEnumerableProp(this, "message", message);
-    this.cause = message;
-    this["isOperational"] = true;
-
-    if (message instanceof Error) {
-        notEnumerableProp(this, "message", message.message);
-        notEnumerableProp(this, "stack", message.stack);
-    } else if (Error.captureStackTrace) {
-        Error.captureStackTrace(this, this.constructor);
-    }
-
-}
-inherits(OperationalError, Error);
-
-var key = "__BluebirdErrorTypes__";
-var errorTypes = Error[key];
-if (!errorTypes) {
-    errorTypes = Objectfreeze({
-        CancellationError: CancellationError,
-        TimeoutError: TimeoutError,
-        OperationalError: OperationalError,
-        RejectionError: OperationalError,
-        AggregateError: AggregateError
+  }
+  createIterator(Constructor, NAME, next);
+  var entries = createIter(KEY+VALUE)
+    , values  = createIter(VALUE);
+  if(DEFAULT == VALUE)values = defineIterator(Base, NAME, values, 'values');
+  else entries = defineIterator(Base, NAME, entries, 'entries');
+  if(DEFAULT){
+    $define(PROTO + FORCED * BUGGY_ITERATORS, NAME, {
+      entries: entries,
+      keys: IS_SET ? values : createIter(KEY),
+      values: values
     });
-    notEnumerableProp(Error, key, errorTypes);
-}
-
-var ensureErrorObject = (function() {
-    if (!("stack" in new Error())) {
-        return function(value) {
-            if (canAttachTrace(value)) return value;
-            try {throw new Error(util.toString(value));}
-            catch(err) {return err;}
-        };
-    } else {
-        return function(value) {
-            if (canAttachTrace(value)) return value;
-            return new Error(util.toString(value));
-        };
-    }
-})();
-
-module.exports = {
-    Error: Error,
-    TypeError: _TypeError,
-    RangeError: _RangeError,
-    CancellationError: errorTypes.CancellationError,
-    OperationalError: errorTypes.OperationalError,
-    TimeoutError: errorTypes.TimeoutError,
-    AggregateError: errorTypes.AggregateError,
-    originatesFromRejection: originatesFromRejection,
-    markAsOriginatingFromRejection: markAsOriginatingFromRejection,
-    canAttachTrace: canAttachTrace,
-    ensureErrorObject: ensureErrorObject
-};
-
-},{"./es5.js":13,"./util.js":36}],12:[function(require,module,exports){
-"use strict";
-module.exports = function(Promise) {
-var TypeError = require("./errors.js").TypeError;
-
-function apiRejection(msg) {
-    var error = new TypeError(msg);
-    var ret = Promise.reject(error);
-    var parent = ret._peekContext();
-    if (parent != null) {
-        parent.attachExtraTrace(error);
-    }
-    return ret;
-}
-
-return apiRejection;
-};
-
-},{"./errors.js":11}],13:[function(require,module,exports){
-var isES5 = (function(){
-    "use strict";
-    return this === undefined;
-})();
-
-if (isES5) {
-    module.exports = {
-        freeze: Object.freeze,
-        defineProperty: Object.defineProperty,
-        keys: Object.keys,
-        getPrototypeOf: Object.getPrototypeOf,
-        isArray: Array.isArray,
-        isES5: isES5,
-        propertyIsWritable: function(obj, prop) {
-            var descriptor = Object.getOwnPropertyDescriptor(obj, prop);
-            return !!(!descriptor || descriptor.writable || descriptor.set);
-        }
-    };
-} else {
-    var has = {}.hasOwnProperty;
-    var str = {}.toString;
-    var proto = {}.constructor.prototype;
-
-    var ObjectKeys = function (o) {
-        var ret = [];
-        for (var key in o) {
-            if (has.call(o, key)) {
-                ret.push(key);
-            }
-        }
-        return ret;
-    };
-
-    var ObjectDefineProperty = function (o, key, desc) {
-        o[key] = desc.value;
-        return o;
-    };
-
-    var ObjectFreeze = function (obj) {
-        return obj;
-    };
-
-    var ObjectGetPrototypeOf = function (obj) {
-        try {
-            return Object(obj).constructor.prototype;
-        }
-        catch (e) {
-            return proto;
-        }
-    };
-
-    var ArrayIsArray = function (obj) {
-        try {
-            return str.call(obj) === "[object Array]";
-        }
-        catch(e) {
-            return false;
-        }
-    };
-
-    module.exports = {
-        isArray: ArrayIsArray,
-        keys: ObjectKeys,
-        defineProperty: ObjectDefineProperty,
-        freeze: ObjectFreeze,
-        getPrototypeOf: ObjectGetPrototypeOf,
-        isES5: isES5,
-        propertyIsWritable: function() {
-            return true;
-        }
-    };
-}
-
-},{}],14:[function(require,module,exports){
-"use strict";
-module.exports = function(Promise, INTERNAL) {
-var PromiseMap = Promise.map;
-
-Promise.prototype.filter = function (fn, options) {
-    return PromiseMap(this, fn, options, INTERNAL);
-};
-
-Promise.filter = function (promises, fn, options) {
-    return PromiseMap(promises, fn, options, INTERNAL);
-};
-};
-
-},{}],15:[function(require,module,exports){
-"use strict";
-module.exports = function(Promise, NEXT_FILTER, tryConvertToPromise) {
-var util = require("./util.js");
-var wrapsPrimitiveReceiver = util.wrapsPrimitiveReceiver;
-var isPrimitive = util.isPrimitive;
-var thrower = util.thrower;
-
-function returnThis() {
-    return this;
-}
-function throwThis() {
-    throw this;
-}
-function return$(r) {
-    return function() {
-        return r;
-    };
-}
-function throw$(r) {
-    return function() {
-        throw r;
-    };
-}
-function promisedFinally(ret, reasonOrValue, isFulfilled) {
-    var then;
-    if (wrapsPrimitiveReceiver && isPrimitive(reasonOrValue)) {
-        then = isFulfilled ? return$(reasonOrValue) : throw$(reasonOrValue);
-    } else {
-        then = isFulfilled ? returnThis : throwThis;
-    }
-    return ret._then(then, thrower, undefined, reasonOrValue, undefined);
-}
-
-function finallyHandler(reasonOrValue) {
-    var promise = this.promise;
-    var handler = this.handler;
-
-    var ret = promise._isBound()
-                    ? handler.call(promise._boundTo)
-                    : handler();
-
-    if (ret !== undefined) {
-        var maybePromise = tryConvertToPromise(ret, undefined);
-        if (maybePromise instanceof Promise) {
-            maybePromise = maybePromise._target();
-            return promisedFinally(maybePromise, reasonOrValue,
-                                    promise.isFulfilled());
-        }
-    }
-
-    if (promise.isRejected()) {
-        NEXT_FILTER.e = reasonOrValue;
-        return NEXT_FILTER;
-    } else {
-        return reasonOrValue;
-    }
-}
-
-function tapHandler(value) {
-    var promise = this.promise;
-    var handler = this.handler;
-
-    var ret = promise._isBound()
-                    ? handler.call(promise._boundTo, value)
-                    : handler(value);
-
-    if (ret !== undefined) {
-        var maybePromise = tryConvertToPromise(ret, undefined);
-        if (maybePromise instanceof Promise) {
-            maybePromise = maybePromise._target();
-            return promisedFinally(maybePromise, value, true);
-        }
-    }
-    return value;
-}
-
-Promise.prototype._passThroughHandler = function (handler, isFinally) {
-    if (typeof handler !== "function") return this.then();
-
-    var promiseAndHandler = {
-        promise: this,
-        handler: handler
-    };
-
-    return this._then(
-            isFinally ? finallyHandler : tapHandler,
-            isFinally ? finallyHandler : undefined, undefined,
-            promiseAndHandler, undefined);
-};
-
-Promise.prototype.lastly =
-Promise.prototype["finally"] = function (handler) {
-    return this._passThroughHandler(handler, true);
-};
-
-Promise.prototype.tap = function (handler) {
-    return this._passThroughHandler(handler, false);
-};
-};
-
-},{"./util.js":36}],16:[function(require,module,exports){
-"use strict";
-module.exports = function(Promise,
-                          apiRejection,
-                          INTERNAL,
-                          tryConvertToPromise) {
-var errors = require("./errors.js");
-var TypeError = errors.TypeError;
-var deprecated = require("./util.js").deprecated;
-var util = require("./util.js");
-var errorObj = util.errorObj;
-var tryCatch1 = util.tryCatch1;
-var yieldHandlers = [];
-
-function promiseFromYieldHandler(value, yieldHandlers, traceParent) {
-    var _errorObj = errorObj;
-    var _Promise = Promise;
-    var len = yieldHandlers.length;
-    for (var i = 0; i < len; ++i) {
-        traceParent._pushContext();
-        var result = tryCatch1(yieldHandlers[i], undefined, value);
-        traceParent._popContext();
-        if (result === _errorObj) {
-            return _Promise.reject(_errorObj.e);
-        }
-        var maybePromise = tryConvertToPromise(result, traceParent);
-        if (maybePromise instanceof _Promise) return maybePromise;
-    }
-    return null;
-}
-
-function PromiseSpawn(generatorFunction, receiver, yieldHandler, stack) {
-    var promise = this._promise = new Promise(INTERNAL);
-    promise._captureStackTrace();
-    this._stack = stack;
-    this._generatorFunction = generatorFunction;
-    this._receiver = receiver;
-    this._generator = undefined;
-    this._yieldHandlers = typeof yieldHandler === "function"
-        ? [yieldHandler].concat(yieldHandlers)
-        : yieldHandlers;
-}
-
-PromiseSpawn.prototype.promise = function () {
-    return this._promise;
-};
-
-PromiseSpawn.prototype._run = function () {
-    this._generator = this._generatorFunction.call(this._receiver);
-    this._receiver =
-        this._generatorFunction = undefined;
-    this._next(undefined);
-};
-
-PromiseSpawn.prototype._continue = function (result) {
-    if (result === errorObj) {
-        this._generator = undefined;
-        var trace = errors.canAttachTrace(result.e)
-            ? result.e : new Error(util.toString(result.e));
-        this._promise._attachExtraTrace(trace);
-        this._promise._reject(result.e, trace);
-        return;
-    }
-
-    var value = result.value;
-    if (result.done === true) {
-        this._generator = undefined;
-        if (!this._promise._tryFollow(value)) {
-            this._promise._fulfill(value);
-        }
-    } else {
-        var maybePromise = tryConvertToPromise(value, this._promise);
-        if (!(maybePromise instanceof Promise)) {
-            maybePromise =
-                promiseFromYieldHandler(maybePromise,
-                                        this._yieldHandlers,
-                                        this._promise);
-            if (maybePromise === null) {
-                this._throw(
-                    new TypeError(
-                        "A value %s was yielded that could not be treated as a promise\u000a\u000a    See http://goo.gl/4Y4pDk\u000a\u000a".replace("%s", value) +
-                        "From coroutine:\u000a" +
-                        this._stack.split("\n").slice(1, -7).join("\n")
-                    )
-                );
-                return;
-            }
-        }
-        maybePromise._then(
-            this._next,
-            this._throw,
-            undefined,
-            this,
-            null
-       );
-    }
-};
-
-PromiseSpawn.prototype._throw = function (reason) {
-    if (errors.canAttachTrace(reason))
-        this._promise._attachExtraTrace(reason);
-    this._promise._pushContext();
-    var result = tryCatch1(this._generator["throw"], this._generator, reason);
-    this._promise._popContext();
-    this._continue(result);
-};
-
-PromiseSpawn.prototype._next = function (value) {
-    this._promise._pushContext();
-    var result = tryCatch1(this._generator.next, this._generator, value);
-    this._promise._popContext();
-    this._continue(result);
-};
-
-Promise.coroutine = function (generatorFunction, options) {
-    if (typeof generatorFunction !== "function") {
-        throw new TypeError("generatorFunction must be a function\u000a\u000a    See http://goo.gl/6Vqhm0\u000a");
-    }
-    var yieldHandler = Object(options).yieldHandler;
-    var PromiseSpawn$ = PromiseSpawn;
-    var stack = new Error().stack;
-    return function () {
-        var generator = generatorFunction.apply(this, arguments);
-        var spawn = new PromiseSpawn$(undefined, undefined, yieldHandler,
-                                      stack);
-        spawn._generator = generator;
-        spawn._next(undefined);
-        return spawn.promise();
-    };
-};
-
-Promise.coroutine.addYieldHandler = function(fn) {
-    if (typeof fn !== "function") throw new TypeError("fn must be a function\u000a\u000a    See http://goo.gl/916lJJ\u000a");
-    yieldHandlers.push(fn);
-};
-
-Promise.spawn = function (generatorFunction) {
-    deprecated("Promise.spawn is deprecated. Use Promise.coroutine instead.");
-    if (typeof generatorFunction !== "function") {
-        return apiRejection("generatorFunction must be a function\u000a\u000a    See http://goo.gl/6Vqhm0\u000a");
-    }
-    var spawn = new PromiseSpawn(generatorFunction, this);
-    var ret = spawn.promise();
-    spawn._run(Promise.spawn);
-    return ret;
-};
-};
-
-},{"./errors.js":11,"./util.js":36}],17:[function(require,module,exports){
-"use strict";
-module.exports =
-function(Promise, PromiseArray, tryConvertToPromise, INTERNAL) {
-var util = require("./util.js");
-var canEvaluate = util.canEvaluate;
-var tryCatch1 = util.tryCatch1;
-var errorObj = util.errorObj;
-var errors = require("./errors.js");
-
-if (canEvaluate) {
-    var thenCallback = function(i) {
-        return new Function("value", "holder", "                             \n\
-            'use strict';                                                    \n\
-            holder.pIndex = value;                                           \n\
-            holder.checkFulfillment(this);                                   \n\
-            ".replace(/Index/g, i));
-    };
-
-    var caller = function(count) {
-        var values = [];
-        for (var i = 1; i <= count; ++i) values.push("holder.p" + i);
-        return new Function("holder", "                                      \n\
-            'use strict';                                                    \n\
-            var callback = holder.fn;                                        \n\
-            return callback(values);                                         \n\
-            ".replace(/values/g, values.join(", ")));
-    };
-    var thenCallbacks = [];
-    var callers = [undefined];
-    for (var i = 1; i <= 5; ++i) {
-        thenCallbacks.push(thenCallback(i));
-        callers.push(caller(i));
-    }
-
-    var Holder = function(total, fn) {
-        this.p1 = this.p2 = this.p3 = this.p4 = this.p5 = null;
-        this.fn = fn;
-        this.total = total;
-        this.now = 0;
-    };
-
-    Holder.prototype.callers = callers;
-    Holder.prototype.checkFulfillment = function(promise) {
-        var now = this.now;
-        now++;
-        var total = this.total;
-        if (now >= total) {
-            var handler = this.callers[total];
-            promise._pushContext();
-            var ret = tryCatch1(handler, undefined, this);
-            promise._popContext();
-            if (ret === errorObj) {
-                var reason = ret.e;
-                var trace = errors.ensureErrorObject(reason);
-                promise._attachExtraTrace(trace);
-                promise._rejectUnchecked(reason,
-                    trace === reason ? undefined : trace);
-            } else if (!promise._tryFollow(ret)) {
-                promise._fulfillUnchecked(ret);
-            }
-        } else {
-            this.now = now;
-        }
-    };
-}
-
-function reject(reason) {
-    this._reject(reason);
-}
-
-Promise.join = function () {
-    var last = arguments.length - 1;
-    var fn;
-    if (last > 0 && typeof arguments[last] === "function") {
-        fn = arguments[last];
-        if (last < 6 && canEvaluate) {
-            var ret = new Promise(INTERNAL);
-            ret._captureStackTrace();
-            var holder = new Holder(last, fn);
-            var callbacks = thenCallbacks;
-            for (var i = 0; i < last; ++i) {
-                var maybePromise = tryConvertToPromise(arguments[i], undefined);
-                if (maybePromise instanceof Promise) {
-                    maybePromise = maybePromise._target();
-                    if (maybePromise._isPending()) {
-                        maybePromise._then(callbacks[i], reject,
-                                           undefined, ret, holder);
-                    } else if (maybePromise._isFulfilled()) {
-                        callbacks[i].call(ret,
-                                          maybePromise._value(), holder);
-                    } else {
-                        ret._reject(maybePromise._reason());
-                        maybePromise._unsetRejectionIsUnhandled();
-                    }
-                } else {
-                    callbacks[i].call(ret, maybePromise, holder);
-                }
-            }
-            return ret;
-        }
-    }
-    var $_len = arguments.length;var args = new Array($_len); for(var $_i = 0; $_i < $_len; ++$_i) {args[$_i] = arguments[$_i];}
-    var ret = new PromiseArray(args).promise();
-    return fn !== undefined ? ret.spread(fn) : ret;
-};
-
-};
-
-},{"./errors.js":11,"./util.js":36}],18:[function(require,module,exports){
-"use strict";
-module.exports = function(Promise,
-                          PromiseArray,
-                          apiRejection,
-                          tryConvertToPromise,
-                          INTERNAL) {
-var util = require("./util.js");
-var tryCatch3 = util.tryCatch3;
-var errorObj = util.errorObj;
-var PENDING = {};
-var EMPTY_ARRAY = [];
-
-function MappingPromiseArray(promises, fn, limit, _filter) {
-    this.constructor$(promises);
-    this._promise._setIsSpreadable();
-    this._promise._captureStackTrace();
-    this._callback = fn;
-    this._preservedValues = _filter === INTERNAL
-        ? new Array(this.length())
-        : null;
-    this._limit = limit;
-    this._inFlight = 0;
-    this._queue = limit >= 1 ? [] : EMPTY_ARRAY;
-    this._init$(undefined, -2);
-}
-util.inherits(MappingPromiseArray, PromiseArray);
-
-MappingPromiseArray.prototype._init = function () {};
-
-MappingPromiseArray.prototype._promiseFulfilled = function (value, index) {
-    var values = this._values;
-    var length = this.length();
-    var preservedValues = this._preservedValues;
-    var limit = this._limit;
-    if (values[index] === PENDING) {
-        values[index] = value;
-        if (limit >= 1) {
-            this._inFlight--;
-            this._drainQueue();
-            if (this._isResolved()) return;
-        }
-    } else {
-        if (limit >= 1 && this._inFlight >= limit) {
-            values[index] = value;
-            this._queue.push(index);
-            return;
-        }
-        if (preservedValues !== null) preservedValues[index] = value;
-
-        var callback = this._callback;
-        var receiver = this._promise._boundTo;
-        this._promise._pushContext();
-        var ret = tryCatch3(callback, receiver, value, index, length);
-        this._promise._popContext();
-        if (ret === errorObj) return this._reject(ret.e);
-
-        var maybePromise = tryConvertToPromise(ret, this._promise);
-        if (maybePromise instanceof Promise) {
-            maybePromise = maybePromise._target();
-            if (maybePromise._isPending()) {
-                if (limit >= 1) this._inFlight++;
-                values[index] = PENDING;
-                return maybePromise._proxyPromiseArray(this, index);
-            } else if (maybePromise._isFulfilled()) {
-                ret = maybePromise._value();
-            } else {
-                maybePromise._unsetRejectionIsUnhandled();
-                return this._reject(maybePromise._reason());
-            }
-        }
-        values[index] = ret;
-    }
-    var totalResolved = ++this._totalResolved;
-    if (totalResolved >= length) {
-        if (preservedValues !== null) {
-            this._filter(values, preservedValues);
-        } else {
-            this._resolve(values);
-        }
-
-    }
-};
-
-MappingPromiseArray.prototype._drainQueue = function () {
-    var queue = this._queue;
-    var limit = this._limit;
-    var values = this._values;
-    while (queue.length > 0 && this._inFlight < limit) {
-        if (this._isResolved()) return;
-        var index = queue.pop();
-        this._promiseFulfilled(values[index], index);
-    }
-};
-
-MappingPromiseArray.prototype._filter = function (booleans, values) {
-    var len = values.length;
-    var ret = new Array(len);
-    var j = 0;
-    for (var i = 0; i < len; ++i) {
-        if (booleans[i]) ret[j++] = values[i];
-    }
-    ret.length = j;
-    this._resolve(ret);
-};
-
-MappingPromiseArray.prototype.preservedValues = function () {
-    return this._preservedValues;
-};
-
-function map(promises, fn, options, _filter) {
-    var limit = typeof options === "object" && options !== null
-        ? options.concurrency
-        : 0;
-    limit = typeof limit === "number" &&
-        isFinite(limit) && limit >= 1 ? limit : 0;
-    return new MappingPromiseArray(promises, fn, limit, _filter);
-}
-
-Promise.prototype.map = function (fn, options) {
-    if (typeof fn !== "function") return apiRejection("fn must be a function\u000a\u000a    See http://goo.gl/916lJJ\u000a");
-
-    return map(this, fn, options, null).promise();
-};
-
-Promise.map = function (promises, fn, options, _filter) {
-    if (typeof fn !== "function") return apiRejection("fn must be a function\u000a\u000a    See http://goo.gl/916lJJ\u000a");
-    return map(promises, fn, options, _filter).promise();
-};
-
-
-};
-
-},{"./util.js":36}],19:[function(require,module,exports){
-"use strict";
-module.exports = function(Promise) {
-var util = require("./util.js");
-var async = require("./async.js");
-var tryCatch2 = util.tryCatch2;
-var tryCatch1 = util.tryCatch1;
-var errorObj = util.errorObj;
-
-function spreadAdapter(val, nodeback) {
-    var promise = this;
-    if (!util.isArray(val)) return successAdapter.call(promise, val, nodeback);
-    var ret = util.tryCatchApply(nodeback,
-                                 [null].concat(val), promise._boundTo);
-    if (ret === errorObj) {
-        async.throwLater(ret.e);
-    }
-}
-
-function successAdapter(val, nodeback) {
-    var promise = this;
-    var receiver = promise._boundTo;
-    var ret = val === undefined
-        ? tryCatch1(nodeback, receiver, null)
-        : tryCatch2(nodeback, receiver, null, val);
-    if (ret === errorObj) {
-        async.throwLater(ret.e);
-    }
-}
-function errorAdapter(reason, nodeback) {
-    var promise = this;
-    if (!reason) {
-        var target = promise._target();
-        var newReason = target._getCarriedStackTrace();
-        newReason.cause = reason;
-        reason = newReason;
-    }
-    var ret = tryCatch1(nodeback, promise._boundTo, reason);
-    if (ret === errorObj) {
-        async.throwLater(ret.e);
-    }
-}
-
-Promise.prototype.nodeify = function (nodeback, options) {
-    if (typeof nodeback == "function") {
-        var adapter = successAdapter;
-        if (options !== undefined && Object(options).spread) {
-            adapter = spreadAdapter;
-        }
-        this._then(
-            adapter,
-            errorAdapter,
-            undefined,
-            this,
-            nodeback
-        );
-    }
-    return this;
-};
-};
-
-},{"./async.js":3,"./util.js":36}],20:[function(require,module,exports){
-"use strict";
-module.exports = function(Promise, PromiseArray) {
-var util = require("./util.js");
-var async = require("./async.js");
-var errors = require("./errors.js");
-var tryCatch1 = util.tryCatch1;
-var errorObj = util.errorObj;
-
-Promise.prototype.progressed = function (handler) {
-    return this._then(undefined, undefined, handler, undefined, undefined);
-};
-
-Promise.prototype._progress = function (progressValue) {
-    if (this._isFollowingOrFulfilledOrRejected()) return;
-    this._target()._progressUnchecked(progressValue);
-
-};
-
-Promise.prototype._progressHandlerAt = function (index) {
-    return index === 0
-        ? this._progressHandler0
-        : this[(index << 2) + index - 5 + 2];
-};
-
-Promise.prototype._doProgressWith = function (progression) {
-    var progressValue = progression.value;
-    var handler = progression.handler;
-    var promise = progression.promise;
-    var receiver = progression.receiver;
-
-    var ret = tryCatch1(handler, receiver, progressValue);
-    if (ret === errorObj) {
-        if (ret.e != null &&
-            ret.e.name !== "StopProgressPropagation") {
-            var trace = errors.canAttachTrace(ret.e)
-                ? ret.e : new Error(util.toString(ret.e));
-            promise._attachExtraTrace(trace);
-            promise._progress(ret.e);
-        }
-    } else if (ret instanceof Promise) {
-        ret._then(promise._progress, null, null, promise, undefined);
-    } else {
-        promise._progress(ret);
-    }
-};
-
-
-Promise.prototype._progressUnchecked = function (progressValue) {
-    var len = this._length();
-    var progress = this._progress;
-    for (var i = 0; i < len; i++) {
-        var handler = this._progressHandlerAt(i);
-        var promise = this._promiseAt(i);
-        if (!(promise instanceof Promise)) {
-            var receiver = this._receiverAt(i);
-            if (typeof handler === "function") {
-                handler.call(receiver, progressValue, promise);
-            } else if (receiver instanceof PromiseArray &&
-                       !receiver._isResolved()) {
-                receiver._promiseProgressed(progressValue, promise);
-            }
-            continue;
-        }
-
-        if (typeof handler === "function") {
-            async.invoke(this._doProgressWith, this, {
-                handler: handler,
-                promise: promise,
-                receiver: this._receiverAt(i),
-                value: progressValue
-            });
-        } else {
-            async.invoke(progress, promise, progressValue);
-        }
-    }
-};
-};
-
-},{"./async.js":3,"./errors.js":11,"./util.js":36}],21:[function(require,module,exports){
-(function (process){
-"use strict";
-module.exports = function() {
-var makeSelfResolutionError = function () {
-    return new TypeError("circular promise resolution chain\u000a\u000a    See http://goo.gl/LhFpo0\u000a");
-};
-var reflect = function() {
-    return new Promise.PromiseInspection(this._target());
-};
-var util = require("./util.js");
-var async = require("./async.js");
-var errors = require("./errors.js");
-var INTERNAL = function(){};
-var APPLY = {};
-var NEXT_FILTER = {e: null};
-var apiRejection = require("./errors_api_rejection")(Promise);
-var tryConvertToPromise = require("./thenables.js")(Promise, INTERNAL);
-var PromiseArray =
-    require("./promise_array.js")(Promise, INTERNAL,
-                                    tryConvertToPromise, apiRejection);
-var CapturedTrace = require("./captured_trace.js")();
-var CatchFilter = require("./catch_filter.js")(NEXT_FILTER);
-var PromiseResolver = require("./promise_resolver.js");
-var isArray = util.isArray;
-var errorObj = util.errorObj;
-var tryCatch0 = util.tryCatch0;
-var tryCatch1 = util.tryCatch1;
-var tryCatch2 = util.tryCatch2;
-var tryCatchApply = util.tryCatchApply;
-var RangeError = errors.RangeError;
-var TypeError = errors.TypeError;
-var CancellationError = errors.CancellationError;
-var TimeoutError = errors.TimeoutError;
-var OperationalError = errors.OperationalError;
-var originatesFromRejection = errors.originatesFromRejection;
-var markAsOriginatingFromRejection = errors.markAsOriginatingFromRejection;
-var canAttachTrace = errors.canAttachTrace;
-var unhandledRejectionHandled;
-var possiblyUnhandledRejection;
-
-var debugging = false || !!(
-    typeof process !== "undefined" &&
-    typeof process.execPath === "string" &&
-    typeof process.env === "object" &&
-    (process.env["BLUEBIRD_DEBUG"] ||
-        process.env["NODE_ENV"] === "development")
-);
-function Promise(resolver) {
-    if (typeof resolver !== "function") {
-        throw new TypeError("the promise constructor requires a resolver function\u000a\u000a    See http://goo.gl/EC22Yn\u000a");
-    }
-    if (this.constructor !== Promise) {
-        throw new TypeError("the promise constructor cannot be invoked directly\u000a\u000a    See http://goo.gl/KsIlge\u000a");
-    }
-    this._bitField = 0;
-    this._fulfillmentHandler0 = undefined;
-    this._rejectionHandler0 = undefined;
-    this._progressHandler0 = undefined;
-    this._promise0 = undefined;
-    this._receiver0 = undefined;
-    this._settledValue = undefined;
-    this._boundTo = undefined;
-    if (resolver !== INTERNAL) this._resolveFromResolver(resolver);
-}
-
-Promise.prototype.bind = function (thisArg) {
-    var maybePromise = tryConvertToPromise(thisArg, this);
-    var ret = new Promise(INTERNAL);
-    ret._propagateFrom(this, 1);
-    var target = this._target();
-    if (maybePromise instanceof Promise) {
-        target._then(INTERNAL, ret._reject, ret._progress, ret, null);
-        maybePromise._then(function(thisArg) {
-            if (ret._isPending()) {
-                ret._setBoundTo(thisArg);
-                ret._follow(target);
-            }
-        }, ret._reject, ret._progress, ret, null);
-    } else {
-        ret._setBoundTo(thisArg);
-        ret._follow(target);
-    }
-
-    return ret;
-};
-
-Promise.prototype.toString = function () {
-    return "[object Promise]";
-};
-
-Promise.prototype.caught = Promise.prototype["catch"] = function (fn) {
-    var len = arguments.length;
-    if (len > 1) {
-        var catchInstances = new Array(len - 1),
-            j = 0, i;
-        for (i = 0; i < len - 1; ++i) {
-            var item = arguments[i];
-            if (typeof item === "function") {
-                catchInstances[j++] = item;
-            } else {
-                var error = new TypeError("Catch filter must inherit from Error or be a simple predicate function\u000a\u000a    See http://goo.gl/o84o68\u000a");
-                this._attachExtraTrace(error);
-                return Promise.reject(error);
-            }
-        }
-        catchInstances.length = j;
-        fn = arguments[i];
-        var catchFilter = new CatchFilter(catchInstances, fn, this);
-        return this._then(undefined, catchFilter.doFilter, undefined,
-            catchFilter, undefined);
-    }
-    return this._then(undefined, fn, undefined, undefined, undefined);
-};
-
-Promise.prototype.reflect = function () {
-    return this._then(reflect, reflect, undefined, this, undefined);
-};
-
-Promise.prototype.then = function (didFulfill, didReject, didProgress) {
-    return this._then(didFulfill, didReject, didProgress,
-        undefined, undefined);
-};
-
-
-Promise.prototype.done = function (didFulfill, didReject, didProgress) {
-    var promise = this._then(didFulfill, didReject, didProgress,
-        undefined, undefined);
-    promise._setIsFinal();
-};
-
-Promise.prototype.spread = function (didFulfill, didReject) {
-    var followee = this._target();
-    var target = followee._isSpreadable()
-        ? (followee === this ? this : this.then())
-        : this.all();
-    return target._then(didFulfill, didReject, undefined, APPLY, undefined);
-};
-
-Promise.prototype.isCancellable = function () {
-    return !this.isResolved() &&
-        this._cancellable();
-};
-
-Promise.prototype.toJSON = function () {
-    var ret = {
-        isFulfilled: false,
-        isRejected: false,
-        fulfillmentValue: undefined,
-        rejectionReason: undefined
-    };
-    if (this.isFulfilled()) {
-        ret.fulfillmentValue = this.value();
-        ret.isFulfilled = true;
-    } else if (this.isRejected()) {
-        ret.rejectionReason = this.reason();
-        ret.isRejected = true;
-    }
-    return ret;
-};
-
-Promise.prototype.all = function () {
-    var ret = new PromiseArray(this).promise();
-    ret._setIsSpreadable();
-    return ret;
-};
-
-Promise.prototype.error = function (fn) {
-    return this.caught(originatesFromRejection, fn);
-};
-
-Promise.is = function (val) {
-    return val instanceof Promise;
-};
-
-Promise.all = function (promises) {
-    var ret = new PromiseArray(promises).promise();
-    ret._setIsSpreadable();
-    return ret;
-};
-
-Promise.method = function (fn) {
-    if (typeof fn !== "function") {
-        throw new TypeError("fn must be a function\u000a\u000a    See http://goo.gl/916lJJ\u000a");
-    }
-    return function () {
-        var ret = new Promise(INTERNAL);
-        ret._captureStackTrace();
-        var value;
-        ret._pushContext();
-        switch(arguments.length) {
-        case 0: value = tryCatch0(fn, this); break;
-        case 1: value = tryCatch1(fn, this, arguments[0]); break;
-        case 2: value = tryCatch2(fn, this, arguments[0], arguments[1]); break;
-        default:
-            var $_len = arguments.length;var args = new Array($_len); for(var $_i = 0; $_i < $_len; ++$_i) {args[$_i] = arguments[$_i];}
-            value = tryCatchApply(fn, args, this); break;
-        }
-        ret._popContext();
-        ret._resolveFromSyncValue(value);
-        return ret;
-    };
-};
-
-Promise.attempt = Promise["try"] = function (fn, args, ctx) {
-    if (typeof fn !== "function") {
-        return apiRejection("fn must be a function\u000a\u000a    See http://goo.gl/916lJJ\u000a");
-    }
-    var ret = new Promise(INTERNAL);
-    ret._captureStackTrace();
-    ret._pushContext();
-    var value = isArray(args)
-        ? tryCatchApply(fn, args, ctx)
-        : tryCatch1(fn, ctx, args);
-    ret._popContext();
-    ret._resolveFromSyncValue(value);
-    return ret;
-};
-
-Promise.defer = Promise.pending = function () {
-    var promise = new Promise(INTERNAL);
-    return new PromiseResolver(promise);
-};
-
-Promise.bind = function (thisArg) {
-    var maybePromise = tryConvertToPromise(thisArg, undefined);
-    var ret = new Promise(INTERNAL);
-
-    if (maybePromise instanceof Promise) {
-        maybePromise._then(function(thisArg) {
-            ret._setBoundTo(thisArg);
-            ret._fulfill(undefined);
-        }, ret._reject, ret._progress, ret, null);
-    } else {
-        ret._setBoundTo(thisArg);
-        ret._setFulfilled();
-    }
-    return ret;
-};
-
-Promise.cast = function (obj) {
-    var ret = tryConvertToPromise(obj, undefined);
-    if (!(ret instanceof Promise)) {
-        var val = ret;
-        ret = new Promise(INTERNAL);
-        ret._setFulfilled();
-        ret._settledValue = val;
-        ret._cleanValues();
-    }
-    return ret;
-};
-
-Promise.resolve = Promise.fulfilled = Promise.cast;
-
-Promise.reject = Promise.rejected = function (reason) {
-    var ret = new Promise(INTERNAL);
-    ret._captureStackTrace();
-    markAsOriginatingFromRejection(reason);
-    var hasStack = canAttachTrace(reason) && typeof reason.stack === "string";
-    var trace = errors.ensureErrorObject(reason);
-    ret._attachExtraTrace(reason, hasStack);
-    ret._rejectUnchecked(reason, trace === reason ? undefined : trace);
-    return ret;
-};
-
-Promise.onPossiblyUnhandledRejection = function (fn) {
-    possiblyUnhandledRejection = typeof fn === "function" ? fn : undefined;
-};
-
-Promise.onUnhandledRejectionHandled = function (fn) {
-    unhandledRejectionHandled = typeof fn === "function" ? fn : undefined;
-};
-
-Promise.longStackTraces = function () {
-    if (async.haveItemsQueued() &&
-        debugging === false
-   ) {
-        throw new Error("cannot enable long stack traces after promises have been created\u000a\u000a    See http://goo.gl/DT1qyG\u000a");
-    }
-    debugging = CapturedTrace.isSupported();
-};
-
-Promise.hasLongStackTraces = function () {
-    return debugging && CapturedTrace.isSupported();
-};
-
-Promise.setScheduler = function(fn) {
-    if (typeof fn !== "function") throw new TypeError("fn must be a function\u000a\u000a    See http://goo.gl/916lJJ\u000a");
-    async._schedule = fn;
-};
-
-Promise.prototype._then = function (
-    didFulfill,
-    didReject,
-    didProgress,
-    receiver,
-    internalData
-) {
-    var haveInternalData = internalData !== undefined;
-    var ret = haveInternalData ? internalData : new Promise(INTERNAL);
-
-    if (!haveInternalData) {
-        ret._propagateFrom(this, 4 | 1);
-        ret._captureStackTrace();
-    }
-
-    var target = this._target();
-    if (target !== this) {
-        if (receiver === undefined) receiver = this._boundTo;
-        if (!haveInternalData) ret._setIsMigrated();
-    }
-
-    var callbackIndex =
-        target._addCallbacks(didFulfill, didReject, didProgress, ret, receiver);
-
-    if (target._isResolved() && !target._isSettlePromisesQueued()) {
-        async.invoke(
-            target._settlePromiseAtPostResolution, target, callbackIndex);
-    }
-
-    return ret;
-};
-
-Promise.prototype._settlePromiseAtPostResolution = function (index) {
-    if (this._isRejectionUnhandled()) this._unsetRejectionIsUnhandled();
-    this._settlePromiseAt(index);
-};
-
-Promise.prototype._length = function () {
-    return this._bitField & 131071;
-};
-
-Promise.prototype._isFollowingOrFulfilledOrRejected = function () {
-    return (this._bitField & 939524096) > 0;
-};
-
-Promise.prototype._isFollowing = function () {
-    return (this._bitField & 536870912) === 536870912;
-};
-
-Promise.prototype._setLength = function (len) {
-    this._bitField = (this._bitField & -131072) |
-        (len & 131071);
-};
-
-Promise.prototype._setFulfilled = function () {
-    this._bitField = this._bitField | 268435456;
-};
-
-Promise.prototype._setRejected = function () {
-    this._bitField = this._bitField | 134217728;
-};
-
-Promise.prototype._setFollowing = function () {
-    this._bitField = this._bitField | 536870912;
-};
-
-Promise.prototype._setIsFinal = function () {
-    this._bitField = this._bitField | 33554432;
-};
-
-Promise.prototype._isFinal = function () {
-    return (this._bitField & 33554432) > 0;
-};
-
-Promise.prototype._cancellable = function () {
-    return (this._bitField & 67108864) > 0;
-};
-
-Promise.prototype._setCancellable = function () {
-    this._bitField = this._bitField | 67108864;
-};
-
-Promise.prototype._unsetCancellable = function () {
-    this._bitField = this._bitField & (~67108864);
-};
-
-Promise.prototype._setRejectionIsUnhandled = function () {
-    this._bitField = this._bitField | 2097152;
-};
-
-Promise.prototype._unsetRejectionIsUnhandled = function () {
-    this._bitField = this._bitField & (~2097152);
-    if (this._isUnhandledRejectionNotified()) {
-        this._unsetUnhandledRejectionIsNotified();
-        this._notifyUnhandledRejectionIsHandled();
-    }
-};
-
-Promise.prototype._isRejectionUnhandled = function () {
-    return (this._bitField & 2097152) > 0;
-};
-
-Promise.prototype._isSpreadable = function () {
-    return (this._bitField & 131072) > 0;
-};
-
-Promise.prototype._setIsSpreadable = function () {
-    this._bitField = this._bitField | 131072;
-};
-
-Promise.prototype._setIsMigrated = function () {
-    this._bitField = this._bitField | 4194304;
-};
-
-Promise.prototype._unsetIsMigrated = function () {
-    this._bitField = this._bitField & (~4194304);
-};
-
-Promise.prototype._isMigrated = function () {
-    return (this._bitField & 4194304) > 0;
-};
-
-Promise.prototype._setUnhandledRejectionIsNotified = function () {
-    this._bitField = this._bitField | 524288;
-};
-
-Promise.prototype._unsetUnhandledRejectionIsNotified = function () {
-    this._bitField = this._bitField & (~524288);
-};
-
-Promise.prototype._isUnhandledRejectionNotified = function () {
-    return (this._bitField & 524288) > 0;
-};
-
-Promise.prototype._setCarriedStackTrace = function (capturedTrace) {
-    this._bitField = this._bitField | 1048576;
-    this._fulfillmentHandler0 = capturedTrace;
-};
-
-Promise.prototype._isCarryingStackTrace = function () {
-    return (this._bitField & 1048576) > 0;
-};
-
-Promise.prototype._getCarriedStackTrace = function () {
-    return this._isCarryingStackTrace()
-        ? this._fulfillmentHandler0
-        : undefined;
-};
-
-Promise.prototype._receiverAt = function (index) {
-    var ret = index === 0
-        ? this._receiver0
-        : this[
-            index * 5 - 5 + 4];
-    if (this._isBound() && ret === undefined) {
-        return this._boundTo;
-    }
-    return ret;
-};
-
-Promise.prototype._promiseAt = function (index) {
-    return index === 0
-        ? this._promise0
-        : this[index * 5 - 5 + 3];
-};
-
-Promise.prototype._fulfillmentHandlerAt = function (index) {
-    return index === 0
-        ? this._fulfillmentHandler0
-        : this[index * 5 - 5 + 0];
-};
-
-Promise.prototype._rejectionHandlerAt = function (index) {
-    return index === 0
-        ? this._rejectionHandler0
-        : this[index * 5 - 5 + 1];
-};
-
-Promise.prototype._migrateCallbacks = function (
-    fulfill,
-    reject,
-    progress,
-    promise,
-    receiver
-) {
-    if (promise instanceof Promise) promise._setIsMigrated();
-    this._addCallbacks(fulfill, reject, progress, promise, receiver);
-};
-
-Promise.prototype._addCallbacks = function (
-    fulfill,
-    reject,
-    progress,
-    promise,
-    receiver
-) {
-    var index = this._length();
-
-    if (index >= 131071 - 5) {
-        index = 0;
-        this._setLength(0);
-    }
-
-    if (index === 0) {
-        this._promise0 = promise;
-        if (receiver !== undefined) this._receiver0 = receiver;
-        if (typeof fulfill === "function" && !this._isCarryingStackTrace())
-            this._fulfillmentHandler0 = fulfill;
-        if (typeof reject === "function") this._rejectionHandler0 = reject;
-        if (typeof progress === "function") this._progressHandler0 = progress;
-    } else {
-        var base = index * 5 - 5;
-        this[base + 3] = promise;
-        this[base + 4] = receiver;
-        if (typeof fulfill === "function")
-            this[base + 0] = fulfill;
-        if (typeof reject === "function")
-            this[base + 1] = reject;
-        if (typeof progress === "function")
-            this[base + 2] = progress;
-    }
-    this._setLength(index + 1);
-    return index;
-};
-
-Promise.prototype._setProxyHandlers = function (receiver, promiseSlotValue) {
-    var index = this._length();
-
-    if (index >= 131071 - 5) {
-        index = 0;
-        this._setLength(0);
-    }
-    if (index === 0) {
-        this._promise0 = promiseSlotValue;
-        this._receiver0 = receiver;
-    } else {
-        var base = index * 5 - 5;
-        this[base + 3] = promiseSlotValue;
-        this[base + 4] = receiver;
-    }
-    this._setLength(index + 1);
-};
-
-Promise.prototype._proxyPromiseArray = function (promiseArray, index) {
-    this._setProxyHandlers(promiseArray, index);
-};
-
-Promise.prototype._setBoundTo = function (obj) {
-    if (obj !== undefined) {
-        this._bitField = this._bitField | 8388608;
-        this._boundTo = obj;
-    } else {
-        this._bitField = this._bitField & (~8388608);
-    }
-};
-
-Promise.prototype._isBound = function () {
-    return (this._bitField & 8388608) === 8388608;
-};
-
-Promise.prototype._resolveFromResolver = function (resolver) {
-    var promise = this;
-    var synchronous = true;
-
-    this._captureStackTrace();
-    this._pushContext();
-    var r = tryCatch2(resolver, undefined, function(value) {
-        if (promise._tryFollow(value)) {
-            return;
-        }
-        promise._fulfill(value);
-    }, function (reason) {
-        markAsOriginatingFromRejection(reason);
-        var trace = errors.ensureErrorObject(reason);
-        var hasStack = canAttachTrace(reason) &&
-            typeof trace.stack === "string";
-        promise._attachExtraTrace(trace, synchronous ? hasStack : false);
-        promise._reject(reason, trace === reason ? undefined : trace);
-    });
-    synchronous = false;
-    this._popContext();
-
-    if (r !== undefined && r === errorObj) {
-        var reason = r.e;
-        var hasStack = canAttachTrace(reason) &&
-            typeof reason.stack === "string";
-        var trace = errors.ensureErrorObject(reason);
-        promise._attachExtraTrace(reason, hasStack);
-        promise._reject(reason, trace === reason ? undefined : trace);
-    }
-};
-
-Promise.prototype._settlePromiseFromHandler = function (
-    handler, receiver, value, promise
-) {
-    if (promise._isRejected()) return;
-    promise._pushContext();
-    var x;
-    if (receiver === APPLY && !this._isRejected()) {
-        x = tryCatchApply(handler, value, this._boundTo);
-    } else {
-        x = tryCatch1(handler, receiver, value);
-    }
-    promise._popContext();
-
-    if (x === errorObj || x === promise || x === NEXT_FILTER) {
-        var err = x === promise
-                    ? makeSelfResolutionError()
-                    : x.e;
-        var trace = canAttachTrace(err) ? err : new Error(util.toString(err));
-        if (x !== NEXT_FILTER) promise._attachExtraTrace(trace);
-        promise._rejectUnchecked(err, trace);
-    } else {
-        x = tryConvertToPromise(x, promise);
-        if (x instanceof Promise) {
-            x = x._target();
-            if (x._isRejected() &&
-                !x._isCarryingStackTrace() &&
-                !canAttachTrace(x._reason())) {
-                var trace = new Error(util.toString(x._reason()));
-                promise._attachExtraTrace(trace);
-                x._setCarriedStackTrace(trace);
-            }
-            promise._follow(x);
-        } else {
-            promise._fulfillUnchecked(x);
-        }
-    }
-};
-
-Promise.prototype._target = function() {
-    var ret = this;
-    while (ret._isFollowing()) ret = ret._followee();
-    return ret;
-};
-
-Promise.prototype._followee = function() {
-    return this._rejectionHandler0;
-};
-
-Promise.prototype._setFollowee = function(promise) {
-    this._rejectionHandler0 = promise;
-};
-
-Promise.prototype._follow = function (promise) {
-    if (promise._isPending()) {
-        var len = this._length();
-        for (var i = 0; i < len; ++i) {
-            promise._migrateCallbacks(
-                this._fulfillmentHandlerAt(i),
-                this._rejectionHandlerAt(i),
-                this._progressHandlerAt(i),
-                this._promiseAt(i),
-                this._receiverAt(i)
-            );
-        }
-        this._setFollowing();
-        this._setLength(0);
-        this._setFollowee(promise);
-        this._propagateFrom(promise, 1);
-    } else if (promise._isFulfilled()) {
-        this._fulfillUnchecked(promise._value());
-    } else {
-        this._rejectUnchecked(promise._reason(),
-            promise._getCarriedStackTrace());
-    }
-    if (promise._isRejectionUnhandled()) promise._unsetRejectionIsUnhandled();
-};
-
-Promise.prototype._tryFollow = function (value) {
-    if (this._isFollowingOrFulfilledOrRejected() ||
-        value === this) {
-        return false;
-    }
-    var maybePromise = tryConvertToPromise(value, this);
-    if (!(maybePromise instanceof Promise)) {
-        return false;
-    }
-    this._follow(maybePromise._target());
-    return true;
-};
-
-Promise.prototype._captureStackTrace = function () {
-    if (debugging) {
-        this._trace = new CapturedTrace(this._peekContext());
-    }
-    return this;
-};
-
-Promise.prototype._canAttachTrace = function(error) {
-    return debugging && canAttachTrace(error);
-};
-
-Promise.prototype._attachExtraTraceIgnoreSelf = function (error) {
-    if (this._canAttachTrace(error) && this._trace._parent !== undefined) {
-        this._trace._parent.attachExtraTrace(error);
-    }
-};
-
-Promise.prototype._attachExtraTrace = function (error, ignoreSelf) {
-    if (debugging && canAttachTrace(error)) {
-        var trace = this._trace;
-        if (trace !== undefined) {
-            if (ignoreSelf) trace = trace._parent;
-        }
-        if (trace !== undefined) {
-            trace.attachExtraTrace(error);
-        } else {
-            CapturedTrace.cleanStack(error, true);
-        }
-    }
-};
-
-Promise.prototype._cleanValues = function () {
-    if (this._cancellable()) {
-        this._cancellationParent = undefined;
-    }
-};
-
-Promise.prototype._propagateFrom = function (parent, flags) {
-    if ((flags & 1) > 0 && parent._cancellable()) {
-        this._setCancellable();
-        this._cancellationParent = parent;
-    }
-    if ((flags & 4) > 0) {
-        this._setBoundTo(parent._boundTo);
-    }
-};
-
-Promise.prototype._fulfill = function (value) {
-    if (this._isFollowingOrFulfilledOrRejected()) return;
-    this._fulfillUnchecked(value);
-};
-
-Promise.prototype._reject = function (reason, carriedStackTrace) {
-    if (this._isFollowingOrFulfilledOrRejected()) return;
-    this._rejectUnchecked(reason, carriedStackTrace);
-};
-
-Promise.prototype._settlePromiseAt = function (index) {
-    var promise = this._promiseAt(index);
-    var isPromise = promise instanceof Promise;
-
-    if (isPromise && promise._isMigrated()) {
-        promise._unsetIsMigrated();
-        return async.invoke(this._settlePromiseAt, this, index);
-    }
-    var handler = this._isFulfilled()
-        ? this._fulfillmentHandlerAt(index)
-        : this._rejectionHandlerAt(index);
-
-    var carriedStackTrace =
-        this._isCarryingStackTrace() ? this._getCarriedStackTrace() : undefined;
-    var value = this._settledValue;
-    var receiver = this._receiverAt(index);
-
-
-    this._clearCallbackDataAtIndex(index);
-
-    if (typeof handler === "function") {
-        if (!isPromise) {
-            handler.call(receiver, value, promise);
-        } else {
-            this._settlePromiseFromHandler(handler, receiver, value, promise);
-        }
-    } else if (receiver instanceof PromiseArray) {
-        if (!receiver._isResolved()) {
-            if (this._isFulfilled()) {
-                receiver._promiseFulfilled(value, promise);
-            }
-            else {
-                receiver._promiseRejected(value, promise);
-            }
-        }
-    } else if (isPromise) {
-        if (this._isFulfilled()) {
-            promise._fulfill(value);
-        } else {
-            promise._reject(value, carriedStackTrace);
-        }
-    }
-
-    if (index >= 4 && (index & 31) === 4)
-        async.invokeLater(this._setLength, this, 0);
-};
-
-Promise.prototype._clearCallbackDataAtIndex = function(index) {
-    if (index === 0) {
-        if (!this._isCarryingStackTrace()) {
-            this._fulfillmentHandler0 = undefined;
-        }
-        this._rejectionHandler0 =
-        this._progressHandler0 =
-        this._receiver0 =
-        this._promise0 = undefined;
-    } else {
-        var base = index * 5 - 5;
-        this[base + 3] =
-        this[base + 4] =
-        this[base + 0] =
-        this[base + 1] =
-        this[base + 2] = undefined;
-    }
-};
-
-Promise.prototype._isSettlePromisesQueued = function () {
-    return (this._bitField &
-            -1073741824) === -1073741824;
-};
-
-Promise.prototype._setSettlePromisesQueued = function () {
-    this._bitField = this._bitField | -1073741824;
-};
-
-Promise.prototype._unsetSettlePromisesQueued = function () {
-    this._bitField = this._bitField & (~-1073741824);
-};
-
-Promise.prototype._queueSettlePromises = function() {
-    if (!this._isSettlePromisesQueued()) {
-        async.settlePromises(this);
-        this._setSettlePromisesQueued();
-    }
-};
-
-Promise.prototype._fulfillUnchecked = function (value) {
-    if (value === this) {
-        var err = makeSelfResolutionError();
-        this._attachExtraTrace(err);
-        return this._rejectUnchecked(err, undefined);
-    }
-    this._setFulfilled();
-    this._settledValue = value;
-    this._cleanValues();
-
-    if (this._length() > 0) {
-        this._queueSettlePromises();
-    }
-};
-
-Promise.prototype._rejectUncheckedCheckError = function (reason) {
-    var trace = errors.ensureErrorObject(reason);
-    this._rejectUnchecked(reason, trace === reason ? undefined : trace);
-};
-
-Promise.prototype._rejectUnchecked = function (reason, trace) {
-    if (reason === this) {
-        var err = makeSelfResolutionError();
-        this._attachExtraTrace(err);
-        return this._rejectUnchecked(err);
-    }
-    this._setRejected();
-    this._settledValue = reason;
-    this._cleanValues();
-
-    if (this._isFinal()) {
-        async.throwLater(function(e) {
-            if ("stack" in e) {
-                async.invokeFirst(
-                    CapturedTrace.unhandledRejection, undefined, e);
-            }
-            throw e;
-        }, trace === undefined ? reason : trace);
-        return;
-    }
-
-    if (trace !== undefined && trace !== reason) {
-        this._setCarriedStackTrace(trace);
-    }
-
-    if (this._length() > 0) {
-        this._queueSettlePromises();
-    } else {
-        this._ensurePossibleRejectionHandled();
-    }
-};
-
-Promise.prototype._settlePromises = function () {
-    this._unsetSettlePromisesQueued();
-    var len = this._length();
-    for (var i = 0; i < len; i++) {
-        this._settlePromiseAt(i);
-    }
-};
-
-Promise.prototype._ensurePossibleRejectionHandled = function () {
-    this._setRejectionIsUnhandled();
-    async.invokeLater(this._notifyUnhandledRejection, this, undefined);
-};
-
-Promise.prototype._notifyUnhandledRejectionIsHandled = function () {
-    CapturedTrace.fireRejectionEvent("rejectionHandled",
-                                  unhandledRejectionHandled, undefined, this);
-};
-
-Promise.prototype._notifyUnhandledRejection = function () {
-    if (this._isRejectionUnhandled()) {
-        var reason = this._getCarriedStackTrace() || this._settledValue;
-        this._setUnhandledRejectionIsNotified();
-        CapturedTrace.fireRejectionEvent("unhandledRejection",
-                                      possiblyUnhandledRejection, reason, this);
-    }
-};
-
-var contextStack = [];
-function Context() {
-    this._trace = new CapturedTrace(peekContext());
-}
-Context.prototype._pushContext = function () {
-    if (!debugging) return;
-    contextStack.push(this._trace);
-};
-
-Context.prototype._popContext = function () {
-    if (!debugging) return;
-    contextStack.pop();
-};
-
- /*jshint unused:false*/
-function createContext() {
-    if (debugging) return new Context();
-}
-
-function peekContext() {
-    var lastIndex = contextStack.length - 1;
-    if (lastIndex >= 0) {
-        return contextStack[lastIndex];
-    }
-    return undefined;
-}
-
-Promise.prototype._peekContext = peekContext;
-Promise.prototype._pushContext = Context.prototype._pushContext;
-Promise.prototype._popContext = Context.prototype._popContext;
-
-Promise.prototype._resolveFromSyncValue = function (value) {
-    if (value === errorObj) {
-        this._setRejected();
-        var reason = value.e;
-        this._settledValue = reason;
-        this._cleanValues();
-        this._attachExtraTrace(reason);
-        this._ensurePossibleRejectionHandled();
-    } else {
-        var maybePromise = tryConvertToPromise(value, this);
-        if (maybePromise instanceof Promise) {
-            maybePromise = maybePromise._target();
-            this._follow(maybePromise);
-        } else {
-            this._setFulfilled();
-            this._settledValue = value;
-            this._cleanValues();
-        }
-    }
-};
-
-
-
-if (!CapturedTrace.isSupported()) {
-    Promise.longStackTraces = function(){};
-    debugging = false;
-}
-
-Promise._makeSelfResolutionError = makeSelfResolutionError;
-require("./finally.js")(Promise, NEXT_FILTER, tryConvertToPromise);
-require("./direct_resolve.js")(Promise);
-require("./synchronous_inspection.js")(Promise);
-require("./join.js")(Promise, PromiseArray, tryConvertToPromise, INTERNAL);
-Promise.RangeError = RangeError;
-Promise.CancellationError = CancellationError;
-Promise.TimeoutError = TimeoutError;
-Promise.TypeError = TypeError;
-Promise.OperationalError = OperationalError;
-Promise.RejectionError = OperationalError;
-Promise.AggregateError = errors.AggregateError;
-
-util.toFastProperties(Promise);
-util.toFastProperties(Promise.prototype);
-Promise.Promise = Promise;
-CapturedTrace.setBounds(async.firstLineError, util.lastLineError);
-require('./nodeify.js')(Promise);
-require('./using.js')(Promise, apiRejection, tryConvertToPromise, createContext);
-require('./generators.js')(Promise, apiRejection, INTERNAL, tryConvertToPromise);
-require('./map.js')(Promise, PromiseArray, apiRejection, tryConvertToPromise, INTERNAL);
-require('./cancel.js')(Promise, INTERNAL);
-require('./promisify.js')(Promise, INTERNAL);
-require('./props.js')(Promise, PromiseArray, tryConvertToPromise);
-require('./race.js')(Promise, INTERNAL, tryConvertToPromise);
-require('./reduce.js')(Promise, PromiseArray, apiRejection, tryConvertToPromise, INTERNAL);
-require('./settle.js')(Promise, PromiseArray);
-require('./call_get.js')(Promise);
-require('./some.js')(Promise, PromiseArray, apiRejection);
-require('./progress.js')(Promise, PromiseArray);
-require('./any.js')(Promise);
-require('./each.js')(Promise, INTERNAL);
-require('./timers.js')(Promise, INTERNAL, tryConvertToPromise);
-require('./filter.js')(Promise, INTERNAL);
-
-Promise.prototype = Promise.prototype;
-return Promise;
-
-};
-
-}).call(this,require('_process'))
-},{"./any.js":2,"./async.js":3,"./call_get.js":5,"./cancel.js":6,"./captured_trace.js":7,"./catch_filter.js":8,"./direct_resolve.js":9,"./each.js":10,"./errors.js":11,"./errors_api_rejection":12,"./filter.js":14,"./finally.js":15,"./generators.js":16,"./join.js":17,"./map.js":18,"./nodeify.js":19,"./progress.js":20,"./promise_array.js":22,"./promise_resolver.js":23,"./promisify.js":24,"./props.js":25,"./race.js":27,"./reduce.js":28,"./settle.js":30,"./some.js":31,"./synchronous_inspection.js":32,"./thenables.js":33,"./timers.js":34,"./using.js":35,"./util.js":36,"_process":39}],22:[function(require,module,exports){
-"use strict";
-module.exports = function(Promise, INTERNAL, tryConvertToPromise,
-    apiRejection) {
-var util = require("./util.js");
-var errors = require("./errors.js");
-var isArray = util.isArray;
-
-function toResolutionValue(val) {
-    switch(val) {
-    case -1: return undefined;
-    case -2: return [];
-    case -3: return {};
-    }
-}
-
-function PromiseArray(values) {
-    var promise = this._promise = new Promise(INTERNAL);
-    var parent;
-    if (values instanceof Promise) {
-        parent = values;
-        promise._propagateFrom(parent, 1 | 4);
-    }
-    this._values = values;
-    this._length = 0;
-    this._totalResolved = 0;
-    this._init(undefined, -2);
-}
-PromiseArray.prototype.length = function () {
-    return this._length;
-};
-
-PromiseArray.prototype.promise = function () {
-    return this._promise;
-};
-
-PromiseArray.prototype._init = function init(_, resolveValueIfEmpty) {
-
-    var values = tryConvertToPromise(this._values, undefined);
-    if (values instanceof Promise) {
-        values._setBoundTo(this._promise._boundTo);
-        values = values._target();
-        this._values = values;
-        if (values._isFulfilled()) {
-            values = values._value();
-            if (!isArray(values)) {
-                var err = new Promise.TypeError("expecting an array, a promise or a thenable\u000a\u000a    See http://goo.gl/s8MMhc\u000a");
-                this.__hardReject__(err);
-                return;
-            }
-        } else if (values._isPending()) {
-            values._then(
-                init,
-                this._reject,
-                undefined,
-                this,
-                resolveValueIfEmpty
-           );
-            return;
-        } else {
-            values._unsetRejectionIsUnhandled();
-            this._reject(values._reason());
-            return;
-        }
-    } else if (!isArray(values)) {
-        this._promise._follow(apiRejection("expecting an array, a promise or a thenable\u000a\u000a    See http://goo.gl/s8MMhc\u000a"));
-        return;
-    }
-
-    if (values.length === 0) {
-        if (resolveValueIfEmpty === -5) {
-            this._resolveEmptyArray();
-        }
-        else {
-            this._resolve(toResolutionValue(resolveValueIfEmpty));
-        }
-        return;
-    }
-    var len = this.getActualLength(values.length);
-    this._length = len;
-    this._values = this.shouldCopyValues() ? new Array(len) : this._values;
-    var promise = this._promise;
-    for (var i = 0; i < len; ++i) {
-        var isResolved = this._isResolved();
-        var maybePromise = tryConvertToPromise(values[i], promise);
-        if (maybePromise instanceof Promise) {
-            maybePromise = maybePromise._target();
-            if (isResolved) {
-                maybePromise._unsetRejectionIsUnhandled();
-            } else if (maybePromise._isPending()) {
-                maybePromise._proxyPromiseArray(this, i);
-            } else if (maybePromise._isFulfilled()) {
-                this._promiseFulfilled(maybePromise._value(), i);
-            } else {
-                maybePromise._unsetRejectionIsUnhandled();
-                this._promiseRejected(maybePromise._reason(), i);
-            }
-        } else if (!isResolved) {
-            this._promiseFulfilled(maybePromise, i);
-        }
-    }
-};
-
-PromiseArray.prototype._isResolved = function () {
-    return this._values === null;
-};
-
-PromiseArray.prototype._resolve = function (value) {
-    this._values = null;
-    this._promise._fulfill(value);
-};
-
-PromiseArray.prototype.__hardReject__ =
-PromiseArray.prototype._reject = function (reason) {
-    this._values = null;
-    var trace = errors.ensureErrorObject(reason);
-    this._promise._attachExtraTrace(trace);
-    this._promise._reject(reason, trace);
-};
-
-PromiseArray.prototype._promiseProgressed = function (progressValue, index) {
-    this._promise._progress({
-        index: index,
-        value: progressValue
-    });
-};
-
-
-PromiseArray.prototype._promiseFulfilled = function (value, index) {
-    this._values[index] = value;
-    var totalResolved = ++this._totalResolved;
-    if (totalResolved >= this._length) {
-        this._resolve(this._values);
-    }
-};
-
-PromiseArray.prototype._promiseRejected = function (reason, index) {
-    this._totalResolved++;
-    this._reject(reason);
-};
-
-PromiseArray.prototype.shouldCopyValues = function () {
-    return true;
-};
-
-PromiseArray.prototype.getActualLength = function (len) {
-    return len;
-};
-
-return PromiseArray;
-};
-
-},{"./errors.js":11,"./util.js":36}],23:[function(require,module,exports){
-"use strict";
-var util = require("./util.js");
-var maybeWrapAsError = util.maybeWrapAsError;
-var errors = require("./errors.js");
-var TimeoutError = errors.TimeoutError;
-var OperationalError = errors.OperationalError;
-var async = require("./async.js");
-var haveGetters = util.haveGetters;
-var es5 = require("./es5.js");
-
-function isUntypedError(obj) {
-    return obj instanceof Error &&
-        es5.getPrototypeOf(obj) === Error.prototype;
-}
-
-var rErrorKey = /^(?:name|message|stack|cause)$/;
-function wrapAsOperationalError(obj) {
-    var ret;
-    if (isUntypedError(obj)) {
-        ret = new OperationalError(obj);
-        ret.name = obj.name;
-        ret.message = obj.message;
-        ret.stack = obj.stack;
-        var keys = es5.keys(obj);
-        for (var i = 0; i < keys.length; ++i) {
-            var key = keys[i];
-            if (!rErrorKey.test(key)) {
-                ret[key] = obj[key];
-            }
-        }
-        return ret;
-    }
-    errors.markAsOriginatingFromRejection(obj);
-    return obj;
-}
-
-function nodebackForPromise(promise) {
-    return function(err, value) {
-        if (promise === null) return;
-
-        if (err) {
-            var wrapped = wrapAsOperationalError(maybeWrapAsError(err));
-            promise._attachExtraTrace(wrapped);
-            promise._reject(wrapped);
-        } else if (arguments.length > 2) {
-            var $_len = arguments.length;var args = new Array($_len - 1); for(var $_i = 1; $_i < $_len; ++$_i) {args[$_i - 1] = arguments[$_i];}
-            promise._fulfill(args);
-        } else {
-            promise._fulfill(value);
-        }
-
-        promise = null;
-    };
-}
-
-
-var PromiseResolver;
-if (!haveGetters) {
-    PromiseResolver = function (promise) {
-        this.promise = promise;
-        this.asCallback = nodebackForPromise(promise);
-        this.callback = this.asCallback;
-    };
-}
-else {
-    PromiseResolver = function (promise) {
-        this.promise = promise;
-    };
-}
-if (haveGetters) {
-    var prop = {
-        get: function() {
-            return nodebackForPromise(this.promise);
-        }
-    };
-    es5.defineProperty(PromiseResolver.prototype, "asCallback", prop);
-    es5.defineProperty(PromiseResolver.prototype, "callback", prop);
-}
-
-PromiseResolver._nodebackForPromise = nodebackForPromise;
-
-PromiseResolver.prototype.toString = function () {
-    return "[object PromiseResolver]";
-};
-
-PromiseResolver.prototype.resolve =
-PromiseResolver.prototype.fulfill = function (value) {
-    if (!(this instanceof PromiseResolver)) {
-        throw new TypeError("Illegal invocation, resolver resolve/reject must be called within a resolver context. Consider using the promise constructor instead.\u000a\u000a    See http://goo.gl/sdkXL9\u000a");
-    }
-
-    var promise = this.promise;
-    if (promise._tryFollow(value)) {
-        return;
-    }
-    async.invoke(promise._fulfill, promise, value);
-};
-
-PromiseResolver.prototype.reject = function (reason) {
-    if (!(this instanceof PromiseResolver)) {
-        throw new TypeError("Illegal invocation, resolver resolve/reject must be called within a resolver context. Consider using the promise constructor instead.\u000a\u000a    See http://goo.gl/sdkXL9\u000a");
-    }
-
-    var promise = this.promise;
-    errors.markAsOriginatingFromRejection(reason);
-    var trace = errors.ensureErrorObject(reason);
-    async.invoke(promise._reject, promise, reason);
-    if (trace !== reason) {
-        async.invoke(this._setCarriedStackTrace, this, trace);
-    }
-};
-
-PromiseResolver.prototype.progress = function (value) {
-    if (!(this instanceof PromiseResolver)) {
-        throw new TypeError("Illegal invocation, resolver resolve/reject must be called within a resolver context. Consider using the promise constructor instead.\u000a\u000a    See http://goo.gl/sdkXL9\u000a");
-    }
-    async.invoke(this.promise._progress, this.promise, value);
-};
-
-PromiseResolver.prototype.cancel = function () {
-    async.invoke(this.promise.cancel, this.promise, undefined);
-};
-
-PromiseResolver.prototype.timeout = function () {
-    this.reject(new TimeoutError("timeout"));
-};
-
-PromiseResolver.prototype.isResolved = function () {
-    return this.promise.isResolved();
-};
-
-PromiseResolver.prototype.toJSON = function () {
-    return this.promise.toJSON();
-};
-
-PromiseResolver.prototype._setCarriedStackTrace = function (trace) {
-    if (this.promise.isRejected()) {
-        this.promise._setCarriedStackTrace(trace);
-    }
-};
-
-module.exports = PromiseResolver;
-
-},{"./async.js":3,"./errors.js":11,"./es5.js":13,"./util.js":36}],24:[function(require,module,exports){
-"use strict";
-module.exports = function(Promise, INTERNAL) {
-var THIS = {};
-var util = require("./util.js");
-var nodebackForPromise = require("./promise_resolver.js")
-    ._nodebackForPromise;
-var withAppended = util.withAppended;
-var maybeWrapAsError = util.maybeWrapAsError;
-var canEvaluate = util.canEvaluate;
-var TypeError = require("./errors").TypeError;
-var defaultSuffix = "Async";
-var defaultFilter = function(name, func) {
-    return util.isIdentifier(name) &&
-        name.charAt(0) !== "_" &&
-        !util.isClass(func);
-};
-var defaultPromisified = {__isPromisified__: true};
-
-
-function escapeIdentRegex(str) {
-    return str.replace(/([$])/, "\\$");
-}
-
-function isPromisified(fn) {
-    try {
-        return fn.__isPromisified__ === true;
-    }
-    catch (e) {
-        return false;
-    }
-}
-
-function hasPromisified(obj, key, suffix) {
-    var val = util.getDataPropertyOrDefault(obj, key + suffix,
-                                            defaultPromisified);
-    return val ? isPromisified(val) : false;
-}
-function checkValid(ret, suffix, suffixRegexp) {
-    for (var i = 0; i < ret.length; i += 2) {
-        var key = ret[i];
-        if (suffixRegexp.test(key)) {
-            var keyWithoutAsyncSuffix = key.replace(suffixRegexp, "");
-            for (var j = 0; j < ret.length; j += 2) {
-                if (ret[j] === keyWithoutAsyncSuffix) {
-                    throw new TypeError("Cannot promisify an API that has normal methods with '%s'-suffix\u000a\u000a    See http://goo.gl/iWrZbw\u000a"
-                        .replace("%s", suffix));
-                }
-            }
-        }
-    }
-}
-
-function promisifiableMethods(obj, suffix, suffixRegexp, filter) {
-    var keys = util.inheritedDataKeys(obj);
-    var ret = [];
-    for (var i = 0; i < keys.length; ++i) {
-        var key = keys[i];
-        var value = obj[key];
-        var passesDefaultFilter = filter === defaultFilter
-            ? true : defaultFilter(key, value, obj);
-        if (typeof value === "function" &&
-            !isPromisified(value) &&
-            !hasPromisified(obj, key, suffix) &&
-            filter(key, value, obj, passesDefaultFilter)) {
-            ret.push(key, value);
-        }
-    }
-    checkValid(ret, suffix, suffixRegexp);
-    return ret;
-}
-
-function switchCaseArgumentOrder(likelyArgumentCount) {
-    var ret = [likelyArgumentCount];
-    var min = Math.max(0, likelyArgumentCount - 1 - 5);
-    for(var i = likelyArgumentCount - 1; i >= min; --i) {
-        if (i === likelyArgumentCount) continue;
-        ret.push(i);
-    }
-    for(var i = likelyArgumentCount + 1; i <= 5; ++i) {
-        ret.push(i);
-    }
-    return ret;
-}
-
-function argumentSequence(argumentCount) {
-    return util.filledRange(argumentCount, "arguments[", "]");
-}
-
-function parameterDeclaration(parameterCount) {
-    return util.filledRange(parameterCount, "_arg", "");
-}
-
-function parameterCount(fn) {
-    if (typeof fn.length === "number") {
-        return Math.max(Math.min(fn.length, 1023 + 1), 0);
-    }
-    return 0;
-}
-
-function generatePropertyAccess(key) {
-    if (util.isIdentifier(key)) {
-        return "." + key;
-    }
-    else return "['" + key.replace(/(['\\])/g, "\\$1") + "']";
-}
-
-function makeNodePromisifiedEval(callback, receiver, originalName, fn, suffix) {
-    var newParameterCount = Math.max(0, parameterCount(fn) - 1);
-    var argumentOrder = switchCaseArgumentOrder(newParameterCount);
-    var callbackName =
-        (typeof originalName === "string" && util.isIdentifier(originalName)
-            ? originalName + suffix
-            : "promisified");
-
-    function generateCallForArgumentCount(count) {
-        var args = argumentSequence(count).join(", ");
-        var comma = count > 0 ? ", " : "";
-        var ret;
-        if (typeof callback === "string") {
-            ret = "                                                          \n\
-                this.method({{args}}, fn);                                   \n\
-                break;                                                       \n\
-            ".replace(".method", generatePropertyAccess(callback));
-        } else if (receiver === THIS) {
-            ret =  "                                                         \n\
-                callback.call(this, {{args}}, fn);                           \n\
-                break;                                                       \n\
-            ";
-        } else if (receiver !== undefined) {
-            ret =  "                                                         \n\
-                callback.call(receiver, {{args}}, fn);                       \n\
-                break;                                                       \n\
-            ";
-        } else {
-            ret =  "                                                         \n\
-                callback({{args}}, fn);                                      \n\
-                break;                                                       \n\
-            ";
-        }
-        return ret.replace("{{args}}", args).replace(", ", comma);
-    }
-
-    function generateArgumentSwitchCase() {
-        var ret = "";
-        for(var i = 0; i < argumentOrder.length; ++i) {
-            ret += "case " + argumentOrder[i] +":" +
-                generateCallForArgumentCount(argumentOrder[i]);
-        }
-        var codeForCall;
-        if (typeof callback === "string") {
-            codeForCall = "                                                  \n\
-                this.property.apply(this, args);                             \n\
-            "
-                .replace(".property", generatePropertyAccess(callback));
-        } else if (receiver === THIS) {
-            codeForCall = "                                                  \n\
-                callback.apply(this, args);                                  \n\
-            ";
-        } else {
-            codeForCall = "                                                  \n\
-                callback.apply(receiver, args);                              \n\
-            ";
-        }
-
-        ret += "                                                             \n\
-        default:                                                             \n\
-            var args = new Array(len + 1);                                   \n\
-            var i = 0;                                                       \n\
-            for (var i = 0; i < len; ++i) {                                  \n\
-               args[i] = arguments[i];                                       \n\
-            }                                                                \n\
-            args[i] = fn;                                                    \n\
-            [CodeForCall]                                                    \n\
-            break;                                                           \n\
-        ".replace("[CodeForCall]", codeForCall);
-        return ret;
-    }
-
-    return new Function("Promise",
-                        "callback",
-                        "receiver",
-                        "withAppended",
-                        "maybeWrapAsError",
-                        "nodebackForPromise",
-                        "INTERNAL","                                         \n\
-        var ret = function (Parameters) {                        \n\
-            'use strict';                                                    \n\
-            var len = arguments.length;                                      \n\
-            var promise = new Promise(INTERNAL);                             \n\
-            promise._captureStackTrace();                                    \n\
-            promise._setIsSpreadable();                                      \n\
-            var fn = nodebackForPromise(promise);                            \n\
-            try {                                                            \n\
-                switch(len) {                                                \n\
-                    [CodeForSwitchCase]                                      \n\
-                }                                                            \n\
-            } catch (e) {                                                    \n\
-                var wrapped = maybeWrapAsError(e);                           \n\
-                promise._attachExtraTrace(wrapped);                          \n\
-                promise._reject(wrapped);                                    \n\
-            }                                                                \n\
-            return promise;                                                  \n\
-        };                                                                   \n\
-        ret.__isPromisified__ = true;                                        \n\
-        return ret;                                                          \n\
-        "
-        .replace("FunctionName", callbackName)
-        .replace("Parameters", parameterDeclaration(newParameterCount))
-        .replace("[CodeForSwitchCase]", generateArgumentSwitchCase()))(
-            Promise,
-            callback,
-            receiver,
-            withAppended,
-            maybeWrapAsError,
-            nodebackForPromise,
-            INTERNAL
-        );
-}
-
-function makeNodePromisifiedClosure(callback, receiver) {
-    function promisified() {
-        var _receiver = receiver;
-        if (receiver === THIS) _receiver = this;
-        if (typeof callback === "string") {
-            callback = _receiver[callback];
-        }
-        var promise = new Promise(INTERNAL);
-        promise._captureStackTrace();
-        promise._setIsSpreadable();
-        var fn = nodebackForPromise(promise);
-        try {
-            callback.apply(_receiver, withAppended(arguments, fn));
-        } catch(e) {
-            var wrapped = maybeWrapAsError(e);
-            promise._attachExtraTrace(wrapped);
-            promise._reject(wrapped);
-        }
-        return promise;
-    }
-    promisified.__isPromisified__ = true;
-    return promisified;
-}
-
-var makeNodePromisified = canEvaluate
-    ? makeNodePromisifiedEval
-    : makeNodePromisifiedClosure;
-
-function promisifyAll(obj, suffix, filter, promisifier) {
-    var suffixRegexp = new RegExp(escapeIdentRegex(suffix) + "$");
-    var methods =
-        promisifiableMethods(obj, suffix, suffixRegexp, filter);
-
-    for (var i = 0, len = methods.length; i < len; i+= 2) {
-        var key = methods[i];
-        var fn = methods[i+1];
-        var promisifiedKey = key + suffix;
-        obj[promisifiedKey] = promisifier === makeNodePromisified
-                ? makeNodePromisified(key, THIS, key, fn, suffix)
-                : promisifier(fn, function() {
-                    return makeNodePromisified(key, THIS, key, fn, suffix);
-                });
-    }
-    util.toFastProperties(obj);
-    return obj;
-}
-
-function promisify(callback, receiver) {
-    return makeNodePromisified(callback, receiver, undefined, callback);
-}
-
-Promise.promisify = function (fn, receiver) {
-    if (typeof fn !== "function") {
-        throw new TypeError("fn must be a function\u000a\u000a    See http://goo.gl/916lJJ\u000a");
-    }
-    if (isPromisified(fn)) {
-        return fn;
-    }
-    return promisify(fn, arguments.length < 2 ? THIS : receiver);
-};
-
-Promise.promisifyAll = function (target, options) {
-    if (typeof target !== "function" && typeof target !== "object") {
-        throw new TypeError("the target of promisifyAll must be an object or a function\u000a\u000a    See http://goo.gl/9ITlV0\u000a");
-    }
-    options = Object(options);
-    var suffix = options.suffix;
-    if (typeof suffix !== "string") suffix = defaultSuffix;
-    var filter = options.filter;
-    if (typeof filter !== "function") filter = defaultFilter;
-    var promisifier = options.promisifier;
-    if (typeof promisifier !== "function") promisifier = makeNodePromisified;
-
-    if (!util.isIdentifier(suffix)) {
-        throw new RangeError("suffix must be a valid identifier\u000a\u000a    See http://goo.gl/8FZo5V\u000a");
-    }
-
-    var keys = util.inheritedDataKeys(target, {includeHidden: true});
-    for (var i = 0; i < keys.length; ++i) {
-        var value = target[keys[i]];
-        if (keys[i] !== "constructor" &&
-            util.isClass(value)) {
-            promisifyAll(value.prototype, suffix, filter, promisifier);
-            promisifyAll(value, suffix, filter, promisifier);
-        }
-    }
-
-    return promisifyAll(target, suffix, filter, promisifier);
-};
-};
-
-
-},{"./errors":11,"./promise_resolver.js":23,"./util.js":36}],25:[function(require,module,exports){
-"use strict";
-module.exports = function(Promise, PromiseArray, tryConvertToPromise) {
-var util = require("./util.js");
-var apiRejection = require("./errors_api_rejection")(Promise);
-var isObject = util.isObject;
-var es5 = require("./es5.js");
-
-function PropertiesPromiseArray(obj) {
-    var keys = es5.keys(obj);
-    var len = keys.length;
-    var values = new Array(len * 2);
-    for (var i = 0; i < len; ++i) {
-        var key = keys[i];
-        values[i] = obj[key];
-        values[i + len] = key;
-    }
-    this.constructor$(values);
-}
-util.inherits(PropertiesPromiseArray, PromiseArray);
-
-PropertiesPromiseArray.prototype._init = function () {
-    this._init$(undefined, -3) ;
-};
-
-PropertiesPromiseArray.prototype._promiseFulfilled = function (value, index) {
-    this._values[index] = value;
-    var totalResolved = ++this._totalResolved;
-    if (totalResolved >= this._length) {
-        var val = {};
-        var keyOffset = this.length();
-        for (var i = 0, len = this.length(); i < len; ++i) {
-            val[this._values[i + keyOffset]] = this._values[i];
-        }
-        this._resolve(val);
-    }
-};
-
-PropertiesPromiseArray.prototype._promiseProgressed = function (value, index) {
-    this._promise._progress({
-        key: this._values[index + this.length()],
-        value: value
-    });
-};
-
-PropertiesPromiseArray.prototype.shouldCopyValues = function () {
-    return false;
-};
-
-PropertiesPromiseArray.prototype.getActualLength = function (len) {
-    return len >> 1;
-};
-
-function props(promises) {
-    var ret;
-    var castValue = tryConvertToPromise(promises, undefined);
-
-    if (!isObject(castValue)) {
-        return apiRejection("cannot await properties of a non-object\u000a\u000a    See http://goo.gl/OsFKC8\u000a");
-    } else if (castValue instanceof Promise) {
-        ret = castValue._then(
-            Promise.props, undefined, undefined, undefined, undefined);
-    } else {
-        ret = new PropertiesPromiseArray(castValue).promise();
-    }
-
-    if (castValue instanceof Promise) {
-        ret._propagateFrom(castValue, 4);
-    }
-    return ret;
-}
-
-Promise.prototype.props = function () {
-    return props(this);
-};
-
-Promise.props = function (promises) {
-    return props(promises);
-};
-};
-
-},{"./errors_api_rejection":12,"./es5.js":13,"./util.js":36}],26:[function(require,module,exports){
-"use strict";
-function arrayMove(src, srcIndex, dst, dstIndex, len) {
-    for (var j = 0; j < len; ++j) {
-        dst[j + dstIndex] = src[j + srcIndex];
-        src[j + srcIndex] = void 0;
-    }
-}
-
-function Queue(capacity) {
-    this._capacity = capacity;
-    this._length = 0;
-    this._front = 0;
-}
-
-Queue.prototype._willBeOverCapacity = function (size) {
-    return this._capacity < size;
-};
-
-Queue.prototype._pushOne = function (arg) {
-    var length = this.length();
-    this._checkCapacity(length + 1);
-    var i = (this._front + length) & (this._capacity - 1);
-    this[i] = arg;
-    this._length = length + 1;
-};
-
-Queue.prototype._unshiftOne = function(value) {
-    var capacity = this._capacity;
-    this._checkCapacity(this.length() + 1);
-    var front = this._front;
-    var i = (((( front - 1 ) &
-                    ( capacity - 1) ) ^ capacity ) - capacity );
-    this[i] = value;
-    this._front = i;
-    this._length = this.length() + 1;
-};
-
-Queue.prototype.unshift = function(fn, receiver, arg) {
-    this._unshiftOne(arg);
-    this._unshiftOne(receiver);
-    this._unshiftOne(fn);
-};
-
-Queue.prototype.push = function (fn, receiver, arg) {
-    var length = this.length() + 3;
-    if (this._willBeOverCapacity(length)) {
-        this._pushOne(fn);
-        this._pushOne(receiver);
-        this._pushOne(arg);
-        return;
-    }
-    var j = this._front + length - 3;
-    this._checkCapacity(length);
-    var wrapMask = this._capacity - 1;
-    this[(j + 0) & wrapMask] = fn;
-    this[(j + 1) & wrapMask] = receiver;
-    this[(j + 2) & wrapMask] = arg;
-    this._length = length;
-};
-
-Queue.prototype.shift = function () {
-    var front = this._front,
-        ret = this[front];
-
-    this[front] = undefined;
-    this._front = (front + 1) & (this._capacity - 1);
-    this._length--;
-    return ret;
-};
-
-Queue.prototype.length = function () {
-    return this._length;
-};
-
-Queue.prototype._checkCapacity = function (size) {
-    if (this._capacity < size) {
-        this._resizeTo(this._capacity << 1);
-    }
-};
-
-Queue.prototype._resizeTo = function (capacity) {
-    var oldCapacity = this._capacity;
-    this._capacity = capacity;
-    var front = this._front;
-    var length = this._length;
-    if (front + length > oldCapacity) {
-        var moveItemsCount = (front + length) & (oldCapacity - 1);
-        arrayMove(this, 0, this, oldCapacity, moveItemsCount);
-    }
-};
-
-module.exports = Queue;
-
-},{}],27:[function(require,module,exports){
-"use strict";
-module.exports = function(Promise, INTERNAL, tryConvertToPromise) {
-var apiRejection = require("./errors_api_rejection.js")(Promise);
-var isArray = require("./util.js").isArray;
-
-var raceLater = function (promise) {
-    return promise.then(function(array) {
-        return race(array, promise);
-    });
-};
-
-function race(promises, parent) {
-    var maybePromise = tryConvertToPromise(promises, undefined);
-
-    if (maybePromise instanceof Promise) {
-        return raceLater(maybePromise);
-    } else if (!isArray(promises)) {
-        return apiRejection("expecting an array, a promise or a thenable\u000a\u000a    See http://goo.gl/s8MMhc\u000a");
-    }
-
-    var ret = new Promise(INTERNAL);
-    if (parent !== undefined) {
-        ret._propagateFrom(parent, 4 | 1);
-    }
-    var fulfill = ret._fulfill;
-    var reject = ret._reject;
-    for (var i = 0, len = promises.length; i < len; ++i) {
-        var val = promises[i];
-
-        if (val === undefined && !(i in promises)) {
-            continue;
-        }
-
-        Promise.cast(val)._then(fulfill, reject, undefined, ret, null);
-    }
-    return ret;
-}
-
-Promise.race = function (promises) {
-    return race(promises, undefined);
-};
-
-Promise.prototype.race = function () {
-    return race(this, undefined);
-};
-
-};
-
-},{"./errors_api_rejection.js":12,"./util.js":36}],28:[function(require,module,exports){
-"use strict";
-module.exports = function(Promise,
-                          PromiseArray,
-                          apiRejection,
-                          tryConvertToPromise,
-                          INTERNAL) {
-var util = require("./util.js");
-var tryCatch4 = util.tryCatch4;
-var tryCatch3 = util.tryCatch3;
-var errorObj = util.errorObj;
-function ReductionPromiseArray(promises, fn, accum, _each) {
-    this.constructor$(promises);
-    this._promise._captureStackTrace();
-    this._preservedValues = _each === INTERNAL ? [] : null;
-    this._zerothIsAccum = (accum === undefined);
-    this._gotAccum = false;
-    this._reducingIndex = (this._zerothIsAccum ? 1 : 0);
-    this._valuesPhase = undefined;
-
-    var maybePromise = tryConvertToPromise(accum, undefined);
-    var rejected = false;
-    var isPromise = maybePromise instanceof Promise;
-    if (isPromise) {
-        maybePromise = maybePromise._target();
-        if (maybePromise._isPending()) {
-            maybePromise._proxyPromiseArray(this, -1);
-        } else if (maybePromise._isFulfilled()) {
-            accum = maybePromise._value();
-            this._gotAccum = true;
-        } else {
-            maybePromise._unsetRejectionIsUnhandled();
-            this._reject(maybePromise._reason());
-            rejected = true;
-        }
-    }
-    if (!(isPromise || this._zerothIsAccum)) this._gotAccum = true;
-    this._callback = fn;
-    this._accum = accum;
-    if (!rejected) this._init$(undefined, -5);
-}
-util.inherits(ReductionPromiseArray, PromiseArray);
-
-ReductionPromiseArray.prototype._init = function () {};
-
-ReductionPromiseArray.prototype._resolveEmptyArray = function () {
-    if (this._gotAccum || this._zerothIsAccum) {
-        this._resolve(this._preservedValues !== null
-                        ? [] : this._accum);
-    }
-};
-
-ReductionPromiseArray.prototype._promiseFulfilled = function (value, index) {
-    var values = this._values;
-    values[index] = value;
-    var length = this.length();
-    var preservedValues = this._preservedValues;
-    var isEach = preservedValues !== null;
-    var gotAccum = this._gotAccum;
-    var valuesPhase = this._valuesPhase;
-    var valuesPhaseIndex;
-    if (!valuesPhase) {
-        valuesPhase = this._valuesPhase = Array(length);
-        for (valuesPhaseIndex=0; valuesPhaseIndex<length; ++valuesPhaseIndex) {
-            valuesPhase[valuesPhaseIndex] = 0;
-        }
-    }
-    valuesPhaseIndex = valuesPhase[index];
-
-    if (index === 0 && this._zerothIsAccum) {
-        if (!gotAccum) {
-            this._accum = value;
-            this._gotAccum = gotAccum = true;
-        }
-        valuesPhase[index] = ((valuesPhaseIndex === 0)
-            ? 1 : 2);
-    } else if (index === -1) {
-        if (!gotAccum) {
-            this._accum = value;
-            this._gotAccum = gotAccum = true;
-        }
-    } else {
-        if (valuesPhaseIndex === 0) {
-            valuesPhase[index] = 1;
-        }
-        else {
-            valuesPhase[index] = 2;
-            if (gotAccum) {
-                this._accum = value;
-            }
-        }
-    }
-    if (!gotAccum) return;
-
-    var callback = this._callback;
-    var receiver = this._promise._boundTo;
-    var ret;
-
-    for (var i = this._reducingIndex; i < length; ++i) {
-        valuesPhaseIndex = valuesPhase[i];
-        if (valuesPhaseIndex === 2) {
-            this._reducingIndex = i + 1;
-            continue;
-        }
-        if (valuesPhaseIndex !== 1) return;
-        value = values[i];
-        if (value instanceof Promise) {
-            value = value._target();
-            if (value._isFulfilled()) {
-                value = value._value();
-            } else if (value._isPending()) {
-                return;
-            } else {
-                value._unsetRejectionIsUnhandled();
-                return this._reject(value._reason());
-            }
-        }
-
-        this._promise._pushContext();
-        if (isEach) {
-            preservedValues.push(value);
-            ret = tryCatch3(callback, receiver, value, i, length);
-        }
-        else {
-            ret = tryCatch4(callback, receiver, this._accum, value, i, length);
-        }
-        this._promise._popContext();
-
-        if (ret === errorObj) return this._reject(ret.e);
-
-        var maybePromise = tryConvertToPromise(ret, this._promise);
-        if (maybePromise instanceof Promise) {
-            maybePromise = maybePromise._target();
-            if (maybePromise._isPending()) {
-                valuesPhase[i] = 4;
-                return maybePromise._proxyPromiseArray(this, i);
-            } else if (maybePromise._isFulfilled()) {
-                ret = maybePromise._value();
-            } else {
-                maybePromise._unsetRejectionIsUnhandled();
-                return this._reject(maybePromise._reason());
-            }
-        }
-
-        this._reducingIndex = i + 1;
-        this._accum = ret;
-    }
-
-    if (this._reducingIndex < length) return;
-    this._resolve(isEach ? preservedValues : this._accum);
-};
-
-function reduce(promises, fn, initialValue, _each) {
-    if (typeof fn !== "function") return apiRejection("fn must be a function\u000a\u000a    See http://goo.gl/916lJJ\u000a");
-    var array = new ReductionPromiseArray(promises, fn, initialValue, _each);
-    return array.promise();
-}
-
-Promise.prototype.reduce = function (fn, initialValue) {
-    return reduce(this, fn, initialValue, null);
-};
-
-Promise.reduce = function (promises, fn, initialValue, _each) {
-    return reduce(promises, fn, initialValue, _each);
-};
-};
-
-},{"./util.js":36}],29:[function(require,module,exports){
-(function (process){
-"use strict";
-var schedule;
-if (typeof process === "object" && typeof process.version === "string") {
-    schedule = parseInt(process.version.split(".")[1], 10) > 10
-        ? setImmediate : process.nextTick;
-}
-else if (typeof MutationObserver !== "undefined") {
-    schedule = function(fn) {
-        var div = document.createElement("div");
-        var observer = new MutationObserver(fn);
-        observer.observe(div, {attributes: true});
-        return function() { div.classList.toggle("foo"); };
-    };
-    schedule.isStatic = true;
-}
-else if (typeof setTimeout !== "undefined") {
-    schedule = function (fn) {
-        setTimeout(fn, 0);
-    };
-}
-else {
-    schedule = function() {
-        throw new Error("No async scheduler available\u000a\u000a    See http://goo.gl/m3OTXk\u000a");
-    };
-}
-module.exports = schedule;
-
-}).call(this,require('_process'))
-},{"_process":39}],30:[function(require,module,exports){
-"use strict";
-module.exports =
-    function(Promise, PromiseArray) {
-var PromiseInspection = Promise.PromiseInspection;
-var util = require("./util.js");
-
-function SettledPromiseArray(values) {
-    this.constructor$(values);
-    this._promise._setIsSpreadable();
-}
-util.inherits(SettledPromiseArray, PromiseArray);
-
-SettledPromiseArray.prototype._promiseResolved = function (index, inspection) {
-    this._values[index] = inspection;
-    var totalResolved = ++this._totalResolved;
-    if (totalResolved >= this._length) {
-        this._resolve(this._values);
-    }
-};
-
-SettledPromiseArray.prototype._promiseFulfilled = function (value, index) {
-    var ret = new PromiseInspection();
-    ret._bitField = 268435456;
-    ret._settledValue = value;
-    this._promiseResolved(index, ret);
-};
-SettledPromiseArray.prototype._promiseRejected = function (reason, index) {
-    var ret = new PromiseInspection();
-    ret._bitField = 134217728;
-    ret._settledValue = reason;
-    this._promiseResolved(index, ret);
-};
-
-Promise.settle = function (promises) {
-    return new SettledPromiseArray(promises).promise();
-};
-
-Promise.prototype.settle = function () {
-    return new SettledPromiseArray(this).promise();
-};
-};
-
-},{"./util.js":36}],31:[function(require,module,exports){
-"use strict";
-module.exports =
-function(Promise, PromiseArray, apiRejection) {
-var util = require("./util.js");
-var RangeError = require("./errors.js").RangeError;
-var AggregateError = require("./errors.js").AggregateError;
-var isArray = util.isArray;
-
-
-function SomePromiseArray(values) {
-    this.constructor$(values);
-    this._howMany = 0;
-    this._unwrap = false;
-    this._initialized = false;
-}
-util.inherits(SomePromiseArray, PromiseArray);
-
-SomePromiseArray.prototype._init = function () {
-    if (!this._initialized) {
-        return;
-    }
-    this._promise._setIsSpreadable();
-    if (this._howMany === 0) {
-        this._resolve([]);
-        return;
-    }
-    this._init$(undefined, -5);
-    var isArrayResolved = isArray(this._values);
-    if (!this._isResolved() &&
-        isArrayResolved &&
-        this._howMany > this._canPossiblyFulfill()) {
-        this._reject(this._getRangeError(this.length()));
-    }
-};
-
-SomePromiseArray.prototype.init = function () {
-    this._initialized = true;
-    this._init();
-};
-
-SomePromiseArray.prototype.setUnwrap = function () {
-    this._unwrap = true;
-};
-
-SomePromiseArray.prototype.howMany = function () {
-    return this._howMany;
-};
-
-SomePromiseArray.prototype.setHowMany = function (count) {
-    if (this._isResolved()) return;
-    this._howMany = count;
-};
-
-SomePromiseArray.prototype._promiseFulfilled = function (value) {
-    this._addFulfilled(value);
-    if (this._fulfilled() === this.howMany()) {
-        this._values.length = this.howMany();
-        if (this.howMany() === 1 && this._unwrap) {
-            this._resolve(this._values[0]);
-        } else {
-            this._resolve(this._values);
-        }
-    }
-
-};
-SomePromiseArray.prototype._promiseRejected = function (reason) {
-    this._addRejected(reason);
-    if (this.howMany() > this._canPossiblyFulfill()) {
-        var e = new AggregateError();
-        for (var i = this.length(); i < this._values.length; ++i) {
-            e.push(this._values[i]);
-        }
-        this._reject(e);
-    }
-};
-
-SomePromiseArray.prototype._fulfilled = function () {
-    return this._totalResolved;
-};
-
-SomePromiseArray.prototype._rejected = function () {
-    return this._values.length - this.length();
-};
-
-SomePromiseArray.prototype._addRejected = function (reason) {
-    this._values.push(reason);
-};
-
-SomePromiseArray.prototype._addFulfilled = function (value) {
-    this._values[this._totalResolved++] = value;
-};
-
-SomePromiseArray.prototype._canPossiblyFulfill = function () {
-    return this.length() - this._rejected();
-};
-
-SomePromiseArray.prototype._getRangeError = function (count) {
-    var message = "Input array must contain at least " +
-            this._howMany + " items but contains only " + count + " items";
-    return new RangeError(message);
-};
-
-SomePromiseArray.prototype._resolveEmptyArray = function () {
-    this._reject(this._getRangeError(0));
-};
-
-function some(promises, howMany) {
-    if ((howMany | 0) !== howMany || howMany < 0) {
-        return apiRejection("expecting a positive integer\u000a\u000a    See http://goo.gl/1wAmHx\u000a");
-    }
-    var ret = new SomePromiseArray(promises);
-    var promise = ret.promise();
-    if (promise.isRejected()) {
-        return promise;
-    }
-    ret.setHowMany(howMany);
-    ret.init();
-    return promise;
-}
-
-Promise.some = function (promises, howMany) {
-    return some(promises, howMany);
-};
-
-Promise.prototype.some = function (howMany) {
-    return some(this, howMany);
-};
-
-Promise._SomePromiseArray = SomePromiseArray;
-};
-
-},{"./errors.js":11,"./util.js":36}],32:[function(require,module,exports){
-"use strict";
-module.exports = function(Promise) {
-function PromiseInspection(promise) {
-    if (promise !== undefined) {
-        promise = promise._target();
-        this._bitField = promise._bitField;
-        this._settledValue = promise._isResolved()
-            ? promise._settledValue
-            : undefined;
-    }
-    else {
-        this._bitField = 0;
-        this._settledValue = undefined;
-    }
-}
-
-PromiseInspection.prototype.value = function () {
-    if (!this.isFulfilled()) {
-        throw new TypeError("cannot get fulfillment value of a non-fulfilled promise\u000a\u000a    See http://goo.gl/hc1DLj\u000a");
-    }
-    return this._settledValue;
-};
-
-PromiseInspection.prototype.error =
-PromiseInspection.prototype.reason = function () {
-    if (!this.isRejected()) {
-        throw new TypeError("cannot get rejection reason of a non-rejected promise\u000a\u000a    See http://goo.gl/hPuiwB\u000a");
-    }
-    return this._settledValue;
-};
-
-PromiseInspection.prototype.isFulfilled =
-Promise.prototype._isFulfilled = function () {
-    return (this._bitField & 268435456) > 0;
-};
-
-PromiseInspection.prototype.isRejected =
-Promise.prototype._isRejected = function () {
-    return (this._bitField & 134217728) > 0;
-};
-
-PromiseInspection.prototype.isPending =
-Promise.prototype._isPending = function () {
-    return (this._bitField & 402653184) === 0;
-};
-
-PromiseInspection.prototype.isResolved =
-Promise.prototype._isResolved = function () {
-    return (this._bitField & 402653184) > 0;
-};
-
-Promise.prototype.isPending = function() {
-    return this._target()._isPending();
-};
-
-Promise.prototype.isRejected = function() {
-    return this._target()._isRejected();
-};
-
-Promise.prototype.isFulfilled = function() {
-    return this._target()._isFulfilled();
-};
-
-Promise.prototype.isResolved = function() {
-    return this._target()._isResolved();
-};
-
-Promise.prototype._value = function() {
-    return this._settledValue;
-};
-
-Promise.prototype._reason = function() {
-    return this._settledValue;
-};
-
-Promise.prototype.value = function() {
-    var target = this._target();
-    if (!target.isFulfilled()) {
-        throw new TypeError("cannot get fulfillment value of a non-fulfilled promise\u000a\u000a    See http://goo.gl/hc1DLj\u000a");
-    }
-    return target._settledValue;
-};
-
-Promise.prototype.reason = function() {
-    var target = this._target();
-    if (!target.isRejected()) {
-        throw new TypeError("cannot get rejection reason of a non-rejected promise\u000a\u000a    See http://goo.gl/hPuiwB\u000a");
-    }
-    return target._settledValue;
-};
-
-
-Promise.PromiseInspection = PromiseInspection;
-};
-
-},{}],33:[function(require,module,exports){
-"use strict";
-module.exports = function(Promise, INTERNAL) {
-var util = require("./util.js");
-var canAttachTrace = require("./errors.js").canAttachTrace;
-var errorObj = util.errorObj;
-var isObject = util.isObject;
-
-function getThen(obj) {
-    try {
-        return obj.then;
-    }
-    catch(e) {
-        errorObj.e = e;
-        return errorObj;
-    }
-}
-
-function tryConvertToPromise(obj, traceParent) {
-    if (isObject(obj)) {
-        if (obj instanceof Promise) {
-            return obj;
-        }
-        else if (isAnyBluebirdPromise(obj)) {
-            var ret = new Promise(INTERNAL);
-            obj._then(
-                ret._fulfillUnchecked,
-                ret._rejectUncheckedCheckError,
-                ret._progressUnchecked,
-                ret,
-                null
-            );
-            return ret;
-        }
-        var then = getThen(obj);
-        if (then === errorObj) {
-            if (traceParent !== undefined && canAttachTrace(then.e)) {
-                traceParent._attachExtraTrace(then.e);
-            }
-            return Promise.reject(then.e);
-        } else if (typeof then === "function") {
-            return doThenable(obj, then, traceParent);
-        }
-    }
-    return obj;
-}
-
-var hasProp = {}.hasOwnProperty;
-function isAnyBluebirdPromise(obj) {
-    return hasProp.call(obj, "_promise0");
-}
-
-function doThenable(x, then, traceParent) {
-    var resolver = Promise.defer();
-    var called = false;
-    try {
-        then.call(
-            x,
-            resolveFromThenable,
-            rejectFromThenable,
-            progressFromThenable
-        );
-    } catch(e) {
-        if (!called) {
-            called = true;
-            var trace = canAttachTrace(e) ? e : new Error(util.toString(e));
-            if (traceParent !== undefined) {
-                traceParent._attachExtraTrace(trace);
-            }
-            resolver.promise._reject(e, trace);
-        }
-    }
-    return resolver.promise;
-
-    function resolveFromThenable(y) {
-        if (called) return;
-        called = true;
-
-        if (x === y) {
-            var e = Promise._makeSelfResolutionError();
-            if (traceParent !== undefined) {
-                traceParent._attachExtraTrace(e);
-            }
-            resolver.promise._reject(e, undefined);
-            return;
-        }
-        resolver.resolve(y);
-    }
-
-    function rejectFromThenable(r) {
-        if (called) return;
-        called = true;
-        var trace = canAttachTrace(r) ? r : new Error(util.toString(r));
-        if (traceParent !== undefined) {
-            traceParent._attachExtraTrace(trace);
-        }
-        resolver.promise._reject(r, trace);
-    }
-
-    function progressFromThenable(v) {
-        if (called) return;
-        var promise = resolver.promise;
-        if (typeof promise._progress === "function") {
-            promise._progress(v);
-        }
-    }
-}
-
-return tryConvertToPromise;
-};
-
-},{"./errors.js":11,"./util.js":36}],34:[function(require,module,exports){
-"use strict";
-module.exports = function(Promise, INTERNAL, tryConvertToPromise) {
-var errors = require("./errors.js");
-var TimeoutError = Promise.TimeoutError;
-
-var afterTimeout = function (promise, message) {
-    if (!promise.isPending()) return;
-    if (typeof message !== "string") {
-        message = "operation timed out";
-    }
-    var err = new TimeoutError(message);
-    errors.markAsOriginatingFromRejection(err);
-    promise._attachExtraTrace(err);
-    promise._cancel(err);
-};
-
-var afterDelay = function (value, promise) {
-    promise._fulfill(value);
-};
-
-var delay = Promise.delay = function (value, ms) {
-    if (ms === undefined) {
-        ms = value;
-        value = undefined;
-    }
-    ms = +ms;
-    var maybePromise = tryConvertToPromise(value, undefined);
-    var promise = new Promise(INTERNAL);
-
-    if (maybePromise instanceof Promise) {
-        promise._propagateFrom(maybePromise, 4 | 1);
-        promise._follow(maybePromise._target());
-        return promise.then(function(value) {
-            return Promise.delay(value, ms);
-        });
-    } else {
-        setTimeout(function delayTimeout() {
-            afterDelay(value, promise);
-        }, ms);
-    }
-    return promise;
-};
-
-Promise.prototype.delay = function (ms) {
-    return delay(this, ms);
-};
-
-function successClear(value) {
-    var handle = this;
-    if (handle instanceof Number) handle = +handle;
-    clearTimeout(handle);
-    return value;
-}
-
-function failureClear(reason) {
-    var handle = this;
-    if (handle instanceof Number) handle = +handle;
-    clearTimeout(handle);
-    throw reason;
-}
-
-Promise.prototype.timeout = function (ms, message) {
-    var target = this._target();
-    ms = +ms;
-    var ret = new Promise(INTERNAL).cancellable();
-    ret._propagateFrom(this, 4 | 1);
-    ret._follow(target);
-    var handle = setTimeout(function timeoutTimeout() {
-        afterTimeout(ret, message);
-    }, ms);
-    return ret._then(successClear, failureClear, undefined, handle, undefined);
-};
-
-};
-
-},{"./errors.js":11}],35:[function(require,module,exports){
-"use strict";
-module.exports = function (Promise, apiRejection, tryConvertToPromise,
-    createContext) {
-    var TypeError = require("./errors.js").TypeError;
-    var inherits = require("./util.js").inherits;
-    var PromiseInspection = Promise.PromiseInspection;
-
-    function inspectionMapper(inspections) {
-        var len = inspections.length;
-        for (var i = 0; i < len; ++i) {
-            var inspection = inspections[i];
-            if (inspection.isRejected()) {
-                return Promise.reject(inspection.error());
-            }
-            inspections[i] = inspection._settledValue;
-        }
-        return inspections;
-    }
-
-    function thrower(e) {
-        setTimeout(function(){throw e;}, 0);
-    }
-
-    function castPreservingDisposable(thenable) {
-        var maybePromise = tryConvertToPromise(thenable, undefined);
-        if (maybePromise !== thenable &&
-            typeof thenable._isDisposable === "function" &&
-            typeof thenable._getDisposer === "function" &&
-            thenable._isDisposable()) {
-            maybePromise._setDisposable(thenable._getDisposer());
-        }
-        return maybePromise;
-    }
-    function dispose(resources, inspection) {
-        var i = 0;
-        var len = resources.length;
-        var ret = Promise.defer();
-        function iterator() {
-            if (i >= len) return ret.resolve();
-            var maybePromise = castPreservingDisposable(resources[i++]);
-            if (maybePromise instanceof Promise &&
-                maybePromise._isDisposable()) {
-                try {
-                    maybePromise = tryConvertToPromise(
-                        maybePromise._getDisposer().tryDispose(inspection),
-                        undefined);
-                } catch (e) {
-                    return thrower(e);
-                }
-                if (maybePromise instanceof Promise) {
-                    return maybePromise._then(iterator, thrower,
-                                              null, null, null);
-                }
-            }
-            iterator();
-        }
-        iterator();
-        return ret.promise;
-    }
-
-    function disposerSuccess(value) {
-        var inspection = new PromiseInspection();
-        inspection._settledValue = value;
-        inspection._bitField = 268435456;
-        return dispose(this, inspection).thenReturn(value);
-    }
-
-    function disposerFail(reason) {
-        var inspection = new PromiseInspection();
-        inspection._settledValue = reason;
-        inspection._bitField = 134217728;
-        return dispose(this, inspection).thenThrow(reason);
-    }
-
-    function Disposer(data, promise, context) {
-        this._data = data;
-        this._promise = promise;
-        this._context = context;
-    }
-
-    Disposer.prototype.data = function () {
-        return this._data;
-    };
-
-    Disposer.prototype.promise = function () {
-        return this._promise;
-    };
-
-    Disposer.prototype.resource = function () {
-        if (this.promise().isFulfilled()) {
-            return this.promise().value();
-        }
-        return null;
-    };
-
-    Disposer.prototype.tryDispose = function(inspection) {
-        var resource = this.resource();
-        var context = this._context;
-        if (context !== undefined) context._pushContext();
-        var ret = resource !== null
-            ? this.doDispose(resource, inspection) : null;
-        if (context !== undefined) context._popContext();
-        this._promise._unsetDisposable();
-        this._data = null;
-        return ret;
-    };
-
-    Disposer.isDisposer = function (d) {
-        return (d != null &&
-                typeof d.resource === "function" &&
-                typeof d.tryDispose === "function");
-    };
-
-    function FunctionDisposer(fn, promise) {
-        this.constructor$(fn, promise);
-    }
-    inherits(FunctionDisposer, Disposer);
-
-    FunctionDisposer.prototype.doDispose = function (resource, inspection) {
-        var fn = this.data();
-        return fn.call(resource, resource, inspection);
-    };
-
-    function maybeUnwrapDisposer(value) {
-        if (Disposer.isDisposer(value)) {
-            this.resources[this.index]._setDisposable(value);
-            return value.promise();
-        }
-        return value;
-    }
-
-    Promise.using = function () {
-        var len = arguments.length;
-        if (len < 2) return apiRejection(
-                        "you must pass at least 2 arguments to Promise.using");
-        var fn = arguments[len - 1];
-        if (typeof fn !== "function") return apiRejection("fn must be a function\u000a\u000a    See http://goo.gl/916lJJ\u000a");
-        len--;
-        var resources = new Array(len);
-        for (var i = 0; i < len; ++i) {
-            var resource = arguments[i];
-            if (Disposer.isDisposer(resource)) {
-                var disposer = resource;
-                resource = resource.promise();
-                resource._setDisposable(disposer);
-            } else {
-                var maybePromise = tryConvertToPromise(resource, undefined);
-                if (maybePromise instanceof Promise) {
-                    resource =
-                        maybePromise._then(maybeUnwrapDisposer, null, null, {
-                            resources: resources,
-                            index: i
-                    }, undefined);
-                }
-            }
-            resources[i] = resource;
-        }
-
-        var promise = Promise.settle(resources)
-            .then(inspectionMapper)
-            .then(function(vals) {
-                promise._pushContext();
-                var ret;
-                try {
-                    ret = fn.apply(undefined, vals);
-                } finally {
-                    promise._popContext();
-                }
-                return ret;
-            })
-            ._then(
-                disposerSuccess, disposerFail, undefined, resources, undefined);
-        return promise;
-    };
-
-    Promise.prototype._setDisposable = function (disposer) {
-        this._bitField = this._bitField | 262144;
-        this._disposer = disposer;
-    };
-
-    Promise.prototype._isDisposable = function () {
-        return (this._bitField & 262144) > 0;
-    };
-
-    Promise.prototype._getDisposer = function () {
-        return this._disposer;
-    };
-
-    Promise.prototype._unsetDisposable = function () {
-        this._bitField = this._bitField & (~262144);
-        this._disposer = undefined;
-    };
-
-    Promise.prototype.disposer = function (fn) {
-        if (typeof fn === "function") {
-            return new FunctionDisposer(fn, this, createContext());
-        }
-        throw new TypeError();
-    };
-
-};
-
-},{"./errors.js":11,"./util.js":36}],36:[function(require,module,exports){
-"use strict";
-var es5 = require("./es5.js");
-var haveGetters = (function(){
-    try {
-        var o = {};
-        es5.defineProperty(o, "f", {
-            get: function () {
-                return 3;
-            }
-        });
-        return o.f === 3;
-    }
-    catch (e) {
-        return false;
-    }
-
-})();
-var canEvaluate = typeof navigator == "undefined";
-var errorObj = {e: {}};
-function tryCatch0(fn, receiver) {
-    try { return fn.call(receiver); }
-    catch (e) {
-        errorObj.e = e;
-        return errorObj;
-    }
-}
-
-function tryCatch1(fn, receiver, arg) {
-    try { return fn.call(receiver, arg); }
-    catch (e) {
-        errorObj.e = e;
-        return errorObj;
-    }
-}
-
-function tryCatch2(fn, receiver, arg, arg2) {
-    try { return fn.call(receiver, arg, arg2); }
-    catch (e) {
-        errorObj.e = e;
-        return errorObj;
-    }
-}
-
-function tryCatch3(fn, receiver, arg, arg2, arg3) {
-    try { return fn.call(receiver, arg, arg2, arg3); }
-    catch (e) {
-        errorObj.e = e;
-        return errorObj;
-    }
-}
-
-function tryCatch4(fn, receiver, arg, arg2, arg3, arg4) {
-    try { return fn.call(receiver, arg, arg2, arg3, arg4); }
-    catch (e) {
-        errorObj.e = e;
-        return errorObj;
-    }
-}
-
-function tryCatchApply(fn, args, receiver) {
-    try { return fn.apply(receiver, args); }
-    catch (e) {
-        errorObj.e = e;
-        return errorObj;
-    }
-}
-
-var inherits = function(Child, Parent) {
-    var hasProp = {}.hasOwnProperty;
-
-    function T() {
-        this.constructor = Child;
-        this.constructor$ = Parent;
-        for (var propertyName in Parent.prototype) {
-            if (hasProp.call(Parent.prototype, propertyName) &&
-                propertyName.charAt(propertyName.length-1) !== "$"
-           ) {
-                this[propertyName + "$"] = Parent.prototype[propertyName];
-            }
-        }
-    }
-    T.prototype = Parent.prototype;
-    Child.prototype = new T();
-    return Child.prototype;
-};
-
-function asString(val) {
-    return typeof val === "string" ? val : ("" + val);
-}
-
-function isPrimitive(val) {
-    return val == null || val === true || val === false ||
-        typeof val === "string" || typeof val === "number";
-
-}
-
-function isObject(value) {
-    return !isPrimitive(value);
-}
-
-function maybeWrapAsError(maybeError) {
-    if (!isPrimitive(maybeError)) return maybeError;
-
-    return new Error(asString(maybeError));
-}
-
-function withAppended(target, appendee) {
-    var len = target.length;
-    var ret = new Array(len + 1);
-    var i;
-    for (i = 0; i < len; ++i) {
-        ret[i] = target[i];
-    }
-    ret[i] = appendee;
-    return ret;
-}
-
-function getDataPropertyOrDefault(obj, key, defaultValue) {
-    if (es5.isES5) {
-        var desc = Object.getOwnPropertyDescriptor(obj, key);
-        if (desc != null) {
-            return desc.get == null && desc.set == null
-                    ? desc.value
-                    : defaultValue;
-        }
-    } else {
-        return {}.hasOwnProperty.call(obj, key) ? obj[key] : undefined;
-    }
-}
-
-function notEnumerableProp(obj, name, value) {
-    if (isPrimitive(obj)) return obj;
-    var descriptor = {
-        value: value,
+  }
+}
+function iterResult(done, value){
+  return {value: value, done: !!done};
+}
+function isIterable(it){
+  var O      = Object(it)
+    , Symbol = global[SYMBOL]
+    , hasExt = (Symbol && Symbol[ITERATOR] || FF_ITERATOR) in O;
+  return hasExt || SYMBOL_ITERATOR in O || has(Iterators, classof(O));
+}
+function getIterator(it){
+  var Symbol  = global[SYMBOL]
+    , ext     = it[Symbol && Symbol[ITERATOR] || FF_ITERATOR]
+    , getIter = ext || it[SYMBOL_ITERATOR] || Iterators[classof(it)];
+  return assertObject(getIter.call(it));
+}
+function stepCall(fn, value, entries){
+  return entries ? invoke(fn, value) : fn(value);
+}
+function checkDangerIterClosing(fn){
+  var danger = true;
+  var O = {
+    next: function(){ throw 1 },
+    'return': function(){ danger = false }
+  };
+  O[SYMBOL_ITERATOR] = returnThis;
+  try {
+    fn(O);
+  } catch(e){}
+  return danger;
+}
+function closeIterator(iterator){
+  var ret = iterator['return'];
+  if(ret !== undefined)ret.call(iterator);
+}
+function safeIterClose(exec, iterator){
+  try {
+    exec(iterator);
+  } catch(e){
+    closeIterator(iterator);
+    throw e;
+  }
+}
+function forOf(iterable, entries, fn, that){
+  safeIterClose(function(iterator){
+    var f = ctx(fn, that, entries ? 2 : 1)
+      , step;
+    while(!(step = iterator.next()).done)if(stepCall(f, step.value, entries) === false){
+      return closeIterator(iterator);
+    }
+  }, getIterator(iterable));
+}
+
+/******************************************************************************
+ * Module : es6.symbol                                                        *
+ ******************************************************************************/
+
+// ECMAScript 6 symbols shim
+!function(TAG, SymbolRegistry, AllSymbols, setter){
+  // 19.4.1.1 Symbol([description])
+  if(!isNative(Symbol)){
+    Symbol = function(description){
+      assert(!(this instanceof Symbol), SYMBOL + ' is not a ' + CONSTRUCTOR);
+      var tag = uid(description)
+        , sym = set(create(Symbol[PROTOTYPE]), TAG, tag);
+      AllSymbols[tag] = sym;
+      DESC && setter && defineProperty(ObjectProto, tag, {
         configurable: true,
-        enumerable: false,
-        writable: true
-    };
-    es5.defineProperty(obj, name, descriptor);
-    return obj;
-}
-
-
-var wrapsPrimitiveReceiver = (function() {
-    return this !== "string";
-}).call("string");
-
-function thrower(r) {
-    throw r;
-}
-
-var inheritedDataKeys = (function() {
-    if (es5.isES5) {
-        return function(obj, opts) {
-            var ret = [];
-            var visitedKeys = Object.create(null);
-            var getKeys = Object(opts).includeHidden
-                ? Object.getOwnPropertyNames
-                : Object.keys;
-            while (obj != null) {
-                var keys;
-                try {
-                    keys = getKeys(obj);
-                } catch (e) {
-                    return ret;
-                }
-                for (var i = 0; i < keys.length; ++i) {
-                    var key = keys[i];
-                    if (visitedKeys[key]) continue;
-                    visitedKeys[key] = true;
-                    var desc = Object.getOwnPropertyDescriptor(obj, key);
-                    if (desc != null && desc.get == null && desc.set == null) {
-                        ret.push(key);
-                    }
-                }
-                obj = es5.getPrototypeOf(obj);
-            }
-            return ret;
-        };
-    } else {
-        return function(obj) {
-            var ret = [];
-            /*jshint forin:false */
-            for (var key in obj) {
-                ret.push(key);
-            }
-            return ret;
-        };
-    }
-
-})();
-
-function isClass(fn) {
-    try {
-        if (typeof fn === "function") {
-            var keys = es5.keys(fn.prototype);
-            return keys.length > 0 &&
-                   !(keys.length === 1 && keys[0] === "constructor");
+        set: function(value){
+          hidden(this, tag, value);
         }
-        return false;
-    } catch (e) {
-        return false;
+      });
+      return sym;
     }
-}
-
-function toFastProperties(obj) {
-    /*jshint -W027*/
-    function f() {}
-    f.prototype = obj;
-    return f;
-    eval(obj);
-}
-
-var rident = /^[a-z$_][a-z$_0-9]*$/i;
-function isIdentifier(str) {
-    return rident.test(str);
-}
-
-function filledRange(count, prefix, suffix) {
-    var ret = new Array(count);
-    for(var i = 0; i < count; ++i) {
-        ret[i] = prefix + i + suffix;
+    hidden(Symbol[PROTOTYPE], TO_STRING, function(){
+      return this[TAG];
+    });
+  }
+  $define(GLOBAL + WRAP, {Symbol: Symbol});
+  
+  var symbolStatics = {
+    // 19.4.2.1 Symbol.for(key)
+    'for': function(key){
+      return has(SymbolRegistry, key += '')
+        ? SymbolRegistry[key]
+        : SymbolRegistry[key] = Symbol(key);
+    },
+    // 19.4.2.4 Symbol.iterator
+    iterator: SYMBOL_ITERATOR || getWellKnownSymbol(ITERATOR),
+    // 19.4.2.5 Symbol.keyFor(sym)
+    keyFor: part.call(keyOf, SymbolRegistry),
+    // 19.4.2.10 Symbol.species
+    species: SYMBOL_SPECIES,
+    // 19.4.2.13 Symbol.toStringTag
+    toStringTag: SYMBOL_TAG = getWellKnownSymbol(TO_STRING_TAG, true),
+    // 19.4.2.14 Symbol.unscopables
+    unscopables: SYMBOL_UNSCOPABLES,
+    pure: safeSymbol,
+    set: set,
+    useSetter: function(){setter = true},
+    useSimple: function(){setter = false}
+  };
+  // 19.4.2.2 Symbol.hasInstance
+  // 19.4.2.3 Symbol.isConcatSpreadable
+  // 19.4.2.6 Symbol.match
+  // 19.4.2.8 Symbol.replace
+  // 19.4.2.9 Symbol.search
+  // 19.4.2.11 Symbol.split
+  // 19.4.2.12 Symbol.toPrimitive
+  forEach.call(array('hasInstance,isConcatSpreadable,match,replace,search,split,toPrimitive'),
+    function(it){
+      symbolStatics[it] = getWellKnownSymbol(it);
     }
-    return ret;
-}
+  );
+  $define(STATIC, SYMBOL, symbolStatics);
+  
+  setToStringTag(Symbol, SYMBOL);
+  
+  $define(STATIC + FORCED * !isNative(Symbol), OBJECT, {
+    // 19.1.2.7 Object.getOwnPropertyNames(O)
+    getOwnPropertyNames: function(it){
+      var names = getNames(toObject(it)), result = [], key, i = 0;
+      while(names.length > i)has(AllSymbols, key = names[i++]) || result.push(key);
+      return result;
+    },
+    // 19.1.2.8 Object.getOwnPropertySymbols(O)
+    getOwnPropertySymbols: function(it){
+      var names = getNames(toObject(it)), result = [], key, i = 0;
+      while(names.length > i)has(AllSymbols, key = names[i++]) && result.push(AllSymbols[key]);
+      return result;
+    }
+  });
+  
+  // 20.2.1.9 Math[@@toStringTag]
+  setToStringTag(Math, MATH, true);
+  // 24.3.3 JSON[@@toStringTag]
+  setToStringTag(global.JSON, 'JSON', true);
+}(safeSymbol('tag'), {}, {}, true);
 
-function safeToString(obj) {
+/******************************************************************************
+ * Module : es6.object.statics                                                *
+ ******************************************************************************/
+
+!function(){
+  var objectStatic = {
+    // 19.1.3.1 Object.assign(target, source)
+    assign: assign,
+    // 19.1.3.10 Object.is(value1, value2)
+    is: function(x, y){
+      return x === y ? x !== 0 || 1 / x === 1 / y : x != x && y != y;
+    }
+  };
+  // 19.1.3.19 Object.setPrototypeOf(O, proto)
+  // Works with __proto__ only. Old v8 can't works with null proto objects.
+  '__proto__' in ObjectProto && function(buggy, set){
     try {
-        return obj + "";
-    } catch (e) {
-        return "[no string representation]";
+      set = ctx(call, getOwnDescriptor(ObjectProto, '__proto__').set, 2);
+      set({}, ArrayProto);
+    } catch(e){ buggy = true }
+    objectStatic.setPrototypeOf = setPrototypeOf = setPrototypeOf || function(O, proto){
+      assertObject(O);
+      assert(proto === null || isObject(proto), proto, ": can't set as prototype!");
+      if(buggy)O.__proto__ = proto;
+      else set(O, proto);
+      return O;
     }
-}
+  }();
+  $define(STATIC, OBJECT, objectStatic);
+}();
 
-var ret = {
-    isClass: isClass,
-    isIdentifier: isIdentifier,
-    inheritedDataKeys: inheritedDataKeys,
-    getDataPropertyOrDefault: getDataPropertyOrDefault,
-    thrower: thrower,
-    isArray: es5.isArray,
-    haveGetters: haveGetters,
-    notEnumerableProp: notEnumerableProp,
-    isPrimitive: isPrimitive,
-    isObject: isObject,
-    canEvaluate: canEvaluate,
-    errorObj: errorObj,
-    tryCatch0: tryCatch0,
-    tryCatch1: tryCatch1,
-    tryCatch2: tryCatch2,
-    tryCatch3: tryCatch3,
-    tryCatch4: tryCatch4,
-    tryCatchApply: tryCatchApply,
-    inherits: inherits,
-    withAppended: withAppended,
-    asString: asString,
-    maybeWrapAsError: maybeWrapAsError,
-    wrapsPrimitiveReceiver: wrapsPrimitiveReceiver,
-    toFastProperties: toFastProperties,
-    filledRange: filledRange,
-    toString: safeToString
-};
-try {throw new Error(); } catch (e) {ret.lastLineError = e;}
-module.exports = ret;
+/******************************************************************************
+ * Module : es6.object.prototype                                              *
+ ******************************************************************************/
 
-},{"./es5.js":13}],37:[function(require,module,exports){
+!function(tmp){
+  // 19.1.3.6 Object.prototype.toString()
+  tmp[SYMBOL_TAG] = DOT;
+  if(cof(tmp) != DOT)hidden(ObjectProto, TO_STRING, function(){
+    return '[object ' + classof(this) + ']';
+  });
+}({});
 
-},{}],38:[function(require,module,exports){
+/******************************************************************************
+ * Module : es6.object.statics-accept-primitives                              *
+ ******************************************************************************/
+
+!function(){
+  // Object static methods accept primitives
+  function wrapObjectMethod(key, MODE){
+    var fn  = Object[key]
+      , exp = core[OBJECT][key]
+      , f   = 0
+      , o   = {};
+    if(!exp || isNative(exp)){
+      o[key] = MODE == 1 ? function(it){
+        return isObject(it) ? fn(it) : it;
+      } : MODE == 2 ? function(it){
+        return isObject(it) ? fn(it) : true;
+      } : MODE == 3 ? function(it){
+        return isObject(it) ? fn(it) : false;
+      } : MODE == 4 ? function(it, key){
+        return fn(toObject(it), key);
+      } : function(it){
+        return fn(toObject(it));
+      };
+      try { fn(DOT) }
+      catch(e){ f = 1 }
+      $define(STATIC + FORCED * f, OBJECT, o);
+    }
+  }
+  wrapObjectMethod('freeze', 1);
+  wrapObjectMethod('seal', 1);
+  wrapObjectMethod('preventExtensions', 1);
+  wrapObjectMethod('isFrozen', 2);
+  wrapObjectMethod('isSealed', 2);
+  wrapObjectMethod('isExtensible', 3);
+  wrapObjectMethod('getOwnPropertyDescriptor', 4);
+  wrapObjectMethod('getPrototypeOf');
+  wrapObjectMethod('keys');
+  wrapObjectMethod('getOwnPropertyNames');
+}();
+
+/******************************************************************************
+ * Module : es6.function                                                      *
+ ******************************************************************************/
+
+!function(NAME){
+  // 19.2.4.2 name
+  NAME in FunctionProto || (DESC && defineProperty(FunctionProto, NAME, {
+    configurable: true,
+    get: function(){
+      var match = String(this).match(/^\s*function ([^ (]*)/)
+        , name  = match ? match[1] : '';
+      has(this, NAME) || defineProperty(this, NAME, descriptor(5, name));
+      return name;
+    },
+    set: function(value){
+      has(this, NAME) || defineProperty(this, NAME, descriptor(0, value));
+    }
+  }));
+}('name');
+
+/******************************************************************************
+ * Module : es6.number.constructor                                            *
+ ******************************************************************************/
+
+Number('0o1') && Number('0b1') || function(_Number, NumberProto){
+  function toNumber(it){
+    if(isObject(it))it = toPrimitive(it);
+    if(typeof it == 'string' && it.length > 2 && it.charCodeAt(0) == 48){
+      var binary = false;
+      switch(it.charCodeAt(1)){
+        case 66 : case 98  : binary = true;
+        case 79 : case 111 : return parseInt(it.slice(2), binary ? 2 : 8);
+      }
+    } return +it;
+  }
+  function toPrimitive(it){
+    var fn, val;
+    if(isFunction(fn = it.valueOf) && !isObject(val = fn.call(it)))return val;
+    if(isFunction(fn = it[TO_STRING]) && !isObject(val = fn.call(it)))return val;
+    throw TypeError("Can't convert object to number");
+  }
+  Number = function Number(it){
+    return this instanceof Number ? new _Number(toNumber(it)) : toNumber(it);
+  }
+  forEach.call(DESC ? getNames(_Number)
+  : array('MAX_VALUE,MIN_VALUE,NaN,NEGATIVE_INFINITY,POSITIVE_INFINITY'), function(key){
+    key in Number || defineProperty(Number, key, getOwnDescriptor(_Number, key));
+  });
+  Number[PROTOTYPE] = NumberProto;
+  NumberProto[CONSTRUCTOR] = Number;
+  hidden(global, NUMBER, Number);
+}(Number, Number[PROTOTYPE]);
+
+/******************************************************************************
+ * Module : es6.number.statics                                                *
+ ******************************************************************************/
+
+!function(isInteger){
+  $define(STATIC, NUMBER, {
+    // 20.1.2.1 Number.EPSILON
+    EPSILON: pow(2, -52),
+    // 20.1.2.2 Number.isFinite(number)
+    isFinite: function(it){
+      return typeof it == 'number' && isFinite(it);
+    },
+    // 20.1.2.3 Number.isInteger(number)
+    isInteger: isInteger,
+    // 20.1.2.4 Number.isNaN(number)
+    isNaN: sameNaN,
+    // 20.1.2.5 Number.isSafeInteger(number)
+    isSafeInteger: function(number){
+      return isInteger(number) && abs(number) <= MAX_SAFE_INTEGER;
+    },
+    // 20.1.2.6 Number.MAX_SAFE_INTEGER
+    MAX_SAFE_INTEGER: MAX_SAFE_INTEGER,
+    // 20.1.2.10 Number.MIN_SAFE_INTEGER
+    MIN_SAFE_INTEGER: -MAX_SAFE_INTEGER,
+    // 20.1.2.12 Number.parseFloat(string)
+    parseFloat: parseFloat,
+    // 20.1.2.13 Number.parseInt(string, radix)
+    parseInt: parseInt
+  });
+// 20.1.2.3 Number.isInteger(number)
+}(Number.isInteger || function(it){
+  return !isObject(it) && isFinite(it) && floor(it) === it;
+});
+
+/******************************************************************************
+ * Module : es6.math                                                          *
+ ******************************************************************************/
+
+// ECMAScript 6 shim
+!function(){
+  // 20.2.2.28 Math.sign(x)
+  var E    = Math.E
+    , exp  = Math.exp
+    , log  = Math.log
+    , sqrt = Math.sqrt
+    , sign = Math.sign || function(x){
+        return (x = +x) == 0 || x != x ? x : x < 0 ? -1 : 1;
+      };
+  
+  // 20.2.2.5 Math.asinh(x)
+  function asinh(x){
+    return !isFinite(x = +x) || x == 0 ? x : x < 0 ? -asinh(-x) : log(x + sqrt(x * x + 1));
+  }
+  // 20.2.2.14 Math.expm1(x)
+  function expm1(x){
+    return (x = +x) == 0 ? x : x > -1e-6 && x < 1e-6 ? x + x * x / 2 : exp(x) - 1;
+  }
+    
+  $define(STATIC, MATH, {
+    // 20.2.2.3 Math.acosh(x)
+    acosh: function(x){
+      return (x = +x) < 1 ? NaN : isFinite(x) ? log(x / E + sqrt(x + 1) * sqrt(x - 1) / E) + 1 : x;
+    },
+    // 20.2.2.5 Math.asinh(x)
+    asinh: asinh,
+    // 20.2.2.7 Math.atanh(x)
+    atanh: function(x){
+      return (x = +x) == 0 ? x : log((1 + x) / (1 - x)) / 2;
+    },
+    // 20.2.2.9 Math.cbrt(x)
+    cbrt: function(x){
+      return sign(x = +x) * pow(abs(x), 1 / 3);
+    },
+    // 20.2.2.11 Math.clz32(x)
+    clz32: function(x){
+      return (x >>>= 0) ? 32 - x[TO_STRING](2).length : 32;
+    },
+    // 20.2.2.12 Math.cosh(x)
+    cosh: function(x){
+      return (exp(x = +x) + exp(-x)) / 2;
+    },
+    // 20.2.2.14 Math.expm1(x)
+    expm1: expm1,
+    // 20.2.2.16 Math.fround(x)
+    // TODO: fallback for IE9-
+    fround: function(x){
+      return new Float32Array([x])[0];
+    },
+    // 20.2.2.17 Math.hypot([value1[, value2[, … ]]])
+    hypot: function(value1, value2){
+      var sum  = 0
+        , len1 = arguments.length
+        , len2 = len1
+        , args = Array(len1)
+        , larg = -Infinity
+        , arg;
+      while(len1--){
+        arg = args[len1] = +arguments[len1];
+        if(arg == Infinity || arg == -Infinity)return Infinity;
+        if(arg > larg)larg = arg;
+      }
+      larg = arg || 1;
+      while(len2--)sum += pow(args[len2] / larg, 2);
+      return larg * sqrt(sum);
+    },
+    // 20.2.2.18 Math.imul(x, y)
+    imul: function(x, y){
+      var UInt16 = 0xffff
+        , xn = +x
+        , yn = +y
+        , xl = UInt16 & xn
+        , yl = UInt16 & yn;
+      return 0 | xl * yl + ((UInt16 & xn >>> 16) * yl + xl * (UInt16 & yn >>> 16) << 16 >>> 0);
+    },
+    // 20.2.2.20 Math.log1p(x)
+    log1p: function(x){
+      return (x = +x) > -1e-8 && x < 1e-8 ? x - x * x / 2 : log(1 + x);
+    },
+    // 20.2.2.21 Math.log10(x)
+    log10: function(x){
+      return log(x) / Math.LN10;
+    },
+    // 20.2.2.22 Math.log2(x)
+    log2: function(x){
+      return log(x) / Math.LN2;
+    },
+    // 20.2.2.28 Math.sign(x)
+    sign: sign,
+    // 20.2.2.30 Math.sinh(x)
+    sinh: function(x){
+      return (abs(x = +x) < 1) ? (expm1(x) - expm1(-x)) / 2 : (exp(x - 1) - exp(-x - 1)) * (E / 2);
+    },
+    // 20.2.2.33 Math.tanh(x)
+    tanh: function(x){
+      var a = expm1(x = +x)
+        , b = expm1(-x);
+      return a == Infinity ? 1 : b == Infinity ? -1 : (a - b) / (exp(x) + exp(-x));
+    },
+    // 20.2.2.34 Math.trunc(x)
+    trunc: trunc
+  });
+}();
+
+/******************************************************************************
+ * Module : es6.string                                                        *
+ ******************************************************************************/
+
+!function(fromCharCode){
+  function assertNotRegExp(it){
+    if(cof(it) == REGEXP)throw TypeError();
+  }
+  
+  $define(STATIC, STRING, {
+    // 21.1.2.2 String.fromCodePoint(...codePoints)
+    fromCodePoint: function(x){
+      var res = []
+        , len = arguments.length
+        , i   = 0
+        , code
+      while(len > i){
+        code = +arguments[i++];
+        if(toIndex(code, 0x10ffff) !== code)throw RangeError(code + ' is not a valid code point');
+        res.push(code < 0x10000
+          ? fromCharCode(code)
+          : fromCharCode(((code -= 0x10000) >> 10) + 0xd800, code % 0x400 + 0xdc00)
+        );
+      } return res.join('');
+    },
+    // 21.1.2.4 String.raw(callSite, ...substitutions)
+    raw: function(callSite){
+      var raw = toObject(callSite.raw)
+        , len = toLength(raw.length)
+        , sln = arguments.length
+        , res = []
+        , i   = 0;
+      while(len > i){
+        res.push(String(raw[i++]));
+        if(i < sln)res.push(String(arguments[i]));
+      } return res.join('');
+    }
+  });
+  
+  $define(PROTO, STRING, {
+    // 21.1.3.3 String.prototype.codePointAt(pos)
+    codePointAt: createPointAt(false),
+    // 21.1.3.6 String.prototype.endsWith(searchString [, endPosition])
+    endsWith: function(searchString /*, endPosition = @length */){
+      assertNotRegExp(searchString);
+      var that = String(assertDefined(this))
+        , endPosition = arguments[1]
+        , len = toLength(that.length)
+        , end = endPosition === undefined ? len : min(toLength(endPosition), len);
+      searchString += '';
+      return that.slice(end - searchString.length, end) === searchString;
+    },
+    // 21.1.3.7 String.prototype.includes(searchString, position = 0)
+    includes: function(searchString /*, position = 0 */){
+      assertNotRegExp(searchString);
+      return !!~String(assertDefined(this)).indexOf(searchString, arguments[1]);
+    },
+    // 21.1.3.13 String.prototype.repeat(count)
+    repeat: function(count){
+      var str = String(assertDefined(this))
+        , res = ''
+        , n   = toInteger(count);
+      if(0 > n || n == Infinity)throw RangeError("Count can't be negative");
+      for(;n > 0; (n >>>= 1) && (str += str))if(n & 1)res += str;
+      return res;
+    },
+    // 21.1.3.18 String.prototype.startsWith(searchString [, position ])
+    startsWith: function(searchString /*, position = 0 */){
+      assertNotRegExp(searchString);
+      var that  = String(assertDefined(this))
+        , index = toLength(min(arguments[1], that.length));
+      searchString += '';
+      return that.slice(index, index + searchString.length) === searchString;
+    }
+  });
+}(String.fromCharCode);
+
+/******************************************************************************
+ * Module : es6.array.statics                                                 *
+ ******************************************************************************/
+
+!function(){
+  $define(STATIC + FORCED * checkDangerIterClosing(Array.from), ARRAY, {
+    // 22.1.2.1 Array.from(arrayLike, mapfn = undefined, thisArg = undefined)
+    from: function(arrayLike/*, mapfn = undefined, thisArg = undefined*/){
+      var O       = Object(assertDefined(arrayLike))
+        , mapfn   = arguments[1]
+        , mapping = mapfn !== undefined
+        , f       = mapping ? ctx(mapfn, arguments[2], 2) : undefined
+        , index   = 0
+        , length, result, step;
+      if(isIterable(O)){
+        result = new (generic(this, Array));
+        safeIterClose(function(iterator){
+          for(; !(step = iterator.next()).done; index++){
+            result[index] = mapping ? f(step.value, index) : step.value;
+          }
+        }, getIterator(O));
+      } else {
+        result = new (generic(this, Array))(length = toLength(O.length));
+        for(; length > index; index++){
+          result[index] = mapping ? f(O[index], index) : O[index];
+        }
+      }
+      result.length = index;
+      return result;
+    }
+  });
+  
+  $define(STATIC, ARRAY, {
+    // 22.1.2.3 Array.of( ...items)
+    of: function(/* ...args */){
+      var index  = 0
+        , length = arguments.length
+        , result = new (generic(this, Array))(length);
+      while(length > index)result[index] = arguments[index++];
+      result.length = length;
+      return result;
+    }
+  });
+  
+  setSpecies(Array);
+}();
+
+/******************************************************************************
+ * Module : es6.array.prototype                                               *
+ ******************************************************************************/
+
+!function(){
+  $define(PROTO, ARRAY, {
+    // 22.1.3.3 Array.prototype.copyWithin(target, start, end = this.length)
+    copyWithin: function(target /* = 0 */, start /* = 0, end = @length */){
+      var O     = Object(assertDefined(this))
+        , len   = toLength(O.length)
+        , to    = toIndex(target, len)
+        , from  = toIndex(start, len)
+        , end   = arguments[2]
+        , fin   = end === undefined ? len : toIndex(end, len)
+        , count = min(fin - from, len - to)
+        , inc   = 1;
+      if(from < to && to < from + count){
+        inc  = -1;
+        from = from + count - 1;
+        to   = to + count - 1;
+      }
+      while(count-- > 0){
+        if(from in O)O[to] = O[from];
+        else delete O[to];
+        to += inc;
+        from += inc;
+      } return O;
+    },
+    // 22.1.3.6 Array.prototype.fill(value, start = 0, end = this.length)
+    fill: function(value /*, start = 0, end = @length */){
+      var O      = Object(assertDefined(this))
+        , length = toLength(O.length)
+        , index  = toIndex(arguments[1], length)
+        , end    = arguments[2]
+        , endPos = end === undefined ? length : toIndex(end, length);
+      while(endPos > index)O[index++] = value;
+      return O;
+    },
+    // 22.1.3.8 Array.prototype.find(predicate, thisArg = undefined)
+    find: createArrayMethod(5),
+    // 22.1.3.9 Array.prototype.findIndex(predicate, thisArg = undefined)
+    findIndex: createArrayMethod(6)
+  });
+  
+  if(framework){
+    // 22.1.3.31 Array.prototype[@@unscopables]
+    forEach.call(array('find,findIndex,fill,copyWithin,entries,keys,values'), function(it){
+      ArrayUnscopables[it] = true;
+    });
+    SYMBOL_UNSCOPABLES in ArrayProto || hidden(ArrayProto, SYMBOL_UNSCOPABLES, ArrayUnscopables);
+  }
+}();
+
+/******************************************************************************
+ * Module : es6.iterators                                                     *
+ ******************************************************************************/
+
+!function(at){
+  // 22.1.3.4 Array.prototype.entries()
+  // 22.1.3.13 Array.prototype.keys()
+  // 22.1.3.29 Array.prototype.values()
+  // 22.1.3.30 Array.prototype[@@iterator]()
+  defineStdIterators(Array, ARRAY, function(iterated, kind){
+    set(this, ITER, {o: toObject(iterated), i: 0, k: kind});
+  // 22.1.5.2.1 %ArrayIteratorPrototype%.next()
+  }, function(){
+    var iter  = this[ITER]
+      , O     = iter.o
+      , kind  = iter.k
+      , index = iter.i++;
+    if(!O || index >= O.length){
+      iter.o = undefined;
+      return iterResult(1);
+    }
+    if(kind == KEY)  return iterResult(0, index);
+    if(kind == VALUE)return iterResult(0, O[index]);
+                     return iterResult(0, [index, O[index]]);
+  }, VALUE);
+  
+  // argumentsList[@@iterator] is %ArrayProto_values% (9.4.4.6, 9.4.4.7)
+  Iterators[ARGUMENTS] = Iterators[ARRAY];
+  
+  // 21.1.3.27 String.prototype[@@iterator]()
+  defineStdIterators(String, STRING, function(iterated){
+    set(this, ITER, {o: String(iterated), i: 0});
+  // 21.1.5.2.1 %StringIteratorPrototype%.next()
+  }, function(){
+    var iter  = this[ITER]
+      , O     = iter.o
+      , index = iter.i
+      , point;
+    if(index >= O.length)return iterResult(1);
+    point = at.call(O, index);
+    iter.i += point.length;
+    return iterResult(0, point);
+  });
+}(createPointAt(true));
+
+/******************************************************************************
+ * Module : es6.regexp                                                        *
+ ******************************************************************************/
+
+DESC && !function(RegExpProto, _RegExp){  
+  // RegExp allows a regex with flags as the pattern
+  if(!function(){try{return RegExp(/a/g, 'i') == '/a/i'}catch(e){}}()){
+    RegExp = function RegExp(pattern, flags){
+      return new _RegExp(cof(pattern) == REGEXP && flags !== undefined
+        ? pattern.source : pattern, flags);
+    }
+    forEach.call(getNames(_RegExp), function(key){
+      key in RegExp || defineProperty(RegExp, key, {
+        configurable: true,
+        get: function(){ return _RegExp[key] },
+        set: function(it){ _RegExp[key] = it }
+      });
+    });
+    RegExpProto[CONSTRUCTOR] = RegExp;
+    RegExp[PROTOTYPE] = RegExpProto;
+    hidden(global, REGEXP, RegExp);
+  }
+  
+  // 21.2.5.3 get RegExp.prototype.flags()
+  if(/./g.flags != 'g')defineProperty(RegExpProto, 'flags', {
+    configurable: true,
+    get: createReplacer(/^.*\/(\w*)$/, '$1')
+  });
+  
+  setSpecies(RegExp);
+}(RegExp[PROTOTYPE], RegExp);
+
+/******************************************************************************
+ * Module : web.immediate                                                     *
+ ******************************************************************************/
+
+// setImmediate shim
+// Node.js 0.9+ & IE10+ has setImmediate, else:
+isFunction(setImmediate) && isFunction(clearImmediate) || function(ONREADYSTATECHANGE){
+  var postMessage      = global.postMessage
+    , addEventListener = global.addEventListener
+    , MessageChannel   = global.MessageChannel
+    , counter          = 0
+    , queue            = {}
+    , defer, channel, port;
+  setImmediate = function(fn){
+    var args = [], i = 1;
+    while(arguments.length > i)args.push(arguments[i++]);
+    queue[++counter] = function(){
+      invoke(isFunction(fn) ? fn : Function(fn), args);
+    }
+    defer(counter);
+    return counter;
+  }
+  clearImmediate = function(id){
+    delete queue[id];
+  }
+  function run(id){
+    if(has(queue, id)){
+      var fn = queue[id];
+      delete queue[id];
+      fn();
+    }
+  }
+  function listner(event){
+    run(event.data);
+  }
+  // Node.js 0.8-
+  if(NODE){
+    defer = function(id){
+      nextTick(part.call(run, id));
+    }
+  // Modern browsers, skip implementation for WebWorkers
+  // IE8 has postMessage, but it's sync & typeof its postMessage is object
+  } else if(addEventListener && isFunction(postMessage) && !global.importScripts){
+    defer = function(id){
+      postMessage(id, '*');
+    }
+    addEventListener('message', listner, false);
+  // WebWorkers
+  } else if(isFunction(MessageChannel)){
+    channel = new MessageChannel;
+    port    = channel.port2;
+    channel.port1.onmessage = listner;
+    defer = ctx(port.postMessage, port, 1);
+  // IE8-
+  } else if(document && ONREADYSTATECHANGE in document[CREATE_ELEMENT]('script')){
+    defer = function(id){
+      html.appendChild(document[CREATE_ELEMENT]('script'))[ONREADYSTATECHANGE] = function(){
+        html.removeChild(this);
+        run(id);
+      }
+    }
+  // Rest old browsers
+  } else {
+    defer = function(id){
+      setTimeout(run, 0, id);
+    }
+  }
+}('onreadystatechange');
+$define(GLOBAL + BIND, {
+  setImmediate:   setImmediate,
+  clearImmediate: clearImmediate
+});
+
+/******************************************************************************
+ * Module : es6.promise                                                       *
+ ******************************************************************************/
+
+// ES6 promises shim
+// Based on https://github.com/getify/native-promise-only/
+!function(Promise, test){
+  isFunction(Promise) && isFunction(Promise.resolve)
+  && Promise.resolve(test = new Promise(function(){})) == test
+  || function(asap, RECORD){
+    function isThenable(it){
+      var then;
+      if(isObject(it))then = it.then;
+      return isFunction(then) ? then : false;
+    }
+    function handledRejectionOrHasOnRejected(promise){
+      var record = promise[RECORD]
+        , chain  = record.c
+        , i      = 0
+        , react;
+      if(record.h)return true;
+      while(chain.length > i){
+        react = chain[i++];
+        if(react.fail || handledRejectionOrHasOnRejected(react.P))return true;
+      }
+    }
+    function notify(record, reject){
+      var chain = record.c;
+      if(reject || chain.length)asap(function(){
+        var promise = record.p
+          , value   = record.v
+          , ok      = record.s == 1
+          , i       = 0;
+        if(reject && !handledRejectionOrHasOnRejected(promise)){
+          setTimeout(function(){
+            if(!handledRejectionOrHasOnRejected(promise)){
+              if(NODE){
+                if(!process.emit('unhandledRejection', value, promise)){
+                  // default node.js behavior
+                }
+              } else if(isFunction(console.error)){
+                console.error('Unhandled promise rejection', value);
+              }
+            }
+          }, 1e3);
+        } else while(chain.length > i)!function(react){
+          var cb = ok ? react.ok : react.fail
+            , ret, then;
+          try {
+            if(cb){
+              if(!ok)record.h = true;
+              ret = cb === true ? value : cb(value);
+              if(ret === react.P){
+                react.rej(TypeError(PROMISE + '-chain cycle'));
+              } else if(then = isThenable(ret)){
+                then.call(ret, react.res, react.rej);
+              } else react.res(ret);
+            } else react.rej(value);
+          } catch(err){
+            react.rej(err);
+          }
+        }(chain[i++]);
+        chain.length = 0;
+      });
+    }
+    function resolve(value){
+      var record = this
+        , then, wrapper;
+      if(record.d)return;
+      record.d = true;
+      record = record.r || record; // unwrap
+      try {
+        if(then = isThenable(value)){
+          wrapper = {r: record, d: false}; // wrap
+          then.call(value, ctx(resolve, wrapper, 1), ctx(reject, wrapper, 1));
+        } else {
+          record.v = value;
+          record.s = 1;
+          notify(record);
+        }
+      } catch(err){
+        reject.call(wrapper || {r: record, d: false}, err); // wrap
+      }
+    }
+    function reject(value){
+      var record = this;
+      if(record.d)return;
+      record.d = true;
+      record = record.r || record; // unwrap
+      record.v = value;
+      record.s = 2;
+      notify(record, true);
+    }
+    function getConstructor(C){
+      var S = assertObject(C)[SYMBOL_SPECIES];
+      return S != undefined ? S : C;
+    }
+    // 25.4.3.1 Promise(executor)
+    Promise = function(executor){
+      assertFunction(executor);
+      assertInstance(this, Promise, PROMISE);
+      var record = {
+        p: this,      // promise
+        c: [],        // chain
+        s: 0,         // state
+        d: false,     // done
+        v: undefined, // value
+        h: false      // handled rejection
+      };
+      hidden(this, RECORD, record);
+      try {
+        executor(ctx(resolve, record, 1), ctx(reject, record, 1));
+      } catch(err){
+        reject.call(record, err);
+      }
+    }
+    assignHidden(Promise[PROTOTYPE], {
+      // 25.4.5.3 Promise.prototype.then(onFulfilled, onRejected)
+      then: function(onFulfilled, onRejected){
+        var S = assertObject(assertObject(this)[CONSTRUCTOR])[SYMBOL_SPECIES];
+        var react = {
+          ok:   isFunction(onFulfilled) ? onFulfilled : true,
+          fail: isFunction(onRejected)  ? onRejected  : false
+        } , P = react.P = new (S != undefined ? S : Promise)(function(resolve, reject){
+          react.res = assertFunction(resolve);
+          react.rej = assertFunction(reject);
+        }), record = this[RECORD];
+        record.c.push(react);
+        record.s && notify(record);
+        return P;
+      },
+      // 25.4.5.1 Promise.prototype.catch(onRejected)
+      'catch': function(onRejected){
+        return this.then(undefined, onRejected);
+      }
+    });
+    assignHidden(Promise, {
+      // 25.4.4.1 Promise.all(iterable)
+      all: function(iterable){
+        var Promise = getConstructor(this)
+          , values  = [];
+        return new Promise(function(resolve, reject){
+          forOf(iterable, false, push, values);
+          var remaining = values.length
+            , results   = Array(remaining);
+          if(remaining)forEach.call(values, function(promise, index){
+            Promise.resolve(promise).then(function(value){
+              results[index] = value;
+              --remaining || resolve(results);
+            }, reject);
+          });
+          else resolve(results);
+        });
+      },
+      // 25.4.4.4 Promise.race(iterable)
+      race: function(iterable){
+        var Promise = getConstructor(this);
+        return new Promise(function(resolve, reject){
+          forOf(iterable, false, function(promise){
+            Promise.resolve(promise).then(resolve, reject);
+          });
+        });
+      },
+      // 25.4.4.5 Promise.reject(r)
+      reject: function(r){
+        return new (getConstructor(this))(function(resolve, reject){
+          reject(r);
+        });
+      },
+      // 25.4.4.6 Promise.resolve(x)
+      resolve: function(x){
+        return isObject(x) && RECORD in x && getPrototypeOf(x) === this[PROTOTYPE]
+          ? x : new (getConstructor(this))(function(resolve, reject){
+            resolve(x);
+          });
+      }
+    });
+  }(nextTick || setImmediate, safeSymbol('record'));
+  setToStringTag(Promise, PROMISE);
+  setSpecies(Promise);
+  $define(GLOBAL + FORCED * !isNative(Promise), {Promise: Promise});
+}(global[PROMISE]);
+
+/******************************************************************************
+ * Module : es6.collections                                                   *
+ ******************************************************************************/
+
+// ECMAScript 6 collections shim
+!function(){
+  var UID   = safeSymbol('uid')
+    , O1    = safeSymbol('O1')
+    , WEAK  = safeSymbol('weak')
+    , LEAK  = safeSymbol('leak')
+    , LAST  = safeSymbol('last')
+    , FIRST = safeSymbol('first')
+    , SIZE  = DESC ? safeSymbol('size') : 'size'
+    , uid   = 0
+    , tmp   = {};
+  
+  function getCollection(C, NAME, methods, commonMethods, isMap, isWeak){
+    var ADDER = isMap ? 'set' : 'add'
+      , proto = C && C[PROTOTYPE]
+      , O     = {};
+    function initFromIterable(that, iterable){
+      if(iterable != undefined)forOf(iterable, isMap, that[ADDER], that);
+      return that;
+    }
+    function fixSVZ(key, chain){
+      var method = proto[key];
+      if(framework)proto[key] = function(a, b){
+        var result = method.call(this, a === 0 ? 0 : a, b);
+        return chain ? this : result;
+      };
+    }
+    if(!isNative(C) || !(isWeak || (!BUGGY_ITERATORS && has(proto, FOR_EACH) && has(proto, 'entries')))){
+      // create collection constructor
+      C = isWeak
+        ? function(iterable){
+            assertInstance(this, C, NAME);
+            set(this, UID, uid++);
+            initFromIterable(this, iterable);
+          }
+        : function(iterable){
+            var that = this;
+            assertInstance(that, C, NAME);
+            set(that, O1, create(null));
+            set(that, SIZE, 0);
+            set(that, LAST, undefined);
+            set(that, FIRST, undefined);
+            initFromIterable(that, iterable);
+          };
+      assignHidden(assignHidden(C[PROTOTYPE], methods), commonMethods);
+      isWeak || !DESC || defineProperty(C[PROTOTYPE], 'size', {get: function(){
+        return assertDefined(this[SIZE]);
+      }});
+    } else {
+      var Native = C
+        , inst   = new C
+        , chain  = inst[ADDER](isWeak ? {} : -0, 1)
+        , buggyZero;
+      // wrap to init collections from iterable
+      if(checkDangerIterClosing(function(O){ new C(O) })){
+        C = function(iterable){
+          assertInstance(this, C, NAME);
+          return initFromIterable(new Native, iterable);
+        }
+        C[PROTOTYPE] = proto;
+        if(framework)proto[CONSTRUCTOR] = C;
+      }
+      isWeak || inst[FOR_EACH](function(val, key){
+        buggyZero = 1 / key === -Infinity;
+      });
+      // fix converting -0 key to +0
+      if(buggyZero){
+        fixSVZ('delete');
+        fixSVZ('has');
+        isMap && fixSVZ('get');
+      }
+      // + fix .add & .set for chaining
+      if(buggyZero || chain !== inst)fixSVZ(ADDER, true);
+    }
+    setToStringTag(C, NAME);
+    setSpecies(C);
+    
+    O[NAME] = C;
+    $define(GLOBAL + WRAP + FORCED * !isNative(C), O);
+    
+    // add .keys, .values, .entries, [@@iterator]
+    // 23.1.3.4, 23.1.3.8, 23.1.3.11, 23.1.3.12, 23.2.3.5, 23.2.3.8, 23.2.3.10, 23.2.3.11
+    isWeak || defineStdIterators(C, NAME, function(iterated, kind){
+      set(this, ITER, {o: iterated, k: kind});
+    }, function(){
+      var iter  = this[ITER]
+        , kind  = iter.k
+        , entry = iter.l;
+      // revert to the last existing entry
+      while(entry && entry.r)entry = entry.p;
+      // get next entry
+      if(!iter.o || !(iter.l = entry = entry ? entry.n : iter.o[FIRST])){
+        // or finish the iteration
+        iter.o = undefined;
+        return iterResult(1);
+      }
+      // return step by kind
+      if(kind == KEY)  return iterResult(0, entry.k);
+      if(kind == VALUE)return iterResult(0, entry.v);
+                       return iterResult(0, [entry.k, entry.v]);   
+    }, isMap ? KEY+VALUE : VALUE, !isMap);
+    
+    return C;
+  }
+  
+  function fastKey(it, create){
+    // return primitive with prefix
+    if(!isObject(it))return (typeof it == 'string' ? 'S' : 'P') + it;
+    // can't set id to frozen object
+    if(isFrozen(it))return 'F';
+    if(!has(it, UID)){
+      // not necessary to add id
+      if(!create)return 'E';
+      // add missing object id
+      hidden(it, UID, ++uid);
+    // return object id with prefix
+    } return 'O' + it[UID];
+  }
+  function getEntry(that, key){
+    // fast case
+    var index = fastKey(key), entry;
+    if(index != 'F')return that[O1][index];
+    // frozen object case
+    for(entry = that[FIRST]; entry; entry = entry.n){
+      if(entry.k == key)return entry;
+    }
+  }
+  function def(that, key, value){
+    var entry = getEntry(that, key)
+      , prev, index;
+    // change existing entry
+    if(entry)entry.v = value;
+    // create new entry
+    else {
+      that[LAST] = entry = {
+        i: index = fastKey(key, true), // <- index
+        k: key,                        // <- key
+        v: value,                      // <- value
+        p: prev = that[LAST],          // <- previous entry
+        n: undefined,                  // <- next entry
+        r: false                       // <- removed
+      };
+      if(!that[FIRST])that[FIRST] = entry;
+      if(prev)prev.n = entry;
+      that[SIZE]++;
+      // add to index
+      if(index != 'F')that[O1][index] = entry;
+    } return that;
+  }
+
+  var collectionMethods = {
+    // 23.1.3.1 Map.prototype.clear()
+    // 23.2.3.2 Set.prototype.clear()
+    clear: function(){
+      for(var that = this, data = that[O1], entry = that[FIRST]; entry; entry = entry.n){
+        entry.r = true;
+        if(entry.p)entry.p = entry.p.n = undefined;
+        delete data[entry.i];
+      }
+      that[FIRST] = that[LAST] = undefined;
+      that[SIZE] = 0;
+    },
+    // 23.1.3.3 Map.prototype.delete(key)
+    // 23.2.3.4 Set.prototype.delete(value)
+    'delete': function(key){
+      var that  = this
+        , entry = getEntry(that, key);
+      if(entry){
+        var next = entry.n
+          , prev = entry.p;
+        delete that[O1][entry.i];
+        entry.r = true;
+        if(prev)prev.n = next;
+        if(next)next.p = prev;
+        if(that[FIRST] == entry)that[FIRST] = next;
+        if(that[LAST] == entry)that[LAST] = prev;
+        that[SIZE]--;
+      } return !!entry;
+    },
+    // 23.2.3.6 Set.prototype.forEach(callbackfn, thisArg = undefined)
+    // 23.1.3.5 Map.prototype.forEach(callbackfn, thisArg = undefined)
+    forEach: function(callbackfn /*, that = undefined */){
+      var f = ctx(callbackfn, arguments[1], 3)
+        , entry;
+      while(entry = entry ? entry.n : this[FIRST]){
+        f(entry.v, entry.k, this);
+        // revert to the last existing entry
+        while(entry && entry.r)entry = entry.p;
+      }
+    },
+    // 23.1.3.7 Map.prototype.has(key)
+    // 23.2.3.7 Set.prototype.has(value)
+    has: function(key){
+      return !!getEntry(this, key);
+    }
+  }
+  
+  // 23.1 Map Objects
+  Map = getCollection(Map, MAP, {
+    // 23.1.3.6 Map.prototype.get(key)
+    get: function(key){
+      var entry = getEntry(this, key);
+      return entry && entry.v;
+    },
+    // 23.1.3.9 Map.prototype.set(key, value)
+    set: function(key, value){
+      return def(this, key === 0 ? 0 : key, value);
+    }
+  }, collectionMethods, true);
+  
+  // 23.2 Set Objects
+  Set = getCollection(Set, SET, {
+    // 23.2.3.1 Set.prototype.add(value)
+    add: function(value){
+      return def(this, value = value === 0 ? 0 : value, value);
+    }
+  }, collectionMethods);
+  
+  function defWeak(that, key, value){
+    if(isFrozen(assertObject(key)))leakStore(that).set(key, value);
+    else {
+      has(key, WEAK) || hidden(key, WEAK, {});
+      key[WEAK][that[UID]] = value;
+    } return that;
+  }
+  function leakStore(that){
+    return that[LEAK] || hidden(that, LEAK, new Map)[LEAK];
+  }
+  
+  var weakMethods = {
+    // 23.3.3.2 WeakMap.prototype.delete(key)
+    // 23.4.3.3 WeakSet.prototype.delete(value)
+    'delete': function(key){
+      if(!isObject(key))return false;
+      if(isFrozen(key))return leakStore(this)['delete'](key);
+      return has(key, WEAK) && has(key[WEAK], this[UID]) && delete key[WEAK][this[UID]];
+    },
+    // 23.3.3.4 WeakMap.prototype.has(key)
+    // 23.4.3.4 WeakSet.prototype.has(value)
+    has: function(key){
+      if(!isObject(key))return false;
+      if(isFrozen(key))return leakStore(this).has(key);
+      return has(key, WEAK) && has(key[WEAK], this[UID]);
+    }
+  };
+  
+  // 23.3 WeakMap Objects
+  WeakMap = getCollection(WeakMap, WEAKMAP, {
+    // 23.3.3.3 WeakMap.prototype.get(key)
+    get: function(key){
+      if(isObject(key)){
+        if(isFrozen(key))return leakStore(this).get(key);
+        if(has(key, WEAK))return key[WEAK][this[UID]];
+      }
+    },
+    // 23.3.3.5 WeakMap.prototype.set(key, value)
+    set: function(key, value){
+      return defWeak(this, key, value);
+    }
+  }, weakMethods, true, true);
+  
+  // IE11 WeakMap frozen keys fix
+  if(framework && new WeakMap().set(Object.freeze(tmp), 7).get(tmp) != 7){
+    forEach.call(array('delete,has,get,set'), function(key){
+      var method = WeakMap[PROTOTYPE][key];
+      WeakMap[PROTOTYPE][key] = function(a, b){
+        // store frozen objects on leaky map
+        if(isObject(a) && isFrozen(a)){
+          var result = leakStore(this)[key](a, b);
+          return key == 'set' ? this : result;
+        // store all the rest on native weakmap
+        } return method.call(this, a, b);
+      };
+    });
+  }
+  
+  // 23.4 WeakSet Objects
+  WeakSet = getCollection(WeakSet, WEAKSET, {
+    // 23.4.3.1 WeakSet.prototype.add(value)
+    add: function(value){
+      return defWeak(this, value, true);
+    }
+  }, weakMethods, false, true);
+}();
+
+/******************************************************************************
+ * Module : es6.reflect                                                       *
+ ******************************************************************************/
+
+!function(){
+  function Enumerate(iterated){
+    var keys = [], key;
+    for(key in iterated)keys.push(key);
+    set(this, ITER, {o: iterated, a: keys, i: 0});
+  }
+  createIterator(Enumerate, OBJECT, function(){
+    var iter = this[ITER]
+      , keys = iter.a
+      , key;
+    do {
+      if(iter.i >= keys.length)return iterResult(1);
+    } while(!((key = keys[iter.i++]) in iter.o));
+    return iterResult(0, key);
+  });
+  
+  function wrap(fn){
+    return function(it){
+      assertObject(it);
+      try {
+        return fn.apply(undefined, arguments), true;
+      } catch(e){
+        return false;
+      }
+    }
+  }
+  
+  function reflectGet(target, propertyKey/*, receiver*/){
+    var receiver = arguments.length < 3 ? target : arguments[2]
+      , desc = getOwnDescriptor(assertObject(target), propertyKey), proto;
+    if(desc)return has(desc, 'value')
+      ? desc.value
+      : desc.get === undefined
+        ? undefined
+        : desc.get.call(receiver);
+    return isObject(proto = getPrototypeOf(target))
+      ? reflectGet(proto, propertyKey, receiver)
+      : undefined;
+  }
+  function reflectSet(target, propertyKey, V/*, receiver*/){
+    var receiver = arguments.length < 4 ? target : arguments[3]
+      , ownDesc  = getOwnDescriptor(assertObject(target), propertyKey)
+      , existingDescriptor, proto;
+    if(!ownDesc){
+      if(isObject(proto = getPrototypeOf(target))){
+        return reflectSet(proto, propertyKey, V, receiver);
+      }
+      ownDesc = descriptor(0);
+    }
+    if(has(ownDesc, 'value')){
+      if(ownDesc.writable === false || !isObject(receiver))return false;
+      existingDescriptor = getOwnDescriptor(receiver, propertyKey) || descriptor(0);
+      existingDescriptor.value = V;
+      return defineProperty(receiver, propertyKey, existingDescriptor), true;
+    }
+    return ownDesc.set === undefined
+      ? false
+      : (ownDesc.set.call(receiver, V), true);
+  }
+  var isExtensible = Object.isExtensible || returnIt;
+  
+  var reflect = {
+    // 26.1.1 Reflect.apply(target, thisArgument, argumentsList)
+    apply: ctx(call, apply, 3),
+    // 26.1.2 Reflect.construct(target, argumentsList [, newTarget])
+    construct: function(target, argumentsList /*, newTarget*/){
+      var proto    = assertFunction(arguments.length < 3 ? target : arguments[2])[PROTOTYPE]
+        , instance = create(isObject(proto) ? proto : ObjectProto)
+        , result   = apply.call(target, instance, argumentsList);
+      return isObject(result) ? result : instance;
+    },
+    // 26.1.3 Reflect.defineProperty(target, propertyKey, attributes)
+    defineProperty: wrap(defineProperty),
+    // 26.1.4 Reflect.deleteProperty(target, propertyKey)
+    deleteProperty: function(target, propertyKey){
+      var desc = getOwnDescriptor(assertObject(target), propertyKey);
+      return desc && !desc.configurable ? false : delete target[propertyKey];
+    },
+    // 26.1.5 Reflect.enumerate(target)
+    enumerate: function(target){
+      return new Enumerate(assertObject(target));
+    },
+    // 26.1.6 Reflect.get(target, propertyKey [, receiver])
+    get: reflectGet,
+    // 26.1.7 Reflect.getOwnPropertyDescriptor(target, propertyKey)
+    getOwnPropertyDescriptor: function(target, propertyKey){
+      return getOwnDescriptor(assertObject(target), propertyKey);
+    },
+    // 26.1.8 Reflect.getPrototypeOf(target)
+    getPrototypeOf: function(target){
+      return getPrototypeOf(assertObject(target));
+    },
+    // 26.1.9 Reflect.has(target, propertyKey)
+    has: function(target, propertyKey){
+      return propertyKey in target;
+    },
+    // 26.1.10 Reflect.isExtensible(target)
+    isExtensible: function(target){
+      return !!isExtensible(assertObject(target));
+    },
+    // 26.1.11 Reflect.ownKeys(target)
+    ownKeys: ownKeys,
+    // 26.1.12 Reflect.preventExtensions(target)
+    preventExtensions: wrap(Object.preventExtensions || returnIt),
+    // 26.1.13 Reflect.set(target, propertyKey, V [, receiver])
+    set: reflectSet
+  }
+  // 26.1.14 Reflect.setPrototypeOf(target, proto)
+  if(setPrototypeOf)reflect.setPrototypeOf = function(target, proto){
+    return setPrototypeOf(assertObject(target), proto), true;
+  };
+  
+  $define(GLOBAL, {Reflect: {}});
+  $define(STATIC, 'Reflect', reflect);
+}();
+
+/******************************************************************************
+ * Module : es7.proposals                                                     *
+ ******************************************************************************/
+
+!function(){
+  $define(PROTO, ARRAY, {
+    // https://github.com/domenic/Array.prototype.includes
+    includes: createArrayContains(true)
+  });
+  $define(PROTO, STRING, {
+    // https://github.com/mathiasbynens/String.prototype.at
+    at: createPointAt(true)
+  });
+  
+  function createObjectToArray(isEntries){
+    return function(object){
+      var O      = toObject(object)
+        , keys   = getKeys(object)
+        , length = keys.length
+        , i      = 0
+        , result = Array(length)
+        , key;
+      if(isEntries)while(length > i)result[i] = [key = keys[i++], O[key]];
+      else while(length > i)result[i] = O[keys[i++]];
+      return result;
+    }
+  }
+  $define(STATIC, OBJECT, {
+    // https://gist.github.com/WebReflection/9353781
+    getOwnPropertyDescriptors: function(object){
+      var O      = toObject(object)
+        , result = {};
+      forEach.call(ownKeys(O), function(key){
+        defineProperty(result, key, descriptor(0, getOwnDescriptor(O, key)));
+      });
+      return result;
+    },
+    // https://github.com/rwaldron/tc39-notes/blob/master/es6/2014-04/apr-9.md#51-objectentries-objectvalues
+    values:  createObjectToArray(false),
+    entries: createObjectToArray(true)
+  });
+  $define(STATIC, REGEXP, {
+    // https://gist.github.com/kangax/9698100
+    escape: createReplacer(/([\\\-[\]{}()*+?.,^$|])/g, '\\$1', true)
+  });
+}();
+
+/******************************************************************************
+ * Module : es7.abstract-refs                                                 *
+ ******************************************************************************/
+
+// https://github.com/zenparsing/es-abstract-refs
+!function(REFERENCE){
+  REFERENCE_GET = getWellKnownSymbol(REFERENCE+'Get', true);
+  var REFERENCE_SET = getWellKnownSymbol(REFERENCE+SET, true)
+    , REFERENCE_DELETE = getWellKnownSymbol(REFERENCE+'Delete', true);
+  
+  $define(STATIC, SYMBOL, {
+    referenceGet: REFERENCE_GET,
+    referenceSet: REFERENCE_SET,
+    referenceDelete: REFERENCE_DELETE
+  });
+  
+  hidden(FunctionProto, REFERENCE_GET, returnThis);
+  
+  function setMapMethods(Constructor){
+    if(Constructor){
+      var MapProto = Constructor[PROTOTYPE];
+      hidden(MapProto, REFERENCE_GET, MapProto.get);
+      hidden(MapProto, REFERENCE_SET, MapProto.set);
+      hidden(MapProto, REFERENCE_DELETE, MapProto['delete']);
+    }
+  }
+  setMapMethods(Map);
+  setMapMethods(WeakMap);
+}('reference');
+
+/******************************************************************************
+ * Module : js.array.statics                                                  *
+ ******************************************************************************/
+
+// JavaScript 1.6 / Strawman array statics shim
+!function(arrayStatics){
+  function setArrayStatics(keys, length){
+    forEach.call(array(keys), function(key){
+      if(key in ArrayProto)arrayStatics[key] = ctx(call, ArrayProto[key], length);
+    });
+  }
+  setArrayStatics('pop,reverse,shift,keys,values,entries', 1);
+  setArrayStatics('indexOf,every,some,forEach,map,filter,find,findIndex,includes', 3);
+  setArrayStatics('join,slice,concat,push,splice,unshift,sort,lastIndexOf,' +
+                  'reduce,reduceRight,copyWithin,fill,turn');
+  $define(STATIC, ARRAY, arrayStatics);
+}({});
+
+/******************************************************************************
+ * Module : web.dom.itarable                                                  *
+ ******************************************************************************/
+
+!function(NodeList){
+  if(framework && NodeList && !(SYMBOL_ITERATOR in NodeList[PROTOTYPE])){
+    hidden(NodeList[PROTOTYPE], SYMBOL_ITERATOR, Iterators[ARRAY]);
+  }
+  Iterators.NodeList = Iterators[ARRAY];
+}(global.NodeList);
+}(typeof self != 'undefined' && self.Math === Math ? self : Function('return this')(), true);
+},{}],4:[function(require,module,exports){
+(function (global){
+/**
+ * Copyright (c) 2014, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * https://raw.github.com/facebook/regenerator/master/LICENSE file. An
+ * additional grant of patent rights can be found in the PATENTS file in
+ * the same directory.
+ */
+
+!(function(global) {
+  "use strict";
+
+  var hasOwn = Object.prototype.hasOwnProperty;
+  var undefined; // More compressible than void 0.
+  var iteratorSymbol =
+    typeof Symbol === "function" && Symbol.iterator || "@@iterator";
+
+  var inModule = typeof module === "object";
+  var runtime = global.regeneratorRuntime;
+  if (runtime) {
+    if (inModule) {
+      // If regeneratorRuntime is defined globally and we're in a module,
+      // make the exports object identical to regeneratorRuntime.
+      module.exports = runtime;
+    }
+    // Don't bother evaluating the rest of this file if the runtime was
+    // already defined globally.
+    return;
+  }
+
+  // Define the runtime globally (as expected by generated code) as either
+  // module.exports (if we're in a module) or a new, empty object.
+  runtime = global.regeneratorRuntime = inModule ? module.exports : {};
+
+  function wrap(innerFn, outerFn, self, tryLocsList) {
+    return new Generator(innerFn, outerFn, self || null, tryLocsList || []);
+  }
+  runtime.wrap = wrap;
+
+  // Try/catch helper to minimize deoptimizations. Returns a completion
+  // record like context.tryEntries[i].completion. This interface could
+  // have been (and was previously) designed to take a closure to be
+  // invoked without arguments, but in all the cases we care about we
+  // already have an existing method we want to call, so there's no need
+  // to create a new function object. We can even get away with assuming
+  // the method takes exactly one argument, since that happens to be true
+  // in every case, so we don't have to touch the arguments object. The
+  // only additional allocation required is the completion record, which
+  // has a stable shape and so hopefully should be cheap to allocate.
+  function tryCatch(fn, obj, arg) {
+    try {
+      return { type: "normal", arg: fn.call(obj, arg) };
+    } catch (err) {
+      return { type: "throw", arg: err };
+    }
+  }
+
+  var GenStateSuspendedStart = "suspendedStart";
+  var GenStateSuspendedYield = "suspendedYield";
+  var GenStateExecuting = "executing";
+  var GenStateCompleted = "completed";
+
+  // Returning this object from the innerFn has the same effect as
+  // breaking out of the dispatch switch statement.
+  var ContinueSentinel = {};
+
+  // Dummy constructor functions that we use as the .constructor and
+  // .constructor.prototype properties for functions that return Generator
+  // objects. For full spec compliance, you may wish to configure your
+  // minifier not to mangle the names of these two functions.
+  function GeneratorFunction() {}
+  function GeneratorFunctionPrototype() {}
+
+  var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype;
+  GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
+  GeneratorFunctionPrototype.constructor = GeneratorFunction;
+  GeneratorFunction.displayName = "GeneratorFunction";
+
+  runtime.isGeneratorFunction = function(genFun) {
+    var ctor = typeof genFun === "function" && genFun.constructor;
+    return ctor
+      ? ctor === GeneratorFunction ||
+        // For the native GeneratorFunction constructor, the best we can
+        // do is to check its .name property.
+        (ctor.displayName || ctor.name) === "GeneratorFunction"
+      : false;
+  };
+
+  runtime.mark = function(genFun) {
+    genFun.__proto__ = GeneratorFunctionPrototype;
+    genFun.prototype = Object.create(Gp);
+    return genFun;
+  };
+
+  runtime.async = function(innerFn, outerFn, self, tryLocsList) {
+    return new Promise(function(resolve, reject) {
+      var generator = wrap(innerFn, outerFn, self, tryLocsList);
+      var callNext = step.bind(generator.next);
+      var callThrow = step.bind(generator["throw"]);
+
+      function step(arg) {
+        var record = tryCatch(this, null, arg);
+        if (record.type === "throw") {
+          reject(record.arg);
+          return;
+        }
+
+        var info = record.arg;
+        if (info.done) {
+          resolve(info.value);
+        } else {
+          Promise.resolve(info.value).then(callNext, callThrow);
+        }
+      }
+
+      callNext();
+    });
+  };
+
+  function Generator(innerFn, outerFn, self, tryLocsList) {
+    var generator = outerFn ? Object.create(outerFn.prototype) : this;
+    var context = new Context(tryLocsList);
+    var state = GenStateSuspendedStart;
+
+    function invoke(method, arg) {
+      if (state === GenStateExecuting) {
+        throw new Error("Generator is already running");
+      }
+
+      if (state === GenStateCompleted) {
+        // Be forgiving, per 25.3.3.3.3 of the spec:
+        // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-generatorresume
+        return doneResult();
+      }
+
+      while (true) {
+        var delegate = context.delegate;
+        if (delegate) {
+          var record = tryCatch(
+            delegate.iterator[method],
+            delegate.iterator,
+            arg
+          );
+
+          if (record.type === "throw") {
+            context.delegate = null;
+
+            // Like returning generator.throw(uncaught), but without the
+            // overhead of an extra function call.
+            method = "throw";
+            arg = record.arg;
+
+            continue;
+          }
+
+          // Delegate generator ran and handled its own exceptions so
+          // regardless of what the method was, we continue as if it is
+          // "next" with an undefined arg.
+          method = "next";
+          arg = undefined;
+
+          var info = record.arg;
+          if (info.done) {
+            context[delegate.resultName] = info.value;
+            context.next = delegate.nextLoc;
+          } else {
+            state = GenStateSuspendedYield;
+            return info;
+          }
+
+          context.delegate = null;
+        }
+
+        if (method === "next") {
+          if (state === GenStateSuspendedStart &&
+              typeof arg !== "undefined") {
+            // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-generatorresume
+            throw new TypeError(
+              "attempt to send " + JSON.stringify(arg) + " to newborn generator"
+            );
+          }
+
+          if (state === GenStateSuspendedYield) {
+            context.sent = arg;
+          } else {
+            delete context.sent;
+          }
+
+        } else if (method === "throw") {
+          if (state === GenStateSuspendedStart) {
+            state = GenStateCompleted;
+            throw arg;
+          }
+
+          if (context.dispatchException(arg)) {
+            // If the dispatched exception was caught by a catch block,
+            // then let that catch block handle the exception normally.
+            method = "next";
+            arg = undefined;
+          }
+
+        } else if (method === "return") {
+          context.abrupt("return", arg);
+        }
+
+        state = GenStateExecuting;
+
+        var record = tryCatch(innerFn, self, context);
+        if (record.type === "normal") {
+          // If an exception is thrown from innerFn, we leave state ===
+          // GenStateExecuting and loop back for another invocation.
+          state = context.done
+            ? GenStateCompleted
+            : GenStateSuspendedYield;
+
+          var info = {
+            value: record.arg,
+            done: context.done
+          };
+
+          if (record.arg === ContinueSentinel) {
+            if (context.delegate && method === "next") {
+              // Deliberately forget the last sent value so that we don't
+              // accidentally pass it on to the delegate.
+              arg = undefined;
+            }
+          } else {
+            return info;
+          }
+
+        } else if (record.type === "throw") {
+          state = GenStateCompleted;
+
+          if (method === "next") {
+            context.dispatchException(record.arg);
+          } else {
+            arg = record.arg;
+          }
+        }
+      }
+    }
+
+    generator.next = invoke.bind(generator, "next");
+    generator["throw"] = invoke.bind(generator, "throw");
+    generator["return"] = invoke.bind(generator, "return");
+
+    return generator;
+  }
+
+  Gp[iteratorSymbol] = function() {
+    return this;
+  };
+
+  Gp.toString = function() {
+    return "[object Generator]";
+  };
+
+  function pushTryEntry(locs) {
+    var entry = { tryLoc: locs[0] };
+
+    if (1 in locs) {
+      entry.catchLoc = locs[1];
+    }
+
+    if (2 in locs) {
+      entry.finallyLoc = locs[2];
+      entry.afterLoc = locs[3];
+    }
+
+    this.tryEntries.push(entry);
+  }
+
+  function resetTryEntry(entry) {
+    var record = entry.completion || {};
+    record.type = "normal";
+    delete record.arg;
+    entry.completion = record;
+  }
+
+  function Context(tryLocsList) {
+    // The root entry object (effectively a try statement without a catch
+    // or a finally block) gives us a place to store values thrown from
+    // locations where there is no enclosing try statement.
+    this.tryEntries = [{ tryLoc: "root" }];
+    tryLocsList.forEach(pushTryEntry, this);
+    this.reset();
+  }
+
+  runtime.keys = function(object) {
+    var keys = [];
+    for (var key in object) {
+      keys.push(key);
+    }
+    keys.reverse();
+
+    // Rather than returning an object with a next method, we keep
+    // things simple and return the next function itself.
+    return function next() {
+      while (keys.length) {
+        var key = keys.pop();
+        if (key in object) {
+          next.value = key;
+          next.done = false;
+          return next;
+        }
+      }
+
+      // To avoid creating an additional object, we just hang the .value
+      // and .done properties off the next function object itself. This
+      // also ensures that the minifier will not anonymize the function.
+      next.done = true;
+      return next;
+    };
+  };
+
+  function values(iterable) {
+    if (iterable) {
+      var iteratorMethod = iterable[iteratorSymbol];
+      if (iteratorMethod) {
+        return iteratorMethod.call(iterable);
+      }
+
+      if (typeof iterable.next === "function") {
+        return iterable;
+      }
+
+      if (!isNaN(iterable.length)) {
+        var i = -1, next = function next() {
+          while (++i < iterable.length) {
+            if (hasOwn.call(iterable, i)) {
+              next.value = iterable[i];
+              next.done = false;
+              return next;
+            }
+          }
+
+          next.value = undefined;
+          next.done = true;
+
+          return next;
+        };
+
+        return next.next = next;
+      }
+    }
+
+    // Return an iterator with no values.
+    return { next: doneResult };
+  }
+  runtime.values = values;
+
+  function doneResult() {
+    return { value: undefined, done: true };
+  }
+
+  Context.prototype = {
+    constructor: Context,
+
+    reset: function() {
+      this.prev = 0;
+      this.next = 0;
+      this.sent = undefined;
+      this.done = false;
+      this.delegate = null;
+
+      this.tryEntries.forEach(resetTryEntry);
+
+      // Pre-initialize at least 20 temporary variables to enable hidden
+      // class optimizations for simple generators.
+      for (var tempIndex = 0, tempName;
+           hasOwn.call(this, tempName = "t" + tempIndex) || tempIndex < 20;
+           ++tempIndex) {
+        this[tempName] = null;
+      }
+    },
+
+    stop: function() {
+      this.done = true;
+
+      var rootEntry = this.tryEntries[0];
+      var rootRecord = rootEntry.completion;
+      if (rootRecord.type === "throw") {
+        throw rootRecord.arg;
+      }
+
+      return this.rval;
+    },
+
+    dispatchException: function(exception) {
+      if (this.done) {
+        throw exception;
+      }
+
+      var context = this;
+      function handle(loc, caught) {
+        record.type = "throw";
+        record.arg = exception;
+        context.next = loc;
+        return !!caught;
+      }
+
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        var record = entry.completion;
+
+        if (entry.tryLoc === "root") {
+          // Exception thrown outside of any try block that could handle
+          // it, so set the completion value of the entire function to
+          // throw the exception.
+          return handle("end");
+        }
+
+        if (entry.tryLoc <= this.prev) {
+          var hasCatch = hasOwn.call(entry, "catchLoc");
+          var hasFinally = hasOwn.call(entry, "finallyLoc");
+
+          if (hasCatch && hasFinally) {
+            if (this.prev < entry.catchLoc) {
+              return handle(entry.catchLoc, true);
+            } else if (this.prev < entry.finallyLoc) {
+              return handle(entry.finallyLoc);
+            }
+
+          } else if (hasCatch) {
+            if (this.prev < entry.catchLoc) {
+              return handle(entry.catchLoc, true);
+            }
+
+          } else if (hasFinally) {
+            if (this.prev < entry.finallyLoc) {
+              return handle(entry.finallyLoc);
+            }
+
+          } else {
+            throw new Error("try statement without catch or finally");
+          }
+        }
+      }
+    },
+
+    abrupt: function(type, arg) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.tryLoc <= this.prev &&
+            hasOwn.call(entry, "finallyLoc") &&
+            this.prev < entry.finallyLoc) {
+          var finallyEntry = entry;
+          break;
+        }
+      }
+
+      if (finallyEntry &&
+          (type === "break" ||
+           type === "continue") &&
+          finallyEntry.tryLoc <= arg &&
+          arg < finallyEntry.finallyLoc) {
+        // Ignore the finally entry if control is not jumping to a
+        // location outside the try/catch block.
+        finallyEntry = null;
+      }
+
+      var record = finallyEntry ? finallyEntry.completion : {};
+      record.type = type;
+      record.arg = arg;
+
+      if (finallyEntry) {
+        this.next = finallyEntry.finallyLoc;
+      } else {
+        this.complete(record);
+      }
+
+      return ContinueSentinel;
+    },
+
+    complete: function(record, afterLoc) {
+      if (record.type === "throw") {
+        throw record.arg;
+      }
+
+      if (record.type === "break" ||
+          record.type === "continue") {
+        this.next = record.arg;
+      } else if (record.type === "return") {
+        this.rval = record.arg;
+        this.next = "end";
+      } else if (record.type === "normal" && afterLoc) {
+        this.next = afterLoc;
+      }
+
+      return ContinueSentinel;
+    },
+
+    finish: function(finallyLoc) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.finallyLoc === finallyLoc) {
+          return this.complete(entry.completion, entry.afterLoc);
+        }
+      }
+    },
+
+    "catch": function(tryLoc) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.tryLoc === tryLoc) {
+          var record = entry.completion;
+          if (record.type === "throw") {
+            var thrown = record.arg;
+            resetTryEntry(entry);
+          }
+          return thrown;
+        }
+      }
+
+      // The context.catch method must only be called with a location
+      // argument that corresponds to a known catch block.
+      throw new Error("illegal catch attempt");
+    },
+
+    delegateYield: function(iterable, resultName, nextLoc) {
+      this.delegate = {
+        iterator: values(iterable),
+        resultName: resultName,
+        nextLoc: nextLoc
+      };
+
+      return ContinueSentinel;
+    }
+  };
+})(
+  // Among the various tricks for obtaining a reference to the global
+  // object, this seems to be the most reliable technique that does not
+  // use indirect eval (which violates Content Security Policy).
+  typeof global === "object" ? global :
+  typeof window === "object" ? window : this
+);
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],5:[function(require,module,exports){
+module.exports = require("./lib/babel/polyfill");
+
+},{"./lib/babel/polyfill":2}],6:[function(require,module,exports){
+
+},{}],7:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -4984,7 +2793,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":39}],39:[function(require,module,exports){
+},{"_process":8}],8:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -5072,7 +2881,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],40:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 // doT.js
 // 2011-2014, Laura Doktorova, https://github.com/olado/doT
 // Licensed under the MIT license.
@@ -5214,7 +3023,7 @@ process.chdir = function (dir) {
 	};
 }());
 
-},{}],41:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 /* doT + auto-compilation of doT templates
  *
  * 2012, Laura Doktorova, https://github.com/olado/doT
@@ -5359,9 +3168,13 @@ InstallDots.prototype.compileAll = function() {
 	return this.__rendermodule;
 };
 
-},{"./doT":40,"fs":37}],42:[function(require,module,exports){
+},{"./doT":9,"fs":6}],11:[function(require,module,exports){
 "use strict";
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -5376,30 +3189,29 @@ InstallDots.prototype.compileAll = function() {
  * @enum {string}
  * @alias ImglyKit.RenderType
  */
-var RenderType = exports.RenderType = {
+var RenderType = {
   IMAGE: "image",
   DATAURL: "data-url"
 };
 
+exports.RenderType = RenderType;
 /**
  * The available output image formats
  * @enum {string}
  * @alias ImglyKit.ImageFormat
  */
-var ImageFormat = exports.ImageFormat = {
+var ImageFormat = {
   PNG: "image/png",
   JPEG: "image/jpeg"
 };
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.ImageFormat = ImageFormat;
 
-},{}],43:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
@@ -5412,9 +3224,9 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var _ = _interopRequire(require("lodash"));
+require("babel/polyfill");
 
-var bluebird = _interopRequire(require("bluebird"));
+var _ = _interopRequire(require("lodash"));
 
 var RenderImage = _interopRequire(require("./lib/render-image"));
 
@@ -5430,11 +3242,6 @@ var Utils = _interopRequire(require("./lib/utils"));
 // Default UIs
 
 var NightUI = _interopRequire(require("./ui/night/ui"));
-
-// Don't catch errors
-bluebird.onPossiblyUnhandledRejection(function (error) {
-  throw error;
-});
 
 /**
  * @class
@@ -5465,10 +3272,14 @@ var ImglyKit = (function () {
       container: null,
       renderOnWindowResize: false
     });
+    options.ui = options.ui || {};
     options.ui = _.defaults(options.ui, {
-      enabled: false,
-      showHeader: true
+      enabled: true
     });
+
+    if (typeof options.image === "undefined" && !options.ui.enabled) {
+      throw new Error("`options.image` needs to be set when UI is disabled.");
+    }
 
     /**
      * @type {Object}
@@ -5510,7 +3321,7 @@ var ImglyKit = (function () {
     }
   }
 
-  _prototypeProperties(ImglyKit, null, {
+  _createClass(ImglyKit, {
     render: {
 
       /**
@@ -5562,9 +3373,7 @@ var ImglyKit = (function () {
           var canvas = renderImage.getRenderer().getCanvas();
           return ImageExporter["export"](canvas, renderType, imageFormat);
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     reset: {
 
@@ -5572,9 +3381,7 @@ var ImglyKit = (function () {
        * Resets all custom and selected operations
        */
 
-      value: function reset() {},
-      writable: true,
-      configurable: true
+      value: function reset() {}
     },
     getAssetPath: {
 
@@ -5593,9 +3400,7 @@ var ImglyKit = (function () {
           var path = require("path");
           return path.resolve(this._options.assetsUrl, asset);
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _handleWindowResize: {
 
@@ -5620,9 +3425,7 @@ var ImglyKit = (function () {
             _this.ui.render();
           }, 300);
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _registerUIs: {
 
@@ -5633,9 +3436,7 @@ var ImglyKit = (function () {
 
       value: function _registerUIs() {
         this.registerUI(NightUI);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _registerOperations: {
 
@@ -5648,9 +3449,7 @@ var ImglyKit = (function () {
         for (var operationName in ImglyKit.Operations) {
           this.registerOperation(ImglyKit.Operations[operationName]);
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     registerOperation: {
 
@@ -5661,9 +3460,7 @@ var ImglyKit = (function () {
 
       value: function registerOperation(operation) {
         this._registeredOperations[operation.prototype.identifier] = operation;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     registerUI: {
 
@@ -5674,9 +3471,7 @@ var ImglyKit = (function () {
 
       value: function registerUI(ui) {
         this._registeredUIs[ui.prototype.identifier] = ui;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _initUI: {
 
@@ -5702,24 +3497,19 @@ var ImglyKit = (function () {
          * @type {ImglyKit.UI}
          */
         this.ui = new UI(this, this._options);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     registeredOperations: {
       get: function () {
         return this._registeredOperations;
-      },
-      configurable: true
+      }
     },
     run: {
       value: function run() {
         if (typeof this.ui !== "undefined") {
           this.ui.run();
         }
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -5731,7 +3521,7 @@ var ImglyKit = (function () {
  * @name ImglyKit.version
  * @internal Keep in sync with package.json
  */
-ImglyKit.version = "2.0.0-beta4";
+ImglyKit.version = "2.0.0-beta5";
 
 // Exposed classes
 ImglyKit.RenderImage = RenderImage;
@@ -5789,10 +3579,10 @@ ImglyKit.Vector2 = require("./lib/math/vector2");
 
 module.exports = ImglyKit;
 
-},{"./constants":42,"./lib/color":44,"./lib/image-exporter":48,"./lib/math/vector2":49,"./lib/render-image":50,"./lib/utils":51,"./operations/brightness-operation":52,"./operations/contrast-operation":53,"./operations/crop-operation":54,"./operations/filters-operation":55,"./operations/filters/a15-filter":56,"./operations/filters/breeze-filter":57,"./operations/filters/bw-filter":58,"./operations/filters/bwhard-filter":59,"./operations/filters/celsius-filter":60,"./operations/filters/chest-filter":61,"./operations/filters/filter":62,"./operations/filters/fixie-filter":63,"./operations/filters/food-filter":64,"./operations/filters/fridge-filter":65,"./operations/filters/front-filter":66,"./operations/filters/glam-filter":67,"./operations/filters/gobblin-filter":68,"./operations/filters/k1-filter":70,"./operations/filters/k2-filter":71,"./operations/filters/k6-filter":72,"./operations/filters/kdynamic-filter":73,"./operations/filters/lenin-filter":74,"./operations/filters/lomo-filter":75,"./operations/filters/mellow-filter":76,"./operations/filters/morning-filter":77,"./operations/filters/orchid-filter":78,"./operations/filters/pola-filter":79,"./operations/filters/pola669-filter":80,"./operations/filters/quozi-filter":94,"./operations/filters/semired-filter":95,"./operations/filters/sunny-filter":96,"./operations/filters/texas-filter":97,"./operations/filters/x400-filter":98,"./operations/flip-operation":99,"./operations/frames-operation":100,"./operations/operation":101,"./operations/radial-blur-operation":102,"./operations/rotation-operation":103,"./operations/saturation-operation":104,"./operations/stickers-operation":105,"./operations/text-operation":106,"./operations/tilt-shift-operation":107,"./ui/night/ui":132,"bluebird":4,"lodash":"lodash","path":38}],44:[function(require,module,exports){
+},{"./constants":11,"./lib/color":13,"./lib/image-exporter":17,"./lib/math/vector2":18,"./lib/render-image":19,"./lib/utils":20,"./operations/brightness-operation":21,"./operations/contrast-operation":22,"./operations/crop-operation":23,"./operations/filters-operation":24,"./operations/filters/a15-filter":25,"./operations/filters/breeze-filter":26,"./operations/filters/bw-filter":27,"./operations/filters/bwhard-filter":28,"./operations/filters/celsius-filter":29,"./operations/filters/chest-filter":30,"./operations/filters/filter":31,"./operations/filters/fixie-filter":32,"./operations/filters/food-filter":33,"./operations/filters/fridge-filter":34,"./operations/filters/front-filter":35,"./operations/filters/glam-filter":36,"./operations/filters/gobblin-filter":37,"./operations/filters/k1-filter":39,"./operations/filters/k2-filter":40,"./operations/filters/k6-filter":41,"./operations/filters/kdynamic-filter":42,"./operations/filters/lenin-filter":43,"./operations/filters/lomo-filter":44,"./operations/filters/mellow-filter":45,"./operations/filters/morning-filter":46,"./operations/filters/orchid-filter":47,"./operations/filters/pola-filter":48,"./operations/filters/pola669-filter":49,"./operations/filters/quozi-filter":63,"./operations/filters/semired-filter":64,"./operations/filters/sunny-filter":65,"./operations/filters/texas-filter":66,"./operations/filters/x400-filter":67,"./operations/flip-operation":68,"./operations/frames-operation":69,"./operations/operation":70,"./operations/radial-blur-operation":71,"./operations/rotation-operation":72,"./operations/saturation-operation":73,"./operations/stickers-operation":74,"./operations/text-operation":75,"./operations/tilt-shift-operation":76,"./ui/night/ui":101,"babel/polyfill":5,"lodash":"lodash","path":7}],13:[function(require,module,exports){
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
@@ -5828,7 +3618,7 @@ var Color = (function () {
     this.a = a;
   }
 
-  _prototypeProperties(Color, null, {
+  _createClass(Color, {
     toRGBA: {
 
       /**
@@ -5839,9 +3629,7 @@ var Color = (function () {
       value: function toRGBA() {
         var colors = [Math.round(this.r * 255), Math.round(this.g * 255), Math.round(this.b * 255), this.a];
         return "rgba(" + colors.join(",") + ")";
-      },
-      writable: true,
-      configurable: true
+      }
     },
     toHex: {
 
@@ -5853,9 +3641,7 @@ var Color = (function () {
       value: function toHex() {
         var components = [this._componentToHex(Math.round(this.r * 255)), this._componentToHex(Math.round(this.g * 255)), this._componentToHex(Math.round(this.b * 255))];
         return "#" + components.join("");
-      },
-      writable: true,
-      configurable: true
+      }
     },
     toGLColor: {
 
@@ -5866,9 +3652,7 @@ var Color = (function () {
 
       value: function toGLColor() {
         return [this.r, this.g, this.b, this.a];
-      },
-      writable: true,
-      configurable: true
+      }
     },
     toRGBGLColor: {
 
@@ -5879,9 +3663,7 @@ var Color = (function () {
 
       value: function toRGBGLColor() {
         return [this.r, this.g, this.b];
-      },
-      writable: true,
-      configurable: true
+      }
     },
     toHSV: {
 
@@ -5917,9 +3699,7 @@ var Color = (function () {
         }
 
         return [h, s, v];
-      },
-      writable: true,
-      configurable: true
+      }
     },
     fromHSV: {
 
@@ -5979,9 +3759,7 @@ var Color = (function () {
         this.r = r;
         this.g = g;
         this.b = b;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     clone: {
 
@@ -5992,9 +3770,7 @@ var Color = (function () {
 
       value: function clone() {
         return new Color(this.r, this.g, this.b, this.a);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _componentToHex: {
 
@@ -6008,9 +3784,7 @@ var Color = (function () {
       value: function _componentToHex(component) {
         var hex = component.toString(16);
         return hex.length == 1 ? "0" + hex : hex;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     toString: {
 
@@ -6021,9 +3795,7 @@ var Color = (function () {
 
       value: function toString() {
         return "Color(" + this.r + ", " + this.g + ", " + this.b + ", " + this.a + ")";
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -6032,10 +3804,10 @@ var Color = (function () {
 
 module.exports = Color;
 
-},{}],45:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
@@ -6063,7 +3835,7 @@ var EventEmitter = (function () {
     this._events = {};
   }
 
-  _prototypeProperties(EventEmitter, null, {
+  _createClass(EventEmitter, {
     on: {
       value: function on(type, listener) {
         if (typeof listener != "function") {
@@ -6080,9 +3852,7 @@ var EventEmitter = (function () {
           error("possible memory leak, added %i %s listeners, " + "use EventEmitter#setMaxListeners(number) if you " + "want to increase the limit (%i now)", listeners.length, type, this._maxListeners);
         }
         return this;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     once: {
       value: function once(type, listener) {
@@ -6092,9 +3862,7 @@ var EventEmitter = (function () {
           listener.apply(null, arguments);
         }
         return this.on(type, onceCallback);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     off: {
       value: function off(type) {
@@ -6107,7 +3875,7 @@ var EventEmitter = (function () {
           return this;
         }
 
-        var listener = arguments[1];
+        var listener = args[0];
         if (typeof listener != "function") {
           throw new TypeError();
         }
@@ -6124,9 +3892,7 @@ var EventEmitter = (function () {
 
         listeners.splice(indexOfListener, 1);
         return this;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     emit: {
       value: function emit(type) {
@@ -6144,9 +3910,7 @@ var EventEmitter = (function () {
         });
 
         return true;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     setMaxListeners: {
       value: function setMaxListeners(newMaxListeners) {
@@ -6155,9 +3919,7 @@ var EventEmitter = (function () {
         }
 
         this._maxListeners = newMaxListeners;
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -6166,9 +3928,8 @@ var EventEmitter = (function () {
 
 module.exports = EventEmitter;
 
-},{}],46:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 "use strict";
-
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -6236,10 +3997,10 @@ module.exports = function (prototypeProperties, classProperties) {
   return child;
 };
 
-},{}],47:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
@@ -6288,7 +4049,7 @@ var ImageDimensions = (function () {
     this._validateRules();
   }
 
-  _prototypeProperties(ImageDimensions, null, {
+  _createClass(ImageDimensions, {
     _parse: {
 
       /**
@@ -6311,9 +4072,7 @@ var ImageDimensions = (function () {
           y: isNaN(match[2]) ? null : parseInt(match[2]),
           modifier: match[3]
         };
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _validateRules: {
 
@@ -6335,9 +4094,7 @@ var ImageDimensions = (function () {
         if (!xAvailable && !yAvailable) {
           throw new Error("Neither `x` nor `y` are given.");
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     calculateFinalDimensions: {
 
@@ -6375,9 +4132,7 @@ var ImageDimensions = (function () {
         }
 
         return dimensions;
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -6386,12 +4141,12 @@ var ImageDimensions = (function () {
 
 module.exports = ImageDimensions;
 
-},{}],48:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
@@ -6422,7 +4177,7 @@ var ImageExporter = (function () {
     _classCallCheck(this, ImageExporter);
   }
 
-  _prototypeProperties(ImageExporter, {
+  _createClass(ImageExporter, null, {
     validateSettings: {
       value: function validateSettings(renderType, imageFormat) {
         var settings = {
@@ -6445,9 +4200,7 @@ var ImageExporter = (function () {
         }
 
         return settings;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     "export": {
 
@@ -6477,9 +4230,7 @@ var ImageExporter = (function () {
           result = image;
         }
         return result;
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -6488,10 +4239,10 @@ var ImageExporter = (function () {
 
 module.exports = ImageExporter;
 
-},{"../constants":42,"./utils":51,"canvas":"canvas"}],49:[function(require,module,exports){
+},{"../constants":11,"./utils":20,"canvas":"canvas"}],18:[function(require,module,exports){
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
@@ -6528,7 +4279,7 @@ var Vector2 = (function () {
     }
   }
 
-  _prototypeProperties(Vector2, null, {
+  _createClass(Vector2, {
     set: {
 
       /**
@@ -6542,9 +4293,7 @@ var Vector2 = (function () {
         this.x = x;
         this.y = y;
         return this;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     clone: {
 
@@ -6555,9 +4304,7 @@ var Vector2 = (function () {
 
       value: function clone() {
         return new Vector2(this.x, this.y);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     copy: {
 
@@ -6571,9 +4318,7 @@ var Vector2 = (function () {
         this.x = other.x;
         this.y = other.y;
         return this;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     clamp: {
 
@@ -6607,9 +4352,7 @@ var Vector2 = (function () {
           this.y = Math.min(maximum.y, this.y);
         }
         return this;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     divide: {
 
@@ -6629,9 +4372,7 @@ var Vector2 = (function () {
           this.y /= typeof y === "undefined" ? divisor : y;
         }
         return this;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     subtract: {
 
@@ -6651,9 +4392,7 @@ var Vector2 = (function () {
           this.y -= typeof y === "undefined" ? subtrahend : y;
         }
         return this;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     multiply: {
 
@@ -6673,9 +4412,7 @@ var Vector2 = (function () {
           this.y *= typeof y === "undefined" ? factor : y;
         }
         return this;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     add: {
 
@@ -6694,9 +4431,7 @@ var Vector2 = (function () {
           this.y += typeof y === "undefined" ? addend : y;
         }
         return this;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     equals: {
 
@@ -6713,9 +4448,7 @@ var Vector2 = (function () {
         } else {
           return vec === this.x && y === this.y;
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     flip: {
 
@@ -6729,9 +4462,7 @@ var Vector2 = (function () {
         this.x = this.y;
         this.y = tempX;
         return this;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     toString: {
 
@@ -6742,9 +4473,7 @@ var Vector2 = (function () {
 
       value: function toString() {
         return "Vector2({ x: " + this.x + ", y: " + this.y + " })";
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -6753,12 +4482,12 @@ var Vector2 = (function () {
 
 module.exports = Vector2;
 
-},{}],50:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
@@ -6770,8 +4499,6 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-
-var bluebird = _interopRequire(require("bluebird"));
 
 var ImageDimensions = _interopRequire(require("./image-dimensions"));
 
@@ -6844,7 +4571,7 @@ var RenderImage = (function () {
     this._initRenderer();
   }
 
-  _prototypeProperties(RenderImage, null, {
+  _createClass(RenderImage, {
     _initRenderer: {
 
       /**
@@ -6869,9 +4596,7 @@ var RenderImage = (function () {
         }
 
         this._renderer.drawImage(this._image);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     render: {
 
@@ -6881,31 +4606,78 @@ var RenderImage = (function () {
        */
 
       value: function render() {
+        var _this = this;
+
         var stack = this.sanitizedStack;
 
-        var self = this;
-        return bluebird.map(stack, function (operation) {
-          return operation.validateSettings();
+        var validationPromises = [];
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+          for (var _iterator = stack[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var operation = _step.value;
+
+            validationPromises.push(operation.validateSettings());
+          }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion && _iterator["return"]) {
+              _iterator["return"]();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
+          }
+        }
+
+        return Promise.all(validationPromises).then(function () {
+          var promises = [];
+          var _iteratorNormalCompletion2 = true;
+          var _didIteratorError2 = false;
+          var _iteratorError2 = undefined;
+
+          try {
+            for (var _iterator2 = stack[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+              var operation = _step2.value;
+
+              promises.push(operation.render(_this._renderer));
+            }
+          } catch (err) {
+            _didIteratorError2 = true;
+            _iteratorError2 = err;
+          } finally {
+            try {
+              if (!_iteratorNormalCompletion2 && _iterator2["return"]) {
+                _iterator2["return"]();
+              }
+            } finally {
+              if (_didIteratorError2) {
+                throw _iteratorError2;
+              }
+            }
+          }
+
+          return Promise.all(promises);
         }).then(function () {
-          return bluebird.map(stack, function (operation) {
-            return operation.render(self._renderer);
-          }, { concurrency: 1 }).then(function () {
-            return self._renderer.renderFinal();
-          });
+          return _this._renderer.renderFinal();
         }).then(function () {
-          var initialSize = self._renderer.getSize();
-          var finalDimensions = self._dimensions.calculateFinalDimensions(initialSize);
+          var initialSize = _this._renderer.getSize();
+          var finalDimensions = _this._dimensions.calculateFinalDimensions(initialSize);
 
           if (finalDimensions.equals(initialSize)) {
             // No need to resize
             return;
           }
 
-          return self._renderer.resizeTo(finalDimensions);
+          return _this._renderer.resizeTo(finalDimensions);
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     getRenderer: {
 
@@ -6916,9 +4688,7 @@ var RenderImage = (function () {
 
       value: function getRenderer() {
         return this._renderer;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     sanitizedStack: {
 
@@ -6956,8 +4726,7 @@ var RenderImage = (function () {
         }
 
         return sanitizedStack;
-      },
-      configurable: true
+      }
     }
   });
 
@@ -6966,12 +4735,12 @@ var RenderImage = (function () {
 
 module.exports = RenderImage;
 
-},{"../renderers/canvas-renderer":108,"../renderers/webgl-renderer":110,"./image-dimensions":47,"./math/vector2":49,"bluebird":4}],51:[function(require,module,exports){
+},{"../renderers/canvas-renderer":77,"../renderers/webgl-renderer":79,"./image-dimensions":16,"./math/vector2":18}],20:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
@@ -6998,7 +4767,7 @@ var Utils = (function () {
     _classCallCheck(this, Utils);
   }
 
-  _prototypeProperties(Utils, {
+  _createClass(Utils, null, {
     isArray: {
 
       /**
@@ -7009,9 +4778,7 @@ var Utils = (function () {
 
       value: function isArray(object) {
         return Object.prototype.toString.call(object) === "[object Array]";
-      },
-      writable: true,
-      configurable: true
+      }
     },
     select: {
 
@@ -7066,9 +4833,7 @@ var Utils = (function () {
         }
 
         throw new Error("Utils#select failed to filter items.");
-      },
-      writable: true,
-      configurable: true
+      }
     },
     values: {
 
@@ -7094,9 +4859,7 @@ var Utils = (function () {
           values.push(object[key]);
         }
         return values;
-      }),
-      writable: true,
-      configurable: true
+      })
     },
     isDOMElement: {
 
@@ -7109,9 +4872,7 @@ var Utils = (function () {
 
       value: function isDOMElement(o) {
         return typeof HTMLElement === "object" ? o instanceof HTMLElement : o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName === "string";
-      },
-      writable: true,
-      configurable: true
+      }
     },
     getEventPosition: {
 
@@ -7129,9 +4890,7 @@ var Utils = (function () {
           y = e.touches[0].pageY;
         }
         return new Vector2(x, y);
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -7140,12 +4899,12 @@ var Utils = (function () {
 
 module.exports = Utils;
 
-},{"./math/vector2":49}],52:[function(require,module,exports){
+},{"./math/vector2":18}],21:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -7174,7 +4933,7 @@ var BrightnessPrimitive = _interopRequire(require("./filters/primitives/brightne
  * @extends ImglyKit.Operation
  */
 
-var BrightnessOperation = (function (Operation) {
+var BrightnessOperation = (function (_Operation) {
   function BrightnessOperation() {
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
@@ -7189,9 +4948,9 @@ var BrightnessOperation = (function (Operation) {
     _get(Object.getPrototypeOf(BrightnessOperation.prototype), "constructor", this).apply(this, args);
   }
 
-  _inherits(BrightnessOperation, Operation);
+  _inherits(BrightnessOperation, _Operation);
 
-  _prototypeProperties(BrightnessOperation, null, {
+  _createClass(BrightnessOperation, {
     identifier: {
 
       /**
@@ -7202,8 +4961,7 @@ var BrightnessOperation = (function (Operation) {
 
       get: function () {
         return "brightness";
-      },
-      configurable: true
+      }
     },
     _renderWebGL: {
 
@@ -7216,9 +4974,7 @@ var BrightnessOperation = (function (Operation) {
 
       value: function _renderWebGL(renderer) {
         this._render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _renderCanvas: {
 
@@ -7230,9 +4986,7 @@ var BrightnessOperation = (function (Operation) {
 
       value: function _renderCanvas(renderer) {
         this._render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _render: {
 
@@ -7250,9 +5004,7 @@ var BrightnessOperation = (function (Operation) {
         }));
 
         stack.render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -7261,12 +5013,12 @@ var BrightnessOperation = (function (Operation) {
 
 module.exports = BrightnessOperation;
 
-},{"./filters/primitives-stack":81,"./filters/primitives/brightness":82,"./operation":101}],53:[function(require,module,exports){
+},{"./filters/primitives-stack":50,"./filters/primitives/brightness":51,"./operation":70}],22:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -7295,7 +5047,7 @@ var ContrastPrimitive = _interopRequire(require("./filters/primitives/contrast")
  * @extends ImglyKit.Operation
  */
 
-var ContrastOperation = (function (Operation) {
+var ContrastOperation = (function (_Operation) {
   function ContrastOperation() {
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
@@ -7310,9 +5062,9 @@ var ContrastOperation = (function (Operation) {
     _get(Object.getPrototypeOf(ContrastOperation.prototype), "constructor", this).apply(this, args);
   }
 
-  _inherits(ContrastOperation, Operation);
+  _inherits(ContrastOperation, _Operation);
 
-  _prototypeProperties(ContrastOperation, null, {
+  _createClass(ContrastOperation, {
     identifier: {
 
       /**
@@ -7323,8 +5075,7 @@ var ContrastOperation = (function (Operation) {
 
       get: function () {
         return "contrast";
-      },
-      configurable: true
+      }
     },
     _renderWebGL: {
 
@@ -7337,9 +5088,7 @@ var ContrastOperation = (function (Operation) {
 
       value: function _renderWebGL(renderer) {
         this._render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _renderCanvas: {
 
@@ -7351,9 +5100,7 @@ var ContrastOperation = (function (Operation) {
 
       value: function _renderCanvas(renderer) {
         this._render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _render: {
 
@@ -7371,9 +5118,7 @@ var ContrastOperation = (function (Operation) {
         }));
 
         stack.render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -7382,12 +5127,12 @@ var ContrastOperation = (function (Operation) {
 
 module.exports = ContrastOperation;
 
-},{"./filters/primitives-stack":81,"./filters/primitives/contrast":83,"./operation":101}],54:[function(require,module,exports){
+},{"./filters/primitives-stack":50,"./filters/primitives/contrast":52,"./operation":70}],23:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -7416,7 +5161,7 @@ var Vector2 = _interopRequire(require("../lib/math/vector2"));
  * @extends ImglyKit.Operation
  */
 
-var CropOperation = (function (Operation) {
+var CropOperation = (function (_Operation) {
   function CropOperation() {
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
@@ -7437,9 +5182,9 @@ var CropOperation = (function (Operation) {
     _get(Object.getPrototypeOf(CropOperation.prototype), "constructor", this).apply(this, args);
   }
 
-  _inherits(CropOperation, Operation);
+  _inherits(CropOperation, _Operation);
 
-  _prototypeProperties(CropOperation, null, {
+  _createClass(CropOperation, {
     identifier: {
 
       /**
@@ -7450,8 +5195,7 @@ var CropOperation = (function (Operation) {
 
       get: function () {
         return "crop";
-      },
-      configurable: true
+      }
     },
     _renderWebGL: {
 
@@ -7494,9 +5238,7 @@ var CropOperation = (function (Operation) {
             u_cropEnd: { type: "2f", value: [end.x, end.y] }
           }
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _renderCanvas: {
 
@@ -7535,9 +5277,7 @@ var CropOperation = (function (Operation) {
 
         // Set the new canvas
         renderer.setCanvas(newCanvas);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     getNewDimensions: {
 
@@ -7559,9 +5299,7 @@ var CropOperation = (function (Operation) {
         }
 
         return newDimensions;
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -7570,12 +5308,12 @@ var CropOperation = (function (Operation) {
 
 module.exports = CropOperation;
 
-},{"../lib/math/vector2":49,"./operation":101}],55:[function(require,module,exports){
+},{"../lib/math/vector2":18,"./operation":70}],24:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -7604,7 +5342,7 @@ var IdentityFilter = _interopRequire(require("./filters/identity-filter"));
  * @extends ImglyKit.Operation
  */
 
-var FiltersOperation = (function (Operation) {
+var FiltersOperation = (function (_Operation) {
   function FiltersOperation() {
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
@@ -7624,9 +5362,9 @@ var FiltersOperation = (function (Operation) {
     _get(Object.getPrototypeOf(FiltersOperation.prototype), "constructor", this).apply(this, args);
   }
 
-  _inherits(FiltersOperation, Operation);
+  _inherits(FiltersOperation, _Operation);
 
-  _prototypeProperties(FiltersOperation, null, {
+  _createClass(FiltersOperation, {
     identifier: {
 
       /**
@@ -7637,8 +5375,7 @@ var FiltersOperation = (function (Operation) {
 
       get: function () {
         return "filters";
-      },
-      configurable: true
+      }
     },
     _renderWebGL: {
 
@@ -7651,9 +5388,7 @@ var FiltersOperation = (function (Operation) {
 
       value: function _renderWebGL(renderer) {
         this._render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _renderCanvas: {
 
@@ -7665,9 +5400,7 @@ var FiltersOperation = (function (Operation) {
 
       value: function _renderCanvas(renderer) {
         this._render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _render: {
 
@@ -7679,9 +5412,7 @@ var FiltersOperation = (function (Operation) {
 
       value: function _render(renderer) {
         this._selectedFilter.render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -7690,12 +5421,12 @@ var FiltersOperation = (function (Operation) {
 
 module.exports = FiltersOperation;
 
-},{"./filters/identity-filter":69,"./operation":101}],56:[function(require,module,exports){
+},{"./filters/identity-filter":38,"./operation":70}],25:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -7719,31 +5450,18 @@ var Filter = _interopRequire(require("./filter"));
  * @extends {ImglyKit.Filter}
  */
 
-var A15Filter = (function (Filter) {
+var A15Filter = (function (_Filter) {
   function A15Filter() {
     _classCallCheck(this, A15Filter);
 
-    if (Filter != null) {
-      Filter.apply(this, arguments);
+    if (_Filter != null) {
+      _Filter.apply(this, arguments);
     }
   }
 
-  _inherits(A15Filter, Filter);
+  _inherits(A15Filter, _Filter);
 
-  _prototypeProperties(A15Filter, {
-    identifier: {
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * the active filter.
-       * @type {String}
-       */
-
-      get: function () {
-        return "a15";
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(A15Filter, {
     name: {
 
       /**
@@ -7753,8 +5471,7 @@ var A15Filter = (function (Filter) {
 
       get: function () {
         return "15";
-      },
-      configurable: true
+      }
     },
     render: {
 
@@ -7784,9 +5501,19 @@ var A15Filter = (function (Filter) {
         }));
 
         stack.render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    identifier: {
+      /**
+       * A unique string that identifies this operation. Can be used to select
+       * the active filter.
+       * @type {String}
+       */
+
+      get: function () {
+        return "a15";
+      }
     }
   });
 
@@ -7795,12 +5522,12 @@ var A15Filter = (function (Filter) {
 
 module.exports = A15Filter;
 
-},{"./filter":62}],57:[function(require,module,exports){
+},{"./filter":31}],26:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -7824,32 +5551,18 @@ var Filter = _interopRequire(require("./filter"));
  * @extends {ImglyKit.Filter}
  */
 
-var BreezeFilter = (function (Filter) {
+var BreezeFilter = (function (_Filter) {
   function BreezeFilter() {
     _classCallCheck(this, BreezeFilter);
 
-    if (Filter != null) {
-      Filter.apply(this, arguments);
+    if (_Filter != null) {
+      _Filter.apply(this, arguments);
     }
   }
 
-  _inherits(BreezeFilter, Filter);
+  _inherits(BreezeFilter, _Filter);
 
-  _prototypeProperties(BreezeFilter, {
-    identifier: {
-
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * the active filter.
-       * @type {String}
-       */
-
-      get: function () {
-        return "breeze";
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(BreezeFilter, {
     name: {
 
       /**
@@ -7859,8 +5572,7 @@ var BreezeFilter = (function (Filter) {
 
       get: function () {
         return "Breeze";
-      },
-      configurable: true
+      }
     },
     render: {
 
@@ -7888,9 +5600,20 @@ var BreezeFilter = (function (Filter) {
         }));
 
         stack.render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    identifier: {
+
+      /**
+       * A unique string that identifies this operation. Can be used to select
+       * the active filter.
+       * @type {String}
+       */
+
+      get: function () {
+        return "breeze";
+      }
     }
   });
 
@@ -7899,12 +5622,12 @@ var BreezeFilter = (function (Filter) {
 
 module.exports = BreezeFilter;
 
-},{"./filter":62}],58:[function(require,module,exports){
+},{"./filter":31}],27:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -7928,31 +5651,18 @@ var Filter = _interopRequire(require("./filter"));
  * @extends {ImglyKit.Filter}
  */
 
-var BWFilter = (function (Filter) {
+var BWFilter = (function (_Filter) {
   function BWFilter() {
     _classCallCheck(this, BWFilter);
 
-    if (Filter != null) {
-      Filter.apply(this, arguments);
+    if (_Filter != null) {
+      _Filter.apply(this, arguments);
     }
   }
 
-  _inherits(BWFilter, Filter);
+  _inherits(BWFilter, _Filter);
 
-  _prototypeProperties(BWFilter, {
-    identifier: {
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * the active filter.
-       * @type {String}
-       */
-
-      get: function () {
-        return "bw";
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(BWFilter, {
     name: {
 
       /**
@@ -7962,8 +5672,7 @@ var BWFilter = (function (Filter) {
 
       get: function () {
         return "B&W";
-      },
-      configurable: true
+      }
     },
     render: {
 
@@ -7979,9 +5688,19 @@ var BWFilter = (function (Filter) {
         stack.add(new Filter.Primitives.Grayscale());
 
         stack.render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    identifier: {
+      /**
+       * A unique string that identifies this operation. Can be used to select
+       * the active filter.
+       * @type {String}
+       */
+
+      get: function () {
+        return "bw";
+      }
     }
   });
 
@@ -7990,12 +5709,12 @@ var BWFilter = (function (Filter) {
 
 module.exports = BWFilter;
 
-},{"./filter":62}],59:[function(require,module,exports){
+},{"./filter":31}],28:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -8019,31 +5738,18 @@ var Filter = _interopRequire(require("./filter"));
  * @extends {ImglyKit.Filter}
  */
 
-var BWHardFilter = (function (Filter) {
+var BWHardFilter = (function (_Filter) {
   function BWHardFilter() {
     _classCallCheck(this, BWHardFilter);
 
-    if (Filter != null) {
-      Filter.apply(this, arguments);
+    if (_Filter != null) {
+      _Filter.apply(this, arguments);
     }
   }
 
-  _inherits(BWHardFilter, Filter);
+  _inherits(BWHardFilter, _Filter);
 
-  _prototypeProperties(BWHardFilter, {
-    identifier: {
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * the active filter.
-       * @type {String}
-       */
-
-      get: function () {
-        return "bwhard";
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(BWHardFilter, {
     name: {
 
       /**
@@ -8053,8 +5759,7 @@ var BWHardFilter = (function (Filter) {
 
       get: function () {
         return "1920";
-      },
-      configurable: true
+      }
     },
     render: {
 
@@ -8073,9 +5778,19 @@ var BWHardFilter = (function (Filter) {
         }));
 
         stack.render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    identifier: {
+      /**
+       * A unique string that identifies this operation. Can be used to select
+       * the active filter.
+       * @type {String}
+       */
+
+      get: function () {
+        return "bwhard";
+      }
     }
   });
 
@@ -8084,12 +5799,12 @@ var BWHardFilter = (function (Filter) {
 
 module.exports = BWHardFilter;
 
-},{"./filter":62}],60:[function(require,module,exports){
+},{"./filter":31}],29:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -8113,31 +5828,18 @@ var Filter = _interopRequire(require("./filter"));
  * @extends {ImglyKit.Filter}
  */
 
-var CelsiusFilter = (function (Filter) {
+var CelsiusFilter = (function (_Filter) {
   function CelsiusFilter() {
     _classCallCheck(this, CelsiusFilter);
 
-    if (Filter != null) {
-      Filter.apply(this, arguments);
+    if (_Filter != null) {
+      _Filter.apply(this, arguments);
     }
   }
 
-  _inherits(CelsiusFilter, Filter);
+  _inherits(CelsiusFilter, _Filter);
 
-  _prototypeProperties(CelsiusFilter, {
-    identifier: {
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * the active filter.
-       * @type {String}
-       */
-
-      get: function () {
-        return "celsius";
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(CelsiusFilter, {
     name: {
 
       /**
@@ -8147,8 +5849,7 @@ var CelsiusFilter = (function (Filter) {
 
       get: function () {
         return "Celsius";
-      },
-      configurable: true
+      }
     },
     render: {
 
@@ -8170,9 +5871,19 @@ var CelsiusFilter = (function (Filter) {
         }));
 
         stack.render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    identifier: {
+      /**
+       * A unique string that identifies this operation. Can be used to select
+       * the active filter.
+       * @type {String}
+       */
+
+      get: function () {
+        return "celsius";
+      }
     }
   });
 
@@ -8181,12 +5892,12 @@ var CelsiusFilter = (function (Filter) {
 
 module.exports = CelsiusFilter;
 
-},{"./filter":62}],61:[function(require,module,exports){
+},{"./filter":31}],30:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -8210,31 +5921,18 @@ var Filter = _interopRequire(require("./filter"));
  * @extends {ImglyKit.Filter}
  */
 
-var ChestFilter = (function (Filter) {
+var ChestFilter = (function (_Filter) {
   function ChestFilter() {
     _classCallCheck(this, ChestFilter);
 
-    if (Filter != null) {
-      Filter.apply(this, arguments);
+    if (_Filter != null) {
+      _Filter.apply(this, arguments);
     }
   }
 
-  _inherits(ChestFilter, Filter);
+  _inherits(ChestFilter, _Filter);
 
-  _prototypeProperties(ChestFilter, {
-    identifier: {
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * the active filter.
-       * @type {String}
-       */
-
-      get: function () {
-        return "chest";
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(ChestFilter, {
     name: {
 
       /**
@@ -8244,8 +5942,7 @@ var ChestFilter = (function (Filter) {
 
       get: function () {
         return "Chest";
-      },
-      configurable: true
+      }
     },
     render: {
 
@@ -8268,9 +5965,19 @@ var ChestFilter = (function (Filter) {
         }));
 
         stack.render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    identifier: {
+      /**
+       * A unique string that identifies this operation. Can be used to select
+       * the active filter.
+       * @type {String}
+       */
+
+      get: function () {
+        return "chest";
+      }
     }
   });
 
@@ -8279,10 +5986,11 @@ var ChestFilter = (function (Filter) {
 
 module.exports = ChestFilter;
 
-},{"./filter":62}],62:[function(require,module,exports){
+},{"./filter":31}],31:[function(require,module,exports){
+/* jshint unused: false */
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
@@ -8306,20 +6014,7 @@ var Filter = (function () {
     _classCallCheck(this, Filter);
   }
 
-  _prototypeProperties(Filter, {
-    identifier: {
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * the active filter.
-       * @type {String}
-       */
-
-      get: function () {
-        return null;
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(Filter, {
     render: {
 
       /**
@@ -8331,9 +6026,19 @@ var Filter = (function () {
       value: function render(renderer) {
         /* istanbul ignore next */
         throw new Error("Filter#render is abstract and not implemented in inherited class.");
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    identifier: {
+      /**
+       * A unique string that identifies this operation. Can be used to select
+       * the active filter.
+       * @type {String}
+       */
+
+      get: function () {
+        return null;
+      }
     }
   });
 
@@ -8363,14 +6068,13 @@ Filter.Primitives.Gobblin = require("./primitives/gobblin");
 Filter.Primitives.Brightness = require("./primitives/brightness");
 
 module.exports = Filter;
-/* jshint unused: false */
 
-},{"../../lib/extend":46,"./primitives-stack":81,"./primitives/brightness":82,"./primitives/contrast":83,"./primitives/desaturation":84,"./primitives/glow":85,"./primitives/gobblin":86,"./primitives/grayscale":87,"./primitives/lookup-table":88,"./primitives/saturation":90,"./primitives/soft-color-overlay":91,"./primitives/tone-curve":92,"./primitives/x400":93}],63:[function(require,module,exports){
+},{"../../lib/extend":15,"./primitives-stack":50,"./primitives/brightness":51,"./primitives/contrast":52,"./primitives/desaturation":53,"./primitives/glow":54,"./primitives/gobblin":55,"./primitives/grayscale":56,"./primitives/lookup-table":57,"./primitives/saturation":59,"./primitives/soft-color-overlay":60,"./primitives/tone-curve":61,"./primitives/x400":62}],32:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -8394,31 +6098,18 @@ var Filter = _interopRequire(require("./filter"));
  * @extends {ImglyKit.Filter}
  */
 
-var FixieFilter = (function (Filter) {
+var FixieFilter = (function (_Filter) {
   function FixieFilter() {
     _classCallCheck(this, FixieFilter);
 
-    if (Filter != null) {
-      Filter.apply(this, arguments);
+    if (_Filter != null) {
+      _Filter.apply(this, arguments);
     }
   }
 
-  _inherits(FixieFilter, Filter);
+  _inherits(FixieFilter, _Filter);
 
-  _prototypeProperties(FixieFilter, {
-    identifier: {
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * the active filter.
-       * @type {String}
-       */
-
-      get: function () {
-        return "fixie";
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(FixieFilter, {
     name: {
 
       /**
@@ -8428,8 +6119,7 @@ var FixieFilter = (function (Filter) {
 
       get: function () {
         return "Fixie";
-      },
-      configurable: true
+      }
     },
     render: {
 
@@ -8452,9 +6142,19 @@ var FixieFilter = (function (Filter) {
         }));
 
         stack.render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    identifier: {
+      /**
+       * A unique string that identifies this operation. Can be used to select
+       * the active filter.
+       * @type {String}
+       */
+
+      get: function () {
+        return "fixie";
+      }
     }
   });
 
@@ -8463,12 +6163,12 @@ var FixieFilter = (function (Filter) {
 
 module.exports = FixieFilter;
 
-},{"./filter":62}],64:[function(require,module,exports){
+},{"./filter":31}],33:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -8492,31 +6192,18 @@ var Filter = _interopRequire(require("./filter"));
  * @extends {ImglyKit.Filter}
  */
 
-var FoodFilter = (function (Filter) {
+var FoodFilter = (function (_Filter) {
   function FoodFilter() {
     _classCallCheck(this, FoodFilter);
 
-    if (Filter != null) {
-      Filter.apply(this, arguments);
+    if (_Filter != null) {
+      _Filter.apply(this, arguments);
     }
   }
 
-  _inherits(FoodFilter, Filter);
+  _inherits(FoodFilter, _Filter);
 
-  _prototypeProperties(FoodFilter, {
-    identifier: {
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * the active filter.
-       * @type {String}
-       */
-
-      get: function () {
-        return "food";
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(FoodFilter, {
     name: {
 
       /**
@@ -8526,8 +6213,7 @@ var FoodFilter = (function (Filter) {
 
       get: function () {
         return "Food";
-      },
-      configurable: true
+      }
     },
     render: {
 
@@ -8549,9 +6235,19 @@ var FoodFilter = (function (Filter) {
         }));
 
         stack.render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    identifier: {
+      /**
+       * A unique string that identifies this operation. Can be used to select
+       * the active filter.
+       * @type {String}
+       */
+
+      get: function () {
+        return "food";
+      }
     }
   });
 
@@ -8560,12 +6256,12 @@ var FoodFilter = (function (Filter) {
 
 module.exports = FoodFilter;
 
-},{"./filter":62}],65:[function(require,module,exports){
+},{"./filter":31}],34:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -8589,31 +6285,18 @@ var Filter = _interopRequire(require("./filter"));
  * @extends {ImglyKit.Filter}
  */
 
-var FridgeFilter = (function (Filter) {
+var FridgeFilter = (function (_Filter) {
   function FridgeFilter() {
     _classCallCheck(this, FridgeFilter);
 
-    if (Filter != null) {
-      Filter.apply(this, arguments);
+    if (_Filter != null) {
+      _Filter.apply(this, arguments);
     }
   }
 
-  _inherits(FridgeFilter, Filter);
+  _inherits(FridgeFilter, _Filter);
 
-  _prototypeProperties(FridgeFilter, {
-    identifier: {
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * the active filter.
-       * @type {String}
-       */
-
-      get: function () {
-        return "fridge";
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(FridgeFilter, {
     name: {
 
       /**
@@ -8623,8 +6306,7 @@ var FridgeFilter = (function (Filter) {
 
       get: function () {
         return "Fridge";
-      },
-      configurable: true
+      }
     },
     render: {
 
@@ -8647,9 +6329,19 @@ var FridgeFilter = (function (Filter) {
         }));
 
         stack.render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    identifier: {
+      /**
+       * A unique string that identifies this operation. Can be used to select
+       * the active filter.
+       * @type {String}
+       */
+
+      get: function () {
+        return "fridge";
+      }
     }
   });
 
@@ -8658,12 +6350,12 @@ var FridgeFilter = (function (Filter) {
 
 module.exports = FridgeFilter;
 
-},{"./filter":62}],66:[function(require,module,exports){
+},{"./filter":31}],35:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -8687,31 +6379,18 @@ var Filter = _interopRequire(require("./filter"));
  * @extends {ImglyKit.Filter}
  */
 
-var FrontFilter = (function (Filter) {
+var FrontFilter = (function (_Filter) {
   function FrontFilter() {
     _classCallCheck(this, FrontFilter);
 
-    if (Filter != null) {
-      Filter.apply(this, arguments);
+    if (_Filter != null) {
+      _Filter.apply(this, arguments);
     }
   }
 
-  _inherits(FrontFilter, Filter);
+  _inherits(FrontFilter, _Filter);
 
-  _prototypeProperties(FrontFilter, {
-    identifier: {
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * the active filter.
-       * @type {String}
-       */
-
-      get: function () {
-        return "front";
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(FrontFilter, {
     name: {
 
       /**
@@ -8721,8 +6400,7 @@ var FrontFilter = (function (Filter) {
 
       get: function () {
         return "Front";
-      },
-      configurable: true
+      }
     },
     render: {
 
@@ -8745,9 +6423,19 @@ var FrontFilter = (function (Filter) {
         }));
 
         stack.render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    identifier: {
+      /**
+       * A unique string that identifies this operation. Can be used to select
+       * the active filter.
+       * @type {String}
+       */
+
+      get: function () {
+        return "front";
+      }
     }
   });
 
@@ -8756,12 +6444,12 @@ var FrontFilter = (function (Filter) {
 
 module.exports = FrontFilter;
 
-},{"./filter":62}],67:[function(require,module,exports){
+},{"./filter":31}],36:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -8785,31 +6473,18 @@ var Filter = _interopRequire(require("./filter"));
  * @extends {ImglyKit.Filter}
  */
 
-var GlamFilter = (function (Filter) {
+var GlamFilter = (function (_Filter) {
   function GlamFilter() {
     _classCallCheck(this, GlamFilter);
 
-    if (Filter != null) {
-      Filter.apply(this, arguments);
+    if (_Filter != null) {
+      _Filter.apply(this, arguments);
     }
   }
 
-  _inherits(GlamFilter, Filter);
+  _inherits(GlamFilter, _Filter);
 
-  _prototypeProperties(GlamFilter, {
-    identifier: {
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * the active filter.
-       * @type {String}
-       */
-
-      get: function () {
-        return "glam";
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(GlamFilter, {
     name: {
 
       /**
@@ -8819,8 +6494,7 @@ var GlamFilter = (function (Filter) {
 
       get: function () {
         return "Glam";
-      },
-      configurable: true
+      }
     },
     render: {
 
@@ -8846,9 +6520,19 @@ var GlamFilter = (function (Filter) {
         }));
 
         stack.render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    identifier: {
+      /**
+       * A unique string that identifies this operation. Can be used to select
+       * the active filter.
+       * @type {String}
+       */
+
+      get: function () {
+        return "glam";
+      }
     }
   });
 
@@ -8857,12 +6541,12 @@ var GlamFilter = (function (Filter) {
 
 module.exports = GlamFilter;
 
-},{"./filter":62}],68:[function(require,module,exports){
+},{"./filter":31}],37:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -8886,31 +6570,18 @@ var Filter = _interopRequire(require("./filter"));
  * @extends {ImglyKit.Filter}
  */
 
-var GobblinFilter = (function (Filter) {
+var GobblinFilter = (function (_Filter) {
   function GobblinFilter() {
     _classCallCheck(this, GobblinFilter);
 
-    if (Filter != null) {
-      Filter.apply(this, arguments);
+    if (_Filter != null) {
+      _Filter.apply(this, arguments);
     }
   }
 
-  _inherits(GobblinFilter, Filter);
+  _inherits(GobblinFilter, _Filter);
 
-  _prototypeProperties(GobblinFilter, {
-    identifier: {
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * the active filter.
-       * @type {String}
-       */
-
-      get: function () {
-        return "gobblin";
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(GobblinFilter, {
     name: {
 
       /**
@@ -8920,8 +6591,7 @@ var GobblinFilter = (function (Filter) {
 
       get: function () {
         return "Gobblin";
-      },
-      configurable: true
+      }
     },
     render: {
 
@@ -8937,9 +6607,19 @@ var GobblinFilter = (function (Filter) {
         stack.add(new Filter.Primitives.Gobblin());
 
         stack.render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    identifier: {
+      /**
+       * A unique string that identifies this operation. Can be used to select
+       * the active filter.
+       * @type {String}
+       */
+
+      get: function () {
+        return "gobblin";
+      }
     }
   });
 
@@ -8948,12 +6628,12 @@ var GobblinFilter = (function (Filter) {
 
 module.exports = GobblinFilter;
 
-},{"./filter":62}],69:[function(require,module,exports){
+},{"./filter":31}],38:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -8977,31 +6657,18 @@ var Filter = _interopRequire(require("./filter"));
  * @extends {ImglyKit.Filter}
  */
 
-var IdentityFilter = (function (Filter) {
+var IdentityFilter = (function (_Filter) {
   function IdentityFilter() {
     _classCallCheck(this, IdentityFilter);
 
-    if (Filter != null) {
-      Filter.apply(this, arguments);
+    if (_Filter != null) {
+      _Filter.apply(this, arguments);
     }
   }
 
-  _inherits(IdentityFilter, Filter);
+  _inherits(IdentityFilter, _Filter);
 
-  _prototypeProperties(IdentityFilter, {
-    identifier: {
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * the active filter.
-       * @type {String}
-       */
-
-      get: function () {
-        return "identity";
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(IdentityFilter, {
     name: {
 
       /**
@@ -9011,8 +6678,7 @@ var IdentityFilter = (function (Filter) {
 
       get: function () {
         return "Original";
-      },
-      configurable: true
+      }
     },
     render: {
 
@@ -9022,9 +6688,19 @@ var IdentityFilter = (function (Filter) {
        * @return {Promise}
        */
 
-      value: function render(renderer) {},
-      writable: true,
-      configurable: true
+      value: function render(renderer) {}
+    }
+  }, {
+    identifier: {
+      /**
+       * A unique string that identifies this operation. Can be used to select
+       * the active filter.
+       * @type {String}
+       */
+
+      get: function () {
+        return "identity";
+      }
     }
   });
 
@@ -9035,12 +6711,12 @@ module.exports = IdentityFilter;
 
 // This is the identity filter, it doesn't have any effect.
 
-},{"./filter":62}],70:[function(require,module,exports){
+},{"./filter":31}],39:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -9064,31 +6740,18 @@ var Filter = _interopRequire(require("./filter"));
  * @extends {ImglyKit.Filter}
  */
 
-var K1Filter = (function (Filter) {
+var K1Filter = (function (_Filter) {
   function K1Filter() {
     _classCallCheck(this, K1Filter);
 
-    if (Filter != null) {
-      Filter.apply(this, arguments);
+    if (_Filter != null) {
+      _Filter.apply(this, arguments);
     }
   }
 
-  _inherits(K1Filter, Filter);
+  _inherits(K1Filter, _Filter);
 
-  _prototypeProperties(K1Filter, {
-    identifier: {
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * the active filter.
-       * @type {String}
-       */
-
-      get: function () {
-        return "k1";
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(K1Filter, {
     name: {
 
       /**
@@ -9098,8 +6761,7 @@ var K1Filter = (function (Filter) {
 
       get: function () {
         return "K1";
-      },
-      configurable: true
+      }
     },
     render: {
 
@@ -9123,9 +6785,19 @@ var K1Filter = (function (Filter) {
         }));
 
         stack.render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    identifier: {
+      /**
+       * A unique string that identifies this operation. Can be used to select
+       * the active filter.
+       * @type {String}
+       */
+
+      get: function () {
+        return "k1";
+      }
     }
   });
 
@@ -9134,12 +6806,12 @@ var K1Filter = (function (Filter) {
 
 module.exports = K1Filter;
 
-},{"./filter":62}],71:[function(require,module,exports){
+},{"./filter":31}],40:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -9165,31 +6837,18 @@ var Color = _interopRequire(require("../../lib/color"));
  * @extends {ImglyKit.Filter}
  */
 
-var K2Filter = (function (Filter) {
+var K2Filter = (function (_Filter) {
   function K2Filter() {
     _classCallCheck(this, K2Filter);
 
-    if (Filter != null) {
-      Filter.apply(this, arguments);
+    if (_Filter != null) {
+      _Filter.apply(this, arguments);
     }
   }
 
-  _inherits(K2Filter, Filter);
+  _inherits(K2Filter, _Filter);
 
-  _prototypeProperties(K2Filter, {
-    identifier: {
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * the active filter.
-       * @type {String}
-       */
-
-      get: function () {
-        return "k2";
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(K2Filter, {
     name: {
 
       /**
@@ -9199,8 +6858,7 @@ var K2Filter = (function (Filter) {
 
       get: function () {
         return "K2";
-      },
-      configurable: true
+      }
     },
     render: {
 
@@ -9224,9 +6882,19 @@ var K2Filter = (function (Filter) {
         }));
 
         stack.render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    identifier: {
+      /**
+       * A unique string that identifies this operation. Can be used to select
+       * the active filter.
+       * @type {String}
+       */
+
+      get: function () {
+        return "k2";
+      }
     }
   });
 
@@ -9235,12 +6903,12 @@ var K2Filter = (function (Filter) {
 
 module.exports = K2Filter;
 
-},{"../../lib/color":44,"./filter":62}],72:[function(require,module,exports){
+},{"../../lib/color":13,"./filter":31}],41:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -9264,31 +6932,18 @@ var Filter = _interopRequire(require("./filter"));
  * @extends {ImglyKit.Filter}
  */
 
-var K6Filter = (function (Filter) {
+var K6Filter = (function (_Filter) {
   function K6Filter() {
     _classCallCheck(this, K6Filter);
 
-    if (Filter != null) {
-      Filter.apply(this, arguments);
+    if (_Filter != null) {
+      _Filter.apply(this, arguments);
     }
   }
 
-  _inherits(K6Filter, Filter);
+  _inherits(K6Filter, _Filter);
 
-  _prototypeProperties(K6Filter, {
-    identifier: {
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * the active filter.
-       * @type {String}
-       */
-
-      get: function () {
-        return "k6";
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(K6Filter, {
     name: {
 
       /**
@@ -9298,8 +6953,7 @@ var K6Filter = (function (Filter) {
 
       get: function () {
         return "K6";
-      },
-      configurable: true
+      }
     },
     render: {
 
@@ -9318,9 +6972,19 @@ var K6Filter = (function (Filter) {
         }));
 
         stack.render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    identifier: {
+      /**
+       * A unique string that identifies this operation. Can be used to select
+       * the active filter.
+       * @type {String}
+       */
+
+      get: function () {
+        return "k6";
+      }
     }
   });
 
@@ -9329,12 +6993,12 @@ var K6Filter = (function (Filter) {
 
 module.exports = K6Filter;
 
-},{"./filter":62}],73:[function(require,module,exports){
+},{"./filter":31}],42:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -9358,31 +7022,18 @@ var Filter = _interopRequire(require("./filter"));
  * @extends {ImglyKit.Filter}
  */
 
-var KDynamicFilter = (function (Filter) {
+var KDynamicFilter = (function (_Filter) {
   function KDynamicFilter() {
     _classCallCheck(this, KDynamicFilter);
 
-    if (Filter != null) {
-      Filter.apply(this, arguments);
+    if (_Filter != null) {
+      _Filter.apply(this, arguments);
     }
   }
 
-  _inherits(KDynamicFilter, Filter);
+  _inherits(KDynamicFilter, _Filter);
 
-  _prototypeProperties(KDynamicFilter, {
-    identifier: {
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * the active filter.
-       * @type {String}
-       */
-
-      get: function () {
-        return "kdynamic";
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(KDynamicFilter, {
     name: {
 
       /**
@@ -9392,8 +7043,7 @@ var KDynamicFilter = (function (Filter) {
 
       get: function () {
         return "KDynamic";
-      },
-      configurable: true
+      }
     },
     render: {
 
@@ -9417,9 +7067,19 @@ var KDynamicFilter = (function (Filter) {
         }));
 
         stack.render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    identifier: {
+      /**
+       * A unique string that identifies this operation. Can be used to select
+       * the active filter.
+       * @type {String}
+       */
+
+      get: function () {
+        return "kdynamic";
+      }
     }
   });
 
@@ -9428,12 +7088,12 @@ var KDynamicFilter = (function (Filter) {
 
 module.exports = KDynamicFilter;
 
-},{"./filter":62}],74:[function(require,module,exports){
+},{"./filter":31}],43:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -9457,31 +7117,18 @@ var Filter = _interopRequire(require("./filter"));
  * @extends {ImglyKit.Filter}
  */
 
-var LeninFilter = (function (Filter) {
+var LeninFilter = (function (_Filter) {
   function LeninFilter() {
     _classCallCheck(this, LeninFilter);
 
-    if (Filter != null) {
-      Filter.apply(this, arguments);
+    if (_Filter != null) {
+      _Filter.apply(this, arguments);
     }
   }
 
-  _inherits(LeninFilter, Filter);
+  _inherits(LeninFilter, _Filter);
 
-  _prototypeProperties(LeninFilter, {
-    identifier: {
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * the active filter.
-       * @type {String}
-       */
-
-      get: function () {
-        return "lenin";
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(LeninFilter, {
     name: {
 
       /**
@@ -9491,8 +7138,7 @@ var LeninFilter = (function (Filter) {
 
       get: function () {
         return "Lenin";
-      },
-      configurable: true
+      }
     },
     render: {
 
@@ -9520,9 +7166,19 @@ var LeninFilter = (function (Filter) {
         }));
 
         stack.render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    identifier: {
+      /**
+       * A unique string that identifies this operation. Can be used to select
+       * the active filter.
+       * @type {String}
+       */
+
+      get: function () {
+        return "lenin";
+      }
     }
   });
 
@@ -9531,12 +7187,12 @@ var LeninFilter = (function (Filter) {
 
 module.exports = LeninFilter;
 
-},{"./filter":62}],75:[function(require,module,exports){
+},{"./filter":31}],44:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -9560,32 +7216,18 @@ var Filter = _interopRequire(require("./filter"));
  * @extends {ImglyKit.Filter}
  */
 
-var LomoFilter = (function (Filter) {
+var LomoFilter = (function (_Filter) {
   function LomoFilter() {
     _classCallCheck(this, LomoFilter);
 
-    if (Filter != null) {
-      Filter.apply(this, arguments);
+    if (_Filter != null) {
+      _Filter.apply(this, arguments);
     }
   }
 
-  _inherits(LomoFilter, Filter);
+  _inherits(LomoFilter, _Filter);
 
-  _prototypeProperties(LomoFilter, {
-    identifier: {
-
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * the active filter.
-       * @type {String}
-       */
-
-      get: function () {
-        return "lomo";
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(LomoFilter, {
     name: {
 
       /**
@@ -9595,8 +7237,7 @@ var LomoFilter = (function (Filter) {
 
       get: function () {
         return "Lomo";
-      },
-      configurable: true
+      }
     },
     render: {
 
@@ -9614,9 +7255,20 @@ var LomoFilter = (function (Filter) {
         }));
 
         stack.render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    identifier: {
+
+      /**
+       * A unique string that identifies this operation. Can be used to select
+       * the active filter.
+       * @type {String}
+       */
+
+      get: function () {
+        return "lomo";
+      }
     }
   });
 
@@ -9625,12 +7277,12 @@ var LomoFilter = (function (Filter) {
 
 module.exports = LomoFilter;
 
-},{"./filter":62}],76:[function(require,module,exports){
+},{"./filter":31}],45:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -9654,31 +7306,18 @@ var Filter = _interopRequire(require("./filter"));
  * @extends {ImglyKit.Filter}
  */
 
-var MellowFilter = (function (Filter) {
+var MellowFilter = (function (_Filter) {
   function MellowFilter() {
     _classCallCheck(this, MellowFilter);
 
-    if (Filter != null) {
-      Filter.apply(this, arguments);
+    if (_Filter != null) {
+      _Filter.apply(this, arguments);
     }
   }
 
-  _inherits(MellowFilter, Filter);
+  _inherits(MellowFilter, _Filter);
 
-  _prototypeProperties(MellowFilter, {
-    identifier: {
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * the active filter.
-       * @type {String}
-       */
-
-      get: function () {
-        return "mellow";
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(MellowFilter, {
     name: {
 
       /**
@@ -9688,8 +7327,7 @@ var MellowFilter = (function (Filter) {
 
       get: function () {
         return "Mellow";
-      },
-      configurable: true
+      }
     },
     render: {
 
@@ -9711,9 +7349,19 @@ var MellowFilter = (function (Filter) {
         }));
 
         stack.render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    identifier: {
+      /**
+       * A unique string that identifies this operation. Can be used to select
+       * the active filter.
+       * @type {String}
+       */
+
+      get: function () {
+        return "mellow";
+      }
     }
   });
 
@@ -9722,12 +7370,12 @@ var MellowFilter = (function (Filter) {
 
 module.exports = MellowFilter;
 
-},{"./filter":62}],77:[function(require,module,exports){
+},{"./filter":31}],46:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -9751,31 +7399,18 @@ var Filter = _interopRequire(require("./filter"));
  * @extends {ImglyKit.Filter}
  */
 
-var MorningFilter = (function (Filter) {
+var MorningFilter = (function (_Filter) {
   function MorningFilter() {
     _classCallCheck(this, MorningFilter);
 
-    if (Filter != null) {
-      Filter.apply(this, arguments);
+    if (_Filter != null) {
+      _Filter.apply(this, arguments);
     }
   }
 
-  _inherits(MorningFilter, Filter);
+  _inherits(MorningFilter, _Filter);
 
-  _prototypeProperties(MorningFilter, {
-    identifier: {
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * the active filter.
-       * @type {String}
-       */
-
-      get: function () {
-        return "morning";
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(MorningFilter, {
     name: {
 
       /**
@@ -9785,8 +7420,7 @@ var MorningFilter = (function (Filter) {
 
       get: function () {
         return "Morning";
-      },
-      configurable: true
+      }
     },
     render: {
 
@@ -9810,9 +7444,19 @@ var MorningFilter = (function (Filter) {
         stack.add(new Filter.Primitives.Glow());
 
         stack.render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    identifier: {
+      /**
+       * A unique string that identifies this operation. Can be used to select
+       * the active filter.
+       * @type {String}
+       */
+
+      get: function () {
+        return "morning";
+      }
     }
   });
 
@@ -9821,12 +7465,12 @@ var MorningFilter = (function (Filter) {
 
 module.exports = MorningFilter;
 
-},{"./filter":62}],78:[function(require,module,exports){
+},{"./filter":31}],47:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -9850,31 +7494,18 @@ var Filter = _interopRequire(require("./filter"));
  * @extends {ImglyKit.Filter}
  */
 
-var OrchidFilter = (function (Filter) {
+var OrchidFilter = (function (_Filter) {
   function OrchidFilter() {
     _classCallCheck(this, OrchidFilter);
 
-    if (Filter != null) {
-      Filter.apply(this, arguments);
+    if (_Filter != null) {
+      _Filter.apply(this, arguments);
     }
   }
 
-  _inherits(OrchidFilter, Filter);
+  _inherits(OrchidFilter, _Filter);
 
-  _prototypeProperties(OrchidFilter, {
-    identifier: {
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * the active filter.
-       * @type {String}
-       */
-
-      get: function () {
-        return "orchid";
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(OrchidFilter, {
     name: {
 
       /**
@@ -9884,8 +7515,7 @@ var OrchidFilter = (function (Filter) {
 
       get: function () {
         return "Orchid";
-      },
-      configurable: true
+      }
     },
     render: {
 
@@ -9918,9 +7548,19 @@ var OrchidFilter = (function (Filter) {
         }));
 
         stack.render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    identifier: {
+      /**
+       * A unique string that identifies this operation. Can be used to select
+       * the active filter.
+       * @type {String}
+       */
+
+      get: function () {
+        return "orchid";
+      }
     }
   });
 
@@ -9929,12 +7569,12 @@ var OrchidFilter = (function (Filter) {
 
 module.exports = OrchidFilter;
 
-},{"./filter":62}],79:[function(require,module,exports){
+},{"./filter":31}],48:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -9958,31 +7598,18 @@ var Filter = _interopRequire(require("./filter"));
  * @extends {ImglyKit.Filter}
  */
 
-var PolaFilter = (function (Filter) {
+var PolaFilter = (function (_Filter) {
   function PolaFilter() {
     _classCallCheck(this, PolaFilter);
 
-    if (Filter != null) {
-      Filter.apply(this, arguments);
+    if (_Filter != null) {
+      _Filter.apply(this, arguments);
     }
   }
 
-  _inherits(PolaFilter, Filter);
+  _inherits(PolaFilter, _Filter);
 
-  _prototypeProperties(PolaFilter, {
-    identifier: {
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * the active filter.
-       * @type {String}
-       */
-
-      get: function () {
-        return "pola";
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(PolaFilter, {
     name: {
 
       /**
@@ -9992,8 +7619,7 @@ var PolaFilter = (function (Filter) {
 
       get: function () {
         return "Pola SX";
-      },
-      configurable: true
+      }
     },
     render: {
 
@@ -10023,9 +7649,19 @@ var PolaFilter = (function (Filter) {
         }));
 
         stack.render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    identifier: {
+      /**
+       * A unique string that identifies this operation. Can be used to select
+       * the active filter.
+       * @type {String}
+       */
+
+      get: function () {
+        return "pola";
+      }
     }
   });
 
@@ -10034,12 +7670,12 @@ var PolaFilter = (function (Filter) {
 
 module.exports = PolaFilter;
 
-},{"./filter":62}],80:[function(require,module,exports){
+},{"./filter":31}],49:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -10063,31 +7699,18 @@ var Filter = _interopRequire(require("./filter"));
  * @extends {ImglyKit.Filter}
  */
 
-var Pola669Filter = (function (Filter) {
+var Pola669Filter = (function (_Filter) {
   function Pola669Filter() {
     _classCallCheck(this, Pola669Filter);
 
-    if (Filter != null) {
-      Filter.apply(this, arguments);
+    if (_Filter != null) {
+      _Filter.apply(this, arguments);
     }
   }
 
-  _inherits(Pola669Filter, Filter);
+  _inherits(Pola669Filter, _Filter);
 
-  _prototypeProperties(Pola669Filter, {
-    identifier: {
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * the active filter.
-       * @type {String}
-       */
-
-      get: function () {
-        return "pola669";
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(Pola669Filter, {
     name: {
 
       /**
@@ -10097,8 +7720,7 @@ var Pola669Filter = (function (Filter) {
 
       get: function () {
         return "Pola 669";
-      },
-      configurable: true
+      }
     },
     render: {
 
@@ -10128,9 +7750,19 @@ var Pola669Filter = (function (Filter) {
         }));
 
         stack.render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    identifier: {
+      /**
+       * A unique string that identifies this operation. Can be used to select
+       * the active filter.
+       * @type {String}
+       */
+
+      get: function () {
+        return "pola669";
+      }
     }
   });
 
@@ -10139,10 +7771,10 @@ var Pola669Filter = (function (Filter) {
 
 module.exports = Pola669Filter;
 
-},{"./filter":62}],81:[function(require,module,exports){
+},{"./filter":31}],50:[function(require,module,exports){
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -10182,7 +7814,7 @@ var PrimitivesStack = (function () {
     this._stack = [];
   }
 
-  _prototypeProperties(PrimitivesStack, null, {
+  _createClass(PrimitivesStack, {
     add: {
 
       /**
@@ -10192,9 +7824,7 @@ var PrimitivesStack = (function () {
 
       value: function add(primitive) {
         this._stack.push(primitive);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     render: {
 
@@ -10208,9 +7838,7 @@ var PrimitivesStack = (function () {
           var primitive = this._stack[i];
           primitive.render(renderer);
         }
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -10219,12 +7847,12 @@ var PrimitivesStack = (function () {
 
 module.exports = PrimitivesStack;
 
-},{}],82:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -10252,7 +7880,7 @@ var Primitive = _interopRequire(require("./primitive"));
  * @extends {ImglyKit.Filter.Primitive}
  */
 
-var Brightness = (function (Primitive) {
+var Brightness = (function (_Primitive) {
   function Brightness() {
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
@@ -10274,9 +7902,9 @@ var Brightness = (function (Primitive) {
     this._fragmentShader = "\n\n      precision mediump float;\n      varying vec2 v_texCoord;\n      uniform sampler2D u_image;\n      uniform float u_brightness;\n\n      void main() {\n        vec4 texColor = texture2D(u_image, v_texCoord);\n        gl_FragColor = vec4((texColor.rgb + vec3(u_brightness)), texColor.a);\n      }\n\n    ";
   }
 
-  _inherits(Brightness, Primitive);
+  _inherits(Brightness, _Primitive);
 
-  _prototypeProperties(Brightness, null, {
+  _createClass(Brightness, {
     renderWebGL: {
 
       /**
@@ -10291,9 +7919,7 @@ var Brightness = (function (Primitive) {
             u_brightness: { type: "f", value: this._options.brightness }
           }
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     renderCanvas: {
 
@@ -10318,9 +7944,7 @@ var Brightness = (function (Primitive) {
         }
 
         renderer.getContext().putImageData(imageData, 0, 0);
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -10329,12 +7953,12 @@ var Brightness = (function (Primitive) {
 
 module.exports = Brightness;
 
-},{"./primitive":89,"lodash":"lodash"}],83:[function(require,module,exports){
+},{"./primitive":58,"lodash":"lodash"}],52:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -10362,7 +7986,7 @@ var Primitive = _interopRequire(require("./primitive"));
  * @extends {ImglyKit.Filter.Primitive}
  */
 
-var Contrast = (function (Primitive) {
+var Contrast = (function (_Primitive) {
   function Contrast() {
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
@@ -10384,9 +8008,9 @@ var Contrast = (function (Primitive) {
     this._fragmentShader = "\n\n      precision mediump float;\n      varying vec2 v_texCoord;\n      uniform sampler2D u_image;\n      uniform float u_contrast;\n\n      void main() {\n        vec4 texColor = texture2D(u_image, v_texCoord);\n        gl_FragColor = vec4(((texColor.rgb - vec3(0.5)) * u_contrast + vec3(0.5)), texColor.a);\n      }\n\n    ";
   }
 
-  _inherits(Contrast, Primitive);
+  _inherits(Contrast, _Primitive);
 
-  _prototypeProperties(Contrast, null, {
+  _createClass(Contrast, {
     renderWebGL: {
 
       /**
@@ -10401,9 +8025,7 @@ var Contrast = (function (Primitive) {
             u_contrast: { type: "f", value: this._options.contrast }
           }
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     renderCanvas: {
 
@@ -10428,9 +8050,7 @@ var Contrast = (function (Primitive) {
         }
 
         renderer.getContext().putImageData(imageData, 0, 0);
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -10439,12 +8059,12 @@ var Contrast = (function (Primitive) {
 
 module.exports = Contrast;
 
-},{"./primitive":89,"lodash":"lodash"}],84:[function(require,module,exports){
+},{"./primitive":58,"lodash":"lodash"}],53:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -10472,7 +8092,7 @@ var Primitive = _interopRequire(require("./primitive"));
  * @extends {ImglyKit.Filter.Primitive}
  */
 
-var Desaturation = (function (Primitive) {
+var Desaturation = (function (_Primitive) {
   function Desaturation() {
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
@@ -10494,9 +8114,9 @@ var Desaturation = (function (Primitive) {
     this._fragmentShader = "\n      precision mediump float;\n      varying vec2 v_texCoord;\n      uniform sampler2D u_image;\n      uniform float u_desaturation;\n\n      const vec3 luminanceWeighting = vec3(0.2125, 0.7154, 0.0721);\n\n      void main() {\n        vec3 texColor = texture2D(u_image, v_texCoord).xyz;\n        vec3 grayXfer = vec3(0.3, 0.59, 0.11);\n        vec3 gray = vec3(dot(grayXfer, texColor));\n        gl_FragColor = vec4(mix(texColor, gray, u_desaturation), 1.0);\n      }\n    ";
   }
 
-  _inherits(Desaturation, Primitive);
+  _inherits(Desaturation, _Primitive);
 
-  _prototypeProperties(Desaturation, null, {
+  _createClass(Desaturation, {
     renderWebGL: {
 
       /**
@@ -10512,9 +8132,7 @@ var Desaturation = (function (Primitive) {
             u_desaturation: { type: "f", value: this._options.desaturation }
           }
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     renderCanvas: {
 
@@ -10540,9 +8158,7 @@ var Desaturation = (function (Primitive) {
         }
 
         renderer.getContext().putImageData(imageData, 0, 0);
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -10551,12 +8167,12 @@ var Desaturation = (function (Primitive) {
 
 module.exports = Desaturation;
 
-},{"./primitive":89,"lodash":"lodash"}],85:[function(require,module,exports){
+},{"./primitive":58,"lodash":"lodash"}],54:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -10586,7 +8202,7 @@ var Color = _interopRequire(require("../../../lib/color"));
  * @extends {ImglyKit.Filter.Primitive}
  */
 
-var Glow = (function (Primitive) {
+var Glow = (function (_Primitive) {
   function Glow() {
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
@@ -10608,9 +8224,9 @@ var Glow = (function (Primitive) {
     this._fragmentShader = "\n      precision mediump float;\n      varying vec2 v_texCoord;\n      uniform sampler2D u_image;\n\n      uniform vec3 u_color;\n\n      void main() {\n        vec3 texColor = texture2D(u_image, v_texCoord).rgb;\n\n        vec2 textureCoord = v_texCoord - vec2(0.5, 0.5);\n        textureCoord /= 0.75;\n\n        float d = 1.0 - dot(textureCoord, textureCoord);\n        d = clamp(d, 0.2, 1.0);\n        vec3 newColor = texColor * d * u_color.rgb;\n        gl_FragColor = vec4(vec3(newColor),1.0);\n      }\n    ";
   }
 
-  _inherits(Glow, Primitive);
+  _inherits(Glow, _Primitive);
 
-  _prototypeProperties(Glow, null, {
+  _createClass(Glow, {
     renderWebGL: {
 
       /**
@@ -10626,9 +8242,7 @@ var Glow = (function (Primitive) {
             u_color: { type: "3f", value: this._options.color.toRGBGLColor() }
           }
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     renderCanvas: {
 
@@ -10667,9 +8281,7 @@ var Glow = (function (Primitive) {
         }
 
         renderer.getContext().putImageData(imageData, 0, 0);
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -10678,12 +8290,12 @@ var Glow = (function (Primitive) {
 
 module.exports = Glow;
 
-},{"../../../lib/color":44,"./primitive":89,"lodash":"lodash"}],86:[function(require,module,exports){
+},{"../../../lib/color":13,"./primitive":58,"lodash":"lodash"}],55:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -10709,7 +8321,7 @@ var Primitive = _interopRequire(require("./primitive"));
  * @extends {ImglyKit.Filter.Primitive}
  */
 
-var Gobblin = (function (Primitive) {
+var Gobblin = (function (_Primitive) {
   function Gobblin() {
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
@@ -10727,9 +8339,9 @@ var Gobblin = (function (Primitive) {
     this._fragmentShader = "\n      precision mediump float;\n      varying vec2 v_texCoord;\n      uniform sampler2D u_image;\n\n      void main() {\n        vec4 texColor = texture2D(u_image, v_texCoord);\n        texColor.b = texColor.g * 0.33;\n        texColor.r = texColor.r * 0.6;\n        texColor.b += texColor.r * 0.33;\n        texColor.g = texColor.g * 0.7;\n        gl_FragColor = texColor;\n      }\n    ";
   }
 
-  _inherits(Gobblin, Primitive);
+  _inherits(Gobblin, _Primitive);
 
-  _prototypeProperties(Gobblin, null, {
+  _createClass(Gobblin, {
     renderWebGL: {
 
       /**
@@ -10741,9 +8353,7 @@ var Gobblin = (function (Primitive) {
 
       value: function renderWebGL(renderer) {
         renderer.runShader(null, this._fragmentShader);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     renderCanvas: {
 
@@ -10769,9 +8379,7 @@ var Gobblin = (function (Primitive) {
         }
 
         renderer.getContext().putImageData(imageData, 0, 0);
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -10780,12 +8388,12 @@ var Gobblin = (function (Primitive) {
 
 module.exports = Gobblin;
 
-},{"./primitive":89}],87:[function(require,module,exports){
+},{"./primitive":58}],56:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -10811,7 +8419,7 @@ var Primitive = _interopRequire(require("./primitive"));
  * @extends {ImglyKit.Filter.Primitive}
  */
 
-var Grayscale = (function (Primitive) {
+var Grayscale = (function (_Primitive) {
   function Grayscale() {
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
@@ -10829,9 +8437,9 @@ var Grayscale = (function (Primitive) {
     this._fragmentShader = "\n      precision mediump float;\n      varying vec2 v_texCoord;\n      uniform sampler2D u_image;\n      vec3 W = vec3(0.2125, 0.7154, 0.0721);\n\n      void main() {\n        vec3 texColor = texture2D(u_image, v_texCoord).rgb;\n        float luminance = dot(texColor, W);\n        gl_FragColor = vec4(vec3(luminance), 1.0);\n      }\n    ";
   }
 
-  _inherits(Grayscale, Primitive);
+  _inherits(Grayscale, _Primitive);
 
-  _prototypeProperties(Grayscale, null, {
+  _createClass(Grayscale, {
     renderWebGL: {
 
       /**
@@ -10843,9 +8451,7 @@ var Grayscale = (function (Primitive) {
 
       value: function renderWebGL(renderer) {
         renderer.runShader(null, this._fragmentShader);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     renderCanvas: {
 
@@ -10871,9 +8477,7 @@ var Grayscale = (function (Primitive) {
         }
 
         renderer.getContext().putImageData(imageData, 0, 0);
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -10882,12 +8486,12 @@ var Grayscale = (function (Primitive) {
 
 module.exports = Grayscale;
 
-},{"./primitive":89}],88:[function(require,module,exports){
+},{"./primitive":58}],57:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -10912,7 +8516,7 @@ var Primitive = _interopRequire(require("./primitive"));
  * @extends {ImglyKit.Filter.Primitive}
  */
 
-var LookupTable = (function (Primitive) {
+var LookupTable = (function (_Primitive) {
   function LookupTable() {
     _classCallCheck(this, LookupTable);
 
@@ -10928,9 +8532,9 @@ var LookupTable = (function (Primitive) {
     this._fragmentShader = "\n      precision mediump float;\n      varying vec2 v_texCoord;\n      uniform sampler2D u_image;\n      uniform sampler2D u_lookupTable;\n\n      void main() {\n        vec4 texColor = texture2D(u_image, v_texCoord);\n        float r = texture2D(u_lookupTable, vec2(texColor.r, 0.0)).r;\n        float g = texture2D(u_lookupTable, vec2(texColor.g, 0.0)).g;\n        float b = texture2D(u_lookupTable, vec2(texColor.b, 0.0)).b;\n\n        gl_FragColor = vec4(r, g, b, texColor.a);\n      }\n    ";
   }
 
-  _inherits(LookupTable, Primitive);
+  _inherits(LookupTable, _Primitive);
 
-  _prototypeProperties(LookupTable, null, {
+  _createClass(LookupTable, {
     renderWebGL: {
 
       /**
@@ -10947,9 +8551,7 @@ var LookupTable = (function (Primitive) {
             u_lookupTable: { type: "i", value: 3 }
           }
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     renderCanvas: {
 
@@ -10977,9 +8579,7 @@ var LookupTable = (function (Primitive) {
         }
 
         renderer.getContext().putImageData(imageData, 0, 0);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _updateTexture: {
 
@@ -11011,9 +8611,7 @@ var LookupTable = (function (Primitive) {
 
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 256, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, dataTypedArray);
         gl.activeTexture(gl.TEXTURE0);
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -11022,10 +8620,11 @@ var LookupTable = (function (Primitive) {
 
 module.exports = LookupTable;
 
-},{"./primitive":89}],89:[function(require,module,exports){
+},{"./primitive":58}],58:[function(require,module,exports){
+/* jshint unused: false */
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
@@ -11053,7 +8652,7 @@ var Primitive = (function () {
     this._options = options;
   }
 
-  _prototypeProperties(Primitive, null, {
+  _createClass(Primitive, {
     render: {
 
       /**
@@ -11068,9 +8667,7 @@ var Primitive = (function () {
         } else {
           this.renderCanvas(renderer);
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     renderWebGL: {
 
@@ -11083,9 +8680,7 @@ var Primitive = (function () {
       value: function renderWebGL(renderer) {
         /* istanbul ignore next */
         throw new Error("Primitive#renderWebGL is abstract and not implemented in inherited class.");
-      },
-      writable: true,
-      configurable: true
+      }
     },
     renderCanvas: {
 
@@ -11097,9 +8692,7 @@ var Primitive = (function () {
       value: function renderCanvas(renderer) {
         /* istanbul ignore next */
         throw new Error("Primitive#renderCanvas is abstract and not implemented in inherited class.");
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -11107,14 +8700,13 @@ var Primitive = (function () {
 })();
 
 module.exports = Primitive;
-/* jshint unused: false */
 
-},{}],90:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -11142,7 +8734,7 @@ var Primitive = _interopRequire(require("./primitive"));
  * @extends {ImglyKit.Filter.Primitive}
  */
 
-var Saturation = (function (Primitive) {
+var Saturation = (function (_Primitive) {
   function Saturation() {
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
@@ -11164,9 +8756,9 @@ var Saturation = (function (Primitive) {
     this._fragmentShader = "\n      precision mediump float;\n      varying vec2 v_texCoord;\n      uniform sampler2D u_image;\n      uniform float u_saturation;\n\n      const vec3 luminanceWeighting = vec3(0.2125, 0.7154, 0.0721);\n\n      void main() {\n        vec4 texColor = texture2D(u_image, v_texCoord);\n        float luminance = dot(texColor.rgb, luminanceWeighting);\n\n        vec3 greyScaleColor = vec3(luminance);\n\n        gl_FragColor = vec4(mix(greyScaleColor, texColor.rgb, u_saturation), texColor.a);\n      }\n    ";
   }
 
-  _inherits(Saturation, Primitive);
+  _inherits(Saturation, _Primitive);
 
-  _prototypeProperties(Saturation, null, {
+  _createClass(Saturation, {
     renderWebGL: {
 
       /**
@@ -11181,9 +8773,7 @@ var Saturation = (function (Primitive) {
             u_saturation: { type: "f", value: this._options.saturation }
           }
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     renderCanvas: {
 
@@ -11211,9 +8801,7 @@ var Saturation = (function (Primitive) {
         }
 
         renderer.getContext().putImageData(imageData, 0, 0);
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -11222,12 +8810,12 @@ var Saturation = (function (Primitive) {
 
 module.exports = Saturation;
 
-},{"./primitive":89,"lodash":"lodash"}],91:[function(require,module,exports){
+},{"./primitive":58,"lodash":"lodash"}],60:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -11257,7 +8845,7 @@ var Color = _interopRequire(require("../../../lib/color"));
  * @extends {ImglyKit.Filter.Primitive}
  */
 
-var SoftColorOverlay = (function (Primitive) {
+var SoftColorOverlay = (function (_Primitive) {
   function SoftColorOverlay() {
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
@@ -11279,9 +8867,9 @@ var SoftColorOverlay = (function (Primitive) {
     this._fragmentShader = "\n      precision mediump float;\n      varying vec2 v_texCoord;\n      uniform sampler2D u_image;\n      uniform vec3 u_overlay;\n\n      void main() {\n        vec4 texColor = texture2D(u_image, v_texCoord);\n        vec4 overlayVec4 = vec4(u_overlay, texColor.a);\n        gl_FragColor = max(overlayVec4, texColor);\n      }\n    ";
   }
 
-  _inherits(SoftColorOverlay, Primitive);
+  _inherits(SoftColorOverlay, _Primitive);
 
-  _prototypeProperties(SoftColorOverlay, null, {
+  _createClass(SoftColorOverlay, {
     renderWebGL: {
 
       /**
@@ -11296,9 +8884,7 @@ var SoftColorOverlay = (function (Primitive) {
             u_overlay: { type: "3f", value: this._options.color.toRGBGLColor() }
           }
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     renderCanvas: {
 
@@ -11322,9 +8908,7 @@ var SoftColorOverlay = (function (Primitive) {
         }
 
         renderer.getContext().putImageData(imageData, 0, 0);
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -11333,12 +8917,12 @@ var SoftColorOverlay = (function (Primitive) {
 
 module.exports = SoftColorOverlay;
 
-},{"../../../lib/color":44,"./primitive":89,"lodash":"lodash"}],92:[function(require,module,exports){
+},{"../../../lib/color":13,"./primitive":58,"lodash":"lodash"}],61:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -11366,7 +8950,7 @@ var LookupTable = _interopRequire(require("./lookup-table"));
  * @extends {ImglyKit.Filter.Primitives.LookupTable}
  */
 
-var ToneCurve = (function (LookupTable) {
+var ToneCurve = (function (_LookupTable) {
   function ToneCurve() {
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
@@ -11389,9 +8973,9 @@ var ToneCurve = (function (LookupTable) {
     }
   }
 
-  _inherits(ToneCurve, LookupTable);
+  _inherits(ToneCurve, _LookupTable);
 
-  _prototypeProperties(ToneCurve, null, {
+  _createClass(ToneCurve, {
     _updateLookupTable: {
 
       /**
@@ -11405,9 +8989,7 @@ var ToneCurve = (function (LookupTable) {
         var b = this._calculateSplineCurve(this._options.rgbControlPoints.blue);
 
         this._options.data = this._buildLookupTable(r, g, b);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _buildLookupTable: {
 
@@ -11431,9 +9013,7 @@ var ToneCurve = (function (LookupTable) {
         }
 
         return data;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _calculateSplineCurve: {
 
@@ -11473,9 +9053,7 @@ var ToneCurve = (function (LookupTable) {
         }
 
         return preparedPoints;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _getSplineCurve: {
       value: function _getSplineCurve(points) {
@@ -11519,9 +9097,7 @@ var ToneCurve = (function (LookupTable) {
         }
 
         return output;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _secondDerivative: {
       value: function _secondDerivative(points) {
@@ -11575,9 +9151,7 @@ var ToneCurve = (function (LookupTable) {
         }
 
         return y2;
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -11586,12 +9160,12 @@ var ToneCurve = (function (LookupTable) {
 
 module.exports = ToneCurve;
 
-},{"./lookup-table":88,"lodash":"lodash"}],93:[function(require,module,exports){
+},{"./lookup-table":57,"lodash":"lodash"}],62:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -11617,7 +9191,7 @@ var Primitive = _interopRequire(require("./primitive"));
  * @extends {ImglyKit.Filter.Primitive}
  */
 
-var X400 = (function (Primitive) {
+var X400 = (function (_Primitive) {
   function X400() {
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
@@ -11635,9 +9209,9 @@ var X400 = (function (Primitive) {
     this._fragmentShader = "\n      precision mediump float;\n      varying vec2 v_texCoord;\n      uniform sampler2D u_image;\n\n      void main() {\n        vec4 texColor = texture2D(u_image, v_texCoord);\n        float gray = texColor.r * 0.3 + texColor.g * 0.3 + texColor.b * 0.3;\n        gray -= 0.2;\n        gray = clamp(gray, 0.0, 1.0);\n        gray += 0.15;\n        gray *= 1.4;\n        gl_FragColor = vec4(vec3(gray), 1.0);\n      }\n    ";
   }
 
-  _inherits(X400, Primitive);
+  _inherits(X400, _Primitive);
 
-  _prototypeProperties(X400, null, {
+  _createClass(X400, {
     renderWebGL: {
 
       /**
@@ -11648,9 +9222,7 @@ var X400 = (function (Primitive) {
 
       value: function renderWebGL(renderer) {
         renderer.runShader(null, this._fragmentShader);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     renderCanvas: {
 
@@ -11681,9 +9253,7 @@ var X400 = (function (Primitive) {
         }
 
         renderer.getContext().putImageData(imageData, 0, 0);
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -11692,12 +9262,12 @@ var X400 = (function (Primitive) {
 
 module.exports = X400;
 
-},{"./primitive":89}],94:[function(require,module,exports){
+},{"./primitive":58}],63:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -11721,31 +9291,18 @@ var Filter = _interopRequire(require("./filter"));
  * @extends {ImglyKit.Filter}
  */
 
-var QuoziFilter = (function (Filter) {
+var QuoziFilter = (function (_Filter) {
   function QuoziFilter() {
     _classCallCheck(this, QuoziFilter);
 
-    if (Filter != null) {
-      Filter.apply(this, arguments);
+    if (_Filter != null) {
+      _Filter.apply(this, arguments);
     }
   }
 
-  _inherits(QuoziFilter, Filter);
+  _inherits(QuoziFilter, _Filter);
 
-  _prototypeProperties(QuoziFilter, {
-    identifier: {
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * the active filter.
-       * @type {String}
-       */
-
-      get: function () {
-        return "quozi";
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(QuoziFilter, {
     name: {
 
       /**
@@ -11755,8 +9312,7 @@ var QuoziFilter = (function (Filter) {
 
       get: function () {
         return "Quozi";
-      },
-      configurable: true
+      }
     },
     render: {
 
@@ -11784,9 +9340,19 @@ var QuoziFilter = (function (Filter) {
         }));
 
         stack.render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    identifier: {
+      /**
+       * A unique string that identifies this operation. Can be used to select
+       * the active filter.
+       * @type {String}
+       */
+
+      get: function () {
+        return "quozi";
+      }
     }
   });
 
@@ -11795,12 +9361,12 @@ var QuoziFilter = (function (Filter) {
 
 module.exports = QuoziFilter;
 
-},{"./filter":62}],95:[function(require,module,exports){
+},{"./filter":31}],64:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -11824,31 +9390,18 @@ var Filter = _interopRequire(require("./filter"));
  * @extends {ImglyKit.Filter}
  */
 
-var SemiredFilter = (function (Filter) {
+var SemiredFilter = (function (_Filter) {
   function SemiredFilter() {
     _classCallCheck(this, SemiredFilter);
 
-    if (Filter != null) {
-      Filter.apply(this, arguments);
+    if (_Filter != null) {
+      _Filter.apply(this, arguments);
     }
   }
 
-  _inherits(SemiredFilter, Filter);
+  _inherits(SemiredFilter, _Filter);
 
-  _prototypeProperties(SemiredFilter, {
-    identifier: {
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * the active filter.
-       * @type {String}
-       */
-
-      get: function () {
-        return "semired";
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(SemiredFilter, {
     name: {
 
       /**
@@ -11858,8 +9411,7 @@ var SemiredFilter = (function (Filter) {
 
       get: function () {
         return "Semi Red";
-      },
-      configurable: true
+      }
     },
     render: {
 
@@ -11883,9 +9435,19 @@ var SemiredFilter = (function (Filter) {
         stack.add(new Filter.Primitives.Glow());
 
         stack.render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    identifier: {
+      /**
+       * A unique string that identifies this operation. Can be used to select
+       * the active filter.
+       * @type {String}
+       */
+
+      get: function () {
+        return "semired";
+      }
     }
   });
 
@@ -11894,12 +9456,12 @@ var SemiredFilter = (function (Filter) {
 
 module.exports = SemiredFilter;
 
-},{"./filter":62}],96:[function(require,module,exports){
+},{"./filter":31}],65:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -11923,31 +9485,18 @@ var Filter = _interopRequire(require("./filter"));
  * @extends {ImglyKit.Filter}
  */
 
-var SunnyFilter = (function (Filter) {
+var SunnyFilter = (function (_Filter) {
   function SunnyFilter() {
     _classCallCheck(this, SunnyFilter);
 
-    if (Filter != null) {
-      Filter.apply(this, arguments);
+    if (_Filter != null) {
+      _Filter.apply(this, arguments);
     }
   }
 
-  _inherits(SunnyFilter, Filter);
+  _inherits(SunnyFilter, _Filter);
 
-  _prototypeProperties(SunnyFilter, {
-    identifier: {
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * the active filter.
-       * @type {String}
-       */
-
-      get: function () {
-        return "sunny";
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(SunnyFilter, {
     name: {
 
       /**
@@ -11957,8 +9506,7 @@ var SunnyFilter = (function (Filter) {
 
       get: function () {
         return "Sunny";
-      },
-      configurable: true
+      }
     },
     render: {
 
@@ -11984,9 +9532,19 @@ var SunnyFilter = (function (Filter) {
         }));
 
         stack.render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    identifier: {
+      /**
+       * A unique string that identifies this operation. Can be used to select
+       * the active filter.
+       * @type {String}
+       */
+
+      get: function () {
+        return "sunny";
+      }
     }
   });
 
@@ -11995,12 +9553,12 @@ var SunnyFilter = (function (Filter) {
 
 module.exports = SunnyFilter;
 
-},{"./filter":62}],97:[function(require,module,exports){
+},{"./filter":31}],66:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -12024,31 +9582,18 @@ var Filter = _interopRequire(require("./filter"));
  * @extends {ImglyKit.Filter}
  */
 
-var TexasFilter = (function (Filter) {
+var TexasFilter = (function (_Filter) {
   function TexasFilter() {
     _classCallCheck(this, TexasFilter);
 
-    if (Filter != null) {
-      Filter.apply(this, arguments);
+    if (_Filter != null) {
+      _Filter.apply(this, arguments);
     }
   }
 
-  _inherits(TexasFilter, Filter);
+  _inherits(TexasFilter, _Filter);
 
-  _prototypeProperties(TexasFilter, {
-    identifier: {
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * the active filter.
-       * @type {String}
-       */
-
-      get: function () {
-        return "texas";
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(TexasFilter, {
     name: {
 
       /**
@@ -12058,8 +9603,7 @@ var TexasFilter = (function (Filter) {
 
       get: function () {
         return "Texas";
-      },
-      configurable: true
+      }
     },
     render: {
 
@@ -12081,9 +9625,19 @@ var TexasFilter = (function (Filter) {
         }));
 
         stack.render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    identifier: {
+      /**
+       * A unique string that identifies this operation. Can be used to select
+       * the active filter.
+       * @type {String}
+       */
+
+      get: function () {
+        return "texas";
+      }
     }
   });
 
@@ -12092,12 +9646,12 @@ var TexasFilter = (function (Filter) {
 
 module.exports = TexasFilter;
 
-},{"./filter":62}],98:[function(require,module,exports){
+},{"./filter":31}],67:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -12121,31 +9675,18 @@ var Filter = _interopRequire(require("./filter"));
  * @extends {ImglyKit.Filter}
  */
 
-var X400Filter = (function (Filter) {
+var X400Filter = (function (_Filter) {
   function X400Filter() {
     _classCallCheck(this, X400Filter);
 
-    if (Filter != null) {
-      Filter.apply(this, arguments);
+    if (_Filter != null) {
+      _Filter.apply(this, arguments);
     }
   }
 
-  _inherits(X400Filter, Filter);
+  _inherits(X400Filter, _Filter);
 
-  _prototypeProperties(X400Filter, {
-    identifier: {
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * the active filter.
-       * @type {String}
-       */
-
-      get: function () {
-        return "x400";
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(X400Filter, {
     name: {
 
       /**
@@ -12155,8 +9696,7 @@ var X400Filter = (function (Filter) {
 
       get: function () {
         return "X400";
-      },
-      configurable: true
+      }
     },
     render: {
 
@@ -12172,9 +9712,19 @@ var X400Filter = (function (Filter) {
         stack.add(new Filter.Primitives.X400());
 
         stack.render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    identifier: {
+      /**
+       * A unique string that identifies this operation. Can be used to select
+       * the active filter.
+       * @type {String}
+       */
+
+      get: function () {
+        return "x400";
+      }
     }
   });
 
@@ -12183,12 +9733,12 @@ var X400Filter = (function (Filter) {
 
 module.exports = X400Filter;
 
-},{"./filter":62}],99:[function(require,module,exports){
+},{"./filter":31}],68:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -12215,7 +9765,7 @@ var Operation = _interopRequire(require("./operation"));
  * @extends ImglyKit.Operation
  */
 
-var FlipOperation = (function (Operation) {
+var FlipOperation = (function (_Operation) {
   function FlipOperation() {
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
@@ -12236,9 +9786,9 @@ var FlipOperation = (function (Operation) {
     _get(Object.getPrototypeOf(FlipOperation.prototype), "constructor", this).apply(this, args);
   }
 
-  _inherits(FlipOperation, Operation);
+  _inherits(FlipOperation, _Operation);
 
-  _prototypeProperties(FlipOperation, null, {
+  _createClass(FlipOperation, {
     identifier: {
 
       /**
@@ -12249,8 +9799,7 @@ var FlipOperation = (function (Operation) {
 
       get: function () {
         return "flip";
-      },
-      configurable: true
+      }
     },
     _renderWebGL: {
 
@@ -12267,9 +9816,7 @@ var FlipOperation = (function (Operation) {
             u_flipHorizontal: { type: "f", value: this._options.horizontal }
           }
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _renderCanvas: {
 
@@ -12311,9 +9858,7 @@ var FlipOperation = (function (Operation) {
 
         // Restore old transformation
         context.restore();
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -12322,12 +9867,12 @@ var FlipOperation = (function (Operation) {
 
 module.exports = FlipOperation;
 
-},{"./operation":101}],100:[function(require,module,exports){
+},{"./operation":70}],69:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -12356,7 +9901,7 @@ var Color = _interopRequire(require("../lib/color"));
  * @extends ImglyKit.Operation
  */
 
-var FramesOperation = (function (Operation) {
+var FramesOperation = (function (_Operation) {
   function FramesOperation() {
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
@@ -12384,9 +9929,9 @@ var FramesOperation = (function (Operation) {
     _get(Object.getPrototypeOf(FramesOperation.prototype), "constructor", this).apply(this, args);
   }
 
-  _inherits(FramesOperation, Operation);
+  _inherits(FramesOperation, _Operation);
 
-  _prototypeProperties(FramesOperation, null, {
+  _createClass(FramesOperation, {
     identifier: {
 
       /**
@@ -12397,8 +9942,7 @@ var FramesOperation = (function (Operation) {
 
       get: function () {
         return "frames";
-      },
-      configurable: true
+      }
     },
     _renderWebGL: {
 
@@ -12422,9 +9966,7 @@ var FramesOperation = (function (Operation) {
             u_thickness: { type: "2f", value: thicknessVec2 }
           }
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _renderCanvas: {
 
@@ -12448,9 +9990,7 @@ var FramesOperation = (function (Operation) {
         context.rect(0, 0, canvas.width, canvas.height);
         context.stroke();
         context.restore();
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -12459,12 +9999,14 @@ var FramesOperation = (function (Operation) {
 
 module.exports = FramesOperation;
 
-},{"../lib/color":44,"./operation":101}],101:[function(require,module,exports){
+},{"../lib/color":13,"./operation":70}],70:[function(require,module,exports){
+/* jshint unused:false */
+/* jshint -W083 */
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -12495,7 +10037,7 @@ var EventEmitter = _interopRequire(require("../lib/event-emitter"));
  * @alias ImglyKit.Operation
  */
 
-var Operation = (function (EventEmitter) {
+var Operation = (function (_EventEmitter) {
   function Operation(kit, options) {
     _classCallCheck(this, Operation);
 
@@ -12520,9 +10062,9 @@ var Operation = (function (EventEmitter) {
     this._initOptions(options || {});
   }
 
-  _inherits(Operation, EventEmitter);
+  _inherits(Operation, _EventEmitter);
 
-  _prototypeProperties(Operation, null, {
+  _createClass(Operation, {
     identifier: {
 
       /**
@@ -12533,28 +10075,31 @@ var Operation = (function (EventEmitter) {
 
       get: function () {
         return null;
-      },
-      configurable: true
+      }
     },
     validateSettings: {
 
       /**
        * Checks whether this Operation can be applied the way it is configured
+       * @return {Promise}
        */
 
       value: function validateSettings() {
-        var identifier = this.identifier;
+        var _this = this;
 
-        // Check for required options
-        for (var optionName in this.availableOptions) {
-          var optionConfig = this.availableOptions[optionName];
-          if (optionConfig.required && typeof this._options[optionName] === "undefined") {
-            throw new Error("Operation `" + identifier + "`: Option `" + optionName + "` is required.");
+        var identifier = this.identifier;
+        return new Promise(function (resolve, reject) {
+          // Check for required options
+          for (var optionName in _this.availableOptions) {
+            var optionConfig = _this.availableOptions[optionName];
+            if (optionConfig.required && typeof _this._options[optionName] === "undefined") {
+              return reject(new Error("Operation `" + identifier + "`: Option `" + optionName + "` is required."));
+            }
           }
-        }
-      },
-      writable: true,
-      configurable: true
+
+          resolve();
+        });
+      }
     },
     render: {
 
@@ -12582,9 +10127,7 @@ var Operation = (function (EventEmitter) {
         } else {
           renderer.drawCached(this._uuid);
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _renderWebGL: {
 
@@ -12597,9 +10140,7 @@ var Operation = (function (EventEmitter) {
 
       value: function _renderWebGL() {
         throw new Error("Operation#_renderWebGL is abstract and not implemented in inherited class.");
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _renderCanvas: {
 
@@ -12611,9 +10152,7 @@ var Operation = (function (EventEmitter) {
 
       value: function _renderCanvas() {
         throw new Error("Operation#_renderCanvas is abstract and not implemented in inherited class.");
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _initOptions: {
 
@@ -12665,9 +10204,7 @@ var Operation = (function (EventEmitter) {
           capitalized = optionName.charAt(0).toUpperCase() + optionName.slice(1);
           this["set" + capitalized](userOptions[optionName]);
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     set: {
 
@@ -12682,9 +10219,7 @@ var Operation = (function (EventEmitter) {
         }
 
         this.emit("update");
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _getOption: {
 
@@ -12697,9 +10232,7 @@ var Operation = (function (EventEmitter) {
 
       value: function _getOption(optionName) {
         return this._options[optionName];
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _setOption: {
 
@@ -12784,9 +10317,7 @@ var Operation = (function (EventEmitter) {
         if (update) {
           this.emit("update");
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     getNewDimensions: {
 
@@ -12803,9 +10334,7 @@ var Operation = (function (EventEmitter) {
         dimensions = dimensions || new Vector2(canvas.width, canvas.height);
 
         return dimensions;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     dirty: {
 
@@ -12824,8 +10353,7 @@ var Operation = (function (EventEmitter) {
        */
       get: function () {
         return this._dirty;
-      },
-      configurable: true
+      }
     }
   });
 
@@ -12843,15 +10371,13 @@ var extend = _interopRequire(require("../lib/extend"));
 Operation.extend = extend;
 
 module.exports = Operation;
-/* jshint unused:false */
-/* jshint -W083 */
 
-},{"../lib/color":44,"../lib/event-emitter":45,"../lib/extend":46,"../lib/math/vector2":49,"lodash":"lodash"}],102:[function(require,module,exports){
+},{"../lib/color":13,"../lib/event-emitter":14,"../lib/extend":15,"../lib/math/vector2":18,"lodash":"lodash"}],71:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _set = function set(object, property, value, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent !== null) { return set(parent, property, value, receiver); } } else if ("value" in desc && desc.writable) { return desc.value = value; } else { var setter = desc.set; if (setter !== undefined) { return setter.call(receiver, value); } } };
 
@@ -12884,7 +10410,7 @@ var StackBlur = _interopRequire(require("../vendor/stack-blur"));
  * @extends ImglyKit.Operation
  */
 
-var RadialBlurOperation = (function (Operation) {
+var RadialBlurOperation = (function (_Operation) {
   function RadialBlurOperation() {
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
@@ -12912,9 +10438,9 @@ var RadialBlurOperation = (function (Operation) {
     this._lastGradientRadius = this._options.gradientRadius;
   }
 
-  _inherits(RadialBlurOperation, Operation);
+  _inherits(RadialBlurOperation, _Operation);
 
-  _prototypeProperties(RadialBlurOperation, null, {
+  _createClass(RadialBlurOperation, {
     identifier: {
 
       /**
@@ -12925,8 +10451,7 @@ var RadialBlurOperation = (function (Operation) {
 
       get: function () {
         return "radial-blur";
-      },
-      configurable: true
+      }
     },
     _renderWebGL: {
 
@@ -12966,9 +10491,7 @@ var RadialBlurOperation = (function (Operation) {
         renderer.runShader(null, this.fragmentShader, {
           uniforms: uniforms
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _renderCanvas: {
 
@@ -12996,9 +10519,7 @@ var RadialBlurOperation = (function (Operation) {
         var maskCanvas = this._createMask(renderer);
 
         this._applyMask(canvas, blurryCanvas, maskCanvas);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _blurCanvas: {
 
@@ -13017,9 +10538,7 @@ var RadialBlurOperation = (function (Operation) {
         blurryContext.putImageData(blurryImageData, 0, 0);
 
         return newCanvas;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _createMask: {
 
@@ -13055,9 +10574,7 @@ var RadialBlurOperation = (function (Operation) {
         maskContext.fillRect(0, 0, canvas.width, canvas.height);
 
         return maskCanvas;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _applyMask: {
 
@@ -13092,9 +10609,7 @@ var RadialBlurOperation = (function (Operation) {
         }
 
         inputContext.putImageData(inputImageData, 0, 0);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     dirty: {
 
@@ -13117,8 +10632,7 @@ var RadialBlurOperation = (function (Operation) {
        */
       get: function () {
         return _get(Object.getPrototypeOf(RadialBlurOperation.prototype), "dirty", this);
-      },
-      configurable: true
+      }
     }
   });
 
@@ -13127,12 +10641,12 @@ var RadialBlurOperation = (function (Operation) {
 
 module.exports = RadialBlurOperation;
 
-},{"../lib/math/vector2":49,"../vendor/stack-blur":133,"./operation":101}],103:[function(require,module,exports){
+},{"../lib/math/vector2":18,"../vendor/stack-blur":102,"./operation":70}],72:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -13161,7 +10675,7 @@ var Vector2 = _interopRequire(require("../lib/math/vector2"));
  * @extends ImglyKit.Operation
  */
 
-var RotationOperation = (function (Operation) {
+var RotationOperation = (function (_Operation) {
   function RotationOperation() {
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
@@ -13185,9 +10699,9 @@ var RotationOperation = (function (Operation) {
     _get(Object.getPrototypeOf(RotationOperation.prototype), "constructor", this).apply(this, args);
   }
 
-  _inherits(RotationOperation, Operation);
+  _inherits(RotationOperation, _Operation);
 
-  _prototypeProperties(RotationOperation, null, {
+  _createClass(RotationOperation, {
     identifier: {
 
       /**
@@ -13198,8 +10712,7 @@ var RotationOperation = (function (Operation) {
 
       get: function () {
         return "rotation";
-      },
-      configurable: true
+      }
     },
     _renderWebGL: {
 
@@ -13236,9 +10749,7 @@ var RotationOperation = (function (Operation) {
             u_matrix: { type: "mat3fv", value: rotationMatrix }
           }
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _renderCanvas: {
 
@@ -13276,9 +10787,7 @@ var RotationOperation = (function (Operation) {
         newContext.restore();
 
         renderer.setCanvas(newCanvas);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     getNewDimensions: {
 
@@ -13301,9 +10810,7 @@ var RotationOperation = (function (Operation) {
         }
 
         return dimensions;
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -13312,12 +10819,12 @@ var RotationOperation = (function (Operation) {
 
 module.exports = RotationOperation;
 
-},{"../lib/math/vector2":49,"./operation":101}],104:[function(require,module,exports){
+},{"../lib/math/vector2":18,"./operation":70}],73:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -13346,7 +10853,7 @@ var SaturationPrimitive = _interopRequire(require("./filters/primitives/saturati
  * @extends ImglyKit.Operation
  */
 
-var SaturationOperation = (function (Operation) {
+var SaturationOperation = (function (_Operation) {
   function SaturationOperation() {
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
@@ -13361,9 +10868,9 @@ var SaturationOperation = (function (Operation) {
     _get(Object.getPrototypeOf(SaturationOperation.prototype), "constructor", this).apply(this, args);
   }
 
-  _inherits(SaturationOperation, Operation);
+  _inherits(SaturationOperation, _Operation);
 
-  _prototypeProperties(SaturationOperation, null, {
+  _createClass(SaturationOperation, {
     identifier: {
 
       /**
@@ -13374,8 +10881,7 @@ var SaturationOperation = (function (Operation) {
 
       get: function () {
         return "saturation";
-      },
-      configurable: true
+      }
     },
     _renderWebGL: {
 
@@ -13388,9 +10894,7 @@ var SaturationOperation = (function (Operation) {
 
       value: function _renderWebGL(renderer) {
         this._render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _renderCanvas: {
 
@@ -13402,9 +10906,7 @@ var SaturationOperation = (function (Operation) {
 
       value: function _renderCanvas(renderer) {
         this._render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _render: {
 
@@ -13422,9 +10924,7 @@ var SaturationOperation = (function (Operation) {
         }));
 
         stack.render(renderer);
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -13433,12 +10933,12 @@ var SaturationOperation = (function (Operation) {
 
 module.exports = SaturationOperation;
 
-},{"./filters/primitives-stack":81,"./filters/primitives/saturation":90,"./operation":101}],105:[function(require,module,exports){
+},{"./filters/primitives-stack":50,"./filters/primitives/saturation":59,"./operation":70}],74:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -13461,8 +10961,6 @@ var Vector2 = _interopRequire(require("../lib/math/vector2"));
 
 var Utils = _interopRequire(require("../lib/utils"));
 
-var bluebird = _interopRequire(require("bluebird"));
-
 /**
  * An operation that can draw text on the canvas
  *
@@ -13471,7 +10969,7 @@ var bluebird = _interopRequire(require("bluebird"));
  * @extends ImglyKit.Operation
  */
 
-var StickersOperation = (function (Operation) {
+var StickersOperation = (function (_Operation) {
   function StickersOperation() {
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
@@ -13502,9 +11000,9 @@ var StickersOperation = (function (Operation) {
     _get(Object.getPrototypeOf(StickersOperation.prototype), "constructor", this).apply(this, args);
   }
 
-  _inherits(StickersOperation, Operation);
+  _inherits(StickersOperation, _Operation);
 
-  _prototypeProperties(StickersOperation, null, {
+  _createClass(StickersOperation, {
     identifier: {
 
       /**
@@ -13515,8 +11013,7 @@ var StickersOperation = (function (Operation) {
 
       get: function () {
         return "stickers";
-      },
-      configurable: true
+      }
     },
     render: {
 
@@ -13537,9 +11034,7 @@ var StickersOperation = (function (Operation) {
             return self._renderCanvas(renderer, image);
           }
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _renderWebGL: {
 
@@ -13600,9 +11095,7 @@ var StickersOperation = (function (Operation) {
             u_size: { type: "2f", value: [size.x, size.y] }
           }
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _renderCanvas: {
 
@@ -13634,9 +11127,7 @@ var StickersOperation = (function (Operation) {
         }
 
         context.drawImage(image, 0, 0, image.width, image.height, scaledPosition.x, scaledPosition.y, size.x, size.y);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _loadSticker: {
 
@@ -13653,9 +11144,7 @@ var StickersOperation = (function (Operation) {
         } else {
           return this._loadImageNode(this._options.sticker);
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _loadImageBrowser: {
 
@@ -13686,9 +11175,7 @@ var StickersOperation = (function (Operation) {
 
           image.src = self._kit.getAssetPath(fileName);
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _loadImageNode: {
 
@@ -13707,13 +11194,15 @@ var StickersOperation = (function (Operation) {
         var image = new Canvas.Image();
         var path = self._kit.getAssetPath(fileName);
 
-        return bluebird.promisify(fs.readFile)(path).then(function (buffer) {
-          image.src = buffer;
-          return image;
+        return new Promise(function (resolve, reject) {
+          fs.readFile(path, function (err, buffer) {
+            if (err) return reject(err);
+
+            image.src = buffer;
+            resolve(image);
+          });
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     stickers: {
 
@@ -13724,8 +11213,7 @@ var StickersOperation = (function (Operation) {
 
       get: function () {
         return this._stickers;
-      },
-      configurable: true
+      }
     }
   });
 
@@ -13734,12 +11222,12 @@ var StickersOperation = (function (Operation) {
 
 module.exports = StickersOperation;
 
-},{"../lib/math/vector2":49,"../lib/utils":51,"./operation":101,"bluebird":4,"canvas":"canvas"}],106:[function(require,module,exports){
+},{"../lib/math/vector2":18,"../lib/utils":20,"./operation":70,"canvas":"canvas"}],75:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -13770,7 +11258,7 @@ var Color = _interopRequire(require("../lib/color"));
  * @extends ImglyKit.Operation
  */
 
-var TextOperation = (function (Operation) {
+var TextOperation = (function (_Operation) {
   function TextOperation() {
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
@@ -13807,9 +11295,9 @@ var TextOperation = (function (Operation) {
     _get(Object.getPrototypeOf(TextOperation.prototype), "constructor", this).apply(this, args);
   }
 
-  _inherits(TextOperation, Operation);
+  _inherits(TextOperation, _Operation);
 
-  _prototypeProperties(TextOperation, null, {
+  _createClass(TextOperation, {
     identifier: {
 
       /**
@@ -13820,8 +11308,7 @@ var TextOperation = (function (Operation) {
 
       get: function () {
         return "text";
-      },
-      configurable: true
+      }
     },
     _renderWebGL: {
 
@@ -13883,9 +11370,7 @@ var TextOperation = (function (Operation) {
             u_size: { type: "2f", value: [size.x, size.y] }
           }
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _renderCanvas: {
 
@@ -13922,9 +11407,7 @@ var TextOperation = (function (Operation) {
         }
 
         context.drawImage(textCanvas, scaledPosition.x, scaledPosition.y);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _renderTextCanvas: {
 
@@ -13993,9 +11476,7 @@ var TextOperation = (function (Operation) {
         }
 
         return canvas;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _applyTextOptions: {
 
@@ -14015,9 +11496,7 @@ var TextOperation = (function (Operation) {
         context.textBaseline = "top";
         context.textAlign = this._options.alignment;
         context.fillStyle = this._options.color.toRGBA();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _buildOutputLines: {
 
@@ -14076,9 +11555,7 @@ var TextOperation = (function (Operation) {
           }
         }
         return outputLines;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _drawText: {
 
@@ -14099,9 +11576,7 @@ var TextOperation = (function (Operation) {
         } else if (this._options.alignment === "right") {
           context.fillText(text, canvas.width, y);
         }
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -14110,12 +11585,12 @@ var TextOperation = (function (Operation) {
 
 module.exports = TextOperation;
 
-},{"../lib/color":44,"../lib/math/vector2":49,"./operation":101}],107:[function(require,module,exports){
+},{"../lib/color":13,"../lib/math/vector2":18,"./operation":70}],76:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _set = function set(object, property, value, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent !== null) { return set(parent, property, value, receiver); } } else if ("value" in desc && desc.writable) { return desc.value = value; } else { var setter = desc.set; if (setter !== undefined) { return setter.call(receiver, value); } } };
 
@@ -14148,7 +11623,7 @@ var StackBlur = _interopRequire(require("../vendor/stack-blur"));
  * @extends ImglyKit.Operation
  */
 
-var TiltShiftOperation = (function (Operation) {
+var TiltShiftOperation = (function (_Operation) {
   function TiltShiftOperation() {
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
@@ -14177,9 +11652,9 @@ var TiltShiftOperation = (function (Operation) {
     this._lastGradientRadius = this._options.gradientRadius;
   }
 
-  _inherits(TiltShiftOperation, Operation);
+  _inherits(TiltShiftOperation, _Operation);
 
-  _prototypeProperties(TiltShiftOperation, null, {
+  _createClass(TiltShiftOperation, {
     identifier: {
 
       /**
@@ -14190,8 +11665,7 @@ var TiltShiftOperation = (function (Operation) {
 
       get: function () {
         return "tilt-shift";
-      },
-      configurable: true
+      }
     },
     _renderWebGL: {
 
@@ -14237,9 +11711,7 @@ var TiltShiftOperation = (function (Operation) {
         renderer.runShader(null, this.fragmentShader, {
           uniforms: uniforms
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _renderCanvas: {
 
@@ -14267,9 +11739,7 @@ var TiltShiftOperation = (function (Operation) {
         var maskCanvas = this._createMask(renderer);
 
         this._applyMask(canvas, blurryCanvas, maskCanvas);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _blurCanvas: {
 
@@ -14288,9 +11758,7 @@ var TiltShiftOperation = (function (Operation) {
         blurryContext.putImageData(blurryImageData, 0, 0);
 
         return newCanvas;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _createMask: {
 
@@ -14338,9 +11806,7 @@ var TiltShiftOperation = (function (Operation) {
         maskContext.fillRect(0, 0, canvas.width, canvas.height);
 
         return maskCanvas;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _applyMask: {
 
@@ -14368,9 +11834,7 @@ var TiltShiftOperation = (function (Operation) {
         }
 
         inputContext.putImageData(inputImageData, 0, 0);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     dirty: {
 
@@ -14393,8 +11857,7 @@ var TiltShiftOperation = (function (Operation) {
        */
       get: function () {
         return _get(Object.getPrototypeOf(TiltShiftOperation.prototype), "dirty", this);
-      },
-      configurable: true
+      }
     }
   });
 
@@ -14403,12 +11866,12 @@ var TiltShiftOperation = (function (Operation) {
 
 module.exports = TiltShiftOperation;
 
-},{"../lib/math/vector2":49,"../vendor/stack-blur":133,"./operation":101}],108:[function(require,module,exports){
+},{"../lib/math/vector2":18,"../vendor/stack-blur":102,"./operation":70}],77:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -14434,45 +11897,18 @@ var Vector2 = _interopRequire(require("../lib/math/vector2"));
  * @private
  */
 
-var CanvasRenderer = (function (Renderer) {
+var CanvasRenderer = (function (_Renderer) {
   function CanvasRenderer() {
     _classCallCheck(this, CanvasRenderer);
 
-    if (Renderer != null) {
-      Renderer.apply(this, arguments);
+    if (_Renderer != null) {
+      _Renderer.apply(this, arguments);
     }
   }
 
-  _inherits(CanvasRenderer, Renderer);
+  _inherits(CanvasRenderer, _Renderer);
 
-  _prototypeProperties(CanvasRenderer, {
-    identifier: {
-      /**
-       * A unique string that identifies this renderer
-       * @type {String}
-       */
-
-      get: function () {
-        return "canvas";
-      },
-      configurable: true
-    },
-    isSupported: {
-
-      /**
-       * Checks whether this type of renderer is supported in the current environment
-       * @abstract
-       * @returns {boolean}
-       */
-
-      value: function isSupported() {
-        var elem = this.prototype.createCanvas();
-        return !!(elem.getContext && elem.getContext("2d"));
-      },
-      writable: true,
-      configurable: true
-    }
-  }, {
+  _createClass(CanvasRenderer, {
     cache: {
 
       /**
@@ -14485,9 +11921,7 @@ var CanvasRenderer = (function (Renderer) {
           data: this._context.getImageData(0, 0, this._canvas.width, this._canvas.height),
           size: new Vector2(this._canvas.width, this._canvas.height)
         };
-      },
-      writable: true,
-      configurable: true
+      }
     },
     drawCached: {
 
@@ -14504,9 +11938,7 @@ var CanvasRenderer = (function (Renderer) {
         this._canvas.width = size.x;
         this._canvas.height = size.y;
         this._context.putImageData(data, 0, 0);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _getContext: {
 
@@ -14519,9 +11951,7 @@ var CanvasRenderer = (function (Renderer) {
       value: function _getContext() {
         /* istanbul ignore next */
         return this._canvas.getContext("2d");
-      },
-      writable: true,
-      configurable: true
+      }
     },
     drawImage: {
 
@@ -14532,9 +11962,7 @@ var CanvasRenderer = (function (Renderer) {
 
       value: function drawImage(image) {
         this._context.drawImage(image, 0, 0, image.width, image.height, 0, 0, this._canvas.width, this._canvas.height);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     resizeTo: {
 
@@ -14556,9 +11984,7 @@ var CanvasRenderer = (function (Renderer) {
 
         // Set the new canvas and context
         this.setCanvas(newCanvas);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     cloneCanvas: {
 
@@ -14579,9 +12005,31 @@ var CanvasRenderer = (function (Renderer) {
         context.drawImage(this._canvas, 0, 0);
 
         return canvas;
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    identifier: {
+      /**
+       * A unique string that identifies this renderer
+       * @type {String}
+       */
+
+      get: function () {
+        return "canvas";
+      }
+    },
+    isSupported: {
+
+      /**
+       * Checks whether this type of renderer is supported in the current environment
+       * @abstract
+       * @returns {boolean}
+       */
+
+      value: function isSupported() {
+        var elem = this.prototype.createCanvas();
+        return !!(elem.getContext && elem.getContext("2d"));
+      }
     }
   });
 
@@ -14590,12 +12038,13 @@ var CanvasRenderer = (function (Renderer) {
 
 module.exports = CanvasRenderer;
 
-},{"../lib/math/vector2":49,"./renderer":109}],109:[function(require,module,exports){
+},{"../lib/math/vector2":18,"./renderer":78}],78:[function(require,module,exports){
+/*jshint unused:false */
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -14623,7 +12072,7 @@ var EventEmitter = _interopRequire(require("../lib/event-emitter"));
  * @private
  */
 
-var Renderer = (function (EventEmitter) {
+var Renderer = (function (_EventEmitter) {
   function Renderer(dimensions, canvas) {
     _classCallCheck(this, Renderer);
 
@@ -14652,25 +12101,9 @@ var Renderer = (function (EventEmitter) {
     this._cache = {};
   }
 
-  _inherits(Renderer, EventEmitter);
+  _inherits(Renderer, _EventEmitter);
 
-  _prototypeProperties(Renderer, {
-    isSupported: {
-
-      /**
-       * Checks whether this type of renderer is supported in the current environment
-       * @abstract
-       * @returns {boolean}
-       */
-
-      value: function isSupported() {
-        /* istanbul ignore next */
-        throw new Error("Renderer#isSupported is abstract and not implemented in inherited class.");
-      },
-      writable: true,
-      configurable: true
-    }
-  }, {
+  _createClass(Renderer, {
     identifier: {
 
       /**
@@ -14680,8 +12113,7 @@ var Renderer = (function (EventEmitter) {
 
       get: function () {
         return null;
-      },
-      configurable: true
+      }
     },
     cache: {
 
@@ -14690,9 +12122,7 @@ var Renderer = (function (EventEmitter) {
        * @param {String} identifier
        */
 
-      value: function cache(identifier) {},
-      writable: true,
-      configurable: true
+      value: function cache(identifier) {}
     },
     drawCached: {
 
@@ -14701,9 +12131,7 @@ var Renderer = (function (EventEmitter) {
        * @param {String} identifier
        */
 
-      value: function drawCached(identifier) {},
-      writable: true,
-      configurable: true
+      value: function drawCached(identifier) {}
     },
     createCanvas: {
 
@@ -14737,9 +12165,7 @@ var Renderer = (function (EventEmitter) {
         }
 
         return canvas;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     getSize: {
 
@@ -14750,9 +12176,7 @@ var Renderer = (function (EventEmitter) {
 
       value: function getSize() {
         return new Vector2(this._canvas.width, this._canvas.height);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     setSize: {
 
@@ -14764,9 +12188,7 @@ var Renderer = (function (EventEmitter) {
       value: function setSize(dimensions) {
         this._canvas.width = dimensions.x;
         this._canvas.height = dimensions.y;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _getContext: {
 
@@ -14779,9 +12201,7 @@ var Renderer = (function (EventEmitter) {
       value: function _getContext() {
         /* istanbul ignore next */
         throw new Error("Renderer#_getContext is abstract and not implemented in inherited class.");
-      },
-      writable: true,
-      configurable: true
+      }
     },
     resizeTo: {
 
@@ -14795,9 +12215,7 @@ var Renderer = (function (EventEmitter) {
       value: function resizeTo(dimensions) {
         /* istanbul ignore next */
         throw new Error("Renderer#resizeTo is abstract and not implemented in inherited class.");
-      },
-      writable: true,
-      configurable: true
+      }
     },
     drawImage: {
 
@@ -14810,9 +12228,7 @@ var Renderer = (function (EventEmitter) {
       value: function drawImage(image) {
         /* istanbul ignore next */
         throw new Error("Renderer#drawImage is abstract and not implemented in inherited class.");
-      },
-      writable: true,
-      configurable: true
+      }
     },
     renderFinal: {
 
@@ -14821,9 +12237,7 @@ var Renderer = (function (EventEmitter) {
        * @param  {Image} image
        */
 
-      value: function renderFinal() {},
-      writable: true,
-      configurable: true
+      value: function renderFinal() {}
     },
     getCanvas: {
 
@@ -14834,9 +12248,7 @@ var Renderer = (function (EventEmitter) {
 
       value: function getCanvas() {
         return this._canvas;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     getContext: {
 
@@ -14847,9 +12259,7 @@ var Renderer = (function (EventEmitter) {
 
       value: function getContext() {
         return this._context;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     setCanvas: {
 
@@ -14863,9 +12273,7 @@ var Renderer = (function (EventEmitter) {
         this._context = this._getContext();
 
         this.emit("new-canvas", this._canvas);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     setContext: {
 
@@ -14876,9 +12284,7 @@ var Renderer = (function (EventEmitter) {
 
       value: function setContext(context) {
         this._context = context;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     reset: {
 
@@ -14886,9 +12292,21 @@ var Renderer = (function (EventEmitter) {
        * Resets the renderer
        */
 
-      value: function reset() {},
-      writable: true,
-      configurable: true
+      value: function reset() {}
+    }
+  }, {
+    isSupported: {
+
+      /**
+       * Checks whether this type of renderer is supported in the current environment
+       * @abstract
+       * @returns {boolean}
+       */
+
+      value: function isSupported() {
+        /* istanbul ignore next */
+        throw new Error("Renderer#isSupported is abstract and not implemented in inherited class.");
+      }
     }
   });
 
@@ -14896,14 +12314,13 @@ var Renderer = (function (EventEmitter) {
 })(EventEmitter);
 
 module.exports = Renderer;
-/*jshint unused:false */
 
-},{"../lib/event-emitter":45,"../lib/math/vector2":49,"canvas":"canvas"}],110:[function(require,module,exports){
+},{"../lib/event-emitter":14,"../lib/math/vector2":18,"canvas":"canvas"}],79:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -14931,7 +12348,7 @@ var Vector2 = _interopRequire(require("../lib/math/vector2"));
  * @private
  */
 
-var WebGLRenderer = (function (Renderer) {
+var WebGLRenderer = (function (_Renderer) {
   function WebGLRenderer() {
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
@@ -14945,24 +12362,9 @@ var WebGLRenderer = (function (Renderer) {
     this.reset();
   }
 
-  _inherits(WebGLRenderer, Renderer);
+  _inherits(WebGLRenderer, _Renderer);
 
-  _prototypeProperties(WebGLRenderer, {
-    isSupported: {
-
-      /**
-       * Checks whether this type of renderer is supported in the current environment
-       * @abstract
-       * @returns {boolean}
-       */
-
-      value: function isSupported() {
-        return !!(typeof window !== "undefined" && window.WebGLRenderingContext);
-      },
-      writable: true,
-      configurable: true
-    }
-  }, {
+  _createClass(WebGLRenderer, {
     identifier: {
 
       /**
@@ -14972,8 +12374,7 @@ var WebGLRenderer = (function (Renderer) {
 
       get: function () {
         return "webgl";
-      },
-      configurable: true
+      }
     },
     cache: {
 
@@ -15017,9 +12418,7 @@ var WebGLRenderer = (function (Renderer) {
         gl.drawArrays(gl.TRIANGLES, 0, 6);
 
         this._cache[identifier] = { fbo: fbo, texture: texture, size: size };
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _drawCachedFinal: {
 
@@ -15049,9 +12448,7 @@ var WebGLRenderer = (function (Renderer) {
 
         // Draw the rectangle
         gl.drawArrays(gl.TRIANGLES, 0, 6);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     drawCached: {
 
@@ -15099,9 +12496,7 @@ var WebGLRenderer = (function (Renderer) {
 
         this.setLastTexture(currentTexture);
         this.selectNextBuffer();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     defaultVertexShader: {
 
@@ -15115,8 +12510,7 @@ var WebGLRenderer = (function (Renderer) {
       get: function () {
         var shader = "\n      attribute vec2 a_position;\n      attribute vec2 a_texCoord;\n      varying vec2 v_texCoord;\n\n      void main() {\n        gl_Position = vec4(a_position, 0, 1);\n        v_texCoord = a_texCoord;\n      }\n    ";
         return shader;
-      },
-      configurable: true
+      }
     },
     defaultFragmentShader: {
 
@@ -15130,8 +12524,7 @@ var WebGLRenderer = (function (Renderer) {
       get: function () {
         var shader = "\n      precision mediump float;\n      uniform sampler2D u_image;\n      varying vec2 v_texCoord;\n\n      void main() {\n        gl_FragColor = texture2D(u_image, v_texCoord);\n      }\n    ";
         return shader;
-      },
-      configurable: true
+      }
     },
     _getContext: {
 
@@ -15144,9 +12537,7 @@ var WebGLRenderer = (function (Renderer) {
       value: function _getContext() {
         /* istanbul ignore next */
         return this._canvas.getContext("webgl") || this._canvas.getContext("webgl-experimental");
-      },
-      writable: true,
-      configurable: true
+      }
     },
     drawImage: {
 
@@ -15171,9 +12562,7 @@ var WebGLRenderer = (function (Renderer) {
 
         // Draw the rectangle
         gl.drawArrays(gl.TRIANGLES, 0, 6);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     runShader: {
 
@@ -15245,9 +12634,7 @@ var WebGLRenderer = (function (Renderer) {
 
         this.setLastTexture(currentTexture);
         this.selectNextBuffer();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     renderFinal: {
 
@@ -15272,9 +12659,7 @@ var WebGLRenderer = (function (Renderer) {
 
         // Draw the rectangle
         gl.drawArrays(gl.TRIANGLES, 0, 6);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     setupGLSLProgram: {
 
@@ -15347,9 +12732,7 @@ var WebGLRenderer = (function (Renderer) {
         -1, 1, 1, -1, 1, 1]), gl.STATIC_DRAW);
 
         return program;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _createShader: {
 
@@ -15379,9 +12762,7 @@ var WebGLRenderer = (function (Renderer) {
         }
 
         return shader;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     createTexture: {
 
@@ -15403,9 +12784,7 @@ var WebGLRenderer = (function (Renderer) {
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 
         return texture;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _createFramebuffers: {
 
@@ -15426,9 +12805,7 @@ var WebGLRenderer = (function (Renderer) {
           this._textures.push(texture);
           this._framebuffers.push(fbo);
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _createFramebuffer: {
 
@@ -15453,9 +12830,7 @@ var WebGLRenderer = (function (Renderer) {
         gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
 
         return { fbo: fbo, texture: texture };
-      },
-      writable: true,
-      configurable: true
+      }
     },
     resizeTo: {
 
@@ -15478,9 +12853,7 @@ var WebGLRenderer = (function (Renderer) {
 
         // Draw the rectangle
         gl.drawArrays(gl.TRIANGLES, 0, 6);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     getCurrentFramebuffer: {
 
@@ -15491,9 +12864,7 @@ var WebGLRenderer = (function (Renderer) {
 
       value: function getCurrentFramebuffer() {
         return this._framebuffers[this._bufferIndex % 2];
-      },
-      writable: true,
-      configurable: true
+      }
     },
     getCurrentTexture: {
 
@@ -15504,9 +12875,7 @@ var WebGLRenderer = (function (Renderer) {
 
       value: function getCurrentTexture() {
         return this._textures[this._bufferIndex % 2];
-      },
-      writable: true,
-      configurable: true
+      }
     },
     selectNextBuffer: {
 
@@ -15516,9 +12885,7 @@ var WebGLRenderer = (function (Renderer) {
 
       value: function selectNextBuffer() {
         this._bufferIndex++;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     getDefaultProgram: {
 
@@ -15529,9 +12896,7 @@ var WebGLRenderer = (function (Renderer) {
 
       value: function getDefaultProgram() {
         return this._defaultProgram;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     getLastTexture: {
 
@@ -15542,9 +12907,7 @@ var WebGLRenderer = (function (Renderer) {
 
       value: function getLastTexture() {
         return this._lastTexture;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     getTextures: {
 
@@ -15555,9 +12918,7 @@ var WebGLRenderer = (function (Renderer) {
 
       value: function getTextures() {
         return this._textures;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     setLastTexture: {
 
@@ -15568,9 +12929,7 @@ var WebGLRenderer = (function (Renderer) {
 
       value: function setLastTexture(texture) {
         this._lastTexture = texture;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     reset: {
 
@@ -15584,12 +12943,24 @@ var WebGLRenderer = (function (Renderer) {
         this._textures = [];
         this._framebuffers = [];
         this._bufferIndex = 0;
+        this._cache = [];
 
         this._createFramebuffers();
         this.setLastTexture(this._inputTexture);
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    isSupported: {
+
+      /**
+       * Checks whether this type of renderer is supported in the current environment
+       * @abstract
+       * @returns {boolean}
+       */
+
+      value: function isSupported() {
+        return !!(typeof window !== "undefined" && window.WebGLRenderingContext);
+      }
     }
   });
 
@@ -15598,10 +12969,10 @@ var WebGLRenderer = (function (Renderer) {
 
 module.exports = WebGLRenderer;
 
-},{"../lib/math/vector2":49,"./renderer":109}],111:[function(require,module,exports){
+},{"../lib/math/vector2":18,"./renderer":78}],80:[function(require,module,exports){
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
@@ -15623,13 +12994,11 @@ var Helpers = (function () {
     this._options = options;
   }
 
-  _prototypeProperties(Helpers, null, {
+  _createClass(Helpers, {
     assetPath: {
       value: function assetPath(asset) {
         return this._options.assetsUrl + "/" + asset;
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -15638,12 +13007,16 @@ var Helpers = (function () {
 
 module.exports = Helpers;
 
-},{}],112:[function(require,module,exports){
+},{}],81:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
@@ -15660,11 +13033,15 @@ var dot = _interopRequire(require("dot"));
 
 var Utils = _interopRequire(require("../../lib/utils"));
 
+var EventEmitter = _interopRequire(require("../../lib/event-emitter"));
+
 var Helpers = _interopRequire(require("./helpers"));
 
-var BaseUI = (function () {
+var BaseUI = (function (_EventEmitter) {
   function BaseUI(kit, options) {
     _classCallCheck(this, BaseUI);
+
+    _get(Object.getPrototypeOf(BaseUI.prototype), "constructor", this).call(this);
 
     this._kit = kit;
     this._options = options;
@@ -15674,7 +13051,9 @@ var BaseUI = (function () {
     this.selectOperations(null);
   }
 
-  _prototypeProperties(BaseUI, null, {
+  _inherits(BaseUI, _EventEmitter);
+
+  _createClass(BaseUI, {
     run: {
 
       /**
@@ -15683,9 +13062,7 @@ var BaseUI = (function () {
 
       value: function run() {
         this._attach();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     identifier: {
 
@@ -15696,8 +13073,7 @@ var BaseUI = (function () {
 
       get: function () {
         return null;
-      },
-      configurable: true
+      }
     },
     _attach: {
 
@@ -15716,9 +13092,7 @@ var BaseUI = (function () {
 
         // Container has to be position: relative
         this._options.container.style.position = "relative";
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _render: {
 
@@ -15734,9 +13108,7 @@ var BaseUI = (function () {
 
         var renderFn = dot.template(this._template);
         return renderFn(this.context);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     selectOperations: {
 
@@ -15754,9 +13126,7 @@ var BaseUI = (function () {
         this._operations = selectedOperations.map(function (identifier) {
           return registeredOperations[identifier];
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     isOperationSelected: {
 
@@ -15771,9 +13141,7 @@ var BaseUI = (function () {
           return operation.prototype.identifier;
         });
         return operationIdentifiers.indexOf(identifier) !== -1;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     context: {
 
@@ -15788,8 +13156,7 @@ var BaseUI = (function () {
           helpers: this._helpers,
           options: this._options
         };
-      },
-      configurable: true
+      }
     },
     container: {
 
@@ -15800,8 +13167,7 @@ var BaseUI = (function () {
 
       get: function () {
         return this._options.container;
-      },
-      configurable: true
+      }
     },
     operations: {
 
@@ -15812,8 +13178,7 @@ var BaseUI = (function () {
 
       get: function () {
         return this._operations;
-      },
-      configurable: true
+      }
     },
     options: {
 
@@ -15824,8 +13189,7 @@ var BaseUI = (function () {
 
       get: function () {
         return this._options;
-      },
-      configurable: true
+      }
     },
     canvas: {
 
@@ -15836,8 +13200,7 @@ var BaseUI = (function () {
 
       get: function () {
         return this._canvas;
-      },
-      configurable: true
+      }
     },
     helpers: {
 
@@ -15848,8 +13211,7 @@ var BaseUI = (function () {
 
       get: function () {
         return this._helpers;
-      },
-      configurable: true
+      }
     },
     image: {
 
@@ -15860,22 +13222,21 @@ var BaseUI = (function () {
 
       get: function () {
         return this._options.image;
-      },
-      configurable: true
+      }
     }
   });
 
   return BaseUI;
-})();
+})(EventEmitter);
 
 module.exports = BaseUI;
 
-},{"../../lib/utils":51,"./helpers":111,"dot":41}],113:[function(require,module,exports){
+},{"../../lib/event-emitter":14,"../../lib/utils":20,"./helpers":80,"dot":10}],82:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -15898,18 +13259,18 @@ var Slider = _interopRequire(require("../lib/slider"));
 
 
 
-var BrightnessControl = (function (Control) {
+var BrightnessControl = (function (_Control) {
   function BrightnessControl() {
     _classCallCheck(this, BrightnessControl);
 
-    if (Control != null) {
-      Control.apply(this, arguments);
+    if (_Control != null) {
+      _Control.apply(this, arguments);
     }
   }
 
-  _inherits(BrightnessControl, Control);
+  _inherits(BrightnessControl, _Control);
 
-  _prototypeProperties(BrightnessControl, null, {
+  _createClass(BrightnessControl, {
     identifier: {
       /**
        * A unique string that identifies this control.
@@ -15918,8 +13279,7 @@ var BrightnessControl = (function (Control) {
 
       get: function () {
         return "brightness";
-      },
-      configurable: true
+      }
     },
     init: {
 
@@ -15931,9 +13291,7 @@ var BrightnessControl = (function (Control) {
         var controlsTemplate = "<div class=\"imglykit-controls-filters\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div>\n    {{#def.slider}}\n  </div>\n\n  <div class=\"imglykit-controls-button imglykit-controls-done\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done.png') }}\" />\n  </div>\n</div>\n";
         this._controlsTemplate = controlsTemplate;
         this._partialTemplates.push(Slider.template);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onEnter: {
 
@@ -15957,9 +13315,7 @@ var BrightnessControl = (function (Control) {
           defaultValue: brightness
         });
         this._slider.on("update", this._onUpdate.bind(this));
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onBack: {
 
@@ -15978,9 +13334,7 @@ var BrightnessControl = (function (Control) {
         }
 
         this._ui.canvas.render();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onUpdate: {
 
@@ -15992,9 +13346,7 @@ var BrightnessControl = (function (Control) {
       value: function _onUpdate(value) {
         this._operation.setBrightness(value);
         this._ui.canvas.render();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onDone: {
 
@@ -16007,9 +13359,7 @@ var BrightnessControl = (function (Control) {
         this._ui.addHistory(this._operation, {
           brightness: this._initialBrightness
         }, this._operationExistedBefore);
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -16018,12 +13368,12 @@ var BrightnessControl = (function (Control) {
 
 module.exports = BrightnessControl;
 
-},{"../lib/slider":130,"./control":115}],114:[function(require,module,exports){
+},{"../lib/slider":99,"./control":84}],83:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -16046,18 +13396,18 @@ var Slider = _interopRequire(require("../lib/slider"));
 
 
 
-var ContrastControl = (function (Control) {
+var ContrastControl = (function (_Control) {
   function ContrastControl() {
     _classCallCheck(this, ContrastControl);
 
-    if (Control != null) {
-      Control.apply(this, arguments);
+    if (_Control != null) {
+      _Control.apply(this, arguments);
     }
   }
 
-  _inherits(ContrastControl, Control);
+  _inherits(ContrastControl, _Control);
 
-  _prototypeProperties(ContrastControl, null, {
+  _createClass(ContrastControl, {
     identifier: {
       /**
        * A unique string that identifies this control.
@@ -16066,8 +13416,7 @@ var ContrastControl = (function (Control) {
 
       get: function () {
         return "contrast";
-      },
-      configurable: true
+      }
     },
     init: {
 
@@ -16079,9 +13428,7 @@ var ContrastControl = (function (Control) {
         var controlsTemplate = "<div class=\"imglykit-controls-filters\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div>\n    {{#def.slider}}\n  </div>\n\n  <div class=\"imglykit-controls-button imglykit-controls-done\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done.png') }}\" />\n  </div>\n</div>\n";
         this._controlsTemplate = controlsTemplate;
         this._partialTemplates.push(Slider.template);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onEnter: {
 
@@ -16105,9 +13452,7 @@ var ContrastControl = (function (Control) {
           defaultValue: contrast
         });
         this._slider.on("update", this._onUpdate.bind(this));
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onBack: {
 
@@ -16126,9 +13471,7 @@ var ContrastControl = (function (Control) {
         }
 
         this._ui.canvas.render();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onUpdate: {
 
@@ -16140,9 +13483,7 @@ var ContrastControl = (function (Control) {
       value: function _onUpdate(value) {
         this._operation.setContrast(value);
         this._ui.canvas.render();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onDone: {
 
@@ -16155,9 +13496,7 @@ var ContrastControl = (function (Control) {
         this._ui.addHistory(this._operation, {
           contrast: this._initialContrast
         }, this._operationExistedBefore);
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -16166,12 +13505,12 @@ var ContrastControl = (function (Control) {
 
 module.exports = ContrastControl;
 
-},{"../lib/slider":130,"./control":115}],115:[function(require,module,exports){
+},{"../lib/slider":99,"./control":84}],84:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -16194,7 +13533,7 @@ var Helpers = _interopRequire(require("../../base/helpers"));
 
 var EventEmitter = _interopRequire(require("../../../lib/event-emitter"));
 
-var Control = (function (EventEmitter) {
+var Control = (function (_EventEmitter) {
   function Control(kit, ui, operation) {
     _classCallCheck(this, Control);
 
@@ -16210,9 +13549,9 @@ var Control = (function (EventEmitter) {
     this.init();
   }
 
-  _inherits(Control, EventEmitter);
+  _inherits(Control, _EventEmitter);
 
-  _prototypeProperties(Control, null, {
+  _createClass(Control, {
     identifier: {
 
       /**
@@ -16222,8 +13561,7 @@ var Control = (function (EventEmitter) {
 
       get: function () {
         return null;
-      },
-      configurable: true
+      }
     },
     setContainers: {
 
@@ -16236,9 +13574,7 @@ var Control = (function (EventEmitter) {
       value: function setContainers(controlsContainer, canvasControlsContainer) {
         this._controlsContainer = controlsContainer;
         this._canvasControlsContainer = canvasControlsContainer;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     init: {
 
@@ -16246,9 +13582,7 @@ var Control = (function (EventEmitter) {
        * The entry point for this control
        */
 
-      value: function init() {},
-      writable: true,
-      configurable: true
+      value: function init() {}
     },
     _renderAllControls: {
 
@@ -16260,9 +13594,7 @@ var Control = (function (EventEmitter) {
       value: function _renderAllControls() {
         this._renderControls();
         this._renderCanvasControls();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _renderControls: {
 
@@ -16292,9 +13624,7 @@ var Control = (function (EventEmitter) {
 
         // Append to DOM
         this._controlsContainer.appendChild(this._controls);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _renderCanvasControls: {
 
@@ -16320,9 +13650,7 @@ var Control = (function (EventEmitter) {
 
         // Append to DOM
         this._canvasControlsContainer.appendChild(this._canvasControls);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _removeControls: {
 
@@ -16336,9 +13664,7 @@ var Control = (function (EventEmitter) {
         if (this._canvasControls) {
           this._canvasControls.parentNode.removeChild(this._canvasControls);
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _handleBackAndDoneButtons: {
       value: function _handleBackAndDoneButtons() {
@@ -16349,9 +13675,7 @@ var Control = (function (EventEmitter) {
         // Done button
         var doneButton = this._controls.querySelector(".imglykit-controls-done");
         doneButton.addEventListener("click", this._onDoneButtonClick.bind(this));
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onBackButtonClick: {
 
@@ -16363,9 +13687,7 @@ var Control = (function (EventEmitter) {
       value: function _onBackButtonClick() {
         this._onBack();
         this.emit("back");
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onDoneButtonClick: {
 
@@ -16377,9 +13699,7 @@ var Control = (function (EventEmitter) {
       value: function _onDoneButtonClick() {
         this._onDone();
         this.emit("back");
-      },
-      writable: true,
-      configurable: true
+      }
     },
     enter: {
 
@@ -16397,9 +13717,7 @@ var Control = (function (EventEmitter) {
         this._handleBackAndDoneButtons();
         this._enableCanvasControls();
         this._onEnter();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     leave: {
 
@@ -16416,23 +13734,17 @@ var Control = (function (EventEmitter) {
         this._removeControls();
         this._disableCanvasControls();
         this._onLeave();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _enableCanvasControls: {
       value: function _enableCanvasControls() {
         this._canvasControlsContainer.classList.remove("imglykit-canvas-controls-disabled");
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _disableCanvasControls: {
       value: function _disableCanvasControls() {
         this._canvasControlsContainer.classList.add("imglykit-canvas-controls-disabled");
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onEnter: {
 
@@ -16443,9 +13755,7 @@ var Control = (function (EventEmitter) {
        * @protected
        */
 
-      value: function _onEnter() {},
-      writable: true,
-      configurable: true
+      value: function _onEnter() {}
     },
     _onLeave: {
 
@@ -16454,9 +13764,7 @@ var Control = (function (EventEmitter) {
        * @protected
        */
 
-      value: function _onLeave() {},
-      writable: true,
-      configurable: true
+      value: function _onLeave() {}
     },
     _onBack: {
 
@@ -16465,9 +13773,7 @@ var Control = (function (EventEmitter) {
        * @protected
        */
 
-      value: function _onBack() {},
-      writable: true,
-      configurable: true
+      value: function _onBack() {}
     },
     _onDone: {
 
@@ -16476,9 +13782,7 @@ var Control = (function (EventEmitter) {
        * @protected
        */
 
-      value: function _onDone() {},
-      writable: true,
-      configurable: true
+      value: function _onDone() {}
     },
     onZoom: {
 
@@ -16487,9 +13791,7 @@ var Control = (function (EventEmitter) {
        * this control is active
        */
 
-      value: function onZoom() {},
-      writable: true,
-      configurable: true
+      value: function onZoom() {}
     },
     context: {
 
@@ -16502,8 +13804,7 @@ var Control = (function (EventEmitter) {
         return {
           helpers: this._helpers
         };
-      },
-      configurable: true
+      }
     }
   });
 
@@ -16512,12 +13813,12 @@ var Control = (function (EventEmitter) {
 
 module.exports = Control;
 
-},{"../../../lib/event-emitter":45,"../../base/helpers":111,"dot":41}],116:[function(require,module,exports){
+},{"../../../lib/event-emitter":14,"../../base/helpers":80,"dot":10}],85:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -16542,18 +13843,18 @@ var Utils = _interopRequire(require("../../../lib/utils"));
 
 
 
-var CropControl = (function (Control) {
+var CropControl = (function (_Control) {
   function CropControl() {
     _classCallCheck(this, CropControl);
 
-    if (Control != null) {
-      Control.apply(this, arguments);
+    if (_Control != null) {
+      _Control.apply(this, arguments);
     }
   }
 
-  _inherits(CropControl, Control);
+  _inherits(CropControl, _Control);
 
-  _prototypeProperties(CropControl, null, {
+  _createClass(CropControl, {
     identifier: {
       /**
        * A unique string that identifies this control.
@@ -16562,8 +13863,7 @@ var CropControl = (function (Control) {
 
       get: function () {
         return "crop";
-      },
-      configurable: true
+      }
     },
     init: {
 
@@ -16593,9 +13893,7 @@ var CropControl = (function (Control) {
 
         // Select all ratios per default
         this.selectRatios(null);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     selectRatios: {
 
@@ -16618,9 +13916,7 @@ var CropControl = (function (Control) {
         if (this._active) {
           this._renderControls();
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _addDefaultRatios: {
 
@@ -16634,9 +13930,7 @@ var CropControl = (function (Control) {
         this.addRatio("square", "1");
         this.addRatio("4-3", "1.33");
         this.addRatio("16-9", "1.77");
-      },
-      writable: true,
-      configurable: true
+      }
     },
     addRatio: {
 
@@ -16649,9 +13943,7 @@ var CropControl = (function (Control) {
 
       value: function addRatio(identifier, ratio, selected) {
         this._availableRatios[identifier] = { ratio: ratio, selected: selected };
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onEnter: {
 
@@ -16723,9 +14015,7 @@ var CropControl = (function (Control) {
         this._ui.canvas.render().then(function () {
           _this._updateDOM();
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _handleControls: {
 
@@ -16761,9 +14051,7 @@ var CropControl = (function (Control) {
             });
           })(i);
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onRatioClick: {
 
@@ -16776,9 +14064,7 @@ var CropControl = (function (Control) {
       value: function _onRatioClick(item) {
         this._unselectAllRatios();
         this._selectRatio(item);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _unselectAllRatios: {
 
@@ -16792,9 +14078,7 @@ var CropControl = (function (Control) {
           var item = this._ratioItems[i];
           item.classList.remove("imglykit-controls-item-active");
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _selectRatio: {
 
@@ -16811,9 +14095,7 @@ var CropControl = (function (Control) {
         var identifier = _item$dataset.identifier;
 
         this._setRatio(identifier, ratio);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _setRatio: {
 
@@ -16861,9 +14143,7 @@ var CropControl = (function (Control) {
         }
 
         this._updateDOM();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _updateDOM: {
 
@@ -16890,9 +14170,7 @@ var CropControl = (function (Control) {
         // heights are defined by top left and center left areas
         this._areas.topLeft.style.height = "" + top + "px";
         this._areas.centerLeft.style.height = "" + height + "px";
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _handleKnobs: {
 
@@ -16915,9 +14193,7 @@ var CropControl = (function (Control) {
             });
           })(identifier);
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onKnobDown: {
 
@@ -16943,9 +14219,7 @@ var CropControl = (function (Control) {
         document.addEventListener("touchmove", this._onKnobDrag);
         document.addEventListener("mouseup", this._onKnobUp);
         document.addEventListener("touchend", this._onKnobUp);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onKnobDrag: {
 
@@ -17062,9 +14336,7 @@ var CropControl = (function (Control) {
         }
 
         this._updateDOM();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onKnobUp: {
 
@@ -17080,9 +14352,7 @@ var CropControl = (function (Control) {
         document.removeEventListener("touchmove", this._onKnobDrag);
         document.removeEventListener("mouseup", this._onKnobUp);
         document.removeEventListener("touchend", this._onKnobUp);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _handleCenter: {
 
@@ -17094,9 +14364,7 @@ var CropControl = (function (Control) {
       value: function _handleCenter() {
         this._areas.centerCenter.addEventListener("mousedown", this._onCenterDown);
         this._areas.centerCenter.addEventListener("touchstart", this._onCenterDown);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onCenterDown: {
 
@@ -17117,9 +14385,7 @@ var CropControl = (function (Control) {
         document.addEventListener("touchmove", this._onCenterDrag);
         document.addEventListener("mouseup", this._onCenterUp);
         document.addEventListener("touchend", this._onCenterUp);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onCenterDrag: {
 
@@ -17157,9 +14423,7 @@ var CropControl = (function (Control) {
         this._end.copy(absoluteEnd).divide(canvasSize);
 
         this._updateDOM();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onCenterUp: {
 
@@ -17174,9 +14438,7 @@ var CropControl = (function (Control) {
         document.removeEventListener("touchmove", this._onCenterDrag);
         document.removeEventListener("mouseup", this._onCenterUp);
         document.removeEventListener("touchend", this._onCenterUp);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onBack: {
 
@@ -17197,9 +14459,7 @@ var CropControl = (function (Control) {
           this._ui.removeOperation("crop");
         }
         this._ui.canvas.render();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onDone: {
 
@@ -17219,9 +14479,7 @@ var CropControl = (function (Control) {
           start: this._initialStart.clone(),
           end: this._initialEnd.clone()
         }, this._operationExistedBefore);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     context: {
 
@@ -17235,8 +14493,7 @@ var CropControl = (function (Control) {
         var context = _get(Object.getPrototypeOf(CropControl.prototype), "context", this);
         context.ratios = this._ratios;
         return context;
-      },
-      configurable: true
+      }
     },
     selectedRatio: {
 
@@ -17247,8 +14504,7 @@ var CropControl = (function (Control) {
 
       get: function () {
         return this._selectedRatio;
-      },
-      configurable: true
+      }
     }
   });
 
@@ -17257,12 +14513,12 @@ var CropControl = (function (Control) {
 
 module.exports = CropControl;
 
-},{"../../../lib/math/vector2":49,"../../../lib/utils":51,"./control":115}],117:[function(require,module,exports){
+},{"../../../lib/math/vector2":18,"../../../lib/utils":20,"./control":84}],86:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -17285,18 +14541,18 @@ var Utils = _interopRequire(require("../../../lib/utils"));
 
 
 
-var FiltersControl = (function (Control) {
+var FiltersControl = (function (_Control) {
   function FiltersControl() {
     _classCallCheck(this, FiltersControl);
 
-    if (Control != null) {
-      Control.apply(this, arguments);
+    if (_Control != null) {
+      _Control.apply(this, arguments);
     }
   }
 
-  _inherits(FiltersControl, Control);
+  _inherits(FiltersControl, _Control);
 
-  _prototypeProperties(FiltersControl, null, {
+  _createClass(FiltersControl, {
     identifier: {
       /**
        * A unique string that identifies this control.
@@ -17305,8 +14561,7 @@ var FiltersControl = (function (Control) {
 
       get: function () {
         return "filters";
-      },
-      configurable: true
+      }
     },
     init: {
 
@@ -17325,9 +14580,7 @@ var FiltersControl = (function (Control) {
 
         // Select all filters per default
         this.selectFilters(null);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _renderAllControls: {
 
@@ -17347,9 +14600,7 @@ var FiltersControl = (function (Control) {
         this._operation = this._ui.getOrCreateOperation("filters");
 
         _get(Object.getPrototypeOf(FiltersControl.prototype), "_renderAllControls", this).apply(this, args);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onEnter: {
 
@@ -17375,9 +14626,7 @@ var FiltersControl = (function (Control) {
             });
           })(i);
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onBack: {
 
@@ -17393,9 +14642,7 @@ var FiltersControl = (function (Control) {
           this._ui.removeOperation("filters");
         }
         this._ui.canvas.render();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onDone: {
 
@@ -17408,9 +14655,7 @@ var FiltersControl = (function (Control) {
         this._ui.addHistory(this._operation, {
           filter: this._initialFilter
         }, this._operationExistedBefore);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onListItemClick: {
 
@@ -17428,9 +14673,7 @@ var FiltersControl = (function (Control) {
         this._ui.canvas.render();
 
         item.classList.add("imglykit-controls-item-active");
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _deactivateAllItems: {
 
@@ -17444,9 +14687,7 @@ var FiltersControl = (function (Control) {
           var listItem = this._listItems[i];
           listItem.classList.remove("imglykit-controls-item-active");
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _addDefaultFilters: {
 
@@ -17485,9 +14726,7 @@ var FiltersControl = (function (Control) {
         this.addFilter(require("../../../operations/filters/sunny-filter"));
         this.addFilter(require("../../../operations/filters/a15-filter"));
         this.addFilter(require("../../../operations/filters/semired-filter"));
-      },
-      writable: true,
-      configurable: true
+      }
     },
     addFilter: {
 
@@ -17499,9 +14738,7 @@ var FiltersControl = (function (Control) {
 
       value: function addFilter(filter) {
         this._availableFilters[filter.identifier] = filter;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     selectFilters: {
 
@@ -17524,9 +14761,7 @@ var FiltersControl = (function (Control) {
         if (this._active) {
           this._renderControls();
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     context: {
 
@@ -17541,8 +14776,7 @@ var FiltersControl = (function (Control) {
         context.filters = this._filters;
         context.activeFilter = this._operation.getFilter();
         return context;
-      },
-      configurable: true
+      }
     }
   });
 
@@ -17551,12 +14785,12 @@ var FiltersControl = (function (Control) {
 
 module.exports = FiltersControl;
 
-},{"../../../lib/utils":51,"../../../operations/filters/a15-filter":56,"../../../operations/filters/breeze-filter":57,"../../../operations/filters/bw-filter":58,"../../../operations/filters/bwhard-filter":59,"../../../operations/filters/celsius-filter":60,"../../../operations/filters/chest-filter":61,"../../../operations/filters/fixie-filter":63,"../../../operations/filters/food-filter":64,"../../../operations/filters/fridge-filter":65,"../../../operations/filters/front-filter":66,"../../../operations/filters/glam-filter":67,"../../../operations/filters/gobblin-filter":68,"../../../operations/filters/identity-filter":69,"../../../operations/filters/k1-filter":70,"../../../operations/filters/k2-filter":71,"../../../operations/filters/k6-filter":72,"../../../operations/filters/kdynamic-filter":73,"../../../operations/filters/lenin-filter":74,"../../../operations/filters/lomo-filter":75,"../../../operations/filters/mellow-filter":76,"../../../operations/filters/morning-filter":77,"../../../operations/filters/orchid-filter":78,"../../../operations/filters/pola-filter":79,"../../../operations/filters/pola669-filter":80,"../../../operations/filters/quozi-filter":94,"../../../operations/filters/semired-filter":95,"../../../operations/filters/sunny-filter":96,"../../../operations/filters/texas-filter":97,"../../../operations/filters/x400-filter":98,"./control":115}],118:[function(require,module,exports){
+},{"../../../lib/utils":20,"../../../operations/filters/a15-filter":25,"../../../operations/filters/breeze-filter":26,"../../../operations/filters/bw-filter":27,"../../../operations/filters/bwhard-filter":28,"../../../operations/filters/celsius-filter":29,"../../../operations/filters/chest-filter":30,"../../../operations/filters/fixie-filter":32,"../../../operations/filters/food-filter":33,"../../../operations/filters/fridge-filter":34,"../../../operations/filters/front-filter":35,"../../../operations/filters/glam-filter":36,"../../../operations/filters/gobblin-filter":37,"../../../operations/filters/identity-filter":38,"../../../operations/filters/k1-filter":39,"../../../operations/filters/k2-filter":40,"../../../operations/filters/k6-filter":41,"../../../operations/filters/kdynamic-filter":42,"../../../operations/filters/lenin-filter":43,"../../../operations/filters/lomo-filter":44,"../../../operations/filters/mellow-filter":45,"../../../operations/filters/morning-filter":46,"../../../operations/filters/orchid-filter":47,"../../../operations/filters/pola-filter":48,"../../../operations/filters/pola669-filter":49,"../../../operations/filters/quozi-filter":63,"../../../operations/filters/semired-filter":64,"../../../operations/filters/sunny-filter":65,"../../../operations/filters/texas-filter":66,"../../../operations/filters/x400-filter":67,"./control":84}],87:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -17575,18 +14809,18 @@ var Control = _interopRequire(require("./control"));
 
 
 
-var FlipControl = (function (Control) {
+var FlipControl = (function (_Control) {
   function FlipControl() {
     _classCallCheck(this, FlipControl);
 
-    if (Control != null) {
-      Control.apply(this, arguments);
+    if (_Control != null) {
+      _Control.apply(this, arguments);
     }
   }
 
-  _inherits(FlipControl, Control);
+  _inherits(FlipControl, _Control);
 
-  _prototypeProperties(FlipControl, null, {
+  _createClass(FlipControl, {
     identifier: {
       /**
        * A unique string that identifies this control.
@@ -17595,8 +14829,7 @@ var FlipControl = (function (Control) {
 
       get: function () {
         return "flip";
-      },
-      configurable: true
+      }
     },
     init: {
 
@@ -17607,9 +14840,7 @@ var FlipControl = (function (Control) {
       value: function init() {
         var controlsTemplate = "<div class=\"imglykit-controls-rotation\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div>\n    <ul class=\"imglykit-controls-list imgly-controls-list-with-buttons\">\n      <li data-direction=\"horizontal\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/flip/horizontal.png')}}\" />\n      </li>\n      <li data-direction=\"vertical\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/flip/vertical.png')}}\" />\n      </li>\n    </ul>\n  </div>\n\n  <div class=\"imglykit-controls-button imglykit-controls-done\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done.png') }}\" />\n  </div>\n</div>\n";
         this._controlsTemplate = controlsTemplate;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onEnter: {
 
@@ -17646,9 +14877,7 @@ var FlipControl = (function (Control) {
             }
           })(i);
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onListItemClick: {
 
@@ -17675,9 +14904,7 @@ var FlipControl = (function (Control) {
         }
 
         this._toggleItem(item, active);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _toggleItem: {
 
@@ -17695,9 +14922,7 @@ var FlipControl = (function (Control) {
         } else {
           item.classList.remove(activeClass);
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onBack: {
 
@@ -17714,9 +14939,7 @@ var FlipControl = (function (Control) {
           this._ui.removeOperation("flip");
         }
         this._ui.canvas.render();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onDone: {
 
@@ -17730,9 +14953,7 @@ var FlipControl = (function (Control) {
           vertical: this._initialVertical,
           horizontal: this._initialHorizontal
         }, this._operationExistedBefore);
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -17741,12 +14962,12 @@ var FlipControl = (function (Control) {
 
 module.exports = FlipControl;
 
-},{"./control":115}],119:[function(require,module,exports){
+},{"./control":84}],88:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -17769,18 +14990,18 @@ var ColorPicker = _interopRequire(require("../lib/color-picker"));
 
 
 
-var FramesControl = (function (Control) {
+var FramesControl = (function (_Control) {
   function FramesControl() {
     _classCallCheck(this, FramesControl);
 
-    if (Control != null) {
-      Control.apply(this, arguments);
+    if (_Control != null) {
+      _Control.apply(this, arguments);
     }
   }
 
-  _inherits(FramesControl, Control);
+  _inherits(FramesControl, _Control);
 
-  _prototypeProperties(FramesControl, null, {
+  _createClass(FramesControl, {
     identifier: {
       /**
        * A unique string that identifies this control.
@@ -17789,8 +15010,7 @@ var FramesControl = (function (Control) {
 
       get: function () {
         return "frames";
-      },
-      configurable: true
+      }
     },
     init: {
 
@@ -17803,9 +15023,7 @@ var FramesControl = (function (Control) {
         this._controlsTemplate = controlsTemplate;
         this._partialTemplates.push(SimpleSlider.template);
         this._partialTemplates.push(ColorPicker.template);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onEnter: {
 
@@ -17839,9 +15057,7 @@ var FramesControl = (function (Control) {
         this._colorPicker = new ColorPicker(this._ui, colorPickerElement);
         this._colorPicker.on("update", this._onColorUpdate.bind(this));
         this._colorPicker.setValue(this._initialOptions.color);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onBack: {
 
@@ -17857,9 +15073,7 @@ var FramesControl = (function (Control) {
           this._ui.removeOperation("frames");
         }
         this._ui.canvas.render();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onThicknessUpdate: {
 
@@ -17871,9 +15085,7 @@ var FramesControl = (function (Control) {
       value: function _onThicknessUpdate(value) {
         this._operation.setThickness(value);
         this._ui.canvas.render();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onColorUpdate: {
 
@@ -17885,9 +15097,7 @@ var FramesControl = (function (Control) {
       value: function _onColorUpdate(value) {
         this._operation.setColor(value);
         this._ui.canvas.render();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onDone: {
 
@@ -17901,9 +15111,7 @@ var FramesControl = (function (Control) {
           color: this._initialOptions.color,
           thickness: this._initialOptions.thickness
         }, this._operationExistedBefore);
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -17912,12 +15120,12 @@ var FramesControl = (function (Control) {
 
 module.exports = FramesControl;
 
-},{"../lib/color-picker":127,"../lib/simple-slider":129,"./control":115}],120:[function(require,module,exports){
+},{"../lib/color-picker":96,"../lib/simple-slider":98,"./control":84}],89:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -17942,18 +15150,18 @@ var SimpleSlider = _interopRequire(require("../lib/simple-slider"));
 
 
 
-var RadialBlurControl = (function (Control) {
+var RadialBlurControl = (function (_Control) {
   function RadialBlurControl() {
     _classCallCheck(this, RadialBlurControl);
 
-    if (Control != null) {
-      Control.apply(this, arguments);
+    if (_Control != null) {
+      _Control.apply(this, arguments);
     }
   }
 
-  _inherits(RadialBlurControl, Control);
+  _inherits(RadialBlurControl, _Control);
 
-  _prototypeProperties(RadialBlurControl, null, {
+  _createClass(RadialBlurControl, {
     identifier: {
       /**
        * A unique string that identifies this control.
@@ -17962,8 +15170,7 @@ var RadialBlurControl = (function (Control) {
 
       get: function () {
         return "radial-blur";
-      },
-      configurable: true
+      }
     },
     init: {
 
@@ -17979,9 +15186,7 @@ var RadialBlurControl = (function (Control) {
         this._canvasControlsTemplate = canvasControlsTemplate;
 
         this._partialTemplates.push(SimpleSlider.template);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onEnter: {
 
@@ -18020,9 +15225,7 @@ var RadialBlurControl = (function (Control) {
         this._ui.canvas.render().then(function () {
           _this._updateDOM();
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _initSliders: {
 
@@ -18039,9 +15242,7 @@ var RadialBlurControl = (function (Control) {
         });
         this._blurRadiusSlider.on("update", this._onBlurRadiusUpdate.bind(this));
         this._blurRadiusSlider.setValue(this._initialSettings.blurRadius);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onBlurRadiusUpdate: {
 
@@ -18054,9 +15255,7 @@ var RadialBlurControl = (function (Control) {
       value: function _onBlurRadiusUpdate(value) {
         this._operation.setBlurRadius(value);
         this._ui.canvas.render();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _handleKnobs: {
 
@@ -18075,9 +15274,7 @@ var RadialBlurControl = (function (Control) {
         this._positionKnob.addEventListener("touchstart", this._onPositionKnobDown);
         this._gradientKnob.addEventListener("mousedown", this._onGradientKnobDown);
         this._gradientKnob.addEventListener("touchstart", this._onGradientKnobDown);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onPositionKnobDown: {
 
@@ -18101,9 +15298,7 @@ var RadialBlurControl = (function (Control) {
 
         document.addEventListener("mouseup", this._onPositionKnobUp);
         document.addEventListener("touchend", this._onPositionKnobUp);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onPositionKnobDrag: {
 
@@ -18133,9 +15328,7 @@ var RadialBlurControl = (function (Control) {
         this._operation.setPosition(newPosition);
         this._updateDOM();
         this._ui.canvas.render();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onPositionKnobUp: {
 
@@ -18153,9 +15346,7 @@ var RadialBlurControl = (function (Control) {
 
         document.removeEventListener("mouseup", this._onPositionKnobUp);
         document.removeEventListener("touchend", this._onPositionKnobUp);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onGradientKnobDown: {
 
@@ -18176,9 +15367,7 @@ var RadialBlurControl = (function (Control) {
 
         document.addEventListener("mouseup", this._onGradientKnobUp);
         document.addEventListener("touchend", this._onGradientKnobUp);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onGradientKnobDrag: {
 
@@ -18208,9 +15397,7 @@ var RadialBlurControl = (function (Control) {
         this._operation.setGradientRadius(gradientRadius);
         this._updateDOM();
         this._ui.canvas.render();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onGradientKnobUp: {
 
@@ -18228,9 +15415,7 @@ var RadialBlurControl = (function (Control) {
 
         document.removeEventListener("mouseup", this._onGradientKnobUp);
         document.removeEventListener("touchend", this._onGradientKnobUp);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _updateDOM: {
 
@@ -18256,9 +15441,7 @@ var RadialBlurControl = (function (Control) {
         this._circle.style.height = "" + circleSize + "px";
         this._circle.style.marginLeft = "-" + circleSize / 2 + "px";
         this._circle.style.marginTop = "-" + circleSize / 2 + "px";
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onBack: {
 
@@ -18274,9 +15457,7 @@ var RadialBlurControl = (function (Control) {
           this._ui.removeOperation("radial-blur");
         }
         this._ui.canvas.render();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onDone: {
 
@@ -18291,9 +15472,7 @@ var RadialBlurControl = (function (Control) {
           gradientRadius: this._initialSettings.gradientRadius,
           blurRadius: this._initialSettings.blurRadius
         }, this._operationExistedBefore);
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -18302,12 +15481,12 @@ var RadialBlurControl = (function (Control) {
 
 module.exports = RadialBlurControl;
 
-},{"../../../lib/math/vector2":49,"../../../lib/utils":51,"../lib/simple-slider":129,"./control":115}],121:[function(require,module,exports){
+},{"../../../lib/math/vector2":18,"../../../lib/utils":20,"../lib/simple-slider":98,"./control":84}],90:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -18328,18 +15507,18 @@ var Vector2 = _interopRequire(require("../../../lib/math/vector2"));
 
 
 
-var RotationControl = (function (Control) {
+var RotationControl = (function (_Control) {
   function RotationControl() {
     _classCallCheck(this, RotationControl);
 
-    if (Control != null) {
-      Control.apply(this, arguments);
+    if (_Control != null) {
+      _Control.apply(this, arguments);
     }
   }
 
-  _inherits(RotationControl, Control);
+  _inherits(RotationControl, _Control);
 
-  _prototypeProperties(RotationControl, null, {
+  _createClass(RotationControl, {
     identifier: {
       /**
        * A unique string that identifies this control.
@@ -18348,8 +15527,7 @@ var RotationControl = (function (Control) {
 
       get: function () {
         return "rotation";
-      },
-      configurable: true
+      }
     },
     init: {
 
@@ -18363,9 +15541,7 @@ var RotationControl = (function (Control) {
 
         var canvasControlsTemplate = "<div class=\"imglykit-canvas-crop-container imglykit-canvas-crop-container-hidden\">\n  <div class=\"imglykit-canvas-crop-top\">\n    <div class=\"imglykit-canvas-crop-top-left\"></div>\n    <div class=\"imglykit-canvas-crop-top-center\"></div>\n    <div class=\"imglykit-canvas-crop-top-right\"></div>\n  </div>\n\n  <div class=\"imglykit-canvas-crop-center\">\n    <div class=\"imglykit-canvas-crop-center-left\"></div>\n    <div class=\"imglykit-canvas-crop-center-center imglykit-canvas-crop-center-center-nomove\">\n\n    </div>\n    <div class=\"imglykit-canvas-crop-center-right\"></div>\n  </div>\n\n  <div class=\"imglykit-canvas-crop-bottom\">\n    <div class=\"imglykit-canvas-crop-bottom-left\"></div>\n    <div class=\"imglykit-canvas-crop-bottom-center\"></div>\n    <div class=\"imglykit-canvas-crop-bottom-right\"></div>\n  </div>\n</div>\n";
         this._canvasControlsTemplate = canvasControlsTemplate;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onEnter: {
 
@@ -18425,9 +15601,7 @@ var RotationControl = (function (Control) {
           _this._showCropContainer();
           _this._updateCropDOM();
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _showCropContainer: {
 
@@ -18440,9 +15614,7 @@ var RotationControl = (function (Control) {
       value: function _showCropContainer() {
         var container = this._canvasControls.querySelector(".imglykit-canvas-crop-container");
         container.classList.remove("imglykit-canvas-crop-container-hidden");
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onListItemClick: {
 
@@ -18464,9 +15636,7 @@ var RotationControl = (function (Control) {
         this._ui.canvas.zoomToFit().then(function () {
           _this._updateCropDOM();
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     onZoom: {
 
@@ -18477,9 +15647,7 @@ var RotationControl = (function (Control) {
 
       value: function onZoom() {
         this._updateCropDOM();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _updateCropDOM: {
 
@@ -18517,9 +15685,7 @@ var RotationControl = (function (Control) {
         // heights are defined by top left and center left areas
         this._cropAreas.topLeft.style.height = "" + top + "px";
         this._cropAreas.centerLeft.style.height = "" + height + "px";
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onBack: {
 
@@ -18542,9 +15708,7 @@ var RotationControl = (function (Control) {
           });
         }
         this._ui.canvas.render();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onDone: {
 
@@ -18566,9 +15730,7 @@ var RotationControl = (function (Control) {
         this._ui.addHistory(this._operation, {
           degrees: this._initialDegrees
         }, this._operationExistedBefore);
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -18577,12 +15739,12 @@ var RotationControl = (function (Control) {
 
 module.exports = RotationControl;
 
-},{"../../../lib/math/vector2":49,"./control":115}],122:[function(require,module,exports){
+},{"../../../lib/math/vector2":18,"./control":84}],91:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -18605,18 +15767,18 @@ var Control = _interopRequire(require("./control"));
 
 
 
-var SaturationControl = (function (Control) {
+var SaturationControl = (function (_Control) {
   function SaturationControl() {
     _classCallCheck(this, SaturationControl);
 
-    if (Control != null) {
-      Control.apply(this, arguments);
+    if (_Control != null) {
+      _Control.apply(this, arguments);
     }
   }
 
-  _inherits(SaturationControl, Control);
+  _inherits(SaturationControl, _Control);
 
-  _prototypeProperties(SaturationControl, null, {
+  _createClass(SaturationControl, {
     identifier: {
       /**
        * A unique string that identifies this control.
@@ -18625,8 +15787,7 @@ var SaturationControl = (function (Control) {
 
       get: function () {
         return "saturation";
-      },
-      configurable: true
+      }
     },
     init: {
 
@@ -18638,9 +15799,7 @@ var SaturationControl = (function (Control) {
         var controlsTemplate = "<div class=\"imglykit-controls-filters\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div>\n    {{#def.slider}}\n  </div>\n\n  <div class=\"imglykit-controls-button imglykit-controls-done\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done.png') }}\" />\n  </div>\n</div>\n";
         this._controlsTemplate = controlsTemplate;
         this._partialTemplates.push(Slider.template);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onEnter: {
 
@@ -18666,9 +15825,7 @@ var SaturationControl = (function (Control) {
           defaultValue: saturation
         });
         this._slider.on("update", this._onUpdate.bind(this));
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onBack: {
 
@@ -18685,9 +15842,7 @@ var SaturationControl = (function (Control) {
           this._ui.removeOperation("saturation");
         }
         this._ui.canvas.render();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onUpdate: {
 
@@ -18699,9 +15854,7 @@ var SaturationControl = (function (Control) {
       value: function _onUpdate(value) {
         this._operation.setSaturation(value);
         this._ui.canvas.render();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onDone: {
 
@@ -18714,9 +15867,7 @@ var SaturationControl = (function (Control) {
         this._ui.addHistory(this._operation, {
           saturation: this._initialSaturation
         }, this._operationExistedBefore);
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -18725,12 +15876,12 @@ var SaturationControl = (function (Control) {
 
 module.exports = SaturationControl;
 
-},{"../lib/slider":130,"./control":115}],123:[function(require,module,exports){
+},{"../lib/slider":99,"./control":84}],92:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -18755,18 +15906,18 @@ var Utils = _interopRequire(require("../../../lib/utils"));
 
 
 
-var StickersControl = (function (Control) {
+var StickersControl = (function (_Control) {
   function StickersControl() {
     _classCallCheck(this, StickersControl);
 
-    if (Control != null) {
-      Control.apply(this, arguments);
+    if (_Control != null) {
+      _Control.apply(this, arguments);
     }
   }
 
-  _inherits(StickersControl, Control);
+  _inherits(StickersControl, _Control);
 
-  _prototypeProperties(StickersControl, null, {
+  _createClass(StickersControl, {
     identifier: {
       /**
        * A unique string that identifies this control.
@@ -18775,8 +15926,7 @@ var StickersControl = (function (Control) {
 
       get: function () {
         return "stickers";
-      },
-      configurable: true
+      }
     },
     init: {
 
@@ -18799,9 +15949,7 @@ var StickersControl = (function (Control) {
         this._stickers = {};
         this._addDefaultStickers();
         this.selectStickers(null);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _addDefaultStickers: {
 
@@ -18828,9 +15976,7 @@ var StickersControl = (function (Control) {
         this.addSticker("pipe", "stickers/sticker-pipe.png");
         this.addSticker("snowflake", "stickers/sticker-snowflake.png");
         this.addSticker("star", "stickers/sticker-star.png");
-      },
-      writable: true,
-      configurable: true
+      }
     },
     addSticker: {
 
@@ -18841,9 +15987,7 @@ var StickersControl = (function (Control) {
 
       value: function addSticker(identifier, path) {
         this._availableStickers[identifier] = path;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     selectStickers: {
 
@@ -18866,9 +16010,7 @@ var StickersControl = (function (Control) {
         if (this._active) {
           this._renderControls();
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onEnter: {
 
@@ -18921,9 +16063,7 @@ var StickersControl = (function (Control) {
         this._handleListItems();
         this._handleImage();
         this._handleKnob();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _handleListItems: {
 
@@ -18953,9 +16093,7 @@ var StickersControl = (function (Control) {
             }
           })(i);
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _applySettings: {
 
@@ -18972,9 +16110,7 @@ var StickersControl = (function (Control) {
         this._stickerImage.style.height = "" + this._size.y + "px";
         this._container.style.left = "" + this._position.x + "px";
         this._container.style.top = "" + this._position.y + "px";
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onBack: {
 
@@ -18991,9 +16127,7 @@ var StickersControl = (function (Control) {
           this._ui.removeOperation("stickers");
         }
         this._ui.canvas.setZoomLevel(this._initialZoomLevel);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onDone: {
 
@@ -19024,9 +16158,7 @@ var StickersControl = (function (Control) {
           position: this._initialSettings.position.clone(),
           size: this._initialSettings.size.clone()
         }, this._operationExistedBefore);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _handleKnob: {
 
@@ -19038,9 +16170,7 @@ var StickersControl = (function (Control) {
       value: function _handleKnob() {
         this._knob.addEventListener("mousedown", this._onKnobDown);
         this._knob.addEventListener("touchstart", this._onKnobDown);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onKnobDown: {
 
@@ -19061,9 +16191,7 @@ var StickersControl = (function (Control) {
 
         document.addEventListener("mouseup", this._onKnobUp);
         document.addEventListener("touchend", this._onKnobUp);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onKnobDrag: {
 
@@ -19087,9 +16215,7 @@ var StickersControl = (function (Control) {
         this._size.copy(size);
 
         this._applySettings();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onKnobUp: {
 
@@ -19105,9 +16231,7 @@ var StickersControl = (function (Control) {
 
         document.removeEventListener("mouseup", this._onKnobUp);
         document.removeEventListener("touchend", this._onKnobUp);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _handleImage: {
 
@@ -19119,9 +16243,7 @@ var StickersControl = (function (Control) {
       value: function _handleImage() {
         this._stickerImage.addEventListener("mousedown", this._onImageDown);
         this._stickerImage.addEventListener("touchstart", this._onImageDown);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onImageDown: {
 
@@ -19142,9 +16264,7 @@ var StickersControl = (function (Control) {
 
         document.addEventListener("mouseup", this._onImageUp);
         document.addEventListener("touchend", this._onImageUp);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onImageDrag: {
 
@@ -19166,9 +16286,7 @@ var StickersControl = (function (Control) {
         this._position.copy(position);
 
         this._applySettings();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onImageUp: {
 
@@ -19184,9 +16302,7 @@ var StickersControl = (function (Control) {
 
         document.removeEventListener("mouseup", this._onImageUp);
         document.removeEventListener("touchend", this._onImageUp);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onStickerLoad: {
 
@@ -19203,9 +16319,7 @@ var StickersControl = (function (Control) {
         }
 
         this._applySettings();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onListItemClick: {
 
@@ -19230,9 +16344,7 @@ var StickersControl = (function (Control) {
         this._stickerImage.src = stickerPath;
 
         item.classList.add("imglykit-controls-item-active");
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _deactivateAllItems: {
 
@@ -19266,9 +16378,7 @@ var StickersControl = (function (Control) {
             }
           }
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     context: {
 
@@ -19282,8 +16392,7 @@ var StickersControl = (function (Control) {
         var context = _get(Object.getPrototypeOf(StickersControl.prototype), "context", this);
         context.stickers = this._stickers;
         return context;
-      },
-      configurable: true
+      }
     }
   });
 
@@ -19292,12 +16401,12 @@ var StickersControl = (function (Control) {
 
 module.exports = StickersControl;
 
-},{"../../../lib/math/vector2":49,"../../../lib/utils":51,"./control":115}],124:[function(require,module,exports){
+},{"../../../lib/math/vector2":18,"../../../lib/utils":20,"./control":84}],93:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -19324,18 +16433,18 @@ var Utils = _interopRequire(require("../../../lib/utils"));
 
 
 
-var TextControl = (function (Control) {
+var TextControl = (function (_Control) {
   function TextControl() {
     _classCallCheck(this, TextControl);
 
-    if (Control != null) {
-      Control.apply(this, arguments);
+    if (_Control != null) {
+      _Control.apply(this, arguments);
     }
   }
 
-  _inherits(TextControl, Control);
+  _inherits(TextControl, _Control);
 
-  _prototypeProperties(TextControl, null, {
+  _createClass(TextControl, {
     identifier: {
       /**
        * A unique string that identifies this control.
@@ -19344,8 +16453,7 @@ var TextControl = (function (Control) {
 
       get: function () {
         return "text";
-      },
-      configurable: true
+      }
     },
     init: {
 
@@ -19364,9 +16472,7 @@ var TextControl = (function (Control) {
 
         this._fonts = [];
         this._addFonts();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onEnter: {
 
@@ -19450,9 +16556,7 @@ var TextControl = (function (Control) {
         this._ui.canvas.zoomToFit().then(function () {
           _this._applySettings();
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _initColorPickers: {
 
@@ -19479,9 +16583,7 @@ var TextControl = (function (Control) {
         this._backgroundColorPicker.on("show", function () {
           _this._foregroundColorPicker.hide();
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _handleListItems: {
 
@@ -19509,9 +16611,7 @@ var TextControl = (function (Control) {
             }
           })(i);
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _handleTextarea: {
 
@@ -19522,9 +16622,7 @@ var TextControl = (function (Control) {
 
       value: function _handleTextarea() {
         this._textarea.addEventListener("keyup", this._onTextareaKeyUp);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onTextareaKeyUp: {
 
@@ -19536,9 +16634,7 @@ var TextControl = (function (Control) {
       value: function _onTextareaKeyUp() {
         this._resizeTextarea();
         this._settings.text = this._textarea.value;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _resizeTextarea: {
 
@@ -19562,9 +16658,7 @@ var TextControl = (function (Control) {
 
         var scrollHeight = this._textarea.scrollHeight;
         this._textarea.style.height = "" + (scrollHeight + 20) + "px";
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _handleMoveKnob: {
 
@@ -19576,9 +16670,7 @@ var TextControl = (function (Control) {
       value: function _handleMoveKnob() {
         this._moveKnob.addEventListener("mousedown", this._onMoveKnobDown);
         this._moveKnob.addEventListener("touchstart", this._onMoveKnobDown);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onMoveKnobDown: {
 
@@ -19598,9 +16690,7 @@ var TextControl = (function (Control) {
 
         document.addEventListener("mouseup", this._onMoveKnobUp);
         document.addEventListener("tochend", this._onMoveKnobUp);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onMoveKnobDrag: {
 
@@ -19626,9 +16716,7 @@ var TextControl = (function (Control) {
 
         this._container.style.left = "" + position.x + "px";
         this._container.style.top = "" + position.y + "px";
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onMoveKnobUp: {
 
@@ -19643,9 +16731,7 @@ var TextControl = (function (Control) {
 
         document.removeEventListener("mouseup", this._onMoveKnobUp);
         document.removeEventListener("touchend", this._onMoveKnobUp);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _handleResizeKnob: {
 
@@ -19657,9 +16743,7 @@ var TextControl = (function (Control) {
       value: function _handleResizeKnob() {
         this._resizeKnob.addEventListener("mousedown", this._onResizeKnobDown);
         this._resizeKnob.addEventListener("touchstart", this._onResizeKnobDown);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onResizeKnobDown: {
 
@@ -19680,9 +16764,7 @@ var TextControl = (function (Control) {
 
         document.addEventListener("mouseup", this._onResizeKnobUp);
         document.addEventListener("touchend", this._onResizeKnobUp);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onResizeKnobDrag: {
 
@@ -19708,9 +16790,7 @@ var TextControl = (function (Control) {
         this._textarea.style.width = "" + maxWidth + "px";
 
         this._resizeTextarea();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onResizeKnobUp: {
 
@@ -19726,9 +16806,7 @@ var TextControl = (function (Control) {
 
         document.removeEventListener("mouseup", this._onResizeKnobUp);
         document.removeEventListener("touchend", this._onResizeKnobUp);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onForegroundColorUpdate: {
 
@@ -19742,9 +16820,7 @@ var TextControl = (function (Control) {
       value: function _onForegroundColorUpdate(value) {
         this._settings.color = value;
         this._applySettings();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onBackgroundColorUpdate: {
 
@@ -19758,9 +16834,7 @@ var TextControl = (function (Control) {
       value: function _onBackgroundColorUpdate(value) {
         this._settings.backgroundColor = value;
         this._applySettings();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _applySettings: {
 
@@ -19787,9 +16861,7 @@ var TextControl = (function (Control) {
         textarea.style.color = settings.color.toRGBA();
         textarea.style.backgroundColor = settings.backgroundColor.toRGBA();
         textarea.style.width = "" + settings.maxWidth + "px";
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onListItemClick: {
 
@@ -19811,9 +16883,7 @@ var TextControl = (function (Control) {
         this._applySettings();
 
         item.classList.add("imglykit-controls-item-active");
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _deactivateAllItems: {
 
@@ -19827,9 +16897,7 @@ var TextControl = (function (Control) {
           var listItem = this._listItems[i];
           listItem.classList.remove("imglykit-controls-item-active");
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _addFonts: {
 
@@ -19842,9 +16910,7 @@ var TextControl = (function (Control) {
         this.addFont("Helvetica", "normal");
         this.addFont("Lucida Grande", "normal");
         this.addFont("Times New Roman", "normal");
-      },
-      writable: true,
-      configurable: true
+      }
     },
     addFont: {
 
@@ -19856,9 +16922,7 @@ var TextControl = (function (Control) {
 
       value: function addFont(name, weight) {
         this._fonts.push({ name: name, weight: weight });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onDone: {
 
@@ -19896,9 +16960,7 @@ var TextControl = (function (Control) {
           text: this._initialSettings.text,
           maxWidth: this._initialSettings.maxWidth
         }, this._operationExistedBefore);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onBack: {
 
@@ -19915,9 +16977,7 @@ var TextControl = (function (Control) {
           this._ui.removeOperation("text");
         }
         this._ui.canvas.setZoomLevel(this._initialZoomLevel);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     context: {
 
@@ -19931,8 +16991,7 @@ var TextControl = (function (Control) {
         var context = _get(Object.getPrototypeOf(TextControl.prototype), "context", this);
         context.fonts = this._fonts;
         return context;
-      },
-      configurable: true
+      }
     }
   });
 
@@ -19941,12 +17000,12 @@ var TextControl = (function (Control) {
 
 module.exports = TextControl;
 
-},{"../../../lib/math/vector2":49,"../../../lib/utils":51,"../lib/color-picker":127,"./control":115}],125:[function(require,module,exports){
+},{"../../../lib/math/vector2":18,"../../../lib/utils":20,"../lib/color-picker":96,"./control":84}],94:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -19971,18 +17030,18 @@ var SimpleSlider = _interopRequire(require("../lib/simple-slider"));
 
 
 
-var TiltShiftControl = (function (Control) {
+var TiltShiftControl = (function (_Control) {
   function TiltShiftControl() {
     _classCallCheck(this, TiltShiftControl);
 
-    if (Control != null) {
-      Control.apply(this, arguments);
+    if (_Control != null) {
+      _Control.apply(this, arguments);
     }
   }
 
-  _inherits(TiltShiftControl, Control);
+  _inherits(TiltShiftControl, _Control);
 
-  _prototypeProperties(TiltShiftControl, null, {
+  _createClass(TiltShiftControl, {
     identifier: {
       /**
        * A unique string that identifies this control.
@@ -19991,8 +17050,7 @@ var TiltShiftControl = (function (Control) {
 
       get: function () {
         return "tilt-shift";
-      },
-      configurable: true
+      }
     },
     init: {
 
@@ -20009,9 +17067,7 @@ var TiltShiftControl = (function (Control) {
 
         this._partialTemplates.push(SimpleSlider.template);
         this._currentKnob = null;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onEnter: {
 
@@ -20054,9 +17110,7 @@ var TiltShiftControl = (function (Control) {
           _this._handleKnobs();
           _this._updateDOM();
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _initSliders: {
 
@@ -20073,9 +17127,7 @@ var TiltShiftControl = (function (Control) {
         });
         this._blurRadiusSlider.on("update", this._onBlurRadiusUpdate.bind(this));
         this._blurRadiusSlider.setValue(this._initialSettings.blurRadius);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onBlurRadiusUpdate: {
 
@@ -20088,9 +17140,7 @@ var TiltShiftControl = (function (Control) {
       value: function _onBlurRadiusUpdate(value) {
         this._operation.setBlurRadius(value);
         this._ui.canvas.render();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _handleKnobs: {
 
@@ -20131,9 +17181,7 @@ var TiltShiftControl = (function (Control) {
         this._updateDOM();
 
         this._ui.canvas.render();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _updateStartAndEnd: {
 
@@ -20152,9 +17200,7 @@ var TiltShiftControl = (function (Control) {
         var end = this._knobPosition.clone().add(diff.y, -diff.x).divide(canvasSize);
 
         this._operation.set({ start: start, end: end });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onPositionKnobDown: {
 
@@ -20176,9 +17222,7 @@ var TiltShiftControl = (function (Control) {
 
         document.addEventListener("mouseup", this._onPositionKnobUp);
         document.addEventListener("touchend", this._onPositionKnobUp);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onPositionKnobDrag: {
 
@@ -20211,9 +17255,7 @@ var TiltShiftControl = (function (Control) {
         this._updateStartAndEnd();
         this._updateDOM();
         this._ui.canvas.render();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onPositionKnobUp: {
 
@@ -20231,9 +17273,7 @@ var TiltShiftControl = (function (Control) {
 
         document.removeEventListener("mouseup", this._onPositionKnobUp);
         document.removeEventListener("touchend", this._onPositionKnobUp);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onGradientKnobDown: {
 
@@ -20254,9 +17294,7 @@ var TiltShiftControl = (function (Control) {
 
         document.addEventListener("mouseup", this._onGradientKnobUp);
         document.addEventListener("touchend", this._onGradientKnobUp);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onGradientKnobDrag: {
 
@@ -20283,9 +17321,7 @@ var TiltShiftControl = (function (Control) {
         this._updateStartAndEnd();
         this._updateDOM();
         this._ui.canvas.render();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onGradientKnobUp: {
 
@@ -20303,9 +17339,7 @@ var TiltShiftControl = (function (Control) {
 
         document.removeEventListener("mouseup", this._onGradientKnobUp);
         document.removeEventListener("touchend", this._onGradientKnobUp);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _updateDOM: {
 
@@ -20339,9 +17373,7 @@ var TiltShiftControl = (function (Control) {
         var dist = gradientPosition.clone().subtract(position);
         var degrees = Math.atan2(dist.x, dist.y) * (180 / Math.PI);
         this._rect.style.transform = "rotate(" + (-degrees).toFixed(2) + "deg)";
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onBack: {
 
@@ -20357,9 +17389,7 @@ var TiltShiftControl = (function (Control) {
           this._ui.removeOperation("tilt-shift");
         }
         this._ui.canvas.render();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onDone: {
 
@@ -20375,9 +17405,7 @@ var TiltShiftControl = (function (Control) {
           blurRadius: this._initialSettings.blurRadius,
           gradientRadius: this._initialSettings.gradientRadius
         }, this._operationExistedBefore);
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -20386,12 +17414,12 @@ var TiltShiftControl = (function (Control) {
 
 module.exports = TiltShiftControl;
 
-},{"../../../lib/math/vector2":49,"../../../lib/utils":51,"../lib/simple-slider":129,"./control":115}],126:[function(require,module,exports){
+},{"../../../lib/math/vector2":18,"../../../lib/utils":20,"../lib/simple-slider":98,"./control":84}],95:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -20408,8 +17436,6 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var bluebird = _interopRequire(require("bluebird"));
-
 var WebGLRenderer = _interopRequire(require("../../../renderers/webgl-renderer"));
 
 var CanvasRenderer = _interopRequire(require("../../../renderers/canvas-renderer"));
@@ -20418,7 +17444,7 @@ var Vector2 = _interopRequire(require("../../../lib/math/vector2"));
 
 var EventEmitter = _interopRequire(require("../../../lib/event-emitter"));
 
-var Canvas = (function (EventEmitter) {
+var Canvas = (function (_EventEmitter) {
   function Canvas(kit, ui, options) {
     _classCallCheck(this, Canvas);
 
@@ -20443,9 +17469,9 @@ var Canvas = (function (EventEmitter) {
     this._dragOnMouseup = this._dragOnMouseup.bind(this);
   }
 
-  _inherits(Canvas, EventEmitter);
+  _inherits(Canvas, _EventEmitter);
 
-  _prototypeProperties(Canvas, null, {
+  _createClass(Canvas, {
     run: {
 
       /**
@@ -20465,9 +17491,7 @@ var Canvas = (function (EventEmitter) {
         this.render();
         this._centerCanvas();
         this._handleDrag();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     render: {
 
@@ -20506,16 +17530,62 @@ var Canvas = (function (EventEmitter) {
         var stack = this.sanitizedStack;
         this._updateStackDirtyStates(stack);
 
-        return bluebird
-        // Validate all settings
-        .map(stack, function (operation) {
-          return operation.validateSettings();
-        })
+        var validationPromises = [];
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+          for (var _iterator = stack[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var operation = _step.value;
+
+            validationPromises.push(operation.validateSettings());
+          }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion && _iterator["return"]) {
+              _iterator["return"]();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
+          }
+        }
+
+        return Promise.all(validationPromises)
         // Render the operations stack
         .then(function () {
-          return bluebird.map(stack, function (operation) {
-            return operation.render(_this._renderer);
-          }, { concurrency: 1 });
+          var promises = [];
+          var _iteratorNormalCompletion2 = true;
+          var _didIteratorError2 = false;
+          var _iteratorError2 = undefined;
+
+          try {
+            for (var _iterator2 = stack[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+              var operation = _step2.value;
+
+              promises.push(operation.render(_this._renderer));
+            }
+          } catch (err) {
+            _didIteratorError2 = true;
+            _iteratorError2 = err;
+          } finally {
+            try {
+              if (!_iteratorNormalCompletion2 && _iterator2["return"]) {
+                _iterator2["return"]();
+              }
+            } finally {
+              if (_didIteratorError2) {
+                throw _iteratorError2;
+              }
+            }
+          }
+
+          return Promise.all(promises);
         })
         // Render the final image
         .then(function () {
@@ -20528,9 +17598,7 @@ var Canvas = (function (EventEmitter) {
           _this._updateCanvasMargins();
           _this._applyBoundaries();
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     zoomIn: {
 
@@ -20554,9 +17622,7 @@ var Canvas = (function (EventEmitter) {
 
         zoomLevel = Math.min(initialZoomLevel * 2, zoomLevel);
         return this.setZoomLevel(zoomLevel / 100);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     zoomOut: {
 
@@ -20580,9 +17646,7 @@ var Canvas = (function (EventEmitter) {
 
         zoomLevel = Math.max(initialZoomLevel, zoomLevel);
         return this.setZoomLevel(zoomLevel / 100);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _setCanvasSize: {
 
@@ -20600,9 +17664,7 @@ var Canvas = (function (EventEmitter) {
 
         this._storeCanvasSize();
         this._updateContainerSize();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _updateContainerSize: {
 
@@ -20615,9 +17677,7 @@ var Canvas = (function (EventEmitter) {
         var size = this._size;
         this._canvasInnerContainer.style.width = "" + size.x + "px";
         this._canvasInnerContainer.style.height = "" + size.y + "px";
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _storeCanvasSize: {
 
@@ -20631,9 +17691,7 @@ var Canvas = (function (EventEmitter) {
 
       value: function _storeCanvasSize() {
         this._size = new Vector2(this._canvas.width, this._canvas.height);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _centerCanvas: {
 
@@ -20649,9 +17707,7 @@ var Canvas = (function (EventEmitter) {
         this._canvasInnerContainer.style.top = "" + position.y + "px";
 
         this._updateCanvasMargins();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _updateCanvasMargins: {
 
@@ -20666,9 +17722,7 @@ var Canvas = (function (EventEmitter) {
         var margin = canvasSize.divide(2).multiply(-1);
         this._canvasInnerContainer.style.marginLeft = "" + margin.x + "px";
         this._canvasInnerContainer.style.marginTop = "" + margin.y + "px";
-      },
-      writable: true,
-      configurable: true
+      }
     },
     setZoomLevel: {
 
@@ -20698,9 +17752,7 @@ var Canvas = (function (EventEmitter) {
           this._applyBoundaries();
           this.emit("zoom"); // will be redirected to top controls
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     setAllOperationsToDirty: {
 
@@ -20716,9 +17768,7 @@ var Canvas = (function (EventEmitter) {
           if (!operation) continue;
           operation.dirty = true;
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _getInitialZoomLevel: {
 
@@ -20765,9 +17815,7 @@ var Canvas = (function (EventEmitter) {
 
         initialSize = finalSize.clone().divide(cropSize);
         return initialSize.x / inputSize.x;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _resizeVectorToFit: {
 
@@ -20784,9 +17832,7 @@ var Canvas = (function (EventEmitter) {
         var newSize = size.clone().multiply(scale);
 
         return newSize;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _initRenderer: {
 
@@ -20813,9 +17859,7 @@ var Canvas = (function (EventEmitter) {
         this._renderer.on("new-canvas", function (canvas) {
           _this._setCanvas(canvas);
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _setCanvas: {
 
@@ -20834,9 +17878,7 @@ var Canvas = (function (EventEmitter) {
         this._updateCanvasMargins();
         this._applyBoundaries();
         this._updateContainerSize();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _handleDrag: {
 
@@ -20848,9 +17890,7 @@ var Canvas = (function (EventEmitter) {
       value: function _handleDrag() {
         this._canvas.addEventListener("mousedown", this._dragOnMousedown);
         this._canvas.addEventListener("touchstart", this._dragOnMousedown);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _dragOnMousedown: {
 
@@ -20884,9 +17924,7 @@ var Canvas = (function (EventEmitter) {
         // Remember initial position
         this._initialMousePosition = new Vector2(x, y);
         this._initialCanvasPosition = new Vector2(canvasX, canvasY);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _dragOnMousemove: {
 
@@ -20914,9 +17952,7 @@ var Canvas = (function (EventEmitter) {
         this._canvasInnerContainer.style.top = "" + newPosition.y + "px";
 
         this._applyBoundaries();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _applyBoundaries: {
 
@@ -20937,9 +17973,7 @@ var Canvas = (function (EventEmitter) {
 
         this._canvasInnerContainer.style.left = "" + canvasPosition.x + "px";
         this._canvasInnerContainer.style.top = "" + canvasPosition.y + "px";
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _dragOnMouseup: {
 
@@ -20957,9 +17991,7 @@ var Canvas = (function (EventEmitter) {
 
         document.removeEventListener("mouseup", this._dragOnMouseup);
         document.removeEventListener("touchend", this._dragOnMouseup);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _boundaries: {
 
@@ -20994,8 +18026,7 @@ var Canvas = (function (EventEmitter) {
         boundaries.min.add(halfCanvasSize);
         boundaries.max.add(halfCanvasSize);
         return boundaries;
-      },
-      configurable: true
+      }
     },
     _maxSize: {
 
@@ -21021,8 +18052,7 @@ var Canvas = (function (EventEmitter) {
         size.y -= controlsHeight;
 
         return size;
-      },
-      configurable: true
+      }
     },
     _updateStackDirtyStates: {
 
@@ -21046,9 +18076,7 @@ var Canvas = (function (EventEmitter) {
             operation.dirty = true;
           }
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     zoomToFit: {
 
@@ -21062,9 +18090,18 @@ var Canvas = (function (EventEmitter) {
 
         var initialZoomLevel = this._getInitialZoomLevel();
         return this.setZoomLevel(initialZoomLevel, render);
-      },
-      writable: true,
-      configurable: true
+      }
+    },
+    reset: {
+
+      /**
+       * Resets the renderer
+       */
+
+      value: function reset() {
+        this._renderer.reset();
+        this._kit.operationsStack = [];
+      }
     },
     sanitizedStack: {
 
@@ -21102,8 +18139,7 @@ var Canvas = (function (EventEmitter) {
         }
 
         return sanitizedStack;
-      },
-      configurable: true
+      }
     },
     zoomLevel: {
 
@@ -21114,8 +18150,7 @@ var Canvas = (function (EventEmitter) {
 
       get: function () {
         return this._zoomLevel;
-      },
-      configurable: true
+      }
     },
     size: {
 
@@ -21126,8 +18161,7 @@ var Canvas = (function (EventEmitter) {
 
       get: function () {
         return this._size;
-      },
-      configurable: true
+      }
     }
   });
 
@@ -21136,14 +18170,14 @@ var Canvas = (function (EventEmitter) {
 
 module.exports = Canvas;
 
-},{"../../../lib/event-emitter":45,"../../../lib/math/vector2":49,"../../../renderers/canvas-renderer":108,"../../../renderers/webgl-renderer":110,"bluebird":4}],127:[function(require,module,exports){
+},{"../../../lib/event-emitter":14,"../../../lib/math/vector2":18,"../../../renderers/canvas-renderer":77,"../../../renderers/webgl-renderer":79}],96:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
 var _slicedToArray = function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { var _arr = []; for (var _iterator = arr[Symbol.iterator](), _step; !(_step = _iterator.next()).done;) { _arr.push(_step.value); if (i && _arr.length === i) break; } return _arr; } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -21172,7 +18206,7 @@ var _ = _interopRequire(require("lodash"));
 
 
 
-var ColorPicker = (function (EventEmitter) {
+var ColorPicker = (function (_EventEmitter) {
   function ColorPicker(ui, element) {
     _classCallCheck(this, ColorPicker);
 
@@ -21218,29 +18252,14 @@ var ColorPicker = (function (EventEmitter) {
     this._handleSaturationKnob();
   }
 
-  _inherits(ColorPicker, EventEmitter);
+  _inherits(ColorPicker, _EventEmitter);
 
-  _prototypeProperties(ColorPicker, {
-    template: {
-
-      /**
-       * The partial template string
-       * @type {String}
-       */
-
-      get: function () {
-        return "{{##def.colorpicker:\n  <div class=\"imglykit-color-picker\" id=\"{{=(typeof colorpickerId === \"undefined\"?'':colorpickerId)}}\">\n    <canvas class=\"imglykit-color-picker-color\" width=\"34\" height=\"34\"></canvas>\n    <div class=\"imglykit-controls-item-label\">{{=(typeof colorpickerLabel === \"undefined\"?'':colorpickerLabel)}}</div>\n\n    <div class=\"imglykit-color-picker-overlay\">\n      <div class=\"imglykit-color-picker-alpha-container\">\n        <canvas class=\"imglykit-color-picker-alpha\" width=\"200\" height=\"30\"></canvas>\n        <div class=\"imglykit-transparent-knob\"></div>\n      </div>\n\n      <div class=\"imglykit-color-picker-saturation-container\">\n        <canvas class=\"imglykit-color-picker-saturation\" width=\"160\" height=\"160\"></canvas>\n        <div class=\"imglykit-transparent-knob\"></div>\n      </div>\n\n      <div class=\"imglykit-color-picker-hue-container\">\n        <canvas class=\"imglykit-color-picker-hue\" width=\"30\" height=\"160\"></canvas>\n        <div class=\"imglykit-transparent-knob\"></div>\n      </div>\n    </div>\n  </div>\n#}}\n";
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(ColorPicker, {
     _onTransparencyImageLoad: {
       value: function _onTransparencyImageLoad() {
         this._loaded = true;
         this._render();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _handleToggle: {
 
@@ -21251,9 +18270,7 @@ var ColorPicker = (function (EventEmitter) {
 
       value: function _handleToggle() {
         this._element.addEventListener("click", this._onElementClick);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onElementClick: {
 
@@ -21273,9 +18290,7 @@ var ColorPicker = (function (EventEmitter) {
             this.emit("show");
           }
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     hide: {
 
@@ -21286,9 +18301,7 @@ var ColorPicker = (function (EventEmitter) {
       value: function hide() {
         this._overlay.classList.remove("imglykit-visible");
         this._visible = false;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     show: {
 
@@ -21299,9 +18312,7 @@ var ColorPicker = (function (EventEmitter) {
       value: function show() {
         this._overlay.classList.add("imglykit-visible");
         this._visible = true;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     setValue: {
 
@@ -21324,9 +18335,7 @@ var ColorPicker = (function (EventEmitter) {
         this._hsvColor = { h: h, s: s, v: v };
         this._positionKnobs();
         this._render();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _positionKnobs: {
 
@@ -21339,9 +18348,7 @@ var ColorPicker = (function (EventEmitter) {
         this._positionAlphaKnob();
         this._positionHueKnob();
         this._positionSaturationKnob();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _positionAlphaKnob: {
 
@@ -21356,9 +18363,7 @@ var ColorPicker = (function (EventEmitter) {
 
         var left = this._value.a * canvasSize.x;
         this._alphaKnob.style.left = "" + left + "px";
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _positionHueKnob: {
 
@@ -21373,9 +18378,7 @@ var ColorPicker = (function (EventEmitter) {
 
         var top = this._hsvColor.h * canvasSize.y;
         this._hueKnob.style.top = "" + top + "px";
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _positionSaturationKnob: {
 
@@ -21392,9 +18395,7 @@ var ColorPicker = (function (EventEmitter) {
         this._saturationKnob.style.left = "" + left + "px";
         var top = (1 - this._hsvColor.v) * canvasSize.y;
         this._saturationKnob.style.top = "" + top + "px";
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _render: {
 
@@ -21410,9 +18411,7 @@ var ColorPicker = (function (EventEmitter) {
         this._renderAlpha();
         this._renderHue();
         this._renderSaturation();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _renderCurrentColor: {
 
@@ -21432,9 +18431,7 @@ var ColorPicker = (function (EventEmitter) {
 
         context.fillStyle = this._value.toRGBA();
         context.fill();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _renderAlpha: {
 
@@ -21460,9 +18457,7 @@ var ColorPicker = (function (EventEmitter) {
         gradient.addColorStop(1, this._value.toHex());
         context.fillStyle = gradient;
         context.fill();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _renderHue: {
 
@@ -21486,9 +18481,7 @@ var ColorPicker = (function (EventEmitter) {
           context.lineTo(canvas.width, y);
           context.stroke();
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _renderSaturation: {
 
@@ -21524,9 +18517,7 @@ var ColorPicker = (function (EventEmitter) {
         }
 
         context.putImageData(imageData, 0, 0);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _handleAlphaKnob: {
 
@@ -21538,9 +18529,7 @@ var ColorPicker = (function (EventEmitter) {
       value: function _handleAlphaKnob() {
         this._alphaCanvas.addEventListener("mousedown", this._onAlphaCanvasDown);
         this._alphaCanvas.addEventListener("touchstart", this._onAlphaCanvasDown);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onAlphaCanvasDown: {
 
@@ -21560,9 +18549,7 @@ var ColorPicker = (function (EventEmitter) {
 
         document.addEventListener("mouseup", this._onAlphaCanvasUp);
         document.addEventListener("touchend", this._onAlphaCanvasUp);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onAlphaCanvasDrag: {
 
@@ -21595,9 +18582,7 @@ var ColorPicker = (function (EventEmitter) {
         // Update alpha value
         this._value.a = relativePosition.x / canvasSize.x;
         this._updateColor();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onAlphaCanvasUp: {
 
@@ -21613,9 +18598,7 @@ var ColorPicker = (function (EventEmitter) {
 
         document.removeEventListener("mouseup", this._onAlphaCanvasUp);
         document.removeEventListener("touchend", this._onAlphaCanvasUp);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _handleHueKnob: {
 
@@ -21627,9 +18610,7 @@ var ColorPicker = (function (EventEmitter) {
       value: function _handleHueKnob() {
         this._hueCanvas.addEventListener("mousedown", this._onHueCanvasDown);
         this._hueCanvas.addEventListener("touchstart", this._onHueCanvasDown);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onHueCanvasDown: {
 
@@ -21649,9 +18630,7 @@ var ColorPicker = (function (EventEmitter) {
 
         document.addEventListener("mouseup", this._onHueCanvasUp);
         document.addEventListener("touchend", this._onHueCanvasUp);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onHueCanvasDrag: {
 
@@ -21686,9 +18665,7 @@ var ColorPicker = (function (EventEmitter) {
         relativePosition.divide(canvasSize);
         this._hsvColor.h = relativePosition.y;
         this._updateColor();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onHueCanvasUp: {
 
@@ -21704,9 +18681,7 @@ var ColorPicker = (function (EventEmitter) {
 
         document.removeEventListener("mouseup", this._onHueCanvasUp);
         document.removeEventListener("touchend", this._onHueCanvasUp);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _handleSaturationKnob: {
 
@@ -21718,9 +18693,7 @@ var ColorPicker = (function (EventEmitter) {
       value: function _handleSaturationKnob() {
         this._saturationCanvas.addEventListener("mousedown", this._onSaturationCanvasDown);
         this._saturationCanvas.addEventListener("touchstart", this._onSaturationCanvasDown);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onSaturationCanvasDown: {
 
@@ -21740,9 +18713,7 @@ var ColorPicker = (function (EventEmitter) {
 
         document.addEventListener("mouseup", this._onSaturationCanvasUp);
         document.addEventListener("touchend", this._onSaturationCanvasUp);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onSaturationCanvasDrag: {
 
@@ -21779,9 +18750,7 @@ var ColorPicker = (function (EventEmitter) {
         this._hsvColor.s = relativePosition.x;
         this._hsvColor.v = 1 - relativePosition.y;
         this._updateColor();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onSaturationCanvasUp: {
 
@@ -21797,9 +18766,7 @@ var ColorPicker = (function (EventEmitter) {
 
         document.removeEventListener("mouseup", this._onSaturationCanvasUp);
         document.removeEventListener("touchend", this._onSaturationCanvasUp);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _updateColor: {
 
@@ -21813,9 +18780,19 @@ var ColorPicker = (function (EventEmitter) {
         this._value.fromHSV(this._hsvColor.h, this._hsvColor.s, this._hsvColor.v);
         this.emit("update", this._value);
         this._render();
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    template: {
+
+      /**
+       * The partial template string
+       * @type {String}
+       */
+
+      get: function () {
+        return "{{##def.colorpicker:\n  <div class=\"imglykit-color-picker\" id=\"{{=(typeof colorpickerId === \"undefined\"?'':colorpickerId)}}\">\n    <canvas class=\"imglykit-color-picker-color\" width=\"34\" height=\"34\"></canvas>\n    <div class=\"imglykit-controls-item-label\">{{=(typeof colorpickerLabel === \"undefined\"?'':colorpickerLabel)}}</div>\n\n    <div class=\"imglykit-color-picker-overlay\">\n      <div class=\"imglykit-color-picker-alpha-container\">\n        <canvas class=\"imglykit-color-picker-alpha\" width=\"200\" height=\"30\"></canvas>\n        <div class=\"imglykit-transparent-knob\"></div>\n      </div>\n\n      <div class=\"imglykit-color-picker-saturation-container\">\n        <canvas class=\"imglykit-color-picker-saturation\" width=\"160\" height=\"160\"></canvas>\n        <div class=\"imglykit-transparent-knob\"></div>\n      </div>\n\n      <div class=\"imglykit-color-picker-hue-container\">\n        <canvas class=\"imglykit-color-picker-hue\" width=\"30\" height=\"160\"></canvas>\n        <div class=\"imglykit-transparent-knob\"></div>\n      </div>\n    </div>\n  </div>\n#}}\n";
+      }
     }
   });
 
@@ -21824,12 +18801,12 @@ var ColorPicker = (function (EventEmitter) {
 
 module.exports = ColorPicker;
 
-},{"../../../lib/color":44,"../../../lib/event-emitter":45,"../../../lib/math/vector2":49,"../../../lib/utils":51,"lodash":"lodash"}],128:[function(require,module,exports){
+},{"../../../lib/color":13,"../../../lib/event-emitter":14,"../../../lib/math/vector2":18,"../../../lib/utils":20,"lodash":"lodash"}],97:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -21848,7 +18825,7 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
 
 var EventEmitter = _interopRequire(require("../../../lib/event-emitter"));
 
-var FileLoader = (function (EventEmitter) {
+var FileLoader = (function (_EventEmitter) {
   function FileLoader(kit, ui) {
     _classCallCheck(this, FileLoader);
 
@@ -21873,9 +18850,9 @@ var FileLoader = (function (EventEmitter) {
     this._handleDropArea();
   }
 
-  _inherits(FileLoader, EventEmitter);
+  _inherits(FileLoader, _EventEmitter);
 
-  _prototypeProperties(FileLoader, null, {
+  _createClass(FileLoader, {
     openFileDialog: {
 
       /**
@@ -21884,9 +18861,7 @@ var FileLoader = (function (EventEmitter) {
 
       value: function openFileDialog() {
         this._hiddenInputField.click();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _handleDropArea: {
 
@@ -21905,9 +18880,7 @@ var FileLoader = (function (EventEmitter) {
         this._dropArea.addEventListener("drop", this._onDropAreaDrop);
         this._dropArea.addEventListener("dragdrop", this._onDropAreaDrop);
         this._dropArea.addEventListener("click", this._onDropAreaClick);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onDropAreaClick: {
 
@@ -21920,9 +18893,7 @@ var FileLoader = (function (EventEmitter) {
 
       value: function _onDropAreaClick(e) {
         this.openFileDialog();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onDropAreaDragEnter: {
 
@@ -21937,9 +18908,7 @@ var FileLoader = (function (EventEmitter) {
 
         this._dragCounter++;
         this._dropArea.classList.add("imglykit-drop-area-active");
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onDropAreaDragOver: {
 
@@ -21951,9 +18920,7 @@ var FileLoader = (function (EventEmitter) {
 
       value: function _onDropAreaDragOver(e) {
         e.preventDefault();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onDropAreaDragLeave: {
 
@@ -21971,9 +18938,7 @@ var FileLoader = (function (EventEmitter) {
         if (this._dragCounter === 0) {
           this._dropArea.classList.remove("imglykit-drop-area-active");
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onDropAreaDrop: {
 
@@ -21993,9 +18958,7 @@ var FileLoader = (function (EventEmitter) {
         if (!e.dataTransfer) {
           return;
         }this._handleFile(e.dataTransfer.files[0]);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onFileInputChange: {
 
@@ -22007,9 +18970,7 @@ var FileLoader = (function (EventEmitter) {
 
       value: function _onFileInputChange(e) {
         this._handleFile(this._hiddenInputField.files[0]);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _handleFile: {
 
@@ -22021,9 +18982,7 @@ var FileLoader = (function (EventEmitter) {
 
       value: function _handleFile(file) {
         this.emit("file", file);
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -22032,12 +18991,12 @@ var FileLoader = (function (EventEmitter) {
 
 module.exports = FileLoader;
 
-},{"../../../lib/event-emitter":45}],129:[function(require,module,exports){
+},{"../../../lib/event-emitter":14}],98:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -22056,30 +19015,18 @@ var Slider = _interopRequire(require("./slider"));
 
 
 
-var SimpleSlider = (function (Slider) {
+var SimpleSlider = (function (_Slider) {
   function SimpleSlider() {
     _classCallCheck(this, SimpleSlider);
 
-    if (Slider != null) {
-      Slider.apply(this, arguments);
+    if (_Slider != null) {
+      _Slider.apply(this, arguments);
     }
   }
 
-  _inherits(SimpleSlider, Slider);
+  _inherits(SimpleSlider, _Slider);
 
-  _prototypeProperties(SimpleSlider, {
-    template: {
-      /**
-       * The partial template string
-       * @type {String}
-       */
-
-      get: function () {
-        return "{{##def.simpleSlider:\n  <div class=\"imglykit-slider\" id=\"{{=(typeof sliderId === \"undefined\"?'':sliderId)}}\">\n    <div class=\"imglykit-slider-minus\">\n      <img src=\"{{=it.helpers.assetPath('ui/night/slider/minus.png') }}\" />\n    </div>\n    <div class=\"imglykit-slider-slider\">\n      <div class=\"imglykit-slider-background\"></div>\n      <div class=\"imglykit-slider-fill\"></div>\n      <div class=\"imglykit-slider-dot\"></div>\n    </div>\n    <div class=\"imglykit-slider-plus\">\n      <img src=\"{{=it.helpers.assetPath('ui/night/slider/plus.png') }}\" />\n    </div>\n  </div>\n#}}\n";
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(SimpleSlider, {
     _setX: {
 
       /**
@@ -22091,9 +19038,18 @@ var SimpleSlider = (function (Slider) {
       value: function _setX(x) {
         this._dotElement.style.left = "" + x + "px";
         this._fillElement.style.width = "" + x + "px";
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    template: {
+      /**
+       * The partial template string
+       * @type {String}
+       */
+
+      get: function () {
+        return "{{##def.simpleSlider:\n  <div class=\"imglykit-slider\" id=\"{{=(typeof sliderId === \"undefined\"?'':sliderId)}}\">\n    <div class=\"imglykit-slider-minus\">\n      <img src=\"{{=it.helpers.assetPath('ui/night/slider/minus.png') }}\" />\n    </div>\n    <div class=\"imglykit-slider-slider\">\n      <div class=\"imglykit-slider-background\"></div>\n      <div class=\"imglykit-slider-fill\"></div>\n      <div class=\"imglykit-slider-dot\"></div>\n    </div>\n    <div class=\"imglykit-slider-plus\">\n      <img src=\"{{=it.helpers.assetPath('ui/night/slider/plus.png') }}\" />\n    </div>\n  </div>\n#}}\n";
+      }
     }
   });
 
@@ -22102,12 +19058,12 @@ var SimpleSlider = (function (Slider) {
 
 module.exports = SimpleSlider;
 
-},{"./slider":130}],130:[function(require,module,exports){
+},{"./slider":99}],99:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -22132,7 +19088,7 @@ var _ = _interopRequire(require("lodash"));
 
 
 
-var Slider = (function (EventEmitter) {
+var Slider = (function (_EventEmitter) {
   function Slider(element, options) {
     _classCallCheck(this, Slider);
 
@@ -22161,22 +19117,9 @@ var Slider = (function (EventEmitter) {
     this._handleDot();
   }
 
-  _inherits(Slider, EventEmitter);
+  _inherits(Slider, _EventEmitter);
 
-  _prototypeProperties(Slider, {
-    template: {
-
-      /**
-       * The partial template string
-       * @type {String}
-       */
-
-      get: function () {
-        return "{{##def.slider:\n  <div class=\"imglykit-slider\" id=\"{{=(typeof sliderId === \"undefined\"?'':sliderId)}}\">\n    <div class=\"imglykit-slider-minus\">\n      <img src=\"{{=it.helpers.assetPath('ui/night/slider/minus.png') }}\" />\n    </div>\n    <div class=\"imglykit-slider-slider\">\n      <div class=\"imglykit-slider-background\"></div>\n      <div class=\"imglykit-slider-fill\"></div>\n      <div class=\"imglykit-slider-center-dot\"></div>\n      <div class=\"imglykit-slider-dot\"></div>\n    </div>\n    <div class=\"imglykit-slider-plus\">\n      <img src=\"{{=it.helpers.assetPath('ui/night/slider/plus.png') }}\" />\n    </div>\n  </div>\n#}}\n";
-      },
-      configurable: true
-    }
-  }, {
+  _createClass(Slider, {
     setValue: {
 
       /**
@@ -22196,9 +19139,7 @@ var Slider = (function (EventEmitter) {
         var percentage = (value - minValue) / valueRange;
         var sliderWidth = this._sliderElement.offsetWidth;
         this._setX(sliderWidth * percentage);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _setX: {
 
@@ -22222,9 +19163,7 @@ var Slider = (function (EventEmitter) {
         } else {
           this._fillElement.style.left = halfSliderWidth + "px";
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _handleDot: {
 
@@ -22240,9 +19179,7 @@ var Slider = (function (EventEmitter) {
         if (this._centerDotElement) {
           this._centerDotElement.addEventListener("click", this._onCenterDotClick);
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onCenterDotClick: {
 
@@ -22255,9 +19192,7 @@ var Slider = (function (EventEmitter) {
       value: function _onCenterDotClick() {
         this.setValue(this._options.defaultValue);
         this.emit("update", this._value);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onMouseDown: {
 
@@ -22285,9 +19220,7 @@ var Slider = (function (EventEmitter) {
 
         this._initialSliderX = dotPosition.left - sliderPosition.left;
         this._initialMousePosition = mousePosition;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onMouseMove: {
 
@@ -22320,9 +19253,7 @@ var Slider = (function (EventEmitter) {
         var percentage = newSliderX / sliderWidth;
         var value = minValue + (maxValue - minValue) * percentage;
         this.emit("update", value);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onMouseUp: {
 
@@ -22337,9 +19268,19 @@ var Slider = (function (EventEmitter) {
 
         document.removeEventListener("mouseup", this._onMouseUp);
         document.removeEventListener("touchend", this._onMouseUp);
-      },
-      writable: true,
-      configurable: true
+      }
+    }
+  }, {
+    template: {
+
+      /**
+       * The partial template string
+       * @type {String}
+       */
+
+      get: function () {
+        return "{{##def.slider:\n  <div class=\"imglykit-slider\" id=\"{{=(typeof sliderId === \"undefined\"?'':sliderId)}}\">\n    <div class=\"imglykit-slider-minus\">\n      <img src=\"{{=it.helpers.assetPath('ui/night/slider/minus.png') }}\" />\n    </div>\n    <div class=\"imglykit-slider-slider\">\n      <div class=\"imglykit-slider-background\"></div>\n      <div class=\"imglykit-slider-fill\"></div>\n      <div class=\"imglykit-slider-center-dot\"></div>\n      <div class=\"imglykit-slider-dot\"></div>\n    </div>\n    <div class=\"imglykit-slider-plus\">\n      <img src=\"{{=it.helpers.assetPath('ui/night/slider/plus.png') }}\" />\n    </div>\n  </div>\n#}}\n";
+      }
     }
   });
 
@@ -22348,12 +19289,12 @@ var Slider = (function (EventEmitter) {
 
 module.exports = Slider;
 
-},{"../../../lib/event-emitter":45,"../../../lib/utils":51,"lodash":"lodash"}],131:[function(require,module,exports){
+},{"../../../lib/event-emitter":14,"../../../lib/utils":20,"lodash":"lodash"}],100:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -22372,7 +19313,7 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
 
 var EventEmitter = _interopRequire(require("../../../lib/event-emitter"));
 
-var TopControls = (function (EventEmitter) {
+var TopControls = (function (_EventEmitter) {
   function TopControls(kit, ui) {
     _classCallCheck(this, TopControls);
 
@@ -22383,9 +19324,9 @@ var TopControls = (function (EventEmitter) {
     this._canvas = this._ui.canvas;
   }
 
-  _inherits(TopControls, EventEmitter);
+  _inherits(TopControls, _EventEmitter);
 
-  _prototypeProperties(TopControls, null, {
+  _createClass(TopControls, {
     run: {
 
       /**
@@ -22406,9 +19347,7 @@ var TopControls = (function (EventEmitter) {
         this._handleZoom();
         this._handleUndo();
         this._handleNew();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _handleZoom: {
 
@@ -22420,9 +19359,7 @@ var TopControls = (function (EventEmitter) {
       value: function _handleZoom() {
         this._zoomIn.addEventListener("click", this._onZoomInClick.bind(this));
         this._zoomOut.addEventListener("click", this._onZoomOutClick.bind(this));
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _handleUndo: {
 
@@ -22434,9 +19371,7 @@ var TopControls = (function (EventEmitter) {
       value: function _handleUndo() {
         this._undoButton.addEventListener("click", this._undo.bind(this));
         this._undo();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _handleNew: {
 
@@ -22449,9 +19384,7 @@ var TopControls = (function (EventEmitter) {
         if (!this._newButton) {
           return;
         }this._newButton.addEventListener("click", this._onNewClick.bind(this));
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onNewClick: {
 
@@ -22467,9 +19400,7 @@ var TopControls = (function (EventEmitter) {
         var fileLoader = this._ui.fileLoader;
 
         fileLoader.openFileDialog();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _undo: {
 
@@ -22480,9 +19411,7 @@ var TopControls = (function (EventEmitter) {
 
       value: function _undo() {
         this.emit("undo");
-      },
-      writable: true,
-      configurable: true
+      }
     },
     updateUndoButton: {
 
@@ -22498,9 +19427,7 @@ var TopControls = (function (EventEmitter) {
         } else {
           this._undoButton.style.display = "inline-block";
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onZoomInClick: {
 
@@ -22515,9 +19442,7 @@ var TopControls = (function (EventEmitter) {
 
         this.emit("zoom-in");
         this.updateZoomLevel();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onZoomOutClick: {
 
@@ -22532,9 +19457,7 @@ var TopControls = (function (EventEmitter) {
 
         this.emit("zoom-out");
         this.updateZoomLevel();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     showZoom: {
 
@@ -22544,9 +19467,7 @@ var TopControls = (function (EventEmitter) {
 
       value: function showZoom() {
         this._rightControls.style.display = "inline-block";
-      },
-      writable: true,
-      configurable: true
+      }
     },
     hideZoom: {
 
@@ -22556,9 +19477,7 @@ var TopControls = (function (EventEmitter) {
 
       value: function hideZoom() {
         this._rightControls.style.display = "none";
-      },
-      writable: true,
-      configurable: true
+      }
     },
     updateZoomLevel: {
 
@@ -22570,9 +19489,7 @@ var TopControls = (function (EventEmitter) {
         var zoomLevel = this._canvas.zoomLevel;
 
         this._zoomLevel.innerHTML = Math.round(zoomLevel * 100);
-      },
-      writable: true,
-      configurable: true
+      }
     }
   });
 
@@ -22581,12 +19498,12 @@ var TopControls = (function (EventEmitter) {
 
 module.exports = TopControls;
 
-},{"../../../lib/event-emitter":45}],132:[function(require,module,exports){
+},{"../../../lib/event-emitter":14}],101:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -22605,6 +19522,8 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
 
 
 
+var _ = _interopRequire(require("lodash"));
+
 var UI = _interopRequire(require("../base/ui"));
 
 var Canvas = _interopRequire(require("./lib/canvas"));
@@ -22613,7 +19532,7 @@ var FileLoader = _interopRequire(require("./lib/file-loader"));
 
 var TopControls = _interopRequire(require("./lib/top-controls"));
 
-var NightUI = (function (UI) {
+var NightUI = (function (_UI) {
   function NightUI() {
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
@@ -22622,7 +19541,7 @@ var NightUI = (function (UI) {
     _classCallCheck(this, NightUI);
 
     this._operationsMap = {};
-    this._template = "<div class=\"imglykit-container\">\n  {{? !it.options.ui.hideHeader }}\n  <div class=\"imglykit-header\">\n    img.ly Photo Editor SDK\n  </div>\n  {{?}}\n  <div class=\"imglykit-top-controls{{? !it.options.ui.hideHeader }} imglykit-header-padding{{?}}\">\n    <div class=\"imglykit-top-controls-left\">\n      {{? it.options.ui.showNewButton }}\n      <div class=\"imglykit-new\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/top/new.png')}}\" />\n        New\n      </div>\n      {{?}}\n      <div class=\"imglykit-undo\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/top/undo.png')}}\" />\n        Undo\n      </div>\n    </div>\n    <div class=\"imglykit-top-controls-right\">\n      <div class=\"imglykit-zoom-fit\"></div>\n      <div class=\"imglykit-zoom-level\">Zoom: <span class=\"imglykit-zoom-level-num\">100</span>%</div>\n      <div class=\"imglykit-zoom-in\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/top/zoom-in.png')}}\" />\n      </div>\n      <div class=\"imglykit-zoom-out\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/top/zoom-out.png')}}\" />\n      </div>\n    </div>\n  </div>\n\n  <div class=\"imglykit-canvas-container{{? !it.options.ui.hideHeader }} imglykit-header-padding{{?}}\">\n    <div class=\"imglykit-canvas-inner-container\">\n      <canvas class=\"imglykit-canvas-draggable\"></canvas>\n      <div class=\"imglykit-canvas-controls imglykit-canvas-controls-disabled\"></div>\n    </div>\n    {{? it.renderDropArea }}\n    <div class=\"imglykit-drop-area-container{{? !it.options.ui.hideHeader }} imglykit-header-padding{{?}}\">\n      <div class=\"imglykit-drop-area\">\n        <input type=\"file\" class=\"imglykit-drop-area-hidden-input\" />\n        <img src=\"{{=it.helpers.assetPath('ui/night/upload.png')}}\" />\n\n        <div class=\"imglykit-drop-area-content\">\n          <h1>Upload a picture</h1>\n          <span>Click to upload a picture from your library or just drag and drop</span>\n        </div>\n      </div>\n    </div>\n    {{?}}\n  </div>\n\n  <div class=\"imglykit-controls-container\">\n    <div class=\"imglykit-controls\">\n\n      <div>\n        <div class=\"imglykit-controls-overview\">\n          <ul class=\"imglykit-controls-list\">\n          {{ for (var identifier in it.controls) { }}\n            {{ var control = it.controls[identifier]; }}\n            <li data-identifier=\"{{= control.identifier}}\">\n              <img src=\"{{=it.helpers.assetPath('ui/night/operations/' + control.identifier + '.png') }}\" />\n            </li>\n          {{ } }}\n          </ul>\n        </div>\n      </div>\n\n    </div>\n  </div>\n</div>\n";
+    this._template = "<div class=\"imglykit-container\">\n  {{? !it.options.ui.hideHeader }}\n  <div class=\"imglykit-header\">\n    img.ly Photo Editor SDK\n\n    {{? it.options.ui.showCloseButton }}\n    <div class=\"imglykit-close-button\">\n      <img src=\"{{=it.helpers.assetPath('ui/night/close.png')}}\" />\n    </div>\n    {{?}}\n  </div>\n  {{?}}\n  <div class=\"imglykit-top-controls{{? !it.options.ui.hideHeader }} imglykit-header-padding{{?}}\">\n    <div class=\"imglykit-top-controls-left\">\n      {{? it.options.ui.showNewButton }}\n      <div class=\"imglykit-new\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/top/new.png')}}\" />\n        New\n      </div>\n      {{?}}\n      <div class=\"imglykit-undo\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/top/undo.png')}}\" />\n        Undo\n      </div>\n    </div>\n    <div class=\"imglykit-top-controls-right\">\n      <div class=\"imglykit-zoom-fit\"></div>\n      <div class=\"imglykit-zoom-level\">Zoom: <span class=\"imglykit-zoom-level-num\">100</span>%</div>\n      <div class=\"imglykit-zoom-in\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/top/zoom-in.png')}}\" />\n      </div>\n      <div class=\"imglykit-zoom-out\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/top/zoom-out.png')}}\" />\n      </div>\n    </div>\n  </div>\n\n  <div class=\"imglykit-canvas-container{{? !it.options.ui.hideHeader }} imglykit-header-padding{{?}}\">\n    <div class=\"imglykit-canvas-inner-container\">\n      <canvas class=\"imglykit-canvas-draggable\"></canvas>\n      <div class=\"imglykit-canvas-controls imglykit-canvas-controls-disabled\"></div>\n    </div>\n    {{? it.renderDropArea }}\n    <div class=\"imglykit-drop-area-container{{? !it.options.ui.hideHeader }} imglykit-header-padding{{?}}\">\n      <div class=\"imglykit-drop-area\">\n        <input type=\"file\" class=\"imglykit-drop-area-hidden-input\" />\n        <img src=\"{{=it.helpers.assetPath('ui/night/upload.png')}}\" />\n\n        <div class=\"imglykit-drop-area-content\">\n          <h1>Upload a picture</h1>\n          <span>Click to upload a picture from your library or just drag and drop</span>\n        </div>\n      </div>\n    </div>\n    {{?}}\n  </div>\n\n  <div class=\"imglykit-controls-container\">\n    <div class=\"imglykit-controls\">\n\n      <div>\n        <div class=\"imglykit-controls-overview\">\n          <ul class=\"imglykit-controls-list\">\n          {{ for (var identifier in it.controls) { }}\n            {{ var control = it.controls[identifier]; }}\n            <li data-identifier=\"{{= control.identifier}}\"{{? it.controlsDisabled }} data-disabled{{?}}>\n              <img src=\"{{=it.helpers.assetPath('ui/night/operations/' + control.identifier + '.png') }}\" />\n            </li>\n          {{ } }}\n          </ul>\n        </div>\n      </div>\n\n    </div>\n  </div>\n</div>\n";
     this._registeredControls = {};
     this._history = [];
 
@@ -22641,12 +19560,16 @@ var NightUI = (function (UI) {
 
     _get(Object.getPrototypeOf(NightUI.prototype), "constructor", this).apply(this, args);
 
-    this._options.ui.showNewButton = !this._options.image;
+    this._options.ui = _.defaults(this._options.ui, {
+      showNewButton: !this._options.image,
+      showHeader: true,
+      showCloseButton: false
+    });
   }
 
-  _inherits(NightUI, UI);
+  _inherits(NightUI, _UI);
 
-  _prototypeProperties(NightUI, null, {
+  _createClass(NightUI, {
     identifier: {
 
       /**
@@ -22656,8 +19579,7 @@ var NightUI = (function (UI) {
 
       get: function () {
         return "night";
-      },
-      configurable: true
+      }
     },
     run: {
 
@@ -22688,9 +19610,11 @@ var NightUI = (function (UI) {
         this._initControls();
 
         if (this._options.image) this.showZoom();
-      },
-      writable: true,
-      configurable: true
+
+        if (this._options.ui.showCloseButton) {
+          this._handleCloseButton();
+        }
+      }
     },
     _initFileLoader: {
 
@@ -22702,9 +19626,7 @@ var NightUI = (function (UI) {
       value: function _initFileLoader() {
         this._fileLoader = new FileLoader(this._kit, this);
         this._fileLoader.on("file", this._onFileLoaded.bind(this));
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onFileLoaded: {
 
@@ -22728,9 +19650,7 @@ var NightUI = (function (UI) {
           };
         })(file);
         reader.readAsDataURL(file);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _setImage: {
 
@@ -22742,10 +19662,11 @@ var NightUI = (function (UI) {
 
       value: function _setImage(image) {
         this._options.image = image;
+        if (this._canvas) {
+          this._canvas.reset();
+        }
         this.run();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _initTopControls: {
 
@@ -22781,9 +19702,7 @@ var NightUI = (function (UI) {
             }
           });
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _initCanvas: {
 
@@ -22800,9 +19719,7 @@ var NightUI = (function (UI) {
         this._canvas.on("zoom", function () {
           _this._topControls.updateZoomLevel();
         });
-      },
-      writable: true,
-      configurable: true
+      }
     },
     selectOperations: {
 
@@ -22813,9 +19730,7 @@ var NightUI = (function (UI) {
 
       value: function selectOperations(selector) {
         _get(Object.getPrototypeOf(NightUI.prototype), "selectOperations", this).call(this, selector);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     getOrCreateOperation: {
 
@@ -22844,9 +19759,7 @@ var NightUI = (function (UI) {
         } else {
           return this._operationsMap[identifier];
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     removeOperation: {
 
@@ -22863,9 +19776,7 @@ var NightUI = (function (UI) {
 
         var index = this._kit.operationsStack.indexOf(operation);
         this._kit.operationsStack.splice(index, 1);
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _registerControls: {
 
@@ -22887,9 +19798,7 @@ var NightUI = (function (UI) {
         this.registerControl("frames", "frames", require("./controls/frames"));
         this.registerControl("stickers", "stickers", require("./controls/stickers"));
         this.registerControl("text", "text", require("./controls/text"));
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _handleOverview: {
 
@@ -22936,9 +19845,7 @@ var NightUI = (function (UI) {
             }
           }
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _onOverviewButtonClick: {
 
@@ -22948,7 +19855,9 @@ var NightUI = (function (UI) {
        */
 
       value: function _onOverviewButtonClick(identifier) {
-        this._overviewControlsContainer.style.display = "none";
+        if (this.context.controlsDisabled) {
+          return;
+        }this._overviewControlsContainer.style.display = "none";
 
         if (this._currentControl) {
           this._currentControl.leave();
@@ -22957,9 +19866,7 @@ var NightUI = (function (UI) {
         this._currentControl = this._registeredControls[identifier];
         this._currentControl.enter();
         this._currentControl.once("back", this._switchToOverview.bind(this));
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _switchToOverview: {
 
@@ -22975,9 +19882,7 @@ var NightUI = (function (UI) {
 
         this._currentControl = null;
         this._overviewControlsContainer.style.display = "";
-      },
-      writable: true,
-      configurable: true
+      }
     },
     registerControl: {
 
@@ -22993,9 +19898,7 @@ var NightUI = (function (UI) {
           return;
         }var instance = new ControlClass(this._kit, this);
         this._registeredControls[identifier] = instance;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     _initControls: {
 
@@ -23010,9 +19913,25 @@ var NightUI = (function (UI) {
           control.setContainers(this._controlsContainer, this._canvasControlsContainer);
           control.init();
         }
-      },
-      writable: true,
-      configurable: true
+      }
+    },
+    _handleCloseButton: {
+
+      /**
+       * Handles the click event on the close button, emits a `close` event
+       * when clicking
+       * @private
+       */
+
+      value: function _handleCloseButton() {
+        var _this = this;
+
+        var closeButton = this._options.container.querySelector(".imglykit-close-button");
+        closeButton.addEventListener("click", function (e) {
+          e.preventDefault();
+          _this.emit("close");
+        });
+      }
     },
     render: {
 
@@ -23021,10 +19940,10 @@ var NightUI = (function (UI) {
        */
 
       value: function render() {
-        this._canvas.render();
-      },
-      writable: true,
-      configurable: true
+        if (this._canvas) {
+          this._canvas.render();
+        }
+      }
     },
     operations: {
 
@@ -23035,8 +19954,7 @@ var NightUI = (function (UI) {
 
       get: function () {
         return this._operationsMap;
-      },
-      configurable: true
+      }
     },
     controls: {
 
@@ -23047,8 +19965,7 @@ var NightUI = (function (UI) {
 
       get: function () {
         return this._registeredControls;
-      },
-      configurable: true
+      }
     },
     context: {
 
@@ -23061,9 +19978,9 @@ var NightUI = (function (UI) {
         var context = _get(Object.getPrototypeOf(NightUI.prototype), "context", this);
         context.controls = this._registeredControls;
         context.renderDropArea = !this._options.image;
+        context.controlsDisabled = !this._options.image;
         return context;
-      },
-      configurable: true
+      }
     },
     pause: {
 
@@ -23074,9 +19991,7 @@ var NightUI = (function (UI) {
 
       value: function pause() {
         this._paused = true;
-      },
-      writable: true,
-      configurable: true
+      }
     },
     resume: {
 
@@ -23092,9 +20007,7 @@ var NightUI = (function (UI) {
         if (rerender) {
           this.render();
         }
-      },
-      writable: true,
-      configurable: true
+      }
     },
     addHistory: {
 
@@ -23108,9 +20021,7 @@ var NightUI = (function (UI) {
       value: function addHistory(operation, options, existent) {
         this._history.push({ operation: operation, options: options, existent: existent });
         this._topControls.updateUndoButton();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     hideZoom: {
 
@@ -23120,9 +20031,7 @@ var NightUI = (function (UI) {
 
       value: function hideZoom() {
         this._topControls.hideZoom();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     showZoom: {
 
@@ -23132,9 +20041,7 @@ var NightUI = (function (UI) {
 
       value: function showZoom() {
         this._topControls.showZoom();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     undo: {
 
@@ -23155,9 +20062,7 @@ var NightUI = (function (UI) {
           this.canvas.zoomToFit(true);
         }
         this._topControls.updateUndoButton();
-      },
-      writable: true,
-      configurable: true
+      }
     },
     history: {
 
@@ -23168,8 +20073,7 @@ var NightUI = (function (UI) {
 
       get: function () {
         return this._history;
-      },
-      configurable: true
+      }
     },
     fileLoader: {
 
@@ -23180,8 +20084,7 @@ var NightUI = (function (UI) {
 
       get: function () {
         return this._fileLoader;
-      },
-      configurable: true
+      }
     }
   });
 
@@ -23190,9 +20093,8 @@ var NightUI = (function (UI) {
 
 module.exports = NightUI;
 
-},{"../base/ui":112,"./controls/brightness":113,"./controls/contrast":114,"./controls/crop":116,"./controls/filters":117,"./controls/flip":118,"./controls/frames":119,"./controls/radial-blur":120,"./controls/rotation":121,"./controls/saturation":122,"./controls/stickers":123,"./controls/text":124,"./controls/tilt-shift":125,"./lib/canvas":126,"./lib/file-loader":128,"./lib/top-controls":131}],133:[function(require,module,exports){
+},{"../base/ui":81,"./controls/brightness":82,"./controls/contrast":83,"./controls/crop":85,"./controls/filters":86,"./controls/flip":87,"./controls/frames":88,"./controls/radial-blur":89,"./controls/rotation":90,"./controls/saturation":91,"./controls/stickers":92,"./controls/text":93,"./controls/tilt-shift":94,"./lib/canvas":95,"./lib/file-loader":97,"./lib/top-controls":100,"lodash":"lodash"}],102:[function(require,module,exports){
 "use strict";
-
 /*
 
 StackBlur - a fast almost Gaussian Blur For Canvas
@@ -23472,8 +20374,6 @@ module.exports = {
 
 },{}],"lodash":[function(require,module,exports){
 (function (global){
-"use strict";
-
 /**
  * @license
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -23483,6 +20383,8 @@ module.exports = {
  * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
  * Available under MIT license <http://lodash.com/license>
  */
+"use strict";
+
 ;(function () {
 
   /** Used internally to indicate various things */
