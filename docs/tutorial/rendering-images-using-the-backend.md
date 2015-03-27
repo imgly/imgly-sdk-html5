@@ -8,7 +8,9 @@ To apply operations on an image, push operation instances to the `operationsStac
 ```js
 var kit = new ImglyKit({
   image: myImage,
-  ui: false // Disable the UI
+  ui: {
+    enabled: false // Disable the UI
+  }
 });
 
 // Instantiate a filters operation, pass the ImglyKit instance and

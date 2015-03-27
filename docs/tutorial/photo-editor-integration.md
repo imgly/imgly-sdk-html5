@@ -23,6 +23,11 @@ automatically fill the container size, so let's set this to 640x480 pixels.
 We will now initialize the photo editor using JavaScript. But before we
 initialize it, we will have to load an image that we can pass to the editor.
 
+> :exclamation: *Notice:* Since v2.0.0-beta4 you don't need to pass an
+> `image` option as long as you're not using the UI. When no `image` option
+> is passed, the default UI will display a `new` button as well as a
+> drag-and-drop area for loading pictures from the hard drive.
+
 ```html
 <script>
   window.onload = function() {
@@ -55,7 +60,9 @@ loaded. Let's initialize the SDK and pass some additional information:
         image: image,
         container: container,
         assetsUrl: "/imglykit/assets", // Change this to where your assets are
-        ui: true // UI is disabled per default
+        ui: {
+          enabled: true // UI is disabled per default
+        }
       });
       kit.run();
     };

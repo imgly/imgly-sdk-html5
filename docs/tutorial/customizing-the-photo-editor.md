@@ -14,7 +14,9 @@ with an object containing an `only` property *before* calling `kit.run()`:
 ```js
 var kit = new ImglyKit({
   image: myImage,
-  ui: true,
+  ui: {
+    enabled: true,
+  }
   container: document.querySelector("#container")
 });
 
