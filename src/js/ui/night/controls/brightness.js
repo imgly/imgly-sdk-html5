@@ -56,11 +56,15 @@ class BrightnessControl extends Control {
    * @override
    */
   _onBack () {
-    super._onBack();
+    let currentBrightness = this._operation.getBrightness();
 
-    if (this._operationExistedBefore) {
-      this._operation.setBrightness(this._initialBrightness);
-    } else {
+    if (this._initialBrightness !== currentBrightness) {
+      this._ui.addHistory(this._operation, {
+        brightness: this._initialBrightness
+      }, this._operationExistedBefore);
+    }
+
+    if (currentBrightness === 1.0) {
       this._ui.removeOperation("brightness");
     }
 
@@ -74,16 +78,6 @@ class BrightnessControl extends Control {
   _onUpdate (value) {
     this._operation.setBrightness(value);
     this._ui.canvas.render();
-  }
-
-  /**
-   * Gets called when the done button has been clicked
-   * @override
-   */
-  _onDone () {
-    this._ui.addHistory(this._operation, {
-      brightness: this._initialBrightness
-    }, this._operationExistedBefore);
   }
 }
 
