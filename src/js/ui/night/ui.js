@@ -14,6 +14,7 @@ import UI from "../base/ui";
 import Canvas from "./lib/canvas";
 import FileLoader from "./lib/file-loader";
 import TopControls from "./lib/top-controls";
+import Scrollbar from "./lib/scrollbar";
 
 class NightUI extends UI {
   constructor (...args) {
@@ -271,6 +272,8 @@ class NightUI extends UI {
     if (this.context.controlsDisabled) return;
     this._overviewControlsContainer.style.display = "none";
 
+    this._scrollbar.remove();
+
     if (this._currentControl) {
       this._currentControl.leave();
     }
@@ -291,6 +294,8 @@ class NightUI extends UI {
 
     this._currentControl = null;
     this._overviewControlsContainer.style.display = "";
+
+    this._initScrollbar();
   }
 
   /**
@@ -316,6 +321,17 @@ class NightUI extends UI {
       control.setContainers(this._controlsContainer, this._canvasControlsContainer);
       control.init();
     }
+
+    this._initScrollbar();
+  }
+
+  /**
+   * Initializes the custom scrollbar
+   * @private
+   */
+  _initScrollbar () {
+    let container = this._controlsContainer.querySelector(".imglykit-controls-list").parentNode;
+    this._scrollbar = new Scrollbar(container);
   }
 
   /**

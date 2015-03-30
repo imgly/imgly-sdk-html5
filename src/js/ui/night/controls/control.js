@@ -11,6 +11,7 @@
 import dot from "dot";
 import Helpers from "../../base/helpers";
 import EventEmitter from "../../../lib/event-emitter";
+import Scrollbar from "../lib/scrollbar";
 
 class Control extends EventEmitter {
   constructor (kit, ui, operation) {
@@ -58,6 +59,7 @@ class Control extends EventEmitter {
   _renderAllControls () {
     this._renderControls();
     this._renderCanvasControls();
+    this._initScrollbar();
   }
 
   /**
@@ -111,6 +113,17 @@ class Control extends EventEmitter {
   }
 
   /**
+   * Initializes the custom scrollbar
+   * @private
+   */
+  _initScrollbar () {
+    let list = this._controls.querySelector(".imglykit-controls-list");
+    if (list) {
+      this._scrollbar = new Scrollbar(list.parentNode);
+    }
+  }
+
+  /**
    * Removes the controls from the DOM
    * @private
    */
@@ -119,8 +132,14 @@ class Control extends EventEmitter {
     if (this._canvasControls) {
       this._canvasControls.parentNode.removeChild(this._canvasControls);
     }
+
+    if (this._scrollbar) this._scrollbar.remove();
   }
 
+  /**
+   * Handles the back and done buttons
+   * @private
+   */
   _handleBackAndDoneButtons () {
     // Back button
     let backButton = this._controls.querySelector(".imglykit-controls-back");

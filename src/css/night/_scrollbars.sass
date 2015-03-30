@@ -7,20 +7,29 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-.imglykit-controls, .imglykit-controls *
-  &::-webkit-scrollbar
-    background: transparent
-    width: $scrollbarWidth
+.imglykit-container
+
+  .imglykit-scrollbar-background
+    @include transition(all 0.3s ease-out)
+    @include opacity(0)
+    width: 100%
     height: $scrollbarWidth
-
-  &::-webkit-scrollbar-track
     background: #1E1E1E
+    position: absolute
+    bottom: 0
+    left: 0
+    &.visible
+      @include opacity(1)
 
-  &::-webkit-scrollbar-thumb
+  .imglykit-scrollbar-button
+    @include border-radius(5px)
     background: $primaryColor
-    +border-radius(5px)
+    height: $scrollbarWidth - 4
 
-    width: 5px
-    margin: 3px
+    position: absolute
+    left: 0
+    top: 0
+    width: 50px
 
-    border: 3px solid #1E1E1E
+    margin: 2px
+    cursor: pointer

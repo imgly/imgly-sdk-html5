@@ -27,7 +27,7 @@
     width: 100%
     text-align: center
     height: $controlsHeight
-    > div > *
+    > div:not(.imglykit-scrollbar-background) > *
       width: 100%
       display: table
       table-layout: fixed
@@ -49,6 +49,7 @@
       width: $controlsWidth
       height: $controlsHeight
       cursor: pointer
+      line-height: $controlsHeight
 
       border-left: 1px solid $borderColor
       &:last-child
@@ -56,8 +57,8 @@
 
       img
         @include transition(all 0.2s ease-out)
-        margin-top: 20px
         width: 40px
+        vertical-align: middle
 
       &.imglykit-controls-item-active
         background: rgba(black, 0.3)
