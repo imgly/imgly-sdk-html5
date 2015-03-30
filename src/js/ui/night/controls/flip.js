@@ -100,24 +100,22 @@ class FlipControl extends Control {
    * @override
    */
   _onBack () {
-    if (this._operationExistedBefore) {
-      this._operation.setHorizontal(this._initialHorizontal);
-      this._operation.setVertical(this._initialVertical);
-    } else {
+    let currentVertical = this._operation.getVertical();
+    let currentHorizontal = this._operation.getHorizontal();
+
+    if (this._initialVertical !== currentVertical ||
+      this._initialHorizontal !== currentHorizontal) {
+        this._ui.addHistory(this._operation, {
+          vertical: this._initialVertical,
+          horizontal: this._initialHorizontal
+        }, this._operationExistedBefore);
+    }
+
+    if (!currentVertical && !currentHorizontal) {
       this._ui.removeOperation("flip");
     }
-    this._ui.canvas.render();
-  }
 
-  /**
-   * Gets called when the done button has been clicked
-   * @override
-   */
-  _onDone () {
-    this._ui.addHistory(this._operation, {
-      vertical: this._initialVertical,
-      horizontal: this._initialHorizontal
-    }, this._operationExistedBefore);
+    this._ui.canvas.render();
   }
 }
 
