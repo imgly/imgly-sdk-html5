@@ -26,6 +26,8 @@ class SimpleSlider extends Slider {
    * @private
    */
   _setX (x) {
+    this._xPosition = x;
+
     this._dotElement.style.left = `${x}px`;
     this._fillElement.style.width = `${x}px`;
   }
