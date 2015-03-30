@@ -49,6 +49,7 @@ class BrightnessControl extends Control {
       defaultValue: brightness
     });
     this._slider.on("update", this._onUpdate.bind(this));
+    this._slider.setValue(this._initialBrightness);
   }
 
   /**

@@ -49,6 +49,7 @@ class ContrastControl extends Control {
       defaultValue: contrast
     });
     this._slider.on("update", this._onUpdate.bind(this));
+    this._slider.setValue(this._initialContrast);
   }
 
   /**
