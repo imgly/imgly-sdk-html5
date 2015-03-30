@@ -73,6 +73,7 @@ class Scrollbar {
    * Hides the scrollbar
    */
   hide () {
+    if (this._isDragging) return;
     this._dom.background.classList.remove("visible");
   }
 
