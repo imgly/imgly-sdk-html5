@@ -56,11 +56,15 @@ class ContrastControl extends Control {
    * @override
    */
   _onBack () {
-    super._onBack();
+    let currentContrast = this._operation.getContrast();
 
-    if (this._operationExistedBefore) {
-      this._operation.setContrast(this._initialContrast);
-    } else {
+    if (this._initialContrast !== currentContrast) {
+      this._ui.addHistory(this._operation, {
+        contrast: this._initialContrast
+      }, this._operationExistedBefore);
+    }
+
+    if (currentContrast === 1.0) {
       this._ui.removeOperation("contrast");
     }
 
@@ -74,16 +78,6 @@ class ContrastControl extends Control {
   _onUpdate (value) {
     this._operation.setContrast(value);
     this._ui.canvas.render();
-  }
-
-  /**
-   * Gets called when the done button has been clicked
-   * @override
-   */
-  _onDone () {
-    this._ui.addHistory(this._operation, {
-      contrast: this._initialContrast
-    }, this._operationExistedBefore);
   }
 }
 
