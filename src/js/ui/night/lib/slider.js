@@ -10,6 +10,7 @@
 
 import EventEmitter from "../../../lib/event-emitter";
 import Utils from "../../../lib/utils";
+import Vector2 from "../../../lib/math/vector2";
 import _ from "lodash";
 
 let fs = require("fs");
@@ -31,12 +32,17 @@ class Slider extends EventEmitter {
     this._dotElement = this._element.querySelector(".imglykit-slider-dot");
     this._centerDotElement = this._element.querySelector(".imglykit-slider-center-dot");
     this._fillElement = this._element.querySelector(".imglykit-slider-fill");
+    this._backgroundElement = this._element.querySelector(".imglykit-slider-background");
 
     // Mouse event callbacks bound to class context
     this._onMouseDown = this._onMouseDown.bind(this);
     this._onMouseMove = this._onMouseMove.bind(this);
     this._onMouseUp = this._onMouseUp.bind(this);
     this._onCenterDotClick = this._onCenterDotClick.bind(this);
+    this._onBackgroundClick = this._onBackgroundClick.bind(this);
+
+    this._backgroundElement.addEventListener("click", this._onBackgroundClick);
+    this._fillElement.addEventListener("click", this._onBackgroundClick);
 
     this._handleDot();
   }
@@ -71,6 +77,7 @@ class Slider extends EventEmitter {
    * @private
    */
   _setX (x) {
+    this._xPosition = x;
     this._dotElement.style.left = `${x}px`;
 
     // X position relative to center to simplify calculations
@@ -107,6 +114,23 @@ class Slider extends EventEmitter {
   _onCenterDotClick () {
     this.setValue(this._options.defaultValue);
     this.emit("update", this._value);
+  }
+
+  /**
+   * Gets called when the user clicks on the slider background
+   * @param {Event} e
+   * @private
+   */
+  _onBackgroundClick (e) {
+    let position = Utils.getEventPosition(e);
+    let sliderOffset = this._sliderElement.getBoundingClientRect();
+    sliderOffset = new Vector2(sliderOffset.left, sliderOffset.y);
+
+    let relativePosition = position.clone()
+      .subtract(sliderOffset);
+
+    this._setX(relativePosition.x);
+    this._updateValue();
   }
 
   /**
@@ -152,10 +176,19 @@ class Slider extends EventEmitter {
     newSliderX = Math.max(0, Math.min(newSliderX, sliderWidth));
 
     this._setX(newSliderX);
+    this._updateValue();
+  }
+
+  /**
+   * Updates the value using the slider position
+   * @private
+   */
+  _updateValue () {
+    let sliderWidth = this._sliderElement.offsetWidth;
 
     // Calculate the new value
     let { minValue, maxValue } = this._options;
-    let percentage = newSliderX / sliderWidth;
+    let percentage = this._xPosition / sliderWidth;
     let value = minValue + (maxValue - minValue) * percentage;
     this.emit("update", value);
   }
