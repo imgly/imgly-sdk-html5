@@ -160,9 +160,14 @@ class RotationControl extends Control {
    * @override
    */
   _onBack () {
-    if (this._operationExistedBefore) {
-      this._operation.setDegrees(this._initialDegrees);
-    } else {
+    let currentDegrees = this._operation.getDegrees();
+    if (this._initialDegrees !== currentDegrees) {
+      this._ui.addHistory(this._operation, {
+        degrees: this._initialDegrees
+      }, this._operationExistedBefore);
+    }
+
+    if (currentDegrees === 0) {
       this._ui.removeOperation("rotation");
     }
 
@@ -173,25 +178,6 @@ class RotationControl extends Control {
       });
     }
     this._ui.canvas.render();
-  }
-
-  /**
-   * Gets called when the done button has been clicked
-   * @override
-   */
-  _onDone () {
-
-    if (this._cropOperation) {
-      this._cropOperation.set({
-        start: this._initialStart,
-        end: this._initialEnd
-      });
-    }
-    this._ui.canvas.render();
-
-    this._ui.addHistory(this._operation, {
-      degrees: this._initialDegrees
-    }, this._operationExistedBefore);
   }
 }
 
