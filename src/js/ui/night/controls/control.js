@@ -147,7 +147,9 @@ class Control extends EventEmitter {
 
     // Done button
     let doneButton = this._controls.querySelector(".imglykit-controls-done");
-    doneButton.addEventListener("click", this._onDoneButtonClick.bind(this));
+    if (doneButton) {
+      doneButton.addEventListener("click", this._onDoneButtonClick.bind(this));
+    }
   }
 
   /**

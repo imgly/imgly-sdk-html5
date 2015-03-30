@@ -56,6 +56,7 @@ class FiltersControl extends Control {
    */
   _onEnter () {
     this._initialFilter = this._operation.getFilter();
+    this._defaultFilter = this._operation.availableOptions.filter.default;
 
     let listItems = this._controls.querySelectorAll("li");
     this._listItems = Array.prototype.slice.call(listItems);
@@ -74,22 +75,16 @@ class FiltersControl extends Control {
    * @override
    */
   _onBack () {
-    if (this._operationExistedBefore) {
-      this._operation.setFilter(this._initialFilter);
-    } else {
+    let currentFilter = this._operation.getFilter();
+    if (currentFilter !== this._initialFilter) {
+      this._ui.addHistory(this._operation, {
+        filter: this._initialFilter
+      }, this._operationExistedBefore);
+    }
+    if (currentFilter === this._defaultFilter) {
       this._ui.removeOperation("filters");
     }
     this._ui.canvas.render();
-  }
-
-  /**
-   * Gets called when the done button has been clicked
-   * @override
-   */
-  _onDone () {
-    this._ui.addHistory(this._operation, {
-      filter: this._initialFilter
-    }, this._operationExistedBefore);
   }
 
   /**
