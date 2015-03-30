@@ -45,6 +45,8 @@ class Scrollbar {
     this._dom.button.addEventListener("touchstart", this._onButtonDown);
     this._dom.background.addEventListener("click", this._onBackgroundClick);
     this._list.addEventListener("scroll", this._onListScroll.bind(this));
+
+    this._onListScroll();
   }
 
   /**
@@ -190,7 +192,6 @@ class Scrollbar {
 
   /**
    * Gets called when the user scrolls the list
-   * @param {Event} event
    * @private
    */
   _onListScroll () {
