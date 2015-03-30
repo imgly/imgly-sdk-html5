@@ -98,6 +98,7 @@
       line-height: $controlsHeight
       font-size: 0
       cursor: pointer
+      position: relative
 
       &:first-child
         border-right: 1px solid $borderColor
@@ -108,3 +109,19 @@
         vertical-align: middle
         width: 40px
         @include transition(all 0.2s ease-out)
+
+    .imglykit-controls-done
+      .imglykit-controls-done-highlighted
+        display: none
+        position: absolute
+        top: 0
+        left: 0
+        width: $controlsWidth
+        height: $controlsHeight
+        line-height: $controlsHeight
+
+      &.highlighted
+        > img
+          display: none
+        .imglykit-controls-done-highlighted
+          display: block

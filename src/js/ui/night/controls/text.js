@@ -152,13 +152,14 @@ class TextControl extends Control {
     // Listen to click events
     for (let i = 0; i < this._listItems.length; i++) {
       let listItem = this._listItems[i];
+      let { name } = listItem.dataset;
       listItem.addEventListener("click", () => {
         this._onListItemClick(listItem);
       });
 
       if ((!this._operationExistedBefore && i === 0) ||
         (this._operationExistedBefore && name === this._initialSettings.fontFamily)) {
-          this._onListItemClick(listItem);
+          this._onListItemClick(listItem, false);
       }
     }
   }
@@ -178,6 +179,7 @@ class TextControl extends Control {
   _onTextareaKeyUp () {
     this._resizeTextarea();
     this._settings.text = this._textarea.value;
+    this._highlightDoneButton();
   }
 
   /**
@@ -340,6 +342,7 @@ class TextControl extends Control {
   _onForegroundColorUpdate (value) {
     this._settings.color = value;
     this._applySettings();
+    this._highlightDoneButton();
   }
 
   /**
@@ -351,6 +354,7 @@ class TextControl extends Control {
   _onBackgroundColorUpdate (value) {
     this._settings.backgroundColor = value;
     this._applySettings();
+    this._highlightDoneButton();
   }
 
   /**
@@ -381,7 +385,7 @@ class TextControl extends Control {
    * Gets called when the user clicked a list item
    * @private
    */
-  _onListItemClick (item) {
+  _onListItemClick (item, manually=true) {
     this._deactivateAllItems();
 
     let { name, weight } = item.dataset;
@@ -391,6 +395,10 @@ class TextControl extends Control {
     this._applySettings();
 
     item.classList.add("imglykit-controls-item-active");
+
+    if (manually) {
+      this._highlightDoneButton();
+    }
   }
 
   /**

@@ -142,13 +142,13 @@ class Control extends EventEmitter {
    */
   _handleBackAndDoneButtons () {
     // Back button
-    let backButton = this._controls.querySelector(".imglykit-controls-back");
-    backButton.addEventListener("click", this._onBackButtonClick.bind(this));
+    this._backButton = this._controls.querySelector(".imglykit-controls-back");
+    this._backButton.addEventListener("click", this._onBackButtonClick.bind(this));
 
     // Done button
-    let doneButton = this._controls.querySelector(".imglykit-controls-done");
-    if (doneButton) {
-      doneButton.addEventListener("click", this._onDoneButtonClick.bind(this));
+    this._doneButton = this._controls.querySelector(".imglykit-controls-done");
+    if (this._doneButton) {
+      this._doneButton.addEventListener("click", this._onDoneButtonClick.bind(this));
     }
   }
 
@@ -168,6 +168,14 @@ class Control extends EventEmitter {
   _onDoneButtonClick () {
     this._onDone();
     this.emit("back");
+  }
+
+  /**
+   * Highlights the done button
+   * @private
+   */
+  _highlightDoneButton () {
+    this._doneButton.classList.add("highlighted");
   }
 
   /**

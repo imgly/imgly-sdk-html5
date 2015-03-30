@@ -93,6 +93,7 @@ class RadialBlurControl extends Control {
   _onBlurRadiusUpdate (value) {
     this._operation.setBlurRadius(value);
     this._ui.canvas.render();
+    this._highlightDoneButton();
   }
 
   /**

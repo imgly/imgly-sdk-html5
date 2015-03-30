@@ -161,7 +161,7 @@ class StickersControl extends Control {
 
       if ((!this._operationExistedBefore && i === 0) ||
         (this._operationExistedBefore && this._stickers[identifier] === this._initialSettings.sticker)) {
-          this._onListItemClick(listItem);
+          this._onListItemClick(listItem, false);
       }
     }
   }
@@ -269,6 +269,7 @@ class StickersControl extends Control {
     this._size.copy(size);
 
     this._applySettings();
+    this._highlightDoneButton();
   }
 
   /**
@@ -329,6 +330,7 @@ class StickersControl extends Control {
     this._position.copy(position);
 
     this._applySettings();
+    this._highlightDoneButton();
   }
 
   /**
@@ -362,7 +364,7 @@ class StickersControl extends Control {
    * Gets called when the user clicked a list item
    * @private
    */
-  _onListItemClick (item) {
+  _onListItemClick (item, manually=true) {
     this._deactivateAllItems();
 
     let { identifier } = item.dataset;
@@ -377,6 +379,10 @@ class StickersControl extends Control {
     this._stickerImage.src = stickerPath;
 
     item.classList.add("imglykit-controls-item-active");
+
+    if (manually) {
+      this._highlightDoneButton();
+    }
   }
 
   /**

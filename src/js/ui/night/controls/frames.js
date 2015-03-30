@@ -83,6 +83,7 @@ class FramesControl extends Control {
   _onThicknessUpdate (value) {
     this._operation.setThickness(value);
     this._ui.canvas.render();
+    this._highlightDoneButton();
   }
 
   /**
@@ -92,6 +93,7 @@ class FramesControl extends Control {
   _onColorUpdate (value) {
     this._operation.setColor(value);
     this._ui.canvas.render();
+    this._highlightDoneButton();
   }
 
   /**
