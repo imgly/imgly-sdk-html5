@@ -9,6 +9,7 @@
  */
 
 import Utils from "../../../lib/utils";
+import Vector2 from "../../../lib/math/vector2";
 
 const maxScrollbarWidth = 18;
 
@@ -35,12 +36,36 @@ class Scrollbar {
     this._onContainerEnter = this._onContainerEnter.bind(this);
     this._onContainerLeave = this._onContainerLeave.bind(this);
 
+    this._onBackgroundClick = this._onBackgroundClick.bind(this);
+
     this._container.addEventListener("mouseenter", this._onContainerEnter);
     this._container.addEventListener("mouseleave", this._onContainerLeave);
     this._container.addEventListener("mousemove", this._onContainerEnter);
     this._dom.button.addEventListener("mousedown", this._onButtonDown);
     this._dom.button.addEventListener("touchstart", this._onButtonDown);
+    this._dom.background.addEventListener("click", this._onBackgroundClick);
     this._list.addEventListener("scroll", this._onListScroll.bind(this));
+  }
+
+  /**
+   * Gets called when the user clicks the scrollbar background
+   * @param {Event} e
+   * @private
+   */
+  _onBackgroundClick (e) {
+    e.preventDefault();
+    if (e.target !== this._dom.background) return;
+
+    let position = Utils.getEventPosition(e);
+    let backgroundOffset = this._dom.background.getBoundingClientRect();
+    backgroundOffset = new Vector2(backgroundOffset.left, backgroundOffset.top);
+
+    let relativePosition = position.clone()
+      .subtract(backgroundOffset);
+
+    relativePosition.x -= this._values.button.width * 0.5;
+
+    this._setButtonPosition(relativePosition.x);
   }
 
   /**
@@ -127,6 +152,15 @@ class Scrollbar {
       .subtract(this._initialMousePosition);
     let newButtonPosition = this._initialButtonPosition + diff.x;
 
+    this._setButtonPosition(newButtonPosition);
+  }
+
+  /**
+   * Sets the button position to the given value
+   * @param {Number} newButtonPosition
+   * @private
+   */
+  _setButtonPosition (newButtonPosition) {
     // Clamp button position
     newButtonPosition = Math.max(0, newButtonPosition);
     newButtonPosition = Math.min(newButtonPosition, this._values.button.scrollableWidth);
@@ -143,7 +177,6 @@ class Scrollbar {
 
   /**
    * Gets called when the user releases the button
-   * @param {Event}
    * @private
    */
   _onButtonUp () {
