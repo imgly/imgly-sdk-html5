@@ -9,12 +9,10 @@
         {{ var filter = it.filters[identifier]; }}
         {{ var name = filter.prototype.name; }}
         {{ var enabled = it.activeFilter.identifier === identifier; }}
-        {{? identifier !== "identity"}}
         <li data-identifier="{{= identifier}}" class="imglykit-controls-item-with-label{{? enabled}} imglykit-controls-item-active{{?}}">
           <img src="{{=it.helpers.assetPath('ui/night/filters/' + identifier + '.png')}}" />
           <div class="imglykit-controls-item-label">{{= name }}</div>
         </li>
-        {{?}}
       {{ } }}
     </ul>
   </div>
