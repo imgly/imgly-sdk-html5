@@ -437,6 +437,9 @@ class NightUI extends UI {
       let { operation, existent, options } = lastItem;
       if (!existent) {
         this.removeOperation(operation.identifier);
+      } else {
+        operation = this.getOrCreateOperation(operation.identifier);
+        operation.set(options);
       }
       this.canvas.zoomToFit(true);
     }

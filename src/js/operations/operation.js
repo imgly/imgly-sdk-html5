@@ -133,9 +133,6 @@ class Operation extends EventEmitter {
       // Create setter and getter
       (function (optionName, option) {
         self["set" + capitalized] = function (value) {
-          if (typeof option.setter !== "undefined") {
-            value = option.setter.call(this, value);
-          }
           self._setOption(optionName, value);
         };
 
@@ -196,6 +193,10 @@ class Operation extends EventEmitter {
   _setOption (optionName, value, update=true) {
     var optionConfig = this.availableOptions[optionName];
     var identifier = this.identifier;
+
+    if (typeof optionConfig.setter !== "undefined") {
+      value = optionConfig.setter.call(this, value);
+    }
 
     if (typeof optionConfig.validation !== "undefined") {
       optionConfig.validation(value);
