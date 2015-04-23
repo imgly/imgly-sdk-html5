@@ -20,7 +20,7 @@ var kit = new ImglyKit({
   container: document.querySelector("#container")
 });
 
-kit.selectOperations({ only: "crop, filters" });
+kit.ui.selectOperations({ only: "crop, filters" });
 
 kit.run();
 ```
@@ -29,7 +29,7 @@ To select all operations except the `text` and `stickers` operations, you
 can pass an object containing an `except` property:
 
 ```js
-kit.selectOperations({ except: "text, stickers" });
+kit.ui.selectOperations({ except: "text, stickers" });
 ```
 
 ## Selecting the available filters
