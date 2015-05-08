@@ -72,7 +72,6 @@ class Saturation extends Primitive {
     var imageData = renderer.getContext().getImageData(0, 0, canvas.width, canvas.height);
     var saturation = this._options.saturation;
 
-    var d;
     for (var x = 0; x < canvas.width; x++) {
       for (var y = 0; y < canvas.height; y++) {
         var index = (canvas.width * y + x) * 4;

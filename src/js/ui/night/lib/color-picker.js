@@ -12,7 +12,6 @@ import EventEmitter from "../../../lib/event-emitter";
 import Utils from "../../../lib/utils";
 import Color from "../../../lib/color";
 import Vector2 from "../../../lib/math/vector2";
-import _ from "lodash";
 
 let fs = require("fs");
 
@@ -334,7 +333,7 @@ class ColorPicker extends EventEmitter {
    * @param {Event} e
    * @private
    */
-  _onAlphaCanvasUp (e) {
+  _onAlphaCanvasUp () {
     document.removeEventListener("mousemove", this._onAlphaCanvasDrag);
     document.removeEventListener("touchmove", this._onAlphaCanvasDrag);
 
@@ -400,7 +399,7 @@ class ColorPicker extends EventEmitter {
    * @param {Event} e
    * @private
    */
-  _onHueCanvasUp (e) {
+  _onHueCanvasUp () {
     document.removeEventListener("mousemove", this._onHueCanvasDrag);
     document.removeEventListener("touchmove", this._onHueCanvasDrag);
 
@@ -468,7 +467,7 @@ class ColorPicker extends EventEmitter {
    * @param {Event} e
    * @private
    */
-  _onSaturationCanvasUp (e) {
+  _onSaturationCanvasUp () {
     document.removeEventListener("mousemove", this._onSaturationCanvasDrag);
     document.removeEventListener("touchmove", this._onSaturationCanvasDrag);
 

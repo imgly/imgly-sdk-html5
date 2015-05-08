@@ -434,7 +434,7 @@ class CropControl extends Control {
    * @param {Event} e
    * @private
    */
-  _onKnobUp (e) {
+  _onKnobUp () {
     this._currentKnob = null;
     document.removeEventListener("mousemove", this._onKnobDrag);
     document.removeEventListener("touchmove", this._onKnobDrag);
@@ -512,7 +512,7 @@ class CropControl extends Control {
    * @param {Event} e
    * @private
    */
-  _onCenterUp (e) {
+  _onCenterUp () {
     document.removeEventListener("mousemove", this._onCenterDrag);
     document.removeEventListener("touchmove", this._onCenterDrag);
     document.removeEventListener("mouseup", this._onCenterUp);

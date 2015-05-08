@@ -317,7 +317,7 @@ class TextControl extends Control {
    * @param {Event} e
    * @private
    */
-  _onResizeKnobUp (e) {
+  _onResizeKnobUp () {
     document.removeEventListener("mousemove", this._onResizeKnobDrag);
     document.removeEventListener("touchmove", this._onResizeKnobDrag);
 

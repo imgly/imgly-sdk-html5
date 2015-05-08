@@ -36,10 +36,9 @@ class IdentityFilter extends Filter {
 
   /**
    * Renders the filter
-   * @param  {Renderer} renderer
    * @return {Promise}
    */
-  render (renderer) {
+  render () {
     // This is the identity filter, it doesn't have any effect.
   }
 }

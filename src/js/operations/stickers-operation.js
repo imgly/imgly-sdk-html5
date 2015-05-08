@@ -10,7 +10,6 @@
 
 import Operation from "./operation";
 import Vector2 from "../lib/math/vector2";
-import Utils from "../lib/utils";
 
 /**
  * An operation that can draw text on the canvas

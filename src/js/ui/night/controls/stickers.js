@@ -269,7 +269,7 @@ class StickersControl extends Control {
    * @param {Event} e
    * @private
    */
-  _onKnobUp (e) {
+  _onKnobUp () {
     document.removeEventListener("mousemove", this._onKnobDrag);
     document.removeEventListener("touchmove", this._onKnobDrag);
 
@@ -330,7 +330,7 @@ class StickersControl extends Control {
    * @param {Event} e
    * @private
    */
-  _onImageUp (e) {
+  _onImageUp () {
     document.removeEventListener("mousemove", this._onImageDrag);
     document.removeEventListener("touchmove", this._onImageDrag);
 

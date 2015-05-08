@@ -113,7 +113,7 @@ class NightUI extends UI {
    */
   _onFileLoaded (file) {
     let reader = new FileReader();
-    reader.onload = ((file) => {
+    reader.onload = (() => {
       return (e) => {
         let data = e.target.result;
         let image = new Image();
