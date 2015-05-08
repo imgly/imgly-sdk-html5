@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -14,8 +14,8 @@
  * @alias ImglyKit.RenderType
  */
 export var RenderType = {
-  IMAGE: "image",
-  DATAURL: "data-url"
+  IMAGE: 'image',
+  DATAURL: 'data-url'
 };
 
 /**
@@ -24,6 +24,6 @@ export var RenderType = {
  * @alias ImglyKit.ImageFormat
  */
 export var ImageFormat = {
-  PNG: "image/png",
-  JPEG: "image/jpeg"
+  PNG: 'image/png',
+  JPEG: 'image/jpeg'
 };

@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -20,7 +20,9 @@
  */
 class Color {
   constructor (r, g, b, a) {
-    if (typeof a === "undefined") a = 1.0;
+    if (typeof a === 'undefined') {
+      a = 1.0;
+    }
 
     this.r = r;
     this.g = g;
@@ -39,7 +41,7 @@ class Color {
       Math.round(this.b * 255),
       this.a
     ];
-    return "rgba(" + colors.join(",") + ")";
+    return 'rgba(' + colors.join(',') + ')';
   }
 
   /**
@@ -52,7 +54,7 @@ class Color {
       this._componentToHex(Math.round(this.g * 255)),
       this._componentToHex(Math.round(this.b * 255))
     ];
-    return "#" + components.join("");
+    return '#' + components.join('');
   }
 
   /**
@@ -78,7 +80,9 @@ class Color {
   toHSV () {
     let max = Math.max(this.r, this.g, this.b);
     let min = Math.min(this.r, this.g, this.b);
-    let h, s, v = max;
+    let h;
+    let s;
+    let v = max;
     let d = max - min;
     s = max === 0 ? 0 : d / max;
 
@@ -117,37 +121,37 @@ class Color {
     let q = v * (1 - f * s);
     let t = v * (1 - (1 - f) * s);
 
-    switch(i % 6){
-        case 0:
-          r = v;
-          g = t;
-          b = p;
-          break;
-        case 1:
-          r = q;
-          g = v;
-          b = p;
-          break;
-        case 2:
-          r = p;
-          g = v;
-          b = t;
-          break;
-        case 3:
-          r = p;
-          g = q;
-          b = v;
-          break;
-        case 4:
-          r = t;
-          g = p;
-          b = v;
-          break;
-        case 5:
-          r = v;
-          g = p;
-          b = q;
-          break;
+    switch (i % 6){
+      case 0:
+        r = v;
+        g = t;
+        b = p;
+        break;
+      case 1:
+        r = q;
+        g = v;
+        b = p;
+        break;
+      case 2:
+        r = p;
+        g = v;
+        b = t;
+        break;
+      case 3:
+        r = p;
+        g = q;
+        b = v;
+        break;
+      case 4:
+        r = t;
+        g = p;
+        b = v;
+        break;
+      case 5:
+        r = v;
+        g = p;
+        b = q;
+        break;
     }
 
     this.r = r;
@@ -171,7 +175,7 @@ class Color {
    */
   _componentToHex (component) {
     var hex = component.toString(16);
-    return hex.length == 1 ? "0" + hex : hex;
+    return hex.length == 1 ? '0' + hex : hex;
   }
 
   /**

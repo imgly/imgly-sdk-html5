@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *

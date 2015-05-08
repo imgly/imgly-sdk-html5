@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 /**
  * EventEmitter (ES6) from:
  * https://gist.github.com/bloodyowl/41b1de3388c626796eca
@@ -18,11 +18,11 @@ class EventEmitter {
   }
 
   on (type, listener) {
-    if(typeof listener != "function") {
+    if (typeof listener != 'function') {
       throw new TypeError();
     }
 
-    let listeners = this._events[type] ||(this._events[type] = []);
+    let listeners = this._events[type] || (this._events[type] = []);
     if (listeners.indexOf(listener) != -1) {
       return this;
     }
@@ -30,9 +30,9 @@ class EventEmitter {
 
     if (listeners.length > this._maxListeners) {
       error(
-        "possible memory leak, added %i %s listeners, "+
-        "use EventEmitter#setMaxListeners(number) if you " +
-        "want to increase the limit (%i now)",
+        ```possible memory leak, added %i %s listeners,
+        use EventEmitter#setMaxListeners(number) if you
+        want to increase the limit (%i now)```,
         listeners.length,
         type,
         this._maxListeners
@@ -57,7 +57,7 @@ class EventEmitter {
     }
 
     let listener = args[0];
-    if (typeof listener != "function") {
+    if (typeof listener != 'function') {
       throw new TypeError();
     }
 
@@ -77,7 +77,7 @@ class EventEmitter {
 
   emit (type, ...args) {
     let listeners = this._events[type];
-    if(!listeners || !listeners.length) {
+    if (!listeners || !listeners.length) {
       return false;
     }
 
