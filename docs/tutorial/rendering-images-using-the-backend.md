@@ -24,7 +24,7 @@ kit.operationsStack.push(a15Filter);
 
 // Instantiate a brightness operation and push it to the stack as well
 var brightness = new ImglyKit.Operations.Brightness(kit, {
-  brightness: 1.5
+  brightness: 0.5
 });
 kit.operationsStack.push(brightness);
 
