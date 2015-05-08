@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,40 +8,40 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-let fs = require("fs");
-import _ from "lodash";
-import UI from "../base/ui";
-import Canvas from "./lib/canvas";
-import FileLoader from "./lib/file-loader";
-import TopControls from "./lib/top-controls";
-import Scrollbar from "./lib/scrollbar";
+let fs = require('fs');
+import _ from 'lodash';
+import UI from '../base/ui';
+import Canvas from './lib/canvas';
+import FileLoader from './lib/file-loader';
+import TopControls from './lib/top-controls';
+import Scrollbar from './lib/scrollbar';
 
 class NightUI extends UI {
   constructor (...args) {
     this._operationsMap = {};
-    this._template = fs.readFileSync(__dirname + "/../../templates/night/template.jst", "utf-8");
+    this._template = fs.readFileSync(__dirname + '/../../templates/night/template.jst', 'utf-8');
     this._registeredControls = {};
     this._history = [];
 
     // The `Night` UI has a fixed operation order
     this._preferredOperationOrder = [
       // First, all operations that affect the image dimensions
-      "rotation",
-      "crop",
-      "flip",
+      'rotation',
+      'crop',
+      'flip',
 
       // Then color operations (first filters, then fine-tuning)
-      "filters",
-      "contrast",
-      "brightness",
-      "saturation",
+      'filters',
+      'contrast',
+      'brightness',
+      'saturation',
 
       // Then post-processing
-      "radial-blur",
-      "tilt-shift",
-      "frames",
-      "stickers",
-      "text"
+      'radial-blur',
+      'tilt-shift',
+      'frames',
+      'stickers',
+      'text'
     ];
 
     this._paused = false;
@@ -60,7 +60,7 @@ class NightUI extends UI {
    * @type {String}
    */
   get identifier () {
-    return "night";
+    return 'night';
   }
 
   /**
@@ -73,9 +73,9 @@ class NightUI extends UI {
 
     let { container } = this._options;
 
-    this._controlsContainer = container.querySelector(".imglykit-controls");
-    this._canvasControlsContainer = container.querySelector(".imglykit-canvas-controls");
-    this._overviewControlsContainer = container.querySelector(".imglykit-controls-overview");
+    this._controlsContainer = container.querySelector('.imglykit-controls');
+    this._canvasControlsContainer = container.querySelector('.imglykit-canvas-controls');
+    this._overviewControlsContainer = container.querySelector('.imglykit-controls-overview');
 
     this._handleOverview();
 
@@ -88,7 +88,9 @@ class NightUI extends UI {
     this._initTopControls();
     this._initControls();
 
-    if (this._options.image) this.showZoom();
+    if (this._options.image) {
+      this.showZoom();
+    }
 
     if (this._options.ui.showCloseButton) {
       this._handleCloseButton();
@@ -101,7 +103,7 @@ class NightUI extends UI {
    */
   _initFileLoader () {
     this._fileLoader = new FileLoader(this._kit, this);
-    this._fileLoader.on("file", this._onFileLoaded.bind(this));
+    this._fileLoader.on('file', this._onFileLoaded.bind(this));
   }
 
   /**
@@ -133,7 +135,18 @@ class NightUI extends UI {
     if (this._canvas) {
       this._canvas.reset();
     }
-    this.run();
+
+    this._fileLoader.removeDOM();
+
+    if (!this._canvas) {
+      this._initCanvas();
+    } else {
+      this._canvas.setImage(this._options.image);
+    }
+
+    this.showZoom();
+    this._topControls.init();
+    this._enableControls();
   }
 
   /**
@@ -144,12 +157,12 @@ class NightUI extends UI {
     this._topControls = new TopControls(this._kit, this);
     this._topControls.run();
 
-    this._topControls.on("undo", () => {
+    this._topControls.on('undo', () => {
       this.undo();
     });
 
     // Pass zoom in event
-    this._topControls.on("zoom-in", () => {
+    this._topControls.on('zoom-in', () => {
       this._canvas.zoomIn()
         .then(() => {
           if (this._currentControl) {
@@ -159,7 +172,7 @@ class NightUI extends UI {
     });
 
     // Pass zoom out event
-    this._topControls.on("zoom-out", () => {
+    this._topControls.on('zoom-out', () => {
       this._canvas.zoomOut()
         .then(() => {
           if (this._currentControl) {
@@ -176,7 +189,7 @@ class NightUI extends UI {
   _initCanvas () {
     this._canvas = new Canvas(this._kit, this, this._options);
     this._canvas.run();
-    this._canvas.on("zoom", () => {
+    this._canvas.on('zoom', () => {
       this._topControls.updateZoomLevel();
     });
   }
@@ -197,7 +210,7 @@ class NightUI extends UI {
     let { operationsStack, registeredOperations } = this._kit;
     let Operation = registeredOperations[identifier];
 
-    if (typeof this._operationsMap[identifier] === "undefined") {
+    if (typeof this._operationsMap[identifier] === 'undefined') {
       // Create operation
       let operationInstance = new Operation(this._kit);
       this._operationsMap[identifier] = operationInstance;
@@ -231,18 +244,18 @@ class NightUI extends UI {
    * @private
    */
   _registerControls () {
-    this.registerControl("filters", "filters", require("./controls/filters"));
-    this.registerControl("rotation", "rotation", require("./controls/rotation"));
-    this.registerControl("flip", "flip", require("./controls/flip"));
-    this.registerControl("brightness", "brightness", require("./controls/brightness"));
-    this.registerControl("contrast", "contrast", require("./controls/contrast"));
-    this.registerControl("saturation", "saturation", require("./controls/saturation"));
-    this.registerControl("crop", "crop", require("./controls/crop"));
-    this.registerControl("radial-blur", "radial-blur", require("./controls/radial-blur"));
-    this.registerControl("tilt-shift", "tilt-shift", require("./controls/tilt-shift"));
-    this.registerControl("frames", "frames", require("./controls/frames"));
-    this.registerControl("stickers", "stickers", require("./controls/stickers"));
-    this.registerControl("text", "text", require("./controls/text"));
+    this.registerControl('filters', 'filters', require('./controls/filters'));
+    this.registerControl('rotation', 'rotation', require('./controls/rotation'));
+    this.registerControl('flip', 'flip', require('./controls/flip'));
+    this.registerControl('brightness', 'brightness', require('./controls/brightness'));
+    this.registerControl('contrast', 'contrast', require('./controls/contrast'));
+    this.registerControl('saturation', 'saturation', require('./controls/saturation'));
+    this.registerControl('crop', 'crop', require('./controls/crop'));
+    this.registerControl('radial-blur', 'radial-blur', require('./controls/radial-blur'));
+    this.registerControl('tilt-shift', 'tilt-shift', require('./controls/tilt-shift'));
+    this.registerControl('frames', 'frames', require('./controls/frames'));
+    this.registerControl('stickers', 'stickers', require('./controls/stickers'));
+    this.registerControl('text', 'text', require('./controls/text'));
   }
 
   /**
@@ -250,7 +263,7 @@ class NightUI extends UI {
    * @private
    */
   _handleOverview () {
-    let listItems = this._overviewControlsContainer.querySelectorAll(":scope > ul > li");
+    let listItems = this._overviewControlsContainer.querySelectorAll(':scope > ul > li');
 
     // Turn NodeList into an Array
     listItems = Array.prototype.slice.call(listItems);
@@ -258,9 +271,25 @@ class NightUI extends UI {
     // Add click events to all items
     for (let listItem of listItems) {
       let { identifier } = listItem.dataset;
-      listItem.addEventListener("click", () => {
+      listItem.addEventListener('click', () => {
         this._onOverviewButtonClick(identifier);
       });
+    }
+  }
+
+  /**
+   * Enables the overview controls
+   * @private
+   */
+  _enableControls () {
+    let listItems = this._overviewControlsContainer.querySelectorAll(':scope > ul > li');
+
+    // Turn NodeList into an Array
+    listItems = Array.prototype.slice.call(listItems);
+
+    // Add click events to all items
+    for (let listItem of listItems) {
+      listItem.removeAttribute('data-disabled');
     }
   }
 
@@ -270,7 +299,7 @@ class NightUI extends UI {
    */
   _onOverviewButtonClick (identifier) {
     if (this.context.controlsDisabled) return;
-    this._overviewControlsContainer.style.display = "none";
+    this._overviewControlsContainer.style.display = 'none';
 
     this._scrollbar.remove();
 
@@ -280,7 +309,7 @@ class NightUI extends UI {
 
     this._currentControl = this._registeredControls[identifier];
     this._currentControl.enter();
-    this._currentControl.once("back", this._switchToOverview.bind(this));
+    this._currentControl.once('back', this._switchToOverview.bind(this));
   }
 
   /**
@@ -293,7 +322,7 @@ class NightUI extends UI {
     }
 
     this._currentControl = null;
-    this._overviewControlsContainer.style.display = "";
+    this._overviewControlsContainer.style.display = '';
 
     this._initScrollbar();
   }
@@ -330,7 +359,7 @@ class NightUI extends UI {
    * @private
    */
   _initScrollbar () {
-    let container = this._controlsContainer.querySelector(".imglykit-controls-list").parentNode;
+    let container = this._controlsContainer.querySelector('.imglykit-controls-list').parentNode;
     this._scrollbar = new Scrollbar(container);
   }
 
@@ -340,10 +369,10 @@ class NightUI extends UI {
    * @private
    */
   _handleCloseButton () {
-    let closeButton = this._options.container.querySelector(".imglykit-close-button");
-    closeButton.addEventListener("click", (e) => {
+    let closeButton = this._options.container.querySelector('.imglykit-close-button');
+    closeButton.addEventListener('click', (e) => {
       e.preventDefault();
-      this.emit("close");
+      this.emit('close');
     });
   }
 

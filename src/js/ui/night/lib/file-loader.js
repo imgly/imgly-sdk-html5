@@ -20,6 +20,8 @@ class FileLoader extends EventEmitter {
     // http://stackoverflow.com/questions/7110353/html5-dragleave-fired-when-hovering-a-child-element
     this._dragCounter = 0;
 
+    this._container = this._ui.container.querySelector('.imglykit-drop-area-container');
+
     this._onDropAreaDragEnter = this._onDropAreaDragEnter.bind(this);
     this._onDropAreaDragOver = this._onDropAreaDragOver.bind(this);
     this._onDropAreaDragLeave = this._onDropAreaDragLeave.bind(this);
@@ -135,6 +137,22 @@ class FileLoader extends EventEmitter {
    */
   _handleFile (file) {
     this.emit("file", file);
+  }
+
+  /**
+   * Removes event listeners and removes the container form the dom
+   */
+  removeDOM () {
+    this._dropArea.removeEventListener("dragenter", this._onDropAreaDragEnter);
+    this._dropArea.removeEventListener("dragover", this._onDropAreaDragOver);
+    this._dropArea.removeEventListener("dragleave", this._onDropAreaDragLeave);
+    this._dropArea.removeEventListener("drop", this._onDropAreaDrop);
+    this._dropArea.removeEventListener("dragdrop", this._onDropAreaDrop);
+    this._dropArea.removeEventListener("click", this._onDropAreaClick);
+
+    if (this._container.parentNode) {
+      this._container.parentNode.removeChild(this._container);
+    }
   }
 }
 

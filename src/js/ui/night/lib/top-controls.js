@@ -16,6 +16,13 @@ class TopControls extends EventEmitter {
 
     this._kit = kit;
     this._ui = ui;
+    this.init();
+  }
+
+  /**
+   * Initializes the controls
+   */
+  init () {
     this._canvas = this._ui.canvas;
   }
 

@@ -113,6 +113,17 @@ class Canvas extends EventEmitter {
   }
 
   /**
+   * Sets the image to the given one
+   * @param {Image} image
+   */
+  setImage (image) {
+    this._image = image;
+    this.reset();
+    this.render();
+    this._centerCanvas();
+  }
+
+  /**
    * Increase zoom level
    */
   zoomIn () {
@@ -542,6 +553,7 @@ class Canvas extends EventEmitter {
   reset () {
     this._renderer.reset(true);
     this._kit.operationsStack = [];
+    this._isFirstRender = true;
   }
 
   /**
