@@ -237,11 +237,13 @@
 }
 /* line 27, ../../src/css/night/_header.sass */
 .imglykit-container .imglykit-header .imglykit-close-button {
+  position: absolute;
+  top: 0;
+  right: 0;
   cursor: pointer;
-  float: right;
   margin-right: 10px;
 }
-/* line 32, ../../src/css/night/_header.sass */
+/* line 34, ../../src/css/night/_header.sass */
 .imglykit-container .imglykit-header .imglykit-close-button img {
   vertical-align: middle;
 }
@@ -450,13 +452,13 @@
   height: 80px;
 }
 /* line 30, ../../src/css/night/_controls.sass */
-.imglykit-container .imglykit-controls > div > * {
+.imglykit-container .imglykit-controls > div:not(.imglykit-scrollbar-background) > * {
   width: 100%;
   display: table;
   table-layout: fixed;
 }
 /* line 34, ../../src/css/night/_controls.sass */
-.imglykit-container .imglykit-controls > div > * > * {
+.imglykit-container .imglykit-controls > div:not(.imglykit-scrollbar-background) > * > * {
   display: table-cell;
   vertical-align: top;
 }
@@ -479,26 +481,27 @@
   width: 80px;
   height: 80px;
   cursor: pointer;
+  line-height: 80px;
   border-left: 1px solid #363636;
 }
-/* line 54, ../../src/css/night/_controls.sass */
+/* line 55, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls li:last-child {
   border-right: 1px solid #363636;
 }
-/* line 57, ../../src/css/night/_controls.sass */
+/* line 58, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls li img {
   -moz-transition: all 0.2s ease-out;
   -o-transition: all 0.2s ease-out;
   -webkit-transition: all 0.2s ease-out;
   transition: all 0.2s ease-out;
-  margin-top: 20px;
   width: 40px;
+  vertical-align: middle;
 }
-/* line 62, ../../src/css/night/_controls.sass */
+/* line 63, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls li.imglykit-controls-item-active {
   background: rgba(0, 0, 0, 0.3);
 }
-/* line 65, ../../src/css/night/_controls.sass */
+/* line 66, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-item-label {
   color: white;
   font-size: 10px;
@@ -506,37 +509,37 @@
   font-weight: bold;
   margin-top: 10px;
 }
-/* line 72, ../../src/css/night/_controls.sass */
+/* line 73, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-icon {
   width: 80px;
   height: 80px;
   line-height: 80px;
   font-size: 0;
 }
-/* line 78, ../../src/css/night/_controls.sass */
+/* line 79, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-icon img {
   vertical-align: middle;
 }
-/* line 81, ../../src/css/night/_controls.sass */
+/* line 82, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls li[data-disabled] {
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=50);
   opacity: 0.5;
 }
-/* line 85, ../../src/css/night/_controls.sass */
+/* line 86, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls li:hover:not([data-disabled]), .imglykit-container .imglykit-controls .imglykit-controls-button:hover:not([data-disabled]) {
   -moz-box-shadow: 0 -3px 0 0 #9FBDFF inset;
   -webkit-box-shadow: 0 -3px 0 0 #9FBDFF inset;
   box-shadow: 0 -3px 0 0 #9FBDFF inset;
   background-color: rgba(0, 0, 0, 0.3);
 }
-/* line 89, ../../src/css/night/_controls.sass */
+/* line 90, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls li:hover:not([data-disabled]) img, .imglykit-container .imglykit-controls .imglykit-controls-button:hover:not([data-disabled]) img {
   -moz-transform: scale(1.1);
   -ms-transform: scale(1.1);
   -webkit-transform: scale(1.1);
   transform: scale(1.1);
 }
-/* line 92, ../../src/css/night/_controls.sass */
+/* line 93, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-button {
   -moz-transition: background-color 0.2s ease-out;
   -o-transition: background-color 0.2s ease-out;
@@ -547,16 +550,17 @@
   line-height: 80px;
   font-size: 0;
   cursor: pointer;
+  position: relative;
 }
-/* line 101, ../../src/css/night/_controls.sass */
+/* line 103, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-button:first-child {
   border-right: 1px solid #363636;
 }
-/* line 103, ../../src/css/night/_controls.sass */
+/* line 105, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-button:last-child {
   border-left: 1px solid #363636;
 }
-/* line 106, ../../src/css/night/_controls.sass */
+/* line 108, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-button img {
   vertical-align: middle;
   width: 40px;
@@ -564,6 +568,24 @@
   -o-transition: all 0.2s ease-out;
   -webkit-transition: all 0.2s ease-out;
   transition: all 0.2s ease-out;
+}
+/* line 114, ../../src/css/night/_controls.sass */
+.imglykit-container .imglykit-controls .imglykit-controls-done .imglykit-controls-done-highlighted {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 80px;
+  height: 80px;
+  line-height: 80px;
+}
+/* line 124, ../../src/css/night/_controls.sass */
+.imglykit-container .imglykit-controls .imglykit-controls-done.highlighted > img {
+  display: none;
+}
+/* line 126, ../../src/css/night/_controls.sass */
+.imglykit-container .imglykit-controls .imglykit-controls-done.highlighted .imglykit-controls-done-highlighted {
+  display: block;
 }
 
 /*!
@@ -587,7 +609,11 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-/* line 12, ../../src/css/night/controls/_filters.sass */
+/* line 11, ../../src/css/night/controls/_filters.sass */
+.imglykit-container .imglykit-controls-filters ul.imglykit-controls-list li {
+  line-height: normal;
+}
+/* line 13, ../../src/css/night/controls/_filters.sass */
 .imglykit-container .imglykit-controls-filters ul.imglykit-controls-list li img {
   width: 40px;
   height: 40px;
@@ -743,13 +769,14 @@
   height: 12px;
   top: 50%;
   margin-top: -8px;
+  cursor: pointer;
 }
-/* line 38, ../../src/css/night/controls/_slider.sass */
+/* line 39, ../../src/css/night/controls/_slider.sass */
 .imglykit-container .imglykit-slider .imglykit-slider-slider .imglykit-slider-fill {
   position: absolute;
   background: #9FBDFF;
 }
-/* line 42, ../../src/css/night/controls/_slider.sass */
+/* line 43, ../../src/css/night/controls/_slider.sass */
 .imglykit-container .imglykit-slider .imglykit-slider-slider .imglykit-slider-center-dot {
   -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
@@ -763,7 +790,7 @@
   cursor: pointer;
   margin: -14px 0 0 -12px;
 }
-/* line 54, ../../src/css/night/controls/_slider.sass */
+/* line 55, ../../src/css/night/controls/_slider.sass */
 .imglykit-container .imglykit-slider .imglykit-slider-slider .imglykit-slider-dot {
   -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
@@ -1098,23 +1125,38 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-/* line 11, ../../src/css/night/_scrollbars.sass */
-.imglykit-controls::-webkit-scrollbar, .imglykit-controls *::-webkit-scrollbar {
-  background: transparent;
-  width: 11px;
+/* line 12, ../../src/css/night/_scrollbars.sass */
+.imglykit-container .imglykit-scrollbar-background {
+  -moz-transition: all 0.3s ease-out;
+  -o-transition: all 0.3s ease-out;
+  -webkit-transition: all 0.3s ease-out;
+  transition: all 0.3s ease-out;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+  opacity: 0;
+  width: 100%;
   height: 11px;
-}
-/* line 16, ../../src/css/night/_scrollbars.sass */
-.imglykit-controls::-webkit-scrollbar-track, .imglykit-controls *::-webkit-scrollbar-track {
   background: #1E1E1E;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  cursor: pointer;
 }
-/* line 19, ../../src/css/night/_scrollbars.sass */
-.imglykit-controls::-webkit-scrollbar-thumb, .imglykit-controls *::-webkit-scrollbar-thumb {
-  background: #9FBDFF;
+/* line 22, ../../src/css/night/_scrollbars.sass */
+.imglykit-container .imglykit-scrollbar-background.visible {
+  filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
+  opacity: 1;
+}
+/* line 25, ../../src/css/night/_scrollbars.sass */
+.imglykit-container .imglykit-scrollbar-button {
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
   border-radius: 5px;
-  width: 5px;
-  margin: 3px;
-  border: 3px solid #1E1E1E;
+  background: #9FBDFF;
+  height: 7px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50px;
+  margin: 2px;
+  cursor: pointer;
 }

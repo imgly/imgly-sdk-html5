@@ -247,7 +247,7 @@ class ImglyKit {
  * @name ImglyKit.version
  * @internal Keep in sync with package.json
  */
-ImglyKit.version = '2.0.0-beta5';
+ImglyKit.version = '2.0.0-beta6';
 
 // Exposed classes
 ImglyKit.RenderImage = RenderImage;

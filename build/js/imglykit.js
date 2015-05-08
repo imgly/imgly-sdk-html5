@@ -3239,10 +3239,6 @@ var ImageFormat = _constants.ImageFormat;
 
 var Utils = _interopRequire(require("./lib/utils"));
 
-// Default UIs
-
-var NightUI = _interopRequire(require("./ui/night/ui"));
-
 /**
  * @class
  * @param {Object} options
@@ -3254,9 +3250,9 @@ var NightUI = _interopRequire(require("./ui/night/ui"));
  * @param {Boolean} [options.renderOnWindowResize] - Specifies whether the canvas
  *                                                 should re-render itself when
  *                                                 the window is being resized.
- * @param {String} [options.assetsUrl="assets"] - The base path for all external assets.
- * @param {String} [options.renderer="webgl"] - The renderer identifier. Can either
- *                                            be "webgl" or "canvas".
+ * @param {String} [options.assetsUrl='assets'] - The base path for all external assets.
+ * @param {String} [options.renderer='webgl'] - The renderer identifier. Can either
+ *                                            be 'webgl' or 'canvas'.
  */
 
 var ImglyKit = (function () {
@@ -3264,7 +3260,9 @@ var ImglyKit = (function () {
     _classCallCheck(this, ImglyKit);
 
     // `options` is required
-    if (typeof options === "undefined") throw new Error("No options given.");
+    if (typeof options === "undefined") {
+      throw new Error("No options given.");
+    }
 
     // Set default options
     options = _.defaults(options, {
@@ -3350,7 +3348,9 @@ var ImglyKit = (function () {
           for (var _iterator = this.operationsStack[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
             var operation = _step.value;
 
-            if (!operation) continue;
+            if (!operation) {
+              continue;
+            }
             operation.dirty = true;
           }
         } catch (err) {
@@ -3435,7 +3435,7 @@ var ImglyKit = (function () {
        */
 
       value: function _registerUIs() {
-        this.registerUI(NightUI);
+        this.registerUI(ImglyKit.NightUI);
       }
     },
     _registerOperations: {
@@ -3460,6 +3460,9 @@ var ImglyKit = (function () {
 
       value: function registerOperation(operation) {
         this._registeredOperations[operation.prototype.identifier] = operation;
+        if (this.ui) {
+          this.ui.addOperation(operation);
+        }
       }
     },
     registerUI: {
@@ -3521,7 +3524,7 @@ var ImglyKit = (function () {
  * @name ImglyKit.version
  * @internal Keep in sync with package.json
  */
-ImglyKit.version = "2.0.0-beta5";
+ImglyKit.version = "2.0.0-beta6";
 
 // Exposed classes
 ImglyKit.RenderImage = RenderImage;
@@ -3577,9 +3580,12 @@ ImglyKit.RenderType = RenderType;
 ImglyKit.ImageFormat = ImageFormat;
 ImglyKit.Vector2 = require("./lib/math/vector2");
 
+// UI
+ImglyKit.NightUI = require("./ui/night/ui");
+
 module.exports = ImglyKit;
 
-},{"./constants":11,"./lib/color":13,"./lib/image-exporter":17,"./lib/math/vector2":18,"./lib/render-image":19,"./lib/utils":20,"./operations/brightness-operation":21,"./operations/contrast-operation":22,"./operations/crop-operation":23,"./operations/filters-operation":24,"./operations/filters/a15-filter":25,"./operations/filters/breeze-filter":26,"./operations/filters/bw-filter":27,"./operations/filters/bwhard-filter":28,"./operations/filters/celsius-filter":29,"./operations/filters/chest-filter":30,"./operations/filters/filter":31,"./operations/filters/fixie-filter":32,"./operations/filters/food-filter":33,"./operations/filters/fridge-filter":34,"./operations/filters/front-filter":35,"./operations/filters/glam-filter":36,"./operations/filters/gobblin-filter":37,"./operations/filters/k1-filter":39,"./operations/filters/k2-filter":40,"./operations/filters/k6-filter":41,"./operations/filters/kdynamic-filter":42,"./operations/filters/lenin-filter":43,"./operations/filters/lomo-filter":44,"./operations/filters/mellow-filter":45,"./operations/filters/morning-filter":46,"./operations/filters/orchid-filter":47,"./operations/filters/pola-filter":48,"./operations/filters/pola669-filter":49,"./operations/filters/quozi-filter":63,"./operations/filters/semired-filter":64,"./operations/filters/sunny-filter":65,"./operations/filters/texas-filter":66,"./operations/filters/x400-filter":67,"./operations/flip-operation":68,"./operations/frames-operation":69,"./operations/operation":70,"./operations/radial-blur-operation":71,"./operations/rotation-operation":72,"./operations/saturation-operation":73,"./operations/stickers-operation":74,"./operations/text-operation":75,"./operations/tilt-shift-operation":76,"./ui/night/ui":101,"babel/polyfill":5,"lodash":"lodash","path":7}],13:[function(require,module,exports){
+},{"./constants":11,"./lib/color":13,"./lib/image-exporter":17,"./lib/math/vector2":18,"./lib/render-image":19,"./lib/utils":20,"./operations/brightness-operation":21,"./operations/contrast-operation":22,"./operations/crop-operation":23,"./operations/filters-operation":24,"./operations/filters/a15-filter":25,"./operations/filters/breeze-filter":26,"./operations/filters/bw-filter":27,"./operations/filters/bwhard-filter":28,"./operations/filters/celsius-filter":29,"./operations/filters/chest-filter":30,"./operations/filters/filter":31,"./operations/filters/fixie-filter":32,"./operations/filters/food-filter":33,"./operations/filters/fridge-filter":34,"./operations/filters/front-filter":35,"./operations/filters/glam-filter":36,"./operations/filters/gobblin-filter":37,"./operations/filters/k1-filter":39,"./operations/filters/k2-filter":40,"./operations/filters/k6-filter":41,"./operations/filters/kdynamic-filter":42,"./operations/filters/lenin-filter":43,"./operations/filters/lomo-filter":44,"./operations/filters/mellow-filter":45,"./operations/filters/morning-filter":46,"./operations/filters/orchid-filter":47,"./operations/filters/pola-filter":48,"./operations/filters/pola669-filter":49,"./operations/filters/quozi-filter":63,"./operations/filters/semired-filter":64,"./operations/filters/sunny-filter":65,"./operations/filters/texas-filter":66,"./operations/filters/x400-filter":67,"./operations/flip-operation":68,"./operations/frames-operation":69,"./operations/operation":70,"./operations/radial-blur-operation":71,"./operations/rotation-operation":72,"./operations/saturation-operation":73,"./operations/stickers-operation":74,"./operations/text-operation":75,"./operations/tilt-shift-operation":76,"./ui/night/ui":102,"babel/polyfill":5,"lodash":"lodash","path":7}],13:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -3610,7 +3616,9 @@ var Color = (function () {
   function Color(r, g, b, a) {
     _classCallCheck(this, Color);
 
-    if (typeof a === "undefined") a = 1;
+    if (typeof a === "undefined") {
+      a = 1;
+    }
 
     this.r = r;
     this.g = g;
@@ -3675,9 +3683,9 @@ var Color = (function () {
       value: function toHSV() {
         var max = Math.max(this.r, this.g, this.b);
         var min = Math.min(this.r, this.g, this.b);
-        var h = undefined,
-            s = undefined,
-            v = max;
+        var h = undefined;
+        var s = undefined;
+        var v = max;
         var d = max - min;
         s = max === 0 ? 0 : d / max;
 
@@ -3807,6 +3815,8 @@ module.exports = Color;
 },{}],14:[function(require,module,exports){
 "use strict";
 
+var _taggedTemplateLiteral = function (strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); };
+
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
@@ -3849,7 +3859,7 @@ var EventEmitter = (function () {
         listeners.push(listener);
 
         if (listeners.length > this._maxListeners) {
-          error("possible memory leak, added %i %s listeners, " + "use EventEmitter#setMaxListeners(number) if you " + "want to increase the limit (%i now)", listeners.length, type, this._maxListeners);
+          error(""(_taggedTemplateLiteral(["possible memory leak, added %i %s listeners,\n        use EventEmitter#setMaxListeners(number) if you\n        want to increase the limit (%i now)"], ["possible memory leak, added %i %s listeners,\n        use EventEmitter#setMaxListeners(number) if you\n        want to increase the limit (%i now)"]))(_taggedTemplateLiteral([""], [""])), listeners.length, type, this._maxListeners);
         }
         return this;
       }
@@ -4951,18 +4961,6 @@ var BrightnessOperation = (function (_Operation) {
   _inherits(BrightnessOperation, _Operation);
 
   _createClass(BrightnessOperation, {
-    identifier: {
-
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * operations.
-       * @type {String}
-       */
-
-      get: function () {
-        return "brightness";
-      }
-    },
     _renderWebGL: {
 
       /**
@@ -5010,6 +5008,13 @@ var BrightnessOperation = (function (_Operation) {
 
   return BrightnessOperation;
 })(Operation);
+
+/**
+ * A unique string that identifies this operation. Can be used to select
+ * operations.
+ * @type {String}
+ */
+BrightnessOperation.prototype.identifier = "brightness";
 
 module.exports = BrightnessOperation;
 
@@ -5065,18 +5070,6 @@ var ContrastOperation = (function (_Operation) {
   _inherits(ContrastOperation, _Operation);
 
   _createClass(ContrastOperation, {
-    identifier: {
-
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * operations.
-       * @type {String}
-       */
-
-      get: function () {
-        return "contrast";
-      }
-    },
     _renderWebGL: {
 
       /**
@@ -5124,6 +5117,13 @@ var ContrastOperation = (function (_Operation) {
 
   return ContrastOperation;
 })(Operation);
+
+/**
+ * A unique string that identifies this operation. Can be used to select
+ * operations.
+ * @type {String}
+ */
+ContrastOperation.prototype.identifier = "contrast";
 
 module.exports = ContrastOperation;
 
@@ -5185,18 +5185,6 @@ var CropOperation = (function (_Operation) {
   _inherits(CropOperation, _Operation);
 
   _createClass(CropOperation, {
-    identifier: {
-
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * operations.
-       * @type {String}
-       */
-
-      get: function () {
-        return "crop";
-      }
-    },
     _renderWebGL: {
 
       /**
@@ -5306,6 +5294,13 @@ var CropOperation = (function (_Operation) {
   return CropOperation;
 })(Operation);
 
+/**
+ * A unique string that identifies this operation. Can be used to select
+ * operations.
+ * @type {String}
+ */
+CropOperation.prototype.identifier = "crop";
+
 module.exports = CropOperation;
 
 },{"../lib/math/vector2":18,"./operation":70}],24:[function(require,module,exports){
@@ -5365,18 +5360,6 @@ var FiltersOperation = (function (_Operation) {
   _inherits(FiltersOperation, _Operation);
 
   _createClass(FiltersOperation, {
-    identifier: {
-
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * operations.
-       * @type {String}
-       */
-
-      get: function () {
-        return "filters";
-      }
-    },
     _renderWebGL: {
 
       /**
@@ -5418,6 +5401,13 @@ var FiltersOperation = (function (_Operation) {
 
   return FiltersOperation;
 })(Operation);
+
+/**
+ * A unique string that identifies this operation. Can be used to select
+ * operations.
+ * @type {String}
+ */
+FiltersOperation.prototype.identifier = "filters";
 
 module.exports = FiltersOperation;
 
@@ -6684,11 +6674,10 @@ var IdentityFilter = (function (_Filter) {
 
       /**
        * Renders the filter
-       * @param  {Renderer} renderer
        * @return {Promise}
        */
 
-      value: function render(renderer) {}
+      value: function render() {}
     }
   }, {
     identifier: {
@@ -8788,7 +8777,6 @@ var Saturation = (function (_Primitive) {
         var imageData = renderer.getContext().getImageData(0, 0, canvas.width, canvas.height);
         var saturation = this._options.saturation;
 
-        var d;
         for (var x = 0; x < canvas.width; x++) {
           for (var y = 0; y < canvas.height; y++) {
             var index = (canvas.width * y + x) * 4;
@@ -9789,18 +9777,6 @@ var FlipOperation = (function (_Operation) {
   _inherits(FlipOperation, _Operation);
 
   _createClass(FlipOperation, {
-    identifier: {
-
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * operations.
-       * @type {String}
-       */
-
-      get: function () {
-        return "flip";
-      }
-    },
     _renderWebGL: {
 
       /**
@@ -9864,6 +9840,13 @@ var FlipOperation = (function (_Operation) {
 
   return FlipOperation;
 })(Operation);
+
+/**
+ * A unique string that identifies this operation. Can be used to select
+ * operations.
+ * @type {String}
+ */
+FlipOperation.prototype.identifier = "flip";
 
 module.exports = FlipOperation;
 
@@ -9932,18 +9915,6 @@ var FramesOperation = (function (_Operation) {
   _inherits(FramesOperation, _Operation);
 
   _createClass(FramesOperation, {
-    identifier: {
-
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * operations.
-       * @type {String}
-       */
-
-      get: function () {
-        return "frames";
-      }
-    },
     _renderWebGL: {
 
       /**
@@ -9996,6 +9967,13 @@ var FramesOperation = (function (_Operation) {
 
   return FramesOperation;
 })(Operation);
+
+/**
+ * A unique string that identifies this operation. Can be used to select
+ * operations.
+ * @type {String}
+ */
+FramesOperation.prototype.identifier = "frames";
 
 module.exports = FramesOperation;
 
@@ -10065,18 +10043,6 @@ var Operation = (function (_EventEmitter) {
   _inherits(Operation, _EventEmitter);
 
   _createClass(Operation, {
-    identifier: {
-
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * operations.
-       * @type {String}
-       */
-
-      get: function () {
-        return null;
-      }
-    },
     validateSettings: {
 
       /**
@@ -10175,9 +10141,6 @@ var Operation = (function (_EventEmitter) {
           // Create setter and getter
           (function (optionName, option) {
             self["set" + capitalized] = function (value) {
-              if (typeof option.setter !== "undefined") {
-                value = option.setter.call(this, value);
-              }
               self._setOption(optionName, value);
             };
 
@@ -10249,6 +10212,10 @@ var Operation = (function (_EventEmitter) {
 
         var optionConfig = this.availableOptions[optionName];
         var identifier = this.identifier;
+
+        if (typeof optionConfig.setter !== "undefined") {
+          value = optionConfig.setter.call(this, value);
+        }
 
         if (typeof optionConfig.validation !== "undefined") {
           optionConfig.validation(value);
@@ -10361,6 +10328,13 @@ var Operation = (function (_EventEmitter) {
 })(EventEmitter);
 
 /**
+ * A unique string that identifies this operation. Can be used to select
+ * operations.
+ * @type {String}
+ */
+Operation.prototype.identifier = null;
+
+/**
  * To create an {@link ImglyKit.Operation} class of your own, call this
  * method and provide instance properties and functions.
  * @function
@@ -10441,18 +10415,6 @@ var RadialBlurOperation = (function (_Operation) {
   _inherits(RadialBlurOperation, _Operation);
 
   _createClass(RadialBlurOperation, {
-    identifier: {
-
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * operations.
-       * @type {String}
-       */
-
-      get: function () {
-        return "radial-blur";
-      }
-    },
     _renderWebGL: {
 
       /**
@@ -10639,9 +10601,16 @@ var RadialBlurOperation = (function (_Operation) {
   return RadialBlurOperation;
 })(Operation);
 
+/**
+ * A unique string that identifies this operation. Can be used to select
+ * operations.
+ * @type {String}
+ */
+RadialBlurOperation.prototype.identifier = "radial-blur";
+
 module.exports = RadialBlurOperation;
 
-},{"../lib/math/vector2":18,"../vendor/stack-blur":102,"./operation":70}],72:[function(require,module,exports){
+},{"../lib/math/vector2":18,"../vendor/stack-blur":103,"./operation":70}],72:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -10702,18 +10671,6 @@ var RotationOperation = (function (_Operation) {
   _inherits(RotationOperation, _Operation);
 
   _createClass(RotationOperation, {
-    identifier: {
-
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * operations.
-       * @type {String}
-       */
-
-      get: function () {
-        return "rotation";
-      }
-    },
     _renderWebGL: {
 
       /**
@@ -10817,6 +10774,13 @@ var RotationOperation = (function (_Operation) {
   return RotationOperation;
 })(Operation);
 
+/**
+ * A unique string that identifies this operation. Can be used to select
+ * operations.
+ * @type {String}
+ */
+RotationOperation.prototype.identifier = "rotation";
+
 module.exports = RotationOperation;
 
 },{"../lib/math/vector2":18,"./operation":70}],73:[function(require,module,exports){
@@ -10871,18 +10835,6 @@ var SaturationOperation = (function (_Operation) {
   _inherits(SaturationOperation, _Operation);
 
   _createClass(SaturationOperation, {
-    identifier: {
-
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * operations.
-       * @type {String}
-       */
-
-      get: function () {
-        return "saturation";
-      }
-    },
     _renderWebGL: {
 
       /**
@@ -10931,6 +10883,13 @@ var SaturationOperation = (function (_Operation) {
   return SaturationOperation;
 })(Operation);
 
+/**
+ * A unique string that identifies this operation. Can be used to select
+ * operations.
+ * @type {String}
+ */
+SaturationOperation.prototype.identifier = "saturation";
+
 module.exports = SaturationOperation;
 
 },{"./filters/primitives-stack":50,"./filters/primitives/saturation":59,"./operation":70}],74:[function(require,module,exports){
@@ -10958,8 +10917,6 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
 var Operation = _interopRequire(require("./operation"));
 
 var Vector2 = _interopRequire(require("../lib/math/vector2"));
-
-var Utils = _interopRequire(require("../lib/utils"));
 
 /**
  * An operation that can draw text on the canvas
@@ -11003,18 +10960,6 @@ var StickersOperation = (function (_Operation) {
   _inherits(StickersOperation, _Operation);
 
   _createClass(StickersOperation, {
-    identifier: {
-
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * operations.
-       * @type {String}
-       */
-
-      get: function () {
-        return "stickers";
-      }
-    },
     render: {
 
       /**
@@ -11220,9 +11165,16 @@ var StickersOperation = (function (_Operation) {
   return StickersOperation;
 })(Operation);
 
+/**
+ * A unique string that identifies this operation. Can be used to select
+ * operations.
+ * @type {String}
+ */
+StickersOperation.prototype.identifier = "stickers";
+
 module.exports = StickersOperation;
 
-},{"../lib/math/vector2":18,"../lib/utils":20,"./operation":70,"canvas":"canvas"}],75:[function(require,module,exports){
+},{"../lib/math/vector2":18,"./operation":70,"canvas":"canvas"}],75:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -11298,18 +11250,6 @@ var TextOperation = (function (_Operation) {
   _inherits(TextOperation, _Operation);
 
   _createClass(TextOperation, {
-    identifier: {
-
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * operations.
-       * @type {String}
-       */
-
-      get: function () {
-        return "text";
-      }
-    },
     _renderWebGL: {
 
       /**
@@ -11583,6 +11523,13 @@ var TextOperation = (function (_Operation) {
   return TextOperation;
 })(Operation);
 
+/**
+ * A unique string that identifies this operation. Can be used to select
+ * operations.
+ * @type {String}
+ */
+TextOperation.prototype.identifier = "text";
+
 module.exports = TextOperation;
 
 },{"../lib/color":13,"../lib/math/vector2":18,"./operation":70}],76:[function(require,module,exports){
@@ -11655,18 +11602,6 @@ var TiltShiftOperation = (function (_Operation) {
   _inherits(TiltShiftOperation, _Operation);
 
   _createClass(TiltShiftOperation, {
-    identifier: {
-
-      /**
-       * A unique string that identifies this operation. Can be used to select
-       * operations.
-       * @type {String}
-       */
-
-      get: function () {
-        return "tilt-shift";
-      }
-    },
     _renderWebGL: {
 
       /**
@@ -11864,9 +11799,16 @@ var TiltShiftOperation = (function (_Operation) {
   return TiltShiftOperation;
 })(Operation);
 
+/**
+ * A unique string that identifies this operation. Can be used to select
+ * operations.
+ * @type {String}
+ */
+TiltShiftOperation.prototype.identifier = "tilt-shift";
+
 module.exports = TiltShiftOperation;
 
-},{"../lib/math/vector2":18,"../vendor/stack-blur":102,"./operation":70}],77:[function(require,module,exports){
+},{"../lib/math/vector2":18,"../vendor/stack-blur":103,"./operation":70}],77:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -12005,6 +11947,22 @@ var CanvasRenderer = (function (_Renderer) {
         context.drawImage(this._canvas, 0, 0);
 
         return canvas;
+      }
+    },
+    reset: {
+
+      /**
+       * Resets the renderer
+       * @param {Boolean} resetCache = false
+       * @override
+       */
+
+      value: function reset() {
+        var resetCache = arguments[0] === undefined ? false : arguments[0];
+
+        if (resetCache) {
+          this._cache = [];
+        }
       }
     }
   }, {
@@ -12290,9 +12248,12 @@ var Renderer = (function (_EventEmitter) {
 
       /**
        * Resets the renderer
+       * @param {Boolean} resetCache = false
        */
 
-      value: function reset() {}
+      value: function reset() {
+        var resetCache = arguments[0] === undefined ? false : arguments[0];
+      }
     }
   }, {
     isSupported: {
@@ -12935,15 +12896,21 @@ var WebGLRenderer = (function (_Renderer) {
 
       /**
        * Resets the renderer
+       * @param {Boolean} resetCache = false
        * @override
        */
 
       value: function reset() {
+        var resetCache = arguments[0] === undefined ? false : arguments[0];
+
         this._lastTexture = null;
         this._textures = [];
         this._framebuffers = [];
         this._bufferIndex = 0;
-        this._cache = [];
+
+        if (resetCache) {
+          this._cache = [];
+        }
 
         this._createFramebuffers();
         this.setLastTexture(this._inputTexture);
@@ -13128,6 +13095,17 @@ var BaseUI = (function (_EventEmitter) {
         });
       }
     },
+    addOperation: {
+
+      /**
+       * Adds the given operation to the available operations
+       * @param {Operation} operation
+       */
+
+      value: function addOperation(operation) {
+        this._operations.push(operation);
+      }
+    },
     isOperationSelected: {
 
       /**
@@ -13238,8 +13216,6 @@ var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["defau
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
@@ -13271,24 +13247,13 @@ var BrightnessControl = (function (_Control) {
   _inherits(BrightnessControl, _Control);
 
   _createClass(BrightnessControl, {
-    identifier: {
-      /**
-       * A unique string that identifies this control.
-       * @type {String}
-       */
-
-      get: function () {
-        return "brightness";
-      }
-    },
     init: {
-
       /**
        * The entry point for this control
        */
 
       value: function init() {
-        var controlsTemplate = "<div class=\"imglykit-controls-filters\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div>\n    {{#def.slider}}\n  </div>\n\n  <div class=\"imglykit-controls-button imglykit-controls-done\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done.png') }}\" />\n  </div>\n</div>\n";
+        var controlsTemplate = "<div class=\"imglykit-controls-filters\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div>\n    {{#def.slider}}\n  </div>\n</div>\n";
         this._controlsTemplate = controlsTemplate;
         this._partialTemplates.push(Slider.template);
       }
@@ -13315,6 +13280,7 @@ var BrightnessControl = (function (_Control) {
           defaultValue: brightness
         });
         this._slider.on("update", this._onUpdate.bind(this));
+        this._slider.setValue(this._initialBrightness);
       }
     },
     _onBack: {
@@ -13325,11 +13291,15 @@ var BrightnessControl = (function (_Control) {
        */
 
       value: function _onBack() {
-        _get(Object.getPrototypeOf(BrightnessControl.prototype), "_onBack", this).call(this);
+        var currentBrightness = this._operation.getBrightness();
 
-        if (this._operationExistedBefore) {
-          this._operation.setBrightness(this._initialBrightness);
-        } else {
+        if (this._initialBrightness !== currentBrightness) {
+          this._ui.addHistory(this._operation, {
+            brightness: this._initialBrightness
+          }, this._operationExistedBefore);
+        }
+
+        if (currentBrightness === 1) {
           this._ui.removeOperation("brightness");
         }
 
@@ -13347,35 +13317,26 @@ var BrightnessControl = (function (_Control) {
         this._operation.setBrightness(value);
         this._ui.canvas.render();
       }
-    },
-    _onDone: {
-
-      /**
-       * Gets called when the done button has been clicked
-       * @override
-       */
-
-      value: function _onDone() {
-        this._ui.addHistory(this._operation, {
-          brightness: this._initialBrightness
-        }, this._operationExistedBefore);
-      }
     }
   });
 
   return BrightnessControl;
 })(Control);
 
+/**
+ * A unique string that identifies this control.
+ * @type {String}
+ */
+BrightnessControl.prototype.identifier = "brightness";
+
 module.exports = BrightnessControl;
 
-},{"../lib/slider":99,"./control":84}],83:[function(require,module,exports){
+},{"../lib/slider":100,"./control":84}],83:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -13408,24 +13369,13 @@ var ContrastControl = (function (_Control) {
   _inherits(ContrastControl, _Control);
 
   _createClass(ContrastControl, {
-    identifier: {
-      /**
-       * A unique string that identifies this control.
-       * @type {String}
-       */
-
-      get: function () {
-        return "contrast";
-      }
-    },
     init: {
-
       /**
        * Entry point for this control
        */
 
       value: function init() {
-        var controlsTemplate = "<div class=\"imglykit-controls-filters\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div>\n    {{#def.slider}}\n  </div>\n\n  <div class=\"imglykit-controls-button imglykit-controls-done\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done.png') }}\" />\n  </div>\n</div>\n";
+        var controlsTemplate = "<div class=\"imglykit-controls-filters\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div>\n    {{#def.slider}}\n  </div>\n</div>\n";
         this._controlsTemplate = controlsTemplate;
         this._partialTemplates.push(Slider.template);
       }
@@ -13452,6 +13402,7 @@ var ContrastControl = (function (_Control) {
           defaultValue: contrast
         });
         this._slider.on("update", this._onUpdate.bind(this));
+        this._slider.setValue(this._initialContrast);
       }
     },
     _onBack: {
@@ -13462,11 +13413,15 @@ var ContrastControl = (function (_Control) {
        */
 
       value: function _onBack() {
-        _get(Object.getPrototypeOf(ContrastControl.prototype), "_onBack", this).call(this);
+        var currentContrast = this._operation.getContrast();
 
-        if (this._operationExistedBefore) {
-          this._operation.setContrast(this._initialContrast);
-        } else {
+        if (this._initialContrast !== currentContrast) {
+          this._ui.addHistory(this._operation, {
+            contrast: this._initialContrast
+          }, this._operationExistedBefore);
+        }
+
+        if (currentContrast === 1) {
           this._ui.removeOperation("contrast");
         }
 
@@ -13484,28 +13439,21 @@ var ContrastControl = (function (_Control) {
         this._operation.setContrast(value);
         this._ui.canvas.render();
       }
-    },
-    _onDone: {
-
-      /**
-       * Gets called when the done button has been clicked
-       * @override
-       */
-
-      value: function _onDone() {
-        this._ui.addHistory(this._operation, {
-          contrast: this._initialContrast
-        }, this._operationExistedBefore);
-      }
     }
   });
 
   return ContrastControl;
 })(Control);
 
+/**
+ * A unique string that identifies this control.
+ * @type {String}
+ */
+ContrastControl.prototype.identifier = "contrast";
+
 module.exports = ContrastControl;
 
-},{"../lib/slider":99,"./control":84}],84:[function(require,module,exports){
+},{"../lib/slider":100,"./control":84}],84:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -13533,6 +13481,8 @@ var Helpers = _interopRequire(require("../../base/helpers"));
 
 var EventEmitter = _interopRequire(require("../../../lib/event-emitter"));
 
+var Scrollbar = _interopRequire(require("../lib/scrollbar"));
+
 var Control = (function (_EventEmitter) {
   function Control(kit, ui, operation) {
     _classCallCheck(this, Control);
@@ -13552,17 +13502,6 @@ var Control = (function (_EventEmitter) {
   _inherits(Control, _EventEmitter);
 
   _createClass(Control, {
-    identifier: {
-
-      /**
-       * A unique string that identifies this control.
-       * @type {String}
-       */
-
-      get: function () {
-        return null;
-      }
-    },
     setContainers: {
 
       /**
@@ -13594,6 +13533,7 @@ var Control = (function (_EventEmitter) {
       value: function _renderAllControls() {
         this._renderControls();
         this._renderCanvasControls();
+        this._initScrollbar();
       }
     },
     _renderControls: {
@@ -13652,6 +13592,20 @@ var Control = (function (_EventEmitter) {
         this._canvasControlsContainer.appendChild(this._canvasControls);
       }
     },
+    _initScrollbar: {
+
+      /**
+       * Initializes the custom scrollbar
+       * @private
+       */
+
+      value: function _initScrollbar() {
+        var list = this._controls.querySelector(".imglykit-controls-list");
+        if (list) {
+          this._scrollbar = new Scrollbar(list.parentNode);
+        }
+      }
+    },
     _removeControls: {
 
       /**
@@ -13664,17 +13618,29 @@ var Control = (function (_EventEmitter) {
         if (this._canvasControls) {
           this._canvasControls.parentNode.removeChild(this._canvasControls);
         }
+
+        if (this._scrollbar) this._scrollbar.remove();
       }
     },
     _handleBackAndDoneButtons: {
+
+      /**
+       * Handles the back and done buttons
+       * @private
+       */
+
       value: function _handleBackAndDoneButtons() {
         // Back button
-        var backButton = this._controls.querySelector(".imglykit-controls-back");
-        backButton.addEventListener("click", this._onBackButtonClick.bind(this));
+        this._backButton = this._controls.querySelector(".imglykit-controls-back");
+        if (this._backButton) {
+          this._backButton.addEventListener("click", this._onBackButtonClick.bind(this));
+        }
 
         // Done button
-        var doneButton = this._controls.querySelector(".imglykit-controls-done");
-        doneButton.addEventListener("click", this._onDoneButtonClick.bind(this));
+        this._doneButton = this._controls.querySelector(".imglykit-controls-done");
+        if (this._doneButton) {
+          this._doneButton.addEventListener("click", this._onDoneButtonClick.bind(this));
+        }
       }
     },
     _onBackButtonClick: {
@@ -13699,6 +13665,17 @@ var Control = (function (_EventEmitter) {
       value: function _onDoneButtonClick() {
         this._onDone();
         this.emit("back");
+      }
+    },
+    _highlightDoneButton: {
+
+      /**
+       * Highlights the done button
+       * @private
+       */
+
+      value: function _highlightDoneButton() {
+        this._doneButton.classList.add("highlighted");
       }
     },
     enter: {
@@ -13811,9 +13788,25 @@ var Control = (function (_EventEmitter) {
   return Control;
 })(EventEmitter);
 
+/**
+ * A unique string that identifies this control.
+ * @type {String}
+ */
+Control.prototype.identifier = null;
+
+/**
+ * To create an {@link ImglyKit.NightUI.Control} class of your own, call
+ * this method and provide instance properties and functions.
+ * @function
+ */
+
+var extend = _interopRequire(require("../../../lib/extend"));
+
+Control.extend = extend;
+
 module.exports = Control;
 
-},{"../../../lib/event-emitter":14,"../../base/helpers":80,"dot":10}],85:[function(require,module,exports){
+},{"../../../lib/event-emitter":14,"../../../lib/extend":15,"../../base/helpers":80,"../lib/scrollbar":98,"dot":10}],85:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -13855,18 +13848,7 @@ var CropControl = (function (_Control) {
   _inherits(CropControl, _Control);
 
   _createClass(CropControl, {
-    identifier: {
-      /**
-       * A unique string that identifies this control.
-       * @type {String}
-       */
-
-      get: function () {
-        return "crop";
-      }
-    },
     init: {
-
       /**
        * Entry point for this control
        */
@@ -14346,7 +14328,7 @@ var CropControl = (function (_Control) {
        * @private
        */
 
-      value: function _onKnobUp(e) {
+      value: function _onKnobUp() {
         this._currentKnob = null;
         document.removeEventListener("mousemove", this._onKnobDrag);
         document.removeEventListener("touchmove", this._onKnobDrag);
@@ -14433,7 +14415,7 @@ var CropControl = (function (_Control) {
        * @private
        */
 
-      value: function _onCenterUp(e) {
+      value: function _onCenterUp() {
         document.removeEventListener("mousemove", this._onCenterDrag);
         document.removeEventListener("touchmove", this._onCenterDrag);
         document.removeEventListener("mouseup", this._onCenterUp);
@@ -14511,6 +14493,12 @@ var CropControl = (function (_Control) {
   return CropControl;
 })(Control);
 
+/**
+ * A unique string that identifies this control.
+ * @type {String}
+ */
+CropControl.prototype.identifier = "crop";
+
 module.exports = CropControl;
 
 },{"../../../lib/math/vector2":18,"../../../lib/utils":20,"./control":84}],86:[function(require,module,exports){
@@ -14553,24 +14541,13 @@ var FiltersControl = (function (_Control) {
   _inherits(FiltersControl, _Control);
 
   _createClass(FiltersControl, {
-    identifier: {
-      /**
-       * A unique string that identifies this control.
-       * @type {String}
-       */
-
-      get: function () {
-        return "filters";
-      }
-    },
     init: {
-
       /**
        * Entry point for this control
        */
 
       value: function init() {
-        var controlsTemplate = "<div class=\"imglykit-controls-filters\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div>\n    <ul class=\"imglykit-controls-list imgly-controls-list-with-buttons\">\n      {{ for(var identifier in it.filters) { }}\n        {{ var filter = it.filters[identifier]; }}\n        {{ var name = filter.prototype.name; }}\n        {{ var enabled = it.activeFilter.identifier === identifier; }}\n        {{? identifier !== \"identity\"}}\n        <li data-identifier=\"{{= identifier}}\" class=\"imglykit-controls-item-with-label{{? enabled}} imglykit-controls-item-active{{?}}\">\n          <img src=\"{{=it.helpers.assetPath('ui/night/filters/' + identifier + '.png')}}\" />\n          <div class=\"imglykit-controls-item-label\">{{= name }}</div>\n        </li>\n        {{?}}\n      {{ } }}\n    </ul>\n  </div>\n\n  <div class=\"imglykit-controls-button imglykit-controls-done\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done.png') }}\" />\n  </div>\n</div>\n";
+        var controlsTemplate = "<div class=\"imglykit-controls-filters\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div>\n    <ul class=\"imglykit-controls-list imgly-controls-list-with-buttons\">\n      {{ for(var identifier in it.filters) { }}\n        {{ var filter = it.filters[identifier]; }}\n        {{ var name = filter.prototype.name; }}\n        {{ var enabled = it.activeFilter.identifier === identifier; }}\n        <li data-identifier=\"{{= identifier}}\" class=\"imglykit-controls-item-with-label{{? enabled}} imglykit-controls-item-active{{?}}\">\n          <img src=\"{{=it.helpers.assetPath('ui/night/filters/' + identifier + '.png')}}\" />\n          <div class=\"imglykit-controls-item-label\">{{= name }}</div>\n        </li>\n      {{ } }}\n    </ul>\n  </div>\n</div>\n";
         this._controlsTemplate = controlsTemplate;
 
         this._availableFilters = {};
@@ -14613,6 +14590,7 @@ var FiltersControl = (function (_Control) {
         var _this = this;
 
         this._initialFilter = this._operation.getFilter();
+        this._defaultFilter = this._operation.availableOptions.filter["default"];
 
         var listItems = this._controls.querySelectorAll("li");
         this._listItems = Array.prototype.slice.call(listItems);
@@ -14636,25 +14614,16 @@ var FiltersControl = (function (_Control) {
        */
 
       value: function _onBack() {
-        if (this._operationExistedBefore) {
-          this._operation.setFilter(this._initialFilter);
-        } else {
+        var currentFilter = this._operation.getFilter();
+        if (currentFilter !== this._initialFilter) {
+          this._ui.addHistory(this._operation, {
+            filter: this._initialFilter
+          }, this._operationExistedBefore);
+        }
+        if (currentFilter === this._defaultFilter) {
           this._ui.removeOperation("filters");
         }
         this._ui.canvas.render();
-      }
-    },
-    _onDone: {
-
-      /**
-       * Gets called when the done button has been clicked
-       * @override
-       */
-
-      value: function _onDone() {
-        this._ui.addHistory(this._operation, {
-          filter: this._initialFilter
-        }, this._operationExistedBefore);
       }
     },
     _onListItemClick: {
@@ -14783,6 +14752,12 @@ var FiltersControl = (function (_Control) {
   return FiltersControl;
 })(Control);
 
+/**
+ * A unique string that identifies this control.
+ * @type {String}
+ */
+FiltersControl.prototype.identifier = "filters";
+
 module.exports = FiltersControl;
 
 },{"../../../lib/utils":20,"../../../operations/filters/a15-filter":25,"../../../operations/filters/breeze-filter":26,"../../../operations/filters/bw-filter":27,"../../../operations/filters/bwhard-filter":28,"../../../operations/filters/celsius-filter":29,"../../../operations/filters/chest-filter":30,"../../../operations/filters/fixie-filter":32,"../../../operations/filters/food-filter":33,"../../../operations/filters/fridge-filter":34,"../../../operations/filters/front-filter":35,"../../../operations/filters/glam-filter":36,"../../../operations/filters/gobblin-filter":37,"../../../operations/filters/identity-filter":38,"../../../operations/filters/k1-filter":39,"../../../operations/filters/k2-filter":40,"../../../operations/filters/k6-filter":41,"../../../operations/filters/kdynamic-filter":42,"../../../operations/filters/lenin-filter":43,"../../../operations/filters/lomo-filter":44,"../../../operations/filters/mellow-filter":45,"../../../operations/filters/morning-filter":46,"../../../operations/filters/orchid-filter":47,"../../../operations/filters/pola-filter":48,"../../../operations/filters/pola669-filter":49,"../../../operations/filters/quozi-filter":63,"../../../operations/filters/semired-filter":64,"../../../operations/filters/sunny-filter":65,"../../../operations/filters/texas-filter":66,"../../../operations/filters/x400-filter":67,"./control":84}],87:[function(require,module,exports){
@@ -14821,24 +14796,13 @@ var FlipControl = (function (_Control) {
   _inherits(FlipControl, _Control);
 
   _createClass(FlipControl, {
-    identifier: {
-      /**
-       * A unique string that identifies this control.
-       * @type {String}
-       */
-
-      get: function () {
-        return "flip";
-      }
-    },
     init: {
-
       /**
        * Entry point for this control
        */
 
       value: function init() {
-        var controlsTemplate = "<div class=\"imglykit-controls-rotation\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div>\n    <ul class=\"imglykit-controls-list imgly-controls-list-with-buttons\">\n      <li data-direction=\"horizontal\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/flip/horizontal.png')}}\" />\n      </li>\n      <li data-direction=\"vertical\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/flip/vertical.png')}}\" />\n      </li>\n    </ul>\n  </div>\n\n  <div class=\"imglykit-controls-button imglykit-controls-done\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done.png') }}\" />\n  </div>\n</div>\n";
+        var controlsTemplate = "<div class=\"imglykit-controls-rotation\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div>\n    <ul class=\"imglykit-controls-list imgly-controls-list-with-buttons\">\n      <li data-direction=\"horizontal\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/flip/horizontal.png')}}\" />\n      </li>\n      <li data-direction=\"vertical\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/flip/vertical.png')}}\" />\n      </li>\n    </ul>\n  </div>\n</div>\n";
         this._controlsTemplate = controlsTemplate;
       }
     },
@@ -14932,33 +14896,33 @@ var FlipControl = (function (_Control) {
        */
 
       value: function _onBack() {
-        if (this._operationExistedBefore) {
-          this._operation.setHorizontal(this._initialHorizontal);
-          this._operation.setVertical(this._initialVertical);
-        } else {
+        var currentVertical = this._operation.getVertical();
+        var currentHorizontal = this._operation.getHorizontal();
+
+        if (this._initialVertical !== currentVertical || this._initialHorizontal !== currentHorizontal) {
+          this._ui.addHistory(this._operation, {
+            vertical: this._initialVertical,
+            horizontal: this._initialHorizontal
+          }, this._operationExistedBefore);
+        }
+
+        if (!currentVertical && !currentHorizontal) {
           this._ui.removeOperation("flip");
         }
+
         this._ui.canvas.render();
-      }
-    },
-    _onDone: {
-
-      /**
-       * Gets called when the done button has been clicked
-       * @override
-       */
-
-      value: function _onDone() {
-        this._ui.addHistory(this._operation, {
-          vertical: this._initialVertical,
-          horizontal: this._initialHorizontal
-        }, this._operationExistedBefore);
       }
     }
   });
 
   return FlipControl;
 })(Control);
+
+/**
+ * A unique string that identifies this control.
+ * @type {String}
+ */
+FlipControl.prototype.identifier = "flip";
 
 module.exports = FlipControl;
 
@@ -15002,24 +14966,13 @@ var FramesControl = (function (_Control) {
   _inherits(FramesControl, _Control);
 
   _createClass(FramesControl, {
-    identifier: {
-      /**
-       * A unique string that identifies this control.
-       * @type {String}
-       */
-
-      get: function () {
-        return "frames";
-      }
-    },
     init: {
-
       /**
        * Entry point for this control
        */
 
       value: function init() {
-        var controlsTemplate = "<div class=\"imglykit-controls-filters\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div>\n    {{#def.simpleSlider}}\n  </div>\n\n  <div class=\"imglykit-controls-button\">\n    {{var colorpickerLabel = \"Color\";}}\n    {{#def.colorpicker}}\n  </div>\n\n  <div class=\"imglykit-controls-button imglykit-controls-done\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done.png') }}\" />\n  </div>\n</div>\n";
+        var controlsTemplate = "<div class=\"imglykit-controls-filters\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div>\n    {{#def.simpleSlider}}\n  </div>\n\n  <div class=\"imglykit-controls-button\">\n    {{var colorpickerLabel = \"Color\";}}\n    {{#def.colorpicker}}\n  </div>\n\n  <div class=\"imglykit-controls-button imglykit-controls-done\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done.png') }}\" />\n    <div class=\"imglykit-controls-done-highlighted\">\n      <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done-highlighted.png') }}\" />\n    </div>\n  </div>\n</div>\n";
         this._controlsTemplate = controlsTemplate;
         this._partialTemplates.push(SimpleSlider.template);
         this._partialTemplates.push(ColorPicker.template);
@@ -15085,6 +15038,7 @@ var FramesControl = (function (_Control) {
       value: function _onThicknessUpdate(value) {
         this._operation.setThickness(value);
         this._ui.canvas.render();
+        this._highlightDoneButton();
       }
     },
     _onColorUpdate: {
@@ -15097,6 +15051,7 @@ var FramesControl = (function (_Control) {
       value: function _onColorUpdate(value) {
         this._operation.setColor(value);
         this._ui.canvas.render();
+        this._highlightDoneButton();
       }
     },
     _onDone: {
@@ -15118,9 +15073,15 @@ var FramesControl = (function (_Control) {
   return FramesControl;
 })(Control);
 
+/**
+ * A unique string that identifies this control.
+ * @type {String}
+ */
+FramesControl.prototype.identifier = "frames";
+
 module.exports = FramesControl;
 
-},{"../lib/color-picker":96,"../lib/simple-slider":98,"./control":84}],89:[function(require,module,exports){
+},{"../lib/color-picker":96,"../lib/simple-slider":99,"./control":84}],89:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -15162,24 +15123,13 @@ var RadialBlurControl = (function (_Control) {
   _inherits(RadialBlurControl, _Control);
 
   _createClass(RadialBlurControl, {
-    identifier: {
-      /**
-       * A unique string that identifies this control.
-       * @type {String}
-       */
-
-      get: function () {
-        return "radial-blur";
-      }
-    },
     init: {
-
       /**
        * Entry point for this control
        */
 
       value: function init() {
-        var controlsTemplate = "<div class=\"imglykit-controls-radial-blur\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div class=\"imglykit-controls-icon\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/blur/blur.png')}}\" />\n  </div>\n\n  <div>\n    {{var sliderId = \"imglykit-blur-radius-slider\";}}\n    {{#def.simpleSlider}}\n  </div>\n\n  <div class=\"imglykit-controls-button imglykit-controls-done\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done.png') }}\" />\n  </div>\n</div>\n";
+        var controlsTemplate = "<div class=\"imglykit-controls-radial-blur\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div class=\"imglykit-controls-icon\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/blur/blur.png')}}\" />\n  </div>\n\n  <div>\n    {{var sliderId = \"imglykit-blur-radius-slider\";}}\n    {{#def.simpleSlider}}\n  </div>\n\n  <div class=\"imglykit-controls-button imglykit-controls-done\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done.png') }}\" />\n    <div class=\"imglykit-controls-done-highlighted\">\n      <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done-highlighted.png') }}\" />\n    </div>\n  </div>\n</div>\n";
         this._controlsTemplate = controlsTemplate;
 
         var canvasControlsTemplate = "<div class=\"imglykit-canvas-radial-blur-container\">\n  <div class=\"imglykit-canvas-radial-blur-dot\" id=\"imglykit-radial-blur-position\"></div>\n  <div class=\"imglykit-canvas-radial-blur-dot\" id=\"imglykit-radial-blur-gradient\"></div>\n  <div class=\"imglykit-canvas-radial-blur-circle-container\">\n    <div class=\"imglykit-canvas-radial-blur-circle\"></div>\n  </div>\n</div>\n";
@@ -15255,6 +15205,7 @@ var RadialBlurControl = (function (_Control) {
       value: function _onBlurRadiusUpdate(value) {
         this._operation.setBlurRadius(value);
         this._ui.canvas.render();
+        this._highlightDoneButton();
       }
     },
     _handleKnobs: {
@@ -15479,9 +15430,15 @@ var RadialBlurControl = (function (_Control) {
   return RadialBlurControl;
 })(Control);
 
+/**
+ * A unique string that identifies this control.
+ * @type {String}
+ */
+RadialBlurControl.prototype.identifier = "radial-blur";
+
 module.exports = RadialBlurControl;
 
-},{"../../../lib/math/vector2":18,"../../../lib/utils":20,"../lib/simple-slider":98,"./control":84}],90:[function(require,module,exports){
+},{"../../../lib/math/vector2":18,"../../../lib/utils":20,"../lib/simple-slider":99,"./control":84}],90:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -15519,24 +15476,13 @@ var RotationControl = (function (_Control) {
   _inherits(RotationControl, _Control);
 
   _createClass(RotationControl, {
-    identifier: {
-      /**
-       * A unique string that identifies this control.
-       * @type {String}
-       */
-
-      get: function () {
-        return "rotation";
-      }
-    },
     init: {
-
       /**
        * Entry point for this control
        */
 
       value: function init() {
-        var controlsTemplate = "<div class=\"imglykit-controls-rotation\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div>\n    <ul class=\"imglykit-controls-list imgly-controls-list-with-buttons\">\n      <li data-degrees=\"-90\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/rotation/left.png')}}\" />\n      </li>\n      <li data-degrees=\"90\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/rotation/right.png')}}\" />\n      </li>\n    </ul>\n  </div>\n\n  <div class=\"imglykit-controls-button imglykit-controls-done\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done.png') }}\" />\n  </div>\n</div>\n";
+        var controlsTemplate = "<div class=\"imglykit-controls-rotation\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div>\n    <ul class=\"imglykit-controls-list imgly-controls-list-with-buttons\">\n      <li data-degrees=\"-90\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/rotation/left.png')}}\" />\n      </li>\n      <li data-degrees=\"90\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/rotation/right.png')}}\" />\n      </li>\n    </ul>\n  </div>\n</div>\n";
         this._controlsTemplate = controlsTemplate;
 
         var canvasControlsTemplate = "<div class=\"imglykit-canvas-crop-container imglykit-canvas-crop-container-hidden\">\n  <div class=\"imglykit-canvas-crop-top\">\n    <div class=\"imglykit-canvas-crop-top-left\"></div>\n    <div class=\"imglykit-canvas-crop-top-center\"></div>\n    <div class=\"imglykit-canvas-crop-top-right\"></div>\n  </div>\n\n  <div class=\"imglykit-canvas-crop-center\">\n    <div class=\"imglykit-canvas-crop-center-left\"></div>\n    <div class=\"imglykit-canvas-crop-center-center imglykit-canvas-crop-center-center-nomove\">\n\n    </div>\n    <div class=\"imglykit-canvas-crop-center-right\"></div>\n  </div>\n\n  <div class=\"imglykit-canvas-crop-bottom\">\n    <div class=\"imglykit-canvas-crop-bottom-left\"></div>\n    <div class=\"imglykit-canvas-crop-bottom-center\"></div>\n    <div class=\"imglykit-canvas-crop-bottom-right\"></div>\n  </div>\n</div>\n";
@@ -15695,9 +15641,14 @@ var RotationControl = (function (_Control) {
        */
 
       value: function _onBack() {
-        if (this._operationExistedBefore) {
-          this._operation.setDegrees(this._initialDegrees);
-        } else {
+        var currentDegrees = this._operation.getDegrees();
+        if (this._initialDegrees !== currentDegrees) {
+          this._ui.addHistory(this._operation, {
+            degrees: this._initialDegrees
+          }, this._operationExistedBefore);
+        }
+
+        if (currentDegrees === 0) {
           this._ui.removeOperation("rotation");
         }
 
@@ -15709,33 +15660,17 @@ var RotationControl = (function (_Control) {
         }
         this._ui.canvas.render();
       }
-    },
-    _onDone: {
-
-      /**
-       * Gets called when the done button has been clicked
-       * @override
-       */
-
-      value: function _onDone() {
-
-        if (this._cropOperation) {
-          this._cropOperation.set({
-            start: this._initialStart,
-            end: this._initialEnd
-          });
-        }
-        this._ui.canvas.render();
-
-        this._ui.addHistory(this._operation, {
-          degrees: this._initialDegrees
-        }, this._operationExistedBefore);
-      }
     }
   });
 
   return RotationControl;
 })(Control);
+
+/**
+ * A unique string that identifies this control.
+ * @type {String}
+ */
+RotationControl.prototype.identifier = "rotation";
 
 module.exports = RotationControl;
 
@@ -15779,24 +15714,13 @@ var SaturationControl = (function (_Control) {
   _inherits(SaturationControl, _Control);
 
   _createClass(SaturationControl, {
-    identifier: {
-      /**
-       * A unique string that identifies this control.
-       * @type {String}
-       */
-
-      get: function () {
-        return "saturation";
-      }
-    },
     init: {
-
       /**
        * Entry point for this control
        */
 
       value: function init() {
-        var controlsTemplate = "<div class=\"imglykit-controls-filters\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div>\n    {{#def.slider}}\n  </div>\n\n  <div class=\"imglykit-controls-button imglykit-controls-done\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done.png') }}\" />\n  </div>\n</div>\n";
+        var controlsTemplate = "<div class=\"imglykit-controls-filters\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div>\n    {{#def.slider}}\n  </div>\n</div>\n";
         this._controlsTemplate = controlsTemplate;
         this._partialTemplates.push(Slider.template);
       }
@@ -15825,6 +15749,7 @@ var SaturationControl = (function (_Control) {
           defaultValue: saturation
         });
         this._slider.on("update", this._onUpdate.bind(this));
+        this._slider.setValue(this._initialSaturation);
       }
     },
     _onBack: {
@@ -15835,12 +15760,18 @@ var SaturationControl = (function (_Control) {
        */
 
       value: function _onBack() {
-        _get(Object.getPrototypeOf(SaturationControl.prototype), "_onBack", this).call(this);
-        if (this._operationExistedBefore) {
-          this._operation.setSaturation(this._initialSaturation);
-        } else {
+        var currentSaturation = this._operation.getSaturation();
+
+        if (this._initialSaturation !== currentSaturation) {
+          this._ui.addHistory(this._operation, {
+            saturation: this._initialSaturation
+          }, this._operationExistedBefore);
+        }
+
+        if (currentSaturation === 1) {
           this._ui.removeOperation("saturation");
         }
+
         this._ui.canvas.render();
       }
     },
@@ -15855,28 +15786,21 @@ var SaturationControl = (function (_Control) {
         this._operation.setSaturation(value);
         this._ui.canvas.render();
       }
-    },
-    _onDone: {
-
-      /**
-       * Gets called when the done button has been clicked
-       * @override
-       */
-
-      value: function _onDone() {
-        this._ui.addHistory(this._operation, {
-          saturation: this._initialSaturation
-        }, this._operationExistedBefore);
-      }
     }
   });
 
   return SaturationControl;
 })(Control);
 
+/**
+ * A unique string that identifies this control.
+ * @type {String}
+ */
+SaturationControl.prototype.identifier = "saturation";
+
 module.exports = SaturationControl;
 
-},{"../lib/slider":99,"./control":84}],92:[function(require,module,exports){
+},{"../lib/slider":100,"./control":84}],92:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -15918,24 +15842,13 @@ var StickersControl = (function (_Control) {
   _inherits(StickersControl, _Control);
 
   _createClass(StickersControl, {
-    identifier: {
-      /**
-       * A unique string that identifies this control.
-       * @type {String}
-       */
-
-      get: function () {
-        return "stickers";
-      }
-    },
     init: {
-
       /**
        * Entry point for this control
        */
 
       value: function init() {
-        var controlsTemplate = "<div class=\"imglykit-controls-stickers\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div>\n    <ul class=\"imglykit-controls-list imgly-controls-list-with-buttons\">\n      {{ for(var identifier in it.stickers) { }}\n        {{ var stickerPath = it.stickers[identifier]; }}\n        {{ var enabled = it.activeSticker === identifier; }}\n        <li data-identifier=\"{{= identifier}}\"{{? enabled}} class=\"imglykit-controls-item-active\"{{?}} style=\"background-image: url('{{=it.helpers.assetPath(stickerPath)}}');\">\n        </li>\n      {{ } }}\n    </ul>\n  </div>\n\n  <div class=\"imglykit-controls-button imglykit-controls-done\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done.png') }}\" />\n  </div>\n</div>\n";
+        var controlsTemplate = "<div class=\"imglykit-controls-stickers\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div>\n    <ul class=\"imglykit-controls-list imgly-controls-list-with-buttons\">\n      {{ for(var identifier in it.stickers) { }}\n        {{ var stickerPath = it.stickers[identifier]; }}\n        {{ var enabled = it.activeSticker === identifier; }}\n        <li data-identifier=\"{{= identifier}}\"{{? enabled}} class=\"imglykit-controls-item-active\"{{?}} style=\"background-image: url('{{=it.helpers.assetPath(stickerPath)}}');\">\n        </li>\n      {{ } }}\n    </ul>\n  </div>\n\n  <div class=\"imglykit-controls-button imglykit-controls-done\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done.png') }}\" />\n    <div class=\"imglykit-controls-done-highlighted\">\n      <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done-highlighted.png') }}\" />\n    </div>\n  </div>\n</div>\n";
         this._controlsTemplate = controlsTemplate;
 
         var canvasControlsTemplate = "<div class=\"imglykit-canvas-stickers-container\">\n  <div class=\"imglykit-canvas-stickers\">\n    <img class=\"imglykit-canvas-sticker-image\" />\n    <div class=\"imglykit-knob\"></div>\n  </div>\n</div>\n";
@@ -16089,7 +16002,7 @@ var StickersControl = (function (_Control) {
             });
 
             if (!_this._operationExistedBefore && i === 0 || _this._operationExistedBefore && _this._stickers[identifier] === _this._initialSettings.sticker) {
-              _this._onListItemClick(listItem);
+              _this._onListItemClick(listItem, false);
             }
           })(i);
         }
@@ -16215,6 +16128,7 @@ var StickersControl = (function (_Control) {
         this._size.copy(size);
 
         this._applySettings();
+        this._highlightDoneButton();
       }
     },
     _onKnobUp: {
@@ -16225,7 +16139,7 @@ var StickersControl = (function (_Control) {
        * @private
        */
 
-      value: function _onKnobUp(e) {
+      value: function _onKnobUp() {
         document.removeEventListener("mousemove", this._onKnobDrag);
         document.removeEventListener("touchmove", this._onKnobDrag);
 
@@ -16286,6 +16200,7 @@ var StickersControl = (function (_Control) {
         this._position.copy(position);
 
         this._applySettings();
+        this._highlightDoneButton();
       }
     },
     _onImageUp: {
@@ -16296,7 +16211,7 @@ var StickersControl = (function (_Control) {
        * @private
        */
 
-      value: function _onImageUp(e) {
+      value: function _onImageUp() {
         document.removeEventListener("mousemove", this._onImageDrag);
         document.removeEventListener("touchmove", this._onImageDrag);
 
@@ -16329,6 +16244,8 @@ var StickersControl = (function (_Control) {
        */
 
       value: function _onListItemClick(item) {
+        var manually = arguments[1] === undefined ? true : arguments[1];
+
         this._deactivateAllItems();
 
         var identifier = item.dataset.identifier;
@@ -16344,6 +16261,10 @@ var StickersControl = (function (_Control) {
         this._stickerImage.src = stickerPath;
 
         item.classList.add("imglykit-controls-item-active");
+
+        if (manually) {
+          this._highlightDoneButton();
+        }
       }
     },
     _deactivateAllItems: {
@@ -16399,6 +16320,12 @@ var StickersControl = (function (_Control) {
   return StickersControl;
 })(Control);
 
+/**
+ * A unique string that identifies this control.
+ * @type {String}
+ */
+StickersControl.prototype.identifier = "stickers";
+
 module.exports = StickersControl;
 
 },{"../../../lib/math/vector2":18,"../../../lib/utils":20,"./control":84}],93:[function(require,module,exports){
@@ -16445,24 +16372,13 @@ var TextControl = (function (_Control) {
   _inherits(TextControl, _Control);
 
   _createClass(TextControl, {
-    identifier: {
-      /**
-       * A unique string that identifies this control.
-       * @type {String}
-       */
-
-      get: function () {
-        return "text";
-      }
-    },
     init: {
-
       /**
        * Entry point for this control
        */
 
       value: function init() {
-        var controlsTemplate = "<div class=\"imglykit-controls-text\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div>\n    <ul class=\"imglykit-controls-list imgly-controls-list-with-buttons\">\n      {{~it.fonts :value:index}}\n        <li data-name=\"{{= value.name}}\" data-weight=\"{{= value.weight}}\" style=\"font-family: {{= value.name}}; font-weight: {{= value.weight}}\">{{= value.name.substr(0, 2)}}</li>\n      {{~}}\n    </ul>\n  </div>\n\n  <div class=\"imglykit-controls-button\">\n    {{var colorpickerId = \"imglykit-text-foreground-color-picker\";}}\n    {{var colorpickerLabel = \"Foreground\";}}\n    {{#def.colorpicker}}\n  </div>\n\n  <div class=\"imglykit-controls-button\">\n    {{var colorpickerId = \"imglykit-text-background-color-picker\";}}\n    {{var colorpickerLabel = \"Background\";}}\n    {{#def.colorpicker}}\n  </div>\n\n  <div class=\"imglykit-controls-button imglykit-controls-done\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done.png') }}\" />\n  </div>\n</div>\n";
+        var controlsTemplate = "<div class=\"imglykit-controls-text\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div>\n    <ul class=\"imglykit-controls-list imgly-controls-list-with-buttons\">\n      {{~it.fonts :value:index}}\n        <li data-name=\"{{= value.name}}\" data-weight=\"{{= value.weight}}\" style=\"font-family: {{= value.name}}; font-weight: {{= value.weight}}\">{{= value.name.substr(0, 2)}}</li>\n      {{~}}\n    </ul>\n  </div>\n\n  <div class=\"imglykit-controls-button\">\n    {{var colorpickerId = \"imglykit-text-foreground-color-picker\";}}\n    {{var colorpickerLabel = \"Foreground\";}}\n    {{#def.colorpicker}}\n  </div>\n\n  <div class=\"imglykit-controls-button\">\n    {{var colorpickerId = \"imglykit-text-background-color-picker\";}}\n    {{var colorpickerLabel = \"Background\";}}\n    {{#def.colorpicker}}\n  </div>\n\n  <div class=\"imglykit-controls-button imglykit-controls-done\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done.png') }}\" />\n    <div class=\"imglykit-controls-done-highlighted\">\n      <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done-highlighted.png') }}\" />\n    </div>\n  </div>\n</div>\n";
         this._controlsTemplate = controlsTemplate;
 
         var canvasControlsTemplate = "<div class=\"imglykit-canvas-text-container\">\n  <div class=\"imglykit-canvas-text\">\n    <div class=\"imglykit-crosshair\">\n      <img src=\"{{=it.helpers.assetPath('ui/night/crosshair.png')}}\" />\n    </div>\n    <div class=\"imglykit-canvas-text-textarea\">\n      <textarea></textarea>\n      <div class=\"imglykit-knob\"></div>\n    </div>\n  </div>\n</div>\n";
@@ -16602,12 +16518,14 @@ var TextControl = (function (_Control) {
         for (var i = 0; i < this._listItems.length; i++) {
           (function (i) {
             var listItem = _this._listItems[i];
+            var name = listItem.dataset.name;
+
             listItem.addEventListener("click", function () {
               _this._onListItemClick(listItem);
             });
 
             if (!_this._operationExistedBefore && i === 0 || _this._operationExistedBefore && name === _this._initialSettings.fontFamily) {
-              _this._onListItemClick(listItem);
+              _this._onListItemClick(listItem, false);
             }
           })(i);
         }
@@ -16634,6 +16552,7 @@ var TextControl = (function (_Control) {
       value: function _onTextareaKeyUp() {
         this._resizeTextarea();
         this._settings.text = this._textarea.value;
+        this._highlightDoneButton();
       }
     },
     _resizeTextarea: {
@@ -16800,7 +16719,7 @@ var TextControl = (function (_Control) {
        * @private
        */
 
-      value: function _onResizeKnobUp(e) {
+      value: function _onResizeKnobUp() {
         document.removeEventListener("mousemove", this._onResizeKnobDrag);
         document.removeEventListener("touchmove", this._onResizeKnobDrag);
 
@@ -16820,6 +16739,7 @@ var TextControl = (function (_Control) {
       value: function _onForegroundColorUpdate(value) {
         this._settings.color = value;
         this._applySettings();
+        this._highlightDoneButton();
       }
     },
     _onBackgroundColorUpdate: {
@@ -16834,6 +16754,7 @@ var TextControl = (function (_Control) {
       value: function _onBackgroundColorUpdate(value) {
         this._settings.backgroundColor = value;
         this._applySettings();
+        this._highlightDoneButton();
       }
     },
     _applySettings: {
@@ -16871,6 +16792,8 @@ var TextControl = (function (_Control) {
        */
 
       value: function _onListItemClick(item) {
+        var manually = arguments[1] === undefined ? true : arguments[1];
+
         this._deactivateAllItems();
 
         var _item$dataset = item.dataset;
@@ -16883,6 +16806,10 @@ var TextControl = (function (_Control) {
         this._applySettings();
 
         item.classList.add("imglykit-controls-item-active");
+
+        if (manually) {
+          this._highlightDoneButton();
+        }
       }
     },
     _deactivateAllItems: {
@@ -16998,6 +16925,12 @@ var TextControl = (function (_Control) {
   return TextControl;
 })(Control);
 
+/**
+ * A unique string that identifies this control.
+ * @type {String}
+ */
+TextControl.prototype.identifier = "text";
+
 module.exports = TextControl;
 
 },{"../../../lib/math/vector2":18,"../../../lib/utils":20,"../lib/color-picker":96,"./control":84}],94:[function(require,module,exports){
@@ -17042,24 +16975,13 @@ var TiltShiftControl = (function (_Control) {
   _inherits(TiltShiftControl, _Control);
 
   _createClass(TiltShiftControl, {
-    identifier: {
-      /**
-       * A unique string that identifies this control.
-       * @type {String}
-       */
-
-      get: function () {
-        return "tilt-shift";
-      }
-    },
     init: {
-
       /**
        * Entry point for this control
        */
 
       value: function init() {
-        var controlsTemplate = "<div class=\"imglykit-controls-tilt-shift\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div class=\"imglykit-controls-icon\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/blur/blur.png')}}\" />\n  </div>\n\n  <div>\n    {{var sliderId = \"imglykit-blur-radius-slider\";}}\n    {{#def.simpleSlider}}\n  </div>\n\n  <div class=\"imglykit-controls-button imglykit-controls-done\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done.png') }}\" />\n  </div>\n</div>\n";
+        var controlsTemplate = "<div class=\"imglykit-controls-tilt-shift\">\n  <div class=\"imglykit-controls-button imglykit-controls-back\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/back.png') }}\" />\n  </div>\n\n  <div class=\"imglykit-controls-icon\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/blur/blur.png')}}\" />\n  </div>\n\n  <div>\n    {{var sliderId = \"imglykit-blur-radius-slider\";}}\n    {{#def.simpleSlider}}\n  </div>\n\n  <div class=\"imglykit-controls-button imglykit-controls-done\">\n    <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done.png') }}\" />\n    <div class=\"imglykit-controls-done-highlighted\">\n      <img src=\"{{=it.helpers.assetPath('ui/night/buttons/done-highlighted.png') }}\" />\n    </div>\n  </div>\n</div>\n";
         this._controlsTemplate = controlsTemplate;
 
         var canvasControlsTemplate = "<div class=\"imglykit-canvas-tilt-shift-container\">\n  <div class=\"imglykit-canvas-tilt-shift-dot\" data-option=\"position\"></div>\n  <div class=\"imglykit-canvas-tilt-shift-dot\" data-option=\"gradient\"></div>\n  <div class=\"imglykit-canvas-tilt-shift-rect-container\">\n    <div class=\"imglykit-canvas-tilt-shift-rect\"></div>\n  </div>\n</div>\n";
@@ -17140,6 +17062,7 @@ var TiltShiftControl = (function (_Control) {
       value: function _onBlurRadiusUpdate(value) {
         this._operation.setBlurRadius(value);
         this._ui.canvas.render();
+        this._highlightDoneButton();
       }
     },
     _handleKnobs: {
@@ -17412,9 +17335,15 @@ var TiltShiftControl = (function (_Control) {
   return TiltShiftControl;
 })(Control);
 
+/**
+ * A unique string that identifies this control.
+ * @type {String}
+ */
+TiltShiftControl.prototype.identifier = "tilt-shift";
+
 module.exports = TiltShiftControl;
 
-},{"../../../lib/math/vector2":18,"../../../lib/utils":20,"../lib/simple-slider":98,"./control":84}],95:[function(require,module,exports){
+},{"../../../lib/math/vector2":18,"../../../lib/utils":20,"../lib/simple-slider":99,"./control":84}],95:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -17598,6 +17527,20 @@ var Canvas = (function (_EventEmitter) {
           _this._updateCanvasMargins();
           _this._applyBoundaries();
         });
+      }
+    },
+    setImage: {
+
+      /**
+       * Sets the image to the given one
+       * @param {Image} image
+       */
+
+      value: function setImage(image) {
+        this._image = image;
+        this.reset();
+        this.render();
+        this._centerCanvas();
       }
     },
     zoomIn: {
@@ -18099,8 +18042,9 @@ var Canvas = (function (_EventEmitter) {
        */
 
       value: function reset() {
-        this._renderer.reset();
+        this._renderer.reset(true);
         this._kit.operationsStack = [];
+        this._isFirstRender = true;
       }
     },
     sanitizedStack: {
@@ -18201,8 +18145,6 @@ var Utils = _interopRequire(require("../../../lib/utils"));
 var Color = _interopRequire(require("../../../lib/color"));
 
 var Vector2 = _interopRequire(require("../../../lib/math/vector2"));
-
-var _ = _interopRequire(require("lodash"));
 
 
 
@@ -18592,7 +18534,7 @@ var ColorPicker = (function (_EventEmitter) {
        * @private
        */
 
-      value: function _onAlphaCanvasUp(e) {
+      value: function _onAlphaCanvasUp() {
         document.removeEventListener("mousemove", this._onAlphaCanvasDrag);
         document.removeEventListener("touchmove", this._onAlphaCanvasDrag);
 
@@ -18675,7 +18617,7 @@ var ColorPicker = (function (_EventEmitter) {
        * @private
        */
 
-      value: function _onHueCanvasUp(e) {
+      value: function _onHueCanvasUp() {
         document.removeEventListener("mousemove", this._onHueCanvasDrag);
         document.removeEventListener("touchmove", this._onHueCanvasDrag);
 
@@ -18760,7 +18702,7 @@ var ColorPicker = (function (_EventEmitter) {
        * @private
        */
 
-      value: function _onSaturationCanvasUp(e) {
+      value: function _onSaturationCanvasUp() {
         document.removeEventListener("mousemove", this._onSaturationCanvasDrag);
         document.removeEventListener("touchmove", this._onSaturationCanvasDrag);
 
@@ -18801,7 +18743,7 @@ var ColorPicker = (function (_EventEmitter) {
 
 module.exports = ColorPicker;
 
-},{"../../../lib/color":13,"../../../lib/event-emitter":14,"../../../lib/math/vector2":18,"../../../lib/utils":20,"lodash":"lodash"}],97:[function(require,module,exports){
+},{"../../../lib/color":13,"../../../lib/event-emitter":14,"../../../lib/math/vector2":18,"../../../lib/utils":20}],97:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -18836,6 +18778,8 @@ var FileLoader = (function (_EventEmitter) {
 
     // http://stackoverflow.com/questions/7110353/html5-dragleave-fired-when-hovering-a-child-element
     this._dragCounter = 0;
+
+    this._container = this._ui.container.querySelector(".imglykit-drop-area-container");
 
     this._onDropAreaDragEnter = this._onDropAreaDragEnter.bind(this);
     this._onDropAreaDragOver = this._onDropAreaDragOver.bind(this);
@@ -18891,7 +18835,7 @@ var FileLoader = (function (_EventEmitter) {
        * @private
        */
 
-      value: function _onDropAreaClick(e) {
+      value: function _onDropAreaClick() {
         this.openFileDialog();
       }
     },
@@ -18968,7 +18912,7 @@ var FileLoader = (function (_EventEmitter) {
        * @private
        */
 
-      value: function _onFileInputChange(e) {
+      value: function _onFileInputChange() {
         this._handleFile(this._hiddenInputField.files[0]);
       }
     },
@@ -18983,6 +18927,25 @@ var FileLoader = (function (_EventEmitter) {
       value: function _handleFile(file) {
         this.emit("file", file);
       }
+    },
+    removeDOM: {
+
+      /**
+       * Removes event listeners and removes the container form the dom
+       */
+
+      value: function removeDOM() {
+        this._dropArea.removeEventListener("dragenter", this._onDropAreaDragEnter);
+        this._dropArea.removeEventListener("dragover", this._onDropAreaDragOver);
+        this._dropArea.removeEventListener("dragleave", this._onDropAreaDragLeave);
+        this._dropArea.removeEventListener("drop", this._onDropAreaDrop);
+        this._dropArea.removeEventListener("dragdrop", this._onDropAreaDrop);
+        this._dropArea.removeEventListener("click", this._onDropAreaClick);
+
+        if (this._container.parentNode) {
+          this._container.parentNode.removeChild(this._container);
+        }
+      }
     }
   });
 
@@ -18992,6 +18955,342 @@ var FileLoader = (function (_EventEmitter) {
 module.exports = FileLoader;
 
 },{"../../../lib/event-emitter":14}],98:[function(require,module,exports){
+"use strict";
+
+var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+/*!
+ * Copyright (c) 2013-2015 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+
+var Utils = _interopRequire(require("../../../lib/utils"));
+
+var Vector2 = _interopRequire(require("../../../lib/math/vector2"));
+
+var maxScrollbarWidth = 18;
+
+/**
+ * Our custom scroll bar
+ */
+
+var Scrollbar = (function () {
+  /**
+   * @param {DOMElement} container
+   */
+
+  function Scrollbar(container) {
+    _classCallCheck(this, Scrollbar);
+
+    this._container = container;
+    this._isDragging = false;
+    this._isHovering = false;
+
+    this._appendDOM();
+    this._resizeButton();
+    this._updateValues();
+
+    this._onButtonDown = this._onButtonDown.bind(this);
+    this._onButtonMove = this._onButtonMove.bind(this);
+    this._onButtonUp = this._onButtonUp.bind(this);
+
+    this._onContainerEnter = this._onContainerEnter.bind(this);
+    this._onContainerLeave = this._onContainerLeave.bind(this);
+
+    this._onBackgroundClick = this._onBackgroundClick.bind(this);
+
+    this._container.addEventListener("mouseenter", this._onContainerEnter);
+    this._container.addEventListener("mouseleave", this._onContainerLeave);
+    this._container.addEventListener("mousemove", this._onContainerEnter);
+    this._dom.button.addEventListener("mousedown", this._onButtonDown);
+    this._dom.button.addEventListener("touchstart", this._onButtonDown);
+    this._dom.background.addEventListener("click", this._onBackgroundClick);
+    this._list.addEventListener("scroll", this._onListScroll.bind(this));
+
+    this._onListScroll();
+  }
+
+  _createClass(Scrollbar, {
+    _onBackgroundClick: {
+
+      /**
+       * Gets called when the user clicks the scrollbar background
+       * @param {Event} e
+       * @private
+       */
+
+      value: function _onBackgroundClick(e) {
+        e.preventDefault();
+        if (e.target !== this._dom.background) {
+          return;
+        }var position = Utils.getEventPosition(e);
+        var backgroundOffset = this._dom.background.getBoundingClientRect();
+        backgroundOffset = new Vector2(backgroundOffset.left, backgroundOffset.top);
+
+        var relativePosition = position.clone().subtract(backgroundOffset);
+
+        relativePosition.x -= this._values.button.width * 0.5;
+
+        this._setButtonPosition(relativePosition.x);
+      }
+    },
+    _onContainerEnter: {
+
+      /**
+       * Gets called when the user enters the list with the mouse
+       * @private
+       */
+
+      value: function _onContainerEnter() {
+        this._isHovering = true;
+        this.show();
+      }
+    },
+    _onContainerLeave: {
+
+      /**
+       * Gets called when the user leaves the list with the mouse
+       * @private
+       */
+
+      value: function _onContainerLeave() {
+        this._isHovering = false;
+        this.hide();
+      }
+    },
+    show: {
+
+      /**
+       * Shows the scrollbar
+       */
+
+      value: function show() {
+        if (!this._isScrollingNecessary) {
+          return;
+        }this._dom.background.classList.add("visible");
+      }
+    },
+    hide: {
+
+      /**
+       * Hides the scrollbar
+       */
+
+      value: function hide() {
+        if (this._isDragging) {
+          return;
+        }this._dom.background.classList.remove("visible");
+      }
+    },
+    _updateValues: {
+
+      /**
+       * Updates the size values
+       * @private
+       */
+
+      value: function _updateValues() {
+        this._values = {
+          list: {
+            totalWidth: this._list.scrollWidth,
+            visibleWidth: this._list.offsetWidth,
+            scrollableWidth: this._list.scrollWidth - this._list.offsetWidth
+          },
+          button: {
+            width: this._dom.button.offsetWidth,
+            scrollableWidth: this._dom.background.offsetWidth - this._dom.button.offsetWidth
+          }
+        };
+      }
+    },
+    _onButtonDown: {
+
+      /**
+       * Gets called when the user starts dragging the button
+       * @param {Event} event
+       * @private
+       */
+
+      value: function _onButtonDown(event) {
+        event.preventDefault();
+
+        this._isDragging = true;
+
+        this._initialMousePosition = Utils.getEventPosition(event);
+        this._initialButtonPosition = this._buttonPosition || 0;
+
+        document.addEventListener("mousemove", this._onButtonMove);
+        document.addEventListener("touchmove", this._onButtonMove);
+        document.addEventListener("mouseup", this._onButtonUp);
+        document.addEventListener("touchend", this._onButtonUp);
+      }
+    },
+    _onButtonMove: {
+
+      /**
+       * Gets called when the user drags the button
+       * @param {Event} event
+       * @private
+       */
+
+      value: function _onButtonMove(event) {
+        event.preventDefault();
+
+        var mousePosition = Utils.getEventPosition(event);
+        var diff = mousePosition.clone().subtract(this._initialMousePosition);
+        var newButtonPosition = this._initialButtonPosition + diff.x;
+
+        this._setButtonPosition(newButtonPosition);
+      }
+    },
+    _setButtonPosition: {
+
+      /**
+       * Sets the button position to the given value
+       * @param {Number} newButtonPosition
+       * @private
+       */
+
+      value: function _setButtonPosition(newButtonPosition) {
+        // Clamp button position
+        newButtonPosition = Math.max(0, newButtonPosition);
+        newButtonPosition = Math.min(newButtonPosition, this._values.button.scrollableWidth);
+
+        // Set button position
+        this._buttonPosition = newButtonPosition;
+        this._dom.button.style.left = "" + this._buttonPosition + "px";
+
+        // Update list scroll position
+        var progress = newButtonPosition / this._values.button.scrollableWidth;
+        var scrollPosition = this._values.list.scrollableWidth * progress;
+        this._list.scrollLeft = scrollPosition;
+      }
+    },
+    _onButtonUp: {
+
+      /**
+       * Gets called when the user releases the button
+       * @private
+       */
+
+      value: function _onButtonUp() {
+        this._isDragging = false;
+
+        document.removeEventListener("mousemove", this._onButtonMove);
+        document.removeEventListener("touchmove", this._onButtonMove);
+        document.removeEventListener("mouseup", this._onButtonUp);
+        document.removeEventListener("touchend", this._onButtonUp);
+      }
+    },
+    _onListScroll: {
+
+      /**
+       * Gets called when the user scrolls the list
+       * @private
+       */
+
+      value: function _onListScroll() {
+        if (this._isDragging) {
+          return;
+        }var listScrollWidth = this._list.scrollWidth - this._list.offsetWidth;
+        var listScrollPosition = this._list.scrollLeft;
+
+        var backgroundScrollWidth = this._dom.background.offsetWidth - this._dom.button.offsetWidth;
+        var progress = listScrollPosition / listScrollWidth;
+
+        this._buttonPosition = backgroundScrollWidth * progress;
+        this._dom.button.style.left = "" + this._buttonPosition + "px";
+      }
+    },
+    _resizeButton: {
+
+      /**
+       * Resizes the button to represent the visible size of the container
+       * @private
+       */
+
+      value: function _resizeButton() {
+        var listScrollWidth = this._list.scrollWidth;
+        var listWidth = this._list.offsetWidth;
+
+        this._buttonWidth = listWidth / listScrollWidth * listWidth;
+        this._dom.button.style.width = "" + this._buttonWidth + "px";
+      }
+    },
+    _appendDOM: {
+
+      /**
+       * Appends the DOM elements to the container
+       * @private
+       */
+
+      value: function _appendDOM() {
+        var background = document.createElement("div");
+        background.classList.add("imglykit-scrollbar-background");
+        background.style.bottom = "" + maxScrollbarWidth + "px";
+
+        var button = document.createElement("div");
+        button.classList.add("imglykit-scrollbar-button");
+
+        background.appendChild(button);
+        this._container.appendChild(background);
+
+        // Container should have position: relative
+        this._container.style.position = "relative";
+
+        // Find the list
+        this._list = this._container.querySelector(".imglykit-controls-list");
+        this._dom = { background: background, button: button };
+
+        // Resize the list and the container
+        this._list.style.height = "";
+        var listHeight = this._list.offsetHeight;
+        listHeight += maxScrollbarWidth;
+        this._container.style.height = "" + listHeight + "px";
+        this._list.style.height = "" + listHeight + "px";
+      }
+    },
+    remove: {
+
+      /**
+       * Removes the DOM elements and event listeners
+       */
+
+      value: function remove() {
+        this._dom.button.removeEventListener("mousedown", this._onButtonDown);
+        this._dom.button.removeEventListener("touchstart", this._onButtonDown);
+
+        this._dom.background.remove();
+      }
+    },
+    _isScrollingNecessary: {
+
+      /**
+       * Checks whether scrolling is necessary
+       * @returns {Boolean}
+       * @private
+       */
+
+      get: function () {
+        return this._list.scrollWidth > this._list.offsetWidth;
+      }
+    }
+  });
+
+  return Scrollbar;
+})();
+
+module.exports = Scrollbar;
+
+},{"../../../lib/math/vector2":18,"../../../lib/utils":20}],99:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -19036,6 +19335,8 @@ var SimpleSlider = (function (_Slider) {
        */
 
       value: function _setX(x) {
+        this._xPosition = x;
+
         this._dotElement.style.left = "" + x + "px";
         this._fillElement.style.width = "" + x + "px";
       }
@@ -19058,7 +19359,7 @@ var SimpleSlider = (function (_Slider) {
 
 module.exports = SimpleSlider;
 
-},{"./slider":99}],99:[function(require,module,exports){
+},{"./slider":100}],100:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -19084,6 +19385,8 @@ var EventEmitter = _interopRequire(require("../../../lib/event-emitter"));
 
 var Utils = _interopRequire(require("../../../lib/utils"));
 
+var Vector2 = _interopRequire(require("../../../lib/math/vector2"));
+
 var _ = _interopRequire(require("lodash"));
 
 
@@ -19107,12 +19410,17 @@ var Slider = (function (_EventEmitter) {
     this._dotElement = this._element.querySelector(".imglykit-slider-dot");
     this._centerDotElement = this._element.querySelector(".imglykit-slider-center-dot");
     this._fillElement = this._element.querySelector(".imglykit-slider-fill");
+    this._backgroundElement = this._element.querySelector(".imglykit-slider-background");
 
     // Mouse event callbacks bound to class context
     this._onMouseDown = this._onMouseDown.bind(this);
     this._onMouseMove = this._onMouseMove.bind(this);
     this._onMouseUp = this._onMouseUp.bind(this);
     this._onCenterDotClick = this._onCenterDotClick.bind(this);
+    this._onBackgroundClick = this._onBackgroundClick.bind(this);
+
+    this._backgroundElement.addEventListener("click", this._onBackgroundClick);
+    this._fillElement.addEventListener("click", this._onBackgroundClick);
 
     this._handleDot();
   }
@@ -19150,6 +19458,7 @@ var Slider = (function (_EventEmitter) {
        */
 
       value: function _setX(x) {
+        this._xPosition = x;
         this._dotElement.style.left = "" + x + "px";
 
         // X position relative to center to simplify calculations
@@ -19192,6 +19501,25 @@ var Slider = (function (_EventEmitter) {
       value: function _onCenterDotClick() {
         this.setValue(this._options.defaultValue);
         this.emit("update", this._value);
+      }
+    },
+    _onBackgroundClick: {
+
+      /**
+       * Gets called when the user clicks on the slider background
+       * @param {Event} e
+       * @private
+       */
+
+      value: function _onBackgroundClick(e) {
+        var position = Utils.getEventPosition(e);
+        var sliderOffset = this._sliderElement.getBoundingClientRect();
+        sliderOffset = new Vector2(sliderOffset.left, sliderOffset.y);
+
+        var relativePosition = position.clone().subtract(sliderOffset);
+
+        this._setX(relativePosition.x);
+        this._updateValue();
       }
     },
     _onMouseDown: {
@@ -19244,13 +19572,25 @@ var Slider = (function (_EventEmitter) {
         newSliderX = Math.max(0, Math.min(newSliderX, sliderWidth));
 
         this._setX(newSliderX);
+        this._updateValue();
+      }
+    },
+    _updateValue: {
+
+      /**
+       * Updates the value using the slider position
+       * @private
+       */
+
+      value: function _updateValue() {
+        var sliderWidth = this._sliderElement.offsetWidth;
 
         // Calculate the new value
         var _options = this._options;
         var minValue = _options.minValue;
         var maxValue = _options.maxValue;
 
-        var percentage = newSliderX / sliderWidth;
+        var percentage = this._xPosition / sliderWidth;
         var value = minValue + (maxValue - minValue) * percentage;
         this.emit("update", value);
       }
@@ -19289,7 +19629,7 @@ var Slider = (function (_EventEmitter) {
 
 module.exports = Slider;
 
-},{"../../../lib/event-emitter":14,"../../../lib/utils":20,"lodash":"lodash"}],100:[function(require,module,exports){
+},{"../../../lib/event-emitter":14,"../../../lib/math/vector2":18,"../../../lib/utils":20,"lodash":"lodash"}],101:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -19321,12 +19661,22 @@ var TopControls = (function (_EventEmitter) {
 
     this._kit = kit;
     this._ui = ui;
-    this._canvas = this._ui.canvas;
+    this.init();
   }
 
   _inherits(TopControls, _EventEmitter);
 
   _createClass(TopControls, {
+    init: {
+
+      /**
+       * Initializes the controls
+       */
+
+      value: function init() {
+        this._canvas = this._ui.canvas;
+      }
+    },
     run: {
 
       /**
@@ -19498,7 +19848,7 @@ var TopControls = (function (_EventEmitter) {
 
 module.exports = TopControls;
 
-},{"../../../lib/event-emitter":14}],101:[function(require,module,exports){
+},{"../../../lib/event-emitter":14}],102:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -19531,6 +19881,8 @@ var Canvas = _interopRequire(require("./lib/canvas"));
 var FileLoader = _interopRequire(require("./lib/file-loader"));
 
 var TopControls = _interopRequire(require("./lib/top-controls"));
+
+var Scrollbar = _interopRequire(require("./lib/scrollbar"));
 
 var NightUI = (function (_UI) {
   function NightUI() {
@@ -19609,7 +19961,9 @@ var NightUI = (function (_UI) {
         this._initTopControls();
         this._initControls();
 
-        if (this._options.image) this.showZoom();
+        if (this._options.image) {
+          this.showZoom();
+        }
 
         if (this._options.ui.showCloseButton) {
           this._handleCloseButton();
@@ -19640,7 +19994,7 @@ var NightUI = (function (_UI) {
         var _this = this;
 
         var reader = new FileReader();
-        reader.onload = (function (file) {
+        reader.onload = (function () {
           return function (e) {
             var data = e.target.result;
             var image = new Image();
@@ -19665,7 +20019,18 @@ var NightUI = (function (_UI) {
         if (this._canvas) {
           this._canvas.reset();
         }
-        this.run();
+
+        this._fileLoader.removeDOM();
+
+        if (!this._canvas) {
+          this._initCanvas();
+        } else {
+          this._canvas.setImage(this._options.image);
+        }
+
+        this.showZoom();
+        this._topControls.init();
+        this._enableControls();
       }
     },
     _initTopControls: {
@@ -19751,8 +20116,11 @@ var NightUI = (function (_UI) {
           var operationInstance = new Operation(this._kit);
           this._operationsMap[identifier] = operationInstance;
 
-          // Find index in preferred operatino order
+          // Find index in preferred operation order
           var index = this._preferredOperationOrder.indexOf(identifier);
+          if (index === -1) {
+            index = this._preferredOperationOrder.length;
+          }
           operationsStack[index] = operationInstance;
 
           return operationInstance;
@@ -19847,6 +20215,46 @@ var NightUI = (function (_UI) {
         }
       }
     },
+    _enableControls: {
+
+      /**
+       * Enables the overview controls
+       * @private
+       */
+
+      value: function _enableControls() {
+        var listItems = this._overviewControlsContainer.querySelectorAll(":scope > ul > li");
+
+        // Turn NodeList into an Array
+        listItems = Array.prototype.slice.call(listItems);
+
+        // Add click events to all items
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+          for (var _iterator = listItems[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var listItem = _step.value;
+
+            listItem.removeAttribute("data-disabled");
+          }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion && _iterator["return"]) {
+              _iterator["return"]();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
+          }
+        }
+      }
+    },
     _onOverviewButtonClick: {
 
       /**
@@ -19858,6 +20266,8 @@ var NightUI = (function (_UI) {
         if (this.context.controlsDisabled) {
           return;
         }this._overviewControlsContainer.style.display = "none";
+
+        this._scrollbar.remove();
 
         if (this._currentControl) {
           this._currentControl.leave();
@@ -19882,6 +20292,8 @@ var NightUI = (function (_UI) {
 
         this._currentControl = null;
         this._overviewControlsContainer.style.display = "";
+
+        this._initScrollbar();
       }
     },
     registerControl: {
@@ -19913,6 +20325,20 @@ var NightUI = (function (_UI) {
           control.setContainers(this._controlsContainer, this._canvasControlsContainer);
           control.init();
         }
+
+        this._initScrollbar();
+      }
+    },
+    _initScrollbar: {
+
+      /**
+       * Initializes the custom scrollbar
+       * @private
+       */
+
+      value: function _initScrollbar() {
+        var container = this._controlsContainer.querySelector(".imglykit-controls-list").parentNode;
+        this._scrollbar = new Scrollbar(container);
       }
     },
     _handleCloseButton: {
@@ -20058,6 +20484,9 @@ var NightUI = (function (_UI) {
 
           if (!existent) {
             this.removeOperation(operation.identifier);
+          } else {
+            operation = this.getOrCreateOperation(operation.identifier);
+            operation.set(options);
           }
           this.canvas.zoomToFit(true);
         }
@@ -20091,9 +20520,11 @@ var NightUI = (function (_UI) {
   return NightUI;
 })(UI);
 
+NightUI.Control = require("./controls/control");
+
 module.exports = NightUI;
 
-},{"../base/ui":81,"./controls/brightness":82,"./controls/contrast":83,"./controls/crop":85,"./controls/filters":86,"./controls/flip":87,"./controls/frames":88,"./controls/radial-blur":89,"./controls/rotation":90,"./controls/saturation":91,"./controls/stickers":92,"./controls/text":93,"./controls/tilt-shift":94,"./lib/canvas":95,"./lib/file-loader":97,"./lib/top-controls":100,"lodash":"lodash"}],102:[function(require,module,exports){
+},{"../base/ui":81,"./controls/brightness":82,"./controls/contrast":83,"./controls/control":84,"./controls/crop":85,"./controls/filters":86,"./controls/flip":87,"./controls/frames":88,"./controls/radial-blur":89,"./controls/rotation":90,"./controls/saturation":91,"./controls/stickers":92,"./controls/text":93,"./controls/tilt-shift":94,"./lib/canvas":95,"./lib/file-loader":97,"./lib/scrollbar":98,"./lib/top-controls":101,"lodash":"lodash"}],103:[function(require,module,exports){
 "use strict";
 /*
 
