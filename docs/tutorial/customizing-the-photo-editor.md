@@ -41,7 +41,7 @@ Make sure you call this function *after* calling `kit.run()`:
 
 ```js
 var filtersControl = kit.ui.controls.filters;
-filtersControl.selectFilters({ only: ["semired, k1, k2, k6"] });
+filtersControl.selectFilters({ only: "semired, k1, k2, k6" });
 ```
 
 ## Adding and selecting available crop ratios
