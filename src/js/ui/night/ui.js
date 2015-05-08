@@ -215,8 +215,11 @@ class NightUI extends UI {
       let operationInstance = new Operation(this._kit);
       this._operationsMap[identifier] = operationInstance;
 
-      // Find index in preferred operatino order
+      // Find index in preferred operation order
       let index = this._preferredOperationOrder.indexOf(identifier);
+      if (index === -1) {
+        index = this._preferredOperationOrder.length;
+      }
       operationsStack[index] = operationInstance;
 
       return operationInstance;
