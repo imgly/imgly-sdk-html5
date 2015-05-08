@@ -495,4 +495,6 @@ class NightUI extends UI {
   }
 }
 
+NightUI.Control = require('./controls/control');
+
 export default NightUI;

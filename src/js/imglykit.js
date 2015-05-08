@@ -16,9 +16,6 @@ import ImageExporter from './lib/image-exporter';
 import { RenderType, ImageFormat } from './constants';
 import Utils from './lib/utils';
 
-// Default UIs
-import NightUI from './ui/night/ui';
-
 /**
  * @class
  * @param {Object} options
@@ -178,7 +175,7 @@ class ImglyKit {
    * @private
    */
   _registerUIs () {
-    this.registerUI(NightUI);
+    this.registerUI(ImglyKit.NightUI);
   }
 
   /**
@@ -302,5 +299,8 @@ ImglyKit.Filters.X400 = require('./operations/filters/x400-filter');
 ImglyKit.RenderType = RenderType;
 ImglyKit.ImageFormat = ImageFormat;
 ImglyKit.Vector2 = require('./lib/math/vector2');
+
+// UI
+ImglyKit.NightUI = require('./ui/night/ui');
 
 export default ImglyKit;
