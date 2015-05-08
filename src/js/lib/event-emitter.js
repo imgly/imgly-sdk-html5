@@ -30,9 +30,9 @@ class EventEmitter {
 
     if (listeners.length > this._maxListeners) {
       error(
-        ```possible memory leak, added %i %s listeners,
+        `possible memory leak, added %i %s listeners,
         use EventEmitter#setMaxListeners(number) if you
-        want to increase the limit (%i now)```,
+        want to increase the limit (%i now)`,
         listeners.length,
         type,
         this._maxListeners
