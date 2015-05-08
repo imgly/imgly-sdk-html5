@@ -275,7 +275,7 @@ class NightUI extends UI {
     for (let listItem of listItems) {
       let { identifier } = listItem.dataset;
       listItem.addEventListener('click', () => {
-        this._onOverviewButtonClick(identifier);
+        this.switchToControl(identifier);
       });
     }
   }
@@ -300,7 +300,7 @@ class NightUI extends UI {
    * Gets called when an overview button has been clicked
    * @private
    */
-  _onOverviewButtonClick (identifier) {
+  switchToControl (identifier) {
     if (this.context.controlsDisabled) return;
     this._overviewControlsContainer.style.display = 'none';
 
