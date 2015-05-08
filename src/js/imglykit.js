@@ -194,6 +194,9 @@ class ImglyKit {
    */
   registerOperation (operation) {
     this._registeredOperations[operation.prototype.identifier] = operation;
+    if (this.ui) {
+      this.ui.addOperation(operation);
+    }
   }
 
   /**

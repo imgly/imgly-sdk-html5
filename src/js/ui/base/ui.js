@@ -83,6 +83,14 @@ class BaseUI extends EventEmitter {
   }
 
   /**
+   * Adds the given operation to the available operations
+   * @param {Operation} operation
+   */
+  addOperation (operation) {
+    this._operations.push(operation);
+  }
+
+  /**
    * Checks whether the operation with the given identifier is selected
    * @param {String} identifier
    * @returns {Boolean}
