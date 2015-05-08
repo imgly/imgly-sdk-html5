@@ -13,14 +13,6 @@ let fs = require("fs");
 
 class FlipControl extends Control {
   /**
-   * A unique string that identifies this control.
-   * @type {String}
-   */
-  get identifier () {
-    return "flip";
-  }
-
-  /**
    * Entry point for this control
    */
   init () {
@@ -118,5 +110,11 @@ class FlipControl extends Control {
     this._ui.canvas.render();
   }
 }
+
+/**
+ * A unique string that identifies this control.
+ * @type {String}
+ */
+FlipControl.prototype.identifier = 'flip';
 
 export default FlipControl;

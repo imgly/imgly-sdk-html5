@@ -16,14 +16,6 @@ let fs = require("fs");
 
 class RadialBlurControl extends Control {
   /**
-   * A unique string that identifies this control.
-   * @type {String}
-   */
-  get identifier () {
-    return "radial-blur";
-  }
-
-  /**
    * Entry point for this control
    */
   init () {
@@ -293,5 +285,11 @@ class RadialBlurControl extends Control {
     }, this._operationExistedBefore);
   }
 }
+
+/**
+ * A unique string that identifies this control.
+ * @type {String}
+ */
+RadialBlurControl.prototype.identifier = 'radial-blur';
 
 export default RadialBlurControl;

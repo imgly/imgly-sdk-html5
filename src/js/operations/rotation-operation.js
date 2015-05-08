@@ -47,15 +47,6 @@ class RotationOperation extends Operation {
   }
 
   /**
-   * A unique string that identifies this operation. Can be used to select
-   * operations.
-   * @type {String}
-   */
-  get identifier () {
-    return "rotation";
-  }
-
-  /**
    * Rotates the image using WebGL
    * @param  {WebGLRenderer} renderer
    */
@@ -148,5 +139,12 @@ class RotationOperation extends Operation {
     return dimensions;
   }
 }
+
+/**
+ * A unique string that identifies this operation. Can be used to select
+ * operations.
+ * @type {String}
+ */
+RotationOperation.prototype.identifier = 'rotation';
 
 export default RotationOperation;

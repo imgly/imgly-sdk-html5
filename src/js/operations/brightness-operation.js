@@ -27,15 +27,6 @@ class BrightnessOperation extends Operation {
   }
 
   /**
-   * A unique string that identifies this operation. Can be used to select
-   * operations.
-   * @type {String}
-   */
-  get identifier () {
-    return "brightness";
-  }
-
-  /**
    * Renders the brightness using WebGL
    * @param  {WebGLRenderer} renderer
    * @override
@@ -69,5 +60,12 @@ class BrightnessOperation extends Operation {
     stack.render(renderer);
   }
 }
+
+/**
+ * A unique string that identifies this operation. Can be used to select
+ * operations.
+ * @type {String}
+ */
+BrightnessOperation.prototype.identifier = 'brightness';
 
 export default BrightnessOperation;

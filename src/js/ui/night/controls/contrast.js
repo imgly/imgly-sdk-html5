@@ -14,14 +14,6 @@ let fs = require("fs");
 
 class ContrastControl extends Control {
   /**
-   * A unique string that identifies this control.
-   * @type {String}
-   */
-  get identifier () {
-    return "contrast";
-  }
-
-  /**
    * Entry point for this control
    */
   init () {
@@ -81,5 +73,11 @@ class ContrastControl extends Control {
     this._ui.canvas.render();
   }
 }
+
+/**
+ * A unique string that identifies this control.
+ * @type {String}
+ */
+ContrastControl.prototype.identifier = 'contrast';
 
 export default ContrastControl;

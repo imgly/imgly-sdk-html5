@@ -28,14 +28,6 @@ class Control extends EventEmitter {
   }
 
   /**
-   * A unique string that identifies this control.
-   * @type {String}
-   */
-  get identifier () {
-    return null;
-  }
-
-  /**
    * Sets the containers that the control will be rendered to
    * @param {DOMElement} controlsContainer
    * @param {DOMElement} canvasControlsContainer
@@ -143,7 +135,9 @@ class Control extends EventEmitter {
   _handleBackAndDoneButtons () {
     // Back button
     this._backButton = this._controls.querySelector(".imglykit-controls-back");
-    this._backButton.addEventListener("click", this._onBackButtonClick.bind(this));
+    if (this._backButton) {
+      this._backButton.addEventListener("click", this._onBackButtonClick.bind(this));
+    }
 
     // Done button
     this._doneButton = this._controls.querySelector(".imglykit-controls-done");
@@ -257,5 +251,19 @@ class Control extends EventEmitter {
     };
   }
 }
+
+/**
+ * A unique string that identifies this control.
+ * @type {String}
+ */
+Control.prototype.identifier = null;
+
+/**
+ * To create an {@link ImglyKit.NightUI.Control} class of your own, call
+ * this method and provide instance properties and functions.
+ * @function
+ */
+import extend from '../../../lib/extend';
+Control.extend = extend;
 
 export default Control;

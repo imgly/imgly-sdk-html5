@@ -14,14 +14,6 @@ let fs = require("fs");
 
 class RotationControl extends Control {
   /**
-   * A unique string that identifies this control.
-   * @type {String}
-   */
-  get identifier () {
-    return "rotation";
-  }
-
-  /**
    * Entry point for this control
    */
   init () {
@@ -180,5 +172,11 @@ class RotationControl extends Control {
     this._ui.canvas.render();
   }
 }
+
+/**
+ * A unique string that identifies this control.
+ * @type {String}
+ */
+RotationControl.prototype.identifier = 'rotation';
 
 export default RotationControl;

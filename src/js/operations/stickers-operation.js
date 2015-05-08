@@ -69,15 +69,6 @@ class StickersOperation extends Operation {
   }
 
   /**
-   * A unique string that identifies this operation. Can be used to select
-   * operations.
-   * @type {String}
-   */
-  get identifier () {
-    return "stickers";
-  }
-
-  /**
    * Applies this operation
    * @param  {Renderer} renderer
    * @return {Promise}
@@ -261,5 +252,12 @@ class StickersOperation extends Operation {
     return this._stickers;
   }
 }
+
+/**
+ * A unique string that identifies this operation. Can be used to select
+ * operations.
+ * @type {String}
+ */
+StickersOperation.prototype.identifier = 'stickers';
 
 export default StickersOperation;

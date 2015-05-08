@@ -14,14 +14,6 @@ let fs = require("fs");
 
 class FiltersControl extends Control {
   /**
-   * A unique string that identifies this control.
-   * @type {String}
-   */
-  get identifier () {
-    return "filters";
-  }
-
-  /**
    * Entry point for this control
    */
   init () {
@@ -189,5 +181,11 @@ class FiltersControl extends Control {
     return context;
   }
 }
+
+/**
+ * A unique string that identifies this control.
+ * @type {String}
+ */
+FiltersControl.prototype.identifier = 'filters';
 
 export default FiltersControl;

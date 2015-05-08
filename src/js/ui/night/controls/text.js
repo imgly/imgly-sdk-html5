@@ -16,14 +16,6 @@ let fs = require("fs");
 
 class TextControl extends Control {
   /**
-   * A unique string that identifies this control.
-   * @type {String}
-   */
-  get identifier () {
-    return "text";
-  }
-
-  /**
    * Entry point for this control
    */
   init () {
@@ -493,5 +485,11 @@ class TextControl extends Control {
     return context;
   }
 }
+
+/**
+ * A unique string that identifies this control.
+ * @type {String}
+ */
+TextControl.prototype.identifier = 'text';
 
 export default TextControl;

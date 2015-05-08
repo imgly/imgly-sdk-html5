@@ -27,15 +27,6 @@ class SaturationOperation extends Operation {
   }
 
   /**
-   * A unique string that identifies this operation. Can be used to select
-   * operations.
-   * @type {String}
-   */
-  get identifier () {
-    return "saturation";
-  }
-
-  /**
    * Renders the saturation using WebGL
    * @param  {WebGLRenderer} renderer
    * @override
@@ -69,5 +60,12 @@ class SaturationOperation extends Operation {
     stack.render(renderer);
   }
 }
+
+/**
+ * A unique string that identifies this operation. Can be used to select
+ * operations.
+ * @type {String}
+ */
+SaturationOperation.prototype.identifier = 'saturation';
 
 export default SaturationOperation;

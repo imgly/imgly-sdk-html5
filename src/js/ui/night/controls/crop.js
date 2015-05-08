@@ -15,14 +15,6 @@ let fs = require("fs");
 
 class CropControl extends Control {
   /**
-   * A unique string that identifies this control.
-   * @type {String}
-   */
-  get identifier () {
-    return "crop";
-  }
-
-  /**
    * Entry point for this control
    */
   init () {
@@ -581,5 +573,11 @@ class CropControl extends Control {
     return this._selectedRatio;
   }
 }
+
+/**
+ * A unique string that identifies this control.
+ * @type {String}
+ */
+CropControl.prototype.identifier = 'crop';
 
 export default CropControl;

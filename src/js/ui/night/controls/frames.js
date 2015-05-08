@@ -15,14 +15,6 @@ let fs = require("fs");
 
 class FramesControl extends Control {
   /**
-   * A unique string that identifies this control.
-   * @type {String}
-   */
-  get identifier () {
-    return "frames";
-  }
-
-  /**
    * Entry point for this control
    */
   init () {
@@ -107,5 +99,11 @@ class FramesControl extends Control {
     }, this._operationExistedBefore);
   }
 }
+
+/**
+ * A unique string that identifies this control.
+ * @type {String}
+ */
+FramesControl.prototype.identifier = 'frames';
 
 export default FramesControl;

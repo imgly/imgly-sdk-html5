@@ -14,14 +14,6 @@ let fs = require("fs");
 
 class SaturationControl extends Control {
   /**
-   * A unique string that identifies this control.
-   * @type {String}
-   */
-  get identifier () {
-    return "saturation";
-  }
-
-  /**
    * Entry point for this control
    */
   init () {
@@ -83,5 +75,11 @@ class SaturationControl extends Control {
     this._ui.canvas.render();
   }
 }
+
+/**
+ * A unique string that identifies this control.
+ * @type {String}
+ */
+SaturationControl.prototype.identifier = 'saturation';
 
 export default SaturationControl;

@@ -33,15 +33,6 @@ class FiltersOperation extends Operation {
   }
 
   /**
-   * A unique string that identifies this operation. Can be used to select
-   * operations.
-   * @type {String}
-   */
-  get identifier () {
-    return "filters";
-  }
-
-  /**
    * Renders the filter using WebGL
    * @param  {WebGLRenderer} renderer
    * @override
@@ -69,5 +60,12 @@ class FiltersOperation extends Operation {
     this._selectedFilter.render(renderer);
   }
 }
+
+/**
+ * A unique string that identifies this operation. Can be used to select
+ * operations.
+ * @type {String}
+ */
+FiltersOperation.prototype.identifier = 'filters';
 
 export default FiltersOperation;

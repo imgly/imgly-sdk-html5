@@ -58,15 +58,6 @@ class FramesOperation extends Operation {
   }
 
   /**
-   * A unique string that identifies this operation. Can be used to select
-   * operations.
-   * @type {String}
-   */
-  get identifier () {
-    return "frames";
-  }
-
-  /**
    * Crops this image using WebGL
    * @param  {WebGLRenderer} renderer
    * @private
@@ -108,5 +99,12 @@ class FramesOperation extends Operation {
     context.restore();
   }
 }
+
+/**
+ * A unique string that identifies this operation. Can be used to select
+ * operations.
+ * @type {String}
+ */
+FramesOperation.prototype.identifier = 'frames';
 
 export default FramesOperation;

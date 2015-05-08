@@ -76,15 +76,6 @@ class RadialBlurOperation extends Operation {
   }
 
   /**
-   * A unique string that identifies this operation. Can be used to select
-   * operations.
-   * @type {String}
-   */
-  get identifier () {
-    return "radial-blur";
-  }
-
-  /**
    * Crops this image using WebGL
    * @param  {WebGLRenderer} renderer
    */
@@ -250,5 +241,12 @@ class RadialBlurOperation extends Operation {
     return super.dirty;
   }
 }
+
+/**
+ * A unique string that identifies this operation. Can be used to select
+ * operations.
+ * @type {String}
+ */
+RadialBlurOperation.prototype.identifier = 'radial-blur';
 
 export default RadialBlurOperation;

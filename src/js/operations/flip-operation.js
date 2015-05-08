@@ -50,15 +50,6 @@ class FlipOperation extends Operation {
   }
 
   /**
-   * A unique string that identifies this operation. Can be used to select
-   * operations.
-   * @type {String}
-   */
-  get identifier () {
-    return "flip";
-  }
-
-  /**
    * Crops this image using WebGL
    * @param  {WebGLRenderer} renderer
    */
@@ -109,5 +100,12 @@ class FlipOperation extends Operation {
     context.restore();
   }
 }
+
+/**
+ * A unique string that identifies this operation. Can be used to select
+ * operations.
+ * @type {String}
+ */
+FlipOperation.prototype.identifier = 'flip';
 
 export default FlipOperation;

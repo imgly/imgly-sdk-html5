@@ -44,15 +44,6 @@ class Operation extends EventEmitter {
   }
 
   /**
-   * A unique string that identifies this operation. Can be used to select
-   * operations.
-   * @type {String}
-   */
-  get identifier () {
-    return null;
-  }
-
-  /**
    * Checks whether this Operation can be applied the way it is configured
    * @return {Promise}
    */
@@ -297,6 +288,13 @@ class Operation extends EventEmitter {
     return this._dirty;
   }
 }
+
+/**
+ * A unique string that identifies this operation. Can be used to select
+ * operations.
+ * @type {String}
+ */
+Operation.prototype.identifier = null;
 
 /**
  * To create an {@link ImglyKit.Operation} class of your own, call this

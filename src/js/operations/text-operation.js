@@ -74,15 +74,6 @@ class TextOperation extends Operation {
     super(...args);
   }
 
-  /**
-   * A unique string that identifies this operation. Can be used to select
-   * operations.
-   * @type {String}
-   */
-  get identifier () {
-    return "text";
-  }
-
 
   /**
    * Crops this image using WebGL
@@ -336,5 +327,12 @@ class TextOperation extends Operation {
     }
   }
 }
+
+/**
+ * A unique string that identifies this operation. Can be used to select
+ * operations.
+ * @type {String}
+ */
+TextOperation.prototype.identifier = 'text';
 
 export default TextOperation;

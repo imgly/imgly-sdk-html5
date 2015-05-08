@@ -27,15 +27,6 @@ class ContrastOperation extends Operation {
   }
 
   /**
-   * A unique string that identifies this operation. Can be used to select
-   * operations.
-   * @type {String}
-   */
-  get identifier () {
-    return "contrast";
-  }
-
-  /**
    * Renders the contrast using WebGL
    * @param  {WebGLRenderer} renderer
    * @override
@@ -69,5 +60,12 @@ class ContrastOperation extends Operation {
     stack.render(renderer);
   }
 }
+
+/**
+ * A unique string that identifies this operation. Can be used to select
+ * operations.
+ * @type {String}
+ */
+ContrastOperation.prototype.identifier = 'contrast';
 
 export default ContrastOperation;

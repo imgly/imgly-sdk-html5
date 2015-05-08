@@ -16,14 +16,6 @@ let fs = require("fs");
 
 class TiltShiftControl extends Control {
   /**
-   * A unique string that identifies this control.
-   * @type {String}
-   */
-  get identifier () {
-    return "tilt-shift";
-  }
-
-  /**
    * Entry point for this control
    */
   init () {
@@ -343,5 +335,11 @@ class TiltShiftControl extends Control {
     }, this._operationExistedBefore);
   }
 }
+
+/**
+ * A unique string that identifies this control.
+ * @type {String}
+ */
+TiltShiftControl.prototype.identifier = 'tilt-shift';
 
 export default TiltShiftControl;

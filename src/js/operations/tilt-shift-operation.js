@@ -80,15 +80,6 @@ class TiltShiftOperation extends Operation {
   }
 
   /**
-   * A unique string that identifies this operation. Can be used to select
-   * operations.
-   * @type {String}
-   */
-  get identifier () {
-    return "tilt-shift";
-  }
-
-  /**
    * Crops this image using WebGL
    * @param  {WebGLRenderer} renderer
    */
@@ -268,5 +259,12 @@ class TiltShiftOperation extends Operation {
     return super.dirty;
   }
 }
+
+/**
+ * A unique string that identifies this operation. Can be used to select
+ * operations.
+ * @type {String}
+ */
+TiltShiftOperation.prototype.identifier = 'tilt-shift';
 
 export default TiltShiftOperation;

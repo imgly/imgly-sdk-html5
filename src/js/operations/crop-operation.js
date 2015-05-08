@@ -45,15 +45,6 @@ class CropOperation extends Operation {
   }
 
   /**
-   * A unique string that identifies this operation. Can be used to select
-   * operations.
-   * @type {String}
-   */
-  get identifier () {
-    return "crop";
-  }
-
-  /**
    * Rotates and crops the image using WebGL
    * @param  {WebGLRenderer} renderer
    * @override
@@ -151,5 +142,12 @@ class CropOperation extends Operation {
     return newDimensions;
   }
 }
+
+/**
+ * A unique string that identifies this operation. Can be used to select
+ * operations.
+ * @type {String}
+ */
+CropOperation.prototype.identifier = 'crop';
 
 export default CropOperation;

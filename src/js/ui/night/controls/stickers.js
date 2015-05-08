@@ -15,14 +15,6 @@ let fs = require("fs");
 
 class StickersControl extends Control {
   /**
-   * A unique string that identifies this control.
-   * @type {String}
-   */
-  get identifier () {
-    return "stickers";
-  }
-
-  /**
    * Entry point for this control
    */
   init () {
@@ -406,5 +398,11 @@ class StickersControl extends Control {
     return context;
   }
 }
+
+/**
+ * A unique string that identifies this control.
+ * @type {String}
+ */
+StickersControl.prototype.identifier = 'stickers';
 
 export default StickersControl;
