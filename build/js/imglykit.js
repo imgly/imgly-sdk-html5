@@ -3174,7 +3174,6 @@ InstallDots.prototype.compileAll = function() {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -3502,16 +3501,37 @@ var ImglyKit = (function () {
         this.ui = new UI(this, this._options);
       }
     },
-    registeredOperations: {
-      get: function () {
-        return this._registeredOperations;
+    getOperationFromStack: {
+
+      /**
+       * Returns the Operation instance with the given identifier,
+       * if it exists
+       * @param {String} identifier
+       * @returns {Operation}
+       */
+
+      value: function getOperationFromStack(identifier) {
+        var operation = this.operationsStack.filter(function (operation) {
+          return operation.identifier === identifier;
+        })[0];
+        return operation;
       }
     },
     run: {
+
+      /**
+       * Runs the UI, if present
+       */
+
       value: function run() {
         if (typeof this.ui !== "undefined") {
           this.ui.run();
         }
+      }
+    },
+    registeredOperations: {
+      get: function () {
+        return this._registeredOperations;
       }
     }
   });
@@ -3689,8 +3709,9 @@ var Color = (function () {
         var d = max - min;
         s = max === 0 ? 0 : d / max;
 
-        if (max == min) {
-          h = 0; // achromatic
+        if (max === min) {
+          h = 0 // achromatic
+          ;
         } else {
           switch (max) {
             case this.r:
@@ -3791,7 +3812,7 @@ var Color = (function () {
 
       value: function _componentToHex(component) {
         var hex = component.toString(16);
-        return hex.length == 1 ? "0" + hex : hex;
+        return hex.length === 1 ? "0" + hex : hex;
       }
     },
     toString: {
@@ -3814,8 +3835,6 @@ module.exports = Color;
 
 },{}],14:[function(require,module,exports){
 "use strict";
-
-var _taggedTemplateLiteral = function (strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); };
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -3848,18 +3867,18 @@ var EventEmitter = (function () {
   _createClass(EventEmitter, {
     on: {
       value: function on(type, listener) {
-        if (typeof listener != "function") {
+        if (typeof listener !== "function") {
           throw new TypeError();
         }
 
         var listeners = this._events[type] || (this._events[type] = []);
-        if (listeners.indexOf(listener) != -1) {
+        if (listeners.indexOf(listener) !== -1) {
           return this;
         }
         listeners.push(listener);
 
         if (listeners.length > this._maxListeners) {
-          error(""(_taggedTemplateLiteral(["possible memory leak, added %i %s listeners,\n        use EventEmitter#setMaxListeners(number) if you\n        want to increase the limit (%i now)"], ["possible memory leak, added %i %s listeners,\n        use EventEmitter#setMaxListeners(number) if you\n        want to increase the limit (%i now)"]))(_taggedTemplateLiteral([""], [""])), listeners.length, type, this._maxListeners);
+          error("possible memory leak, added %i %s listeners,\n        use EventEmitter#setMaxListeners(number) if you\n        want to increase the limit (%i now)", listeners.length, type, this._maxListeners);
         }
         return this;
       }
@@ -3886,7 +3905,7 @@ var EventEmitter = (function () {
         }
 
         var listener = args[0];
-        if (typeof listener != "function") {
+        if (typeof listener !== "function") {
           throw new TypeError();
         }
 
@@ -3896,7 +3915,7 @@ var EventEmitter = (function () {
         }
 
         var indexOfListener = listeners.indexOf(listener);
-        if (indexOfListener == -1) {
+        if (indexOfListener === -1) {
           return this;
         }
 
@@ -3924,7 +3943,7 @@ var EventEmitter = (function () {
     },
     setMaxListeners: {
       value: function setMaxListeners(newMaxListeners) {
-        if (parseInt(newMaxListeners) !== newMaxListeners) {
+        if (parseInt(newMaxListeners, 10) !== newMaxListeners) {
           throw new TypeError();
         }
 
@@ -20195,7 +20214,7 @@ var NightUI = (function (_UI) {
               var identifier = listItem.dataset.identifier;
 
               listItem.addEventListener("click", function () {
-                _this._onOverviewButtonClick(identifier);
+                _this.switchToControl(identifier);
               });
             })();
           }
@@ -20255,14 +20274,14 @@ var NightUI = (function (_UI) {
         }
       }
     },
-    _onOverviewButtonClick: {
+    switchToControl: {
 
       /**
        * Gets called when an overview button has been clicked
        * @private
        */
 
-      value: function _onOverviewButtonClick(identifier) {
+      value: function switchToControl(identifier) {
         if (this.context.controlsDisabled) {
           return;
         }this._overviewControlsContainer.style.display = "none";
