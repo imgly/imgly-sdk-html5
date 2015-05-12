@@ -1,4 +1,3 @@
-'use strict';
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,13 +7,13 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-require('babel/polyfill');
+require('babel/polyfill')
 
-import _ from 'lodash';
-import RenderImage from './lib/render-image';
-import ImageExporter from './lib/image-exporter';
-import { RenderType, ImageFormat } from './constants';
-import Utils from './lib/utils';
+import _ from 'lodash'
+import RenderImage from './lib/render-image'
+import ImageExporter from './lib/image-exporter'
+import { RenderType, ImageFormat } from './constants'
+import Utils from './lib/utils'
 
 /**
  * @class
@@ -35,7 +34,7 @@ class ImglyKit {
   constructor (options) {
     // `options` is required
     if (typeof options === 'undefined') {
-      throw new Error('No options given.');
+      throw new Error('No options given.')
     }
 
     // Set default options
@@ -43,52 +42,52 @@ class ImglyKit {
       assetsUrl: 'assets',
       container: null,
       renderOnWindowResize: false
-    });
-    options.ui = options.ui || {};
+    })
+    options.ui = options.ui || {}
     options.ui = _.defaults(options.ui, {
       enabled: true
-    });
+    })
 
     if (typeof options.image === 'undefined' && !options.ui.enabled) {
-      throw new Error('`options.image` needs to be set when UI is disabled.');
+      throw new Error('`options.image` needs to be set when UI is disabled.')
     }
 
     /**
      * @type {Object}
      * @private
      */
-    this._options = options;
+    this._options = options
 
     /**
      * The stack of {@link Operation} instances that will be used
      * to render the final Image
      * @type {Array.<ImglyKit.Operation>}
      */
-    this.operationsStack = [];
+    this.operationsStack = []
 
     /**
      * The registered UI types that can be selected via the `ui` option
      * @type {Object.<String, UI>}
      * @private
      */
-    this._registeredUIs = {};
+    this._registeredUIs = {}
 
     // Register the default UIs
-    this._registerUIs();
+    this._registerUIs()
 
     /**
      * The registered operations
      * @type {Object.<String, ImglyKit.Operation>}
      */
-    this._registeredOperations = {};
+    this._registeredOperations = {}
 
     // Register the default operations
-    this._registerOperations();
+    this._registerOperations()
 
     if (this._options.ui.enabled) {
-      this._initUI();
+      this._initUI()
       if (this._options.renderOnWindowResize) {
-        this._handleWindowResize();
+        this._handleWindowResize()
       }
     }
   }
@@ -101,30 +100,30 @@ class ImglyKit {
    * @return {Promise}
    */
   render (renderType, imageFormat, dimensions) {
-    var settings = ImageExporter.validateSettings(renderType, imageFormat);
+    var settings = ImageExporter.validateSettings(renderType, imageFormat)
 
-    renderType = settings.renderType;
-    imageFormat = settings.imageFormat;
+    renderType = settings.renderType
+    imageFormat = settings.imageFormat
 
     // Create a RenderImage
     var renderImage = new RenderImage(
       this._options.image,
       this.operationsStack,
       dimensions,
-      this._options.renderer);
+      this._options.renderer)
 
     // Set all operations to dirty, since we have another webgl renderer
     for (let operation of this.operationsStack) {
-      if (!operation) { continue; }
-      operation.dirty = true;
+      if (!operation) { continue }
+      operation.dirty = true
     }
 
     // Initiate image rendering
     return renderImage.render()
       .then(function () {
-        var canvas = renderImage.getRenderer().getCanvas();
-        return ImageExporter.export(canvas, renderType, imageFormat);
-      });
+        var canvas = renderImage.getRenderer().getCanvas()
+        return ImageExporter.export(canvas, renderType, imageFormat)
+      })
   }
 
   /**
@@ -140,13 +139,13 @@ class ImglyKit {
    * @return {String}
    */
   getAssetPath (asset) {
-    var isBrowser = typeof window !== 'undefined';
+    var isBrowser = typeof window !== 'undefined'
     if (isBrowser) {
       /* istanbul ignore next */
-      return this._options.assetsUrl + '/' + asset;
+      return this._options.assetsUrl + '/' + asset
     } else {
-      var path = require('path');
-      return path.resolve(this._options.assetsUrl, asset);
+      var path = require('path')
+      return path.resolve(this._options.assetsUrl, asset)
     }
   }
 
@@ -157,17 +156,17 @@ class ImglyKit {
    * @private
    */
   _handleWindowResize () {
-    let timer = null;
+    let timer = null
     window.addEventListener('resize', () => {
       if (timer !== null) {
-        clearTimeout(timer);
+        clearTimeout(timer)
       }
 
       timer = setTimeout(() => {
-        timer = null;
-        this.ui.render();
-      }, 300);
-    });
+        timer = null
+        this.ui.render()
+      }, 300)
+    })
   }
 
   /**
@@ -175,7 +174,7 @@ class ImglyKit {
    * @private
    */
   _registerUIs () {
-    this.registerUI(ImglyKit.NightUI);
+    this.registerUI(ImglyKit.NightUI)
   }
 
   /**
@@ -184,7 +183,7 @@ class ImglyKit {
    */
   _registerOperations () {
     for (let operationName in ImglyKit.Operations) {
-      this.registerOperation(ImglyKit.Operations[operationName]);
+      this.registerOperation(ImglyKit.Operations[operationName])
     }
   }
 
@@ -193,9 +192,9 @@ class ImglyKit {
    * @param {ImglyKit.Operation} operation - The operation class
    */
   registerOperation (operation) {
-    this._registeredOperations[operation.prototype.identifier] = operation;
+    this._registeredOperations[operation.prototype.identifier] = operation
     if (this.ui) {
-      this.ui.addOperation(operation);
+      this.ui.addOperation(operation)
     }
   }
 
@@ -204,7 +203,7 @@ class ImglyKit {
    * @param {UI} ui
    */
   registerUI (ui) {
-    this._registeredUIs[ui.prototype.identifier] = ui;
+    this._registeredUIs[ui.prototype.identifier] = ui
   }
 
   /**
@@ -213,32 +212,31 @@ class ImglyKit {
    */
   /* istanbul ignore next */
   _initUI () {
-    var UI;
+    var UI
 
     if (this._options.ui.enabled === true) {
       // Select the first UI by default
-      UI = Utils.values(this._registeredUIs)[0];
+      UI = Utils.values(this._registeredUIs)[0]
     }
 
     if (!UI) {
-      return;
+      return
     }
 
     /**
      * @type {ImglyKit.UI}
      */
-    this.ui = new UI(this, this._options);
+    this.ui = new UI(this, this._options)
   }
 
   get registeredOperations () {
-    return this._registeredOperations;
+    return this._registeredOperations
   }
 
   run () {
     if (typeof this.ui !== 'undefined') {
-      this.ui.run();
+      this.ui.run()
     }
-
   }
 }
 
@@ -247,63 +245,63 @@ class ImglyKit {
  * @name ImglyKit.version
  * @internal Keep in sync with package.json
  */
-ImglyKit.version = '2.0.0-beta6';
+ImglyKit.version = '2.0.0-beta6'
 
 // Exposed classes
-ImglyKit.RenderImage = RenderImage;
-ImglyKit.Color = require('./lib/color');
-ImglyKit.Filter = require('./operations/filters/filter');
-ImglyKit.Operation = require('./operations/operation');
-ImglyKit.Operations = {};
-ImglyKit.Operations.Filters = require('./operations/filters-operation');
-ImglyKit.Operations.Crop = require('./operations/crop-operation');
-ImglyKit.Operations.Rotation = require('./operations/rotation-operation');
-ImglyKit.Operations.Saturation = require('./operations/saturation-operation');
-ImglyKit.Operations.Contrast = require('./operations/contrast-operation');
-ImglyKit.Operations.Brightness = require('./operations/brightness-operation');
-ImglyKit.Operations.Flip = require('./operations/flip-operation');
-ImglyKit.Operations.TiltShift = require('./operations/tilt-shift-operation');
-ImglyKit.Operations.RadialBlur = require('./operations/radial-blur-operation');
-ImglyKit.Operations.Text = require('./operations/text-operation');
-ImglyKit.Operations.Stickers = require('./operations/stickers-operation');
-ImglyKit.Operations.Frames = require('./operations/frames-operation');
+ImglyKit.RenderImage = RenderImage
+ImglyKit.Color = require('./lib/color')
+ImglyKit.Filter = require('./operations/filters/filter')
+ImglyKit.Operation = require('./operations/operation')
+ImglyKit.Operations = {}
+ImglyKit.Operations.Filters = require('./operations/filters-operation')
+ImglyKit.Operations.Crop = require('./operations/crop-operation')
+ImglyKit.Operations.Rotation = require('./operations/rotation-operation')
+ImglyKit.Operations.Saturation = require('./operations/saturation-operation')
+ImglyKit.Operations.Contrast = require('./operations/contrast-operation')
+ImglyKit.Operations.Brightness = require('./operations/brightness-operation')
+ImglyKit.Operations.Flip = require('./operations/flip-operation')
+ImglyKit.Operations.TiltShift = require('./operations/tilt-shift-operation')
+ImglyKit.Operations.RadialBlur = require('./operations/radial-blur-operation')
+ImglyKit.Operations.Text = require('./operations/text-operation')
+ImglyKit.Operations.Stickers = require('./operations/stickers-operation')
+ImglyKit.Operations.Frames = require('./operations/frames-operation')
 
-ImglyKit.Filters = {};
-ImglyKit.Filters.A15 = require('./operations/filters/a15-filter');
-ImglyKit.Filters.Breeze = require('./operations/filters/breeze-filter');
-ImglyKit.Filters.BW = require('./operations/filters/bw-filter');
-ImglyKit.Filters.BWHard = require('./operations/filters/bwhard-filter');
-ImglyKit.Filters.Celsius = require('./operations/filters/celsius-filter');
-ImglyKit.Filters.Chest = require('./operations/filters/chest-filter');
-ImglyKit.Filters.Fixie = require('./operations/filters/fixie-filter');
-ImglyKit.Filters.Food = require('./operations/filters/food-filter');
-ImglyKit.Filters.Fridge = require('./operations/filters/fridge-filter');
-ImglyKit.Filters.Front = require('./operations/filters/front-filter');
-ImglyKit.Filters.Glam = require('./operations/filters/glam-filter');
-ImglyKit.Filters.Gobblin = require('./operations/filters/gobblin-filter');
-ImglyKit.Filters.K1 = require('./operations/filters/k1-filter');
-ImglyKit.Filters.K2 = require('./operations/filters/k2-filter');
-ImglyKit.Filters.K6 = require('./operations/filters/k6-filter');
-ImglyKit.Filters.KDynamic = require('./operations/filters/kdynamic-filter');
-ImglyKit.Filters.Lenin = require('./operations/filters/lenin-filter');
-ImglyKit.Filters.Lomo = require('./operations/filters/lomo-filter');
-ImglyKit.Filters.Mellow = require('./operations/filters/mellow-filter');
-ImglyKit.Filters.Morning = require('./operations/filters/morning-filter');
-ImglyKit.Filters.Orchid = require('./operations/filters/orchid-filter');
-ImglyKit.Filters.Pola = require('./operations/filters/pola-filter');
-ImglyKit.Filters.Pola669 = require('./operations/filters/pola669-filter');
-ImglyKit.Filters.Quozi = require('./operations/filters/quozi-filter');
-ImglyKit.Filters.Semired = require('./operations/filters/semired-filter');
-ImglyKit.Filters.Sunny = require('./operations/filters/sunny-filter');
-ImglyKit.Filters.Texas = require('./operations/filters/texas-filter');
-ImglyKit.Filters.X400 = require('./operations/filters/x400-filter');
+ImglyKit.Filters = {}
+ImglyKit.Filters.A15 = require('./operations/filters/a15-filter')
+ImglyKit.Filters.Breeze = require('./operations/filters/breeze-filter')
+ImglyKit.Filters.BW = require('./operations/filters/bw-filter')
+ImglyKit.Filters.BWHard = require('./operations/filters/bwhard-filter')
+ImglyKit.Filters.Celsius = require('./operations/filters/celsius-filter')
+ImglyKit.Filters.Chest = require('./operations/filters/chest-filter')
+ImglyKit.Filters.Fixie = require('./operations/filters/fixie-filter')
+ImglyKit.Filters.Food = require('./operations/filters/food-filter')
+ImglyKit.Filters.Fridge = require('./operations/filters/fridge-filter')
+ImglyKit.Filters.Front = require('./operations/filters/front-filter')
+ImglyKit.Filters.Glam = require('./operations/filters/glam-filter')
+ImglyKit.Filters.Gobblin = require('./operations/filters/gobblin-filter')
+ImglyKit.Filters.K1 = require('./operations/filters/k1-filter')
+ImglyKit.Filters.K2 = require('./operations/filters/k2-filter')
+ImglyKit.Filters.K6 = require('./operations/filters/k6-filter')
+ImglyKit.Filters.KDynamic = require('./operations/filters/kdynamic-filter')
+ImglyKit.Filters.Lenin = require('./operations/filters/lenin-filter')
+ImglyKit.Filters.Lomo = require('./operations/filters/lomo-filter')
+ImglyKit.Filters.Mellow = require('./operations/filters/mellow-filter')
+ImglyKit.Filters.Morning = require('./operations/filters/morning-filter')
+ImglyKit.Filters.Orchid = require('./operations/filters/orchid-filter')
+ImglyKit.Filters.Pola = require('./operations/filters/pola-filter')
+ImglyKit.Filters.Pola669 = require('./operations/filters/pola669-filter')
+ImglyKit.Filters.Quozi = require('./operations/filters/quozi-filter')
+ImglyKit.Filters.Semired = require('./operations/filters/semired-filter')
+ImglyKit.Filters.Sunny = require('./operations/filters/sunny-filter')
+ImglyKit.Filters.Texas = require('./operations/filters/texas-filter')
+ImglyKit.Filters.X400 = require('./operations/filters/x400-filter')
 
 // Exposed constants
-ImglyKit.RenderType = RenderType;
-ImglyKit.ImageFormat = ImageFormat;
-ImglyKit.Vector2 = require('./lib/math/vector2');
+ImglyKit.RenderType = RenderType
+ImglyKit.ImageFormat = ImageFormat
+ImglyKit.Vector2 = require('./lib/math/vector2')
 
 // UI
-ImglyKit.NightUI = require('./ui/night/ui');
+ImglyKit.NightUI = require('./ui/night/ui')
 
-export default ImglyKit;
+export default ImglyKit

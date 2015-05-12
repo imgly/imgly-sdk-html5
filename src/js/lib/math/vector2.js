@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -19,13 +18,13 @@
  */
 class Vector2 {
   constructor (x, y) {
-    this.x = x;
-    this.y = y;
-    if (typeof this.x === "undefined") {
-      this.x = 0;
+    this.x = x
+    this.y = y
+    if (typeof this.x === 'undefined') {
+      this.x = 0
     }
-    if (typeof this.y === "undefined") {
-      this.y = 0;
+    if (typeof this.y === 'undefined') {
+      this.y = 0
     }
   }
 
@@ -36,9 +35,9 @@ class Vector2 {
    * @return {Vector2}
    */
   set (x, y) {
-    this.x = x;
-    this.y = y;
-    return this;
+    this.x = x
+    this.y = y
+    return this
   }
 
   /**
@@ -46,7 +45,7 @@ class Vector2 {
    * @return {Vector2}
    */
   clone () {
-    return new Vector2(this.x, this.y);
+    return new Vector2(this.x, this.y)
   }
 
   /**
@@ -55,9 +54,9 @@ class Vector2 {
    * @return {Vector2}
    */
   copy (other) {
-    this.x = other.x;
-    this.y = other.y;
-    return this;
+    this.x = other.x
+    this.y = other.y
+    return this
   }
 
   /**
@@ -67,28 +66,28 @@ class Vector2 {
    * @return {Vector2}
    */
   clamp (minimum, maximum) {
-    let minimumSet = minimum !== null && typeof minimum !== "undefined";
-    let maximumSet = maximum !== null && typeof maximum !== "undefined";
+    let minimumSet = minimum !== null && typeof minimum !== 'undefined'
+    let maximumSet = maximum !== null && typeof maximum !== 'undefined'
 
     /* istanbul ignore else  */
     if (!(minimum instanceof Vector2) && minimumSet) {
-      minimum = new Vector2(minimum, minimum);
+      minimum = new Vector2(minimum, minimum)
     }
     /* istanbul ignore else  */
     if (!(maximum instanceof Vector2) && maximumSet) {
-      maximum = new Vector2(maximum, maximum);
+      maximum = new Vector2(maximum, maximum)
     }
 
     if (minimumSet) {
-      this.x = Math.max(minimum.x, this.x);
-      this.y = Math.max(minimum.y, this.y);
+      this.x = Math.max(minimum.x, this.x)
+      this.y = Math.max(minimum.y, this.y)
     }
 
     if (maximumSet) {
-      this.x = Math.min(maximum.x, this.x);
-      this.y = Math.min(maximum.y, this.y);
+      this.x = Math.min(maximum.x, this.x)
+      this.y = Math.min(maximum.y, this.y)
     }
-    return this;
+    return this
   }
 
   /**
@@ -99,13 +98,13 @@ class Vector2 {
    */
   divide (divisor, y) {
     if (divisor instanceof Vector2) {
-      this.x /= divisor.x;
-      this.y /= divisor.y;
+      this.x /= divisor.x
+      this.y /= divisor.y
     } else {
-      this.x /= divisor;
-      this.y /= (typeof y === "undefined" ? divisor : y);
+      this.x /= divisor
+      this.y /= (typeof y === 'undefined' ? divisor : y)
     }
-    return this;
+    return this
   }
 
   /**
@@ -116,13 +115,13 @@ class Vector2 {
    */
   subtract (subtrahend, y) {
     if (subtrahend instanceof Vector2) {
-      this.x -= subtrahend.x;
-      this.y -= subtrahend.y;
+      this.x -= subtrahend.x
+      this.y -= subtrahend.y
     } else {
-      this.x -= subtrahend;
-      this.y -= (typeof y === "undefined" ? subtrahend : y);
+      this.x -= subtrahend
+      this.y -= (typeof y === 'undefined' ? subtrahend : y)
     }
-    return this;
+    return this
   }
 
   /**
@@ -133,13 +132,13 @@ class Vector2 {
    */
   multiply (factor, y) {
     if (factor instanceof Vector2) {
-      this.x *= factor.x;
-      this.y *= factor.y;
+      this.x *= factor.x
+      this.y *= factor.y
     } else {
-      this.x *= factor;
-      this.y *= (typeof y === "undefined" ? factor : y);
+      this.x *= factor
+      this.y *= (typeof y === 'undefined' ? factor : y)
     }
-    return this;
+    return this
   }
 
   /**
@@ -149,13 +148,13 @@ class Vector2 {
    */
   add (addend, y) {
     if (addend instanceof Vector2) {
-      this.x += addend.x;
-      this.y += addend.y;
+      this.x += addend.x
+      this.y += addend.y
     } else {
-      this.x += addend;
-      this.y += (typeof y === "undefined" ? addend : y);
+      this.x += addend
+      this.y += (typeof y === 'undefined' ? addend : y)
     }
-    return this;
+    return this
   }
 
   /**
@@ -166,9 +165,9 @@ class Vector2 {
    */
   equals (vec, y) {
     if (vec instanceof Vector2) {
-      return vec.x === this.x && vec.y === this.y;
+      return vec.x === this.x && vec.y === this.y
     } else {
-      return vec === this.x && y === this.y;
+      return vec === this.x && y === this.y
     }
   }
 
@@ -177,10 +176,10 @@ class Vector2 {
    * @return {Vector2}
    */
   flip () {
-    let tempX = this.x;
-    this.x = this.y;
-    this.y = tempX;
-    return this;
+    let tempX = this.x
+    this.x = this.y
+    this.y = tempX
+    return this
   }
 
   /**
@@ -188,9 +187,8 @@ class Vector2 {
    * @return {String}
    */
   toString () {
-    return "Vector2({ x: " + this.x + ", y: " + this.y + " })";
+    return `Vector2({ x: ${this.x}, y: ${this.y} })`
   }
-
 }
 
-export default Vector2;
+export default Vector2

@@ -1,32 +1,31 @@
-'use strict';
 /**
  * EventEmitter (ES6) from:
  * https://gist.github.com/bloodyowl/41b1de3388c626796eca
  */
 
-const DEFAULT_MAX_LISTENERS = 12;
+const DEFAULT_MAX_LISTENERS = 12
 
 function error (message, ...args) {
-  console.error.apply(console, [message].concat(args));
-  console.trace();
+  console.error.apply(console, [message].concat(args))
+  console.trace()
 }
 
 class EventEmitter {
   constructor () {
-    this._maxListeners = DEFAULT_MAX_LISTENERS;
-    this._events = {};
+    this._maxListeners = DEFAULT_MAX_LISTENERS
+    this._events = {}
   }
 
   on (type, listener) {
-    if (typeof listener != 'function') {
-      throw new TypeError();
+    if (typeof listener !== 'function') {
+      throw new TypeError()
     }
 
-    let listeners = this._events[type] || (this._events[type] = []);
-    if (listeners.indexOf(listener) != -1) {
-      return this;
+    let listeners = this._events[type] || (this._events[type] = [])
+    if (listeners.indexOf(listener) !== -1) {
+      return this
     }
-    listeners.push(listener);
+    listeners.push(listener)
 
     if (listeners.length > this._maxListeners) {
       error(
@@ -36,63 +35,63 @@ class EventEmitter {
         listeners.length,
         type,
         this._maxListeners
-      );
+      )
     }
-    return this;
+    return this
   }
 
   once (type, listener) {
-    let eventsInstance = this;
+    let eventsInstance = this
     function onceCallback () {
-      eventsInstance.off(type, onceCallback);
-      listener.apply(null, arguments);
+      eventsInstance.off(type, onceCallback)
+      listener.apply(null, arguments)
     }
-    return this.on(type, onceCallback);
+    return this.on(type, onceCallback)
   }
 
   off (type, ...args) {
     if (args.length === 0) {
-      this._events[type] = null;
-      return this;
+      this._events[type] = null
+      return this
     }
 
-    let listener = args[0];
-    if (typeof listener != 'function') {
-      throw new TypeError();
+    let listener = args[0]
+    if (typeof listener !== 'function') {
+      throw new TypeError()
     }
 
-    let listeners = this._events[type];
+    let listeners = this._events[type]
     if (!listeners || !listeners.length) {
-      return this;
+      return this
     }
 
-    let indexOfListener = listeners.indexOf(listener);
-    if (indexOfListener == -1) {
-      return this;
+    let indexOfListener = listeners.indexOf(listener)
+    if (indexOfListener === -1) {
+      return this
     }
 
-    listeners.splice(indexOfListener, 1);
-    return this;
+    listeners.splice(indexOfListener, 1)
+    return this
   }
 
   emit (type, ...args) {
-    let listeners = this._events[type];
+    let listeners = this._events[type]
     if (!listeners || !listeners.length) {
-      return false;
+      return false
     }
 
-    listeners.forEach(fn => fn.apply(null, args));
+    listeners.forEach(fn => fn.apply(null, args))
 
-    return true;
+    return true
   }
 
   setMaxListeners (newMaxListeners) {
-    if (parseInt(newMaxListeners) !== newMaxListeners) {
-      throw new TypeError();
+    if (parseInt(newMaxListeners, 10) !== newMaxListeners) {
+      throw new TypeError()
     }
 
-    this._maxListeners = newMaxListeners;
+    this._maxListeners = newMaxListeners
   }
 }
 
-export default EventEmitter;
+export default EventEmitter

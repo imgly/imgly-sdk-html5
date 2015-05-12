@@ -1,4 +1,3 @@
-'use strict';
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -21,13 +20,13 @@
 class Color {
   constructor (r, g, b, a) {
     if (typeof a === 'undefined') {
-      a = 1.0;
+      a = 1.0
     }
 
-    this.r = r;
-    this.g = g;
-    this.b = b;
-    this.a = a;
+    this.r = r
+    this.g = g
+    this.b = b
+    this.a = a
   }
 
   /**
@@ -40,8 +39,8 @@ class Color {
       Math.round(this.g * 255),
       Math.round(this.b * 255),
       this.a
-    ];
-    return 'rgba(' + colors.join(',') + ')';
+    ]
+    return 'rgba(' + colors.join(',') + ')'
   }
 
   /**
@@ -53,8 +52,8 @@ class Color {
       this._componentToHex(Math.round(this.r * 255)),
       this._componentToHex(Math.round(this.g * 255)),
       this._componentToHex(Math.round(this.b * 255))
-    ];
-    return '#' + components.join('');
+    ]
+    return '#' + components.join('')
   }
 
   /**
@@ -62,7 +61,7 @@ class Color {
    * @return {Array.<Number>}
    */
   toGLColor () {
-    return [this.r, this.g, this.b, this.a];
+    return [this.r, this.g, this.b, this.a]
   }
 
   /**
@@ -70,7 +69,7 @@ class Color {
    * @return {Array.<Number>}
    */
   toRGBGLColor () {
-    return [this.r, this.g, this.b];
+    return [this.r, this.g, this.b]
   }
 
   /**
@@ -78,32 +77,32 @@ class Color {
    * @return {Array.<Number>}
    */
   toHSV () {
-    let max = Math.max(this.r, this.g, this.b);
-    let min = Math.min(this.r, this.g, this.b);
-    let h;
-    let s;
-    let v = max;
-    let d = max - min;
-    s = max === 0 ? 0 : d / max;
+    let max = Math.max(this.r, this.g, this.b)
+    let min = Math.min(this.r, this.g, this.b)
+    let h
+    let s
+    let v = max
+    let d = max - min
+    s = max === 0 ? 0 : d / max
 
-    if (max == min) {
-      h = 0; // achromatic
+    if (max === min) {
+      h = 0 // achromatic
     } else {
-      switch (max){
+      switch (max) {
         case this.r:
-          h = (this.g - this.b) / d + (this.g < this.b ? 6 : 0);
-          break;
+          h = (this.g - this.b) / d + (this.g < this.b ? 6 : 0)
+          break
         case this.g:
-          h = (this.b - this.r) / d + 2;
-          break;
+          h = (this.b - this.r) / d + 2
+          break
         case this.b:
-          h = (this.r - this.g) / d + 4;
-          break;
+          h = (this.r - this.g) / d + 4
+          break
       }
-      h /= 6;
+      h /= 6
     }
 
-    return [h, s, v];
+    return [h, s, v]
   }
 
   /**
@@ -113,50 +112,50 @@ class Color {
    * @param {Number} v
    */
   fromHSV (h, s, v) {
-    let {r, g, b} = this;
+    let {r, g, b} = this
 
-    let i = Math.floor(h * 6);
-    let f = h * 6 - i;
-    let p = v * (1 - s);
-    let q = v * (1 - f * s);
-    let t = v * (1 - (1 - f) * s);
+    let i = Math.floor(h * 6)
+    let f = h * 6 - i
+    let p = v * (1 - s)
+    let q = v * (1 - f * s)
+    let t = v * (1 - (1 - f) * s)
 
-    switch (i % 6){
+    switch (i % 6) {
       case 0:
-        r = v;
-        g = t;
-        b = p;
-        break;
+        r = v
+        g = t
+        b = p
+        break
       case 1:
-        r = q;
-        g = v;
-        b = p;
-        break;
+        r = q
+        g = v
+        b = p
+        break
       case 2:
-        r = p;
-        g = v;
-        b = t;
-        break;
+        r = p
+        g = v
+        b = t
+        break
       case 3:
-        r = p;
-        g = q;
-        b = v;
-        break;
+        r = p
+        g = q
+        b = v
+        break
       case 4:
-        r = t;
-        g = p;
-        b = v;
-        break;
+        r = t
+        g = p
+        b = v
+        break
       case 5:
-        r = v;
-        g = p;
-        b = q;
-        break;
+        r = v
+        g = p
+        b = q
+        break
     }
 
-    this.r = r;
-    this.g = g;
-    this.b = b;
+    this.r = r
+    this.g = g
+    this.b = b
   }
 
   /**
@@ -164,7 +163,7 @@ class Color {
    * @return {Color}
    */
   clone () {
-    return new Color(this.r, this.g, this.b, this.a);
+    return new Color(this.r, this.g, this.b, this.a)
   }
 
   /**
@@ -174,8 +173,8 @@ class Color {
    * @private
    */
   _componentToHex (component) {
-    var hex = component.toString(16);
-    return hex.length == 1 ? '0' + hex : hex;
+    var hex = component.toString(16)
+    return hex.length === 1 ? '0' + hex : hex
   }
 
   /**
@@ -183,8 +182,8 @@ class Color {
    * @returns {String}
    */
   toString () {
-    return `Color(${this.r}, ${this.g}, ${this.b}, ${this.a})`;
+    return `Color(${this.r}, ${this.g}, ${this.b}, ${this.a})`
   }
 }
 
-export default Color;
+export default Color

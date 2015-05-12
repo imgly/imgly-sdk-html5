@@ -1,4 +1,3 @@
-'use strict';
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -16,7 +15,7 @@
 export var RenderType = {
   IMAGE: 'image',
   DATAURL: 'data-url'
-};
+}
 
 /**
  * The available output image formats
@@ -26,4 +25,4 @@ export var RenderType = {
 export var ImageFormat = {
   PNG: 'image/png',
   JPEG: 'image/jpeg'
-};
+}
