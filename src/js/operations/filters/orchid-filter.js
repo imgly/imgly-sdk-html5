@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,7 +7,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Filter from "./filter";
+import Filter from './filter'
 
 /**
  * Orchid Filter
@@ -23,7 +22,7 @@ class OrchidFilter extends Filter {
    * @type {String}
    */
   static get identifier () {
-    return "orchid";
+    return 'orchid'
   }
 
   /**
@@ -31,7 +30,7 @@ class OrchidFilter extends Filter {
    * @type {String}
    */
   get name () {
-    return "Orchid";
+    return 'Orchid'
   }
 
   /**
@@ -40,7 +39,7 @@ class OrchidFilter extends Filter {
    * @return {Promise}
    */
   render (renderer) {
-    var stack = new Filter.PrimitivesStack();
+    var stack = new Filter.PrimitivesStack()
 
     // Tone curve
     stack.add(new Filter.Primitives.ToneCurve({
@@ -64,7 +63,7 @@ class OrchidFilter extends Filter {
           [255, 255]
         ]
       }
-    }));
+    }))
 
     // Tone curve
     stack.add(new Filter.Primitives.ToneCurve({
@@ -74,15 +73,15 @@ class OrchidFilter extends Filter {
         [189, 217],
         [255, 255]
       ]
-    }));
+    }))
 
     // Desaturation
     stack.add(new Filter.Primitives.Desaturation({
       desaturation: 0.65
-    }));
+    }))
 
-    stack.render(renderer);
+    stack.render(renderer)
   }
 }
 
-export default OrchidFilter;
+export default OrchidFilter

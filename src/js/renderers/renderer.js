@@ -1,5 +1,4 @@
 /*jshint unused:false */
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -9,8 +8,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Vector2 from "../lib/math/vector2";
-import EventEmitter from "../lib/event-emitter";
+import Vector2 from '../lib/math/vector2'
+import EventEmitter from '../lib/event-emitter'
 
 /**
  * @class
@@ -20,29 +19,29 @@ import EventEmitter from "../lib/event-emitter";
  */
 class Renderer extends EventEmitter {
   constructor (dimensions, canvas) {
-    super();
+    super()
 
     /**
      * @type {Canvas}
      * @private
      */
-    this._canvas = canvas || this.createCanvas();
+    this._canvas = canvas || this.createCanvas()
 
     if (!canvas) {
-      this.setSize(dimensions);
+      this.setSize(dimensions)
     }
 
     /**
      * @type {RenderingContext}
      * @private
      */
-    this._context = this._getContext();
+    this._context = this._getContext()
 
     /**
      * The texture / image data cache
      * @type {Object.<String, *>}
      */
-    this._cache = {};
+    this._cache = {}
   }
 
   /**
@@ -50,7 +49,7 @@ class Renderer extends EventEmitter {
    * @type {String}
    */
   get identifier () {
-    return null;
+    return null
   }
 
   /**
@@ -60,7 +59,7 @@ class Renderer extends EventEmitter {
    */
   static isSupported () {
     /* istanbul ignore next */
-    throw new Error("Renderer#isSupported is abstract and not implemented in inherited class.");
+    throw new Error('Renderer#isSupported is abstract and not implemented in inherited class.')
   }
 
   /**
@@ -83,27 +82,27 @@ class Renderer extends EventEmitter {
    * @private
    */
   createCanvas (width, height) {
-    var isBrowser = typeof window !== "undefined";
-    var canvas;
+    var isBrowser = typeof window !== 'undefined'
+    var canvas
     if (isBrowser) {
       /* istanbul ignore next */
-      canvas = document.createElement("canvas");
+      canvas = document.createElement('canvas')
     } else {
-      var Canvas = require("canvas");
-      canvas = new Canvas();
+      var Canvas = require('canvas')
+      canvas = new Canvas()
     }
 
     // Apply width
-    if (typeof width !== "undefined") {
-      canvas.width = width;
+    if (typeof width !== 'undefined') {
+      canvas.width = width
     }
 
     // Apply height
-    if (typeof height !== "undefined") {
-      canvas.height = height;
+    if (typeof height !== 'undefined') {
+      canvas.height = height
     }
 
-    return canvas;
+    return canvas
   }
 
   /**
@@ -111,7 +110,7 @@ class Renderer extends EventEmitter {
    * @return {Vector2}
    */
   getSize () {
-    return new Vector2(this._canvas.width, this._canvas.height);
+    return new Vector2(this._canvas.width, this._canvas.height)
   }
 
   /**
@@ -119,8 +118,8 @@ class Renderer extends EventEmitter {
    * @param {Vector2} dimensions
    */
   setSize (dimensions) {
-    this._canvas.width = dimensions.x;
-    this._canvas.height = dimensions.y;
+    this._canvas.width = dimensions.x
+    this._canvas.height = dimensions.y
   }
 
   /**
@@ -130,7 +129,7 @@ class Renderer extends EventEmitter {
    */
   _getContext () {
     /* istanbul ignore next */
-    throw new Error("Renderer#_getContext is abstract and not implemented in inherited class.");
+    throw new Error('Renderer#_getContext is abstract and not implemented in inherited class.')
   }
 
   /**
@@ -141,7 +140,7 @@ class Renderer extends EventEmitter {
    */
   resizeTo (dimensions) {
     /* istanbul ignore next */
-    throw new Error("Renderer#resizeTo is abstract and not implemented in inherited class.");
+    throw new Error('Renderer#resizeTo is abstract and not implemented in inherited class.')
   }
 
   /**
@@ -151,7 +150,7 @@ class Renderer extends EventEmitter {
    */
   drawImage (image) {
     /* istanbul ignore next */
-    throw new Error("Renderer#drawImage is abstract and not implemented in inherited class.");
+    throw new Error('Renderer#drawImage is abstract and not implemented in inherited class.')
   }
 
   /**
@@ -165,7 +164,7 @@ class Renderer extends EventEmitter {
    * @return {Canvas}
    */
   getCanvas () {
-    return this._canvas;
+    return this._canvas
   }
 
   /**
@@ -173,7 +172,7 @@ class Renderer extends EventEmitter {
    * @return {RenderingContext}
    */
   getContext () {
-    return this._context;
+    return this._context
   }
 
   /**
@@ -181,10 +180,10 @@ class Renderer extends EventEmitter {
    * @param {Canvas} canvas
    */
   setCanvas (canvas) {
-    this._canvas = canvas;
-    this._context = this._getContext();
+    this._canvas = canvas
+    this._context = this._getContext()
 
-    this.emit("new-canvas", this._canvas);
+    this.emit('new-canvas', this._canvas)
   }
 
   /**
@@ -192,7 +191,7 @@ class Renderer extends EventEmitter {
    * @param {RenderingContext2D} context
    */
   setContext (context) {
-    this._context = context;
+    this._context = context
   }
 
   /**
@@ -204,4 +203,4 @@ class Renderer extends EventEmitter {
   }
 }
 
-export default Renderer;
+export default Renderer

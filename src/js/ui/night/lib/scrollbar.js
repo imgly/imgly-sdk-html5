@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,10 +7,10 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Utils from "../../../lib/utils";
-import Vector2 from "../../../lib/math/vector2";
+import Utils from '../../../lib/utils'
+import Vector2 from '../../../lib/math/vector2'
 
-const maxScrollbarWidth = 18;
+const maxScrollbarWidth = 18
 
 /**
  * Our custom scroll bar
@@ -21,32 +20,32 @@ class Scrollbar {
    * @param {DOMElement} container
    */
   constructor (container) {
-    this._container = container;
-    this._isDragging = false;
-    this._isHovering = false;
+    this._container = container
+    this._isDragging = false
+    this._isHovering = false
 
-    this._appendDOM();
-    this._resizeButton();
-    this._updateValues();
+    this._appendDOM()
+    this._resizeButton()
+    this._updateValues()
 
-    this._onButtonDown = this._onButtonDown.bind(this);
-    this._onButtonMove = this._onButtonMove.bind(this);
-    this._onButtonUp = this._onButtonUp.bind(this);
+    this._onButtonDown = this._onButtonDown.bind(this)
+    this._onButtonMove = this._onButtonMove.bind(this)
+    this._onButtonUp = this._onButtonUp.bind(this)
 
-    this._onContainerEnter = this._onContainerEnter.bind(this);
-    this._onContainerLeave = this._onContainerLeave.bind(this);
+    this._onContainerEnter = this._onContainerEnter.bind(this)
+    this._onContainerLeave = this._onContainerLeave.bind(this)
 
-    this._onBackgroundClick = this._onBackgroundClick.bind(this);
+    this._onBackgroundClick = this._onBackgroundClick.bind(this)
 
-    this._container.addEventListener("mouseenter", this._onContainerEnter);
-    this._container.addEventListener("mouseleave", this._onContainerLeave);
-    this._container.addEventListener("mousemove", this._onContainerEnter);
-    this._dom.button.addEventListener("mousedown", this._onButtonDown);
-    this._dom.button.addEventListener("touchstart", this._onButtonDown);
-    this._dom.background.addEventListener("click", this._onBackgroundClick);
-    this._list.addEventListener("scroll", this._onListScroll.bind(this));
+    this._container.addEventListener('mouseenter', this._onContainerEnter)
+    this._container.addEventListener('mouseleave', this._onContainerLeave)
+    this._container.addEventListener('mousemove', this._onContainerEnter)
+    this._dom.button.addEventListener('mousedown', this._onButtonDown)
+    this._dom.button.addEventListener('touchstart', this._onButtonDown)
+    this._dom.background.addEventListener('click', this._onBackgroundClick)
+    this._list.addEventListener('scroll', this._onListScroll.bind(this))
 
-    this._onListScroll();
+    this._onListScroll()
   }
 
   /**
@@ -55,19 +54,19 @@ class Scrollbar {
    * @private
    */
   _onBackgroundClick (e) {
-    e.preventDefault();
-    if (e.target !== this._dom.background) return;
+    e.preventDefault()
+    if (e.target !== this._dom.background) return
 
-    let position = Utils.getEventPosition(e);
-    let backgroundOffset = this._dom.background.getBoundingClientRect();
-    backgroundOffset = new Vector2(backgroundOffset.left, backgroundOffset.top);
+    let position = Utils.getEventPosition(e)
+    let backgroundOffset = this._dom.background.getBoundingClientRect()
+    backgroundOffset = new Vector2(backgroundOffset.left, backgroundOffset.top)
 
     let relativePosition = position.clone()
-      .subtract(backgroundOffset);
+      .subtract(backgroundOffset)
 
-    relativePosition.x -= this._values.button.width * 0.5;
+    relativePosition.x -= this._values.button.width * 0.5
 
-    this._setButtonPosition(relativePosition.x);
+    this._setButtonPosition(relativePosition.x)
   }
 
   /**
@@ -75,8 +74,8 @@ class Scrollbar {
    * @private
    */
   _onContainerEnter () {
-    this._isHovering = true;
-    this.show();
+    this._isHovering = true
+    this.show()
   }
 
   /**
@@ -84,24 +83,24 @@ class Scrollbar {
    * @private
    */
   _onContainerLeave () {
-    this._isHovering = false;
-    this.hide();
+    this._isHovering = false
+    this.hide()
   }
 
   /**
    * Shows the scrollbar
    */
   show () {
-    if (!this._isScrollingNecessary) return;
-    this._dom.background.classList.add("visible");
+    if (!this._isScrollingNecessary) return
+    this._dom.background.classList.add('visible')
   }
 
   /**
    * Hides the scrollbar
    */
   hide () {
-    if (this._isDragging) return;
-    this._dom.background.classList.remove("visible");
+    if (this._isDragging) return
+    this._dom.background.classList.remove('visible')
   }
 
   /**
@@ -119,7 +118,7 @@ class Scrollbar {
         width: this._dom.button.offsetWidth,
         scrollableWidth: this._dom.background.offsetWidth - this._dom.button.offsetWidth
       }
-    };
+    }
   }
 
   /**
@@ -128,17 +127,17 @@ class Scrollbar {
    * @private
    */
   _onButtonDown (event) {
-    event.preventDefault();
+    event.preventDefault()
 
-    this._isDragging = true;
+    this._isDragging = true
 
-    this._initialMousePosition = Utils.getEventPosition(event);
-    this._initialButtonPosition = this._buttonPosition || 0;
+    this._initialMousePosition = Utils.getEventPosition(event)
+    this._initialButtonPosition = this._buttonPosition || 0
 
-    document.addEventListener("mousemove", this._onButtonMove);
-    document.addEventListener("touchmove", this._onButtonMove);
-    document.addEventListener("mouseup", this._onButtonUp);
-    document.addEventListener("touchend", this._onButtonUp);
+    document.addEventListener('mousemove', this._onButtonMove)
+    document.addEventListener('touchmove', this._onButtonMove)
+    document.addEventListener('mouseup', this._onButtonUp)
+    document.addEventListener('touchend', this._onButtonUp)
   }
 
   /**
@@ -147,14 +146,14 @@ class Scrollbar {
    * @private
    */
   _onButtonMove (event) {
-    event.preventDefault();
+    event.preventDefault()
 
-    let mousePosition = Utils.getEventPosition(event);
+    let mousePosition = Utils.getEventPosition(event)
     let diff = mousePosition.clone()
-      .subtract(this._initialMousePosition);
-    let newButtonPosition = this._initialButtonPosition + diff.x;
+      .subtract(this._initialMousePosition)
+    let newButtonPosition = this._initialButtonPosition + diff.x
 
-    this._setButtonPosition(newButtonPosition);
+    this._setButtonPosition(newButtonPosition)
   }
 
   /**
@@ -164,17 +163,17 @@ class Scrollbar {
    */
   _setButtonPosition (newButtonPosition) {
     // Clamp button position
-    newButtonPosition = Math.max(0, newButtonPosition);
-    newButtonPosition = Math.min(newButtonPosition, this._values.button.scrollableWidth);
+    newButtonPosition = Math.max(0, newButtonPosition)
+    newButtonPosition = Math.min(newButtonPosition, this._values.button.scrollableWidth)
 
     // Set button position
-    this._buttonPosition = newButtonPosition;
-    this._dom.button.style.left = `${this._buttonPosition}px`;
+    this._buttonPosition = newButtonPosition
+    this._dom.button.style.left = `${this._buttonPosition}px`
 
     // Update list scroll position
-    let progress = newButtonPosition / this._values.button.scrollableWidth;
-    let scrollPosition = this._values.list.scrollableWidth * progress;
-    this._list.scrollLeft = scrollPosition;
+    let progress = newButtonPosition / this._values.button.scrollableWidth
+    let scrollPosition = this._values.list.scrollableWidth * progress
+    this._list.scrollLeft = scrollPosition
   }
 
   /**
@@ -182,12 +181,12 @@ class Scrollbar {
    * @private
    */
   _onButtonUp () {
-    this._isDragging = false;
+    this._isDragging = false
 
-    document.removeEventListener("mousemove", this._onButtonMove);
-    document.removeEventListener("touchmove", this._onButtonMove);
-    document.removeEventListener("mouseup", this._onButtonUp);
-    document.removeEventListener("touchend", this._onButtonUp);
+    document.removeEventListener('mousemove', this._onButtonMove)
+    document.removeEventListener('touchmove', this._onButtonMove)
+    document.removeEventListener('mouseup', this._onButtonUp)
+    document.removeEventListener('touchend', this._onButtonUp)
   }
 
   /**
@@ -195,16 +194,16 @@ class Scrollbar {
    * @private
    */
   _onListScroll () {
-    if (this._isDragging) return;
+    if (this._isDragging) return
 
-    let listScrollWidth = this._list.scrollWidth - this._list.offsetWidth;
-    let listScrollPosition = this._list.scrollLeft;
+    let listScrollWidth = this._list.scrollWidth - this._list.offsetWidth
+    let listScrollPosition = this._list.scrollLeft
 
-    let backgroundScrollWidth = this._dom.background.offsetWidth - this._dom.button.offsetWidth;
-    let progress = listScrollPosition / listScrollWidth;
+    let backgroundScrollWidth = this._dom.background.offsetWidth - this._dom.button.offsetWidth
+    let progress = listScrollPosition / listScrollWidth
 
-    this._buttonPosition = backgroundScrollWidth * progress;
-    this._dom.button.style.left = `${this._buttonPosition}px`;
+    this._buttonPosition = backgroundScrollWidth * progress
+    this._dom.button.style.left = `${this._buttonPosition}px`
   }
 
   /**
@@ -212,11 +211,11 @@ class Scrollbar {
    * @private
    */
   _resizeButton () {
-    let listScrollWidth = this._list.scrollWidth;
-    let listWidth = this._list.offsetWidth;
+    let listScrollWidth = this._list.scrollWidth
+    let listWidth = this._list.offsetWidth
 
-    this._buttonWidth = listWidth / listScrollWidth * listWidth;
-    this._dom.button.style.width = `${this._buttonWidth}px`;
+    this._buttonWidth = listWidth / listScrollWidth * listWidth
+    this._dom.button.style.width = `${this._buttonWidth}px`
   }
 
   /**
@@ -224,39 +223,39 @@ class Scrollbar {
    * @private
    */
   _appendDOM () {
-    let background = document.createElement("div");
-    background.classList.add("imglykit-scrollbar-background");
-    background.style.bottom = `${maxScrollbarWidth}px`;
+    let background = document.createElement('div')
+    background.classList.add('imglykit-scrollbar-background')
+    background.style.bottom = `${maxScrollbarWidth}px`
 
-    let button = document.createElement("div");
-    button.classList.add("imglykit-scrollbar-button");
+    let button = document.createElement('div')
+    button.classList.add('imglykit-scrollbar-button')
 
-    background.appendChild(button);
-    this._container.appendChild(background);
+    background.appendChild(button)
+    this._container.appendChild(background)
 
     // Container should have position: relative
-    this._container.style.position = "relative";
+    this._container.style.position = 'relative'
 
     // Find the list
-    this._list = this._container.querySelector(".imglykit-controls-list");
-    this._dom = { background, button };
+    this._list = this._container.querySelector('.imglykit-controls-list')
+    this._dom = { background, button }
 
     // Resize the list and the container
-    this._list.style.height = "";
-    let listHeight = this._list.offsetHeight;
-    listHeight += maxScrollbarWidth;
-    this._container.style.height = `${listHeight}px`;
-    this._list.style.height = `${listHeight}px`;
+    this._list.style.height = ''
+    let listHeight = this._list.offsetHeight
+    listHeight += maxScrollbarWidth
+    this._container.style.height = `${listHeight}px`
+    this._list.style.height = `${listHeight}px`
   }
 
   /**
    * Removes the DOM elements and event listeners
    */
   remove () {
-    this._dom.button.removeEventListener("mousedown", this._onButtonDown);
-    this._dom.button.removeEventListener("touchstart", this._onButtonDown);
+    this._dom.button.removeEventListener('mousedown', this._onButtonDown)
+    this._dom.button.removeEventListener('touchstart', this._onButtonDown)
 
-    this._dom.background.remove();
+    this._dom.background.remove()
   }
 
   /**
@@ -265,8 +264,8 @@ class Scrollbar {
    * @private
    */
   get _isScrollingNecessary () {
-    return (this._list.scrollWidth > this._list.offsetWidth);
+    return (this._list.scrollWidth > this._list.offsetWidth)
   }
 }
 
-export default Scrollbar;
+export default Scrollbar

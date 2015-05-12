@@ -1,4 +1,4 @@
-"use strict";
+/* global HTMLElement */
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,7 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Vector2 from "./math/vector2";
+import Vector2 from './math/vector2'
 
 /**
  * Provides utility functions for internal use
@@ -24,7 +24,7 @@ class Utils {
    * @return {Boolean}
    */
   static isArray (object) {
-    return Object.prototype.toString.call(object) === "[object Array]";
+    return Object.prototype.toString.call(object) === '[object Array]'
   }
 
   /**
@@ -35,46 +35,46 @@ class Utils {
    */
   static select (items, selector=null) {
     if (selector === null) {
-      return items;
+      return items
     }
 
     // Turn string parameter into an array
-    if (typeof selector === "string") {
-      selector = selector.split(",").map(function (identifier) {
-        return identifier.trim();
-      });
+    if (typeof selector === 'string') {
+      selector = selector.split(',').map(function (identifier) {
+        return identifier.trim()
+      })
     }
 
     // Turn array parameter into an object with `only`
     if (Utils.isArray(selector)) {
-      selector = { only: selector };
+      selector = { only: selector }
     }
 
-    if (typeof selector.only !== "undefined") {
-      if (typeof selector.only === "string") {
-        selector.only = selector.only.split(",").map(function (identifier) {
-          return identifier.trim();
-        });
+    if (typeof selector.only !== 'undefined') {
+      if (typeof selector.only === 'string') {
+        selector.only = selector.only.split(',').map(function (identifier) {
+          return identifier.trim()
+        })
       }
 
       // Select only the given identifiers
       return items.filter(function (item) {
-        return selector.only.indexOf(item) !== -1;
-      });
-    } else if(typeof selector.except !== "undefined") {
-      if (typeof selector.except === "string") {
-        selector.except = selector.except.split(",").map(function (identifier) {
-          return identifier.trim();
-        });
+        return selector.only.indexOf(item) !== -1
+      })
+    } else if (typeof selector.except !== 'undefined') {
+      if (typeof selector.except === 'string') {
+        selector.except = selector.except.split(',').map(function (identifier) {
+          return identifier.trim()
+        })
       }
 
       // Select all but the given identifiers
       return items.filter(function (item) {
-        return selector.except.indexOf(item) === -1;
-      });
+        return selector.except.indexOf(item) === -1
+      })
     }
 
-    throw new Error("Utils#select failed to filter items.");
+    throw new Error('Utils#select failed to filter items.')
   }
 
   /**
@@ -83,11 +83,11 @@ class Utils {
    * @returns {Array<*>}
    */
   static values (object) {
-    var values = [];
+    var values = []
     for (var key in object) {
-      values.push(object[key]);
+      values.push(object[key])
     }
-    return values;
+    return values
   }
 
   /**
@@ -98,9 +98,9 @@ class Utils {
   /* istanbul ignore next */
   static isDOMElement (o) {
     return (
-      typeof HTMLElement === "object" ? o instanceof HTMLElement :
-      o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string"
-    );
+      typeof HTMLElement === 'object' ? o instanceof HTMLElement :
+      o && typeof o === 'object' && o !== null && o.nodeType === 1 && typeof o.nodeName === 'string'
+    )
   }
 
   /**
@@ -109,15 +109,15 @@ class Utils {
    * @return {Vector2}
    */
   static getEventPosition (e) {
-    let x = e.pageX;
-    let y = e.pageY;
-    if (e.type.indexOf("touch") !== -1) {
-      x = e.touches[0].pageX;
-      y = e.touches[0].pageY;
+    let x = e.pageX
+    let y = e.pageY
+    if (e.type.indexOf('touch') !== -1) {
+      x = e.touches[0].pageX
+      y = e.touches[0].pageY
     }
-    return new Vector2(x, y);
+    return new Vector2(x, y)
   }
 
 }
 
-export default Utils;
+export default Utils

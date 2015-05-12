@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -7,28 +6,28 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-import dot from "dot";
-import Utils from "../../lib/utils";
-import EventEmitter from "../../lib/event-emitter";
-import Helpers from "./helpers";
+import dot from 'dot'
+import Utils from '../../lib/utils'
+import EventEmitter from '../../lib/event-emitter'
+import Helpers from './helpers'
 
 class BaseUI extends EventEmitter {
   constructor (kit, options) {
-    super();
+    super()
 
-    this._kit = kit;
-    this._options = options;
-    this._options.ui = this._options.ui || {};
-    this._operations = [];
-    this._helpers = new Helpers(this.kit, this, options);
-    this.selectOperations(null);
+    this._kit = kit
+    this._options = options
+    this._options.ui = this._options.ui || {}
+    this._operations = []
+    this._helpers = new Helpers(this.kit, this, options)
+    this.selectOperations(null)
   }
 
   /**
    * Prepares the UI for use
    */
   run () {
-    this._attach();
+    this._attach()
   }
 
   /**
@@ -36,7 +35,7 @@ class BaseUI extends EventEmitter {
    * @type {String}
    */
   get identifier () {
-    return null;
+    return null
   }
 
   /**
@@ -45,14 +44,14 @@ class BaseUI extends EventEmitter {
    */
   _attach () {
     if (this._options.container === null) {
-      throw new Error("BaseUI#attach: No container set.");
+      throw new Error('BaseUI#attach: No container set.')
     }
 
-    let html = this._render();
-    this._options.container.innerHTML = html;
+    let html = this._render()
+    this._options.container.innerHTML = html
 
     // Container has to be position: relative
-    this._options.container.style.position = "relative";
+    this._options.container.style.position = 'relative'
   }
 
   /**
@@ -60,12 +59,12 @@ class BaseUI extends EventEmitter {
    * @private
    */
   _render () {
-    if (typeof this._template === "undefined") {
-      throw new Error("BaseUI#_render: No template set.");
+    if (typeof this._template === 'undefined') {
+      throw new Error('BaseUI#_render: No template set.')
     }
 
-    let renderFn = dot.template(this._template);
-    return renderFn(this.context);
+    let renderFn = dot.template(this._template)
+    return renderFn(this.context)
   }
 
   /**
@@ -73,13 +72,13 @@ class BaseUI extends EventEmitter {
    * @param {ImglyKit.Selector}
    */
   selectOperations (selector) {
-    let { registeredOperations } = this._kit;
-    let operationIdentifiers = Object.keys(registeredOperations);
+    let { registeredOperations } = this._kit
+    let operationIdentifiers = Object.keys(registeredOperations)
 
-    let selectedOperations = Utils.select(operationIdentifiers, selector);
+    let selectedOperations = Utils.select(operationIdentifiers, selector)
     this._operations = selectedOperations.map((identifier) => {
-      return registeredOperations[identifier];
-    });
+      return registeredOperations[identifier]
+    })
   }
 
   /**
@@ -87,7 +86,7 @@ class BaseUI extends EventEmitter {
    * @param {Operation} operation
    */
   addOperation (operation) {
-    this._operations.push(operation);
+    this._operations.push(operation)
   }
 
   /**
@@ -97,9 +96,9 @@ class BaseUI extends EventEmitter {
    */
   isOperationSelected (identifier) {
     let operationIdentifiers = this._operations.map((operation) => {
-      return operation.prototype.identifier;
-    });
-    return operationIdentifiers.indexOf(identifier) !== -1;
+      return operation.prototype.identifier
+    })
+    return operationIdentifiers.indexOf(identifier) !== -1
   }
 
   /**
@@ -111,7 +110,7 @@ class BaseUI extends EventEmitter {
       operations: this._operations,
       helpers: this._helpers,
       options: this._options
-    };
+    }
   }
 
   /**
@@ -119,7 +118,7 @@ class BaseUI extends EventEmitter {
    * @type {DOMElement}
    */
   get container () {
-    return this._options.container;
+    return this._options.container
   }
 
   /**
@@ -127,7 +126,7 @@ class BaseUI extends EventEmitter {
    * @type {Array.<ImglyKit.Operation>}
    */
   get operations () {
-    return this._operations;
+    return this._operations
   }
 
   /**
@@ -135,7 +134,7 @@ class BaseUI extends EventEmitter {
    * @type {Object}
    */
   get options () {
-    return this._options;
+    return this._options
   }
 
   /**
@@ -143,7 +142,7 @@ class BaseUI extends EventEmitter {
    * @type {Canvas}
    */
   get canvas () {
-    return this._canvas;
+    return this._canvas
   }
 
   /**
@@ -151,7 +150,7 @@ class BaseUI extends EventEmitter {
    * @type {Helpers}
    */
   get helpers () {
-    return this._helpers;
+    return this._helpers
   }
 
   /**
@@ -159,8 +158,8 @@ class BaseUI extends EventEmitter {
    * @type {Image}
    */
   get image () {
-    return this._options.image;
+    return this._options.image
   }
 }
 
-export default BaseUI;
+export default BaseUI

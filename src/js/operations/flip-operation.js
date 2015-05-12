@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,7 +7,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Operation from "./operation";
+import Operation from './operation'
 
 /**
  * An operation that can flip the canvas
@@ -20,9 +19,9 @@ import Operation from "./operation";
 class FlipOperation extends Operation {
   constructor (...args) {
     this.availableOptions = {
-      horizontal: { type: "boolean", default: false },
-      vertical: { type: "boolean", default: false }
-    };
+      horizontal: { type: 'boolean', default: false },
+      vertical: { type: 'boolean', default: false }
+    }
 
     /**
      * The fragment shader used for this operation
@@ -44,9 +43,9 @@ class FlipOperation extends Operation {
         }
         gl_FragColor = texture2D(u_image, texCoord);
       }
-    `;
+    `
 
-    super(...args);
+    super(...args)
   }
 
   /**
@@ -57,10 +56,10 @@ class FlipOperation extends Operation {
   _renderWebGL (renderer) {
     renderer.runShader(null, this.fragmentShader, {
       uniforms: {
-        u_flipVertical: { type: "f", value: this._options.vertical },
-        u_flipHorizontal: { type: "f", value: this._options.horizontal }
+        u_flipVertical: { type: 'f', value: this._options.vertical },
+        u_flipHorizontal: { type: 'f', value: this._options.horizontal }
       }
-    });
+    })
   }
 
   /**
@@ -68,36 +67,36 @@ class FlipOperation extends Operation {
    * @param  {CanvasRenderer} renderer
    */
   _renderCanvas (renderer) {
-    var canvas = renderer.getCanvas();
-    var context = renderer.getContext();
+    var canvas = renderer.getCanvas()
+    var context = renderer.getContext()
 
-    var scaleX = 1, scaleY = 1;
-    var translateX = 0, translateY = 0;
+    var scaleX = 1, scaleY = 1
+    var translateX = 0, translateY = 0
 
     if (this._options.horizontal) {
-      scaleX = -1;
-      translateX = canvas.width;
+      scaleX = -1
+      translateX = canvas.width
     }
 
     if (this._options.vertical) {
-      scaleY = -1;
-      translateY = canvas.height;
+      scaleY = -1
+      translateY = canvas.height
     }
 
     // Save the current state
-    context.save();
+    context.save()
 
     // Apply the transformation
-    context.translate(translateX, translateY);
-    context.scale(scaleX, scaleY);
+    context.translate(translateX, translateY)
+    context.scale(scaleX, scaleY)
 
     // Create a temporary canvas so that we can draw the image
     // with the applied transformation
-    var tempCanvas = renderer.cloneCanvas();
-    context.drawImage(tempCanvas, 0, 0);
+    var tempCanvas = renderer.cloneCanvas()
+    context.drawImage(tempCanvas, 0, 0)
 
     // Restore old transformation
-    context.restore();
+    context.restore()
   }
 }
 
@@ -106,6 +105,6 @@ class FlipOperation extends Operation {
  * operations.
  * @type {String}
  */
-FlipOperation.prototype.identifier = 'flip';
+FlipOperation.prototype.identifier = 'flip'
 
-export default FlipOperation;
+export default FlipOperation

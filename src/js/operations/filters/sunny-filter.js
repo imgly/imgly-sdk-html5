@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,7 +7,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Filter from "./filter";
+import Filter from './filter'
 
 /**
  * Sunny Filter
@@ -23,7 +22,7 @@ class SunnyFilter extends Filter {
    * @type {String}
    */
   static get identifier () {
-    return "sunny";
+    return 'sunny'
   }
 
   /**
@@ -31,7 +30,7 @@ class SunnyFilter extends Filter {
    * @type {String}
    */
   get name () {
-    return "Sunny";
+    return 'Sunny'
   }
 
   /**
@@ -40,7 +39,7 @@ class SunnyFilter extends Filter {
    * @return {Promise}
    */
   render (renderer) {
-    var stack = new Filter.PrimitivesStack();
+    var stack = new Filter.PrimitivesStack()
 
     stack.add(new Filter.Primitives.ToneCurve({
       rgbControlPoints: {
@@ -62,7 +61,7 @@ class SunnyFilter extends Filter {
           [255, 235]
         ]
       }
-    }));
+    }))
 
     stack.add(new Filter.Primitives.ToneCurve({
       controlPoints: [
@@ -71,10 +70,10 @@ class SunnyFilter extends Filter {
         [158, 191],
         [255, 255]
       ]
-    }));
+    }))
 
-    stack.render(renderer);
+    stack.render(renderer)
   }
 }
 
-export default SunnyFilter;
+export default SunnyFilter

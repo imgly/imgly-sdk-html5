@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,7 +7,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Filter from "./filter";
+import Filter from './filter'
 
 /**
  * Mellow Filter
@@ -23,7 +22,7 @@ class MellowFilter extends Filter {
    * @type {String}
    */
   static get identifier () {
-    return "mellow";
+    return 'mellow'
   }
 
   /**
@@ -31,7 +30,7 @@ class MellowFilter extends Filter {
    * @type {String}
    */
   get name () {
-    return "Mellow";
+    return 'Mellow'
   }
 
   /**
@@ -40,7 +39,7 @@ class MellowFilter extends Filter {
    * @return {Promise}
    */
   render (renderer) {
-    var stack = new Filter.PrimitivesStack();
+    var stack = new Filter.PrimitivesStack()
 
     stack.add(new Filter.Primitives.ToneCurve({
       rgbControlPoints: {
@@ -59,10 +58,10 @@ class MellowFilter extends Filter {
           [255, 131]
         ]
       }
-    }));
+    }))
 
-    stack.render(renderer);
+    stack.render(renderer)
   }
 }
 
-export default MellowFilter;
+export default MellowFilter

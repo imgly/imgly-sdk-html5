@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,9 +7,9 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Operation from "./operation";
-import Vector2 from "../lib/math/vector2";
-import Color from "../lib/color";
+import Operation from './operation'
+import Vector2 from '../lib/math/vector2'
+import Color from '../lib/color'
 
 /**
  * An operation that can draw text on the canvas
@@ -22,25 +21,25 @@ import Color from "../lib/color";
 class TextOperation extends Operation {
   constructor (...args) {
     this.availableOptions = {
-      fontSize: { type: "number", default: 0.1 },
-      lineHeight: { type: "number", default: 1.1 },
-      fontFamily: { type: "string", default: "Times New Roman" },
-      fontWeight: { type: "string", default: "normal" },
-      alignment: { type: "string", default: "left", available: ["left", "center", "right"] },
-      verticalAlignment: { type: "string", default: "top", available: ["top", "center", "bottom"] },
-      color: { type: "color", default: new Color(1, 1, 1, 1) },
-      backgroundColor: { type: "color", default: new Color(0, 0, 0, 0) },
-      position: { type: "vector2", default: new Vector2(0, 0) },
-      text: { type: "string", required: true },
-      maxWidth: { type: "number", default: 1.0 }
-    };
+      fontSize: { type: 'number', default: 0.1 },
+      lineHeight: { type: 'number', default: 1.1 },
+      fontFamily: { type: 'string', default: 'Times New Roman' },
+      fontWeight: { type: 'string', default: 'normal' },
+      alignment: { type: 'string', default: 'left', available: ['left', 'center', 'right'] },
+      verticalAlignment: { type: 'string', default: 'top', available: ['top', 'center', 'bottom'] },
+      color: { type: 'color', default: new Color(1, 1, 1, 1) },
+      backgroundColor: { type: 'color', default: new Color(0, 0, 0, 0) },
+      position: { type: 'vector2', default: new Vector2(0, 0) },
+      text: { type: 'string', required: true },
+      maxWidth: { type: 'number', default: 1.0 }
+    }
 
     /**
      * The texture index used for the text
      * @type {Number}
      * @private
      */
-    this._textureIndex = 1;
+    this._textureIndex = 1
 
     /**
      * The fragment shader used for this operation
@@ -69,11 +68,10 @@ class TextOperation extends Operation {
 
         }
       }
-    `;
+    `
 
-    super(...args);
+    super(...args)
   }
-
 
   /**
    * Crops this image using WebGL
@@ -81,57 +79,57 @@ class TextOperation extends Operation {
    */
   /* istanbul ignore next */
   _renderWebGL (renderer) {
-    var textCanvas = this._renderTextCanvas(renderer);
+    var textCanvas = this._renderTextCanvas(renderer)
 
-    var canvas = renderer.getCanvas();
-    var gl = renderer.getContext();
+    var canvas = renderer.getCanvas()
+    var gl = renderer.getContext()
 
-    var position = this._options.position.clone();
-    var canvasSize = new Vector2(canvas.width, canvas.height);
-    var size = new Vector2(textCanvas.width, textCanvas.height).divide(canvasSize);
+    var position = this._options.position.clone()
+    var canvasSize = new Vector2(canvas.width, canvas.height)
+    var size = new Vector2(textCanvas.width, textCanvas.height).divide(canvasSize)
 
-    if (this._options.numberFormat === "absolute") {
-      position.divide(canvasSize);
+    if (this._options.numberFormat === 'absolute') {
+      position.divide(canvasSize)
     }
 
-    position.y = 1 - position.y; // Invert y
-    position.y -= size.y; // Fix y
+    position.y = 1 - position.y // Invert y
+    position.y -= size.y // Fix y
 
     // Adjust vertical alignment
-    if (this._options.verticalAlignment === "center") {
-      position.y += size.y / 2;
-    } else if (this._options.verticalAlignment === "bottom") {
-      position.y += size.y;
+    if (this._options.verticalAlignment === 'center') {
+      position.y += size.y / 2
+    } else if (this._options.verticalAlignment === 'bottom') {
+      position.y += size.y
     }
 
     // Adjust horizontal alignment
-    if (this._options.alignment === "center") {
-      position.x -= size.x / 2;
-    } else if (this._options.alignment === "right") {
-      position.x -= size.x;
+    if (this._options.alignment === 'center') {
+      position.x -= size.x / 2
+    } else if (this._options.alignment === 'right') {
+      position.x -= size.x
     }
 
     // Upload the texture
-    gl.activeTexture(gl.TEXTURE0 + this._textureIndex);
-    this._texture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, this._texture);
+    gl.activeTexture(gl.TEXTURE0 + this._textureIndex)
+    this._texture = gl.createTexture()
+    gl.bindTexture(gl.TEXTURE_2D, this._texture)
 
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
 
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textCanvas);
-    gl.activeTexture(gl.TEXTURE0);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textCanvas)
+    gl.activeTexture(gl.TEXTURE0)
 
     // Execute the shader
     renderer.runShader(null, this._fragmentShader, {
       uniforms: {
-        u_textImage: { type: "i", value: this._textureIndex },
-        u_position: { type: "2f", value: [position.x, position.y] },
-        u_size: { type: "2f", value: [size.x, size.y] }
+        u_textImage: { type: 'i', value: this._textureIndex },
+        u_position: { type: '2f', value: [position.x, position.y] },
+        u_size: { type: '2f', value: [size.x, size.y] }
       }
-    });
+    })
   }
 
   /**
@@ -139,33 +137,33 @@ class TextOperation extends Operation {
    * @param  {CanvasRenderer} renderer
    */
   _renderCanvas (renderer) {
-    var textCanvas = this._renderTextCanvas(renderer);
+    var textCanvas = this._renderTextCanvas(renderer)
 
-    var canvas = renderer.getCanvas();
-    var context = renderer.getContext();
+    var canvas = renderer.getCanvas()
+    var context = renderer.getContext()
 
-    var canvasSize = new Vector2(canvas.width, canvas.height);
-    var scaledPosition = this._options.position.clone();
+    var canvasSize = new Vector2(canvas.width, canvas.height)
+    var scaledPosition = this._options.position.clone()
 
-    if (this._options.numberFormat === "relative") {
-      scaledPosition.multiply(canvasSize);
+    if (this._options.numberFormat === 'relative') {
+      scaledPosition.multiply(canvasSize)
     }
 
     // Adjust vertical alignment
-    if (this._options.verticalAlignment === "center") {
-      scaledPosition.y -= textCanvas.height / 2;
-    } else if (this._options.verticalAlignment === "bottom") {
-      scaledPosition.y -= textCanvas.height;
+    if (this._options.verticalAlignment === 'center') {
+      scaledPosition.y -= textCanvas.height / 2
+    } else if (this._options.verticalAlignment === 'bottom') {
+      scaledPosition.y -= textCanvas.height
     }
 
     // Adjust horizontal alignment
-    if (this._options.alignment === "center") {
-      scaledPosition.x -= textCanvas.width / 2;
-    } else if (this._options.alignment === "right") {
-      scaledPosition.x -= textCanvas.width;
+    if (this._options.alignment === 'center') {
+      scaledPosition.x -= textCanvas.width / 2
+    } else if (this._options.alignment === 'right') {
+      scaledPosition.x -= textCanvas.width
     }
 
-    context.drawImage(textCanvas, scaledPosition.x, scaledPosition.y);
+    context.drawImage(textCanvas, scaledPosition.x, scaledPosition.y)
   }
 
   /**
@@ -175,62 +173,62 @@ class TextOperation extends Operation {
    * @private
    */
   _renderTextCanvas (renderer) {
-    let line, lineNum;
-    let canvas = renderer.createCanvas();
-    let context = canvas.getContext("2d");
+    let line, lineNum
+    let canvas = renderer.createCanvas()
+    let context = canvas.getContext('2d')
 
-    let outputCanvas = renderer.getCanvas();
-    let canvasSize = new Vector2(outputCanvas.width, outputCanvas.height);
+    let outputCanvas = renderer.getCanvas()
+    let canvasSize = new Vector2(outputCanvas.width, outputCanvas.height)
 
-    let maxWidth = this._options.maxWidth;
-    let actualFontSize = this._options.fontSize * canvasSize.y;
-    let actualLineHeight = this._options.lineHeight * actualFontSize;
+    let maxWidth = this._options.maxWidth
+    let actualFontSize = this._options.fontSize * canvasSize.y
+    let actualLineHeight = this._options.lineHeight * actualFontSize
 
-    if (this._options.numberFormat === "relative") {
-      maxWidth *= renderer.getCanvas().width;
+    if (this._options.numberFormat === 'relative') {
+      maxWidth *= renderer.getCanvas().width
     }
 
     // Apply text options
-    this._applyTextOptions(renderer, context);
+    this._applyTextOptions(renderer, context)
 
-    let boundingBox = new Vector2();
+    let boundingBox = new Vector2()
 
-    let lines = this._options.text.split("\n");
-    if (typeof maxWidth !== "undefined") {
+    let lines = this._options.text.split('\n')
+    if (typeof maxWidth !== 'undefined') {
       // Calculate the bounding box
-      boundingBox.x = maxWidth;
-      lines = this._buildOutputLines(context, maxWidth);
+      boundingBox.x = maxWidth
+      lines = this._buildOutputLines(context, maxWidth)
     } else {
       for (lineNum = 0; lineNum < lines.length; lineNum++) {
-        line = lines[lineNum];
-        boundingBox.x = Math.max(boundingBox.x, context.measureText(line).width);
+        line = lines[lineNum]
+        boundingBox.x = Math.max(boundingBox.x, context.measureText(line).width)
       }
     }
 
     // Calculate boundingbox height
-    boundingBox.y = actualLineHeight * lines.length;
+    boundingBox.y = actualLineHeight * lines.length
 
     // Resize the canvas
-    canvas.width = boundingBox.x;
-    canvas.height = boundingBox.y;
+    canvas.width = boundingBox.x
+    canvas.height = boundingBox.y
 
     // Get the context again
-    context = canvas.getContext("2d");
+    context = canvas.getContext('2d')
 
     // Render background color
-    context.fillStyle = this._options.backgroundColor.toRGBA();
-    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.fillStyle = this._options.backgroundColor.toRGBA()
+    context.fillRect(0, 0, canvas.width, canvas.height)
 
     // Apply text options
-    this._applyTextOptions(renderer, context);
+    this._applyTextOptions(renderer, context)
 
     // Draw lines
     for (lineNum = 0; lineNum < lines.length; lineNum++) {
-      line = lines[lineNum];
-      this._drawText(context, line, actualLineHeight * lineNum);
+      line = lines[lineNum]
+      this._drawText(context, line, actualLineHeight * lineNum)
     }
 
-    return canvas;
+    return canvas
   }
 
   /**
@@ -240,16 +238,16 @@ class TextOperation extends Operation {
    * @private
    */
   _applyTextOptions (renderer, context) {
-    let canvas = renderer.getCanvas();
-    let canvasSize = new Vector2(canvas.width, canvas.height);
-    let actualFontSize = this._options.fontSize * canvasSize.y;
+    let canvas = renderer.getCanvas()
+    let canvasSize = new Vector2(canvas.width, canvas.height)
+    let actualFontSize = this._options.fontSize * canvasSize.y
 
-    context.font = this._options.fontWeight + " " +
-      actualFontSize + "px " +
-      this._options.fontFamily;
-    context.textBaseline = "top";
-    context.textAlign = this._options.alignment;
-    context.fillStyle = this._options.color.toRGBA();
+    context.font = this._options.fontWeight + ' ' +
+      actualFontSize + 'px ' +
+      this._options.fontFamily
+    context.textBaseline = 'top'
+    context.textAlign = this._options.alignment
+    context.fillStyle = this._options.color.toRGBA()
   }
 
   /**
@@ -261,52 +259,52 @@ class TextOperation extends Operation {
    * @private
    */
   _buildOutputLines (context, maxWidth) {
-    var inputLines = this._options.text.split("\n");
-    var outputLines = [];
-    var currentChars = [];
+    var inputLines = this._options.text.split('\n')
+    var outputLines = []
+    var currentChars = []
 
     for (var lineNum = 0; lineNum < inputLines.length; lineNum++) {
-      var inputLine = inputLines[lineNum];
-      var lineChars = inputLine.split("");
+      var inputLine = inputLines[lineNum]
+      var lineChars = inputLine.split('')
 
       if (lineChars.length === 0) {
-        outputLines.push("");
+        outputLines.push('')
       }
 
       for (var charNum = 0; charNum < lineChars.length; charNum++) {
-        var currentChar = lineChars[charNum];
-        currentChars.push(currentChar);
-        var currentLine = currentChars.join("");
-        var lineWidth = context.measureText(currentLine).width;
+        var currentChar = lineChars[charNum]
+        currentChars.push(currentChar)
+        var currentLine = currentChars.join('')
+        var lineWidth = context.measureText(currentLine).width
 
         if (lineWidth > maxWidth && currentChars.length === 1) {
-          outputLines.push(currentChars[0]);
-          currentChars = [];
+          outputLines.push(currentChars[0])
+          currentChars = []
         } else if (lineWidth > maxWidth) {
           // Remove the last word
-          var lastWord = currentChars.pop();
+          var lastWord = currentChars.pop()
 
           // Add the line, clear the words
-          outputLines.push(currentChars.join(""));
-          currentChars = [];
+          outputLines.push(currentChars.join(''))
+          currentChars = []
 
           // Make sure to use the last word for the next line
-          currentChars = [lastWord];
+          currentChars = [lastWord]
         } else if (charNum === lineChars.length - 1) {
           // Add the line, clear the words
-          outputLines.push(currentChars.join(""));
-          currentChars = [];
+          outputLines.push(currentChars.join(''))
+          currentChars = []
         }
       }
 
       // Line ended, but there's words left
       if (currentChars.length) {
-        outputLines.push(currentChars.join(""));
-        currentChars = [];
+        outputLines.push(currentChars.join(''))
+        currentChars = []
       }
-
     }
-    return outputLines;
+
+    return outputLines
   }
 
   /**
@@ -317,13 +315,13 @@ class TextOperation extends Operation {
    * @private
    */
   _drawText (context, text, y) {
-    var canvas = context.canvas;
-    if (this._options.alignment === "center") {
-      context.fillText(text, canvas.width / 2, y);
-    } else if (this._options.alignment === "left") {
-      context.fillText(text, 0, y);
-    } else if (this._options.alignment === "right") {
-      context.fillText(text, canvas.width, y);
+    var canvas = context.canvas
+    if (this._options.alignment === 'center') {
+      context.fillText(text, canvas.width / 2, y)
+    } else if (this._options.alignment === 'left') {
+      context.fillText(text, 0, y)
+    } else if (this._options.alignment === 'right') {
+      context.fillText(text, canvas.width, y)
     }
   }
 }
@@ -333,6 +331,6 @@ class TextOperation extends Operation {
  * operations.
  * @type {String}
  */
-TextOperation.prototype.identifier = 'text';
+TextOperation.prototype.identifier = 'text'
 
-export default TextOperation;
+export default TextOperation

@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -7,10 +6,10 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-import ImageDimensions from "./image-dimensions";
-import Vector2 from "./math/vector2";
-import CanvasRenderer from "../renderers/canvas-renderer";
-import WebGLRenderer from "../renderers/webgl-renderer";
+import ImageDimensions from './image-dimensions'
+import Vector2 from './math/vector2'
+import CanvasRenderer from '../renderers/canvas-renderer'
+import WebGLRenderer from '../renderers/webgl-renderer'
 
 /**
  * Handles the image rendering process
@@ -30,46 +29,46 @@ class RenderImage {
      */
     this._options = {
       preferredRenderer: preferredRenderer
-    };
+    }
 
     /**
      * @type {Boolean}
      * @private
      * @default false
      */
-    this._webglEnabled = false;
+    this._webglEnabled = false
 
     /**
      * @type {Renderer}
      * @private
      */
-    this._renderer = null;
+    this._renderer = null
 
     /**
      * @type {Image}
      * @private
      */
-    this._image = image;
+    this._image = image
 
     /**
      * @type {Array.<ImglyKit.Operation>}
      * @private
      */
-    this._stack = operationsStack;
+    this._stack = operationsStack
 
     /**
      * @type {ImglyKit.ImageDimensions}
      * @private
      */
-    this._dimensions = new ImageDimensions(dimensions);
+    this._dimensions = new ImageDimensions(dimensions)
 
     /**
      * @type {Vector2}
      * @private
      */
-    this._initialDimensions = new Vector2(this._image.width, this._image.height);
+    this._initialDimensions = new Vector2(this._image.width, this._image.height)
 
-    this._initRenderer();
+    this._initRenderer()
   }
 
   /**
@@ -79,20 +78,20 @@ class RenderImage {
    */
   _initRenderer () {
     /* istanbul ignore if */
-    if (WebGLRenderer.isSupported() && this._options.preferredRenderer !== "canvas") {
-      this._renderer = new WebGLRenderer(this._initialDimensions);
-      this._webglEnabled = true;
+    if (WebGLRenderer.isSupported() && this._options.preferredRenderer !== 'canvas') {
+      this._renderer = new WebGLRenderer(this._initialDimensions)
+      this._webglEnabled = true
     } else if (CanvasRenderer.isSupported()) {
-      this._renderer = new CanvasRenderer(this._initialDimensions);
-      this._webglEnabled = false;
+      this._renderer = new CanvasRenderer(this._initialDimensions)
+      this._webglEnabled = false
     }
 
     /* istanbul ignore if */
     if (this._renderer === null) {
-      throw new Error("Neither Canvas nor WebGL renderer are supported.");
+      throw new Error('Neither Canvas nor WebGL renderer are supported.')
     }
 
-    this._renderer.drawImage(this._image);
+    this._renderer.drawImage(this._image)
   }
 
   /**
@@ -100,35 +99,35 @@ class RenderImage {
    * @return {Promise}
    */
   render () {
-    let stack = this.sanitizedStack;
+    let stack = this.sanitizedStack
 
-    let validationPromises = [];
+    let validationPromises = []
     for (let operation of stack) {
-      validationPromises.push(operation.validateSettings());
+      validationPromises.push(operation.validateSettings())
     }
 
     return Promise.all(validationPromises)
       .then(() => {
-        let promises = [];
+        let promises = []
         for (let operation of stack) {
-          promises.push(operation.render(this._renderer));
+          promises.push(operation.render(this._renderer))
         }
-        return Promise.all(promises);
+        return Promise.all(promises)
       })
       .then(() => {
-        return this._renderer.renderFinal();
+        return this._renderer.renderFinal()
       })
       .then(() => {
-        let initialSize = this._renderer.getSize();
-        let finalDimensions = this._dimensions.calculateFinalDimensions(initialSize);
+        let initialSize = this._renderer.getSize()
+        let finalDimensions = this._dimensions.calculateFinalDimensions(initialSize)
 
         if (finalDimensions.equals(initialSize)) {
           // No need to resize
-          return;
+          return
         }
 
-        return this._renderer.resizeTo(finalDimensions);
-      });
+        return this._renderer.resizeTo(finalDimensions)
+      })
   }
 
   /**
@@ -136,7 +135,7 @@ class RenderImage {
    * @return {Renderer}
    */
   getRenderer () {
-    return this._renderer;
+    return this._renderer
   }
 
   /**
@@ -144,13 +143,13 @@ class RenderImage {
    * @type {Array.<Operation>}
    */
   get sanitizedStack () {
-    let sanitizedStack = [];
+    let sanitizedStack = []
     for (let operation of this._stack) {
-      if (!operation) continue;
-      sanitizedStack.push(operation);
+      if (!operation) continue
+      sanitizedStack.push(operation)
     }
-    return sanitizedStack;
+    return sanitizedStack
   }
 }
 
-export default RenderImage;
+export default RenderImage

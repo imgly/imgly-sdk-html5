@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,20 +7,20 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Control from "./control";
-import SimpleSlider from "../lib/simple-slider";
-import ColorPicker from "../lib/color-picker";
-let fs = require("fs");
+import Control from './control'
+import SimpleSlider from '../lib/simple-slider'
+import ColorPicker from '../lib/color-picker'
+let fs = require('fs')
 
 class FramesControl extends Control {
   /**
    * Entry point for this control
    */
   init () {
-    let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/frames_controls.jst", "utf-8");
-    this._controlsTemplate = controlsTemplate;
-    this._partialTemplates.push(SimpleSlider.template);
-    this._partialTemplates.push(ColorPicker.template);
+    let controlsTemplate = fs.readFileSync(__dirname + '/../../../templates/night/operations/frames_controls.jst', 'utf-8')
+    this._controlsTemplate = controlsTemplate
+    this._partialTemplates.push(SimpleSlider.template)
+    this._partialTemplates.push(ColorPicker.template)
   }
 
   /**
@@ -29,30 +28,30 @@ class FramesControl extends Control {
    * @override
    */
   _onEnter () {
-    this._operationExistedBefore = !!this._ui.operations.frames;
-    this._operation = this._ui.getOrCreateOperation("frames");
+    this._operationExistedBefore = !!this._ui.operations.frames
+    this._operation = this._ui.getOrCreateOperation('frames')
 
     this._initialOptions = {
       thickness: this._operation.getThickness(),
       color: this._operation.getColor()
-    };
+    }
 
-    this._ui.canvas.render();
+    this._ui.canvas.render()
 
     // Init slider
-    let sliderElement = this._controls.querySelector(".imglykit-slider");
+    let sliderElement = this._controls.querySelector('.imglykit-slider')
     this._slider = new SimpleSlider(sliderElement, {
       minValue: 0.0,
       maxValue: 0.5
-    });
-    this._slider.on("update", this._onThicknessUpdate.bind(this));
-    this._slider.setValue(this._initialOptions.thickness);
+    })
+    this._slider.on('update', this._onThicknessUpdate.bind(this))
+    this._slider.setValue(this._initialOptions.thickness)
 
     // Init colorpicker
-    let colorPickerElement = this._controls.querySelector(".imglykit-color-picker");
-    this._colorPicker = new ColorPicker(this._ui, colorPickerElement);
-    this._colorPicker.on("update", this._onColorUpdate.bind(this));
-    this._colorPicker.setValue(this._initialOptions.color);
+    let colorPickerElement = this._controls.querySelector('.imglykit-color-picker')
+    this._colorPicker = new ColorPicker(this._ui, colorPickerElement)
+    this._colorPicker.on('update', this._onColorUpdate.bind(this))
+    this._colorPicker.setValue(this._initialOptions.color)
   }
 
   /**
@@ -61,11 +60,11 @@ class FramesControl extends Control {
    */
   _onBack () {
     if (this._operationExistedBefore) {
-      this._operation.set(this._initialOptions);
+      this._operation.set(this._initialOptions)
     } else {
-      this._ui.removeOperation("frames");
+      this._ui.removeOperation('frames')
     }
-    this._ui.canvas.render();
+    this._ui.canvas.render()
   }
 
   /**
@@ -73,9 +72,9 @@ class FramesControl extends Control {
    * @override
    */
   _onThicknessUpdate (value) {
-    this._operation.setThickness(value);
-    this._ui.canvas.render();
-    this._highlightDoneButton();
+    this._operation.setThickness(value)
+    this._ui.canvas.render()
+    this._highlightDoneButton()
   }
 
   /**
@@ -83,9 +82,9 @@ class FramesControl extends Control {
    * @override
    */
   _onColorUpdate (value) {
-    this._operation.setColor(value);
-    this._ui.canvas.render();
-    this._highlightDoneButton();
+    this._operation.setColor(value)
+    this._ui.canvas.render()
+    this._highlightDoneButton()
   }
 
   /**
@@ -96,7 +95,7 @@ class FramesControl extends Control {
     this._ui.addHistory(this._operation, {
       color: this._initialOptions.color,
       thickness: this._initialOptions.thickness
-    }, this._operationExistedBefore);
+    }, this._operationExistedBefore)
   }
 }
 
@@ -104,6 +103,6 @@ class FramesControl extends Control {
  * A unique string that identifies this control.
  * @type {String}
  */
-FramesControl.prototype.identifier = 'frames';
+FramesControl.prototype.identifier = 'frames'
 
-export default FramesControl;
+export default FramesControl

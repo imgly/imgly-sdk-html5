@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,18 +7,18 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Control from "./control";
-import Slider from "../lib/slider";
-let fs = require("fs");
+import Control from './control'
+import Slider from '../lib/slider'
+let fs = require('fs')
 
 class ContrastControl extends Control {
   /**
    * Entry point for this control
    */
   init () {
-    let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/contrast_controls.jst", "utf-8");
-    this._controlsTemplate = controlsTemplate;
-    this._partialTemplates.push(Slider.template);
+    let controlsTemplate = fs.readFileSync(__dirname + '/../../../templates/night/operations/contrast_controls.jst', 'utf-8')
+    this._controlsTemplate = controlsTemplate
+    this._partialTemplates.push(Slider.template)
   }
 
   /**
@@ -27,21 +26,21 @@ class ContrastControl extends Control {
    * @override
    */
   _onEnter () {
-    this._operationExistedBefore = !!this._ui.operations.contrast;
-    this._operation = this._ui.getOrCreateOperation("contrast");
+    this._operationExistedBefore = !!this._ui.operations.contrast
+    this._operation = this._ui.getOrCreateOperation('contrast')
 
     // Initially set value
-    let contrast = this._operation.getContrast();
-    this._initialContrast = contrast;
+    let contrast = this._operation.getContrast()
+    this._initialContrast = contrast
 
-    let sliderElement = this._controls.querySelector(".imglykit-slider");
+    let sliderElement = this._controls.querySelector('.imglykit-slider')
     this._slider = new Slider(sliderElement, {
       minValue: 0,
       maxValue: 2,
       defaultValue: contrast
-    });
-    this._slider.on("update", this._onUpdate.bind(this));
-    this._slider.setValue(this._initialContrast);
+    })
+    this._slider.on('update', this._onUpdate.bind(this))
+    this._slider.setValue(this._initialContrast)
   }
 
   /**
@@ -49,19 +48,19 @@ class ContrastControl extends Control {
    * @override
    */
   _onBack () {
-    let currentContrast = this._operation.getContrast();
+    let currentContrast = this._operation.getContrast()
 
     if (this._initialContrast !== currentContrast) {
       this._ui.addHistory(this._operation, {
         contrast: this._initialContrast
-      }, this._operationExistedBefore);
+      }, this._operationExistedBefore)
     }
 
     if (currentContrast === 1.0) {
-      this._ui.removeOperation("contrast");
+      this._ui.removeOperation('contrast')
     }
 
-    this._ui.canvas.render();
+    this._ui.canvas.render()
   }
 
   /**
@@ -69,8 +68,8 @@ class ContrastControl extends Control {
    * @override
    */
   _onUpdate (value) {
-    this._operation.setContrast(value);
-    this._ui.canvas.render();
+    this._operation.setContrast(value)
+    this._ui.canvas.render()
   }
 }
 
@@ -78,6 +77,6 @@ class ContrastControl extends Control {
  * A unique string that identifies this control.
  * @type {String}
  */
-ContrastControl.prototype.identifier = 'contrast';
+ContrastControl.prototype.identifier = 'contrast'
 
-export default ContrastControl;
+export default ContrastControl

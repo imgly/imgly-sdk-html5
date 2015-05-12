@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,9 +7,9 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Operation from "./operation";
-import PrimitivesStack from "./filters/primitives-stack";
-import BrightnessPrimitive from "./filters/primitives/brightness";
+import Operation from './operation'
+import PrimitivesStack from './filters/primitives-stack'
+import BrightnessPrimitive from './filters/primitives/brightness'
 
 /**
  * @class
@@ -20,10 +19,10 @@ import BrightnessPrimitive from "./filters/primitives/brightness";
 class BrightnessOperation extends Operation {
   constructor (...args) {
     this.availableOptions = {
-      brightness: { type: "number", default: 0 }
-    };
+      brightness: { type: 'number', default: 0 }
+    }
 
-    super(...args);
+    super(...args)
   }
 
   /**
@@ -33,7 +32,7 @@ class BrightnessOperation extends Operation {
    */
   /* istanbul ignore next */
   _renderWebGL (renderer) {
-    this._render(renderer);
+    this._render(renderer)
   }
 
   /**
@@ -42,7 +41,7 @@ class BrightnessOperation extends Operation {
    * @override
    */
   _renderCanvas (renderer) {
-    this._render(renderer);
+    this._render(renderer)
   }
 
   /**
@@ -51,13 +50,13 @@ class BrightnessOperation extends Operation {
    * @private
    */
   _render (renderer) {
-    var stack = new PrimitivesStack();
+    var stack = new PrimitivesStack()
 
     stack.add(new BrightnessPrimitive({
       brightness: this._options.brightness
-    }));
+    }))
 
-    stack.render(renderer);
+    stack.render(renderer)
   }
 }
 
@@ -66,6 +65,6 @@ class BrightnessOperation extends Operation {
  * operations.
  * @type {String}
  */
-BrightnessOperation.prototype.identifier = 'brightness';
+BrightnessOperation.prototype.identifier = 'brightness'
 
-export default BrightnessOperation;
+export default BrightnessOperation

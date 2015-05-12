@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,9 +7,9 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Operation from "./operation";
-import PrimitivesStack from "./filters/primitives-stack";
-import ContrastPrimitive from "./filters/primitives/contrast";
+import Operation from './operation'
+import PrimitivesStack from './filters/primitives-stack'
+import ContrastPrimitive from './filters/primitives/contrast'
 
 /**
  * @class
@@ -20,10 +19,10 @@ import ContrastPrimitive from "./filters/primitives/contrast";
 class ContrastOperation extends Operation {
   constructor (...args) {
     this.availableOptions = {
-      contrast: { type: "number", default: 1.0 }
-    };
+      contrast: { type: 'number', default: 1.0 }
+    }
 
-    super(...args);
+    super(...args)
   }
 
   /**
@@ -33,7 +32,7 @@ class ContrastOperation extends Operation {
    */
   /* istanbul ignore next */
   _renderWebGL (renderer) {
-    this._render(renderer);
+    this._render(renderer)
   }
 
   /**
@@ -42,7 +41,7 @@ class ContrastOperation extends Operation {
    * @override
    */
   _renderCanvas (renderer) {
-    this._render(renderer);
+    this._render(renderer)
   }
 
   /**
@@ -51,13 +50,13 @@ class ContrastOperation extends Operation {
    * @private
    */
   _render (renderer) {
-    var stack = new PrimitivesStack();
+    var stack = new PrimitivesStack()
 
     stack.add(new ContrastPrimitive({
       contrast: this._options.contrast
-    }));
+    }))
 
-    stack.render(renderer);
+    stack.render(renderer)
   }
 }
 
@@ -66,6 +65,6 @@ class ContrastOperation extends Operation {
  * operations.
  * @type {String}
  */
-ContrastOperation.prototype.identifier = 'contrast';
+ContrastOperation.prototype.identifier = 'contrast'
 
-export default ContrastOperation;
+export default ContrastOperation

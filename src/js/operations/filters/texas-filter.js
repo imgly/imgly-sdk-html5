@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,7 +7,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Filter from "./filter";
+import Filter from './filter'
 
 /**
  * Texas Filter
@@ -23,7 +22,7 @@ class TexasFilter extends Filter {
    * @type {String}
    */
   static get identifier () {
-    return "texas";
+    return 'texas'
   }
 
   /**
@@ -31,7 +30,7 @@ class TexasFilter extends Filter {
    * @type {String}
    */
   get name () {
-    return "Texas";
+    return 'Texas'
   }
 
   /**
@@ -40,7 +39,7 @@ class TexasFilter extends Filter {
    * @return {Promise}
    */
   render (renderer) {
-    var stack = new Filter.PrimitivesStack();
+    var stack = new Filter.PrimitivesStack()
 
     stack.add(new Filter.Primitives.ToneCurve({
       rgbControlPoints: {
@@ -59,10 +58,10 @@ class TexasFilter extends Filter {
           [255, 151]
         ]
       }
-    }));
+    }))
 
-    stack.render(renderer);
+    stack.render(renderer)
   }
 }
 
-export default TexasFilter;
+export default TexasFilter

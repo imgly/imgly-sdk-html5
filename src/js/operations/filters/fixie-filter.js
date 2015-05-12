@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,7 +7,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Filter from "./filter";
+import Filter from './filter'
 
 /**
  * Fixie Filter
@@ -23,7 +22,7 @@ class FixieFilter extends Filter {
    * @type {String}
    */
   static get identifier () {
-    return "fixie";
+    return 'fixie'
   }
 
   /**
@@ -31,7 +30,7 @@ class FixieFilter extends Filter {
    * @type {String}
    */
   get name () {
-    return "Fixie";
+    return 'Fixie'
   }
 
   /**
@@ -40,7 +39,7 @@ class FixieFilter extends Filter {
    * @return {Promise}
    */
   render (renderer) {
-    var stack = new Filter.PrimitivesStack();
+    var stack = new Filter.PrimitivesStack()
 
     // Tone curve
     stack.add(new Filter.Primitives.ToneCurve({
@@ -69,10 +68,10 @@ class FixieFilter extends Filter {
           [255, 224]
         ]
       }
-    }));
+    }))
 
-    stack.render(renderer);
+    stack.render(renderer)
   }
 }
 
-export default FixieFilter;
+export default FixieFilter

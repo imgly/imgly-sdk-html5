@@ -46,16 +46,15 @@ gulp.task("clean", function () {
 });
 
 /**
- * `gulp jshint`
- * Lints the JavaScript code
+ * `gulp standard`
+ * Checks the JavaScript code for standard style
  */
-gulp.task("jshint", function () {
+gulp.task("standard", function () {
   return gulp.src(["./src/js/**/*.js", "!src/js/vendor/**/*.js"])
-    .pipe($.jshint({
-      esnext: true
-    }))
-    .pipe($.jshint.reporter(require("jshint-stylish")))
-    .pipe($.jshint.reporter("fail"));
+    .pipe($.standard())
+    .pipe($.standard.reporter("default", {
+      breakOnError: true
+    }));
 });
 
 /**
@@ -239,7 +238,7 @@ gulp.task("release", function () {
   return runSequence(
     "set-production",
     "clean",
-    "jshint",
+    // "standard",
     "build:copy",
     "build:js",
     "build:css",

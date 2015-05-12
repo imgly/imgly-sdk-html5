@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,74 +7,74 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Control from "./control";
-import Vector2 from "../../../lib/math/vector2";
-let fs = require("fs");
+import Control from './control'
+import Vector2 from '../../../lib/math/vector2'
+let fs = require('fs')
 
 class RotationControl extends Control {
   /**
    * Entry point for this control
    */
   init () {
-    let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/rotation_controls.jst", "utf-8");
-    this._controlsTemplate = controlsTemplate;
+    let controlsTemplate = fs.readFileSync(__dirname + '/../../../templates/night/operations/rotation_controls.jst', 'utf-8')
+    this._controlsTemplate = controlsTemplate
 
-    let canvasControlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/rotation_canvas.jst", "utf-8");
-    this._canvasControlsTemplate = canvasControlsTemplate;
+    let canvasControlsTemplate = fs.readFileSync(__dirname + '/../../../templates/night/operations/rotation_canvas.jst', 'utf-8')
+    this._canvasControlsTemplate = canvasControlsTemplate
   }
 
   /**
    * Gets called when this control is activated
    */
   _onEnter () {
-    this._operationExistedBefore = !!this._ui.operations.rotation;
-    this._operation = this._ui.getOrCreateOperation("rotation");
+    this._operationExistedBefore = !!this._ui.operations.rotation
+    this._operation = this._ui.getOrCreateOperation('rotation')
 
-    this._cropOperation = this._ui.operations.crop;
+    this._cropOperation = this._ui.operations.crop
 
-    this._initialZoomLevel = this._ui.canvas.zoomLevel;
-    this._ui.canvas.zoomToFit(false);
+    this._initialZoomLevel = this._ui.canvas.zoomLevel
+    this._ui.canvas.zoomToFit(false)
 
     if (this._cropOperation) {
-      // Store initial settings for "back" and "done" buttons
-      this._initialStart = this._cropOperation.getStart().clone();
-      this._initialEnd = this._cropOperation.getEnd().clone();
+      // Store initial settings for 'back' and 'done' buttons
+      this._initialStart = this._cropOperation.getStart().clone()
+      this._initialEnd = this._cropOperation.getEnd().clone()
 
       // Make sure we see the whole input image
       this._cropOperation.set({
         start: new Vector2(0, 0),
         end: new Vector2(1, 1)
-      });
+      })
     }
 
-    this._initialDegrees = this._operation.getDegrees();
+    this._initialDegrees = this._operation.getDegrees()
 
-    let listItems = this._controls.querySelectorAll("li");
-    this._listItems = Array.prototype.slice.call(listItems);
+    let listItems = this._controls.querySelectorAll('li')
+    this._listItems = Array.prototype.slice.call(listItems)
 
     // Listen to click events
     for (let i = 0; i < this._listItems.length; i++) {
-      let listItem = this._listItems[i];
-      listItem.addEventListener("click", () => {
-        this._onListItemClick(listItem);
-      });
+      let listItem = this._listItems[i]
+      listItem.addEventListener('click', () => {
+        this._onListItemClick(listItem)
+      })
     }
 
     // Find the div areas that affect the displayed crop size
-    let prefix = ".imglykit-canvas-crop";
+    let prefix = '.imglykit-canvas-crop'
     this._cropAreas = {
       topLeft: this._canvasControls.querySelector(`${prefix}-top-left`),
       topCenter: this._canvasControls.querySelector(`${prefix}-top-center`),
       centerLeft: this._canvasControls.querySelector(`${prefix}-center-left`),
       centerCenter: this._canvasControls.querySelector(`${prefix}-center-center`)
-    };
+    }
 
     // Resume the rendering
     this._ui.canvas.render()
       .then(() => {
-        this._showCropContainer();
-        this._updateCropDOM();
-      });
+        this._showCropContainer()
+        this._updateCropDOM()
+      })
   }
 
   /**
@@ -84,8 +83,8 @@ class RotationControl extends Control {
    * @private
    */
   _showCropContainer () {
-    let container = this._canvasControls.querySelector(".imglykit-canvas-crop-container");
-    container.classList.remove("imglykit-canvas-crop-container-hidden");
+    let container = this._canvasControls.querySelector('.imglykit-canvas-crop-container')
+    container.classList.remove('imglykit-canvas-crop-container-hidden')
   }
 
   /**
@@ -94,15 +93,15 @@ class RotationControl extends Control {
    * @private
    */
   _onListItemClick (item) {
-    let { degrees } = item.dataset;
-    degrees = parseInt(degrees);
+    let { degrees } = item.dataset
+    degrees = parseInt(degrees, 10)
 
-    let currentDegrees = this._operation.getDegrees();
-    this._operation.setDegrees(currentDegrees + degrees);
+    let currentDegrees = this._operation.getDegrees()
+    this._operation.setDegrees(currentDegrees + degrees)
     this._ui.canvas.zoomToFit()
       .then(() => {
-        this._updateCropDOM();
-      });
+        this._updateCropDOM()
+      })
   }
 
   /**
@@ -110,7 +109,7 @@ class RotationControl extends Control {
    * this control is active
    */
   onZoom () {
-    this._updateCropDOM();
+    this._updateCropDOM()
   }
 
   /**
@@ -118,33 +117,33 @@ class RotationControl extends Control {
    * @private
    */
   _updateCropDOM () {
-    let start, end;
+    let start, end
     if (this._cropOperation) {
-      start = this._initialStart.clone();
-      end = this._initialEnd.clone();
+      start = this._initialStart.clone()
+      end = this._initialEnd.clone()
     } else {
-      start = new Vector2(0, 0);
-      end = new Vector2(1, 1);
+      start = new Vector2(0, 0)
+      end = new Vector2(1, 1)
     }
 
-    let canvasSize = this._ui.canvas.size;
+    let canvasSize = this._ui.canvas.size
 
-    let startAbsolute = start.multiply(canvasSize);
-    let endAbsolute = end.multiply(canvasSize);
-    let size = endAbsolute.clone().subtract(startAbsolute);
+    let startAbsolute = start.multiply(canvasSize)
+    let endAbsolute = end.multiply(canvasSize)
+    let size = endAbsolute.clone().subtract(startAbsolute)
 
-    let top = Math.max(1, startAbsolute.y);
-    let left = Math.max(1, startAbsolute.x);
-    let width = Math.max(1, size.x);
-    let height = Math.max(1, size.y);
+    let top = Math.max(1, startAbsolute.y)
+    let left = Math.max(1, startAbsolute.x)
+    let width = Math.max(1, size.x)
+    let height = Math.max(1, size.y)
 
     // widths are defined by top left and top center areas
-    this._cropAreas.topLeft.style.width = `${left}px`;
-    this._cropAreas.topCenter.style.width = `${width}px`;
+    this._cropAreas.topLeft.style.width = `${left}px`
+    this._cropAreas.topCenter.style.width = `${width}px`
 
     // heights are defined by top left and center left areas
-    this._cropAreas.topLeft.style.height = `${top}px`;
-    this._cropAreas.centerLeft.style.height = `${height}px`;
+    this._cropAreas.topLeft.style.height = `${top}px`
+    this._cropAreas.centerLeft.style.height = `${height}px`
   }
 
   /**
@@ -152,24 +151,24 @@ class RotationControl extends Control {
    * @override
    */
   _onBack () {
-    let currentDegrees = this._operation.getDegrees();
+    let currentDegrees = this._operation.getDegrees()
     if (this._initialDegrees !== currentDegrees) {
       this._ui.addHistory(this._operation, {
         degrees: this._initialDegrees
-      }, this._operationExistedBefore);
+      }, this._operationExistedBefore)
     }
 
     if (currentDegrees === 0) {
-      this._ui.removeOperation("rotation");
+      this._ui.removeOperation('rotation')
     }
 
     if (this._cropOperation) {
       this._cropOperation.set({
         start: this._initialStart,
         end: this._initialEnd
-      });
+      })
     }
-    this._ui.canvas.render();
+    this._ui.canvas.render()
   }
 }
 
@@ -177,6 +176,6 @@ class RotationControl extends Control {
  * A unique string that identifies this control.
  * @type {String}
  */
-RotationControl.prototype.identifier = 'rotation';
+RotationControl.prototype.identifier = 'rotation'
 
-export default RotationControl;
+export default RotationControl

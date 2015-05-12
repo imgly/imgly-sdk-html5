@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,7 +7,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Filter from "./filter";
+import Filter from './filter'
 
 /**
  * Fridge Filter
@@ -23,7 +22,7 @@ class FridgeFilter extends Filter {
    * @type {String}
    */
   static get identifier () {
-    return "fridge";
+    return 'fridge'
   }
 
   /**
@@ -31,7 +30,7 @@ class FridgeFilter extends Filter {
    * @type {String}
    */
   get name () {
-    return "Fridge";
+    return 'Fridge'
   }
 
   /**
@@ -40,7 +39,7 @@ class FridgeFilter extends Filter {
    * @return {Promise}
    */
   render (renderer) {
-    var stack = new Filter.PrimitivesStack();
+    var stack = new Filter.PrimitivesStack()
 
     // Tone curve
     stack.add(new Filter.Primitives.ToneCurve({
@@ -66,10 +65,10 @@ class FridgeFilter extends Filter {
           [255, 220]
         ]
       }
-    }));
+    }))
 
-    stack.render(renderer);
+    stack.render(renderer)
   }
 }
 
-export default FridgeFilter;
+export default FridgeFilter

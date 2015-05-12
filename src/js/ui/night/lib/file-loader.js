@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,38 +7,38 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import EventEmitter from "../../../lib/event-emitter";
+import EventEmitter from '../../../lib/event-emitter'
 
 class FileLoader extends EventEmitter {
   constructor (kit, ui) {
-    super();
+    super()
 
-    this._kit = kit;
-    this._ui = ui;
+    this._kit = kit
+    this._ui = ui
 
     // http://stackoverflow.com/questions/7110353/html5-dragleave-fired-when-hovering-a-child-element
-    this._dragCounter = 0;
+    this._dragCounter = 0
 
-    this._container = this._ui.container.querySelector('.imglykit-drop-area-container');
+    this._container = this._ui.container.querySelector('.imglykit-drop-area-container')
 
-    this._onDropAreaDragEnter = this._onDropAreaDragEnter.bind(this);
-    this._onDropAreaDragOver = this._onDropAreaDragOver.bind(this);
-    this._onDropAreaDragLeave = this._onDropAreaDragLeave.bind(this);
-    this._onDropAreaDrop = this._onDropAreaDrop.bind(this);
-    this._onDropAreaClick = this._onDropAreaClick.bind(this);
-    this._onFileInputChange = this._onFileInputChange.bind(this);
+    this._onDropAreaDragEnter = this._onDropAreaDragEnter.bind(this)
+    this._onDropAreaDragOver = this._onDropAreaDragOver.bind(this)
+    this._onDropAreaDragLeave = this._onDropAreaDragLeave.bind(this)
+    this._onDropAreaDrop = this._onDropAreaDrop.bind(this)
+    this._onDropAreaClick = this._onDropAreaClick.bind(this)
+    this._onFileInputChange = this._onFileInputChange.bind(this)
 
-    this._hiddenInputField = this._ui.container.querySelector(".imglykit-drop-area .imglykit-drop-area-hidden-input");
-    this._hiddenInputField.addEventListener("change", this._onFileInputChange);
+    this._hiddenInputField = this._ui.container.querySelector('.imglykit-drop-area .imglykit-drop-area-hidden-input')
+    this._hiddenInputField.addEventListener('change', this._onFileInputChange)
 
-    this._handleDropArea();
+    this._handleDropArea()
   }
 
   /**
    * Opens the file dialog
    */
   openFileDialog () {
-    this._hiddenInputField.click();
+    this._hiddenInputField.click()
   }
 
   /**
@@ -47,15 +46,15 @@ class FileLoader extends EventEmitter {
    * @private
    */
   _handleDropArea () {
-    let { container } = this._ui;
+    let { container } = this._ui
 
-    this._dropArea = container.querySelector(".imglykit-drop-area");
-    this._dropArea.addEventListener("dragenter", this._onDropAreaDragEnter);
-    this._dropArea.addEventListener("dragover", this._onDropAreaDragOver);
-    this._dropArea.addEventListener("dragleave", this._onDropAreaDragLeave);
-    this._dropArea.addEventListener("drop", this._onDropAreaDrop);
-    this._dropArea.addEventListener("dragdrop", this._onDropAreaDrop);
-    this._dropArea.addEventListener("click", this._onDropAreaClick);
+    this._dropArea = container.querySelector('.imglykit-drop-area')
+    this._dropArea.addEventListener('dragenter', this._onDropAreaDragEnter)
+    this._dropArea.addEventListener('dragover', this._onDropAreaDragOver)
+    this._dropArea.addEventListener('dragleave', this._onDropAreaDragLeave)
+    this._dropArea.addEventListener('drop', this._onDropAreaDrop)
+    this._dropArea.addEventListener('dragdrop', this._onDropAreaDrop)
+    this._dropArea.addEventListener('click', this._onDropAreaClick)
   }
 
   /**
@@ -65,7 +64,7 @@ class FileLoader extends EventEmitter {
    * @private
    */
   _onDropAreaClick () {
-    this.openFileDialog();
+    this.openFileDialog()
   }
 
   /**
@@ -74,10 +73,10 @@ class FileLoader extends EventEmitter {
    * @private
    */
   _onDropAreaDragEnter (e) {
-    e.preventDefault();
+    e.preventDefault()
 
-    this._dragCounter++;
-    this._dropArea.classList.add("imglykit-drop-area-active");
+    this._dragCounter++
+    this._dropArea.classList.add('imglykit-drop-area-active')
   }
 
   /**
@@ -86,7 +85,7 @@ class FileLoader extends EventEmitter {
    * @private
    */
   _onDropAreaDragOver (e) {
-    e.preventDefault();
+    e.preventDefault()
   }
 
   /**
@@ -95,12 +94,12 @@ class FileLoader extends EventEmitter {
    * @private
    */
   _onDropAreaDragLeave (e) {
-    e.preventDefault();
+    e.preventDefault()
 
-    this._dragCounter--;
+    this._dragCounter--
 
     if (this._dragCounter === 0) {
-      this._dropArea.classList.remove("imglykit-drop-area-active");
+      this._dropArea.classList.remove('imglykit-drop-area-active')
     }
   }
 
@@ -110,15 +109,15 @@ class FileLoader extends EventEmitter {
    * @private
    */
   _onDropAreaDrop (e) {
-    e.stopPropagation();
-    e.preventDefault();
-    e.returnValue = false;
+    e.stopPropagation()
+    e.preventDefault()
+    e.returnValue = false
 
-    this._dropArea.classList.remove("imglykit-drop-area-active");
+    this._dropArea.classList.remove('imglykit-drop-area-active')
 
-    if (!e.dataTransfer) return;
+    if (!e.dataTransfer) return
 
-    this._handleFile(e.dataTransfer.files[0]);
+    this._handleFile(e.dataTransfer.files[0])
   }
 
   /**
@@ -127,7 +126,7 @@ class FileLoader extends EventEmitter {
    * @private
    */
   _onFileInputChange () {
-    this._handleFile(this._hiddenInputField.files[0]);
+    this._handleFile(this._hiddenInputField.files[0])
   }
 
   /**
@@ -136,24 +135,24 @@ class FileLoader extends EventEmitter {
    * @private
    */
   _handleFile (file) {
-    this.emit("file", file);
+    this.emit('file', file)
   }
 
   /**
    * Removes event listeners and removes the container form the dom
    */
   removeDOM () {
-    this._dropArea.removeEventListener("dragenter", this._onDropAreaDragEnter);
-    this._dropArea.removeEventListener("dragover", this._onDropAreaDragOver);
-    this._dropArea.removeEventListener("dragleave", this._onDropAreaDragLeave);
-    this._dropArea.removeEventListener("drop", this._onDropAreaDrop);
-    this._dropArea.removeEventListener("dragdrop", this._onDropAreaDrop);
-    this._dropArea.removeEventListener("click", this._onDropAreaClick);
+    this._dropArea.removeEventListener('dragenter', this._onDropAreaDragEnter)
+    this._dropArea.removeEventListener('dragover', this._onDropAreaDragOver)
+    this._dropArea.removeEventListener('dragleave', this._onDropAreaDragLeave)
+    this._dropArea.removeEventListener('drop', this._onDropAreaDrop)
+    this._dropArea.removeEventListener('dragdrop', this._onDropAreaDrop)
+    this._dropArea.removeEventListener('click', this._onDropAreaClick)
 
     if (this._container.parentNode) {
-      this._container.parentNode.removeChild(this._container);
+      this._container.parentNode.removeChild(this._container)
     }
   }
 }
 
-export default FileLoader;
+export default FileLoader

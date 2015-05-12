@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -16,14 +15,14 @@
  */
 class PrimitivesStack {
   constructor (...args) {
-    super(...args);
+    super(...args)
 
     /**
      * The stack of {@link ImglyKit.Filter.Primitive} instances
      * @type {Array}
      * @private
      */
-    this._stack = [];
+    this._stack = []
   }
 
   /**
@@ -31,7 +30,7 @@ class PrimitivesStack {
    * @param {ImglyKit.Filter.Primitive} primitive
    */
   add (primitive) {
-    this._stack.push(primitive);
+    this._stack.push(primitive)
   }
 
   /**
@@ -40,10 +39,10 @@ class PrimitivesStack {
    */
   render (renderer) {
     for (var i = 0; i < this._stack.length; i++) {
-      var primitive = this._stack[i];
-      primitive.render(renderer);
+      var primitive = this._stack[i]
+      primitive.render(renderer)
     }
   }
 }
 
-export default PrimitivesStack;
+export default PrimitivesStack

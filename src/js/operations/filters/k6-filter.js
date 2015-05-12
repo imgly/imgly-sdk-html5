@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,7 +7,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Filter from "./filter";
+import Filter from './filter'
 
 /**
  * K6 Filter
@@ -23,7 +22,7 @@ class K6Filter extends Filter {
    * @type {String}
    */
   static get identifier () {
-    return "k6";
+    return 'k6'
   }
 
   /**
@@ -31,7 +30,7 @@ class K6Filter extends Filter {
    * @type {String}
    */
   get name () {
-    return "K6";
+    return 'K6'
   }
 
   /**
@@ -40,15 +39,15 @@ class K6Filter extends Filter {
    * @return {Promise}
    */
   render (renderer) {
-    var stack = new Filter.PrimitivesStack();
+    var stack = new Filter.PrimitivesStack()
 
     // Saturation
     stack.add(new Filter.Primitives.Saturation({
       saturation: 0.5
-    }));
+    }))
 
-    stack.render(renderer);
+    stack.render(renderer)
   }
 }
 
-export default K6Filter;
+export default K6Filter

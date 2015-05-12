@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,23 +7,23 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import dot from "dot";
-import Helpers from "../../base/helpers";
-import EventEmitter from "../../../lib/event-emitter";
-import Scrollbar from "../lib/scrollbar";
+import dot from 'dot'
+import Helpers from '../../base/helpers'
+import EventEmitter from '../../../lib/event-emitter'
+import Scrollbar from '../lib/scrollbar'
 
 class Control extends EventEmitter {
   constructor (kit, ui, operation) {
-    super();
+    super()
 
-    this._kit = kit;
-    this._ui = ui;
-    this._operation = operation;
-    this._helpers = new Helpers(this._kit, this._ui, this._ui.options);
-    this._partialTemplates = [];
-    this._active = false;
+    this._kit = kit
+    this._ui = ui
+    this._operation = operation
+    this._helpers = new Helpers(this._kit, this._ui, this._ui.options)
+    this._partialTemplates = []
+    this._active = false
 
-    this.init();
+    this.init()
   }
 
   /**
@@ -33,8 +32,8 @@ class Control extends EventEmitter {
    * @param {DOMElement} canvasControlsContainer
    */
   setContainers (controlsContainer, canvasControlsContainer) {
-    this._controlsContainer = controlsContainer;
-    this._canvasControlsContainer = canvasControlsContainer;
+    this._controlsContainer = controlsContainer
+    this._canvasControlsContainer = canvasControlsContainer
   }
 
   /**
@@ -49,9 +48,9 @@ class Control extends EventEmitter {
    * @private
    */
   _renderAllControls () {
-    this._renderControls();
-    this._renderCanvasControls();
-    this._initScrollbar();
+    this._renderControls()
+    this._renderCanvasControls()
+    this._initScrollbar()
   }
 
   /**
@@ -59,26 +58,26 @@ class Control extends EventEmitter {
    * @private
    */
   _renderControls () {
-    if (typeof this._controlsTemplate === "undefined") {
-      throw new Error("Control#_renderOverviewControls: Control needs to define this._controlsTemplate.");
+    if (typeof this._controlsTemplate === 'undefined') {
+      throw new Error('Control#_renderOverviewControls: Control needs to define this._controlsTemplate.')
     }
 
-    let template = this._partialTemplates.concat([this._controlsTemplate]).join("\r\n");
+    let template = this._partialTemplates.concat([this._controlsTemplate]).join('\r\n')
 
     // Render the template
-    let renderFn = dot.template(template);
-    let html = renderFn(this.context);
+    let renderFn = dot.template(template)
+    let html = renderFn(this.context)
 
-    if (typeof this._controls !== "undefined" && this._controls.parentNode !== null) {
-        this._controls.parentNode.removeChild(this._controls);
+    if (typeof this._controls !== 'undefined' && this._controls.parentNode !== null) {
+      this._controls.parentNode.removeChild(this._controls)
     }
 
     // Create a wrapper
-    this._controls = document.createElement("div");
-    this._controls.innerHTML = html;
+    this._controls = document.createElement('div')
+    this._controls.innerHTML = html
 
     // Append to DOM
-    this._controlsContainer.appendChild(this._controls);
+    this._controlsContainer.appendChild(this._controls)
   }
 
   /**
@@ -86,22 +85,22 @@ class Control extends EventEmitter {
    * @private
    */
   _renderCanvasControls () {
-    if (typeof this._canvasControlsTemplate === "undefined") {
-      return; // Canvas controls are optional
+    if (typeof this._canvasControlsTemplate === 'undefined') {
+      return // Canvas controls are optional
     }
 
-    let template = this._partialTemplates.concat([this._canvasControlsTemplate]).join("\r\n");
+    let template = this._partialTemplates.concat([this._canvasControlsTemplate]).join('\r\n')
 
     // Render the template
-    let renderFn = dot.template(template);
-    let html = renderFn(this.context);
+    let renderFn = dot.template(template)
+    let html = renderFn(this.context)
 
     // Create a wrapper
-    this._canvasControls = document.createElement("div");
-    this._canvasControls.innerHTML = html;
+    this._canvasControls = document.createElement('div')
+    this._canvasControls.innerHTML = html
 
     // Append to DOM
-    this._canvasControlsContainer.appendChild(this._canvasControls);
+    this._canvasControlsContainer.appendChild(this._canvasControls)
   }
 
   /**
@@ -109,9 +108,9 @@ class Control extends EventEmitter {
    * @private
    */
   _initScrollbar () {
-    let list = this._controls.querySelector(".imglykit-controls-list");
+    let list = this._controls.querySelector('.imglykit-controls-list')
     if (list) {
-      this._scrollbar = new Scrollbar(list.parentNode);
+      this._scrollbar = new Scrollbar(list.parentNode)
     }
   }
 
@@ -120,12 +119,12 @@ class Control extends EventEmitter {
    * @private
    */
   _removeControls () {
-    this._controls.parentNode.removeChild(this._controls);
+    this._controls.parentNode.removeChild(this._controls)
     if (this._canvasControls) {
-      this._canvasControls.parentNode.removeChild(this._canvasControls);
+      this._canvasControls.parentNode.removeChild(this._canvasControls)
     }
 
-    if (this._scrollbar) this._scrollbar.remove();
+    if (this._scrollbar) this._scrollbar.remove()
   }
 
   /**
@@ -134,15 +133,15 @@ class Control extends EventEmitter {
    */
   _handleBackAndDoneButtons () {
     // Back button
-    this._backButton = this._controls.querySelector(".imglykit-controls-back");
+    this._backButton = this._controls.querySelector('.imglykit-controls-back')
     if (this._backButton) {
-      this._backButton.addEventListener("click", this._onBackButtonClick.bind(this));
+      this._backButton.addEventListener('click', this._onBackButtonClick.bind(this))
     }
 
     // Done button
-    this._doneButton = this._controls.querySelector(".imglykit-controls-done");
+    this._doneButton = this._controls.querySelector('.imglykit-controls-done')
     if (this._doneButton) {
-      this._doneButton.addEventListener("click", this._onDoneButtonClick.bind(this));
+      this._doneButton.addEventListener('click', this._onDoneButtonClick.bind(this))
     }
   }
 
@@ -151,8 +150,8 @@ class Control extends EventEmitter {
    * @private
    */
   _onBackButtonClick () {
-    this._onBack();
-    this.emit("back");
+    this._onBack()
+    this.emit('back')
   }
 
   /**
@@ -160,8 +159,8 @@ class Control extends EventEmitter {
    * @private
    */
   _onDoneButtonClick () {
-    this._onDone();
-    this.emit("back");
+    this._onDone()
+    this.emit('back')
   }
 
   /**
@@ -169,7 +168,7 @@ class Control extends EventEmitter {
    * @private
    */
   _highlightDoneButton () {
-    this._doneButton.classList.add("highlighted");
+    this._doneButton.classList.add('highlighted')
   }
 
   /**
@@ -177,14 +176,14 @@ class Control extends EventEmitter {
    * @internal Used by the SDK, don't override.
    */
   enter () {
-    this._active = true;
+    this._active = true
 
-    this._ui.hideZoom();
+    this._ui.hideZoom()
 
-    this._renderAllControls();
-    this._handleBackAndDoneButtons();
-    this._enableCanvasControls();
-    this._onEnter();
+    this._renderAllControls()
+    this._handleBackAndDoneButtons()
+    this._enableCanvasControls()
+    this._onEnter()
   }
 
   /**
@@ -192,21 +191,21 @@ class Control extends EventEmitter {
    * @internal Used by the SDK, don't override.
    */
   leave () {
-    this._active = false;
+    this._active = false
 
-    this._ui.showZoom();
+    this._ui.showZoom()
 
-    this._removeControls();
-    this._disableCanvasControls();
-    this._onLeave();
+    this._removeControls()
+    this._disableCanvasControls()
+    this._onLeave()
   }
 
-  _enableCanvasControls ()  {
-    this._canvasControlsContainer.classList.remove("imglykit-canvas-controls-disabled");
+  _enableCanvasControls () {
+    this._canvasControlsContainer.classList.remove('imglykit-canvas-controls-disabled')
   }
 
   _disableCanvasControls () {
-    this._canvasControlsContainer.classList.add("imglykit-canvas-controls-disabled");
+    this._canvasControlsContainer.classList.add('imglykit-canvas-controls-disabled')
   }
 
   // Protected methods
@@ -248,7 +247,7 @@ class Control extends EventEmitter {
   get context () {
     return {
       helpers: this._helpers
-    };
+    }
   }
 }
 
@@ -256,14 +255,14 @@ class Control extends EventEmitter {
  * A unique string that identifies this control.
  * @type {String}
  */
-Control.prototype.identifier = null;
+Control.prototype.identifier = null
 
 /**
  * To create an {@link ImglyKit.NightUI.Control} class of your own, call
  * this method and provide instance properties and functions.
  * @function
  */
-import extend from '../../../lib/extend';
-Control.extend = extend;
+import extend from '../../../lib/extend'
+Control.extend = extend
 
-export default Control;
+export default Control

@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,8 +7,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import _ from "lodash";
-import Primitive from "./primitive";
+import _ from 'lodash'
+import Primitive from './primitive'
 
 /**
  * Contrast primitive
@@ -19,11 +18,11 @@ import Primitive from "./primitive";
  */
 class Contrast extends Primitive {
   constructor (...args) {
-    super(...args);
+    super(...args)
 
     this._options = _.defaults(this._options, {
       contrast: 1.0
-    });
+    })
 
     /**
      * The fragment shader for this primitive
@@ -31,7 +30,6 @@ class Contrast extends Primitive {
      * @private
      */
     this._fragmentShader = `
-
       precision mediump float;
       varying vec2 v_texCoord;
       uniform sampler2D u_image;
@@ -41,8 +39,7 @@ class Contrast extends Primitive {
         vec4 texColor = texture2D(u_image, v_texCoord);
         gl_FragColor = vec4(((texColor.rgb - vec3(0.5)) * u_contrast + vec3(0.5)), texColor.a);
       }
-
-    `;
+    `
   }
 
   /**
@@ -53,9 +50,9 @@ class Contrast extends Primitive {
   renderWebGL (renderer) {
     renderer.runShader(null, this._fragmentShader, {
       uniforms: {
-        u_contrast: { type: "f", value: this._options.contrast }
+        u_contrast: { type: 'f', value: this._options.contrast }
       }
-    });
+    })
   }
 
   /**
@@ -63,22 +60,22 @@ class Contrast extends Primitive {
    * @param  {CanvasRenderer} renderer
    */
   renderCanvas (renderer) {
-    var canvas = renderer.getCanvas();
-    var imageData = renderer.getContext().getImageData(0, 0, canvas.width, canvas.height);
-    var contrast = this._options.contrast;
+    var canvas = renderer.getCanvas()
+    var imageData = renderer.getContext().getImageData(0, 0, canvas.width, canvas.height)
+    var contrast = this._options.contrast
 
     for (var x = 0; x < canvas.width; x++) {
       for (var y = 0; y < canvas.height; y++) {
-        var index = (canvas.width * y + x) * 4;
+        var index = (canvas.width * y + x) * 4
 
-        imageData.data[index]     = (imageData.data[index] - 127) * contrast + 127;
-        imageData.data[index + 1] = (imageData.data[index + 1] - 127) * contrast + 127;
-        imageData.data[index + 2] = (imageData.data[index + 2] - 127) * contrast + 127;
+        imageData.data[index] = (imageData.data[index] - 127) * contrast + 127
+        imageData.data[index + 1] = (imageData.data[index + 1] - 127) * contrast + 127
+        imageData.data[index + 2] = (imageData.data[index + 2] - 127) * contrast + 127
       }
     }
 
-    renderer.getContext().putImageData(imageData, 0, 0);
+    renderer.getContext().putImageData(imageData, 0, 0)
   }
 }
 
-export default Contrast;
+export default Contrast

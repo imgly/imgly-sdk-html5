@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,8 +7,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Filter from "./filter";
-import Color from "../../lib/color";
+import Filter from './filter'
+import Color from '../../lib/color'
 
 /**
  * K2 Filter
@@ -24,7 +23,7 @@ class K2Filter extends Filter {
    * @type {String}
    */
   static get identifier () {
-    return "k2";
+    return 'k2'
   }
 
   /**
@@ -32,7 +31,7 @@ class K2Filter extends Filter {
    * @type {String}
    */
   get name () {
-    return "K2";
+    return 'K2'
   }
 
   /**
@@ -41,7 +40,7 @@ class K2Filter extends Filter {
    * @return {Promise}
    */
   render (renderer) {
-    var stack = new Filter.PrimitivesStack();
+    var stack = new Filter.PrimitivesStack()
 
     // Tone curve
     stack.add(new Filter.Primitives.ToneCurve({
@@ -55,15 +54,15 @@ class K2Filter extends Filter {
         [229, 232],
         [255, 255]
       ]
-    }));
+    }))
 
     // Soft color overlay
     stack.add(new Filter.Primitives.SoftColorOverlay({
       color: new Color(40 / 255, 40 / 255, 40 / 255)
-    }));
+    }))
 
-    stack.render(renderer);
+    stack.render(renderer)
   }
 }
 
-export default K2Filter;
+export default K2Filter

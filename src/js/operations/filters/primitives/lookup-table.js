@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,7 +7,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Primitive from "./primitive";
+import Primitive from './primitive'
 
 /**
  * Stores a 256 byte long lookup table in a 2d texture which will be
@@ -19,9 +18,9 @@ import Primitive from "./primitive";
  */
 class LookupTable extends Primitive {
   constructor () {
-    Primitive.apply(this, arguments);
+    Primitive.apply(this, arguments)
 
-    this._textureIndex = 3;
+    this._textureIndex = 3
 
     /**
      * The fragment shader for this primitive
@@ -42,7 +41,7 @@ class LookupTable extends Primitive {
 
         gl_FragColor = vec4(r, g, b, texColor.a);
       }
-    `;
+    `
   }
 
   /**
@@ -51,13 +50,13 @@ class LookupTable extends Primitive {
    */
   /* istanbul ignore next */
   renderWebGL (renderer) {
-    this._updateTexture(renderer);
+    this._updateTexture(renderer)
 
     renderer.runShader(null, this._fragmentShader, {
       uniforms: {
-        u_lookupTable: { type: "i", value: 3 }
+        u_lookupTable: { type: 'i', value: 3 }
       }
-    });
+    })
   }
 
   /**
@@ -65,24 +64,24 @@ class LookupTable extends Primitive {
    * @param  {CanvasRenderer} renderer
    */
   renderCanvas (renderer) {
-    var canvas = renderer.getCanvas();
-    var imageData = renderer.getContext().getImageData(0, 0, canvas.width, canvas.height);
-    var table = this._options.data;
+    var canvas = renderer.getCanvas()
+    var imageData = renderer.getContext().getImageData(0, 0, canvas.width, canvas.height)
+    var table = this._options.data
 
     for (var x = 0; x < canvas.width; x++) {
       for (var y = 0; y < canvas.height; y++) {
-        var index = (canvas.width * y + x) * 4;
+        var index = (canvas.width * y + x) * 4
 
-        var r = imageData.data[index];
-        imageData.data[index] = table[r * 4];
-        var g = imageData.data[index + 1];
-        imageData.data[index + 1] = table[1 + g * 4];
-        var b = imageData.data[index + 2];
-        imageData.data[index + 2] = table[2 + b * 4];
+        var r = imageData.data[index]
+        imageData.data[index] = table[r * 4]
+        var g = imageData.data[index + 1]
+        imageData.data[index + 1] = table[1 + g * 4]
+        var b = imageData.data[index + 2]
+        imageData.data[index + 2] = table[2 + b * 4]
       }
     }
 
-    renderer.getContext().putImageData(imageData, 0, 0);
+    renderer.getContext().putImageData(imageData, 0, 0)
   }
 
   /**
@@ -91,28 +90,28 @@ class LookupTable extends Primitive {
    */
   /* istanbul ignore next */
   _updateTexture (renderer) {
-    var gl = renderer.getContext();
+    var gl = renderer.getContext()
 
-    if (typeof this._options.data === "undefined") {
-      throw new Error("LookupTable: No data specified.");
+    if (typeof this._options.data === 'undefined') {
+      throw new Error('LookupTable: No data specified.')
     }
 
-    var dataTypedArray = new Uint8Array(this._options.data);
+    var dataTypedArray = new Uint8Array(this._options.data)
 
-    gl.activeTexture(gl.TEXTURE0 + this._textureIndex);
+    gl.activeTexture(gl.TEXTURE0 + this._textureIndex)
     if (!this._texture) {
-      this._texture = gl.createTexture();
+      this._texture = gl.createTexture()
     }
-    gl.bindTexture(gl.TEXTURE_2D, this._texture);
+    gl.bindTexture(gl.TEXTURE_2D, this._texture)
 
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
 
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 256, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, dataTypedArray);
-    gl.activeTexture(gl.TEXTURE0);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 256, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, dataTypedArray)
+    gl.activeTexture(gl.TEXTURE0)
   }
 }
 
-export default LookupTable;
+export default LookupTable

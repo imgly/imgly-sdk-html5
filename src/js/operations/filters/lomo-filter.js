@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,7 +7,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Filter from "./filter";
+import Filter from './filter'
 
 /**
  * Lomo Filter
@@ -24,7 +23,7 @@ class LomoFilter extends Filter {
    * @type {String}
    */
   static get identifier () {
-    return "lomo";
+    return 'lomo'
   }
 
   /**
@@ -32,7 +31,7 @@ class LomoFilter extends Filter {
    * @type {String}
    */
   get name () {
-    return "Lomo";
+    return 'Lomo'
   }
 
   /**
@@ -41,7 +40,7 @@ class LomoFilter extends Filter {
    * @return {Promise}
    */
   render (renderer) {
-    var stack = new Filter.PrimitivesStack();
+    var stack = new Filter.PrimitivesStack()
 
     stack.add(new Filter.Primitives.ToneCurve({
       controlPoints: [
@@ -51,10 +50,10 @@ class LomoFilter extends Filter {
         [183, 205],
         [255, 200]
       ]
-    }));
+    }))
 
-    stack.render(renderer);
+    stack.render(renderer)
   }
 }
 
-export default LomoFilter;
+export default LomoFilter

@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,9 +7,9 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import _ from "lodash";
-import Primitive from "./primitive";
-import Color from "../../../lib/color";
+import _ from 'lodash'
+import Primitive from './primitive'
+import Color from '../../../lib/color'
 
 /**
  * Glow primitive
@@ -20,11 +19,11 @@ import Color from "../../../lib/color";
  */
 class Glow extends Primitive {
   constructor (...args) {
-    super(...args);
+    super(...args)
 
     this._options = _.defaults(this._options, {
       color: new Color(1, 1, 1)
-    });
+    })
 
     /**
      * The fragment shader for this primitive
@@ -49,7 +48,7 @@ class Glow extends Primitive {
         vec3 newColor = texColor * d * u_color.rgb;
         gl_FragColor = vec4(vec3(newColor),1.0);
       }
-    `;
+    `
   }
 
   /**
@@ -61,9 +60,9 @@ class Glow extends Primitive {
   renderWebGL (renderer) {
     renderer.runShader(null, this._fragmentShader, {
       uniforms: {
-        u_color: { type: "3f", value: this._options.color.toRGBGLColor()}
+        u_color: { type: '3f', value: this._options.color.toRGBGLColor()}
       }
-    });
+    })
   }
 
   /**
@@ -72,35 +71,35 @@ class Glow extends Primitive {
    * @return {Promise}
    */
   renderCanvas (renderer) {
-    var canvas = renderer.getCanvas();
-    var imageData = renderer.getContext().getImageData(0, 0, canvas.width, canvas.height);
-    var color = this._options.color;
+    var canvas = renderer.getCanvas()
+    var imageData = renderer.getContext().getImageData(0, 0, canvas.width, canvas.height)
+    var color = this._options.color
 
-    var d;
+    var d
     for (var x = 0; x < canvas.width; x++) {
       for (var y = 0; y < canvas.height; y++) {
-        var index = (canvas.width * y + x) * 4;
+        var index = (canvas.width * y + x) * 4
 
-        var x01 = x / canvas.width;
-        var y01 = y / canvas.height;
+        var x01 = x / canvas.width
+        var y01 = y / canvas.height
 
-        var nx = (x01 - 0.5) / 0.75;
-        var ny = (y01 - 0.5) / 0.75;
+        var nx = (x01 - 0.5) / 0.75
+        var ny = (y01 - 0.5) / 0.75
 
-        var scalarX = nx * nx;
-        var scalarY = ny * ny;
-        d = 1 - (scalarX + scalarY);
-        d = Math.min(Math.max(d, 0.1), 1.0);
+        var scalarX = nx * nx
+        var scalarY = ny * ny
+        d = 1 - (scalarX + scalarY)
+        d = Math.min(Math.max(d, 0.1), 1.0)
 
-        imageData.data[index] = imageData.data[index] * (d * color.r);
-        imageData.data[index + 1] = imageData.data[index + 1] * (d * color.g);
-        imageData.data[index + 2] = imageData.data[index + 2] * (d * color.b);
-        imageData.data[index + 3] = 255;
+        imageData.data[index] = imageData.data[index] * (d * color.r)
+        imageData.data[index + 1] = imageData.data[index + 1] * (d * color.g)
+        imageData.data[index + 2] = imageData.data[index + 2] * (d * color.b)
+        imageData.data[index + 3] = 255
       }
     }
 
-    renderer.getContext().putImageData(imageData, 0, 0);
+    renderer.getContext().putImageData(imageData, 0, 0)
   }
 }
 
-export default Glow;
+export default Glow

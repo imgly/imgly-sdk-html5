@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,8 +7,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import _ from "lodash";
-import Primitive from "./primitive";
+import _ from 'lodash'
+import Primitive from './primitive'
 
 /**
  * Desaturation primitive
@@ -19,11 +18,11 @@ import Primitive from "./primitive";
  */
 class Desaturation extends Primitive {
   constructor (...args) {
-    super(...args);
+    super(...args)
 
     this._options = _.defaults(this._options, {
       desaturation: 1.0
-    });
+    })
 
     /**
      * The fragment shader for this primitive
@@ -44,7 +43,7 @@ class Desaturation extends Primitive {
         vec3 gray = vec3(dot(grayXfer, texColor));
         gl_FragColor = vec4(mix(texColor, gray, u_desaturation), 1.0);
       }
-    `;
+    `
   }
 
   /**
@@ -56,9 +55,9 @@ class Desaturation extends Primitive {
   renderWebGL (renderer) {
     renderer.runShader(null, this._fragmentShader, {
       uniforms: {
-        u_desaturation: { type: "f", value: this._options.desaturation }
+        u_desaturation: { type: 'f', value: this._options.desaturation }
       }
-    });
+    })
   }
 
   /**
@@ -66,23 +65,23 @@ class Desaturation extends Primitive {
    * @param  {CanvasRenderer} renderer
    */
   renderCanvas (renderer) {
-    var canvas = renderer.getCanvas();
-    var imageData = renderer.getContext().getImageData(0, 0, canvas.width, canvas.height);
-    var desaturation = this._options.desaturation;
+    var canvas = renderer.getCanvas()
+    var imageData = renderer.getContext().getImageData(0, 0, canvas.width, canvas.height)
+    var desaturation = this._options.desaturation
 
     for (var x = 0; x < canvas.width; x++) {
       for (var y = 0; y < canvas.height; y++) {
-        var index = (canvas.width * y + x) * 4;
+        var index = (canvas.width * y + x) * 4
 
-        var luminance = imageData.data[index] * 0.3 + imageData.data[index + 1] * 0.59 + imageData.data[index + 2] * 0.11;
-        imageData.data[index] = luminance * (1 - desaturation) + (imageData.data[index] * desaturation);
-        imageData.data[index + 1] = luminance * (1 - desaturation) + (imageData.data[index + 1] * desaturation);
-        imageData.data[index + 2] = luminance * (1 - desaturation) + (imageData.data[index + 2] * desaturation);
+        var luminance = imageData.data[index] * 0.3 + imageData.data[index + 1] * 0.59 + imageData.data[index + 2] * 0.11
+        imageData.data[index] = luminance * (1 - desaturation) + (imageData.data[index] * desaturation)
+        imageData.data[index + 1] = luminance * (1 - desaturation) + (imageData.data[index + 1] * desaturation)
+        imageData.data[index + 2] = luminance * (1 - desaturation) + (imageData.data[index + 2] * desaturation)
       }
     }
 
-    renderer.getContext().putImageData(imageData, 0, 0);
+    renderer.getContext().putImageData(imageData, 0, 0)
   }
 }
 
-export default Desaturation;
+export default Desaturation

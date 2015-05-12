@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,7 +7,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Filter from "./filter";
+import Filter from './filter'
 
 /**
  * Quozi Filter
@@ -23,7 +22,7 @@ class QuoziFilter extends Filter {
    * @type {String}
    */
   static get identifier () {
-    return "quozi";
+    return 'quozi'
   }
 
   /**
@@ -31,7 +30,7 @@ class QuoziFilter extends Filter {
    * @type {String}
    */
   get name () {
-    return "Quozi";
+    return 'Quozi'
   }
 
   /**
@@ -40,12 +39,12 @@ class QuoziFilter extends Filter {
    * @return {Promise}
    */
   render (renderer) {
-    var stack = new Filter.PrimitivesStack();
+    var stack = new Filter.PrimitivesStack()
 
     // Desaturation
     stack.add(new Filter.Primitives.Desaturation({
       desaturation: 0.65
-    }));
+    }))
 
     // Tone curve
     stack.add(new Filter.Primitives.ToneCurve({
@@ -76,10 +75,10 @@ class QuoziFilter extends Filter {
           [255, 219]
         ]
       }
-    }));
+    }))
 
-    stack.render(renderer);
+    stack.render(renderer)
   }
 }
 
-export default QuoziFilter;
+export default QuoziFilter

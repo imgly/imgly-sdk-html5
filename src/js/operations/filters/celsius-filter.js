@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,7 +7,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Filter from "./filter";
+import Filter from './filter'
 
 /**
  * Celsius Filter
@@ -23,7 +22,7 @@ class CelsiusFilter extends Filter {
    * @type {String}
    */
   static get identifier () {
-    return "celsius";
+    return 'celsius'
   }
 
   /**
@@ -31,7 +30,7 @@ class CelsiusFilter extends Filter {
    * @type {String}
    */
   get name () {
-    return "Celsius";
+    return 'Celsius'
   }
 
   /**
@@ -40,7 +39,7 @@ class CelsiusFilter extends Filter {
    * @return {Promise}
    */
   render (renderer) {
-    var stack = new Filter.PrimitivesStack();
+    var stack = new Filter.PrimitivesStack()
 
     stack.add(new Filter.Primitives.ToneCurve({
       rgbControlPoints: {
@@ -63,10 +62,10 @@ class CelsiusFilter extends Filter {
           [255, 171]
         ]
       }
-    }));
+    }))
 
-    stack.render(renderer);
+    stack.render(renderer)
   }
 }
 
-export default CelsiusFilter;
+export default CelsiusFilter

@@ -1,4 +1,4 @@
-"use strict";
+/* global Image */
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,8 +8,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Operation from "./operation";
-import Vector2 from "../lib/math/vector2";
+import Operation from './operation'
+import Vector2 from '../lib/math/vector2'
 
 /**
  * An operation that can draw text on the canvas
@@ -21,17 +21,17 @@ import Vector2 from "../lib/math/vector2";
 class StickersOperation extends Operation {
   constructor (...args) {
     this.availableOptions = {
-      sticker: { type: "string" },
-      position: { type: "vector2", default: new Vector2(0, 0) },
-      size: { type: "vector2", default: new Vector2(0, 0) }
-    };
+      sticker: { type: 'string' },
+      position: { type: 'vector2', default: new Vector2(0, 0) },
+      size: { type: 'vector2', default: new Vector2(0, 0) }
+    }
 
     /**
      * The texture index used for the sticker
      * @type {Number}
      * @private
      */
-    this._textureIndex = 1;
+    this._textureIndex = 1
 
     /**
      * The fragment shader used for this operation
@@ -60,11 +60,11 @@ class StickersOperation extends Operation {
 
         }
       }
-    `;
+    `
 
-    this._loadedStickers = {};
+    this._loadedStickers = {}
 
-    super(...args);
+    super(...args)
   }
 
   /**
@@ -74,16 +74,16 @@ class StickersOperation extends Operation {
    * @abstract
    */
   render (renderer) {
-    var self = this;
+    var self = this
     return this._loadSticker()
       .then(function (image) {
-        if (renderer.identifier === "webgl") {
+        if (renderer.identifier === 'webgl') {
           /* istanbul ignore next */
-          return self._renderWebGL(renderer, image);
+          return self._renderWebGL(renderer, image)
         } else {
-          return self._renderCanvas(renderer, image);
+          return self._renderCanvas(renderer, image)
         }
-      });
+      })
   }
 
   /**
@@ -94,54 +94,54 @@ class StickersOperation extends Operation {
    */
   /* istanbul ignore next */
   _renderWebGL (renderer, image) {
-    var canvas = renderer.getCanvas();
-    var gl = renderer.getContext();
+    var canvas = renderer.getCanvas()
+    var gl = renderer.getContext()
 
-    var position = this._options.position.clone();
-    var canvasSize = new Vector2(canvas.width, canvas.height);
+    var position = this._options.position.clone()
+    var canvasSize = new Vector2(canvas.width, canvas.height)
 
-    if (this._options.numberFormat === "absolute") {
-      position.divide(canvasSize);
+    if (this._options.numberFormat === 'absolute') {
+      position.divide(canvasSize)
     }
 
-    var size = new Vector2(image.width, image.height);
-    if (typeof this._options.size !== "undefined") {
-      size.copy(this._options.size);
+    var size = new Vector2(image.width, image.height)
+    if (typeof this._options.size !== 'undefined') {
+      size.copy(this._options.size)
 
-      if (this._options.numberFormat === "relative") {
-        size.multiply(canvasSize);
+      if (this._options.numberFormat === 'relative') {
+        size.multiply(canvasSize)
       }
 
       // Calculate image ratio, scale by width
-      let ratio = image.height / image.width;
-      size.y = size.x * ratio;
+      let ratio = image.height / image.width
+      size.y = size.x * ratio
     }
-    size.divide(canvasSize);
+    size.divide(canvasSize)
 
-    position.y = 1 - position.y; // Invert y
-    position.y -= size.y; // Fix y
+    position.y = 1 - position.y // Invert y
+    position.y -= size.y // Fix y
 
     // Upload the texture
-    gl.activeTexture(gl.TEXTURE0 + this._textureIndex);
-    this._texture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, this._texture);
+    gl.activeTexture(gl.TEXTURE0 + this._textureIndex)
+    this._texture = gl.createTexture()
+    gl.bindTexture(gl.TEXTURE_2D, this._texture)
 
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
 
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-    gl.activeTexture(gl.TEXTURE0);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image)
+    gl.activeTexture(gl.TEXTURE0)
 
     // Execute the shader
     renderer.runShader(null, this._fragmentShader, {
       uniforms: {
-        u_stickerImage: { type: "i", value: this._textureIndex },
-        u_position: { type: "2f", value: [position.x, position.y] },
-        u_size: { type: "2f", value: [size.x, size.y] }
+        u_stickerImage: { type: 'i', value: this._textureIndex },
+        u_position: { type: '2f', value: [position.x, position.y] },
+        u_size: { type: '2f', value: [size.x, size.y] }
       }
-    });
+    })
   }
 
   /**
@@ -151,22 +151,22 @@ class StickersOperation extends Operation {
    * @private
    */
   _renderCanvas (renderer, image) {
-    var canvas = renderer.getCanvas();
-    var context = renderer.getContext();
+    var canvas = renderer.getCanvas()
+    var context = renderer.getContext()
 
-    var canvasSize = new Vector2(canvas.width, canvas.height);
-    var scaledPosition = this._options.position.clone();
+    var canvasSize = new Vector2(canvas.width, canvas.height)
+    var scaledPosition = this._options.position.clone()
 
-    if (this._options.numberFormat === "relative") {
-      scaledPosition.multiply(canvasSize);
+    if (this._options.numberFormat === 'relative') {
+      scaledPosition.multiply(canvasSize)
     }
 
-    var size = new Vector2(image.width, image.height);
-    if (typeof this._options.size !== "undefined") {
-      size.copy(this._options.size);
+    var size = new Vector2(image.width, image.height)
+    if (typeof this._options.size !== 'undefined') {
+      size.copy(this._options.size)
 
-      if (this._options.numberFormat === "relative") {
-        size.multiply(canvasSize);
+      if (this._options.numberFormat === 'relative') {
+        size.multiply(canvasSize)
       }
     }
 
@@ -174,7 +174,7 @@ class StickersOperation extends Operation {
       0, 0,
       image.width, image.height,
       scaledPosition.x, scaledPosition.y,
-      size.x, size.y);
+      size.x, size.y)
   }
 
   /**
@@ -183,11 +183,11 @@ class StickersOperation extends Operation {
    * @private
    */
   _loadSticker () {
-    var isBrowser = typeof window !== "undefined";
+    var isBrowser = typeof window !== 'undefined'
     if (isBrowser) {
-      return this._loadImageBrowser(this._options.sticker);
+      return this._loadImageBrowser(this._options.sticker)
     } else {
-      return this._loadImageNode(this._options.sticker);
+      return this._loadImageNode(this._options.sticker)
     }
   }
 
@@ -198,25 +198,25 @@ class StickersOperation extends Operation {
    * @private
    */
   _loadImageBrowser (fileName) {
-    var self = this;
+    var self = this
     return new Promise((resolve, reject) => {
       // Return preloaded sticker if available
       if (self._loadedStickers[fileName]) {
-        return resolve(self._loadedStickers[fileName]);
+        return resolve(self._loadedStickers[fileName])
       }
 
-      var image = new Image();
+      var image = new Image()
 
-      image.addEventListener("load", () => {
-        self._loadedStickers[fileName] = image;
-        resolve(image);
-      });
-      image.addEventListener("error", () => {
-        reject(new Error("Could not load sticker: " + fileName));
-      });
+      image.addEventListener('load', () => {
+        self._loadedStickers[fileName] = image
+        resolve(image)
+      })
+      image.addEventListener('error', () => {
+        reject(new Error('Could not load sticker: ' + fileName))
+      })
 
-      image.src = self._kit.getAssetPath(fileName);
-    });
+      image.src = self._kit.getAssetPath(fileName)
+    })
   }
 
   /**
@@ -226,21 +226,21 @@ class StickersOperation extends Operation {
    * @private
    */
   _loadImageNode (fileName) {
-    var Canvas = require("canvas");
-    var fs = require("fs");
+    var Canvas = require('canvas')
+    var fs = require('fs')
 
-    var self = this;
-    var image = new Canvas.Image();
-    var path = self._kit.getAssetPath(fileName);
+    var self = this
+    var image = new Canvas.Image()
+    var path = self._kit.getAssetPath(fileName)
 
     return new Promise((resolve, reject) => {
       fs.readFile(path, (err, buffer) => {
-        if (err) return reject(err);
+        if (err) return reject(err)
 
-        image.src = buffer;
-        resolve(image);
-      });
-    });
+        image.src = buffer
+        resolve(image)
+      })
+    })
   }
 
   /**
@@ -248,7 +248,7 @@ class StickersOperation extends Operation {
    * @type {Object.<String,String>}
    */
   get stickers () {
-    return this._stickers;
+    return this._stickers
   }
 }
 
@@ -257,6 +257,6 @@ class StickersOperation extends Operation {
  * operations.
  * @type {String}
  */
-StickersOperation.prototype.identifier = 'stickers';
+StickersOperation.prototype.identifier = 'stickers'
 
-export default StickersOperation;
+export default StickersOperation

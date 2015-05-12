@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,7 +7,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Filter from "./filter";
+import Filter from './filter'
 
 /**
  * Pola669 Filter
@@ -23,7 +22,7 @@ class Pola669Filter extends Filter {
    * @type {String}
    */
   static get identifier () {
-    return "pola669";
+    return 'pola669'
   }
 
   /**
@@ -31,7 +30,7 @@ class Pola669Filter extends Filter {
    * @type {String}
    */
   get name () {
-    return "Pola 669";
+    return 'Pola 669'
   }
 
   /**
@@ -40,7 +39,7 @@ class Pola669Filter extends Filter {
    * @return {Promise}
    */
   render (renderer) {
-    var stack = new Filter.PrimitivesStack();
+    var stack = new Filter.PrimitivesStack()
 
     stack.add(new Filter.Primitives.ToneCurve({
       rgbControlPoints: {
@@ -62,18 +61,18 @@ class Pola669Filter extends Filter {
           [255, 255]
         ]
       }
-    }));
+    }))
 
     stack.add(new Filter.Primitives.Saturation({
       saturation: 0.8
-    }));
+    }))
 
     stack.add(new Filter.Primitives.Contrast({
       contrast: 1.5
-    }));
+    }))
 
-    stack.render(renderer);
+    stack.render(renderer)
   }
 }
 
-export default Pola669Filter;
+export default Pola669Filter

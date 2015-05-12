@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,25 +7,25 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Control from "./control";
-import Vector2 from "../../../lib/math/vector2";
-import Utils from "../../../lib/utils";
-import SimpleSlider from "../lib/simple-slider";
-let fs = require("fs");
+import Control from './control'
+import Vector2 from '../../../lib/math/vector2'
+import Utils from '../../../lib/utils'
+import SimpleSlider from '../lib/simple-slider'
+let fs = require('fs')
 
 class TiltShiftControl extends Control {
   /**
    * Entry point for this control
    */
   init () {
-    let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/tilt-shift_controls.jst", "utf-8");
-    this._controlsTemplate = controlsTemplate;
+    let controlsTemplate = fs.readFileSync(__dirname + '/../../../templates/night/operations/tilt-shift_controls.jst', 'utf-8')
+    this._controlsTemplate = controlsTemplate
 
-    let canvasControlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/tilt-shift_canvas.jst", "utf-8");
-    this._canvasControlsTemplate = canvasControlsTemplate;
+    let canvasControlsTemplate = fs.readFileSync(__dirname + '/../../../templates/night/operations/tilt-shift_canvas.jst', 'utf-8')
+    this._canvasControlsTemplate = canvasControlsTemplate
 
-    this._partialTemplates.push(SimpleSlider.template);
-    this._currentKnob = null;
+    this._partialTemplates.push(SimpleSlider.template)
+    this._currentKnob = null
   }
 
   /**
@@ -34,37 +33,37 @@ class TiltShiftControl extends Control {
    * @override
    */
   _onEnter () {
-    this._operationExistedBefore = !!this._ui.operations["tilt-shift"];
-    this._operation = this._ui.getOrCreateOperation("tilt-shift");
+    this._operationExistedBefore = !!this._ui.operations['tilt-shift']
+    this._operation = this._ui.getOrCreateOperation('tilt-shift')
 
     this._initialSettings = {
       start: this._operation.getStart().clone(),
       end: this._operation.getEnd().clone(),
       gradientRadius: this._operation.getGradientRadius(),
       blurRadius: this._operation.getBlurRadius()
-    };
+    }
 
     // Mouse event callbacks bound to the class context
-    this._onPositionKnobDown = this._onPositionKnobDown.bind(this);
-    this._onPositionKnobDrag = this._onPositionKnobDrag.bind(this);
-    this._onPositionKnobUp = this._onPositionKnobUp.bind(this);
-    this._onGradientKnobDown = this._onGradientKnobDown.bind(this);
-    this._onGradientKnobDrag = this._onGradientKnobDrag.bind(this);
-    this._onGradientKnobUp = this._onGradientKnobUp.bind(this);
+    this._onPositionKnobDown = this._onPositionKnobDown.bind(this)
+    this._onPositionKnobDrag = this._onPositionKnobDrag.bind(this)
+    this._onPositionKnobUp = this._onPositionKnobUp.bind(this)
+    this._onGradientKnobDown = this._onGradientKnobDown.bind(this)
+    this._onGradientKnobDrag = this._onGradientKnobDrag.bind(this)
+    this._onGradientKnobUp = this._onGradientKnobUp.bind(this)
 
     // Find DOM elements
-    let selector = ".imglykit-canvas-tilt-shift-dot";
-    this._positionKnob = this._canvasControls.querySelector(`${selector}[data-option="position"]`);
-    this._gradientKnob = this._canvasControls.querySelector(`${selector}[data-option="gradient"]`);
-    this._rect = this._canvasControls.querySelector(".imglykit-canvas-tilt-shift-rect");
+    let selector = '.imglykit-canvas-tilt-shift-dot'
+    this._positionKnob = this._canvasControls.querySelector(`${selector}[data-option='position']`)
+    this._gradientKnob = this._canvasControls.querySelector(`${selector}[data-option='gradient']`)
+    this._rect = this._canvasControls.querySelector('.imglykit-canvas-tilt-shift-rect')
 
     // Initialization
-    this._initSliders();
+    this._initSliders()
 
     this._ui.canvas.render().then(() => {
-      this._handleKnobs();
-      this._updateDOM();
-    });
+      this._handleKnobs()
+      this._updateDOM()
+    })
   }
 
   /**
@@ -72,13 +71,13 @@ class TiltShiftControl extends Control {
    * @private
    */
   _initSliders () {
-    let blurRadiusSlider = this._controls.querySelector("#imglykit-blur-radius-slider");
+    let blurRadiusSlider = this._controls.querySelector('#imglykit-blur-radius-slider')
     this._blurRadiusSlider = new SimpleSlider(blurRadiusSlider, {
       minValue: 0,
       maxValue: 40
-    });
-    this._blurRadiusSlider.on("update", this._onBlurRadiusUpdate.bind(this));
-    this._blurRadiusSlider.setValue(this._initialSettings.blurRadius);
+    })
+    this._blurRadiusSlider.on('update', this._onBlurRadiusUpdate.bind(this))
+    this._blurRadiusSlider.setValue(this._initialSettings.blurRadius)
   }
 
   /**
@@ -87,9 +86,9 @@ class TiltShiftControl extends Control {
    * @private
    */
   _onBlurRadiusUpdate (value) {
-    this._operation.setBlurRadius(value);
-    this._ui.canvas.render();
-    this._highlightDoneButton();
+    this._operation.setBlurRadius(value)
+    this._ui.canvas.render()
+    this._highlightDoneButton()
   }
 
   /**
@@ -98,34 +97,34 @@ class TiltShiftControl extends Control {
    */
   _handleKnobs () {
     // Add event listeners
-    this._positionKnob.addEventListener("mousedown", this._onPositionKnobDown);
-    this._positionKnob.addEventListener("touchstart", this._onPositionKnobDown);
-    this._gradientKnob.addEventListener("mousedown", this._onGradientKnobDown);
-    this._gradientKnob.addEventListener("touchstart", this._onGradientKnobDown);
+    this._positionKnob.addEventListener('mousedown', this._onPositionKnobDown)
+    this._positionKnob.addEventListener('touchstart', this._onPositionKnobDown)
+    this._gradientKnob.addEventListener('mousedown', this._onGradientKnobDown)
+    this._gradientKnob.addEventListener('touchstart', this._onGradientKnobDown)
 
-    let canvasSize = this._ui.canvas.size;
-    let { start, end } = this._initialSettings;
-    start = start.clone().multiply(canvasSize);
-    end = end.clone().multiply(canvasSize);
+    let canvasSize = this._ui.canvas.size
+    let { start, end } = this._initialSettings
+    start = start.clone().multiply(canvasSize)
+    end = end.clone().multiply(canvasSize)
 
-    let dist = end.clone().subtract(start);
-    let middle = start.clone().add(dist.clone().divide(2));
+    let dist = end.clone().subtract(start)
+    let middle = start.clone().add(dist.clone().divide(2))
 
-    let totalDist = Math.sqrt(Math.pow(dist.x, 2) + Math.pow(dist.y, 2));
-    let factor = dist.clone().divide(totalDist).divide(2);
+    let totalDist = Math.sqrt(Math.pow(dist.x, 2) + Math.pow(dist.y, 2))
+    let factor = dist.clone().divide(totalDist).divide(2)
 
     // Calculate initial knob position (middle of start and end)
-    this._knobPosition = middle.clone();
+    this._knobPosition = middle.clone()
 
     // Calculate initial gradient knob position
-    let gradientRadius = this._initialSettings.gradientRadius;
+    let gradientRadius = this._initialSettings.gradientRadius
     this._gradientKnobPosition = middle.clone()
-      .add(-gradientRadius * factor.y, gradientRadius * factor.x);
+      .add(-gradientRadius * factor.y, gradientRadius * factor.x)
 
-    this._updateStartAndEnd();
-    this._updateDOM();
+    this._updateStartAndEnd()
+    this._updateDOM()
 
-    this._ui.canvas.render();
+    this._ui.canvas.render()
   }
 
   /**
@@ -133,20 +132,20 @@ class TiltShiftControl extends Control {
    * @private
    */
   _updateStartAndEnd () {
-    let canvasSize = this._ui.canvas.size;
+    let canvasSize = this._ui.canvas.size
 
     // Calculate distance between gradient and position knob
     let diff = this._gradientKnobPosition.clone()
-      .subtract(this._knobPosition);
+      .subtract(this._knobPosition)
 
     let start = this._knobPosition.clone()
       .add(-diff.y, diff.x)
-      .divide(canvasSize);
+      .divide(canvasSize)
     let end = this._knobPosition.clone()
       .add(diff.y, -diff.x)
-      .divide(canvasSize);
+      .divide(canvasSize)
 
-    this._operation.set({ start, end });
+    this._operation.set({ start, end })
   }
 
   /**
@@ -155,18 +154,18 @@ class TiltShiftControl extends Control {
    * @private
    */
   _onPositionKnobDown (e) {
-    e.preventDefault();
+    e.preventDefault()
 
-    this._initialMousePosition = Utils.getEventPosition(e);
-    this._initialPosition = this._knobPosition.clone();
+    this._initialMousePosition = Utils.getEventPosition(e)
+    this._initialPosition = this._knobPosition.clone()
     this._initialDistanceToGradientKnob = this._gradientKnobPosition.clone()
-      .subtract(this._initialPosition);
+      .subtract(this._initialPosition)
 
-    document.addEventListener("mousemove", this._onPositionKnobDrag);
-    document.addEventListener("touchmove", this._onPositionKnobDrag);
+    document.addEventListener('mousemove', this._onPositionKnobDrag)
+    document.addEventListener('touchmove', this._onPositionKnobDrag)
 
-    document.addEventListener("mouseup", this._onPositionKnobUp);
-    document.addEventListener("touchend", this._onPositionKnobUp);
+    document.addEventListener('mouseup', this._onPositionKnobUp)
+    document.addEventListener('touchend', this._onPositionKnobUp)
   }
 
   /**
@@ -175,29 +174,29 @@ class TiltShiftControl extends Control {
    * @private
    */
   _onPositionKnobDrag (e) {
-    e.preventDefault();
+    e.preventDefault()
 
-    let canvasSize = this._ui.canvas.size;
-    let mousePosition = Utils.getEventPosition(e);
-    let diff = mousePosition.subtract(this._initialMousePosition);
+    let canvasSize = this._ui.canvas.size
+    let mousePosition = Utils.getEventPosition(e)
+    let diff = mousePosition.subtract(this._initialMousePosition)
 
-    let newPosition = this._initialPosition.clone().add(diff);
-    this._knobPosition.copy(newPosition);
+    let newPosition = this._initialPosition.clone().add(diff)
+    this._knobPosition.copy(newPosition)
 
-    let minPosition = new Vector2().subtract(this._initialDistanceToGradientKnob);
-    minPosition.clamp(new Vector2(0, 0));
+    let minPosition = new Vector2().subtract(this._initialDistanceToGradientKnob)
+    minPosition.clamp(new Vector2(0, 0))
 
-    let maxPosition = canvasSize.clone().subtract(this._initialDistanceToGradientKnob);
-    maxPosition.clamp(null, canvasSize);
+    let maxPosition = canvasSize.clone().subtract(this._initialDistanceToGradientKnob)
+    maxPosition.clamp(null, canvasSize)
 
-    this._knobPosition.clamp(minPosition, maxPosition);
+    this._knobPosition.clamp(minPosition, maxPosition)
 
     this._gradientKnobPosition.copy(this._knobPosition)
-      .add(this._initialDistanceToGradientKnob);
+      .add(this._initialDistanceToGradientKnob)
 
-    this._updateStartAndEnd();
-    this._updateDOM();
-    this._ui.canvas.render();
+    this._updateStartAndEnd()
+    this._updateDOM()
+    this._ui.canvas.render()
   }
 
   /**
@@ -206,13 +205,13 @@ class TiltShiftControl extends Control {
    * @private
    */
   _onPositionKnobUp (e) {
-    e.preventDefault();
+    e.preventDefault()
 
-    document.removeEventListener("mousemove", this._onPositionKnobDrag);
-    document.removeEventListener("touchmove", this._onPositionKnobDrag);
+    document.removeEventListener('mousemove', this._onPositionKnobDrag)
+    document.removeEventListener('touchmove', this._onPositionKnobDrag)
 
-    document.removeEventListener("mouseup", this._onPositionKnobUp);
-    document.removeEventListener("touchend", this._onPositionKnobUp);
+    document.removeEventListener('mouseup', this._onPositionKnobUp)
+    document.removeEventListener('touchend', this._onPositionKnobUp)
   }
 
   /**
@@ -221,16 +220,16 @@ class TiltShiftControl extends Control {
    * @private
    */
   _onGradientKnobDown (e) {
-    e.preventDefault();
+    e.preventDefault()
 
-    this._initialMousePosition = Utils.getEventPosition(e);
-    this._initialGradientKnobPosition = this._gradientKnobPosition.clone();
+    this._initialMousePosition = Utils.getEventPosition(e)
+    this._initialGradientKnobPosition = this._gradientKnobPosition.clone()
 
-    document.addEventListener("mousemove", this._onGradientKnobDrag);
-    document.addEventListener("touchmove", this._onGradientKnobDrag);
+    document.addEventListener('mousemove', this._onGradientKnobDrag)
+    document.addEventListener('touchmove', this._onGradientKnobDrag)
 
-    document.addEventListener("mouseup", this._onGradientKnobUp);
-    document.addEventListener("touchend", this._onGradientKnobUp);
+    document.addEventListener('mouseup', this._onGradientKnobUp)
+    document.addEventListener('touchend', this._onGradientKnobUp)
   }
 
   /**
@@ -239,24 +238,24 @@ class TiltShiftControl extends Control {
    * @private
    */
   _onGradientKnobDrag (e) {
-    e.preventDefault();
+    e.preventDefault()
 
-    let canvasSize = this._ui.canvas.size;
-    let mousePosition = Utils.getEventPosition(e);
-    let diff = mousePosition.subtract(this._initialMousePosition);
+    let canvasSize = this._ui.canvas.size
+    let mousePosition = Utils.getEventPosition(e)
+    let diff = mousePosition.subtract(this._initialMousePosition)
 
-    this._gradientKnobPosition.copy(this._initialGradientKnobPosition).add(diff);
-    this._gradientKnobPosition.clamp(new Vector2(0, 0), canvasSize);
+    this._gradientKnobPosition.copy(this._initialGradientKnobPosition).add(diff)
+    this._gradientKnobPosition.clamp(new Vector2(0, 0), canvasSize)
 
-    let distance = this._gradientKnobPosition.clone().subtract(this._knobPosition);
+    let distance = this._gradientKnobPosition.clone().subtract(this._knobPosition)
     let newGradientRadius = 2 * Math.sqrt(
       Math.pow(distance.x, 2) + Math.pow(distance.y, 2)
-    );
+    )
 
-    this._operation.setGradientRadius(newGradientRadius);
-    this._updateStartAndEnd();
-    this._updateDOM();
-    this._ui.canvas.render();
+    this._operation.setGradientRadius(newGradientRadius)
+    this._updateStartAndEnd()
+    this._updateDOM()
+    this._ui.canvas.render()
   }
 
   /**
@@ -265,13 +264,13 @@ class TiltShiftControl extends Control {
    * @private
    */
   _onGradientKnobUp (e) {
-    e.preventDefault();
+    e.preventDefault()
 
-    document.removeEventListener("mousemove", this._onGradientKnobDrag);
-    document.removeEventListener("touchmove", this._onGradientKnobDrag);
+    document.removeEventListener('mousemove', this._onGradientKnobDrag)
+    document.removeEventListener('touchmove', this._onGradientKnobDrag)
 
-    document.removeEventListener("mouseup", this._onGradientKnobUp);
-    document.removeEventListener("touchend", this._onGradientKnobUp);
+    document.removeEventListener('mouseup', this._onGradientKnobUp)
+    document.removeEventListener('touchend', this._onGradientKnobUp)
   }
 
   /**
@@ -279,34 +278,34 @@ class TiltShiftControl extends Control {
    * @private
    */
   _updateDOM () {
-    let position = this._knobPosition;
-    this._positionKnob.style.left = `${position.x}px`;
-    this._positionKnob.style.top = `${position.y}px`;
+    let position = this._knobPosition
+    this._positionKnob.style.left = `${position.x}px`
+    this._positionKnob.style.top = `${position.y}px`
 
-    let gradientPosition = this._gradientKnobPosition;
-    this._gradientKnob.style.left = `${gradientPosition.x}px`;
-    this._gradientKnob.style.top = `${gradientPosition.y}px`;
+    let gradientPosition = this._gradientKnobPosition
+    this._gradientKnob.style.left = `${gradientPosition.x}px`
+    this._gradientKnob.style.top = `${gradientPosition.y}px`
 
     // Resize rectangle to worst case size
-    let canvasSize = this._ui.canvas.size;
-    let gradientRadius = this._operation.getGradientRadius();
+    let canvasSize = this._ui.canvas.size
+    let gradientRadius = this._operation.getGradientRadius()
     let rectSize = new Vector2(
       Math.sqrt(Math.pow(canvasSize.x, 2) + Math.pow(canvasSize.y, 2)) * 2,
       gradientRadius
-    );
+    )
 
-    this._rect.style.width = `${rectSize.x}px`;
-    this._rect.style.height = `${rectSize.y}px`;
-    this._rect.style.marginLeft = `-${rectSize.x / 2}px`;
-    this._rect.style.marginTop = `-${rectSize.y / 2}px`;
-    this._rect.style.left = `${position.x}px`;
-    this._rect.style.top = `${position.y}px`;
+    this._rect.style.width = `${rectSize.x}px`
+    this._rect.style.height = `${rectSize.y}px`
+    this._rect.style.marginLeft = `-${rectSize.x / 2}px`
+    this._rect.style.marginTop = `-${rectSize.y / 2}px`
+    this._rect.style.left = `${position.x}px`
+    this._rect.style.top = `${position.y}px`
 
     // Rotate rectangle
     let dist = gradientPosition.clone()
-      .subtract(position);
-    let degrees = Math.atan2(dist.x, dist.y) * (180 / Math.PI);
-    this._rect.style.transform = `rotate(${(-degrees).toFixed(2)}deg)`;
+      .subtract(position)
+    let degrees = Math.atan2(dist.x, dist.y) * (180 / Math.PI)
+    this._rect.style.transform = `rotate(${(-degrees).toFixed(2)}deg)`
   }
 
   /**
@@ -315,11 +314,11 @@ class TiltShiftControl extends Control {
    */
   _onBack () {
     if (this._operationExistedBefore) {
-      this._operation.set(this._initialSettings);
+      this._operation.set(this._initialSettings)
     } else {
-      this._ui.removeOperation("tilt-shift");
+      this._ui.removeOperation('tilt-shift')
     }
-    this._ui.canvas.render();
+    this._ui.canvas.render()
   }
 
   /**
@@ -332,7 +331,7 @@ class TiltShiftControl extends Control {
       end: this._initialSettings.end.clone(),
       blurRadius: this._initialSettings.blurRadius,
       gradientRadius: this._initialSettings.gradientRadius
-    }, this._operationExistedBefore);
+    }, this._operationExistedBefore)
   }
 }
 
@@ -340,6 +339,6 @@ class TiltShiftControl extends Control {
  * A unique string that identifies this control.
  * @type {String}
  */
-TiltShiftControl.prototype.identifier = 'tilt-shift';
+TiltShiftControl.prototype.identifier = 'tilt-shift'
 
-export default TiltShiftControl;
+export default TiltShiftControl

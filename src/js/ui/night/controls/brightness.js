@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,18 +7,18 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Control from "./control";
-import Slider from "../lib/slider";
-let fs = require("fs");
+import Control from './control'
+import Slider from '../lib/slider'
+let fs = require('fs')
 
 class BrightnessControl extends Control {
   /**
    * The entry point for this control
    */
   init () {
-    let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/brightness_controls.jst", "utf-8");
-    this._controlsTemplate = controlsTemplate;
-    this._partialTemplates.push(Slider.template);
+    let controlsTemplate = fs.readFileSync(__dirname + '/../../../templates/night/operations/brightness_controls.jst', 'utf-8')
+    this._controlsTemplate = controlsTemplate
+    this._partialTemplates.push(Slider.template)
   }
 
   /**
@@ -27,21 +26,21 @@ class BrightnessControl extends Control {
    * @override
    */
   _onEnter () {
-    this._operationExistedBefore = !!this._ui.operations.brightness;
-    this._operation = this._ui.getOrCreateOperation("brightness");
+    this._operationExistedBefore = !!this._ui.operations.brightness
+    this._operation = this._ui.getOrCreateOperation('brightness')
 
     // Initially set value
-    let brightness = this._operation.getBrightness();
-    this._initialBrightness = brightness;
+    let brightness = this._operation.getBrightness()
+    this._initialBrightness = brightness
 
-    let sliderElement = this._controls.querySelector(".imglykit-slider");
+    let sliderElement = this._controls.querySelector('.imglykit-slider')
     this._slider = new Slider(sliderElement, {
       minValue: -1,
       maxValue: 1,
       defaultValue: brightness
-    });
-    this._slider.on("update", this._onUpdate.bind(this));
-    this._slider.setValue(this._initialBrightness);
+    })
+    this._slider.on('update', this._onUpdate.bind(this))
+    this._slider.setValue(this._initialBrightness)
   }
 
   /**
@@ -49,19 +48,19 @@ class BrightnessControl extends Control {
    * @override
    */
   _onBack () {
-    let currentBrightness = this._operation.getBrightness();
+    let currentBrightness = this._operation.getBrightness()
 
     if (this._initialBrightness !== currentBrightness) {
       this._ui.addHistory(this._operation, {
         brightness: this._initialBrightness
-      }, this._operationExistedBefore);
+      }, this._operationExistedBefore)
     }
 
     if (currentBrightness === 1.0) {
-      this._ui.removeOperation("brightness");
+      this._ui.removeOperation('brightness')
     }
 
-    this._ui.canvas.render();
+    this._ui.canvas.render()
   }
 
   /**
@@ -69,8 +68,8 @@ class BrightnessControl extends Control {
    * @override
    */
   _onUpdate (value) {
-    this._operation.setBrightness(value);
-    this._ui.canvas.render();
+    this._operation.setBrightness(value)
+    this._ui.canvas.render()
   }
 }
 
@@ -78,6 +77,6 @@ class BrightnessControl extends Control {
  * A unique string that identifies this control.
  * @type {String}
  */
-BrightnessControl.prototype.identifier = 'brightness';
+BrightnessControl.prototype.identifier = 'brightness'
 
-export default BrightnessControl;
+export default BrightnessControl

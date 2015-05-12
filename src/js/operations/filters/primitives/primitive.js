@@ -1,5 +1,4 @@
 /* jshint unused: false */
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -16,9 +15,9 @@
  */
 class Primitive {
   constructor (options) {
-    options = options || {};
+    options = options || {}
 
-    this._options = options;
+    this._options = options
   }
 
   /**
@@ -27,10 +26,10 @@ class Primitive {
    * @return {Promise}
    */
   render (renderer) {
-    if (renderer.identifier === "webgl") {
-      this.renderWebGL(renderer);
+    if (renderer.identifier === 'webgl') {
+      this.renderWebGL(renderer)
     } else {
-      this.renderCanvas(renderer);
+      this.renderCanvas(renderer)
     }
   }
 
@@ -41,7 +40,7 @@ class Primitive {
   /* istanbul ignore next */
   renderWebGL (renderer) {
     /* istanbul ignore next */
-    throw new Error("Primitive#renderWebGL is abstract and not implemented in inherited class.");
+    throw new Error('Primitive#renderWebGL is abstract and not implemented in inherited class.')
   }
 
   /**
@@ -50,8 +49,8 @@ class Primitive {
    */
   renderCanvas (renderer) {
     /* istanbul ignore next */
-    throw new Error("Primitive#renderCanvas is abstract and not implemented in inherited class.");
+    throw new Error('Primitive#renderCanvas is abstract and not implemented in inherited class.')
   }
 }
 
-export default Primitive;
+export default Primitive

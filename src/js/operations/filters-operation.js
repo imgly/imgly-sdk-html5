@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,8 +7,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Operation from "./operation";
-import IdentityFilter from "./filters/identity-filter";
+import Operation from './operation'
+import IdentityFilter from './filters/identity-filter'
 
 /**
  * An operation that can apply a selected filter
@@ -21,15 +20,15 @@ import IdentityFilter from "./filters/identity-filter";
 class FiltersOperation extends Operation {
   constructor (...args) {
     this.availableOptions = {
-      filter: { type: "object", default: IdentityFilter,
+      filter: { type: 'object', default: IdentityFilter,
         setter: function (Filter) {
-          this._selectedFilter = new Filter();
-          return Filter;
+          this._selectedFilter = new Filter()
+          return Filter
         }
       }
-    };
+    }
 
-    super(...args);
+    super(...args)
   }
 
   /**
@@ -39,7 +38,7 @@ class FiltersOperation extends Operation {
    */
   /* istanbul ignore next */
   _renderWebGL (renderer) {
-    this._render(renderer);
+    this._render(renderer)
   }
 
   /**
@@ -48,7 +47,7 @@ class FiltersOperation extends Operation {
    * @override
    */
   _renderCanvas (renderer) {
-    this._render(renderer);
+    this._render(renderer)
   }
 
   /**
@@ -57,7 +56,7 @@ class FiltersOperation extends Operation {
    * @private
    */
   _render (renderer) {
-    this._selectedFilter.render(renderer);
+    this._selectedFilter.render(renderer)
   }
 }
 
@@ -66,6 +65,6 @@ class FiltersOperation extends Operation {
  * operations.
  * @type {String}
  */
-FiltersOperation.prototype.identifier = 'filters';
+FiltersOperation.prototype.identifier = 'filters'
 
-export default FiltersOperation;
+export default FiltersOperation

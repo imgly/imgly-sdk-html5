@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,7 +7,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Primitive from "./primitive";
+import Primitive from './primitive'
 
 /**
  * Gobblin primitive
@@ -18,7 +17,7 @@ import Primitive from "./primitive";
  */
 class Gobblin extends Primitive {
   constructor (...args) {
-    super(...args);
+    super(...args)
 
     /**
      * The fragment shader for this primitive
@@ -38,7 +37,7 @@ class Gobblin extends Primitive {
         texColor.g = texColor.g * 0.7;
         gl_FragColor = texColor;
       }
-    `;
+    `
   }
 
   /**
@@ -48,7 +47,7 @@ class Gobblin extends Primitive {
    */
   /* istanbul ignore next */
   renderWebGL (renderer) {
-    renderer.runShader(null, this._fragmentShader);
+    renderer.runShader(null, this._fragmentShader)
   }
 
   /**
@@ -56,23 +55,23 @@ class Gobblin extends Primitive {
    * @param  {CanvasRenderer} renderer
    */
   renderCanvas (renderer) {
-    var canvas = renderer.getCanvas();
-    var imageData = renderer.getContext().getImageData(0, 0, canvas.width, canvas.height);
+    var canvas = renderer.getCanvas()
+    var imageData = renderer.getContext().getImageData(0, 0, canvas.width, canvas.height)
 
     for (var x = 0; x < canvas.width; x++) {
       for (var y = 0; y < canvas.height; y++) {
-        var index = (canvas.width * y + x) * 4;
+        var index = (canvas.width * y + x) * 4
 
-        imageData.data[index + 2] = imageData.data[index + 1] * 0.33;
-        imageData.data[index] = imageData.data[index] * 0.6;
-        imageData.data[index + 2] += imageData.data[index] * 0.33;
-        imageData.data[index + 1] = imageData.data[index + 1] * 0.7;
-        imageData.data[index + 3] = 255;
+        imageData.data[index + 2] = imageData.data[index + 1] * 0.33
+        imageData.data[index] = imageData.data[index] * 0.6
+        imageData.data[index + 2] += imageData.data[index] * 0.33
+        imageData.data[index + 1] = imageData.data[index + 1] * 0.7
+        imageData.data[index + 3] = 255
       }
     }
 
-    renderer.getContext().putImageData(imageData, 0, 0);
+    renderer.getContext().putImageData(imageData, 0, 0)
   }
 }
 
-export default Gobblin;
+export default Gobblin

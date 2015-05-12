@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -16,49 +15,48 @@
  * @param  {Object} classProperties
  * @return {Object}
  */
-module.exports = function(prototypeProperties, classProperties) {
+module.exports = function (prototypeProperties, classProperties) {
   /*jshint validthis:true*/
-  var parent = this;
-  var child;
+  var parent = this
+  var child
 
   // The constructor function for the new subclass is either defined by you
-  // (the "constructor" property in your `extend` definition), or defaulted
+  // (the 'constructor' property in your `extend` definition), or defaulted
   // by us to simply call the parent's constructor.
-  if (prototypeProperties &&
-    prototypeProperties.hasOwnProperty("constructor")) {
-      child = prototypeProperties.constructor;
+  if (prototypeProperties && prototypeProperties.hasOwnProperty('constructor')) {
+    child = prototypeProperties.constructor
   } else {
-    child = function(){ return parent.apply(this, arguments); };
+    child = function () { return parent.apply(this, arguments) }
   }
 
   // Add static properties to the constructor function, if supplied.
-  var key;
+  var key
   for (key in parent) {
-    child[key] = parent[key];
+    child[key] = parent[key]
   }
-  if (typeof classProperties !== "undefined") {
+  if (typeof classProperties !== 'undefined') {
     for (key in classProperties) {
-      child[key] = classProperties[key];
+      child[key] = classProperties[key]
     }
   }
 
   // Set the prototype chain to inherit from `parent`, without calling
   // `parent`'s constructor function.
-  var Surrogate = function(){ this.constructor = child; };
-  Surrogate.prototype = parent.prototype;
-  child.prototype = new Surrogate();
+  var Surrogate = function () { this.constructor = child }
+  Surrogate.prototype = parent.prototype
+  child.prototype = new Surrogate()
 
   // Add prototype properties (instance properties) to the subclass,
   // if supplied.
   if (prototypeProperties) {
     for (key in prototypeProperties) {
-      child.prototype[key] = prototypeProperties[key];
+      child.prototype[key] = prototypeProperties[key]
     }
   }
 
   // Set a convenience property in case the parent's prototype is needed
   // later.
-  child.__super__ = parent.prototype;
+  child.__super__ = parent.prototype
 
-  return child;
-};
+  return child
+}

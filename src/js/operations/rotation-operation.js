@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,8 +7,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Operation from "./operation";
-import Vector2 from "../lib/math/vector2";
+import Operation from './operation'
+import Vector2 from '../lib/math/vector2'
 
 /**
  * An operation that can crop out a part of the image and rotates it
@@ -21,12 +20,12 @@ import Vector2 from "../lib/math/vector2";
 class RotationOperation extends Operation {
   constructor (...args) {
     this.availableOptions = {
-      degrees: { type: "number", default: 0, validation: function (value) {
+      degrees: { type: 'number', default: 0, validation: function (value) {
         if (value % 90 !== 0) {
-          throw new Error("RotationOperation: `rotation` has to be a multiple of 90.");
+          throw new Error('RotationOperation: `rotation` has to be a multiple of 90.')
         }
       }}
-    };
+    }
 
     /**
      * The fragment shader used for this operation
@@ -41,9 +40,9 @@ class RotationOperation extends Operation {
         gl_Position = vec4((u_matrix * vec3(a_position, 1)).xy, 0, 1);
         v_texCoord = a_texCoord;
       }
-    `;
+    `
 
-    super(...args);
+    super(...args)
   }
 
   /**
@@ -52,36 +51,36 @@ class RotationOperation extends Operation {
    */
   /* istanbul ignore next */
   _renderWebGL (renderer) {
-    var canvas = renderer.getCanvas();
+    var canvas = renderer.getCanvas()
 
-    var actualDegrees = this._options.degrees % 360;
+    var actualDegrees = this._options.degrees % 360
 
     // If we're not rotating by 180 degrees, we need to resize the canvas
     // and the texture
     if (actualDegrees % 180 !== 0) {
-      let newDimensions = this.getNewDimensions(renderer);
+      let newDimensions = this.getNewDimensions(renderer)
 
       // Resize the canvas
-      canvas.width = newDimensions.x;
-      canvas.height = newDimensions.y;
+      canvas.width = newDimensions.x
+      canvas.height = newDimensions.y
     }
 
     // Build the rotation matrix
-    var radians = actualDegrees * (Math.PI / 180);
-    var c = Math.cos(radians);
-    var s = Math.sin(radians);
+    var radians = actualDegrees * (Math.PI / 180)
+    var c = Math.cos(radians)
+    var s = Math.sin(radians)
     var rotationMatrix = [
-      c,-s, 0,
+      c, -s, 0,
       s, c, 0,
       0, 0, 1
-    ];
+    ]
 
     // Run the shader
     renderer.runShader(this.vertexShader, null, {
       uniforms: {
-        u_matrix: { type: "mat3fv", value: rotationMatrix }
+        u_matrix: { type: 'mat3fv', value: rotationMatrix }
       }
-    });
+    })
   }
 
   /**
@@ -89,34 +88,34 @@ class RotationOperation extends Operation {
    * @param  {CanvasRenderer} renderer
    */
   _renderCanvas (renderer) {
-    var canvas = renderer.getCanvas();
+    var canvas = renderer.getCanvas()
 
-    var actualDegrees = this._options.degrees % 360;
-    let newDimensions = this.getNewDimensions(renderer);
+    var actualDegrees = this._options.degrees % 360
+    let newDimensions = this.getNewDimensions(renderer)
 
     // Create a rotated canvas
-    var newCanvas = renderer.createCanvas();
-    newCanvas.width = newDimensions.x;
-    newCanvas.height = newDimensions.y;
-    var newContext = newCanvas.getContext("2d");
+    var newCanvas = renderer.createCanvas()
+    newCanvas.width = newDimensions.x
+    newCanvas.height = newDimensions.y
+    var newContext = newCanvas.getContext('2d')
 
-    newContext.save();
+    newContext.save()
 
     // Translate the canvas
-    newContext.translate(newCanvas.width / 2, newCanvas.height / 2);
+    newContext.translate(newCanvas.width / 2, newCanvas.height / 2)
 
     // Rotate the canvas
-    newContext.rotate(actualDegrees * (Math.PI / 180));
+    newContext.rotate(actualDegrees * (Math.PI / 180))
 
     // Create a temporary canvas so that we can draw the image
     // with the applied transformation
-    var tempCanvas = renderer.cloneCanvas();
-    newContext.drawImage(tempCanvas, -canvas.width / 2, -canvas.height / 2);
+    var tempCanvas = renderer.cloneCanvas()
+    newContext.drawImage(tempCanvas, -canvas.width / 2, -canvas.height / 2)
 
     // Restore old transformation
-    newContext.restore();
+    newContext.restore()
 
-    renderer.setCanvas(newCanvas);
+    renderer.setCanvas(newCanvas)
   }
 
   /**
@@ -126,17 +125,17 @@ class RotationOperation extends Operation {
    * @return {Vector2}
    */
   getNewDimensions (renderer, dimensions) {
-    let canvas = renderer.getCanvas();
-    dimensions = dimensions || new Vector2(canvas.width, canvas.height);
+    let canvas = renderer.getCanvas()
+    dimensions = dimensions || new Vector2(canvas.width, canvas.height)
 
-    let actualDegrees = this._options.degrees % 360;
+    let actualDegrees = this._options.degrees % 360
     if (actualDegrees % 180 !== 0) {
-      let tempX = dimensions.x;
-      dimensions.x = dimensions.y;
-      dimensions.y = tempX;
+      let tempX = dimensions.x
+      dimensions.x = dimensions.y
+      dimensions.y = tempX
     }
 
-    return dimensions;
+    return dimensions
   }
 }
 
@@ -145,6 +144,6 @@ class RotationOperation extends Operation {
  * operations.
  * @type {String}
  */
-RotationOperation.prototype.identifier = 'rotation';
+RotationOperation.prototype.identifier = 'rotation'
 
-export default RotationOperation;
+export default RotationOperation

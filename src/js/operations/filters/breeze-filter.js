@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,7 +7,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Filter from "./filter";
+import Filter from './filter'
 
 /**
  * Breeze Filter
@@ -24,7 +23,7 @@ class BreezeFilter extends Filter {
    * @type {String}
    */
   static get identifier () {
-    return "breeze";
+    return 'breeze'
   }
 
   /**
@@ -32,7 +31,7 @@ class BreezeFilter extends Filter {
    * @type {String}
    */
   get name () {
-    return "Breeze";
+    return 'Breeze'
   }
 
   /**
@@ -41,12 +40,12 @@ class BreezeFilter extends Filter {
    * @return {Promise}
    */
   render (renderer) {
-    var stack = new Filter.PrimitivesStack();
+    var stack = new Filter.PrimitivesStack()
 
     // Desaturation
     stack.add(new Filter.Primitives.Desaturation({
       desaturation: 0.5
-    }));
+    }))
 
     // Tone curve
     stack.add(new Filter.Primitives.ToneCurve({
@@ -71,10 +70,10 @@ class BreezeFilter extends Filter {
           [255, 255]
         ]
       }
-    }));
+    }))
 
-    stack.render(renderer);
+    stack.render(renderer)
   }
 }
 
-export default BreezeFilter;
+export default BreezeFilter

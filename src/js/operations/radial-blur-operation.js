@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,9 +7,9 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Operation from "./operation";
-import Vector2 from "../lib/math/vector2";
-import StackBlur from "../vendor/stack-blur";
+import Operation from './operation'
+import Vector2 from '../lib/math/vector2'
+import StackBlur from '../vendor/stack-blur'
 
 /**
  * An operation that can crop out a part of the image
@@ -22,10 +21,10 @@ import StackBlur from "../vendor/stack-blur";
 class RadialBlurOperation extends Operation {
   constructor (...args) {
     this.availableOptions = {
-      position: { type: "vector2", default: new Vector2(0.5, 0.5) },
-      gradientRadius: { type: "number", default: 50 },
-      blurRadius: { type: "number", default: 20 }
-    };
+      position: { type: 'vector2', default: new Vector2(0.5, 0.5) },
+      gradientRadius: { type: 'number', default: 50 },
+      blurRadius: { type: 'number', default: 20 }
+    }
 
     /**
      * The fragment shader used for this operation
@@ -66,13 +65,13 @@ class RadialBlurOperation extends Operation {
           gl_FragColor = color / total;
           gl_FragColor.rgb /= gl_FragColor.a + 0.00001;
       }
-    `;
+    `
 
-    super(...args);
+    super(...args)
 
-    this._cachedBlurredCanvas = null;
-    this._lastBlurRadius = this._options.blurRadius;
-    this._lastGradientRadius = this._options.gradientRadius;
+    this._cachedBlurredCanvas = null
+    this._lastBlurRadius = this._options.blurRadius
+    this._lastGradientRadius = this._options.gradientRadius
   }
 
   /**
@@ -81,35 +80,35 @@ class RadialBlurOperation extends Operation {
    */
   /* istanbul ignore next */
   _renderWebGL (renderer) {
-    var canvas = renderer.getCanvas();
-    var canvasSize = new Vector2(canvas.width, canvas.height);
+    var canvas = renderer.getCanvas()
+    var canvasSize = new Vector2(canvas.width, canvas.height)
 
-    var position = this._options.position.clone();
-    position.y = 1 - position.y;
+    var position = this._options.position.clone()
+    position.y = 1 - position.y
 
-    if (this._options.numberFormat === "relative") {
-      position.multiply(canvasSize);
+    if (this._options.numberFormat === 'relative') {
+      position.multiply(canvasSize)
     }
 
     var uniforms = {
-      blurRadius: { type: "f", value: this._options.blurRadius },
-      gradientRadius: { type: "f", value: this._options.gradientRadius },
-      position: { type: "2f", value: [position.x, position.y] },
-      texSize: { type: "2f", value: [canvas.width, canvas.height] },
-      delta: { type: "2f", value: [1, 1] }
-    };
+      blurRadius: { type: 'f', value: this._options.blurRadius },
+      gradientRadius: { type: 'f', value: this._options.gradientRadius },
+      position: { type: '2f', value: [position.x, position.y] },
+      texSize: { type: '2f', value: [canvas.width, canvas.height] },
+      delta: { type: '2f', value: [1, 1] }
+    }
 
     // First pass
     renderer.runShader(null, this.fragmentShader, {
       uniforms: uniforms
-    });
+    })
 
     // Update delta for second pass
-    uniforms.delta.value = [-1, 1];
+    uniforms.delta.value = [-1, 1]
 
     renderer.runShader(null, this.fragmentShader, {
       uniforms: uniforms
-    });
+    })
   }
 
   /**
@@ -117,24 +116,24 @@ class RadialBlurOperation extends Operation {
    * @param  {CanvasRenderer} renderer
    */
   _renderCanvas (renderer) {
-    var canvas = renderer.getCanvas();
+    var canvas = renderer.getCanvas()
 
-    let blurRadiusChanged = this._options.blurRadius !== this._lastBlurRadius;
-    let blurryCanvas;
+    let blurRadiusChanged = this._options.blurRadius !== this._lastBlurRadius
+    let blurryCanvas
     if (blurRadiusChanged || this._cachedBlurredCanvas === null) {
       // Blur and cache canvas
-      blurryCanvas = this._blurCanvas(renderer);
-      this._cachedBlurredCanvas = blurryCanvas;
-      this._lastBlurRadius = this._options.blurRadius;
-      this._lastGradientRadius = this._options.gradientRadius;
+      blurryCanvas = this._blurCanvas(renderer)
+      this._cachedBlurredCanvas = blurryCanvas
+      this._lastBlurRadius = this._options.blurRadius
+      this._lastGradientRadius = this._options.gradientRadius
     } else {
       // Use cached canvas
-      blurryCanvas = this._cachedBlurredCanvas;
+      blurryCanvas = this._cachedBlurredCanvas
     }
 
-    var maskCanvas = this._createMask(renderer);
+    var maskCanvas = this._createMask(renderer)
 
-    this._applyMask(canvas, blurryCanvas, maskCanvas);
+    this._applyMask(canvas, blurryCanvas, maskCanvas)
   }
 
   /**
@@ -144,13 +143,13 @@ class RadialBlurOperation extends Operation {
    * @private
    */
   _blurCanvas (renderer) {
-    var newCanvas = renderer.cloneCanvas();
-    var blurryContext = newCanvas.getContext("2d");
-    var blurryImageData = blurryContext.getImageData(0, 0, newCanvas.width, newCanvas.height);
-    StackBlur.stackBlurCanvasRGBA(blurryImageData, 0, 0, newCanvas.width, newCanvas.height, this._options.blurRadius);
-    blurryContext.putImageData(blurryImageData, 0, 0);
+    var newCanvas = renderer.cloneCanvas()
+    var blurryContext = newCanvas.getContext('2d')
+    var blurryImageData = blurryContext.getImageData(0, 0, newCanvas.width, newCanvas.height)
+    StackBlur.stackBlurCanvasRGBA(blurryImageData, 0, 0, newCanvas.width, newCanvas.height, this._options.blurRadius)
+    blurryContext.putImageData(blurryImageData, 0, 0)
 
-    return newCanvas;
+    return newCanvas
   }
 
   /**
@@ -160,33 +159,33 @@ class RadialBlurOperation extends Operation {
    * @private
    */
   _createMask (renderer) {
-    var canvas = renderer.getCanvas();
+    var canvas = renderer.getCanvas()
 
-    var canvasSize = new Vector2(canvas.width, canvas.height);
-    var gradientRadius = this._options.gradientRadius;
+    var canvasSize = new Vector2(canvas.width, canvas.height)
+    var gradientRadius = this._options.gradientRadius
 
-    var maskCanvas = renderer.createCanvas(canvas.width, canvas.height);
-    var maskContext = maskCanvas.getContext("2d");
+    var maskCanvas = renderer.createCanvas(canvas.width, canvas.height)
+    var maskContext = maskCanvas.getContext('2d')
 
-    var position = this._options.position.clone();
+    var position = this._options.position.clone()
 
-    if (this._options.numberFormat === "relative") {
-      position.multiply(canvasSize);
+    if (this._options.numberFormat === 'relative') {
+      position.multiply(canvasSize)
     }
 
     // Build gradient
     var gradient = maskContext.createRadialGradient(
       position.x, position.y, 0,
       position.x, position.y, gradientRadius
-    );
-    gradient.addColorStop(0, "#FFFFFF");
-    gradient.addColorStop(1, "#000000");
+    )
+    gradient.addColorStop(0, '#FFFFFF')
+    gradient.addColorStop(1, '#000000')
 
     // Draw gradient
-    maskContext.fillStyle = gradient;
-    maskContext.fillRect(0, 0, canvas.width, canvas.height);
+    maskContext.fillStyle = gradient
+    maskContext.fillRect(0, 0, canvas.width, canvas.height)
 
-    return maskCanvas;
+    return maskCanvas
   }
 
   /**
@@ -197,28 +196,28 @@ class RadialBlurOperation extends Operation {
    * @private
    */
   _applyMask (inputCanvas, blurryCanvas, maskCanvas) {
-    var inputContext = inputCanvas.getContext("2d");
-    var blurryContext = blurryCanvas.getContext("2d");
-    var maskContext = maskCanvas.getContext("2d");
+    var inputContext = inputCanvas.getContext('2d')
+    var blurryContext = blurryCanvas.getContext('2d')
+    var maskContext = maskCanvas.getContext('2d')
 
-    var inputImageData = inputContext.getImageData(0, 0, inputCanvas.width, inputCanvas.height);
-    var pixels = inputImageData.data;
-    var blurryPixels = blurryContext.getImageData(0, 0, inputCanvas.width, inputCanvas.height).data;
-    var maskPixels = maskContext.getImageData(0, 0, inputCanvas.width, inputCanvas.height).data;
+    var inputImageData = inputContext.getImageData(0, 0, inputCanvas.width, inputCanvas.height)
+    var pixels = inputImageData.data
+    var blurryPixels = blurryContext.getImageData(0, 0, inputCanvas.width, inputCanvas.height).data
+    var maskPixels = maskContext.getImageData(0, 0, inputCanvas.width, inputCanvas.height).data
 
-    var index, alpha;
+    var index, alpha
     for (var y = 0; y < inputCanvas.height; y++) {
       for (var x = 0; x < inputCanvas.width; x++) {
-        index = (y * inputCanvas.width + x) * 4;
-        alpha = maskPixels[index] / 255;
+        index = (y * inputCanvas.width + x) * 4
+        alpha = maskPixels[index] / 255
 
-        pixels[index] = alpha * pixels[index] + (1 - alpha) * blurryPixels[index];
-        pixels[index + 1] = alpha * pixels[index + 1] + (1 - alpha) * blurryPixels[index + 1];
-        pixels[index + 2] = alpha * pixels[index + 2] + (1 - alpha) * blurryPixels[index + 2];
+        pixels[index] = alpha * pixels[index] + (1 - alpha) * blurryPixels[index]
+        pixels[index + 1] = alpha * pixels[index + 1] + (1 - alpha) * blurryPixels[index + 1]
+        pixels[index + 2] = alpha * pixels[index + 2] + (1 - alpha) * blurryPixels[index + 2]
       }
     }
 
-    inputContext.putImageData(inputImageData, 0, 0);
+    inputContext.putImageData(inputImageData, 0, 0)
   }
 
   /**
@@ -229,8 +228,8 @@ class RadialBlurOperation extends Operation {
    *          dirty state changes.
    */
   set dirty (dirty) {
-    super.dirty = dirty;
-    this._cachedBlurredCanvas = null;
+    super.dirty = dirty
+    this._cachedBlurredCanvas = null
   }
 
   /**
@@ -238,7 +237,7 @@ class RadialBlurOperation extends Operation {
    * @type {Boolean}
    */
   get dirty () {
-    return super.dirty;
+    return super.dirty
   }
 }
 
@@ -247,6 +246,6 @@ class RadialBlurOperation extends Operation {
  * operations.
  * @type {String}
  */
-RadialBlurOperation.prototype.identifier = 'radial-blur';
+RadialBlurOperation.prototype.identifier = 'radial-blur'
 
-export default RadialBlurOperation;
+export default RadialBlurOperation

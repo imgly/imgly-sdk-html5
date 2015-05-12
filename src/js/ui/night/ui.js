@@ -1,4 +1,4 @@
-'use strict';
+/* global FileReader, Image */
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,20 +8,20 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-let fs = require('fs');
-import _ from 'lodash';
-import UI from '../base/ui';
-import Canvas from './lib/canvas';
-import FileLoader from './lib/file-loader';
-import TopControls from './lib/top-controls';
-import Scrollbar from './lib/scrollbar';
+let fs = require('fs')
+import _ from 'lodash'
+import UI from '../base/ui'
+import Canvas from './lib/canvas'
+import FileLoader from './lib/file-loader'
+import TopControls from './lib/top-controls'
+import Scrollbar from './lib/scrollbar'
 
 class NightUI extends UI {
   constructor (...args) {
-    this._operationsMap = {};
-    this._template = fs.readFileSync(__dirname + '/../../templates/night/template.jst', 'utf-8');
-    this._registeredControls = {};
-    this._history = [];
+    this._operationsMap = {}
+    this._template = fs.readFileSync(__dirname + '/../../templates/night/template.jst', 'utf-8')
+    this._registeredControls = {}
+    this._history = []
 
     // The `Night` UI has a fixed operation order
     this._preferredOperationOrder = [
@@ -42,17 +42,17 @@ class NightUI extends UI {
       'frames',
       'stickers',
       'text'
-    ];
+    ]
 
-    this._paused = false;
+    this._paused = false
 
-    super(...args);
+    super(...args)
 
     this._options.ui = _.defaults(this._options.ui, {
       showNewButton: !this._options.image,
       showHeader: true,
       showCloseButton: false
-    });
+    })
   }
 
   /**
@@ -60,40 +60,40 @@ class NightUI extends UI {
    * @type {String}
    */
   get identifier () {
-    return 'night';
+    return 'night'
   }
 
   /**
    * Prepares the UI for use
    */
   run () {
-    this._registerControls();
+    this._registerControls()
 
-    super.run();
+    super.run()
 
-    let { container } = this._options;
+    let { container } = this._options
 
-    this._controlsContainer = container.querySelector('.imglykit-controls');
-    this._canvasControlsContainer = container.querySelector('.imglykit-canvas-controls');
-    this._overviewControlsContainer = container.querySelector('.imglykit-controls-overview');
+    this._controlsContainer = container.querySelector('.imglykit-controls')
+    this._canvasControlsContainer = container.querySelector('.imglykit-canvas-controls')
+    this._overviewControlsContainer = container.querySelector('.imglykit-controls-overview')
 
-    this._handleOverview();
+    this._handleOverview()
 
     if (this._options.image) {
-      this._initCanvas();
+      this._initCanvas()
     } else {
-      this._initFileLoader();
+      this._initFileLoader()
     }
 
-    this._initTopControls();
-    this._initControls();
+    this._initTopControls()
+    this._initControls()
 
     if (this._options.image) {
-      this.showZoom();
+      this.showZoom()
     }
 
     if (this._options.ui.showCloseButton) {
-      this._handleCloseButton();
+      this._handleCloseButton()
     }
   }
 
@@ -102,8 +102,8 @@ class NightUI extends UI {
    * @private
    */
   _initFileLoader () {
-    this._fileLoader = new FileLoader(this._kit, this);
-    this._fileLoader.on('file', this._onFileLoaded.bind(this));
+    this._fileLoader = new FileLoader(this._kit, this)
+    this._fileLoader.on('file', this._onFileLoaded.bind(this))
   }
 
   /**
@@ -112,17 +112,17 @@ class NightUI extends UI {
    * @private
    */
   _onFileLoaded (file) {
-    let reader = new FileReader();
+    let reader = new FileReader()
     reader.onload = (() => {
       return (e) => {
-        let data = e.target.result;
-        let image = new Image();
-        image.src = data;
+        let data = e.target.result
+        let image = new Image()
+        image.src = data
 
-        this._setImage(image);
-      };
-    })(file);
-    reader.readAsDataURL(file);
+        this._setImage(image)
+      }
+    })(file)
+    reader.readAsDataURL(file)
   }
 
   /**
@@ -131,22 +131,22 @@ class NightUI extends UI {
    * @private
    */
   _setImage (image) {
-    this._options.image = image;
+    this._options.image = image
     if (this._canvas) {
-      this._canvas.reset();
+      this._canvas.reset()
     }
 
-    this._fileLoader.removeDOM();
+    this._fileLoader.removeDOM()
 
     if (!this._canvas) {
-      this._initCanvas();
+      this._initCanvas()
     } else {
-      this._canvas.setImage(this._options.image);
+      this._canvas.setImage(this._options.image)
     }
 
-    this.showZoom();
-    this._topControls.init();
-    this._enableControls();
+    this.showZoom()
+    this._topControls.init()
+    this._enableControls()
   }
 
   /**
@@ -154,32 +154,32 @@ class NightUI extends UI {
    * @private
    */
   _initTopControls () {
-    this._topControls = new TopControls(this._kit, this);
-    this._topControls.run();
+    this._topControls = new TopControls(this._kit, this)
+    this._topControls.run()
 
     this._topControls.on('undo', () => {
-      this.undo();
-    });
+      this.undo()
+    })
 
     // Pass zoom in event
     this._topControls.on('zoom-in', () => {
       this._canvas.zoomIn()
         .then(() => {
           if (this._currentControl) {
-            this._currentControl.onZoom();
+            this._currentControl.onZoom()
           }
-        });
-    });
+        })
+    })
 
     // Pass zoom out event
     this._topControls.on('zoom-out', () => {
       this._canvas.zoomOut()
         .then(() => {
           if (this._currentControl) {
-            this._currentControl.onZoom();
+            this._currentControl.onZoom()
           }
-        });
-    });
+        })
+    })
   }
 
   /**
@@ -187,11 +187,11 @@ class NightUI extends UI {
    * @private
    */
   _initCanvas () {
-    this._canvas = new Canvas(this._kit, this, this._options);
-    this._canvas.run();
+    this._canvas = new Canvas(this._kit, this, this._options)
+    this._canvas.run()
     this._canvas.on('zoom', () => {
-      this._topControls.updateZoomLevel();
-    });
+      this._topControls.updateZoomLevel()
+    })
   }
 
   /**
@@ -199,7 +199,7 @@ class NightUI extends UI {
    * @param {ImglyKit.Selector}
    */
   selectOperations (selector) {
-    super.selectOperations(selector);
+    super.selectOperations(selector)
   }
 
   /**
@@ -207,24 +207,24 @@ class NightUI extends UI {
    * @param {String} identifier
    */
   getOrCreateOperation (identifier) {
-    let { operationsStack, registeredOperations } = this._kit;
-    let Operation = registeredOperations[identifier];
+    let { operationsStack, registeredOperations } = this._kit
+    let Operation = registeredOperations[identifier]
 
     if (typeof this._operationsMap[identifier] === 'undefined') {
       // Create operation
-      let operationInstance = new Operation(this._kit);
-      this._operationsMap[identifier] = operationInstance;
+      let operationInstance = new Operation(this._kit)
+      this._operationsMap[identifier] = operationInstance
 
       // Find index in preferred operation order
-      let index = this._preferredOperationOrder.indexOf(identifier);
+      let index = this._preferredOperationOrder.indexOf(identifier)
       if (index === -1) {
-        index = this._preferredOperationOrder.length;
+        index = this._preferredOperationOrder.length
       }
-      operationsStack[index] = operationInstance;
+      operationsStack[index] = operationInstance
 
-      return operationInstance;
+      return operationInstance
     } else {
-      return this._operationsMap[identifier];
+      return this._operationsMap[identifier]
     }
   }
 
@@ -233,13 +233,13 @@ class NightUI extends UI {
    * @param {String} identifier
    */
   removeOperation (identifier) {
-    if (!this._operationsMap[identifier]) return;
+    if (!this._operationsMap[identifier]) return
 
-    let operation = this._operationsMap[identifier];
-    delete this._operationsMap[identifier];
+    let operation = this._operationsMap[identifier]
+    delete this._operationsMap[identifier]
 
-    let index = this._kit.operationsStack.indexOf(operation);
-    this._kit.operationsStack.splice(index, 1);
+    let index = this._kit.operationsStack.indexOf(operation)
+    this._kit.operationsStack.splice(index, 1)
   }
 
   /**
@@ -247,18 +247,18 @@ class NightUI extends UI {
    * @private
    */
   _registerControls () {
-    this.registerControl('filters', 'filters', require('./controls/filters'));
-    this.registerControl('rotation', 'rotation', require('./controls/rotation'));
-    this.registerControl('flip', 'flip', require('./controls/flip'));
-    this.registerControl('brightness', 'brightness', require('./controls/brightness'));
-    this.registerControl('contrast', 'contrast', require('./controls/contrast'));
-    this.registerControl('saturation', 'saturation', require('./controls/saturation'));
-    this.registerControl('crop', 'crop', require('./controls/crop'));
-    this.registerControl('radial-blur', 'radial-blur', require('./controls/radial-blur'));
-    this.registerControl('tilt-shift', 'tilt-shift', require('./controls/tilt-shift'));
-    this.registerControl('frames', 'frames', require('./controls/frames'));
-    this.registerControl('stickers', 'stickers', require('./controls/stickers'));
-    this.registerControl('text', 'text', require('./controls/text'));
+    this.registerControl('filters', 'filters', require('./controls/filters'))
+    this.registerControl('rotation', 'rotation', require('./controls/rotation'))
+    this.registerControl('flip', 'flip', require('./controls/flip'))
+    this.registerControl('brightness', 'brightness', require('./controls/brightness'))
+    this.registerControl('contrast', 'contrast', require('./controls/contrast'))
+    this.registerControl('saturation', 'saturation', require('./controls/saturation'))
+    this.registerControl('crop', 'crop', require('./controls/crop'))
+    this.registerControl('radial-blur', 'radial-blur', require('./controls/radial-blur'))
+    this.registerControl('tilt-shift', 'tilt-shift', require('./controls/tilt-shift'))
+    this.registerControl('frames', 'frames', require('./controls/frames'))
+    this.registerControl('stickers', 'stickers', require('./controls/stickers'))
+    this.registerControl('text', 'text', require('./controls/text'))
   }
 
   /**
@@ -266,17 +266,17 @@ class NightUI extends UI {
    * @private
    */
   _handleOverview () {
-    let listItems = this._overviewControlsContainer.querySelectorAll(':scope > ul > li');
+    let listItems = this._overviewControlsContainer.querySelectorAll(':scope > ul > li')
 
     // Turn NodeList into an Array
-    listItems = Array.prototype.slice.call(listItems);
+    listItems = Array.prototype.slice.call(listItems)
 
     // Add click events to all items
     for (let listItem of listItems) {
-      let { identifier } = listItem.dataset;
+      let { identifier } = listItem.dataset
       listItem.addEventListener('click', () => {
-        this.switchToControl(identifier);
-      });
+        this.switchToControl(identifier)
+      })
     }
   }
 
@@ -285,14 +285,14 @@ class NightUI extends UI {
    * @private
    */
   _enableControls () {
-    let listItems = this._overviewControlsContainer.querySelectorAll(':scope > ul > li');
+    let listItems = this._overviewControlsContainer.querySelectorAll(':scope > ul > li')
 
     // Turn NodeList into an Array
-    listItems = Array.prototype.slice.call(listItems);
+    listItems = Array.prototype.slice.call(listItems)
 
     // Add click events to all items
     for (let listItem of listItems) {
-      listItem.removeAttribute('data-disabled');
+      listItem.removeAttribute('data-disabled')
     }
   }
 
@@ -301,18 +301,18 @@ class NightUI extends UI {
    * @private
    */
   switchToControl (identifier) {
-    if (this.context.controlsDisabled) return;
-    this._overviewControlsContainer.style.display = 'none';
+    if (this.context.controlsDisabled) return
+    this._overviewControlsContainer.style.display = 'none'
 
-    this._scrollbar.remove();
+    this._scrollbar.remove()
 
     if (this._currentControl) {
-      this._currentControl.leave();
+      this._currentControl.leave()
     }
 
-    this._currentControl = this._registeredControls[identifier];
-    this._currentControl.enter();
-    this._currentControl.once('back', this._switchToOverview.bind(this));
+    this._currentControl = this._registeredControls[identifier]
+    this._currentControl.enter()
+    this._currentControl.once('back', this._switchToOverview.bind(this))
   }
 
   /**
@@ -321,13 +321,13 @@ class NightUI extends UI {
    */
   _switchToOverview () {
     if (this._currentControl) {
-      this._currentControl.leave();
+      this._currentControl.leave()
     }
 
-    this._currentControl = null;
-    this._overviewControlsContainer.style.display = '';
+    this._currentControl = null
+    this._overviewControlsContainer.style.display = ''
 
-    this._initScrollbar();
+    this._initScrollbar()
   }
 
   /**
@@ -337,10 +337,10 @@ class NightUI extends UI {
    * @param {Control} ControlClass
    */
   registerControl (identifier, operationIdentifier, ControlClass) {
-    if (!this.isOperationSelected(operationIdentifier)) return;
+    if (!this.isOperationSelected(operationIdentifier)) return
 
-    let instance = new ControlClass(this._kit, this);
-    this._registeredControls[identifier] = instance;
+    let instance = new ControlClass(this._kit, this)
+    this._registeredControls[identifier] = instance
   }
 
   /**
@@ -349,12 +349,12 @@ class NightUI extends UI {
    */
   _initControls () {
     for (let identifier in this._registeredControls) {
-      let control = this._registeredControls[identifier];
-      control.setContainers(this._controlsContainer, this._canvasControlsContainer);
-      control.init();
+      let control = this._registeredControls[identifier]
+      control.setContainers(this._controlsContainer, this._canvasControlsContainer)
+      control.init()
     }
 
-    this._initScrollbar();
+    this._initScrollbar()
   }
 
   /**
@@ -362,8 +362,8 @@ class NightUI extends UI {
    * @private
    */
   _initScrollbar () {
-    let container = this._controlsContainer.querySelector('.imglykit-controls-list').parentNode;
-    this._scrollbar = new Scrollbar(container);
+    let container = this._controlsContainer.querySelector('.imglykit-controls-list').parentNode
+    this._scrollbar = new Scrollbar(container)
   }
 
   /**
@@ -372,11 +372,11 @@ class NightUI extends UI {
    * @private
    */
   _handleCloseButton () {
-    let closeButton = this._options.container.querySelector('.imglykit-close-button');
+    let closeButton = this._options.container.querySelector('.imglykit-close-button')
     closeButton.addEventListener('click', (e) => {
-      e.preventDefault();
-      this.emit('close');
-    });
+      e.preventDefault()
+      this.emit('close')
+    })
   }
 
   /**
@@ -384,7 +384,7 @@ class NightUI extends UI {
    */
   render () {
     if (this._canvas) {
-      this._canvas.render();
+      this._canvas.render()
     }
   }
 
@@ -393,7 +393,7 @@ class NightUI extends UI {
    * @type {Object.<String,Operation>}
    */
   get operations () {
-    return this._operationsMap;
+    return this._operationsMap
   }
 
   /**
@@ -401,7 +401,7 @@ class NightUI extends UI {
    * @type {Object.<String,Control>}
    */
   get controls () {
-    return this._registeredControls;
+    return this._registeredControls
   }
 
   /**
@@ -409,11 +409,11 @@ class NightUI extends UI {
    * @type {Object}
    */
   get context () {
-    let context = super.context;
-    context.controls = this._registeredControls;
-    context.renderDropArea = !this._options.image;
-    context.controlsDisabled = !this._options.image;
-    return context;
+    let context = super.context
+    context.controls = this._registeredControls
+    context.renderDropArea = !this._options.image
+    context.controlsDisabled = !this._options.image
+    return context
   }
 
   /**
@@ -421,7 +421,7 @@ class NightUI extends UI {
    * of the canvas.
    */
   pause () {
-    this._paused = true;
+    this._paused = true
   }
 
   /**
@@ -429,9 +429,9 @@ class NightUI extends UI {
    * @param {Boolean} rerender = true
    */
   resume (rerender=true) {
-    this._paused = false;
+    this._paused = false
     if (rerender) {
-      this.render();
+      this.render()
     }
   }
 
@@ -442,40 +442,40 @@ class NightUI extends UI {
    * @param {Boolean} existent
    */
   addHistory (operation, options, existent) {
-    this._history.push({ operation, options, existent });
-    this._topControls.updateUndoButton();
+    this._history.push({ operation, options, existent })
+    this._topControls.updateUndoButton()
   }
 
   /**
    * Hides the zoom control
    */
   hideZoom () {
-    this._topControls.hideZoom();
+    this._topControls.hideZoom()
   }
 
   /**
    * Hides the zoom control
    */
   showZoom () {
-    this._topControls.showZoom();
+    this._topControls.showZoom()
   }
 
   /**
    * Takes the last history item and applies its options
    */
   undo () {
-    let lastItem = this._history.pop();
+    let lastItem = this._history.pop()
     if (lastItem) {
-      let { operation, existent, options } = lastItem;
+      let { operation, existent, options } = lastItem
       if (!existent) {
-        this.removeOperation(operation.identifier);
+        this.removeOperation(operation.identifier)
       } else {
-        operation = this.getOrCreateOperation(operation.identifier);
-        operation.set(options);
+        operation = this.getOrCreateOperation(operation.identifier)
+        operation.set(options)
       }
-      this.canvas.zoomToFit(true);
+      this.canvas.zoomToFit(true)
     }
-    this._topControls.updateUndoButton();
+    this._topControls.updateUndoButton()
   }
 
   /**
@@ -483,7 +483,7 @@ class NightUI extends UI {
    * @type {Array.<Object>}
    */
   get history () {
-    return this._history;
+    return this._history
   }
 
   /**
@@ -491,10 +491,10 @@ class NightUI extends UI {
    * @type {FileLoader}
    */
   get fileLoader () {
-    return this._fileLoader;
+    return this._fileLoader
   }
 }
 
-NightUI.Control = require('./controls/control');
+NightUI.Control = require('./controls/control')
 
-export default NightUI;
+export default NightUI

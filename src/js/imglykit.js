@@ -237,7 +237,7 @@ class ImglyKit {
    */
   getOperationFromStack (identifier) {
     let operation = this.operationsStack.filter((operation) => {
-      return operation.identifier === identifier;
+      return operation.identifier === identifier
     })[0]
     return operation
   }

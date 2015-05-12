@@ -1,6 +1,5 @@
 /* jshint unused:false */
 /* jshint -W083 */
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -10,10 +9,10 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import _ from "lodash";
-import Vector2 from "../lib/math/vector2";
-import Color from "../lib/color";
-import EventEmitter from "../lib/event-emitter";
+import _ from 'lodash'
+import Vector2 from '../lib/math/vector2'
+import Color from '../lib/color'
+import EventEmitter from '../lib/event-emitter'
 
 /**
  * Base class for Operations. Extendable via {@link ImglyKit.Operation#extend}.
@@ -22,25 +21,25 @@ import EventEmitter from "../lib/event-emitter";
  */
 class Operation extends EventEmitter {
   constructor (kit, options) {
-    super();
+    super()
 
-    if (kit.constructor.name !== "ImglyKit") {
-      throw new Error("Operation: First parameter for constructor has to be an ImglyKit instance.");
+    if (kit.constructor.name !== 'ImglyKit') {
+      throw new Error('Operation: First parameter for constructor has to be an ImglyKit instance.')
     }
 
-    this._kit = kit;
+    this._kit = kit
     this.availableOptions = _.extend(this.availableOptions || {}, {
-      numberFormat: { type: "string", default: "relative", available: ["absolute", "relative"] }
-    });
-    this._dirty = true;
+      numberFormat: { type: 'string', default: 'relative', available: ['absolute', 'relative'] }
+    })
+    this._dirty = true
 
-    this._uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
-      let r = Math.random()*16|0;
-      let v = c == "x" ? r : (r&0x3|0x8);
-      return v.toString(16);
-    });
+    this._uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      let r = Math.random() * 16 | 0
+      let v = c === 'x' ? r : (r & 0x3 | 0x8)
+      return v.toString(16)
+    })
 
-    this._initOptions(options || {});
+    this._initOptions(options || {})
   }
 
   /**
@@ -48,18 +47,18 @@ class Operation extends EventEmitter {
    * @return {Promise}
    */
   validateSettings () {
-    let identifier = this.identifier;
+    let identifier = this.identifier
     return new Promise((resolve, reject) => {
       // Check for required options
       for (let optionName in this.availableOptions) {
-        let optionConfig = this.availableOptions[optionName];
-        if (optionConfig.required && typeof this._options[optionName] === "undefined") {
-          return reject(new Error("Operation `" + identifier + "`: Option `" + optionName + "` is required."));
+        let optionConfig = this.availableOptions[optionName]
+        if (optionConfig.required && typeof this._options[optionName] === 'undefined') {
+          return reject(new Error('Operation `' + identifier + '`: Option `' + optionName + '` is required.'))
         }
       }
 
-      resolve();
-    });
+      resolve()
+    })
   }
 
   /**
@@ -69,21 +68,21 @@ class Operation extends EventEmitter {
    * @abstract
    */
   render (renderer) {
-    let renderFn;
-    if (renderer.identifier === "webgl") {
+    let renderFn
+    if (renderer.identifier === 'webgl') {
       /* istanbul ignore next */
-      renderFn = this._renderWebGL.bind(this);
+      renderFn = this._renderWebGL.bind(this)
     } else {
-      renderFn = this._renderCanvas.bind(this);
+      renderFn = this._renderCanvas.bind(this)
     }
 
     // Handle caching
     if (this._dirty) {
-      renderFn(renderer);
-      renderer.cache(this._uuid);
-      this._dirty = false;
+      renderFn(renderer)
+      renderer.cache(this._uuid)
+      this._dirty = false
     } else {
-      renderer.drawCached(this._uuid);
+      renderer.drawCached(this._uuid)
     }
   }
 
@@ -94,7 +93,7 @@ class Operation extends EventEmitter {
    */
   /* istanbul ignore next */
   _renderWebGL () {
-    throw new Error("Operation#_renderWebGL is abstract and not implemented in inherited class.");
+    throw new Error('Operation#_renderWebGL is abstract and not implemented in inherited class.')
   }
 
   /**
@@ -103,7 +102,7 @@ class Operation extends EventEmitter {
    * @private
    */
   _renderCanvas () {
-    throw new Error("Operation#_renderCanvas is abstract and not implemented in inherited class.");
+    throw new Error('Operation#_renderCanvas is abstract and not implemented in inherited class.')
   }
 
   /**
@@ -112,43 +111,44 @@ class Operation extends EventEmitter {
    * @private
    */
   _initOptions (userOptions) {
-    this._options = {};
+    this._options = {}
 
     // Set defaults, create getters and setters
-    var optionName, option, capitalized;
-    var self = this;
+    var optionName, option, capitalized
+    var self = this
     for (optionName in this.availableOptions) {
-      capitalized = optionName.charAt(0).toUpperCase() + optionName.slice(1);
-      option = this.availableOptions[optionName];
+      capitalized = optionName.charAt(0).toUpperCase() + optionName.slice(1)
+      option = this.availableOptions[optionName]
 
       // Create setter and getter
-      (function (optionName, option) {
-        self["set" + capitalized] = function (value) {
-          self._setOption(optionName, value);
-        };
+      let fn = function (optionName, option) {
+        self['set' + capitalized] = function (value) {
+          self._setOption(optionName, value)
+        }
 
         // Default getter
-        self["get" + capitalized] = function () {
-          return self._getOption(optionName);
-        };
-      })(optionName, option);
+        self['get' + capitalized] = function () {
+          return self._getOption(optionName)
+        }
+      }
+      fn(optionName, option)
 
       // Set default if available
-      if (typeof option.default !== "undefined") {
-        this["set" + capitalized](option.default);
+      if (typeof option.default !== 'undefined') {
+        this['set' + capitalized](option.default)
       }
     }
 
     // Overwrite options with the ones given by user
     for (optionName in userOptions) {
       // Check if option is available
-      if (typeof this.availableOptions[optionName] === "undefined") {
-        throw new Error("Invalid option: " + optionName);
+      if (typeof this.availableOptions[optionName] === 'undefined') {
+        throw new Error('Invalid option: ' + optionName)
       }
 
       // Call setter
-      capitalized = optionName.charAt(0).toUpperCase() + optionName.slice(1);
-      this["set" + capitalized](userOptions[optionName]);
+      capitalized = optionName.charAt(0).toUpperCase() + optionName.slice(1)
+      this['set' + capitalized](userOptions[optionName])
     }
   }
 
@@ -158,10 +158,10 @@ class Operation extends EventEmitter {
    */
   set (options) {
     for (let optionName in options) {
-      this._setOption(optionName, options[optionName], false);
+      this._setOption(optionName, options[optionName], false)
     }
 
-    this.emit("update");
+    this.emit('update')
   }
 
   /**
@@ -171,7 +171,7 @@ class Operation extends EventEmitter {
    * @private
    */
   _getOption (optionName) {
-    return this._options[optionName];
+    return this._options[optionName]
   }
 
   /**
@@ -182,79 +182,79 @@ class Operation extends EventEmitter {
    * @private
    */
   _setOption (optionName, value, update=true) {
-    var optionConfig = this.availableOptions[optionName];
-    var identifier = this.identifier;
+    var optionConfig = this.availableOptions[optionName]
+    var identifier = this.identifier
 
-    if (typeof optionConfig.setter !== "undefined") {
-      value = optionConfig.setter.call(this, value);
+    if (typeof optionConfig.setter !== 'undefined') {
+      value = optionConfig.setter.call(this, value)
     }
 
-    if (typeof optionConfig.validation !== "undefined") {
-      optionConfig.validation(value);
+    if (typeof optionConfig.validation !== 'undefined') {
+      optionConfig.validation(value)
     }
 
     switch (optionConfig.type) {
       // String options
-      case "string":
-        if (typeof value !== "string") {
-          throw new Error("Operation `" + identifier + "`: Option `" + optionName + "` has to be a string.");
+      case 'string':
+        if (typeof value !== 'string') {
+          throw new Error('Operation `' + identifier + '`: Option `' + optionName + '` has to be a string.')
         }
 
         // String value restrictions
-        var available = optionConfig.available;
-        if (typeof available !== "undefined" && available.indexOf(value) === -1) {
-          throw new Error("Operation `" + identifier + "`: Invalid value for `" + optionName + "` (valid values are: " + optionConfig.available.join(", ") + ")");
+        var available = optionConfig.available
+        if (typeof available !== 'undefined' && available.indexOf(value) === -1) {
+          throw new Error('Operation `' + identifier + '`: Invalid value for `' + optionName + '` (valid values are: ' + optionConfig.available.join(', ') + ')')
         }
 
-        this._options[optionName] = value;
-        break;
+        this._options[optionName] = value
+        break
 
       // Number options
-      case "number":
-        if (typeof value !== "number") {
-          throw new Error("Operation `" + identifier + "`: Option `" + optionName + "` has to be a number.");
+      case 'number':
+        if (typeof value !== 'number') {
+          throw new Error('Operation `' + identifier + '`: Option `' + optionName + '` has to be a number.')
         }
 
-        this._options[optionName] = value;
-        break;
+        this._options[optionName] = value
+        break
 
       // Boolean options
-      case "boolean":
-        if (typeof value !== "boolean") {
-          throw new Error("Operation `" + identifier + "`: Option `" + optionName + "` has to be a boolean.");
+      case 'boolean':
+        if (typeof value !== 'boolean') {
+          throw new Error('Operation `' + identifier + '`: Option `' + optionName + '` has to be a boolean.')
         }
 
-        this._options[optionName] = value;
-        break;
+        this._options[optionName] = value
+        break
 
       // Vector2 options
-      case "vector2":
+      case 'vector2':
         if (!(value instanceof Vector2)) {
-          throw new Error("Operation `" + identifier + "`: Option `" + optionName + "` has to be an instance of ImglyKit.Vector2.");
+          throw new Error('Operation `' + identifier + '`: Option `' + optionName + '` has to be an instance of ImglyKit.Vector2.')
         }
 
-        this._options[optionName] = value.clone();
+        this._options[optionName] = value.clone()
 
-        break;
+        break
 
       // Color options
-      case "color":
+      case 'color':
         if (!(value instanceof Color)) {
-          throw new Error("Operation `" + identifier + "`: Option `" + optionName + "` has to be an instance of ImglyKit.Color.");
+          throw new Error('Operation `' + identifier + '`: Option `' + optionName + '` has to be an instance of ImglyKit.Color.')
         }
 
-        this._options[optionName] = value;
-        break;
+        this._options[optionName] = value
+        break
 
       // Object options
-      case "object":
-        this._options[optionName] = value;
-        break;
+      case 'object':
+        this._options[optionName] = value
+        break
     }
 
-    this._dirty = true;
+    this._dirty = true
     if (update) {
-      this.emit("update");
+      this.emit('update')
     }
   }
 
@@ -266,10 +266,10 @@ class Operation extends EventEmitter {
    * @private
    */
   getNewDimensions (renderer, dimensions) {
-    let canvas = renderer.getCanvas();
-    dimensions = dimensions || new Vector2(canvas.width, canvas.height);
+    let canvas = renderer.getCanvas()
+    dimensions = dimensions || new Vector2(canvas.width, canvas.height)
 
-    return dimensions;
+    return dimensions
   }
 
   /**
@@ -277,7 +277,7 @@ class Operation extends EventEmitter {
    * @param {Boolean} dirty = true
    */
   set dirty (dirty) {
-    this._dirty = dirty;
+    this._dirty = dirty
   }
 
   /**
@@ -285,7 +285,7 @@ class Operation extends EventEmitter {
    * @type {Boolean}
    */
   get dirty () {
-    return this._dirty;
+    return this._dirty
   }
 }
 
@@ -294,14 +294,14 @@ class Operation extends EventEmitter {
  * operations.
  * @type {String}
  */
-Operation.prototype.identifier = null;
+Operation.prototype.identifier = null
 
 /**
  * To create an {@link ImglyKit.Operation} class of your own, call this
  * method and provide instance properties and functions.
  * @function
  */
-import extend from "../lib/extend";
-Operation.extend = extend;
+import extend from '../lib/extend'
+Operation.extend = extend
 
-export default Operation;
+export default Operation

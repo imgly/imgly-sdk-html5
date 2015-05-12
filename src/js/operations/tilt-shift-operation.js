@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,9 +7,9 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Operation from "./operation";
-import Vector2 from "../lib/math/vector2";
-import StackBlur from "../vendor/stack-blur";
+import Operation from './operation'
+import Vector2 from '../lib/math/vector2'
+import StackBlur from '../vendor/stack-blur'
 
 /**
  * An operation that can crop out a part of the image
@@ -22,11 +21,11 @@ import StackBlur from "../vendor/stack-blur";
 class TiltShiftOperation extends Operation {
   constructor (...args) {
     this.availableOptions = {
-      start: { type: "vector2", default: new Vector2(0.0, 0.5) },
-      end: { type: "vector2", default: new Vector2(1.0, 0.5) },
-      blurRadius: { type: "number", default: 30 },
-      gradientRadius: { type: "number", default: 50 }
-    };
+      start: { type: 'vector2', default: new Vector2(0.0, 0.5) },
+      end: { type: 'vector2', default: new Vector2(1.0, 0.5) },
+      blurRadius: { type: 'number', default: 30 },
+      gradientRadius: { type: 'number', default: 50 }
+    }
 
     /**
      * The fragment shader used for this operation
@@ -70,13 +69,13 @@ class TiltShiftOperation extends Operation {
           gl_FragColor = color / total;
           gl_FragColor.rgb /= gl_FragColor.a + 0.00001;
       }
-    `;
+    `
 
-    super(...args);
+    super(...args)
 
-    this._cachedBlurredCanvas = null;
-    this._lastBlurRadius = this._options.blurRadius;
-    this._lastGradientRadius = this._options.gradientRadius;
+    this._cachedBlurredCanvas = null
+    this._lastBlurRadius = this._options.blurRadius
+    this._lastGradientRadius = this._options.gradientRadius
   }
 
   /**
@@ -85,41 +84,41 @@ class TiltShiftOperation extends Operation {
    */
   /* istanbul ignore next */
   _renderWebGL (renderer) {
-    var canvas = renderer.getCanvas();
-    var canvasSize = new Vector2(canvas.width, canvas.height);
+    var canvas = renderer.getCanvas()
+    var canvasSize = new Vector2(canvas.width, canvas.height)
 
-    var start = this._options.start.clone();
-    var end = this._options.end.clone();
+    var start = this._options.start.clone()
+    var end = this._options.end.clone()
 
-    if (this._options.numberFormat === "relative") {
-      start.multiply(canvasSize);
-      end.multiply(canvasSize);
+    if (this._options.numberFormat === 'relative') {
+      start.multiply(canvasSize)
+      end.multiply(canvasSize)
     }
 
-    start.y = canvasSize.y - start.y;
-    end.y = canvasSize.y - end.y;
+    start.y = canvasSize.y - start.y
+    end.y = canvasSize.y - end.y
 
-    var delta = end.clone().subtract(start);
-    var d = Math.sqrt(delta.x * delta.x + delta.y * delta.y);
+    var delta = end.clone().subtract(start)
+    var d = Math.sqrt(delta.x * delta.x + delta.y * delta.y)
 
     var uniforms = {
-      blurRadius: { type: "f", value: this._options.blurRadius },
-      gradientRadius: { type: "f", value: this._options.gradientRadius },
-      start: { type: "2f", value: [start.x, start.y] },
-      end: { type: "2f", value: [end.x, end.y] },
-      delta: { type: "2f", value: [delta.x / d, delta.y / d] },
-      texSize: { type: "2f", value: [canvas.width, canvas.height] }
-    };
+      blurRadius: { type: 'f', value: this._options.blurRadius },
+      gradientRadius: { type: 'f', value: this._options.gradientRadius },
+      start: { type: '2f', value: [start.x, start.y] },
+      end: { type: '2f', value: [end.x, end.y] },
+      delta: { type: '2f', value: [delta.x / d, delta.y / d] },
+      texSize: { type: '2f', value: [canvas.width, canvas.height] }
+    }
 
     renderer.runShader(null, this.fragmentShader, {
       uniforms: uniforms
-    });
+    })
 
-    uniforms.delta.value = [-delta.y / d, delta.x / d];
+    uniforms.delta.value = [-delta.y / d, delta.x / d]
 
     renderer.runShader(null, this.fragmentShader, {
       uniforms: uniforms
-    });
+    })
   }
 
   /**
@@ -127,25 +126,25 @@ class TiltShiftOperation extends Operation {
    * @param  {CanvasRenderer} renderer
    */
   _renderCanvas (renderer) {
-    var canvas = renderer.getCanvas();
+    var canvas = renderer.getCanvas()
 
     let optionsChanged = this._options.blurRadius !== this._lastBlurRadius ||
-      this._options.gradientRadius !== this._lastGradientRadius;
-    let blurryCanvas;
+      this._options.gradientRadius !== this._lastGradientRadius
+    let blurryCanvas
     if (optionsChanged || this._cachedBlurredCanvas === null) {
       // Blur and cache canvas
-      blurryCanvas = this._blurCanvas(renderer);
-      this._cachedBlurredCanvas = blurryCanvas;
-      this._lastBlurRadius = this._options.blurRadius;
-      this._lastGradientRadius = this._options.gradientRadius;
+      blurryCanvas = this._blurCanvas(renderer)
+      this._cachedBlurredCanvas = blurryCanvas
+      this._lastBlurRadius = this._options.blurRadius
+      this._lastGradientRadius = this._options.gradientRadius
     } else {
       // Use cached canvas
-      blurryCanvas = this._cachedBlurredCanvas;
+      blurryCanvas = this._cachedBlurredCanvas
     }
 
-    var maskCanvas = this._createMask(renderer);
+    var maskCanvas = this._createMask(renderer)
 
-    this._applyMask(canvas, blurryCanvas, maskCanvas);
+    this._applyMask(canvas, blurryCanvas, maskCanvas)
   }
 
   /**
@@ -155,13 +154,13 @@ class TiltShiftOperation extends Operation {
    * @private
    */
   _blurCanvas (renderer) {
-    var newCanvas = renderer.cloneCanvas();
-    var blurryContext = newCanvas.getContext("2d");
-    var blurryImageData = blurryContext.getImageData(0, 0, newCanvas.width, newCanvas.height);
-    StackBlur.stackBlurCanvasRGBA(blurryImageData, 0, 0, newCanvas.width, newCanvas.height, this._options.blurRadius);
-    blurryContext.putImageData(blurryImageData, 0, 0);
+    var newCanvas = renderer.cloneCanvas()
+    var blurryContext = newCanvas.getContext('2d')
+    var blurryImageData = blurryContext.getImageData(0, 0, newCanvas.width, newCanvas.height)
+    StackBlur.stackBlurCanvasRGBA(blurryImageData, 0, 0, newCanvas.width, newCanvas.height, this._options.blurRadius)
+    blurryContext.putImageData(blurryImageData, 0, 0)
 
-    return newCanvas;
+    return newCanvas
   }
 
   /**
@@ -171,47 +170,47 @@ class TiltShiftOperation extends Operation {
    * @private
    */
   _createMask (renderer) {
-    var canvas = renderer.getCanvas();
+    var canvas = renderer.getCanvas()
 
-    var canvasSize = new Vector2(canvas.width, canvas.height);
-    var gradientRadius = this._options.gradientRadius;
+    var canvasSize = new Vector2(canvas.width, canvas.height)
+    var gradientRadius = this._options.gradientRadius
 
-    var maskCanvas = renderer.createCanvas(canvas.width, canvas.height);
-    var maskContext = maskCanvas.getContext("2d");
+    var maskCanvas = renderer.createCanvas(canvas.width, canvas.height)
+    var maskContext = maskCanvas.getContext('2d')
 
-    var start = this._options.start.clone();
-    var end = this._options.end.clone();
+    var start = this._options.start.clone()
+    var end = this._options.end.clone()
 
-    if (this._options.numberFormat === "relative") {
-      start.multiply(canvasSize);
-      end.multiply(canvasSize);
+    if (this._options.numberFormat === 'relative') {
+      start.multiply(canvasSize)
+      end.multiply(canvasSize)
     }
 
-    let dist = end.clone().subtract(start);
-    let middle = start.clone().add(dist.clone().divide(2));
+    let dist = end.clone().subtract(start)
+    let middle = start.clone().add(dist.clone().divide(2))
 
-    let totalDist = Math.sqrt(Math.pow(dist.x, 2) + Math.pow(dist.y, 2));
-    let factor = dist.clone().divide(totalDist);
+    let totalDist = Math.sqrt(Math.pow(dist.x, 2) + Math.pow(dist.y, 2))
+    let factor = dist.clone().divide(totalDist)
 
     let gradientStart = middle.clone()
-      .add(gradientRadius * factor.y, -gradientRadius * factor.x);
+      .add(gradientRadius * factor.y, -gradientRadius * factor.x)
     let gradientEnd = middle.clone()
-      .add(-gradientRadius * factor.y, gradientRadius * factor.x);
+      .add(-gradientRadius * factor.y, gradientRadius * factor.x)
 
     // Build gradient
     var gradient = maskContext.createLinearGradient(
       gradientStart.x, gradientStart.y,
-      gradientEnd.x,   gradientEnd.y
-    );
-    gradient.addColorStop(0, "#000000");
-    gradient.addColorStop(0.5, "#FFFFFF");
-    gradient.addColorStop(1, "#000000");
+      gradientEnd.x, gradientEnd.y
+    )
+    gradient.addColorStop(0, '#000000')
+    gradient.addColorStop(0.5, '#FFFFFF')
+    gradient.addColorStop(1, '#000000')
 
     // Draw gradient
-    maskContext.fillStyle = gradient;
-    maskContext.fillRect(0, 0, canvas.width, canvas.height);
+    maskContext.fillStyle = gradient
+    maskContext.fillRect(0, 0, canvas.width, canvas.height)
 
-    return maskCanvas;
+    return maskCanvas
   }
 
   /**
@@ -222,21 +221,21 @@ class TiltShiftOperation extends Operation {
    * @private
    */
   _applyMask (inputCanvas, blurryCanvas, maskCanvas) {
-    var inputContext = inputCanvas.getContext("2d");
-    var blurryContext = blurryCanvas.getContext("2d");
-    var maskContext = maskCanvas.getContext("2d");
+    var inputContext = inputCanvas.getContext('2d')
+    var blurryContext = blurryCanvas.getContext('2d')
+    var maskContext = maskCanvas.getContext('2d')
 
-    var inputImageData = inputContext.getImageData(0, 0, inputCanvas.width, inputCanvas.height);
-    var pixels = inputImageData.data;
-    var blurryPixels = blurryContext.getImageData(0, 0, inputCanvas.width, inputCanvas.height).data;
-    var maskPixels = maskContext.getImageData(0, 0, inputCanvas.width, inputCanvas.height).data;
+    var inputImageData = inputContext.getImageData(0, 0, inputCanvas.width, inputCanvas.height)
+    var pixels = inputImageData.data
+    var blurryPixels = blurryContext.getImageData(0, 0, inputCanvas.width, inputCanvas.height).data
+    var maskPixels = maskContext.getImageData(0, 0, inputCanvas.width, inputCanvas.height).data
 
     for (let i = 0; i < maskPixels.length; i++) {
-      let alpha = maskPixels[i] / 255;
-      pixels[i] = alpha * pixels[i] + (1 - alpha) * blurryPixels[i];
+      let alpha = maskPixels[i] / 255
+      pixels[i] = alpha * pixels[i] + (1 - alpha) * blurryPixels[i]
     }
 
-    inputContext.putImageData(inputImageData, 0, 0);
+    inputContext.putImageData(inputImageData, 0, 0)
   }
 
   /**
@@ -247,8 +246,8 @@ class TiltShiftOperation extends Operation {
    *          dirty state changes.
    */
   set dirty (dirty) {
-    super.dirty = dirty;
-    this._cachedBlurredCanvas = null;
+    super.dirty = dirty
+    this._cachedBlurredCanvas = null
   }
 
   /**
@@ -256,7 +255,7 @@ class TiltShiftOperation extends Operation {
    * @type {Boolean}
    */
   get dirty () {
-    return super.dirty;
+    return super.dirty
   }
 }
 
@@ -265,6 +264,6 @@ class TiltShiftOperation extends Operation {
  * operations.
  * @type {String}
  */
-TiltShiftOperation.prototype.identifier = 'tilt-shift';
+TiltShiftOperation.prototype.identifier = 'tilt-shift'
 
-export default TiltShiftOperation;
+export default TiltShiftOperation

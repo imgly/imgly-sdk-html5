@@ -1,4 +1,4 @@
-"use strict";
+/* global Image */
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -7,8 +7,8 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-import { RenderType, ImageFormat } from "../constants";
-import Utils from "./utils";
+import { RenderType, ImageFormat } from '../constants'
+import Utils from './utils'
 
 /**
  * @class
@@ -21,25 +21,25 @@ class ImageExporter {
     var settings = {
       renderType: renderType,
       imageFormat: imageFormat
-    };
+    }
 
     // Validate RenderType
-    if ((typeof settings.renderType !== "undefined" && settings.renderType !== null) &&
-      Utils.values(RenderType).indexOf(settings.renderType) === -1) {
-        throw new Error("Invalid render type: " + settings.renderType);
-    } else if (typeof renderType === "undefined") {
-      settings.renderType = RenderType.DATA_URL;
+    if ((typeof settings.renderType !== 'undefined' && settings.renderType !== null) &&
+        Utils.values(RenderType).indexOf(settings.renderType) === -1) {
+      throw new Error('Invalid render type: ' + settings.renderType)
+    } else if (typeof renderType === 'undefined') {
+      settings.renderType = RenderType.DATA_URL
     }
 
     // Validate ImageFormat
-    if ((typeof settings.imageFormat !== "undefined" && settings.imageFormat !== null) &&
-      Utils.values(ImageFormat).indexOf(settings.imageFormat) === -1) {
-        throw new Error("Invalid image format: " + settings.imageFormat);
-    } else if (typeof imageFormat === "undefined") {
-      settings.imageFormat = ImageFormat.PNG;
+    if ((typeof settings.imageFormat !== 'undefined' && settings.imageFormat !== null) &&
+        Utils.values(ImageFormat).indexOf(settings.imageFormat) === -1) {
+      throw new Error('Invalid image format: ' + settings.imageFormat)
+    } else if (typeof imageFormat === 'undefined') {
+      settings.imageFormat = ImageFormat.PNG
     }
 
-    return settings;
+    return settings
   }
 
   /**
@@ -50,25 +50,25 @@ class ImageExporter {
    * @return {string|image}
    */
   static export (canvas, renderType, imageFormat) {
-    var result = canvas.toDataURL(imageFormat);
-    if (renderType == RenderType.IMAGE) {
-      var image;
+    var result = canvas.toDataURL(imageFormat)
+    if (renderType === RenderType.IMAGE) {
+      var image
 
       /* istanbul ignore else  */
-      if (typeof window === "undefined") {
+      if (typeof window === 'undefined') {
         // Not a browser environment
-        var CanvasImage = require("canvas").Image;
-        image = new CanvasImage();
+        var CanvasImage = require('canvas').Image
+        image = new CanvasImage()
       } else {
-        image = new Image();
+        image = new Image()
       }
 
-      image.src = result;
-      result = image;
+      image.src = result
+      result = image
     }
-    return result;
+    return result
   }
 
 }
 
-export default ImageExporter;
+export default ImageExporter

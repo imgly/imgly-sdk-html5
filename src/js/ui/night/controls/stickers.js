@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,30 +7,30 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Control from "./control";
-import Vector2 from "../../../lib/math/vector2";
-import Utils from "../../../lib/utils";
-let fs = require("fs");
+import Control from './control'
+import Vector2 from '../../../lib/math/vector2'
+import Utils from '../../../lib/utils'
+let fs = require('fs')
 
 class StickersControl extends Control {
   /**
    * Entry point for this control
    */
   init () {
-    let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/stickers_controls.jst", "utf-8");
-    this._controlsTemplate = controlsTemplate;
+    let controlsTemplate = fs.readFileSync(__dirname + '/../../../templates/night/operations/stickers_controls.jst', 'utf-8')
+    this._controlsTemplate = controlsTemplate
 
-    let canvasControlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/stickers_canvas.jst", "utf-8");
-    this._canvasControlsTemplate = canvasControlsTemplate;
+    let canvasControlsTemplate = fs.readFileSync(__dirname + '/../../../templates/night/operations/stickers_canvas.jst', 'utf-8')
+    this._canvasControlsTemplate = canvasControlsTemplate
 
     /**
      * The registered stickers
      * @type {Object.<string, class>}
      */
-    this._availableStickers = {};
-    this._stickers = {};
-    this._addDefaultStickers();
-    this.selectStickers(null);
+    this._availableStickers = {}
+    this._stickers = {}
+    this._addDefaultStickers()
+    this.selectStickers(null)
   }
 
   /**
@@ -39,23 +38,23 @@ class StickersControl extends Control {
    * @private
    */
   _addDefaultStickers () {
-    this.addSticker("glasses-nerd", "stickers/sticker-glasses-nerd.png");
-    this.addSticker("glasses-normal", "stickers/sticker-glasses-normal.png");
-    this.addSticker("glasses-shutter-green", "stickers/sticker-glasses-shutter-green.png");
-    this.addSticker("glasses-shutter-yellow", "stickers/sticker-glasses-shutter-yellow.png");
-    this.addSticker("glasses-sun", "stickers/sticker-glasses-sun.png");
-    this.addSticker("hat-cap", "stickers/sticker-hat-cap.png");
-    this.addSticker("hat-cylinder", "stickers/sticker-hat-cylinder.png");
-    this.addSticker("hat-party", "stickers/sticker-hat-party.png");
-    this.addSticker("hat-sheriff", "stickers/sticker-hat-sheriff.png");
-    this.addSticker("heart", "stickers/sticker-heart.png");
-    this.addSticker("mustache-long", "stickers/sticker-mustache-long.png");
-    this.addSticker("mustache1", "stickers/sticker-mustache1.png");
-    this.addSticker("mustache2", "stickers/sticker-mustache2.png");
-    this.addSticker("mustache3", "stickers/sticker-mustache3.png");
-    this.addSticker("pipe", "stickers/sticker-pipe.png");
-    this.addSticker("snowflake", "stickers/sticker-snowflake.png");
-    this.addSticker("star", "stickers/sticker-star.png");
+    this.addSticker('glasses-nerd', 'stickers/sticker-glasses-nerd.png')
+    this.addSticker('glasses-normal', 'stickers/sticker-glasses-normal.png')
+    this.addSticker('glasses-shutter-green', 'stickers/sticker-glasses-shutter-green.png')
+    this.addSticker('glasses-shutter-yellow', 'stickers/sticker-glasses-shutter-yellow.png')
+    this.addSticker('glasses-sun', 'stickers/sticker-glasses-sun.png')
+    this.addSticker('hat-cap', 'stickers/sticker-hat-cap.png')
+    this.addSticker('hat-cylinder', 'stickers/sticker-hat-cylinder.png')
+    this.addSticker('hat-party', 'stickers/sticker-hat-party.png')
+    this.addSticker('hat-sheriff', 'stickers/sticker-hat-sheriff.png')
+    this.addSticker('heart', 'stickers/sticker-heart.png')
+    this.addSticker('mustache-long', 'stickers/sticker-mustache-long.png')
+    this.addSticker('mustache1', 'stickers/sticker-mustache1.png')
+    this.addSticker('mustache2', 'stickers/sticker-mustache2.png')
+    this.addSticker('mustache3', 'stickers/sticker-mustache3.png')
+    this.addSticker('pipe', 'stickers/sticker-pipe.png')
+    this.addSticker('snowflake', 'stickers/sticker-snowflake.png')
+    this.addSticker('star', 'stickers/sticker-star.png')
   }
 
   /**
@@ -63,7 +62,7 @@ class StickersControl extends Control {
    * @private
    */
   addSticker (identifier, path) {
-    this._availableStickers[identifier] = path;
+    this._availableStickers[identifier] = path
   }
 
   /**
@@ -71,18 +70,18 @@ class StickersControl extends Control {
    * @param {Selector} selector
    */
   selectStickers (selector) {
-    this._stickers = {};
+    this._stickers = {}
 
-    let stickerIdentifiers = Object.keys(this._availableStickers);
+    let stickerIdentifiers = Object.keys(this._availableStickers)
 
-    let selectedStickers = Utils.select(stickerIdentifiers, selector);
+    let selectedStickers = Utils.select(stickerIdentifiers, selector)
     for (let i = 0; i < selectedStickers.length; i++) {
-      let identifier = selectedStickers[i];
-      this._stickers[identifier] = this._availableStickers[identifier];
+      let identifier = selectedStickers[i]
+      this._stickers[identifier] = this._availableStickers[identifier]
     }
 
     if (this._active) {
-      this._renderControls();
+      this._renderControls()
     }
   }
 
@@ -91,48 +90,48 @@ class StickersControl extends Control {
    * @override
    */
   _onEnter () {
-    this._operationExistedBefore = !!this._ui.operations.stickers;
-    this._operation = this._ui.getOrCreateOperation("stickers");
+    this._operationExistedBefore = !!this._ui.operations.stickers
+    this._operation = this._ui.getOrCreateOperation('stickers')
 
     // Don't render initially
-    this._ui.removeOperation("stickers");
+    this._ui.removeOperation('stickers')
 
     this._initialSettings = {
       sticker: this._operation.getSticker(),
       position: this._operation.getPosition().clone(),
       size: this._operation.getSize().clone()
-    };
+    }
 
-    let canvasSize = this._ui.canvas.size;
+    let canvasSize = this._ui.canvas.size
 
-    this._size = this._initialSettings.size.clone();
+    this._size = this._initialSettings.size.clone()
     this._position = this._initialSettings.position.clone()
-      .multiply(canvasSize);
+      .multiply(canvasSize)
 
     // Remember zoom level and zoom to fit the canvas
-    this._initialZoomLevel = this._ui.canvas.zoomLevel;
-    this._ui.canvas.zoomToFit();
+    this._initialZoomLevel = this._ui.canvas.zoomLevel
+    this._ui.canvas.zoomToFit()
 
     // Find DOM elements
-    this._container = this._canvasControls.querySelector(".imglykit-canvas-stickers");
-    this._stickerImage = this._canvasControls.querySelector("img");
-    this._stickerImage.addEventListener("load", () => {
-      this._stickerSize = new Vector2(this._stickerImage.width, this._stickerImage.height);
-      this._onStickerLoad();
-    });
-    this._knob = this._canvasControls.querySelector("div.imglykit-knob");
+    this._container = this._canvasControls.querySelector('.imglykit-canvas-stickers')
+    this._stickerImage = this._canvasControls.querySelector('img')
+    this._stickerImage.addEventListener('load', () => {
+      this._stickerSize = new Vector2(this._stickerImage.width, this._stickerImage.height)
+      this._onStickerLoad()
+    })
+    this._knob = this._canvasControls.querySelector('div.imglykit-knob')
 
     // Mouse event callbacks bound to the class context
-    this._onImageDown = this._onImageDown.bind(this);
-    this._onImageDrag = this._onImageDrag.bind(this);
-    this._onImageUp = this._onImageUp.bind(this);
-    this._onKnobDown = this._onKnobDown.bind(this);
-    this._onKnobDrag = this._onKnobDrag.bind(this);
-    this._onKnobUp = this._onKnobUp.bind(this);
+    this._onImageDown = this._onImageDown.bind(this)
+    this._onImageDrag = this._onImageDrag.bind(this)
+    this._onImageUp = this._onImageUp.bind(this)
+    this._onKnobDown = this._onKnobDown.bind(this)
+    this._onKnobDrag = this._onKnobDrag.bind(this)
+    this._onKnobUp = this._onKnobUp.bind(this)
 
-    this._handleListItems();
-    this._handleImage();
-    this._handleKnob();
+    this._handleListItems()
+    this._handleImage()
+    this._handleKnob()
   }
 
   /**
@@ -140,20 +139,21 @@ class StickersControl extends Control {
    * @private
    */
   _handleListItems () {
-    let listItems = this._controls.querySelectorAll("li");
-    this._listItems = Array.prototype.slice.call(listItems);
+    let listItems = this._controls.querySelectorAll('li')
+    this._listItems = Array.prototype.slice.call(listItems)
 
     // Listen to click events
     for (let i = 0; i < this._listItems.length; i++) {
-      let listItem = this._listItems[i];
-      let { identifier } = listItem.dataset;
-      listItem.addEventListener("click", () => {
-        this._onListItemClick(listItem);
-      });
+      let listItem = this._listItems[i]
+      let { identifier } = listItem.dataset
+      listItem.addEventListener('click', () => {
+        this._onListItemClick(listItem)
+      })
 
       if ((!this._operationExistedBefore && i === 0) ||
-        (this._operationExistedBefore && this._stickers[identifier] === this._initialSettings.sticker)) {
-          this._onListItemClick(listItem, false);
+          (this._operationExistedBefore &&
+          this._stickers[identifier] === this._initialSettings.sticker)) {
+        this._onListItemClick(listItem, false)
       }
     }
   }
@@ -163,13 +163,13 @@ class StickersControl extends Control {
    * @private
    */
   _applySettings () {
-    let ratio = this._stickerSize.y / this._stickerSize.x;
-    this._size.y = this._size.x * ratio;
+    let ratio = this._stickerSize.y / this._stickerSize.x
+    this._size.y = this._size.x * ratio
 
-    this._stickerImage.style.width = `${this._size.x}px`;
-    this._stickerImage.style.height = `${this._size.y}px`;
-    this._container.style.left = `${this._position.x}px`;
-    this._container.style.top = `${this._position.y}px`;
+    this._stickerImage.style.width = `${this._size.x}px`
+    this._stickerImage.style.height = `${this._size.y}px`
+    this._container.style.left = `${this._position.x}px`
+    this._container.style.top = `${this._position.y}px`
   }
 
   /**
@@ -178,12 +178,12 @@ class StickersControl extends Control {
    */
   _onBack () {
     if (this._operationExistedBefore) {
-      this._operation = this._ui.getOrCreateOperation("stickers");
-      this._operation.set(this._initialSettings);
+      this._operation = this._ui.getOrCreateOperation('stickers')
+      this._operation.set(this._initialSettings)
     } else {
-      this._ui.removeOperation("stickers");
+      this._ui.removeOperation('stickers')
     }
-    this._ui.canvas.setZoomLevel(this._initialZoomLevel);
+    this._ui.canvas.setZoomLevel(this._initialZoomLevel)
   }
 
   /**
@@ -192,26 +192,26 @@ class StickersControl extends Control {
    */
   _onDone () {
     // Map the position and size options to 0...1 values
-    let canvasSize = this._ui.canvas.size;
-    let position = this._position.clone().divide(canvasSize);
-    let size = this._size.clone().divide(canvasSize);
+    let canvasSize = this._ui.canvas.size
+    let position = this._position.clone().divide(canvasSize)
+    let size = this._size.clone().divide(canvasSize)
 
-    this._ui.canvas.setZoomLevel(this._initialZoomLevel, false);
+    this._ui.canvas.setZoomLevel(this._initialZoomLevel, false)
 
     // Create a new operation and render it
-    this._operation = this._ui.getOrCreateOperation("stickers");
+    this._operation = this._ui.getOrCreateOperation('stickers')
     this._operation.set({
       sticker: this._availableStickers[this._sticker],
       position: position,
       size: size
-    });
-    this._ui.canvas.render();
+    })
+    this._ui.canvas.render()
 
     this._ui.addHistory(this, {
       sticker: this._initialSettings.sticker,
       position: this._initialSettings.position.clone(),
       size: this._initialSettings.size.clone()
-    }, this._operationExistedBefore);
+    }, this._operationExistedBefore)
   }
 
   /**
@@ -219,8 +219,8 @@ class StickersControl extends Control {
    * @private
    */
   _handleKnob () {
-    this._knob.addEventListener("mousedown", this._onKnobDown);
-    this._knob.addEventListener("touchstart", this._onKnobDown);
+    this._knob.addEventListener('mousedown', this._onKnobDown)
+    this._knob.addEventListener('touchstart', this._onKnobDown)
   }
 
   /**
@@ -229,16 +229,16 @@ class StickersControl extends Control {
    * @private
    */
   _onKnobDown (e) {
-    e.preventDefault();
+    e.preventDefault()
 
-    this._initialMousePosition = Utils.getEventPosition(e);
-    this._initialSize = this._size.clone();
+    this._initialMousePosition = Utils.getEventPosition(e)
+    this._initialSize = this._size.clone()
 
-    document.addEventListener("mousemove", this._onKnobDrag);
-    document.addEventListener("touchmove", this._onKnobDrag);
+    document.addEventListener('mousemove', this._onKnobDrag)
+    document.addEventListener('touchmove', this._onKnobDrag)
 
-    document.addEventListener("mouseup", this._onKnobUp);
-    document.addEventListener("touchend", this._onKnobUp);
+    document.addEventListener('mouseup', this._onKnobUp)
+    document.addEventListener('touchend', this._onKnobUp)
   }
 
   /**
@@ -247,21 +247,21 @@ class StickersControl extends Control {
    * @private
    */
   _onKnobDrag (e) {
-    e.preventDefault();
+    e.preventDefault()
 
-    let mousePosition = Utils.getEventPosition(e);
+    let mousePosition = Utils.getEventPosition(e)
     let diff = mousePosition.clone()
-      .subtract(this._initialMousePosition);
+      .subtract(this._initialMousePosition)
 
-    let size = this._initialSize.clone();
-    let ratio = this._stickerImage.height / this._stickerImage.width;
-    size.x += diff.x;
-    size.y = size.x * ratio;
+    let size = this._initialSize.clone()
+    let ratio = this._stickerImage.height / this._stickerImage.width
+    size.x += diff.x
+    size.y = size.x * ratio
 
-    this._size.copy(size);
+    this._size.copy(size)
 
-    this._applySettings();
-    this._highlightDoneButton();
+    this._applySettings()
+    this._highlightDoneButton()
   }
 
   /**
@@ -270,11 +270,11 @@ class StickersControl extends Control {
    * @private
    */
   _onKnobUp () {
-    document.removeEventListener("mousemove", this._onKnobDrag);
-    document.removeEventListener("touchmove", this._onKnobDrag);
+    document.removeEventListener('mousemove', this._onKnobDrag)
+    document.removeEventListener('touchmove', this._onKnobDrag)
 
-    document.removeEventListener("mouseup", this._onKnobUp);
-    document.removeEventListener("touchend", this._onKnobUp);
+    document.removeEventListener('mouseup', this._onKnobUp)
+    document.removeEventListener('touchend', this._onKnobUp)
   }
 
   /**
@@ -282,8 +282,8 @@ class StickersControl extends Control {
    * @private
    */
   _handleImage () {
-    this._stickerImage.addEventListener("mousedown", this._onImageDown);
-    this._stickerImage.addEventListener("touchstart", this._onImageDown);
+    this._stickerImage.addEventListener('mousedown', this._onImageDown)
+    this._stickerImage.addEventListener('touchstart', this._onImageDown)
   }
 
   /**
@@ -292,16 +292,16 @@ class StickersControl extends Control {
    * @private
    */
   _onImageDown (e) {
-    e.preventDefault();
+    e.preventDefault()
 
-    this._initialMousePosition = Utils.getEventPosition(e);
-    this._initialPosition = this._position.clone();
+    this._initialMousePosition = Utils.getEventPosition(e)
+    this._initialPosition = this._position.clone()
 
-    document.addEventListener("mousemove", this._onImageDrag);
-    document.addEventListener("touchmove", this._onImageDrag);
+    document.addEventListener('mousemove', this._onImageDrag)
+    document.addEventListener('touchmove', this._onImageDrag)
 
-    document.addEventListener("mouseup", this._onImageUp);
-    document.addEventListener("touchend", this._onImageUp);
+    document.addEventListener('mouseup', this._onImageUp)
+    document.addEventListener('touchend', this._onImageUp)
   }
 
   /**
@@ -310,19 +310,19 @@ class StickersControl extends Control {
    * @private
    */
   _onImageDrag (e) {
-    e.preventDefault();
+    e.preventDefault()
 
-    let mousePosition = Utils.getEventPosition(e);
+    let mousePosition = Utils.getEventPosition(e)
     let diff = mousePosition.clone()
-      .subtract(this._initialMousePosition);
+      .subtract(this._initialMousePosition)
 
-    let position = this._initialPosition.clone();
-    position.add(diff);
+    let position = this._initialPosition.clone()
+    position.add(diff)
 
-    this._position.copy(position);
+    this._position.copy(position)
 
-    this._applySettings();
-    this._highlightDoneButton();
+    this._applySettings()
+    this._highlightDoneButton()
   }
 
   /**
@@ -331,11 +331,11 @@ class StickersControl extends Control {
    * @private
    */
   _onImageUp () {
-    document.removeEventListener("mousemove", this._onImageDrag);
-    document.removeEventListener("touchmove", this._onImageDrag);
+    document.removeEventListener('mousemove', this._onImageDrag)
+    document.removeEventListener('touchmove', this._onImageDrag)
 
-    document.removeEventListener("mouseup", this._onImageUp);
-    document.removeEventListener("touchend", this._onImageUp);
+    document.removeEventListener('mouseup', this._onImageUp)
+    document.removeEventListener('touchend', this._onImageUp)
   }
 
   /**
@@ -343,13 +343,13 @@ class StickersControl extends Control {
    * @private
    */
   _onStickerLoad () {
-    this._size = new Vector2(this._stickerImage.width, this._stickerImage.height);
+    this._size = new Vector2(this._stickerImage.width, this._stickerImage.height)
 
-    if (typeof this._position === "undefined") {
-      this._position = new Vector2(0, 0);
+    if (typeof this._position === 'undefined') {
+      this._position = new Vector2(0, 0)
     }
 
-    this._applySettings();
+    this._applySettings()
   }
 
   /**
@@ -357,23 +357,23 @@ class StickersControl extends Control {
    * @private
    */
   _onListItemClick (item, manually=true) {
-    this._deactivateAllItems();
+    this._deactivateAllItems()
 
-    let { identifier } = item.dataset;
-    let stickerPath = this._availableStickers[identifier];
-    stickerPath = this._kit.getAssetPath(stickerPath);
+    let { identifier } = item.dataset
+    let stickerPath = this._availableStickers[identifier]
+    stickerPath = this._kit.getAssetPath(stickerPath)
 
     try {
-      this._stickerImage.attributes.removeNamedItem("style");
+      this._stickerImage.attributes.removeNamedItem('style')
     } catch (e) {}
 
-    this._sticker = identifier;
-    this._stickerImage.src = stickerPath;
+    this._sticker = identifier
+    this._stickerImage.src = stickerPath
 
-    item.classList.add("imglykit-controls-item-active");
+    item.classList.add('imglykit-controls-item-active')
 
     if (manually) {
-      this._highlightDoneButton();
+      this._highlightDoneButton()
     }
   }
 
@@ -383,7 +383,7 @@ class StickersControl extends Control {
    */
   _deactivateAllItems () {
     for (let listItem of this._listItems) {
-      listItem.classList.remove("imglykit-controls-item-active");
+      listItem.classList.remove('imglykit-controls-item-active')
     }
   }
 
@@ -393,9 +393,9 @@ class StickersControl extends Control {
    * @override
    */
   get context () {
-    let context = super.context;
-    context.stickers = this._stickers;
-    return context;
+    let context = super.context
+    context.stickers = this._stickers
+    return context
   }
 }
 
@@ -403,6 +403,6 @@ class StickersControl extends Control {
  * A unique string that identifies this control.
  * @type {String}
  */
-StickersControl.prototype.identifier = 'stickers';
+StickersControl.prototype.identifier = 'stickers'
 
-export default StickersControl;
+export default StickersControl

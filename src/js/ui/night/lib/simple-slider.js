@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,8 +7,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Slider from "./slider";
-let fs = require("fs");
+import Slider from './slider'
+let fs = require('fs')
 
 class SimpleSlider extends Slider {
   /**
@@ -17,7 +16,7 @@ class SimpleSlider extends Slider {
    * @type {String}
    */
   static get template () {
-    return fs.readFileSync(__dirname + "/../../../templates/night/generics/simple-slider_control.jst", "utf-8");
+    return fs.readFileSync(__dirname + '/../../../templates/night/generics/simple-slider_control.jst', 'utf-8')
   }
 
   /**
@@ -26,11 +25,11 @@ class SimpleSlider extends Slider {
    * @private
    */
   _setX (x) {
-    this._xPosition = x;
+    this._xPosition = x
 
-    this._dotElement.style.left = `${x}px`;
-    this._fillElement.style.width = `${x}px`;
+    this._dotElement.style.left = `${x}px`
+    this._fillElement.style.width = `${x}px`
   }
 }
 
-export default SimpleSlider;
+export default SimpleSlider

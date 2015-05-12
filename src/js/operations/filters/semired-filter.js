@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,7 +7,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Filter from "./filter";
+import Filter from './filter'
 
 /**
  * Semired Filter
@@ -23,7 +22,7 @@ class SemiredFilter extends Filter {
    * @type {String}
    */
   static get identifier () {
-    return "semired";
+    return 'semired'
   }
 
   /**
@@ -31,7 +30,7 @@ class SemiredFilter extends Filter {
    * @type {String}
    */
   get name () {
-    return "Semi Red";
+    return 'Semi Red'
   }
 
   /**
@@ -40,7 +39,7 @@ class SemiredFilter extends Filter {
    * @return {Promise}
    */
   render (renderer) {
-    var stack = new Filter.PrimitivesStack();
+    var stack = new Filter.PrimitivesStack()
 
     stack.add(new Filter.Primitives.ToneCurve({
       rgbControlPoints: {
@@ -63,12 +62,12 @@ class SemiredFilter extends Filter {
           [255, 229]
         ]
       }
-    }));
+    }))
 
-    stack.add(new Filter.Primitives.Glow());
+    stack.add(new Filter.Primitives.Glow())
 
-    stack.render(renderer);
+    stack.render(renderer)
   }
 }
 
-export default SemiredFilter;
+export default SemiredFilter

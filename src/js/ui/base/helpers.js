@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -10,14 +9,14 @@
 
 class Helpers {
   constructor (kit, ui, options) {
-    this._kit = kit;
-    this._ui = ui;
-    this._options = options;
+    this._kit = kit
+    this._ui = ui
+    this._options = options
   }
 
   assetPath (asset) {
-    return this._options.assetsUrl + "/" + asset;
+    return this._options.assetsUrl + '/' + asset
   }
 }
 
-export default Helpers;
+export default Helpers

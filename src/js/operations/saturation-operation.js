@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,9 +7,9 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Operation from "./operation";
-import PrimitivesStack from "./filters/primitives-stack";
-import SaturationPrimitive from "./filters/primitives/saturation";
+import Operation from './operation'
+import PrimitivesStack from './filters/primitives-stack'
+import SaturationPrimitive from './filters/primitives/saturation'
 
 /**
  * @class
@@ -20,10 +19,10 @@ import SaturationPrimitive from "./filters/primitives/saturation";
 class SaturationOperation extends Operation {
   constructor (...args) {
     this.availableOptions = {
-      saturation: { type: "number", default: 1.0 }
-    };
+      saturation: { type: 'number', default: 1.0 }
+    }
 
-    super(...args);
+    super(...args)
   }
 
   /**
@@ -33,7 +32,7 @@ class SaturationOperation extends Operation {
    */
   /* istanbul ignore next */
   _renderWebGL (renderer) {
-    this._render(renderer);
+    this._render(renderer)
   }
 
   /**
@@ -42,7 +41,7 @@ class SaturationOperation extends Operation {
    * @override
    */
   _renderCanvas (renderer) {
-    this._render(renderer);
+    this._render(renderer)
   }
 
   /**
@@ -51,13 +50,13 @@ class SaturationOperation extends Operation {
    * @private
    */
   _render (renderer) {
-    var stack = new PrimitivesStack();
+    var stack = new PrimitivesStack()
 
     stack.add(new SaturationPrimitive({
       saturation: this._options.saturation
-    }));
+    }))
 
-    stack.render(renderer);
+    stack.render(renderer)
   }
 }
 
@@ -66,6 +65,6 @@ class SaturationOperation extends Operation {
  * operations.
  * @type {String}
  */
-SaturationOperation.prototype.identifier = 'saturation';
+SaturationOperation.prototype.identifier = 'saturation'
 
-export default SaturationOperation;
+export default SaturationOperation

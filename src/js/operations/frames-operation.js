@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,8 +7,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Operation from "./operation";
-import Color from "../lib/color";
+import Operation from './operation'
+import Color from '../lib/color'
 
 /**
  * An operation that can frames on the canvas
@@ -21,16 +20,16 @@ import Color from "../lib/color";
 class FramesOperation extends Operation {
   constructor (...args) {
     this.availableOptions = {
-      color: { type: "color", default: new Color(0, 0, 0, 1) },
-      thickness: { type: "number", default: 0.02 }
-    };
+      color: { type: 'color', default: new Color(0, 0, 0, 1) },
+      thickness: { type: 'number', default: 0.02 }
+    }
 
     /**
      * The texture index used for the frame
      * @type {Number}
      * @private
      */
-    this._textureIndex = 1;
+    this._textureIndex = 1
 
     /**
      * The fragment shader used for this operation
@@ -52,9 +51,9 @@ class FramesOperation extends Operation {
 
         gl_FragColor = fragColor;
       }
-    `;
+    `
 
-    super(...args);
+    super(...args)
   }
 
   /**
@@ -64,18 +63,18 @@ class FramesOperation extends Operation {
    */
   /* istanbul ignore next */
   _renderWebGL (renderer) {
-    var canvas = renderer.getCanvas();
+    var canvas = renderer.getCanvas()
 
-    var color = this._options.color;
-    var thickness = this._options.thickness * canvas.height;
-    var thicknessVec2 = [thickness / canvas.width, thickness / canvas.height];
+    var color = this._options.color
+    var thickness = this._options.thickness * canvas.height
+    var thicknessVec2 = [thickness / canvas.width, thickness / canvas.height]
 
     renderer.runShader(null, this._fragmentShader, {
       uniforms: {
-        u_color: { type: "4f", value: color.toGLColor() },
-        u_thickness: { type: "2f", value: thicknessVec2 }
+        u_color: { type: '4f', value: color.toGLColor() },
+        u_thickness: { type: '2f', value: thicknessVec2 }
       }
-    });
+    })
   }
 
   /**
@@ -84,19 +83,19 @@ class FramesOperation extends Operation {
    * @private
    */
   _renderCanvas (renderer) {
-    var canvas = renderer.getCanvas();
-    var context = renderer.getContext();
+    var canvas = renderer.getCanvas()
+    var context = renderer.getContext()
 
-    var color = this._options.color;
-    var thickness = this._options.thickness * canvas.height;
+    var color = this._options.color
+    var thickness = this._options.thickness * canvas.height
 
-    context.save();
-    context.beginPath();
-    context.lineWidth = thickness * 2;
-    context.strokeStyle = color.toRGBA();
-    context.rect(0, 0, canvas.width, canvas.height);
-    context.stroke();
-    context.restore();
+    context.save()
+    context.beginPath()
+    context.lineWidth = thickness * 2
+    context.strokeStyle = color.toRGBA()
+    context.rect(0, 0, canvas.width, canvas.height)
+    context.stroke()
+    context.restore()
   }
 }
 
@@ -105,6 +104,6 @@ class FramesOperation extends Operation {
  * operations.
  * @type {String}
  */
-FramesOperation.prototype.identifier = 'frames';
+FramesOperation.prototype.identifier = 'frames'
 
-export default FramesOperation;
+export default FramesOperation

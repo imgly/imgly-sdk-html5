@@ -1,5 +1,4 @@
 /* jshint unused: false */
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -20,7 +19,7 @@ class Filter {
    * the active filter.
    * @type {String}
    */
-  static get identifier () { return null; }
+  static get identifier () { return null }
 
   /**
    * Renders the filter
@@ -29,7 +28,7 @@ class Filter {
    */
   render (renderer) {
     /* istanbul ignore next */
-    throw new Error("Filter#render is abstract and not implemented in inherited class.");
+    throw new Error('Filter#render is abstract and not implemented in inherited class.')
   }
 }
 
@@ -38,21 +37,21 @@ class Filter {
  * method and provide instance properties and functions.
  * @function
  */
-Filter.extend = require("../../lib/extend");
+Filter.extend = require('../../lib/extend')
 
 // Exposed classes
-Filter.PrimitivesStack = require("./primitives-stack");
-Filter.Primitives = {};
-Filter.Primitives.Saturation = require("./primitives/saturation");
-Filter.Primitives.LookupTable = require("./primitives/lookup-table");
-Filter.Primitives.ToneCurve = require("./primitives/tone-curve");
-Filter.Primitives.SoftColorOverlay = require("./primitives/soft-color-overlay");
-Filter.Primitives.Desaturation = require("./primitives/desaturation");
-Filter.Primitives.X400 = require("./primitives/x400");
-Filter.Primitives.Grayscale = require("./primitives/grayscale");
-Filter.Primitives.Contrast = require("./primitives/contrast");
-Filter.Primitives.Glow = require("./primitives/glow");
-Filter.Primitives.Gobblin = require("./primitives/gobblin");
-Filter.Primitives.Brightness = require("./primitives/brightness");
+Filter.PrimitivesStack = require('./primitives-stack')
+Filter.Primitives = {}
+Filter.Primitives.Saturation = require('./primitives/saturation')
+Filter.Primitives.LookupTable = require('./primitives/lookup-table')
+Filter.Primitives.ToneCurve = require('./primitives/tone-curve')
+Filter.Primitives.SoftColorOverlay = require('./primitives/soft-color-overlay')
+Filter.Primitives.Desaturation = require('./primitives/desaturation')
+Filter.Primitives.X400 = require('./primitives/x400')
+Filter.Primitives.Grayscale = require('./primitives/grayscale')
+Filter.Primitives.Contrast = require('./primitives/contrast')
+Filter.Primitives.Glow = require('./primitives/glow')
+Filter.Primitives.Gobblin = require('./primitives/gobblin')
+Filter.Primitives.Brightness = require('./primitives/brightness')
 
-export default Filter;
+export default Filter

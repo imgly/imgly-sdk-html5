@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,25 +7,25 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Control from "./control";
-import Utils from "../../../lib/utils";
-let fs = require("fs");
+import Control from './control'
+import Utils from '../../../lib/utils'
+let fs = require('fs')
 
 class FiltersControl extends Control {
   /**
    * Entry point for this control
    */
   init () {
-    let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/filters_controls.jst", "utf-8");
-    this._controlsTemplate = controlsTemplate;
+    let controlsTemplate = fs.readFileSync(__dirname + '/../../../templates/night/operations/filters_controls.jst', 'utf-8')
+    this._controlsTemplate = controlsTemplate
 
-    this._availableFilters = {};
-    this._filters = {};
+    this._availableFilters = {}
+    this._filters = {}
 
-    this._addDefaultFilters();
+    this._addDefaultFilters()
 
     // Select all filters per default
-    this.selectFilters(null);
+    this.selectFilters(null)
   }
 
   /**
@@ -36,10 +35,10 @@ class FiltersControl extends Control {
    *           rendering, which is why we have to override this function
    */
   _renderAllControls (...args) {
-    this._operationExistedBefore = !!this._ui.operations.filters;
-    this._operation = this._ui.getOrCreateOperation("filters");
+    this._operationExistedBefore = !!this._ui.operations.filters
+    this._operation = this._ui.getOrCreateOperation('filters')
 
-    super._renderAllControls(...args);
+    super._renderAllControls(...args)
   }
 
   /**
@@ -47,18 +46,18 @@ class FiltersControl extends Control {
    * @override
    */
   _onEnter () {
-    this._initialFilter = this._operation.getFilter();
-    this._defaultFilter = this._operation.availableOptions.filter.default;
+    this._initialFilter = this._operation.getFilter()
+    this._defaultFilter = this._operation.availableOptions.filter.default
 
-    let listItems = this._controls.querySelectorAll("li");
-    this._listItems = Array.prototype.slice.call(listItems);
+    let listItems = this._controls.querySelectorAll('li')
+    this._listItems = Array.prototype.slice.call(listItems)
 
     // Listen to click events
     for (let i = 0; i < this._listItems.length; i++) {
-      let listItem = this._listItems[i];
-      listItem.addEventListener("click", () => {
-        this._onListItemClick(listItem);
-      });
+      let listItem = this._listItems[i]
+      listItem.addEventListener('click', () => {
+        this._onListItemClick(listItem)
+      })
     }
   }
 
@@ -67,16 +66,16 @@ class FiltersControl extends Control {
    * @override
    */
   _onBack () {
-    let currentFilter = this._operation.getFilter();
+    let currentFilter = this._operation.getFilter()
     if (currentFilter !== this._initialFilter) {
       this._ui.addHistory(this._operation, {
         filter: this._initialFilter
-      }, this._operationExistedBefore);
+      }, this._operationExistedBefore)
     }
     if (currentFilter === this._defaultFilter) {
-      this._ui.removeOperation("filters");
+      this._ui.removeOperation('filters')
     }
-    this._ui.canvas.render();
+    this._ui.canvas.render()
   }
 
   /**
@@ -84,13 +83,13 @@ class FiltersControl extends Control {
    * @private
    */
   _onListItemClick (item) {
-    this._deactivateAllItems();
+    this._deactivateAllItems()
 
-    let { identifier } = item.dataset;
-    this._operation.setFilter(this._filters[identifier]);
-    this._ui.canvas.render();
+    let { identifier } = item.dataset
+    this._operation.setFilter(this._filters[identifier])
+    this._ui.canvas.render()
 
-    item.classList.add("imglykit-controls-item-active");
+    item.classList.add('imglykit-controls-item-active')
   }
 
   /**
@@ -99,8 +98,8 @@ class FiltersControl extends Control {
    */
   _deactivateAllItems () {
     for (let i = 0; i < this._listItems.length; i++) {
-      let listItem = this._listItems[i];
-      listItem.classList.remove("imglykit-controls-item-active");
+      let listItem = this._listItems[i]
+      listItem.classList.remove('imglykit-controls-item-active')
     }
   }
 
@@ -109,35 +108,35 @@ class FiltersControl extends Control {
    * @private
    */
   _addDefaultFilters () {
-    this.addFilter(require("../../../operations/filters/identity-filter"));
-    this.addFilter(require("../../../operations/filters/k1-filter"));
-    this.addFilter(require("../../../operations/filters/k2-filter"));
-    this.addFilter(require("../../../operations/filters/k6-filter"));
-    this.addFilter(require("../../../operations/filters/kdynamic-filter"));
-    this.addFilter(require("../../../operations/filters/fridge-filter"));
-    this.addFilter(require("../../../operations/filters/breeze-filter"));
-    this.addFilter(require("../../../operations/filters/orchid-filter"));
-    this.addFilter(require("../../../operations/filters/chest-filter"));
-    this.addFilter(require("../../../operations/filters/front-filter"));
-    this.addFilter(require("../../../operations/filters/fixie-filter"));
-    this.addFilter(require("../../../operations/filters/x400-filter"));
-    this.addFilter(require("../../../operations/filters/bw-filter"));
-    this.addFilter(require("../../../operations/filters/bwhard-filter"));
-    this.addFilter(require("../../../operations/filters/lenin-filter"));
-    this.addFilter(require("../../../operations/filters/quozi-filter"));
-    this.addFilter(require("../../../operations/filters/pola669-filter"));
-    this.addFilter(require("../../../operations/filters/pola-filter"));
-    this.addFilter(require("../../../operations/filters/food-filter"));
-    this.addFilter(require("../../../operations/filters/glam-filter"));
-    this.addFilter(require("../../../operations/filters/celsius-filter"));
-    this.addFilter(require("../../../operations/filters/texas-filter"));
-    this.addFilter(require("../../../operations/filters/morning-filter"));
-    this.addFilter(require("../../../operations/filters/lomo-filter"));
-    this.addFilter(require("../../../operations/filters/gobblin-filter"));
-    this.addFilter(require("../../../operations/filters/mellow-filter"));
-    this.addFilter(require("../../../operations/filters/sunny-filter"));
-    this.addFilter(require("../../../operations/filters/a15-filter"));
-    this.addFilter(require("../../../operations/filters/semired-filter"));
+    this.addFilter(require('../../../operations/filters/identity-filter'))
+    this.addFilter(require('../../../operations/filters/k1-filter'))
+    this.addFilter(require('../../../operations/filters/k2-filter'))
+    this.addFilter(require('../../../operations/filters/k6-filter'))
+    this.addFilter(require('../../../operations/filters/kdynamic-filter'))
+    this.addFilter(require('../../../operations/filters/fridge-filter'))
+    this.addFilter(require('../../../operations/filters/breeze-filter'))
+    this.addFilter(require('../../../operations/filters/orchid-filter'))
+    this.addFilter(require('../../../operations/filters/chest-filter'))
+    this.addFilter(require('../../../operations/filters/front-filter'))
+    this.addFilter(require('../../../operations/filters/fixie-filter'))
+    this.addFilter(require('../../../operations/filters/x400-filter'))
+    this.addFilter(require('../../../operations/filters/bw-filter'))
+    this.addFilter(require('../../../operations/filters/bwhard-filter'))
+    this.addFilter(require('../../../operations/filters/lenin-filter'))
+    this.addFilter(require('../../../operations/filters/quozi-filter'))
+    this.addFilter(require('../../../operations/filters/pola669-filter'))
+    this.addFilter(require('../../../operations/filters/pola-filter'))
+    this.addFilter(require('../../../operations/filters/food-filter'))
+    this.addFilter(require('../../../operations/filters/glam-filter'))
+    this.addFilter(require('../../../operations/filters/celsius-filter'))
+    this.addFilter(require('../../../operations/filters/texas-filter'))
+    this.addFilter(require('../../../operations/filters/morning-filter'))
+    this.addFilter(require('../../../operations/filters/lomo-filter'))
+    this.addFilter(require('../../../operations/filters/gobblin-filter'))
+    this.addFilter(require('../../../operations/filters/mellow-filter'))
+    this.addFilter(require('../../../operations/filters/sunny-filter'))
+    this.addFilter(require('../../../operations/filters/a15-filter'))
+    this.addFilter(require('../../../operations/filters/semired-filter'))
   }
 
   /**
@@ -146,7 +145,7 @@ class FiltersControl extends Control {
    * @private
    */
   addFilter (filter) {
-    this._availableFilters[filter.identifier] = filter;
+    this._availableFilters[filter.identifier] = filter
   }
 
   /**
@@ -154,18 +153,18 @@ class FiltersControl extends Control {
    * @param {Selector} selector
    */
   selectFilters (selector) {
-    this._filters = {};
+    this._filters = {}
 
-    let filterIdentifiers = Object.keys(this._availableFilters);
+    let filterIdentifiers = Object.keys(this._availableFilters)
 
-    let selectedFilters = Utils.select(filterIdentifiers, selector);
+    let selectedFilters = Utils.select(filterIdentifiers, selector)
     for (let i = 0; i < selectedFilters.length; i++) {
-      let identifier = selectedFilters[i];
-      this._filters[identifier] = this._availableFilters[identifier];
+      let identifier = selectedFilters[i]
+      this._filters[identifier] = this._availableFilters[identifier]
     }
 
     if (this._active) {
-      this._renderControls();
+      this._renderControls()
     }
   }
 
@@ -175,10 +174,10 @@ class FiltersControl extends Control {
    * @override
    */
   get context () {
-    let context = super.context;
-    context.filters = this._filters;
-    context.activeFilter = this._operation.getFilter();
-    return context;
+    let context = super.context
+    context.filters = this._filters
+    context.activeFilter = this._operation.getFilter()
+    return context
   }
 }
 
@@ -186,6 +185,6 @@ class FiltersControl extends Control {
  * A unique string that identifies this control.
  * @type {String}
  */
-FiltersControl.prototype.identifier = 'filters';
+FiltersControl.prototype.identifier = 'filters'
 
-export default FiltersControl;
+export default FiltersControl

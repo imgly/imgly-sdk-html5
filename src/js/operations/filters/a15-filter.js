@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,7 +7,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Filter from "./filter";
+import Filter from './filter'
 
 /**
  * A15 Filter
@@ -23,7 +22,7 @@ class A15Filter extends Filter {
    * @type {String}
    */
   static get identifier () {
-    return "a15";
+    return 'a15'
   }
 
   /**
@@ -31,7 +30,7 @@ class A15Filter extends Filter {
    * @type {String}
    */
   get name () {
-    return "15";
+    return '15'
   }
 
   /**
@@ -40,15 +39,15 @@ class A15Filter extends Filter {
    * @return {Promise}
    */
   render (renderer) {
-    var stack = new Filter.PrimitivesStack();
+    var stack = new Filter.PrimitivesStack()
 
     stack.add(new Filter.Primitives.Contrast({
       contrast: 0.63
-    }));
+    }))
 
     stack.add(new Filter.Primitives.Brightness({
       brightness: 0.12
-    }));
+    }))
 
     stack.add(new Filter.Primitives.ToneCurve({
       rgbControlPoints: {
@@ -72,10 +71,10 @@ class A15Filter extends Filter {
           [255, 255]
         ]
       }
-    }));
+    }))
 
-    stack.render(renderer);
+    stack.render(renderer)
   }
 }
 
-export default A15Filter;
+export default A15Filter

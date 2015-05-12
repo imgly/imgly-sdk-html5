@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,27 +7,27 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Control from "./control";
-import ColorPicker from "../lib/color-picker";
-import Vector2 from "../../../lib/math/vector2";
-import Utils from "../../../lib/utils";
-let fs = require("fs");
+import Control from './control'
+import ColorPicker from '../lib/color-picker'
+import Vector2 from '../../../lib/math/vector2'
+import Utils from '../../../lib/utils'
+let fs = require('fs')
 
 class TextControl extends Control {
   /**
    * Entry point for this control
    */
   init () {
-    let controlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/text_controls.jst", "utf-8");
-    this._controlsTemplate = controlsTemplate;
+    let controlsTemplate = fs.readFileSync(__dirname + '/../../../templates/night/operations/text_controls.jst', 'utf-8')
+    this._controlsTemplate = controlsTemplate
 
-    let canvasControlsTemplate = fs.readFileSync(__dirname + "/../../../templates/night/operations/text_canvas.jst", "utf-8");
-    this._canvasControlsTemplate = canvasControlsTemplate;
+    let canvasControlsTemplate = fs.readFileSync(__dirname + '/../../../templates/night/operations/text_canvas.jst', 'utf-8')
+    this._canvasControlsTemplate = canvasControlsTemplate
 
-    this._partialTemplates.push(ColorPicker.template);
+    this._partialTemplates.push(ColorPicker.template)
 
-    this._fonts = [];
-    this._addFonts();
+    this._fonts = []
+    this._addFonts()
   }
 
   /**
@@ -36,13 +35,13 @@ class TextControl extends Control {
    * @override
    */
   _onEnter () {
-    this._operationExistedBefore = !!this._ui.operations.text;
-    this._operation = this._ui.getOrCreateOperation("text");
+    this._operationExistedBefore = !!this._ui.operations.text
+    this._operation = this._ui.getOrCreateOperation('text')
 
     // Don't render initially
-    this._ui.removeOperation("text");
+    this._ui.removeOperation('text')
 
-    let canvasSize = this._ui.canvas.size;
+    let canvasSize = this._ui.canvas.size
 
     this._initialSettings = {
       lineHeight: this._operation.getLineHeight(),
@@ -51,10 +50,10 @@ class TextControl extends Control {
       fontWeight: this._operation.getFontWeight(),
       color: this._operation.getColor(),
       position: this._operation.getPosition(),
-      text: this._operation.getText() || "",
+      text: this._operation.getText() || '',
       maxWidth: this._operation.getMaxWidth(),
       backgroundColor: this._operation.getBackgroundColor()
-    };
+    }
 
     this._settings = {
       lineHeight: this._initialSettings.lineHeight,
@@ -66,49 +65,49 @@ class TextControl extends Control {
       text: this._initialSettings.text,
       maxWidth: this._initialSettings.maxWidth * canvasSize.x,
       backgroundColor: this._initialSettings.backgroundColor.clone()
-    };
+    }
 
     // Remember zoom level and zoom to fit the canvas
-    this._initialZoomLevel = this._ui.canvas.zoomLevel;
+    this._initialZoomLevel = this._ui.canvas.zoomLevel
 
-    this._container = this._canvasControls.querySelector(".imglykit-canvas-text");
-    this._textarea = this._canvasControls.querySelector("textarea");
-    this._textarea.focus();
+    this._container = this._canvasControls.querySelector('.imglykit-canvas-text')
+    this._textarea = this._canvasControls.querySelector('textarea')
+    this._textarea.focus()
 
-    this._moveKnob = this._canvasControls.querySelector(".imglykit-crosshair");
-    this._resizeKnob = this._canvasControls.querySelector(".imglykit-knob");
+    this._moveKnob = this._canvasControls.querySelector('.imglykit-crosshair')
+    this._resizeKnob = this._canvasControls.querySelector('.imglykit-knob')
 
     // If the text has been edited before, subtract the knob width and padding
     if (this._operationExistedBefore) {
-      this._settings.position.x -= 2;
-      this._settings.position.y -= 2;
+      this._settings.position.x -= 2
+      this._settings.position.y -= 2
     }
 
-    this._onTextareaKeyUp = this._onTextareaKeyUp.bind(this);
-    this._onResizeKnobDown = this._onResizeKnobDown.bind(this);
-    this._onResizeKnobDrag = this._onResizeKnobDrag.bind(this);
-    this._onResizeKnobUp = this._onResizeKnobUp.bind(this);
-    this._onMoveKnobDown = this._onMoveKnobDown.bind(this);
-    this._onMoveKnobDrag = this._onMoveKnobDrag.bind(this);
-    this._onMoveKnobUp = this._onMoveKnobUp.bind(this);
-    this._onForegroundColorUpdate = this._onForegroundColorUpdate.bind(this);
-    this._onBackgroundColorUpdate = this._onBackgroundColorUpdate.bind(this);
+    this._onTextareaKeyUp = this._onTextareaKeyUp.bind(this)
+    this._onResizeKnobDown = this._onResizeKnobDown.bind(this)
+    this._onResizeKnobDrag = this._onResizeKnobDrag.bind(this)
+    this._onResizeKnobUp = this._onResizeKnobUp.bind(this)
+    this._onMoveKnobDown = this._onMoveKnobDown.bind(this)
+    this._onMoveKnobDrag = this._onMoveKnobDrag.bind(this)
+    this._onMoveKnobUp = this._onMoveKnobUp.bind(this)
+    this._onForegroundColorUpdate = this._onForegroundColorUpdate.bind(this)
+    this._onBackgroundColorUpdate = this._onBackgroundColorUpdate.bind(this)
 
-    this._initColorPickers();
-    this._handleListItems();
-    this._handleTextarea();
-    this._handleResizeKnob();
-    this._handleMoveKnob();
+    this._initColorPickers()
+    this._handleListItems()
+    this._handleTextarea()
+    this._handleResizeKnob()
+    this._handleMoveKnob()
 
     // Resize asynchronously to render a frame
     setTimeout(() => {
-      this._resizeTextarea();
-    }, 1);
+      this._resizeTextarea()
+    }, 1)
 
     this._ui.canvas.zoomToFit()
       .then(() => {
-        this._applySettings();
-      });
+        this._applySettings()
+      })
   }
 
   /**
@@ -116,21 +115,21 @@ class TextControl extends Control {
    * @private
    */
   _initColorPickers () {
-    let foregroundColorPicker = this._controls.querySelector("#imglykit-text-foreground-color-picker");
-    this._foregroundColorPicker = new ColorPicker(this._ui, foregroundColorPicker);
-    this._foregroundColorPicker.setValue(this._operation.getColor());
-    this._foregroundColorPicker.on("update", this._onForegroundColorUpdate);
-    this._foregroundColorPicker.on("show", () => {
-      this._backgroundColorPicker.hide();
-    });
+    let foregroundColorPicker = this._controls.querySelector('#imglykit-text-foreground-color-picker')
+    this._foregroundColorPicker = new ColorPicker(this._ui, foregroundColorPicker)
+    this._foregroundColorPicker.setValue(this._operation.getColor())
+    this._foregroundColorPicker.on('update', this._onForegroundColorUpdate)
+    this._foregroundColorPicker.on('show', () => {
+      this._backgroundColorPicker.hide()
+    })
 
-    let backgroundColorPicker = this._controls.querySelector("#imglykit-text-background-color-picker");
-    this._backgroundColorPicker = new ColorPicker(this._ui, backgroundColorPicker);
-    this._backgroundColorPicker.setValue(this._operation.getBackgroundColor());
-    this._backgroundColorPicker.on("update", this._onBackgroundColorUpdate);
-    this._backgroundColorPicker.on("show", () => {
-      this._foregroundColorPicker.hide();
-    });
+    let backgroundColorPicker = this._controls.querySelector('#imglykit-text-background-color-picker')
+    this._backgroundColorPicker = new ColorPicker(this._ui, backgroundColorPicker)
+    this._backgroundColorPicker.setValue(this._operation.getBackgroundColor())
+    this._backgroundColorPicker.on('update', this._onBackgroundColorUpdate)
+    this._backgroundColorPicker.on('show', () => {
+      this._foregroundColorPicker.hide()
+    })
   }
 
   /**
@@ -138,20 +137,20 @@ class TextControl extends Control {
    * @private
    */
   _handleListItems () {
-    let listItems = this._controls.querySelectorAll("li");
-    this._listItems = Array.prototype.slice.call(listItems);
+    let listItems = this._controls.querySelectorAll('li')
+    this._listItems = Array.prototype.slice.call(listItems)
 
     // Listen to click events
     for (let i = 0; i < this._listItems.length; i++) {
-      let listItem = this._listItems[i];
-      let { name } = listItem.dataset;
-      listItem.addEventListener("click", () => {
-        this._onListItemClick(listItem);
-      });
+      let listItem = this._listItems[i]
+      let { name } = listItem.dataset
+      listItem.addEventListener('click', () => {
+        this._onListItemClick(listItem)
+      })
 
       if ((!this._operationExistedBefore && i === 0) ||
         (this._operationExistedBefore && name === this._initialSettings.fontFamily)) {
-          this._onListItemClick(listItem, false);
+        this._onListItemClick(listItem, false)
       }
     }
   }
@@ -161,7 +160,7 @@ class TextControl extends Control {
    * @private
    */
   _handleTextarea () {
-    this._textarea.addEventListener("keyup", this._onTextareaKeyUp);
+    this._textarea.addEventListener('keyup', this._onTextareaKeyUp)
   }
 
   /**
@@ -169,9 +168,9 @@ class TextControl extends Control {
    * @private
    */
   _onTextareaKeyUp () {
-    this._resizeTextarea();
-    this._settings.text = this._textarea.value;
-    this._highlightDoneButton();
+    this._resizeTextarea()
+    this._settings.text = this._textarea.value
+    this._highlightDoneButton()
   }
 
   /**
@@ -179,20 +178,20 @@ class TextControl extends Control {
    * @private
    */
   _resizeTextarea () {
-    let scrollTop = this._textarea.scrollTop;
+    let scrollTop = this._textarea.scrollTop
 
     if (!scrollTop) {
-      let scrollHeight, height;
+      let scrollHeight, height
       do {
-        scrollHeight = this._textarea.scrollHeight;
-        height = this._textarea.offsetHeight;
-        this._textarea.style.height = `${height - 5}px`;
+        scrollHeight = this._textarea.scrollHeight
+        height = this._textarea.offsetHeight
+        this._textarea.style.height = `${height - 5}px`
       }
-      while (scrollHeight && (scrollHeight != this._textarea.scrollHeight));
+      while (scrollHeight && (scrollHeight !== this._textarea.scrollHeight))
     }
 
-    let scrollHeight = this._textarea.scrollHeight;
-    this._textarea.style.height = `${scrollHeight + 20}px`;
+    let scrollHeight = this._textarea.scrollHeight
+    this._textarea.style.height = `${scrollHeight + 20}px`
   }
 
   /**
@@ -200,8 +199,8 @@ class TextControl extends Control {
    * @private
    */
   _handleMoveKnob () {
-    this._moveKnob.addEventListener("mousedown", this._onMoveKnobDown);
-    this._moveKnob.addEventListener("touchstart", this._onMoveKnobDown);
+    this._moveKnob.addEventListener('mousedown', this._onMoveKnobDown)
+    this._moveKnob.addEventListener('touchstart', this._onMoveKnobDown)
   }
 
   /**
@@ -209,16 +208,16 @@ class TextControl extends Control {
    * @private
    */
   _onMoveKnobDown (e) {
-    e.preventDefault();
+    e.preventDefault()
 
-    this._initialMousePosition = Utils.getEventPosition(e);
-    this._initialPosition = this._settings.position.clone();
+    this._initialMousePosition = Utils.getEventPosition(e)
+    this._initialPosition = this._settings.position.clone()
 
-    document.addEventListener("mousemove", this._onMoveKnobDrag);
-    document.addEventListener("touchmove", this._onMoveKnobDrag);
+    document.addEventListener('mousemove', this._onMoveKnobDrag)
+    document.addEventListener('touchmove', this._onMoveKnobDrag)
 
-    document.addEventListener("mouseup", this._onMoveKnobUp);
-    document.addEventListener("tochend", this._onMoveKnobUp);
+    document.addEventListener('mouseup', this._onMoveKnobUp)
+    document.addEventListener('tochend', this._onMoveKnobUp)
   }
 
   /**
@@ -226,28 +225,28 @@ class TextControl extends Control {
    * @private
    */
   _onMoveKnobDrag (e) {
-    e.preventDefault();
+    e.preventDefault()
 
-    let canvasSize = this._ui.canvas.size;
+    let canvasSize = this._ui.canvas.size
 
-    let mousePosition = Utils.getEventPosition(e);
+    let mousePosition = Utils.getEventPosition(e)
     let diff = mousePosition.clone()
-      .subtract(this._initialMousePosition);
+      .subtract(this._initialMousePosition)
 
-    let minPosition = new Vector2(0, 0);
+    let minPosition = new Vector2(0, 0)
     let containerSize = new Vector2(
       this._container.offsetWidth,
       this._container.offsetHeight
-    );
-    let maxPosition = canvasSize.clone().subtract(containerSize);
+    )
+    let maxPosition = canvasSize.clone().subtract(containerSize)
     let position = this._initialPosition.clone()
       .add(diff)
-      .clamp(minPosition, maxPosition);
+      .clamp(minPosition, maxPosition)
 
-    this._settings.position = position;
+    this._settings.position = position
 
-    this._container.style.left = `${position.x}px`;
-    this._container.style.top = `${position.y}px`;
+    this._container.style.left = `${position.x}px`
+    this._container.style.top = `${position.y}px`
   }
 
   /**
@@ -255,11 +254,11 @@ class TextControl extends Control {
    * @private
    */
   _onMoveKnobUp () {
-    document.removeEventListener("mousemove", this._onMoveKnobDrag);
-    document.removeEventListener("touchmove", this._onMoveKnobDrag);
+    document.removeEventListener('mousemove', this._onMoveKnobDrag)
+    document.removeEventListener('touchmove', this._onMoveKnobDrag)
 
-    document.removeEventListener("mouseup", this._onMoveKnobUp);
-    document.removeEventListener("touchend", this._onMoveKnobUp);
+    document.removeEventListener('mouseup', this._onMoveKnobUp)
+    document.removeEventListener('touchend', this._onMoveKnobUp)
   }
 
   /**
@@ -267,8 +266,8 @@ class TextControl extends Control {
    * @private
    */
   _handleResizeKnob () {
-    this._resizeKnob.addEventListener("mousedown", this._onResizeKnobDown);
-    this._resizeKnob.addEventListener("touchstart", this._onResizeKnobDown);
+    this._resizeKnob.addEventListener('mousedown', this._onResizeKnobDown)
+    this._resizeKnob.addEventListener('touchstart', this._onResizeKnobDown)
   }
 
   /**
@@ -277,16 +276,16 @@ class TextControl extends Control {
    * @private
    */
   _onResizeKnobDown (e) {
-    e.preventDefault();
+    e.preventDefault()
 
-    this._initialMousePosition = Utils.getEventPosition(e);
-    this._initialMaxWidth = this._settings.maxWidth;
+    this._initialMousePosition = Utils.getEventPosition(e)
+    this._initialMaxWidth = this._settings.maxWidth
 
-    document.addEventListener("mousemove", this._onResizeKnobDrag);
-    document.addEventListener("touchmove", this._onResizeKnobDrag);
+    document.addEventListener('mousemove', this._onResizeKnobDrag)
+    document.addEventListener('touchmove', this._onResizeKnobDrag)
 
-    document.addEventListener("mouseup", this._onResizeKnobUp);
-    document.addEventListener("touchend", this._onResizeKnobUp);
+    document.addEventListener('mouseup', this._onResizeKnobUp)
+    document.addEventListener('touchend', this._onResizeKnobUp)
   }
 
   /**
@@ -295,21 +294,21 @@ class TextControl extends Control {
    * @private
    */
   _onResizeKnobDrag (e) {
-    e.preventDefault();
+    e.preventDefault()
 
-    let canvasSize = this._ui.canvas.size;
-    let mousePosition = Utils.getEventPosition(e);
-    let diff = mousePosition.subtract(this._initialMousePosition);
+    let canvasSize = this._ui.canvas.size
+    let mousePosition = Utils.getEventPosition(e)
+    let diff = mousePosition.subtract(this._initialMousePosition)
 
-    let position = this._settings.position.clone();
-    let maxWidthAllowed = canvasSize.x - position.x;
+    let position = this._settings.position.clone()
+    let maxWidthAllowed = canvasSize.x - position.x
 
-    let maxWidth = this._initialMaxWidth + diff.x;
-    maxWidth = Math.max(100, Math.min(maxWidthAllowed, maxWidth));
-    this._settings.maxWidth = maxWidth;
-    this._textarea.style.width = `${maxWidth}px`;
+    let maxWidth = this._initialMaxWidth + diff.x
+    maxWidth = Math.max(100, Math.min(maxWidthAllowed, maxWidth))
+    this._settings.maxWidth = maxWidth
+    this._textarea.style.width = `${maxWidth}px`
 
-    this._resizeTextarea();
+    this._resizeTextarea()
   }
 
   /**
@@ -318,11 +317,11 @@ class TextControl extends Control {
    * @private
    */
   _onResizeKnobUp () {
-    document.removeEventListener("mousemove", this._onResizeKnobDrag);
-    document.removeEventListener("touchmove", this._onResizeKnobDrag);
+    document.removeEventListener('mousemove', this._onResizeKnobDrag)
+    document.removeEventListener('touchmove', this._onResizeKnobDrag)
 
-    document.removeEventListener("mouseup", this._onResizeKnobUp);
-    document.removeEventListener("touchend", this._onResizeKnobUp);
+    document.removeEventListener('mouseup', this._onResizeKnobUp)
+    document.removeEventListener('touchend', this._onResizeKnobUp)
   }
 
   /**
@@ -332,9 +331,9 @@ class TextControl extends Control {
    * @private
    */
   _onForegroundColorUpdate (value) {
-    this._settings.color = value;
-    this._applySettings();
-    this._highlightDoneButton();
+    this._settings.color = value
+    this._applySettings()
+    this._highlightDoneButton()
   }
 
   /**
@@ -344,9 +343,9 @@ class TextControl extends Control {
    * @private
    */
   _onBackgroundColorUpdate (value) {
-    this._settings.backgroundColor = value;
-    this._applySettings();
-    this._highlightDoneButton();
+    this._settings.backgroundColor = value
+    this._applySettings()
+    this._highlightDoneButton()
   }
 
   /**
@@ -354,23 +353,23 @@ class TextControl extends Control {
    * @private
    */
   _applySettings () {
-    let textarea = this._textarea;
-    let settings = this._settings;
+    let textarea = this._textarea
+    let settings = this._settings
 
-    let canvasSize = this._ui.canvas.size;
-    let actualFontSize = settings.fontSize * canvasSize.y;
+    let canvasSize = this._ui.canvas.size
+    let actualFontSize = settings.fontSize * canvasSize.y
 
-    this._container.style.left = `${settings.position.x}px`;
-    this._container.style.top = `${settings.position.y}px`;
+    this._container.style.left = `${settings.position.x}px`
+    this._container.style.top = `${settings.position.y}px`
 
-    textarea.value = settings.text;
-    textarea.style.fontFamily = settings.fontFamily;
-    textarea.style.fontSize = `${actualFontSize}px`;
-    textarea.style.fontWeight = settings.fontWeight;
-    textarea.style.lineHeight = settings.lineHeight;
-    textarea.style.color = settings.color.toRGBA();
-    textarea.style.backgroundColor = settings.backgroundColor.toRGBA();
-    textarea.style.width = `${settings.maxWidth}px`;
+    textarea.value = settings.text
+    textarea.style.fontFamily = settings.fontFamily
+    textarea.style.fontSize = `${actualFontSize}px`
+    textarea.style.fontWeight = settings.fontWeight
+    textarea.style.lineHeight = settings.lineHeight
+    textarea.style.color = settings.color.toRGBA()
+    textarea.style.backgroundColor = settings.backgroundColor.toRGBA()
+    textarea.style.width = `${settings.maxWidth}px`
   }
 
   /**
@@ -378,18 +377,18 @@ class TextControl extends Control {
    * @private
    */
   _onListItemClick (item, manually=true) {
-    this._deactivateAllItems();
+    this._deactivateAllItems()
 
-    let { name, weight } = item.dataset;
-    this._settings.fontFamily = name;
-    this._settings.fontWeight = weight;
+    let { name, weight } = item.dataset
+    this._settings.fontFamily = name
+    this._settings.fontWeight = weight
 
-    this._applySettings();
+    this._applySettings()
 
-    item.classList.add("imglykit-controls-item-active");
+    item.classList.add('imglykit-controls-item-active')
 
     if (manually) {
-      this._highlightDoneButton();
+      this._highlightDoneButton()
     }
   }
 
@@ -399,8 +398,8 @@ class TextControl extends Control {
    */
   _deactivateAllItems () {
     for (let i = 0; i < this._listItems.length; i++) {
-      let listItem = this._listItems[i];
-      listItem.classList.remove("imglykit-controls-item-active");
+      let listItem = this._listItems[i]
+      listItem.classList.remove('imglykit-controls-item-active')
     }
   }
 
@@ -409,9 +408,9 @@ class TextControl extends Control {
    * @private
    */
   _addFonts () {
-    this.addFont("Helvetica", "normal");
-    this.addFont("Lucida Grande", "normal");
-    this.addFont("Times New Roman", "normal");
+    this.addFont('Helvetica', 'normal')
+    this.addFont('Lucida Grande', 'normal')
+    this.addFont('Times New Roman', 'normal')
   }
 
   /**
@@ -420,7 +419,7 @@ class TextControl extends Control {
    * @param {String} weight
    */
   addFont (name, weight) {
-    this._fonts.push({ name, weight });
+    this._fonts.push({ name, weight })
   }
 
   /**
@@ -428,15 +427,15 @@ class TextControl extends Control {
    * @override
    */
   _onDone () {
-    let canvasSize = this._ui.canvas.size;
-    let padding = new Vector2(2, 2);
+    let canvasSize = this._ui.canvas.size
+    let padding = new Vector2(2, 2)
     let position = this._settings.position.clone()
       .add(padding)
-      .divide(canvasSize);
+      .divide(canvasSize)
 
-    this._ui.canvas.setZoomLevel(this._initialZoomLevel, false);
+    this._ui.canvas.setZoomLevel(this._initialZoomLevel, false)
 
-    this._operation = this._ui.getOrCreateOperation("text");
+    this._operation = this._ui.getOrCreateOperation('text')
     this._operation.set({
       fontSize: this._settings.fontSize,
       fontFamily: this._settings.fontFamily,
@@ -446,8 +445,8 @@ class TextControl extends Control {
       position: position,
       text: this._settings.text,
       maxWidth: this._settings.maxWidth / canvasSize.x
-    });
-    this._ui.canvas.render();
+    })
+    this._ui.canvas.render()
 
     this._ui.addHistory(this, {
       fontFamily: this._initialSettings.fontFamily,
@@ -457,7 +456,7 @@ class TextControl extends Control {
       position: this._initialSettings.position.clone(),
       text: this._initialSettings.text,
       maxWidth: this._initialSettings.maxWidth
-    }, this._operationExistedBefore);
+    }, this._operationExistedBefore)
   }
 
   /**
@@ -466,12 +465,12 @@ class TextControl extends Control {
    */
   _onBack () {
     if (this._operationExistedBefore) {
-      this._operation = this._ui.getOrCreateOperation("text");
-      this._operation.set(this._initialSettings);
+      this._operation = this._ui.getOrCreateOperation('text')
+      this._operation.set(this._initialSettings)
     } else {
-      this._ui.removeOperation("text");
+      this._ui.removeOperation('text')
     }
-    this._ui.canvas.setZoomLevel(this._initialZoomLevel);
+    this._ui.canvas.setZoomLevel(this._initialZoomLevel)
   }
 
   /**
@@ -480,9 +479,9 @@ class TextControl extends Control {
    * @override
    */
   get context () {
-    let context = super.context;
-    context.fonts = this._fonts;
-    return context;
+    let context = super.context
+    context.fonts = this._fonts
+    return context
   }
 }
 
@@ -490,6 +489,6 @@ class TextControl extends Control {
  * A unique string that identifies this control.
  * @type {String}
  */
-TextControl.prototype.identifier = 'text';
+TextControl.prototype.identifier = 'text'
 
-export default TextControl;
+export default TextControl

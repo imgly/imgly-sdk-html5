@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,41 +7,41 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import EventEmitter from "../../../lib/event-emitter";
+import EventEmitter from '../../../lib/event-emitter'
 
 class TopControls extends EventEmitter {
   constructor (kit, ui) {
-    super();
+    super()
 
-    this._kit = kit;
-    this._ui = ui;
-    this.init();
+    this._kit = kit
+    this._ui = ui
+    this.init()
   }
 
   /**
    * Initializes the controls
    */
   init () {
-    this._canvas = this._ui.canvas;
+    this._canvas = this._ui.canvas
   }
 
   /**
    * Initializes the controls
    */
   run () {
-    let { container } = this._ui;
+    let { container } = this._ui
 
-    this._rightControls = container.querySelector(".imglykit-top-controls-right");
-    this._leftControls = container.querySelector(".imglykit-top-controls-left");
+    this._rightControls = container.querySelector('.imglykit-top-controls-right')
+    this._leftControls = container.querySelector('.imglykit-top-controls-left')
 
-    this._undoButton = container.querySelector(".imglykit-undo");
-    this._zoomIn = container.querySelector(".imglykit-zoom-in");
-    this._zoomOut = container.querySelector(".imglykit-zoom-out");
-    this._zoomLevel = container.querySelector(".imglykit-zoom-level-num");
-    this._newButton = container.querySelector(".imglykit-new");
-    this._handleZoom();
-    this._handleUndo();
-    this._handleNew();
+    this._undoButton = container.querySelector('.imglykit-undo')
+    this._zoomIn = container.querySelector('.imglykit-zoom-in')
+    this._zoomOut = container.querySelector('.imglykit-zoom-out')
+    this._zoomLevel = container.querySelector('.imglykit-zoom-level-num')
+    this._newButton = container.querySelector('.imglykit-new')
+    this._handleZoom()
+    this._handleUndo()
+    this._handleNew()
   }
 
   /**
@@ -50,8 +49,8 @@ class TopControls extends EventEmitter {
    * @private
    */
   _handleZoom () {
-    this._zoomIn.addEventListener("click", this._onZoomInClick.bind(this));
-    this._zoomOut.addEventListener("click", this._onZoomOutClick.bind(this));
+    this._zoomIn.addEventListener('click', this._onZoomInClick.bind(this))
+    this._zoomOut.addEventListener('click', this._onZoomOutClick.bind(this))
   }
 
   /**
@@ -59,8 +58,8 @@ class TopControls extends EventEmitter {
    * @private
    */
   _handleUndo () {
-    this._undoButton.addEventListener("click", this._undo.bind(this));
-    this._undo();
+    this._undoButton.addEventListener('click', this._undo.bind(this))
+    this._undo()
   }
 
   /**
@@ -68,9 +67,9 @@ class TopControls extends EventEmitter {
    * @private
    */
   _handleNew () {
-    if (!this._newButton) return;
+    if (!this._newButton) return
 
-    this._newButton.addEventListener("click", this._onNewClick.bind(this));
+    this._newButton.addEventListener('click', this._onNewClick.bind(this))
   }
 
   /**
@@ -79,10 +78,10 @@ class TopControls extends EventEmitter {
    * @private
    */
   _onNewClick (e) {
-    e.preventDefault();
+    e.preventDefault()
 
-    let { fileLoader } = this._ui;
-    fileLoader.openFileDialog();
+    let { fileLoader } = this._ui
+    fileLoader.openFileDialog()
   }
 
   /**
@@ -90,18 +89,18 @@ class TopControls extends EventEmitter {
    * @private
    */
   _undo () {
-    this.emit("undo");
+    this.emit('undo')
   }
 
   /**
    * Updates the undo button active state
    */
   updateUndoButton () {
-    let { history } = this._ui;
+    let { history } = this._ui
     if (history.length === 0) {
-      this._undoButton.style.display = "none";
+      this._undoButton.style.display = 'none'
     } else {
-      this._undoButton.style.display = "inline-block";
+      this._undoButton.style.display = 'inline-block'
     }
   }
 
@@ -111,10 +110,10 @@ class TopControls extends EventEmitter {
    * @private
    */
   _onZoomInClick (e) {
-    e.preventDefault();
+    e.preventDefault()
 
-    this.emit("zoom-in");
-    this.updateZoomLevel();
+    this.emit('zoom-in')
+    this.updateZoomLevel()
   }
 
   /**
@@ -123,33 +122,33 @@ class TopControls extends EventEmitter {
    * @private
    */
   _onZoomOutClick (e) {
-    e.preventDefault();
+    e.preventDefault()
 
-    this.emit("zoom-out");
-    this.updateZoomLevel();
+    this.emit('zoom-out')
+    this.updateZoomLevel()
   }
 
   /**
    * Shows the zoom control
    */
   showZoom () {
-    this._rightControls.style.display = "inline-block";
+    this._rightControls.style.display = 'inline-block'
   }
 
   /**
    * Hides the zoom control
    */
   hideZoom () {
-    this._rightControls.style.display = "none";
+    this._rightControls.style.display = 'none'
   }
 
   /**
    * Updates the zoom level display
    */
   updateZoomLevel () {
-    let { zoomLevel } = this._canvas;
-    this._zoomLevel.innerHTML = Math.round(zoomLevel * 100);
+    let { zoomLevel } = this._canvas
+    this._zoomLevel.innerHTML = Math.round(zoomLevel * 100)
   }
 }
 
-export default TopControls;
+export default TopControls

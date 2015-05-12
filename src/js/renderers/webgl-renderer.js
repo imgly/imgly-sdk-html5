@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,8 +7,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Renderer from "./renderer";
-import Vector2 from "../lib/math/vector2";
+import Renderer from './renderer'
+import Vector2 from '../lib/math/vector2'
 
 /**
  * @class
@@ -19,10 +18,10 @@ import Vector2 from "../lib/math/vector2";
  */
 class WebGLRenderer extends Renderer {
   constructor (...args) {
-    super(...args);
+    super(...args)
 
-    this._defaultProgram = this.setupGLSLProgram();
-    this.reset();
+    this._defaultProgram = this.setupGLSLProgram()
+    this.reset()
   }
 
   /**
@@ -30,7 +29,7 @@ class WebGLRenderer extends Renderer {
    * @type {String}
    */
   get identifier () {
-    return "webgl";
+    return 'webgl'
   }
 
   /**
@@ -38,38 +37,38 @@ class WebGLRenderer extends Renderer {
    * @param {String} identifier
    */
   cache (identifier) {
-    let size = new Vector2(this._canvas.width, this._canvas.height);
+    let size = new Vector2(this._canvas.width, this._canvas.height)
 
     // Re-use FBO and textures
-    let fbo, texture, cacheObject;
+    let fbo, texture, cacheObject
     if (!this._cache[identifier]) {
-      cacheObject = this._createFramebuffer();
+      cacheObject = this._createFramebuffer()
     } else {
-      cacheObject = this._cache[identifier];
+      cacheObject = this._cache[identifier]
     }
 
     // Extract FBO and texture
-    fbo = cacheObject.fbo;
-    texture = cacheObject.texture;
+    fbo = cacheObject.fbo
+    texture = cacheObject.texture
 
     // Resize output texture
-    let gl = this._context;
-    gl.useProgram(this._defaultProgram);
+    let gl = this._context
+    gl.useProgram(this._defaultProgram)
 
     // Resize cached texture
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size.x, size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.bindTexture(gl.TEXTURE_2D, texture)
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size.x, size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
 
     // Render to FBO
-    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
-    gl.viewport(0, 0, size.x, size.y);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo)
+    gl.viewport(0, 0, size.x, size.y)
 
     // Use last fbo texture as input
-    gl.bindTexture(gl.TEXTURE_2D, this._lastTexture);
+    gl.bindTexture(gl.TEXTURE_2D, this._lastTexture)
 
-    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    gl.drawArrays(gl.TRIANGLES, 0, 6)
 
-    this._cache[identifier] = { fbo, texture, size };
+    this._cache[identifier] = { fbo, texture, size }
   }
 
   /**
@@ -78,23 +77,23 @@ class WebGLRenderer extends Renderer {
    * @private
    */
   _drawCachedFinal (identifier) {
-    let { texture, size } = this._cache[identifier];
+    let { texture, size } = this._cache[identifier]
 
-    let gl = this._context;
-    gl.useProgram(this._defaultProgram);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    let gl = this._context
+    gl.useProgram(this._defaultProgram)
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null)
 
     // Use the cached texture as input
-    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.bindTexture(gl.TEXTURE_2D, texture)
 
     // Resize the canvas
-    this._canvas.width = size.x;
-    this._canvas.height = size.y;
+    this._canvas.width = size.x
+    this._canvas.height = size.y
 
-    gl.viewport(0, 0, size.x, size.y);
+    gl.viewport(0, 0, size.x, size.y)
 
     // Draw the rectangle
-    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    gl.drawArrays(gl.TRIANGLES, 0, 6)
   }
 
   /**
@@ -102,42 +101,42 @@ class WebGLRenderer extends Renderer {
    * @param {String} identifier
    */
   drawCached (identifier) {
-    let { texture, size } = this._cache[identifier];
+    let { texture, size } = this._cache[identifier]
 
-    let fbo = this.getCurrentFramebuffer();
-    let currentTexture = this.getCurrentTexture();
+    let fbo = this.getCurrentFramebuffer()
+    let currentTexture = this.getCurrentTexture()
 
-    let gl = this._context;
-    gl.useProgram(this._defaultProgram);
+    let gl = this._context
+    gl.useProgram(this._defaultProgram)
 
     // Resize the canvas
-    this._canvas.width = size.x;
-    this._canvas.height = size.y;
+    this._canvas.width = size.x
+    this._canvas.height = size.y
 
     // Resize all textures
     for (let i = 0; i < this._textures.length; i++) {
-      let otherTexture = this._textures[i];
-      gl.bindTexture(gl.TEXTURE_2D, otherTexture);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size.x, size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+      let otherTexture = this._textures[i]
+      gl.bindTexture(gl.TEXTURE_2D, otherTexture)
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size.x, size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
     }
 
     // Select the current framebuffer to draw to
-    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo)
 
     // Resize the texture we're drawing to
-    gl.bindTexture(gl.TEXTURE_2D, currentTexture);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size.x, size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.bindTexture(gl.TEXTURE_2D, currentTexture)
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size.x, size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
 
     // Use the cached texture as input
-    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.bindTexture(gl.TEXTURE_2D, texture)
 
-    gl.viewport(0, 0, size.x, size.y);
+    gl.viewport(0, 0, size.x, size.y)
 
     // Draw the rectangle
-    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    gl.drawArrays(gl.TRIANGLES, 0, 6)
 
-    this.setLastTexture(currentTexture);
-    this.selectNextBuffer();
+    this.setLastTexture(currentTexture)
+    this.selectNextBuffer()
   }
 
   /**
@@ -156,8 +155,8 @@ class WebGLRenderer extends Renderer {
         gl_Position = vec4(a_position, 0, 1);
         v_texCoord = a_texCoord;
       }
-    `;
-    return shader;
+    `
+    return shader
   }
 
   /**
@@ -175,8 +174,8 @@ class WebGLRenderer extends Renderer {
       void main() {
         gl_FragColor = texture2D(u_image, v_texCoord);
       }
-    `;
-    return shader;
+    `
+    return shader
   }
 
   /**
@@ -185,7 +184,7 @@ class WebGLRenderer extends Renderer {
    * @returns {boolean}
    */
   static isSupported () {
-    return !!(typeof window !== "undefined" && window.WebGLRenderingContext);
+    return !!(typeof window !== 'undefined' && window.WebGLRenderingContext)
   }
 
   /**
@@ -195,8 +194,8 @@ class WebGLRenderer extends Renderer {
    */
   _getContext () {
     /* istanbul ignore next */
-    return this._canvas.getContext("webgl") ||
-      this._canvas.getContext("webgl-experimental");
+    return this._canvas.getContext('webgl') ||
+      this._canvas.getContext('webgl-experimental')
   }
 
   /**
@@ -205,20 +204,20 @@ class WebGLRenderer extends Renderer {
    */
   /* istanbul ignore next */
   drawImage (image) {
-    var gl = this._context;
-    gl.useProgram(this._defaultProgram);
+    var gl = this._context
+    gl.useProgram(this._defaultProgram)
 
     // Create the texture
-    var texture = this.createTexture();
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-    this._inputTexture = texture;
-    this.setLastTexture(texture);
+    var texture = this.createTexture()
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true)
+    this._inputTexture = texture
+    this.setLastTexture(texture)
 
     // Upload the image into the texture
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image)
 
     // Draw the rectangle
-    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    gl.drawArrays(gl.TRIANGLES, 0, 6)
   }
 
   /**
@@ -228,66 +227,66 @@ class WebGLRenderer extends Renderer {
    */
   /* istanbul ignore next */
   runShader (vertexShader, fragmentShader, options) {
-    if (typeof options === "undefined") options = {};
-    if (typeof options.uniforms === "undefined") options.uniforms = {};
+    if (typeof options === 'undefined') options = {}
+    if (typeof options.uniforms === 'undefined') options.uniforms = {}
 
-    var gl = this._context;
-    var program = this.setupGLSLProgram(vertexShader, fragmentShader);
-    gl.useProgram(program);
+    var gl = this._context
+    var program = this.setupGLSLProgram(vertexShader, fragmentShader)
+    gl.useProgram(program)
 
-    var fbo = this.getCurrentFramebuffer();
-    var currentTexture = this.getCurrentTexture();
+    var fbo = this.getCurrentFramebuffer()
+    var currentTexture = this.getCurrentTexture()
 
     // Select the current framebuffer
-    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
-    gl.viewport(0, 0, this._canvas.width, this._canvas.height);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo)
+    gl.viewport(0, 0, this._canvas.width, this._canvas.height)
 
     // Resize the texture to canvas size
-    gl.bindTexture(gl.TEXTURE_2D, currentTexture);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._canvas.width, this._canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.bindTexture(gl.TEXTURE_2D, currentTexture)
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._canvas.width, this._canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
 
     // Make sure we select the current texture
-    gl.bindTexture(gl.TEXTURE_2D, this._lastTexture);
+    gl.bindTexture(gl.TEXTURE_2D, this._lastTexture)
 
     // Set the uniforms
     for (var name in options.uniforms) {
-      var location = gl.getUniformLocation(program, name);
-      var uniform = options.uniforms[name];
+      var location = gl.getUniformLocation(program, name)
+      var uniform = options.uniforms[name]
 
       switch (uniform.type) {
-        case "i":
-        case "1i":
-          gl.uniform1i(location, uniform.value);
-          break;
-        case "f":
-        case "1f":
-          gl.uniform1f(location, uniform.value);
-          break;
-        case "2f":
-          gl.uniform2f(location, uniform.value[0], uniform.value[1]);
-          break;
-        case "3f":
-          gl.uniform3f(location, uniform.value[0], uniform.value[1], uniform.value[2]);
-          break;
-        case "4f":
-          gl.uniform4f(location, uniform.value[0], uniform.value[1], uniform.value[2], uniform.value[3]);
-          break;
-        case "2fv":
-          gl.uniform2fv(location, uniform.value);
-          break;
-        case "mat3fv":
-          gl.uniformMatrix3fv(location, false, uniform.value);
-          break;
+        case 'i':
+        case '1i':
+          gl.uniform1i(location, uniform.value)
+          break
+        case 'f':
+        case '1f':
+          gl.uniform1f(location, uniform.value)
+          break
+        case '2f':
+          gl.uniform2f(location, uniform.value[0], uniform.value[1])
+          break
+        case '3f':
+          gl.uniform3f(location, uniform.value[0], uniform.value[1], uniform.value[2])
+          break
+        case '4f':
+          gl.uniform4f(location, uniform.value[0], uniform.value[1], uniform.value[2], uniform.value[3])
+          break
+        case '2fv':
+          gl.uniform2fv(location, uniform.value)
+          break
+        case 'mat3fv':
+          gl.uniformMatrix3fv(location, false, uniform.value)
+          break
         default:
-          throw new Error("Unknown uniform type: " + uniform.type);
+          throw new Error('Unknown uniform type: ' + uniform.type)
       }
     }
 
     // Draw the rectangle
-    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    gl.drawArrays(gl.TRIANGLES, 0, 6)
 
-    this.setLastTexture(currentTexture);
-    this.selectNextBuffer();
+    this.setLastTexture(currentTexture)
+    this.selectNextBuffer()
   }
 
   /**
@@ -295,21 +294,21 @@ class WebGLRenderer extends Renderer {
    */
   /* istanbul ignore next */
   renderFinal () {
-    var gl = this._context;
-    var program = this._defaultProgram;
-    gl.useProgram(program);
+    var gl = this._context
+    var program = this._defaultProgram
+    gl.useProgram(program)
 
     // Don't draw to framebuffer
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null)
 
     // Make sure the viewport size is correct
-    gl.viewport(0, 0, this._canvas.width, this._canvas.height);
+    gl.viewport(0, 0, this._canvas.width, this._canvas.height)
 
     // Select the last texture that has been rendered to
-    gl.bindTexture(gl.TEXTURE_2D, this._lastTexture);
+    gl.bindTexture(gl.TEXTURE_2D, this._lastTexture)
 
     // Draw the rectangle
-    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    gl.drawArrays(gl.TRIANGLES, 0, 6)
   }
 
   /**
@@ -321,43 +320,43 @@ class WebGLRenderer extends Renderer {
    */
   /* istanbul ignore next */
   setupGLSLProgram (vertexShader, fragmentShader) {
-    var gl = this._context;
-    var shaders = [];
+    var gl = this._context
+    var shaders = []
 
     // Use default vertex shader
-    vertexShader = this._createShader(gl.VERTEX_SHADER, vertexShader || WebGLRenderer.prototype.defaultVertexShader);
-    shaders.push(vertexShader);
+    vertexShader = this._createShader(gl.VERTEX_SHADER, vertexShader || WebGLRenderer.prototype.defaultVertexShader)
+    shaders.push(vertexShader)
 
     // Use default fragment shader
-    fragmentShader = this._createShader(gl.FRAGMENT_SHADER, fragmentShader || WebGLRenderer.prototype.defaultFragmentShader);
-    shaders.push(fragmentShader);
+    fragmentShader = this._createShader(gl.FRAGMENT_SHADER, fragmentShader || WebGLRenderer.prototype.defaultFragmentShader)
+    shaders.push(fragmentShader)
 
     // Create the program
-    var program = gl.createProgram();
+    var program = gl.createProgram()
 
     // Attach the shaders
     for (var i = 0; i < shaders.length; i++) {
-      gl.attachShader(program, shaders[i]);
+      gl.attachShader(program, shaders[i])
     }
 
     // Link the program
-    gl.linkProgram(program);
+    gl.linkProgram(program)
 
     // Check linking status
-    var linked = gl.getProgramParameter(program, gl.LINK_STATUS);
+    var linked = gl.getProgramParameter(program, gl.LINK_STATUS)
     if (!linked) {
-      var lastError = gl.getProgramInfoLog(program);
-      gl.deleteProgram(program);
-      throw new Error("WebGL program linking error: " + lastError);
+      var lastError = gl.getProgramInfoLog(program)
+      gl.deleteProgram(program)
+      throw new Error('WebGL program linking error: ' + lastError)
     }
 
     // Lookup texture coordinates location
-    var positionLocation = gl.getAttribLocation(program, "a_position");
-    var texCoordLocation = gl.getAttribLocation(program, "a_texCoord");
+    var positionLocation = gl.getAttribLocation(program, 'a_position')
+    var texCoordLocation = gl.getAttribLocation(program, 'a_texCoord')
 
     // Provide texture coordinates
-    var texCoordBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
+    var texCoordBuffer = gl.createBuffer()
+    gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer)
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
       // First triangle
       0.0, 0.0,
@@ -368,28 +367,28 @@ class WebGLRenderer extends Renderer {
       0.0, 1.0,
       1.0, 0.0,
       1.0, 1.0
-    ]), gl.STATIC_DRAW);
-    gl.enableVertexAttribArray(texCoordLocation);
-    gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 0, 0);
+    ]), gl.STATIC_DRAW)
+    gl.enableVertexAttribArray(texCoordLocation)
+    gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 0, 0)
 
     // Create a buffer for the rectangle positions
-    var buffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.enableVertexAttribArray(positionLocation);
-    gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+    var buffer = gl.createBuffer()
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
+    gl.enableVertexAttribArray(positionLocation)
+    gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0)
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
       // First triangle
       -1.0, -1.0,
        1.0, -1.0,
-      -1.0,  1.0,
+      -1.0, 1.0,
 
       // Second triangle
-      -1.0,  1.0,
+      -1.0, 1.0,
        1.0, -1.0,
-       1.0,  1.0
-    ]), gl.STATIC_DRAW);
+       1.0, 1.0
+    ]), gl.STATIC_DRAW)
 
-    return program;
+    return program
   }
 
   /**
@@ -401,22 +400,22 @@ class WebGLRenderer extends Renderer {
    */
   /* istanbul ignore next */
   _createShader (shaderType, shaderSource) {
-    var gl = this._context;
+    var gl = this._context
 
     // Create the shader and compile it
-    var shader = gl.createShader(shaderType);
-    gl.shaderSource(shader, shaderSource);
-    gl.compileShader(shader);
+    var shader = gl.createShader(shaderType)
+    gl.shaderSource(shader, shaderSource)
+    gl.compileShader(shader)
 
     // Check compilation status
-    var compiled = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
+    var compiled = gl.getShaderParameter(shader, gl.COMPILE_STATUS)
     if (!compiled) {
-      var lastError = gl.getShaderInfoLog(shader);
-      gl.deleteShader(shader);
-      throw new Error("WebGL shader compilation error: " + lastError);
+      var lastError = gl.getShaderInfoLog(shader)
+      gl.deleteShader(shader)
+      throw new Error('WebGL shader compilation error: ' + lastError)
     }
 
-    return shader;
+    return shader
   }
 
   /**
@@ -425,17 +424,17 @@ class WebGLRenderer extends Renderer {
    */
   /* istanbul ignore next */
   createTexture () {
-    var gl = this._context;
-    var texture = gl.createTexture();
+    var gl = this._context
+    var texture = gl.createTexture()
 
-    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.bindTexture(gl.TEXTURE_2D, texture)
 
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
 
-    return texture;
+    return texture
   }
 
   /**
@@ -445,10 +444,10 @@ class WebGLRenderer extends Renderer {
    */
   /* istanbul ignore next */
   _createFramebuffers () {
-    for(var i = 0; i < 2; i++) {
-      let { fbo, texture } = this._createFramebuffer();
-      this._textures.push(texture);
-      this._framebuffers.push(fbo);
+    for (var i = 0; i < 2; i++) {
+      let { fbo, texture } = this._createFramebuffer()
+      this._textures.push(texture)
+      this._framebuffers.push(fbo)
     }
   }
 
@@ -458,20 +457,20 @@ class WebGLRenderer extends Renderer {
    * @private
    */
   _createFramebuffer () {
-    let gl = this._context;
+    let gl = this._context
 
     // Create texture
-    let texture = this.createTexture();
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._canvas.width, this._canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    let texture = this.createTexture()
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._canvas.width, this._canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
 
     // Create framebuffer
-    let fbo = gl.createFramebuffer();
-    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    let fbo = gl.createFramebuffer()
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo)
 
     // Attach the texture
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0)
 
-    return { fbo, texture };
+    return { fbo, texture }
   }
 
   /**
@@ -481,17 +480,17 @@ class WebGLRenderer extends Renderer {
    */
   /* istanbul ignore next */
   resizeTo (dimensions) {
-    var gl = this._context;
+    var gl = this._context
 
     // Resize the canvas
-    this._canvas.width = dimensions.x;
-    this._canvas.height = dimensions.y;
+    this._canvas.width = dimensions.x
+    this._canvas.height = dimensions.y
 
     // Update the viewport dimensions
-    gl.viewport(0, 0, this._canvas.width, this._canvas.height);
+    gl.viewport(0, 0, this._canvas.width, this._canvas.height)
 
     // Draw the rectangle
-    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    gl.drawArrays(gl.TRIANGLES, 0, 6)
   }
 
   /**
@@ -499,7 +498,7 @@ class WebGLRenderer extends Renderer {
    * @return {WebGLFramebuffer}
    */
   getCurrentFramebuffer () {
-    return this._framebuffers[this._bufferIndex % 2];
+    return this._framebuffers[this._bufferIndex % 2]
   }
 
   /**
@@ -507,14 +506,14 @@ class WebGLRenderer extends Renderer {
    * @return {WebGLTexture}
    */
   getCurrentTexture () {
-    return this._textures[this._bufferIndex % 2];
+    return this._textures[this._bufferIndex % 2]
   }
 
   /**
    * Increases the buffer index
    */
   selectNextBuffer () {
-    this._bufferIndex++;
+    this._bufferIndex++
   }
 
   /**
@@ -522,7 +521,7 @@ class WebGLRenderer extends Renderer {
    * @return {WebGLProgram}
    */
   getDefaultProgram () {
-    return this._defaultProgram;
+    return this._defaultProgram
   }
 
   /**
@@ -530,7 +529,7 @@ class WebGLRenderer extends Renderer {
    * @return {WebGLTexture}
    */
   getLastTexture () {
-    return this._lastTexture;
+    return this._lastTexture
   }
 
   /**
@@ -538,7 +537,7 @@ class WebGLRenderer extends Renderer {
    * @return {Array.<WebGLTexture>}
    */
   getTextures () {
-    return this._textures;
+    return this._textures
   }
 
   /**
@@ -546,7 +545,7 @@ class WebGLRenderer extends Renderer {
    * @param {WebGLTexture} texture
    */
   setLastTexture (texture) {
-    this._lastTexture = texture;
+    this._lastTexture = texture
   }
 
   /**
@@ -555,18 +554,18 @@ class WebGLRenderer extends Renderer {
    * @override
    */
   reset (resetCache=false) {
-    this._lastTexture = null;
-    this._textures = [];
-    this._framebuffers = [];
-    this._bufferIndex = 0;
+    this._lastTexture = null
+    this._textures = []
+    this._framebuffers = []
+    this._bufferIndex = 0
 
     if (resetCache) {
-      this._cache = [];
+      this._cache = []
     }
 
-    this._createFramebuffers();
-    this.setLastTexture(this._inputTexture);
+    this._createFramebuffers()
+    this.setLastTexture(this._inputTexture)
   }
 }
 
-export default WebGLRenderer;
+export default WebGLRenderer
