@@ -229,14 +229,30 @@ class ImglyKit {
     this.ui = new UI(this, this._options)
   }
 
-  get registeredOperations () {
-    return this._registeredOperations
+  /**
+   * Returns the Operation instance with the given identifier,
+   * if it exists
+   * @param {String} identifier
+   * @returns {Operation}
+   */
+  getOperationFromStack (identifier) {
+    let operation = this.operationsStack.filter((operation) => {
+      return operation.identifier === identifier;
+    })[0]
+    return operation
   }
 
+  /**
+   * Runs the UI, if present
+   */
   run () {
     if (typeof this.ui !== 'undefined') {
       this.ui.run()
     }
+  }
+
+  get registeredOperations () {
+    return this._registeredOperations
   }
 }
 
