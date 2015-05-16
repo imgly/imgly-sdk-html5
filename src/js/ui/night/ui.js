@@ -247,18 +247,18 @@ class NightUI extends UI {
    * @private
    */
   _registerControls () {
-    this.registerControl('filters', 'filters', require('./controls/filters'))
-    this.registerControl('rotation', 'rotation', require('./controls/rotation'))
-    this.registerControl('flip', 'flip', require('./controls/flip'))
-    this.registerControl('brightness', 'brightness', require('./controls/brightness'))
-    this.registerControl('contrast', 'contrast', require('./controls/contrast'))
-    this.registerControl('saturation', 'saturation', require('./controls/saturation'))
-    this.registerControl('crop', 'crop', require('./controls/crop'))
-    this.registerControl('radial-blur', 'radial-blur', require('./controls/radial-blur'))
-    this.registerControl('tilt-shift', 'tilt-shift', require('./controls/tilt-shift'))
-    this.registerControl('frames', 'frames', require('./controls/frames'))
-    this.registerControl('stickers', 'stickers', require('./controls/stickers'))
-    this.registerControl('text', 'text', require('./controls/text'))
+    this.registerControl('filters', 'filters', require('./controls/filters-control'))
+    this.registerControl('rotation', 'rotation', require('./controls/rotation-control'))
+    this.registerControl('flip', 'flip', require('./controls/flip-control'))
+    this.registerControl('brightness', 'brightness', require('./controls/brightness-control'))
+    this.registerControl('contrast', 'contrast', require('./controls/contrast-control'))
+    this.registerControl('saturation', 'saturation', require('./controls/saturation-control'))
+    this.registerControl('crop', 'crop', require('./controls/crop-control'))
+    this.registerControl('radial-blur', 'radial-blur', require('./controls/radial-blur-control'))
+    this.registerControl('tilt-shift', 'tilt-shift', require('./controls/tilt-shift-control'))
+    this.registerControl('frames', 'frames', require('./controls/frames-control'))
+    this.registerControl('stickers', 'stickers', require('./controls/stickers-control'))
+    this.registerControl('text', 'text', require('./controls/text-control'))
   }
 
   /**
