@@ -9,9 +9,12 @@
 
 require('babel/polyfill')
 
+const VERSION = '2.0.0-beta6'
+
 import _ from 'lodash'
 import RenderImage from './lib/render-image'
 import ImageExporter from './lib/image-exporter'
+import VersionChecker from './lib/version-checker'
 import { RenderType, ImageFormat } from './constants'
 import Utils from './lib/utils'
 
@@ -83,6 +86,8 @@ class ImglyKit {
 
     // Register the default operations
     this._registerOperations()
+
+    this._versionChecker = new VersionChecker(VERSION)
 
     if (this._options.ui.enabled) {
       this._initUI()
@@ -261,7 +266,7 @@ class ImglyKit {
  * @name ImglyKit.version
  * @internal Keep in sync with package.json
  */
-ImglyKit.version = '2.0.0-beta6'
+ImglyKit.version = VERSION
 
 // Exposed classes
 ImglyKit.RenderImage = RenderImage
