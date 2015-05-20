@@ -21,7 +21,7 @@ export default class VersionChecker {
    * @private
    */
   _check () {
-    let self = this
+    let self = this;
     (window || global || {}).imglySDKVersionCallback = (response) => {
       let [major, minor, patch] = response.version.split('.')
       let [cMajor, cMinor, cPatch] = self._version.split('.')
