@@ -22,7 +22,7 @@ export default class VersionChecker {
    */
   _check () {
     let self = this
-    window.imglySDKVersionCallback = (response) => {
+    (window || global || {}).imglySDKVersionCallback = (response) => {
       let [major, minor, patch] = response.version.split('.')
       let [cMajor, cMinor, cPatch] = self._version.split('.')
 
