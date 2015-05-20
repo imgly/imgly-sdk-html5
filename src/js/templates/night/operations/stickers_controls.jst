@@ -1,8 +1,4 @@
-<div class="imglykit-controls-stickers">
-  <div class="imglykit-controls-button imglykit-controls-back">
-    <img src="{{=it.helpers.assetPath('ui/night/buttons/back.png') }}" />
-  </div>
-
+{{##def.control:
   <div>
     <ul class="imglykit-controls-list imgly-controls-list-with-buttons">
       {{ for(var identifier in it.stickers) { }}
@@ -20,4 +16,4 @@
       <img src="{{=it.helpers.assetPath('ui/night/buttons/done-highlighted.png') }}" />
     </div>
   </div>
-</div>
+#}}

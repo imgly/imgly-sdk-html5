@@ -12,6 +12,8 @@ import Helpers from '../../base/helpers'
 import EventEmitter from '../../../lib/event-emitter'
 import Scrollbar from '../lib/scrollbar'
 
+let fs = require('fs')
+
 class Control extends EventEmitter {
   constructor (kit, ui, operation) {
     super()
@@ -21,6 +23,10 @@ class Control extends EventEmitter {
     this._operation = operation
     this._helpers = new Helpers(this._kit, this._ui, this._ui.options)
     this._partialTemplates = []
+    this._template = fs.readFileSync(
+      __dirname + '/../../../templates/night/generics/control.jst',
+      'utf-8'
+    )
     this._active = false
 
     this.init()
@@ -62,7 +68,11 @@ class Control extends EventEmitter {
       throw new Error('Control#_renderOverviewControls: Control needs to define this._controlsTemplate.')
     }
 
-    let template = this._partialTemplates.concat([this._controlsTemplate]).join('\r\n')
+    let template = this._partialTemplates
+      .concat([
+        this._controlsTemplate,
+        this._template
+      ]).join('\r\n')
 
     // Render the template
     let renderFn = dot.template(template)
