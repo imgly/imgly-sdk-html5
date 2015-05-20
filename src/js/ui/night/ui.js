@@ -117,9 +117,12 @@ class NightUI extends UI {
       return (e) => {
         let data = e.target.result
         let image = new Image()
-        image.src = data
 
-        this._setImage(image)
+        image.addEventListener('load', () => {
+          this._setImage(image)
+        })
+
+        image.src = data
       }
     })(file)
     reader.readAsDataURL(file)
