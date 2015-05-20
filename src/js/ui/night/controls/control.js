@@ -256,7 +256,8 @@ class Control extends EventEmitter {
    */
   get context () {
     return {
-      helpers: this._helpers
+      helpers: this._helpers,
+      identifier: this.identifier
     }
   }
 }
