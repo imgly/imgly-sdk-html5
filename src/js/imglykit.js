@@ -87,7 +87,9 @@ class ImglyKit {
     // Register the default operations
     this._registerOperations()
 
-    this._versionChecker = new VersionChecker(VERSION)
+    if (typeof window !== 'undefined') {
+      this._versionChecker = new VersionChecker(VERSION)
+    }
 
     if (this._options.ui.enabled) {
       this._initUI()
