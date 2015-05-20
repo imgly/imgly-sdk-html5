@@ -22,7 +22,13 @@ class Control extends EventEmitter {
     this._ui = ui
     this._operation = operation
     this._helpers = new Helpers(this._kit, this._ui, this._ui.options)
-    this._partialTemplates = []
+    this._partialTemplates = [
+      fs.readFileSync(
+        __dirname + '/../../../templates/night/generics/done_button.jst',
+        'utf-8'
+      )
+    ]
+
     this._template = fs.readFileSync(
       __dirname + '/../../../templates/night/generics/control.jst',
       'utf-8'
