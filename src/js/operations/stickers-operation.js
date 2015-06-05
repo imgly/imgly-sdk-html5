@@ -20,6 +20,7 @@ import Vector2 from '../lib/math/vector2'
  */
 class StickersOperation extends Operation {
   constructor (...args) {
+    super(...args)
     this.availableOptions = {
       sticker: { type: 'string' },
       position: { type: 'vector2', default: new Vector2(0, 0) },

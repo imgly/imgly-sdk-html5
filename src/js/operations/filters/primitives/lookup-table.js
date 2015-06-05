@@ -17,8 +17,8 @@ import Primitive from './primitive'
  * @extends {ImglyKit.Filter.Primitive}
  */
 class LookupTable extends Primitive {
-  constructor () {
-    Primitive.apply(this, arguments)
+  constructor (...args) {
+    super(...args)
 
     this._textureIndex = 3
 

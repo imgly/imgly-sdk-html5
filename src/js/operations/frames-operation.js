@@ -19,6 +19,7 @@ import Color from '../lib/color'
  */
 class FramesOperation extends Operation {
   constructor (...args) {
+    super(...args)
     this.availableOptions = {
       color: { type: 'color', default: new Color(0, 0, 0, 1) },
       thickness: { type: 'number', default: 0.02 }

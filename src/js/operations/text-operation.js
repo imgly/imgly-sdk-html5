@@ -20,6 +20,7 @@ import Color from '../lib/color'
  */
 class TextOperation extends Operation {
   constructor (...args) {
+    super(...args)
     this.availableOptions = {
       fontSize: { type: 'number', default: 0.1 },
       lineHeight: { type: 'number', default: 1.1 },

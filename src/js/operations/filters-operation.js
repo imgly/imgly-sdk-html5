@@ -19,6 +19,7 @@ import IdentityFilter from './filters/identity-filter'
  */
 class FiltersOperation extends Operation {
   constructor (...args) {
+    super(...args)
     this.availableOptions = {
       filter: { type: 'object', default: IdentityFilter,
         setter: function (Filter) {

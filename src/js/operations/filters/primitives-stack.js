@@ -15,8 +15,6 @@
  */
 class PrimitivesStack {
   constructor (...args) {
-    super(...args)
-
     /**
      * The stack of {@link ImglyKit.Filter.Primitive} instances
      * @type {Array}

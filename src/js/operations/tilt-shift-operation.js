@@ -20,6 +20,7 @@ import StackBlur from '../vendor/stack-blur'
  */
 class TiltShiftOperation extends Operation {
   constructor (...args) {
+    super(...args)
     this.availableOptions = {
       start: { type: 'vector2', default: new Vector2(0.0, 0.5) },
       end: { type: 'vector2', default: new Vector2(1.0, 0.5) },

@@ -7,8 +7,6 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-require('babel/polyfill')
-
 const VERSION = '2.0.0-beta6'
 
 import _ from 'lodash'

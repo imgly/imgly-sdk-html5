@@ -18,6 +18,8 @@ import Scrollbar from './lib/scrollbar'
 
 class NightUI extends UI {
   constructor (...args) {
+    super(...args)
+
     this._operationsMap = {}
     this._template = fs.readFileSync(__dirname + '/../../templates/night/template.jst', 'utf-8')
     this._registeredControls = {}
@@ -45,8 +47,6 @@ class NightUI extends UI {
     ]
 
     this._paused = false
-
-    super(...args)
 
     this._options.ui = _.defaults(this._options.ui, {
       showNewButton: !this._options.image,

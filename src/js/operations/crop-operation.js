@@ -19,6 +19,7 @@ import Vector2 from '../lib/math/vector2'
  */
 class CropOperation extends Operation {
   constructor (...args) {
+    super(...args)
     this.availableOptions = {
       start: { type: 'vector2', required: true, default: new Vector2(0, 0) },
       end: { type: 'vector2', required: true, default: new Vector2(1, 1) }

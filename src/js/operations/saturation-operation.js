@@ -18,6 +18,7 @@ import SaturationPrimitive from './filters/primitives/saturation'
  */
 class SaturationOperation extends Operation {
   constructor (...args) {
+    super(...args)
     this.availableOptions = {
       saturation: { type: 'number', default: 1.0 }
     }

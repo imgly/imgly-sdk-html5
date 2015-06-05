@@ -20,6 +20,7 @@ import StackBlur from '../vendor/stack-blur'
  */
 class RadialBlurOperation extends Operation {
   constructor (...args) {
+    super(...args)
     this.availableOptions = {
       position: { type: 'vector2', default: new Vector2(0.5, 0.5) },
       gradientRadius: { type: 'number', default: 50 },

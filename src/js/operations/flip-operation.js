@@ -18,6 +18,7 @@ import Operation from './operation'
  */
 class FlipOperation extends Operation {
   constructor (...args) {
+    super(...args)
     this.availableOptions = {
       horizontal: { type: 'boolean', default: false },
       vertical: { type: 'boolean', default: false }

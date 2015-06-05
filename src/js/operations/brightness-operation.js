@@ -18,6 +18,7 @@ import BrightnessPrimitive from './filters/primitives/brightness'
  */
 class BrightnessOperation extends Operation {
   constructor (...args) {
+    super(...args)
     this.availableOptions = {
       brightness: { type: 'number', default: 0 }
     }

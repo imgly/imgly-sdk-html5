@@ -18,6 +18,7 @@ import ContrastPrimitive from './filters/primitives/contrast'
  */
 class ContrastOperation extends Operation {
   constructor (...args) {
+    super(...args)
     this.availableOptions = {
       contrast: { type: 'number', default: 1.0 }
     }

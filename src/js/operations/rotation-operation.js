@@ -19,6 +19,7 @@ import Vector2 from '../lib/math/vector2'
  */
 class RotationOperation extends Operation {
   constructor (...args) {
+    super(...args)
     this.availableOptions = {
       degrees: { type: 'number', default: 0, validation: function (value) {
         if (value % 90 !== 0) {
