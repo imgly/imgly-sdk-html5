@@ -65,10 +65,22 @@ describe("RenderImage", function () {
         describe("when set to ImglyKit.RenderType.DATA_URL", function () {
 
           it("should render to a data url", function (done) {
-            kit.render(ImglyKit.RenderType.DATA_URL)
+            kit.render(ImglyKit.RenderType.DATAURL)
               .then(function (result) {
                 result.should.be.type("string");
                 result.should.startWith("data:");
+                done();
+              });
+          });
+
+        });
+
+        describe("when set to ImglyKit.RenderType.BUFFER", function () {
+
+          it("should render to a data url", function (done) {
+            kit.render(ImglyKit.RenderType.BUFFER)
+              .then(function (result) {
+                result.constructor.name.should.equal("Buffer");
                 done();
               });
           });

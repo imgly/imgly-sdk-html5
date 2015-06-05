@@ -99,7 +99,7 @@ class ImglyKit {
 
   /**
    * Renders the image
-   * @param  {ImglyKit.RenderType} [renderType=ImglyKit.RenderType.DATA_URL] - The output type
+   * @param  {ImglyKit.RenderType} [renderType=ImglyKit.RenderType.DATAURL] - The output type
    * @param  {ImglyKit.ImageFormat} [imageFormat=ImglyKit.ImageFormat.PNG] - The output image format
    * @param  {string} [dimensions] - The final dimensions of the image
    * @return {Promise}

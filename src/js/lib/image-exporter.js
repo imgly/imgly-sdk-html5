@@ -28,7 +28,7 @@ class ImageExporter {
         Utils.values(RenderType).indexOf(settings.renderType) === -1) {
       throw new Error('Invalid render type: ' + settings.renderType)
     } else if (typeof renderType === 'undefined') {
-      settings.renderType = RenderType.DATA_URL
+      settings.renderType = RenderType.DATAURL
     }
 
     // Validate ImageFormat
@@ -37,6 +37,12 @@ class ImageExporter {
       throw new Error('Invalid image format: ' + settings.imageFormat)
     } else if (typeof imageFormat === 'undefined') {
       settings.imageFormat = ImageFormat.PNG
+    }
+
+    // Render type 'buffer' only available in node
+    if (settings.renderType === RenderType.BUFFER &&
+        typeof process === 'undefined') {
+      throw new Error('Render type \'buffer\' is only available when using node.js')
     }
 
     return settings
@@ -50,9 +56,10 @@ class ImageExporter {
    * @return {string|image}
    */
   static export (canvas, renderType, imageFormat) {
-    var result = canvas.toDataURL(imageFormat)
+    var result
     if (renderType === RenderType.IMAGE) {
       var image
+      result = canvas.toDataURL(imageFormat)
 
       /* istanbul ignore else  */
       if (typeof window === 'undefined') {
@@ -65,10 +72,14 @@ class ImageExporter {
 
       image.src = result
       result = image
+      return result
+    } else if (renderType === RenderType.DATAURL) {
+      result = canvas.toDataURL(imageFormat)
+      return result
+    } else if (renderType === RenderType.BUFFER) {
+      return canvas.toBuffer()
     }
-    return result
   }
-
 }
 
 export default ImageExporter
