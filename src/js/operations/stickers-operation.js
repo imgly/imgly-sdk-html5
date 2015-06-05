@@ -21,11 +21,6 @@ import Vector2 from '../lib/math/vector2'
 class StickersOperation extends Operation {
   constructor (...args) {
     super(...args)
-    this.availableOptions = {
-      sticker: { type: 'string' },
-      position: { type: 'vector2', default: new Vector2(0, 0) },
-      size: { type: 'vector2', default: new Vector2(0, 0) }
-    }
 
     /**
      * The texture index used for the sticker
@@ -64,8 +59,6 @@ class StickersOperation extends Operation {
     `
 
     this._loadedStickers = {}
-
-    super(...args)
   }
 
   /**
@@ -259,5 +252,15 @@ class StickersOperation extends Operation {
  * @type {String}
  */
 StickersOperation.prototype.identifier = 'stickers'
+
+/**
+ * Specifies the available options for this operation
+ * @type {Object}
+ */
+StickersOperation.prototype.availableOptions = {
+  sticker: { type: 'string' },
+  position: { type: 'vector2', default: new Vector2(0, 0) },
+  size: { type: 'vector2', default: new Vector2(0, 0) }
+}
 
 export default StickersOperation

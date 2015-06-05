@@ -17,15 +17,6 @@ import SaturationPrimitive from './filters/primitives/saturation'
  * @extends ImglyKit.Operation
  */
 class SaturationOperation extends Operation {
-  constructor (...args) {
-    super(...args)
-    this.availableOptions = {
-      saturation: { type: 'number', default: 1.0 }
-    }
-
-    super(...args)
-  }
-
   /**
    * Renders the saturation using WebGL
    * @param  {WebGLRenderer} renderer
@@ -67,5 +58,13 @@ class SaturationOperation extends Operation {
  * @type {String}
  */
 SaturationOperation.prototype.identifier = 'saturation'
+
+/**
+ * Specifies the available options for this operation
+ * @type {Object}
+ */
+SaturationOperation.prototype.availableOptions = {
+  saturation: { type: 'number', default: 1.0 }
+}
 
 export default SaturationOperation

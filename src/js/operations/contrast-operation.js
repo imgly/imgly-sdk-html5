@@ -17,15 +17,6 @@ import ContrastPrimitive from './filters/primitives/contrast'
  * @extends ImglyKit.Operation
  */
 class ContrastOperation extends Operation {
-  constructor (...args) {
-    super(...args)
-    this.availableOptions = {
-      contrast: { type: 'number', default: 1.0 }
-    }
-
-    super(...args)
-  }
-
   /**
    * Renders the contrast using WebGL
    * @param  {WebGLRenderer} renderer
@@ -67,5 +58,13 @@ class ContrastOperation extends Operation {
  * @type {String}
  */
 ContrastOperation.prototype.identifier = 'contrast'
+
+/**
+ * Specifies the available options for this operation
+ * @type {Object}
+ */
+ContrastOperation.prototype.availableOptions = {
+  contrast: { type: 'number', default: 1.0 }
+}
 
 export default ContrastOperation

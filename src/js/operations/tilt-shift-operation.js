@@ -21,12 +21,6 @@ import StackBlur from '../vendor/stack-blur'
 class TiltShiftOperation extends Operation {
   constructor (...args) {
     super(...args)
-    this.availableOptions = {
-      start: { type: 'vector2', default: new Vector2(0.0, 0.5) },
-      end: { type: 'vector2', default: new Vector2(1.0, 0.5) },
-      blurRadius: { type: 'number', default: 30 },
-      gradientRadius: { type: 'number', default: 50 }
-    }
 
     /**
      * The fragment shader used for this operation
@@ -71,8 +65,6 @@ class TiltShiftOperation extends Operation {
           gl_FragColor.rgb /= gl_FragColor.a + 0.00001;
       }
     `
-
-    super(...args)
 
     this._cachedBlurredCanvas = null
     this._lastBlurRadius = this._options.blurRadius
@@ -266,5 +258,16 @@ class TiltShiftOperation extends Operation {
  * @type {String}
  */
 TiltShiftOperation.prototype.identifier = 'tilt-shift'
+
+/**
+ * Specifies the available options for this operation
+ * @type {Object}
+ */
+TiltShiftOperation.prototype.availableOptions = {
+  start: { type: 'vector2', default: new Vector2(0.0, 0.5) },
+  end: { type: 'vector2', default: new Vector2(1.0, 0.5) },
+  blurRadius: { type: 'number', default: 30 },
+  gradientRadius: { type: 'number', default: 50 }
+}
 
 export default TiltShiftOperation

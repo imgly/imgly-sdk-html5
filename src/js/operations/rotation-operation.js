@@ -20,13 +20,6 @@ import Vector2 from '../lib/math/vector2'
 class RotationOperation extends Operation {
   constructor (...args) {
     super(...args)
-    this.availableOptions = {
-      degrees: { type: 'number', default: 0, validation: function (value) {
-        if (value % 90 !== 0) {
-          throw new Error('RotationOperation: `rotation` has to be a multiple of 90.')
-        }
-      }}
-    }
 
     /**
      * The fragment shader used for this operation
@@ -42,8 +35,6 @@ class RotationOperation extends Operation {
         v_texCoord = a_texCoord;
       }
     `
-
-    super(...args)
   }
 
   /**
@@ -146,5 +137,17 @@ class RotationOperation extends Operation {
  * @type {String}
  */
 RotationOperation.prototype.identifier = 'rotation'
+
+/**
+ * Specifies the available options for this operation
+ * @type {Object}
+ */
+RotationOperation.prototype.availableOptions = {
+  degrees: { type: 'number', default: 0, validation: function (value) {
+    if (value % 90 !== 0) {
+      throw new Error('RotationOperation: `rotation` has to be a multiple of 90.')
+    }
+  }}
+}
 
 export default RotationOperation

@@ -21,11 +21,6 @@ import StackBlur from '../vendor/stack-blur'
 class RadialBlurOperation extends Operation {
   constructor (...args) {
     super(...args)
-    this.availableOptions = {
-      position: { type: 'vector2', default: new Vector2(0.5, 0.5) },
-      gradientRadius: { type: 'number', default: 50 },
-      blurRadius: { type: 'number', default: 20 }
-    }
 
     /**
      * The fragment shader used for this operation
@@ -67,8 +62,6 @@ class RadialBlurOperation extends Operation {
           gl_FragColor.rgb /= gl_FragColor.a + 0.00001;
       }
     `
-
-    super(...args)
 
     this._cachedBlurredCanvas = null
     this._lastBlurRadius = this._options.blurRadius
@@ -248,5 +241,15 @@ class RadialBlurOperation extends Operation {
  * @type {String}
  */
 RadialBlurOperation.prototype.identifier = 'radial-blur'
+
+/**
+ * Specifies the available options for this operation
+ * @type {Object}
+ */
+RadialBlurOperation.prototype.availableOptions = {
+  position: { type: 'vector2', default: new Vector2(0.5, 0.5) },
+  gradientRadius: { type: 'number', default: 50 },
+  blurRadius: { type: 'number', default: 20 }
+}
 
 export default RadialBlurOperation

@@ -17,15 +17,6 @@ import BrightnessPrimitive from './filters/primitives/brightness'
  * @extends ImglyKit.Operation
  */
 class BrightnessOperation extends Operation {
-  constructor (...args) {
-    super(...args)
-    this.availableOptions = {
-      brightness: { type: 'number', default: 0 }
-    }
-
-    super(...args)
-  }
-
   /**
    * Renders the brightness using WebGL
    * @param  {WebGLRenderer} renderer
@@ -67,5 +58,13 @@ class BrightnessOperation extends Operation {
  * @type {String}
  */
 BrightnessOperation.prototype.identifier = 'brightness'
+
+/**
+ * Specifies the available options for this operation
+ * @type {Object}
+ */
+BrightnessOperation.prototype.availableOptions = {
+  brightness: { type: 'number', default: 0 }
+}
 
 export default BrightnessOperation

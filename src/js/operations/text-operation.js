@@ -21,19 +21,6 @@ import Color from '../lib/color'
 class TextOperation extends Operation {
   constructor (...args) {
     super(...args)
-    this.availableOptions = {
-      fontSize: { type: 'number', default: 0.1 },
-      lineHeight: { type: 'number', default: 1.1 },
-      fontFamily: { type: 'string', default: 'Times New Roman' },
-      fontWeight: { type: 'string', default: 'normal' },
-      alignment: { type: 'string', default: 'left', available: ['left', 'center', 'right'] },
-      verticalAlignment: { type: 'string', default: 'top', available: ['top', 'center', 'bottom'] },
-      color: { type: 'color', default: new Color(1, 1, 1, 1) },
-      backgroundColor: { type: 'color', default: new Color(0, 0, 0, 0) },
-      position: { type: 'vector2', default: new Vector2(0, 0) },
-      text: { type: 'string', required: true },
-      maxWidth: { type: 'number', default: 1.0 }
-    }
 
     /**
      * The texture index used for the text
@@ -70,8 +57,6 @@ class TextOperation extends Operation {
         }
       }
     `
-
-    super(...args)
   }
 
   /**
@@ -333,5 +318,23 @@ class TextOperation extends Operation {
  * @type {String}
  */
 TextOperation.prototype.identifier = 'text'
+
+/**
+ * Specifies the available options for this operation
+ * @type {Object}
+ */
+TextOperation.prototype.availableOptions = {
+  fontSize: { type: 'number', default: 0.1 },
+  lineHeight: { type: 'number', default: 1.1 },
+  fontFamily: { type: 'string', default: 'Times New Roman' },
+  fontWeight: { type: 'string', default: 'normal' },
+  alignment: { type: 'string', default: 'left', available: ['left', 'center', 'right'] },
+  verticalAlignment: { type: 'string', default: 'top', available: ['top', 'center', 'bottom'] },
+  color: { type: 'color', default: new Color(1, 1, 1, 1) },
+  backgroundColor: { type: 'color', default: new Color(0, 0, 0, 0) },
+  position: { type: 'vector2', default: new Vector2(0, 0) },
+  text: { type: 'string', required: true },
+  maxWidth: { type: 'number', default: 1.0 }
+}
 
 export default TextOperation

@@ -19,10 +19,6 @@ import Operation from './operation'
 class FlipOperation extends Operation {
   constructor (...args) {
     super(...args)
-    this.availableOptions = {
-      horizontal: { type: 'boolean', default: false },
-      vertical: { type: 'boolean', default: false }
-    }
 
     /**
      * The fragment shader used for this operation
@@ -45,8 +41,6 @@ class FlipOperation extends Operation {
         gl_FragColor = texture2D(u_image, texCoord);
       }
     `
-
-    super(...args)
   }
 
   /**
@@ -107,5 +101,14 @@ class FlipOperation extends Operation {
  * @type {String}
  */
 FlipOperation.prototype.identifier = 'flip'
+
+/**
+ * Specifies the available options for this operation
+ * @type {Object}
+ */
+FlipOperation.prototype.availableOptions = {
+  horizontal: { type: 'boolean', default: false },
+  vertical: { type: 'boolean', default: false }
+}
 
 export default FlipOperation

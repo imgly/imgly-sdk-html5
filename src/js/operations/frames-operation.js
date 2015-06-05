@@ -20,10 +20,6 @@ import Color from '../lib/color'
 class FramesOperation extends Operation {
   constructor (...args) {
     super(...args)
-    this.availableOptions = {
-      color: { type: 'color', default: new Color(0, 0, 0, 1) },
-      thickness: { type: 'number', default: 0.02 }
-    }
 
     /**
      * The texture index used for the frame
@@ -53,8 +49,6 @@ class FramesOperation extends Operation {
         gl_FragColor = fragColor;
       }
     `
-
-    super(...args)
   }
 
   /**
@@ -106,5 +100,14 @@ class FramesOperation extends Operation {
  * @type {String}
  */
 FramesOperation.prototype.identifier = 'frames'
+
+/**
+ * Specifies the available options for this operation
+ * @type {Object}
+ */
+FramesOperation.prototype.availableOptions = {
+  color: { type: 'color', default: new Color(0, 0, 0, 1) },
+  thickness: { type: 'number', default: 0.02 }
+}
 
 export default FramesOperation

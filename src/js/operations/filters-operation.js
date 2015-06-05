@@ -18,20 +18,6 @@ import IdentityFilter from './filters/identity-filter'
  * @extends ImglyKit.Operation
  */
 class FiltersOperation extends Operation {
-  constructor (...args) {
-    super(...args)
-    this.availableOptions = {
-      filter: { type: 'object', default: IdentityFilter,
-        setter: function (Filter) {
-          this._selectedFilter = new Filter()
-          return Filter
-        }
-      }
-    }
-
-    super(...args)
-  }
-
   /**
    * Renders the filter using WebGL
    * @param  {WebGLRenderer} renderer
@@ -67,5 +53,18 @@ class FiltersOperation extends Operation {
  * @type {String}
  */
 FiltersOperation.prototype.identifier = 'filters'
+
+/**
+ * Specifies the available options for this operation
+ * @type {Object}
+ */
+FiltersOperation.prototype.availableOptions = {
+  filter: { type: 'object', default: IdentityFilter,
+    setter: function (Filter) {
+      this._selectedFilter = new Filter()
+      return Filter
+    }
+  }
+}
 
 export default FiltersOperation

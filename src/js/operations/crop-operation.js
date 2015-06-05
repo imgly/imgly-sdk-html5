@@ -20,10 +20,6 @@ import Vector2 from '../lib/math/vector2'
 class CropOperation extends Operation {
   constructor (...args) {
     super(...args)
-    this.availableOptions = {
-      start: { type: 'vector2', required: true, default: new Vector2(0, 0) },
-      end: { type: 'vector2', required: true, default: new Vector2(1, 1) }
-    }
 
     /**
      * The fragment shader used for this operation
@@ -40,8 +36,6 @@ class CropOperation extends Operation {
         gl_FragColor = texture2D(u_image, v_texCoord * size + u_cropStart);
       }
     `
-
-    super(...args)
   }
 
   /**
@@ -149,5 +143,14 @@ class CropOperation extends Operation {
  * @type {String}
  */
 CropOperation.prototype.identifier = 'crop'
+
+/**
+ * Specifies the available options for this operation
+ * @type {Object}
+ */
+CropOperation.prototype.availableOptions = {
+  start: { type: 'vector2', required: true, default: new Vector2(0, 0) },
+  end: { type: 'vector2', required: true, default: new Vector2(1, 1) }
+}
 
 export default CropOperation
