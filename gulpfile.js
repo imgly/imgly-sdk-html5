@@ -145,7 +145,7 @@ gulp.task("webpack", function () {
   // Initialize webpack
   return gulp.src(input)
     .pipe(webpack({
-      watch: env === 'development',
+      watch: !isProduction,
       context: path.resolve(sourceFiles + '/js'),
       output: {
         library: 'ImglyKit',

@@ -97,7 +97,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _libUtils2 = _interopRequireDefault(_libUtils);
 
-	var VERSION = '2.0.0-beta6';
+	var VERSION = '2.0.0-beta8';
 
 	/**
 	 * @class
@@ -1610,7 +1610,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	// no operation performed
 
 	// no operation performed
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(73)(module), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(91)(module), (function() { return this; }())))
 
 /***/ },
 /* 2 */
@@ -2611,7 +2611,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _libColor2 = _interopRequireDefault(_libColor);
 
-	var _libEventEmitter = __webpack_require__(71);
+	var _libEventEmitter = __webpack_require__(70);
 
 	var _libEventEmitter2 = _interopRequireDefault(_libEventEmitter);
 
@@ -2977,7 +2977,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _operation2 = _interopRequireDefault(_operation);
 
-	var _filtersIdentityFilter = __webpack_require__(70);
+	var _filtersIdentityFilter = __webpack_require__(71);
 
 	var _filtersIdentityFilter2 = _interopRequireDefault(_filtersIdentityFilter);
 
@@ -8368,23 +8368,23 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _lodash2 = _interopRequireDefault(_lodash);
 
-	var _baseUi = __webpack_require__(74);
+	var _baseUi = __webpack_require__(73);
 
 	var _baseUi2 = _interopRequireDefault(_baseUi);
 
-	var _libCanvas = __webpack_require__(75);
+	var _libCanvas = __webpack_require__(74);
 
 	var _libCanvas2 = _interopRequireDefault(_libCanvas);
 
-	var _libFileLoader = __webpack_require__(76);
+	var _libFileLoader = __webpack_require__(75);
 
 	var _libFileLoader2 = _interopRequireDefault(_libFileLoader);
 
-	var _libTopControls = __webpack_require__(77);
+	var _libTopControls = __webpack_require__(76);
 
 	var _libTopControls2 = _interopRequireDefault(_libTopControls);
 
-	var _libScrollbar = __webpack_require__(78);
+	var _libScrollbar = __webpack_require__(77);
 
 	var _libScrollbar2 = _interopRequireDefault(_libScrollbar);
 
@@ -8642,18 +8642,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @private
 	     */
 	    value: function _registerControls() {
-	      this.registerControl('filters', 'filters', __webpack_require__(79));
-	      this.registerControl('rotation', 'rotation', __webpack_require__(80));
-	      this.registerControl('flip', 'flip', __webpack_require__(81));
-	      this.registerControl('brightness', 'brightness', __webpack_require__(82));
-	      this.registerControl('contrast', 'contrast', __webpack_require__(83));
-	      this.registerControl('saturation', 'saturation', __webpack_require__(84));
-	      this.registerControl('crop', 'crop', __webpack_require__(85));
-	      this.registerControl('radial-blur', 'radial-blur', __webpack_require__(86));
-	      this.registerControl('tilt-shift', 'tilt-shift', __webpack_require__(87));
-	      this.registerControl('frames', 'frames', __webpack_require__(88));
-	      this.registerControl('stickers', 'stickers', __webpack_require__(89));
-	      this.registerControl('text', 'text', __webpack_require__(90));
+	      this.registerControl('filters', 'filters', __webpack_require__(78));
+	      this.registerControl('rotation', 'rotation', __webpack_require__(79));
+	      this.registerControl('flip', 'flip', __webpack_require__(80));
+	      this.registerControl('brightness', 'brightness', __webpack_require__(81));
+	      this.registerControl('contrast', 'contrast', __webpack_require__(82));
+	      this.registerControl('saturation', 'saturation', __webpack_require__(83));
+	      this.registerControl('crop', 'crop', __webpack_require__(84));
+	      this.registerControl('radial-blur', 'radial-blur', __webpack_require__(85));
+	      this.registerControl('tilt-shift', 'tilt-shift', __webpack_require__(86));
+	      this.registerControl('frames', 'frames', __webpack_require__(87));
+	      this.registerControl('stickers', 'stickers', __webpack_require__(88));
+	      this.registerControl('text', 'text', __webpack_require__(89));
 	    }
 	  }, {
 	    key: '_handleOverview',
@@ -8998,7 +8998,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return NightUI;
 	})(_baseUi2['default']);
 
-	NightUI.Control = __webpack_require__(91);
+	NightUI.Control = __webpack_require__(90);
 
 	exports['default'] = NightUI;
 	module.exports = exports['default'];
@@ -11581,94 +11581,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/*!
-	 * Copyright (c) 2013-2015 9elements GmbH
-	 *
-	 * Released under Attribution-NonCommercial 3.0 Unported
-	 * http://creativecommons.org/licenses/by-nc/3.0/
-	 *
-	 * For commercial use, please contact us at contact@9elements.com
-	 */
-
-	'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-
-	var _filter = __webpack_require__(8);
-
-	var _filter2 = _interopRequireDefault(_filter);
-
-	/**
-	 * Identity Filter
-	 * @class
-	 * @alias ImglyKit.Filters.IdentityFilter
-	 * @extends {ImglyKit.Filter}
-	 */
-
-	var IdentityFilter = (function (_Filter) {
-	  function IdentityFilter() {
-	    _classCallCheck(this, IdentityFilter);
-
-	    if (_Filter != null) {
-	      _Filter.apply(this, arguments);
-	    }
-	  }
-
-	  _inherits(IdentityFilter, _Filter);
-
-	  _createClass(IdentityFilter, [{
-	    key: 'render',
-
-	    /**
-	     * Renders the filter
-	     * @return {Promise}
-	     */
-	    value: function render() {}
-	  }, {
-	    key: 'name',
-
-	    /**
-	     * The name that is displayed in the UI
-	     * @type {String}
-	     */
-	    get: function () {
-	      return 'Original';
-	    }
-	  }], [{
-	    key: 'identifier',
-
-	    /**
-	     * A unique string that identifies this operation. Can be used to select
-	     * the active filter.
-	     * @type {String}
-	     */
-	    get: function () {
-	      return 'identity';
-	    }
-	  }]);
-
-	  return IdentityFilter;
-	})(_filter2['default']);
-
-	exports['default'] = IdentityFilter;
-	module.exports = exports['default'];
-
-	// This is the identity filter, it doesn't have any effect.
-
-/***/ },
-/* 71 */
-/***/ function(module, exports, __webpack_require__) {
-
 	/**
 	 * EventEmitter (ES6) from:
 	 * https://gist.github.com/bloodyowl/41b1de3388c626796eca
@@ -11795,6 +11707,94 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	exports['default'] = EventEmitter;
 	module.exports = exports['default'];
+
+/***/ },
+/* 71 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*!
+	 * Copyright (c) 2013-2015 9elements GmbH
+	 *
+	 * Released under Attribution-NonCommercial 3.0 Unported
+	 * http://creativecommons.org/licenses/by-nc/3.0/
+	 *
+	 * For commercial use, please contact us at contact@9elements.com
+	 */
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+	var _filter = __webpack_require__(8);
+
+	var _filter2 = _interopRequireDefault(_filter);
+
+	/**
+	 * Identity Filter
+	 * @class
+	 * @alias ImglyKit.Filters.IdentityFilter
+	 * @extends {ImglyKit.Filter}
+	 */
+
+	var IdentityFilter = (function (_Filter) {
+	  function IdentityFilter() {
+	    _classCallCheck(this, IdentityFilter);
+
+	    if (_Filter != null) {
+	      _Filter.apply(this, arguments);
+	    }
+	  }
+
+	  _inherits(IdentityFilter, _Filter);
+
+	  _createClass(IdentityFilter, [{
+	    key: 'render',
+
+	    /**
+	     * Renders the filter
+	     * @return {Promise}
+	     */
+	    value: function render() {}
+	  }, {
+	    key: 'name',
+
+	    /**
+	     * The name that is displayed in the UI
+	     * @type {String}
+	     */
+	    get: function () {
+	      return 'Original';
+	    }
+	  }], [{
+	    key: 'identifier',
+
+	    /**
+	     * A unique string that identifies this operation. Can be used to select
+	     * the active filter.
+	     * @type {String}
+	     */
+	    get: function () {
+	      return 'identity';
+	    }
+	  }]);
+
+	  return IdentityFilter;
+	})(_filter2['default']);
+
+	exports['default'] = IdentityFilter;
+	module.exports = exports['default'];
+
+	// This is the identity filter, it doesn't have any effect.
 
 /***/ },
 /* 72 */
@@ -12081,22 +12081,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 73 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = function(module) {
-		if(!module.webpackPolyfill) {
-			module.deprecate = function() {};
-			module.paths = [];
-			// module.parent = undefined by default
-			module.children = [];
-			module.webpackPolyfill = 1;
-		}
-		return module;
-	}
-
-
-/***/ },
-/* 74 */
-/***/ function(module, exports, __webpack_require__) {
-
 	/*!
 	 * Copyright (c) 2013-2015 9elements GmbH
 	 *
@@ -12129,7 +12113,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _libUtils2 = _interopRequireDefault(_libUtils);
 
-	var _libEventEmitter = __webpack_require__(71);
+	var _libEventEmitter = __webpack_require__(70);
 
 	var _libEventEmitter2 = _interopRequireDefault(_libEventEmitter);
 
@@ -12329,7 +12313,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 75 */
+/* 74 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*!
@@ -12369,7 +12353,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _libMathVector22 = _interopRequireDefault(_libMathVector2);
 
-	var _libEventEmitter = __webpack_require__(71);
+	var _libEventEmitter = __webpack_require__(70);
 
 	var _libEventEmitter2 = _interopRequireDefault(_libEventEmitter);
 
@@ -13087,7 +13071,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	// will be redirected to top controls
 
 /***/ },
-/* 76 */
+/* 75 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*!
@@ -13115,7 +13099,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-	var _libEventEmitter = __webpack_require__(71);
+	var _libEventEmitter = __webpack_require__(70);
 
 	var _libEventEmitter2 = _interopRequireDefault(_libEventEmitter);
 
@@ -13297,7 +13281,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 77 */
+/* 76 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*!
@@ -13325,7 +13309,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-	var _libEventEmitter = __webpack_require__(71);
+	var _libEventEmitter = __webpack_require__(70);
 
 	var _libEventEmitter2 = _interopRequireDefault(_libEventEmitter);
 
@@ -13512,7 +13496,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 78 */
+/* 77 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*!
@@ -13842,7 +13826,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 79 */
+/* 78 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*!
@@ -13870,7 +13854,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-	var _control = __webpack_require__(91);
+	var _control = __webpack_require__(90);
 
 	var _control2 = _interopRequireDefault(_control);
 
@@ -14013,7 +13997,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @private
 	     */
 	    value: function _addDefaultFilters() {
-	      this.addFilter(__webpack_require__(70));
+	      this.addFilter(__webpack_require__(71));
 	      this.addFilter(__webpack_require__(34));
 	      this.addFilter(__webpack_require__(35));
 	      this.addFilter(__webpack_require__(36));
@@ -14105,7 +14089,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 80 */
+/* 79 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*!
@@ -14131,7 +14115,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-	var _control = __webpack_require__(91);
+	var _control = __webpack_require__(90);
 
 	var _control2 = _interopRequireDefault(_control);
 
@@ -14348,7 +14332,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 81 */
+/* 80 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*!
@@ -14374,7 +14358,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-	var _control = __webpack_require__(91);
+	var _control = __webpack_require__(90);
 
 	var _control2 = _interopRequireDefault(_control);
 
@@ -14521,7 +14505,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 82 */
+/* 81 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*!
@@ -14547,7 +14531,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-	var _control = __webpack_require__(91);
+	var _control = __webpack_require__(90);
 
 	var _control2 = _interopRequireDefault(_control);
 
@@ -14651,7 +14635,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 83 */
+/* 82 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*!
@@ -14677,7 +14661,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-	var _control = __webpack_require__(91);
+	var _control = __webpack_require__(90);
 
 	var _control2 = _interopRequireDefault(_control);
 
@@ -14781,7 +14765,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 84 */
+/* 83 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*!
@@ -14813,7 +14797,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _libSlider2 = _interopRequireDefault(_libSlider);
 
-	var _control = __webpack_require__(91);
+	var _control = __webpack_require__(90);
 
 	var _control2 = _interopRequireDefault(_control);
 
@@ -14915,7 +14899,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 85 */
+/* 84 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*!
@@ -14943,7 +14927,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-	var _control = __webpack_require__(91);
+	var _control = __webpack_require__(90);
 
 	var _control2 = _interopRequireDefault(_control);
 
@@ -15601,7 +15585,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 86 */
+/* 85 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*!
@@ -15627,7 +15611,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-	var _control = __webpack_require__(91);
+	var _control = __webpack_require__(90);
 
 	var _control2 = _interopRequireDefault(_control);
 
@@ -15960,7 +15944,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 87 */
+/* 86 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*!
@@ -15986,7 +15970,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-	var _control = __webpack_require__(91);
+	var _control = __webpack_require__(90);
 
 	var _control2 = _interopRequireDefault(_control);
 
@@ -16371,7 +16355,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 88 */
+/* 87 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*!
@@ -16397,7 +16381,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-	var _control = __webpack_require__(91);
+	var _control = __webpack_require__(90);
 
 	var _control2 = _interopRequireDefault(_control);
 
@@ -16534,7 +16518,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 89 */
+/* 88 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*!
@@ -16562,7 +16546,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-	var _control = __webpack_require__(91);
+	var _control = __webpack_require__(90);
 
 	var _control2 = _interopRequireDefault(_control);
 
@@ -17057,7 +17041,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 90 */
+/* 89 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*!
@@ -17085,7 +17069,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-	var _control = __webpack_require__(91);
+	var _control = __webpack_require__(90);
 
 	var _control2 = _interopRequireDefault(_control);
 
@@ -17655,7 +17639,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 91 */
+/* 90 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*!
@@ -17691,11 +17675,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _baseHelpers2 = _interopRequireDefault(_baseHelpers);
 
-	var _libEventEmitter = __webpack_require__(71);
+	var _libEventEmitter = __webpack_require__(70);
 
 	var _libEventEmitter2 = _interopRequireDefault(_libEventEmitter);
 
-	var _libScrollbar = __webpack_require__(78);
+	var _libScrollbar = __webpack_require__(77);
 
 	var _libScrollbar2 = _interopRequireDefault(_libScrollbar);
 
@@ -18010,6 +17994,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
+/* 91 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function(module) {
+		if(!module.webpackPolyfill) {
+			module.deprecate = function() {};
+			module.paths = [];
+			// module.parent = undefined by default
+			module.children = [];
+			module.webpackPolyfill = 1;
+		}
+		return module;
+	}
+
+
+/***/ },
 /* 92 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -18043,7 +18043,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _libMathVector22 = _interopRequireDefault(_libMathVector2);
 
-	var _libEventEmitter = __webpack_require__(71);
+	var _libEventEmitter = __webpack_require__(70);
 
 	var _libEventEmitter2 = _interopRequireDefault(_libEventEmitter);
 
@@ -18590,7 +18590,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-	var _libEventEmitter = __webpack_require__(71);
+	var _libEventEmitter = __webpack_require__(70);
 
 	var _libEventEmitter2 = _interopRequireDefault(_libEventEmitter);
 
@@ -18942,7 +18942,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-	var _libEventEmitter = __webpack_require__(71);
+	var _libEventEmitter = __webpack_require__(70);
 
 	var _libEventEmitter2 = _interopRequireDefault(_libEventEmitter);
 
