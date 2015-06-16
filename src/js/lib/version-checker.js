@@ -12,8 +12,8 @@ const VERSION_CHECK_URL = `http://sdk.img.ly/version.json?sdk=html5&jsoncallback
 
 export default class VersionChecker {
   constructor (version) {
-    this._check()
     this._version = version
+    this._check()
   }
 
   /**
@@ -22,20 +22,15 @@ export default class VersionChecker {
    */
   _check () {
     let self = this
-    window.imglySDKVersionCallback = (response) => {
-      let [major, minor, patch] = response.version.split('.')
-      let [cMajor, cMinor, cPatch] = self._version.split('.')
-
-      if (major > cMajor ||
-          (major <= cMajor && minor > cMinor) ||
-          (major <= cMajor && minor <= cMinor && patch > cPatch)) {
+    window[VERSION_CHECK_FN] = (response) => {
+      if (response.outdated) {
         console.warn(`imgly-sdk-html5: Your version ${self._version} is outdated.`)
         console.warn(`imgly-sdk-html5: Current version is ${response.version}.`)
       }
     }
 
     let script = document.createElement('script')
-    script.src = VERSION_CHECK_URL
+    script.src = VERSION_CHECK_URL + '&version=' + this._version
     script.async = true
     document.getElementsByTagName('head')[0].appendChild(script)
   }
