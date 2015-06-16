@@ -11,7 +11,11 @@ window.onload = function () {
       container: document.querySelector('#container'),
       image: myImage,
       ui: {
-        enabled: true
+        enabled: true,
+        showExportButton: true,
+        export: {
+          type: ImglyKit.ImageFormat.JPEG
+        }
       },
       renderOnWindowResize: true // Our editor's size is relative to the window size
     })
