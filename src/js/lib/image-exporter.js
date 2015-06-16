@@ -53,13 +53,14 @@ class ImageExporter {
    * @param  {Canvas} canvas
    * @param  {ImglyKit.RenderType} renderType
    * @param  {ImglyKit.ImageFormat} imageFormat
+   * @param  {Number} quality = 0.8
    * @return {string|image}
    */
-  static export (canvas, renderType, imageFormat) {
+  static export (canvas, renderType, imageFormat, quality=0.8) {
     var result
     if (renderType === RenderType.IMAGE) {
       var image
-      result = canvas.toDataURL(imageFormat)
+      result = canvas.toDataURL(imageFormat, quality)
 
       /* istanbul ignore else  */
       if (typeof window === 'undefined') {
@@ -74,7 +75,7 @@ class ImageExporter {
       result = image
       return result
     } else if (renderType === RenderType.DATAURL) {
-      result = canvas.toDataURL(imageFormat)
+      result = canvas.toDataURL(imageFormat, quality)
       return result
     } else if (renderType === RenderType.BUFFER) {
       return canvas.toBuffer()

@@ -102,9 +102,10 @@ class ImglyKit {
    * @param  {ImglyKit.RenderType} [renderType=ImglyKit.RenderType.DATAURL] - The output type
    * @param  {ImglyKit.ImageFormat} [imageFormat=ImglyKit.ImageFormat.PNG] - The output image format
    * @param  {string} [dimensions] - The final dimensions of the image
+   * @param  {Number} [quality] - The image quality, between 0 and 1
    * @return {Promise}
    */
-  render (renderType, imageFormat, dimensions) {
+  render (renderType, imageFormat, dimensions, quality) {
     var settings = ImageExporter.validateSettings(renderType, imageFormat)
 
     renderType = settings.renderType
@@ -127,7 +128,7 @@ class ImglyKit {
     return renderImage.render()
       .then(function () {
         var canvas = renderImage.getRenderer().getCanvas()
-        return ImageExporter.export(canvas, renderType, imageFormat)
+        return ImageExporter.export(canvas, renderType, imageFormat, quality)
       })
   }
 

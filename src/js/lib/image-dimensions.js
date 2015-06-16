@@ -45,7 +45,7 @@ class ImageDimensions {
    * @private
    */
   _parse () {
-    if (typeof this._dimensionsString === 'undefined') {
+    if (typeof this._dimensionsString === 'undefined' || this._dimensionsString === null) {
       return null
     }
 

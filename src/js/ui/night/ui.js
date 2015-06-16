@@ -58,7 +58,8 @@ class NightUI extends UI {
     })
 
     this._options.ui.export = _.defaults(this._options.ui.export, {
-      type: ImageFormat.PNG
+      type: ImageFormat.JPEG,
+      quality: 0.8
     })
   }
 
@@ -500,7 +501,10 @@ class NightUI extends UI {
    * Exports the current image with the default settings
    */
   export () {
-    this._kit.render(RenderType.DATAURL, this._options.ui.export.type)
+    this._kit.render(RenderType.DATAURL,
+      this._options.ui.export.type,
+      this._options.ui.export.dimensions,
+      this._options.ui.export.quality)
       .then((data) => {
         let link = document.createElement('a')
         let extension = this._options.ui.export.type.split('/').pop()
