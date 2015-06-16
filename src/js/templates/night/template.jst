@@ -22,6 +22,12 @@
         <img src="{{=it.helpers.assetPath('ui/night/top/undo.png')}}" />
         Undo
       </div>
+      {{? it.options.ui.showExportButton }}
+      <div class="imglykit-export">
+        <img src="{{=it.helpers.assetPath('ui/night/top/export.png')}}" />
+        Export
+      </div>
+      {{?}}
     </div>
     <div class="imglykit-top-controls-right">
       <div class="imglykit-zoom-fit"></div>

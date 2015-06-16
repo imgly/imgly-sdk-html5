@@ -39,9 +39,11 @@ class TopControls extends EventEmitter {
     this._zoomOut = container.querySelector('.imglykit-zoom-out')
     this._zoomLevel = container.querySelector('.imglykit-zoom-level-num')
     this._newButton = container.querySelector('.imglykit-new')
+    this._exportButton = container.querySelector('.imglykit-export')
     this._handleZoom()
     this._handleUndo()
     this._handleNew()
+    this._handleExport()
   }
 
   /**
@@ -73,6 +75,16 @@ class TopControls extends EventEmitter {
   }
 
   /**
+   * Handles the export button
+   * @private
+   */
+  _handleExport () {
+    if (!this._exportButton) return
+
+    this._exportButton.addEventListener('click', this._onExportClick.bind(this))
+  }
+
+  /**
    * Gets called when the user clicks the new button
    * @param {Event} e
    * @private
@@ -85,6 +97,17 @@ class TopControls extends EventEmitter {
   }
 
   /**
+   * Gets called when the user clicks the export button
+   * @param {Event} e
+   * @private
+   */
+  _onExportClick (e) {
+    e.preventDefault()
+
+    this.emit('export')
+  }
+
+  /**
    * Gets called when the user clicks the undo button
    * @private
    */
@@ -93,7 +116,7 @@ class TopControls extends EventEmitter {
   }
 
   /**
-   * Updates the undo button active state
+   * Updates the undo button visible state
    */
   updateUndoButton () {
     let { history } = this._ui
@@ -101,6 +124,20 @@ class TopControls extends EventEmitter {
       this._undoButton.style.display = 'none'
     } else {
       this._undoButton.style.display = 'inline-block'
+    }
+  }
+
+  /**
+   * Updates the export button visible state
+   */
+  updateExportButton () {
+    if (!this._exportButton) return
+
+    let { image } = this._ui
+    if (image) {
+      this._exportButton.style.display = 'inline-block'
+    } else {
+      this._exportButton.style.display = 'none'
     }
   }
 

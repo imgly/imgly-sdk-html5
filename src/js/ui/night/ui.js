@@ -15,6 +15,7 @@ import Canvas from './lib/canvas'
 import FileLoader from './lib/file-loader'
 import TopControls from './lib/top-controls'
 import Scrollbar from './lib/scrollbar'
+import { RenderType, ImageFormat } from '../../constants'
 
 class NightUI extends UI {
   constructor (...args) {
@@ -51,7 +52,13 @@ class NightUI extends UI {
     this._options.ui = _.defaults(this._options.ui, {
       showNewButton: !this._options.image,
       showHeader: true,
-      showCloseButton: false
+      showCloseButton: false,
+      showExportButton: false,
+      export: {}
+    })
+
+    this._options.ui.export = _.defaults(this._options.ui.export, {
+      type: ImageFormat.PNG
     })
   }
 
@@ -95,6 +102,8 @@ class NightUI extends UI {
     if (this._options.ui.showCloseButton) {
       this._handleCloseButton()
     }
+
+    this._topControls.updateExportButton()
   }
 
   /**
@@ -150,6 +159,8 @@ class NightUI extends UI {
     this.showZoom()
     this._topControls.init()
     this._enableControls()
+
+    this._topControls.updateExportButton()
   }
 
   /**
@@ -162,6 +173,10 @@ class NightUI extends UI {
 
     this._topControls.on('undo', () => {
       this.undo()
+    })
+
+    this._topControls.on('export', () => {
+      this.export()
     })
 
     // Pass zoom in event
@@ -479,6 +494,24 @@ class NightUI extends UI {
       this.canvas.zoomToFit(true)
     }
     this._topControls.updateUndoButton()
+  }
+
+  /**
+   * Exports the current image with the default settings
+   */
+  export () {
+    this._kit.render(RenderType.DATAURL, this._options.ui.export.type)
+      .then((data) => {
+        let link = document.createElement('a')
+        let extension = this._options.ui.export.type.split('/').pop()
+        link.download = `imglykit-export.${extension}`
+
+        link.href = data
+        document.body.appendChild(link)
+        link.click()
+        // Cleanup the DOM
+        document.body.removeChild(link)
+      })
   }
 
   /**
