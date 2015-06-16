@@ -60,7 +60,12 @@ class ImageExporter {
     var result
     if (renderType === RenderType.IMAGE) {
       var image
-      result = canvas.toDataURL(imageFormat, quality)
+      if (typeof window === 'undefined') {
+        // Quality not supported in node-canvas
+        result = canvas.toDataURL(imageFormat)
+      } else {
+        result = canvas.toDataURL(imageFormat, quality)
+      }
 
       /* istanbul ignore else  */
       if (typeof window === 'undefined') {
@@ -75,7 +80,12 @@ class ImageExporter {
       result = image
       return result
     } else if (renderType === RenderType.DATAURL) {
-      result = canvas.toDataURL(imageFormat, quality)
+      if (typeof window === 'undefined') {
+        // Quality not supported in node-canvas
+        result = canvas.toDataURL(imageFormat)
+      } else {
+        result = canvas.toDataURL(imageFormat, quality)
+      }
       return result
     } else if (renderType === RenderType.BUFFER) {
       return canvas.toBuffer()
