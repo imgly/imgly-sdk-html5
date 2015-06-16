@@ -97,7 +97,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _libUtils2 = _interopRequireDefault(_libUtils);
 
-	var VERSION = '2.0.0-beta9';
+	var VERSION = '2.0.0-beta.10';
 
 	/**
 	 * @class
@@ -191,9 +191,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @param  {ImglyKit.RenderType} [renderType=ImglyKit.RenderType.DATAURL] - The output type
 	     * @param  {ImglyKit.ImageFormat} [imageFormat=ImglyKit.ImageFormat.PNG] - The output image format
 	     * @param  {string} [dimensions] - The final dimensions of the image
+	     * @param  {Number} [quality] - The image quality, between 0 and 1
 	     * @return {Promise}
 	     */
-	    value: function render(renderType, imageFormat, dimensions) {
+	    value: function render(renderType, imageFormat, dimensions, quality) {
 	      var settings = _libImageExporter2['default'].validateSettings(renderType, imageFormat);
 
 	      renderType = settings.renderType;
@@ -234,7 +235,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // Initiate image rendering
 	      return renderImage.render().then(function () {
 	        var canvas = renderImage.getRenderer().getCanvas();
-	        return _libImageExporter2['default']['export'](canvas, renderType, imageFormat);
+	        return _libImageExporter2['default']['export'](canvas, renderType, imageFormat, quality);
 	      });
 	    }
 	  }, {
@@ -1954,13 +1955,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @param  {Canvas} canvas
 	     * @param  {ImglyKit.RenderType} renderType
 	     * @param  {ImglyKit.ImageFormat} imageFormat
+	     * @param  {Number} quality = 0.8
 	     * @return {string|image}
 	     */
 	    value: function _export(canvas, renderType, imageFormat) {
+	      var quality = arguments[3] === undefined ? 0.8 : arguments[3];
+
 	      var result;
 	      if (renderType === _constants.RenderType.IMAGE) {
 	        var image;
-	        result = canvas.toDataURL(imageFormat);
+	        result = canvas.toDataURL(imageFormat, quality);
 
 	        /* istanbul ignore else  */
 	        if (typeof window === 'undefined') {
@@ -1975,7 +1979,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        result = image;
 	        return result;
 	      } else if (renderType === _constants.RenderType.DATAURL) {
-	        result = canvas.toDataURL(imageFormat);
+	        result = canvas.toDataURL(imageFormat, quality);
 	        return result;
 	      } else if (renderType === _constants.RenderType.BUFFER) {
 	        return canvas.toBuffer();
@@ -2011,8 +2015,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-	function _slicedToArray(arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }
-
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 	var VERSION_CHECK_FN = 'imglySDKVersionCallback';
@@ -2022,8 +2024,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function VersionChecker(version) {
 	    _classCallCheck(this, VersionChecker);
 
-	    this._check();
 	    this._version = version;
+	    this._check();
 	  }
 
 	  _createClass(VersionChecker, [{
@@ -2035,31 +2037,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    value: function _check() {
 	      var self = this;
-	      window.imglySDKVersionCallback = function (response) {
-	        var _response$version$split = response.version.split('.');
-
-	        var _response$version$split2 = _slicedToArray(_response$version$split, 3);
-
-	        var major = _response$version$split2[0];
-	        var minor = _response$version$split2[1];
-	        var patch = _response$version$split2[2];
-
-	        var _self$_version$split = self._version.split('.');
-
-	        var _self$_version$split2 = _slicedToArray(_self$_version$split, 3);
-
-	        var cMajor = _self$_version$split2[0];
-	        var cMinor = _self$_version$split2[1];
-	        var cPatch = _self$_version$split2[2];
-
-	        if (major > cMajor || major <= cMajor && minor > cMinor || major <= cMajor && minor <= cMinor && patch > cPatch) {
+	      window[VERSION_CHECK_FN] = function (response) {
+	        if (response.outdated) {
 	          console.warn('imgly-sdk-html5: Your version ' + self._version + ' is outdated.');
 	          console.warn('imgly-sdk-html5: Current version is ' + response.version + '.');
 	        }
 	      };
 
 	      var script = document.createElement('script');
-	      script.src = VERSION_CHECK_URL;
+	      script.src = VERSION_CHECK_URL + '&version=' + this._version;
 	      script.async = true;
 	      document.getElementsByTagName('head')[0].appendChild(script);
 	    }
@@ -2624,7 +2610,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _libColor2 = _interopRequireDefault(_libColor);
 
-	var _libEventEmitter = __webpack_require__(71);
+	var _libEventEmitter = __webpack_require__(70);
 
 	var _libEventEmitter2 = _interopRequireDefault(_libEventEmitter);
 
@@ -2988,7 +2974,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _operation2 = _interopRequireDefault(_operation);
 
-	var _filtersIdentityFilter = __webpack_require__(70);
+	var _filtersIdentityFilter = __webpack_require__(71);
 
 	var _filtersIdentityFilter2 = _interopRequireDefault(_filtersIdentityFilter);
 
@@ -8421,6 +8407,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _libScrollbar2 = _interopRequireDefault(_libScrollbar);
 
+	var _constants = __webpack_require__(5);
+
 
 
 	var NightUI = (function (_UI) {
@@ -8434,7 +8422,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _get(Object.getPrototypeOf(NightUI.prototype), 'constructor', this).apply(this, args);
 
 	    this._operationsMap = {};
-	    this._template = "<div class=\"imglykit-container\">\n  {{? !it.options.ui.hideHeader }}\n  <div class=\"imglykit-header\">\n    img.ly Photo Editor SDK\n\n    {{? it.options.ui.showCloseButton }}\n    <div class=\"imglykit-close-button\">\n      <img src=\"{{=it.helpers.assetPath('ui/night/close.png')}}\" />\n    </div>\n    {{?}}\n  </div>\n  {{?}}\n  <div class=\"imglykit-top-controls{{? !it.options.ui.hideHeader }} imglykit-header-padding{{?}}\">\n    <div class=\"imglykit-top-controls-left\">\n      {{? it.options.ui.showNewButton }}\n      <div class=\"imglykit-new\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/top/new.png')}}\" />\n        New\n      </div>\n      {{?}}\n      <div class=\"imglykit-undo\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/top/undo.png')}}\" />\n        Undo\n      </div>\n    </div>\n    <div class=\"imglykit-top-controls-right\">\n      <div class=\"imglykit-zoom-fit\"></div>\n      <div class=\"imglykit-zoom-level\">Zoom: <span class=\"imglykit-zoom-level-num\">100</span>%</div>\n      <div class=\"imglykit-zoom-in\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/top/zoom-in.png')}}\" />\n      </div>\n      <div class=\"imglykit-zoom-out\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/top/zoom-out.png')}}\" />\n      </div>\n    </div>\n  </div>\n\n  <div class=\"imglykit-canvas-container{{? !it.options.ui.hideHeader }} imglykit-header-padding{{?}}\">\n    <div class=\"imglykit-canvas-inner-container\">\n      <canvas class=\"imglykit-canvas-draggable\"></canvas>\n      <div class=\"imglykit-canvas-controls imglykit-canvas-controls-disabled\"></div>\n    </div>\n    {{? it.renderDropArea }}\n    <div class=\"imglykit-drop-area-container{{? !it.options.ui.hideHeader }} imglykit-header-padding{{?}}\">\n      <div class=\"imglykit-drop-area\">\n        <input type=\"file\" class=\"imglykit-drop-area-hidden-input\" />\n        <img src=\"{{=it.helpers.assetPath('ui/night/upload.png')}}\" />\n\n        <div class=\"imglykit-drop-area-content\">\n          <h1>Upload a picture</h1>\n          <span>Click to upload a picture from your library or just drag and drop</span>\n        </div>\n      </div>\n    </div>\n    {{?}}\n  </div>\n\n  <div class=\"imglykit-controls-container\">\n    <div class=\"imglykit-controls\">\n\n      <div>\n        <div class=\"imglykit-controls-overview\">\n          <ul class=\"imglykit-controls-list\">\n          {{ for (var identifier in it.controls) { }}\n            {{ var control = it.controls[identifier]; }}\n            <li data-identifier=\"{{= control.identifier}}\"{{? it.controlsDisabled }} data-disabled{{?}}>\n              <img src=\"{{=it.helpers.assetPath('ui/night/operations/' + control.identifier + '.png') }}\" />\n            </li>\n          {{ } }}\n          </ul>\n        </div>\n      </div>\n\n    </div>\n  </div>\n</div>\n";
+	    this._template = "<div class=\"imglykit-container\">\n  {{? !it.options.ui.hideHeader }}\n  <div class=\"imglykit-header\">\n    img.ly Photo Editor SDK\n\n    {{? it.options.ui.showCloseButton }}\n    <div class=\"imglykit-close-button\">\n      <img src=\"{{=it.helpers.assetPath('ui/night/close.png')}}\" />\n    </div>\n    {{?}}\n  </div>\n  {{?}}\n  <div class=\"imglykit-top-controls{{? !it.options.ui.hideHeader }} imglykit-header-padding{{?}}\">\n    <div class=\"imglykit-top-controls-left\">\n      {{? it.options.ui.showNewButton }}\n      <div class=\"imglykit-new\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/top/new.png')}}\" />\n        New\n      </div>\n      {{?}}\n      <div class=\"imglykit-undo\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/top/undo.png')}}\" />\n        Undo\n      </div>\n      {{? it.options.ui.showExportButton }}\n      <div class=\"imglykit-export\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/top/export.png')}}\" />\n        Export\n      </div>\n      {{?}}\n    </div>\n    <div class=\"imglykit-top-controls-right\">\n      <div class=\"imglykit-zoom-fit\"></div>\n      <div class=\"imglykit-zoom-level\">Zoom: <span class=\"imglykit-zoom-level-num\">100</span>%</div>\n      <div class=\"imglykit-zoom-in\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/top/zoom-in.png')}}\" />\n      </div>\n      <div class=\"imglykit-zoom-out\">\n        <img src=\"{{=it.helpers.assetPath('ui/night/top/zoom-out.png')}}\" />\n      </div>\n    </div>\n  </div>\n\n  <div class=\"imglykit-canvas-container{{? !it.options.ui.hideHeader }} imglykit-header-padding{{?}}\">\n    <div class=\"imglykit-canvas-inner-container\">\n      <canvas class=\"imglykit-canvas-draggable\"></canvas>\n      <div class=\"imglykit-canvas-controls imglykit-canvas-controls-disabled\"></div>\n    </div>\n    {{? it.renderDropArea }}\n    <div class=\"imglykit-drop-area-container{{? !it.options.ui.hideHeader }} imglykit-header-padding{{?}}\">\n      <div class=\"imglykit-drop-area\">\n        <input type=\"file\" class=\"imglykit-drop-area-hidden-input\" />\n        <img src=\"{{=it.helpers.assetPath('ui/night/upload.png')}}\" />\n\n        <div class=\"imglykit-drop-area-content\">\n          <h1>Upload a picture</h1>\n          <span>Click to upload a picture from your library or just drag and drop</span>\n        </div>\n      </div>\n    </div>\n    {{?}}\n  </div>\n\n  <div class=\"imglykit-controls-container\">\n    <div class=\"imglykit-controls\">\n\n      <div>\n        <div class=\"imglykit-controls-overview\">\n          <ul class=\"imglykit-controls-list\">\n          {{ for (var identifier in it.controls) { }}\n            {{ var control = it.controls[identifier]; }}\n            <li data-identifier=\"{{= control.identifier}}\"{{? it.controlsDisabled }} data-disabled{{?}}>\n              <img src=\"{{=it.helpers.assetPath('ui/night/operations/' + control.identifier + '.png') }}\" />\n            </li>\n          {{ } }}\n          </ul>\n        </div>\n      </div>\n\n    </div>\n  </div>\n</div>\n";
 	    this._registeredControls = {};
 	    this._history = [];
 
@@ -8454,7 +8442,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this._options.ui = _lodash2['default'].defaults(this._options.ui, {
 	      showNewButton: !this._options.image,
 	      showHeader: true,
-	      showCloseButton: false
+	      showCloseButton: false,
+	      showExportButton: false,
+	      'export': {}
+	    });
+
+	    this._options.ui['export'] = _lodash2['default'].defaults(this._options.ui['export'], {
+	      type: _constants.ImageFormat.JPEG,
+	      quality: 0.8
 	    });
 	  }
 
@@ -8495,6 +8490,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (this._options.ui.showCloseButton) {
 	        this._handleCloseButton();
 	      }
+
+	      this._topControls.updateExportButton();
 	    }
 	  }, {
 	    key: '_initFileLoader',
@@ -8558,6 +8555,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.showZoom();
 	      this._topControls.init();
 	      this._enableControls();
+
+	      this._topControls.updateExportButton();
 	    }
 	  }, {
 	    key: '_initTopControls',
@@ -8574,6 +8573,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this._topControls.on('undo', function () {
 	        _this2.undo();
+	      });
+
+	      this._topControls.on('export', function () {
+	        _this2['export']();
 	      });
 
 	      // Pass zoom in event
@@ -8963,6 +8966,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this._topControls.updateUndoButton();
 	    }
 	  }, {
+	    key: 'export',
+
+	    /**
+	     * Exports the current image with the default settings
+	     */
+	    value: function _export() {
+	      var _this6 = this;
+
+	      this._kit.render(_constants.RenderType.DATAURL, this._options.ui['export'].type, this._options.ui['export'].dimensions, this._options.ui['export'].quality).then(function (data) {
+	        var link = document.createElement('a');
+	        var extension = _this6._options.ui['export'].type.split('/').pop();
+	        link.download = 'imglykit-export.' + extension;
+
+	        link.href = data;
+	        document.body.appendChild(link);
+	        link.click();
+	        // Cleanup the DOM
+	        document.body.removeChild(link);
+	      });
+	    }
+	  }, {
 	    key: 'identifier',
 
 	    /**
@@ -9114,7 +9138,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @private
 	     */
 	    value: function _parse() {
-	      if (typeof this._dimensionsString === 'undefined') {
+	      if (typeof this._dimensionsString === 'undefined' || this._dimensionsString === null) {
 	        return null;
 	      }
 
@@ -11614,94 +11638,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/*!
-	 * Copyright (c) 2013-2015 9elements GmbH
-	 *
-	 * Released under Attribution-NonCommercial 3.0 Unported
-	 * http://creativecommons.org/licenses/by-nc/3.0/
-	 *
-	 * For commercial use, please contact us at contact@9elements.com
-	 */
-
-	'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-
-	var _filter = __webpack_require__(8);
-
-	var _filter2 = _interopRequireDefault(_filter);
-
-	/**
-	 * Identity Filter
-	 * @class
-	 * @alias ImglyKit.Filters.IdentityFilter
-	 * @extends {ImglyKit.Filter}
-	 */
-
-	var IdentityFilter = (function (_Filter) {
-	  function IdentityFilter() {
-	    _classCallCheck(this, IdentityFilter);
-
-	    if (_Filter != null) {
-	      _Filter.apply(this, arguments);
-	    }
-	  }
-
-	  _inherits(IdentityFilter, _Filter);
-
-	  _createClass(IdentityFilter, [{
-	    key: 'render',
-
-	    /**
-	     * Renders the filter
-	     * @return {Promise}
-	     */
-	    value: function render() {}
-	  }, {
-	    key: 'name',
-
-	    /**
-	     * The name that is displayed in the UI
-	     * @type {String}
-	     */
-	    get: function () {
-	      return 'Original';
-	    }
-	  }], [{
-	    key: 'identifier',
-
-	    /**
-	     * A unique string that identifies this operation. Can be used to select
-	     * the active filter.
-	     * @type {String}
-	     */
-	    get: function () {
-	      return 'identity';
-	    }
-	  }]);
-
-	  return IdentityFilter;
-	})(_filter2['default']);
-
-	exports['default'] = IdentityFilter;
-	module.exports = exports['default'];
-
-	// This is the identity filter, it doesn't have any effect.
-
-/***/ },
-/* 71 */
-/***/ function(module, exports, __webpack_require__) {
-
 	/**
 	 * EventEmitter (ES6) from:
 	 * https://gist.github.com/bloodyowl/41b1de3388c626796eca
@@ -11828,6 +11764,94 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	exports['default'] = EventEmitter;
 	module.exports = exports['default'];
+
+/***/ },
+/* 71 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*!
+	 * Copyright (c) 2013-2015 9elements GmbH
+	 *
+	 * Released under Attribution-NonCommercial 3.0 Unported
+	 * http://creativecommons.org/licenses/by-nc/3.0/
+	 *
+	 * For commercial use, please contact us at contact@9elements.com
+	 */
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+	var _filter = __webpack_require__(8);
+
+	var _filter2 = _interopRequireDefault(_filter);
+
+	/**
+	 * Identity Filter
+	 * @class
+	 * @alias ImglyKit.Filters.IdentityFilter
+	 * @extends {ImglyKit.Filter}
+	 */
+
+	var IdentityFilter = (function (_Filter) {
+	  function IdentityFilter() {
+	    _classCallCheck(this, IdentityFilter);
+
+	    if (_Filter != null) {
+	      _Filter.apply(this, arguments);
+	    }
+	  }
+
+	  _inherits(IdentityFilter, _Filter);
+
+	  _createClass(IdentityFilter, [{
+	    key: 'render',
+
+	    /**
+	     * Renders the filter
+	     * @return {Promise}
+	     */
+	    value: function render() {}
+	  }, {
+	    key: 'name',
+
+	    /**
+	     * The name that is displayed in the UI
+	     * @type {String}
+	     */
+	    get: function () {
+	      return 'Original';
+	    }
+	  }], [{
+	    key: 'identifier',
+
+	    /**
+	     * A unique string that identifies this operation. Can be used to select
+	     * the active filter.
+	     * @type {String}
+	     */
+	    get: function () {
+	      return 'identity';
+	    }
+	  }]);
+
+	  return IdentityFilter;
+	})(_filter2['default']);
+
+	exports['default'] = IdentityFilter;
+	module.exports = exports['default'];
+
+	// This is the identity filter, it doesn't have any effect.
 
 /***/ },
 /* 72 */
@@ -12210,7 +12234,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _libUtils2 = _interopRequireDefault(_libUtils);
 
-	var _libEventEmitter = __webpack_require__(71);
+	var _libEventEmitter = __webpack_require__(70);
 
 	var _libEventEmitter2 = _interopRequireDefault(_libEventEmitter);
 
@@ -12450,7 +12474,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _libMathVector22 = _interopRequireDefault(_libMathVector2);
 
-	var _libEventEmitter = __webpack_require__(71);
+	var _libEventEmitter = __webpack_require__(70);
 
 	var _libEventEmitter2 = _interopRequireDefault(_libEventEmitter);
 
@@ -13196,7 +13220,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-	var _libEventEmitter = __webpack_require__(71);
+	var _libEventEmitter = __webpack_require__(70);
 
 	var _libEventEmitter2 = _interopRequireDefault(_libEventEmitter);
 
@@ -13406,7 +13430,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-	var _libEventEmitter = __webpack_require__(71);
+	var _libEventEmitter = __webpack_require__(70);
 
 	var _libEventEmitter2 = _interopRequireDefault(_libEventEmitter);
 
@@ -13449,9 +13473,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this._zoomOut = container.querySelector('.imglykit-zoom-out');
 	      this._zoomLevel = container.querySelector('.imglykit-zoom-level-num');
 	      this._newButton = container.querySelector('.imglykit-new');
+	      this._exportButton = container.querySelector('.imglykit-export');
 	      this._handleZoom();
 	      this._handleUndo();
 	      this._handleNew();
+	      this._handleExport();
 	    }
 	  }, {
 	    key: '_handleZoom',
@@ -13488,6 +13514,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this._newButton.addEventListener('click', this._onNewClick.bind(this));
 	    }
 	  }, {
+	    key: '_handleExport',
+
+	    /**
+	     * Handles the export button
+	     * @private
+	     */
+	    value: function _handleExport() {
+	      if (!this._exportButton) return;
+
+	      this._exportButton.addEventListener('click', this._onExportClick.bind(this));
+	    }
+	  }, {
 	    key: '_onNewClick',
 
 	    /**
@@ -13503,6 +13541,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	      fileLoader.openFileDialog();
 	    }
 	  }, {
+	    key: '_onExportClick',
+
+	    /**
+	     * Gets called when the user clicks the export button
+	     * @param {Event} e
+	     * @private
+	     */
+	    value: function _onExportClick(e) {
+	      e.preventDefault();
+
+	      this.emit('export');
+	    }
+	  }, {
 	    key: '_undo',
 
 	    /**
@@ -13516,7 +13567,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'updateUndoButton',
 
 	    /**
-	     * Updates the undo button active state
+	     * Updates the undo button visible state
 	     */
 	    value: function updateUndoButton() {
 	      var history = this._ui.history;
@@ -13525,6 +13576,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._undoButton.style.display = 'none';
 	      } else {
 	        this._undoButton.style.display = 'inline-block';
+	      }
+	    }
+	  }, {
+	    key: 'updateExportButton',
+
+	    /**
+	     * Updates the export button visible state
+	     */
+	    value: function updateExportButton() {
+	      if (!this._exportButton) return;
+
+	      var image = this._ui.image;
+
+	      if (image) {
+	        this._exportButton.style.display = 'inline-block';
+	      } else {
+	        this._exportButton.style.display = 'none';
 	      }
 	    }
 	  }, {
@@ -14094,7 +14162,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @private
 	     */
 	    value: function _addDefaultFilters() {
-	      this.addFilter(__webpack_require__(70));
+	      this.addFilter(__webpack_require__(71));
 	      this.addFilter(__webpack_require__(34));
 	      this.addFilter(__webpack_require__(35));
 	      this.addFilter(__webpack_require__(36));
@@ -17772,7 +17840,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _baseHelpers2 = _interopRequireDefault(_baseHelpers);
 
-	var _libEventEmitter = __webpack_require__(71);
+	var _libEventEmitter = __webpack_require__(70);
 
 	var _libEventEmitter2 = _interopRequireDefault(_libEventEmitter);
 
@@ -18140,7 +18208,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _libMathVector22 = _interopRequireDefault(_libMathVector2);
 
-	var _libEventEmitter = __webpack_require__(71);
+	var _libEventEmitter = __webpack_require__(70);
 
 	var _libEventEmitter2 = _interopRequireDefault(_libEventEmitter);
 
@@ -18687,7 +18755,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-	var _libEventEmitter = __webpack_require__(71);
+	var _libEventEmitter = __webpack_require__(70);
 
 	var _libEventEmitter2 = _interopRequireDefault(_libEventEmitter);
 
@@ -19039,7 +19107,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-	var _libEventEmitter = __webpack_require__(71);
+	var _libEventEmitter = __webpack_require__(70);
 
 	var _libEventEmitter2 = _interopRequireDefault(_libEventEmitter);
 

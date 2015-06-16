@@ -331,7 +331,7 @@
   cursor: pointer;
   border-right: 1px solid #363636;
   color: rgba(255, 255, 255, 0.4);
-  padding-right: 10px;
+  padding: 0 10px;
   display: none;
 }
 /* line 69, ../../src/css/night/_top.sass */
@@ -342,13 +342,28 @@
   vertical-align: middle;
 }
 /* line 74, ../../src/css/night/_top.sass */
+.imglykit-container .imglykit-export {
+  cursor: pointer;
+  border-right: 1px solid #363636;
+  color: rgba(255, 255, 255, 0.4);
+  padding: 0 10px;
+  display: none;
+}
+/* line 80, ../../src/css/night/_top.sass */
+.imglykit-container .imglykit-export img {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
+  opacity: 0.4;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+/* line 85, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-new {
   cursor: pointer;
   border-right: 1px solid #363636;
   color: rgba(255, 255, 255, 0.4);
   padding-right: 10px;
 }
-/* line 79, ../../src/css/night/_top.sass */
+/* line 90, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-new img {
   margin-right: 5px;
   vertical-align: middle;
@@ -522,24 +537,24 @@
 }
 /* line 82, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls li[data-disabled] {
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=50);
-  opacity: 0.5;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=20);
+  opacity: 0.2;
 }
-/* line 86, ../../src/css/night/_controls.sass */
+/* line 85, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls li:hover:not([data-disabled]), .imglykit-container .imglykit-controls .imglykit-controls-button:hover:not([data-disabled]) {
   -moz-box-shadow: 0 -3px 0 0 #9FBDFF inset;
   -webkit-box-shadow: 0 -3px 0 0 #9FBDFF inset;
   box-shadow: 0 -3px 0 0 #9FBDFF inset;
   background-color: rgba(0, 0, 0, 0.3);
 }
-/* line 90, ../../src/css/night/_controls.sass */
+/* line 89, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls li:hover:not([data-disabled]) img, .imglykit-container .imglykit-controls .imglykit-controls-button:hover:not([data-disabled]) img {
   -moz-transform: scale(1.1);
   -ms-transform: scale(1.1);
   -webkit-transform: scale(1.1);
   transform: scale(1.1);
 }
-/* line 93, ../../src/css/night/_controls.sass */
+/* line 92, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-button {
   -moz-transition: background-color 0.2s ease-out;
   -o-transition: background-color 0.2s ease-out;
@@ -552,15 +567,15 @@
   cursor: pointer;
   position: relative;
 }
-/* line 103, ../../src/css/night/_controls.sass */
+/* line 102, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-button:first-child {
   border-right: 1px solid #363636;
 }
-/* line 105, ../../src/css/night/_controls.sass */
+/* line 104, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-button:last-child {
   border-left: 1px solid #363636;
 }
-/* line 108, ../../src/css/night/_controls.sass */
+/* line 107, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-button img {
   vertical-align: middle;
   width: 40px;
@@ -569,7 +584,7 @@
   -webkit-transition: all 0.2s ease-out;
   transition: all 0.2s ease-out;
 }
-/* line 114, ../../src/css/night/_controls.sass */
+/* line 113, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-done .imglykit-controls-done-highlighted {
   display: none;
   position: absolute;
@@ -579,11 +594,11 @@
   height: 80px;
   line-height: 80px;
 }
-/* line 124, ../../src/css/night/_controls.sass */
+/* line 123, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-done.highlighted > img {
   display: none;
 }
-/* line 126, ../../src/css/night/_controls.sass */
+/* line 125, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls .imglykit-controls-done.highlighted .imglykit-controls-done-highlighted {
   display: block;
 }
