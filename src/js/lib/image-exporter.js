@@ -89,6 +89,8 @@ class ImageExporter {
       return result
     } else if (renderType === RenderType.BUFFER) {
       return canvas.toBuffer()
+    } else if (renderType === RenderType.BLOB) {
+      return canvas.toBlob()
     }
   }
 }
