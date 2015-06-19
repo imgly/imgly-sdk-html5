@@ -77,7 +77,7 @@ describe("RenderImage", function () {
 
         describe("when set to ImglyKit.RenderType.BUFFER", function () {
 
-          it("should render to a data url", function (done) {
+          it("should render to a buffer", function (done) {
             kit.render(ImglyKit.RenderType.BUFFER)
               .then(function (result) {
                 result.constructor.name.should.equal("Buffer");
