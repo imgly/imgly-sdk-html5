@@ -8,6 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 import { RenderType, ImageFormat } from '../constants'
+import ExifRestorer from './exif-restorer'
 import Utils from './utils'
 
 /**
@@ -50,42 +51,46 @@ class ImageExporter {
 
   /**
    * Exports the image from the given canvas with the given options
+   * @param  {Image} image
    * @param  {Canvas} canvas
    * @param  {ImglyKit.RenderType} renderType
    * @param  {ImglyKit.ImageFormat} imageFormat
    * @param  {Number} quality = 0.8
    * @return {string|image}
    */
-  static export (canvas, renderType, imageFormat, quality=0.8) {
-    var result
-    if (renderType === RenderType.IMAGE) {
-      var image
+  static export (image, canvas, renderType, imageFormat, quality=0.8) {
+    let result
+    if (renderType === RenderType.IMAGE ||
+        renderType === RenderType.DATAURL) {
       if (typeof window === 'undefined') {
-        // Quality not supported in node-canvas
+        // Quality not supported in node environment / node-canvas
         result = canvas.toDataURL(imageFormat)
       } else {
         result = canvas.toDataURL(imageFormat, quality)
       }
+
+      // When image's `src` attribute is a jpeg data url, we can restore
+      // the exif information
+      if (image.src.match(/^data:image\/jpeg/i)) {
+        result = ExifRestorer.restore(image.src, result)
+      }
+    }
+
+    if (renderType === RenderType.IMAGE) {
+      let outputImage
 
       /* istanbul ignore else  */
       if (typeof window === 'undefined') {
         // Not a browser environment
         var CanvasImage = require('canvas').Image
-        image = new CanvasImage()
+        outputImage = new CanvasImage()
       } else {
-        image = new Image()
+        outputImage = new Image()
       }
 
-      image.src = result
-      result = image
-      return result
+      outputImage.src = result
+      return outputImage
     } else if (renderType === RenderType.DATAURL) {
-      if (typeof window === 'undefined') {
-        // Quality not supported in node-canvas
-        result = canvas.toDataURL(imageFormat)
-      } else {
-        result = canvas.toDataURL(imageFormat, quality)
-      }
       return result
     } else if (renderType === RenderType.BUFFER) {
       return canvas.toBuffer()

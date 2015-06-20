@@ -126,9 +126,9 @@ class ImglyKit {
 
     // Initiate image rendering
     return renderImage.render()
-      .then(function () {
+      .then(() => {
         var canvas = renderImage.getRenderer().getCanvas()
-        return ImageExporter.export(canvas, renderType, imageFormat, quality)
+        return ImageExporter.export(this._options.image, canvas, renderType, imageFormat, quality)
       })
   }
 
