@@ -1,0 +1,44 @@
+/*!
+ * Copyright (c) 2013-2015 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+
+.imglykit-container
+
+  .imglykit-loadingOverlay
+    position: absolute
+    z-index: 3
+    top: 0
+    left: 0
+    display: none
+    width: 100%
+    height: 100%
+    background: rgba($backgroundColor, 0.9)
+
+
+  .imglykit-loadingOverlay-content
+    position: absolute
+    top: 50%
+    left: 50%
+    margin-top: -40px
+    margin-left: -75px
+    border-radius: 5px
+    width: 150px
+    height: 70px
+    padding: 10px
+    background: $backgroundColor
+
+    img
+      display: block
+      margin: auto
+      margin-bottom: 10px
+
+    span
+      display: block
+      font: bold 11px Helvetica, Arial, sans-serif
+      text-align: center
+      color: white

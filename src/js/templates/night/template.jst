@@ -1,4 +1,10 @@
 <div class="imglykit-container">
+  <div class="imglykit-loadingOverlay">
+    <div class="imglykit-loadingOverlay-content">
+      <img src="{{= it.helpers.assetPath('ui/night/loading.gif')}}" />
+      <span>Loading...</span>
+    </div>
+  </div>
   {{? !it.options.ui.hideHeader }}
   <div class="imglykit-header">
     img.ly Photo Editor SDK

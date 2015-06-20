@@ -84,6 +84,8 @@ class NightUI extends UI {
     this._controlsContainer = container.querySelector('.imglykit-controls')
     this._canvasControlsContainer = container.querySelector('.imglykit-canvas-controls')
     this._overviewControlsContainer = container.querySelector('.imglykit-controls-overview')
+    this._loadingOverlay = container.querySelector('.imglykit-loadingOverlay')
+    this._loadingSpan = container.querySelector('.imglykit-loadingOverlay span')
 
     this._handleOverview()
 
@@ -501,21 +503,43 @@ class NightUI extends UI {
    * Exports the current image with the default settings
    */
   export () {
-    this._kit.render(RenderType.DATAURL,
-      this._options.ui.export.type,
-      this._options.ui.export.dimensions,
-      this._options.ui.export.quality)
-      .then((data) => {
-        let link = document.createElement('a')
-        let extension = this._options.ui.export.type.split('/').pop()
-        link.download = `imglykit-export.${extension}`
+    this.displayLoadingMessage('Exporting...')
 
-        link.href = data
-        document.body.appendChild(link)
-        link.click()
-        // Cleanup the DOM
-        document.body.removeChild(link)
-      })
+    setTimeout(() => {
+      this._kit.render(RenderType.DATAURL,
+        this._options.ui.export.type,
+        this._options.ui.export.dimensions,
+        this._options.ui.export.quality)
+        .then((data) => {
+          let link = document.createElement('a')
+          let extension = this._options.ui.export.type.split('/').pop()
+          link.download = `imglykit-export.${extension}`
+
+          link.href = data
+          document.body.appendChild(link)
+          link.click()
+          // Cleanup the DOM
+          document.body.removeChild(link)
+
+          this.hideLoadingMessage()
+        })
+    }, 1000)
+  }
+
+  /**
+   * Displays the given message inside the loading overlay
+   * @param {String} message
+   */
+  displayLoadingMessage (message) {
+    this._loadingSpan.innerText = message
+    this._loadingOverlay.style.display = 'block'
+  }
+
+  /**
+   * Hides the loading message
+   */
+  hideLoadingMessage () {
+    this._loadingOverlay.style.display = 'none'
   }
 
   /**
