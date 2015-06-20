@@ -48,7 +48,9 @@ class TextOperation extends Operation {
           relative.y >= 0.0 && relative.y <= 1.0) {
 
             vec4 color1 = texture2D(u_textImage, relative);
-            gl_FragColor = vec4(mix(color0.rgb, color1.rgb, color1.a), 1.0);
+
+            // GL_SOURCE_ALPHA, GL_ONE_MINUS_SOURCE_ALPHA
+            gl_FragColor = color1 + color0 * (1.0 - color1.a);
 
         } else {
 
@@ -104,6 +106,9 @@ class TextOperation extends Operation {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+
+    // Set premultiplied alpha
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)
 
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textCanvas)
     gl.activeTexture(gl.TEXTURE0)
