@@ -15,7 +15,8 @@
 export var RenderType = {
   IMAGE: 'image',
   DATAURL: 'data-url',
-  BUFFER: 'buffer'
+  BUFFER: 'buffer',
+  BLOB: 'blob'
 }
 
 /**
