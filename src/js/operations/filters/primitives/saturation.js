@@ -43,7 +43,7 @@ class Saturation extends Primitive {
 
         vec3 greyScaleColor = vec3(luminance);
 
-        gl_FragColor = vec4(mix(greyScaleColor, texColor.rgb, u_saturation), texColor.a);
+        gl_FragColor = vec4(mix(greyScaleColor, texColor.rgb, u_saturation) * texColor.a, texColor.a);
       }
     `
   }

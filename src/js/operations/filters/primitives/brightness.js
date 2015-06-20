@@ -37,7 +37,7 @@ class Brightness extends Primitive {
 
       void main() {
         vec4 texColor = texture2D(u_image, v_texCoord);
-        gl_FragColor = vec4((texColor.rgb + vec3(u_brightness)), texColor.a);
+        gl_FragColor = vec4((texColor.rgb + vec3(u_brightness) * texColor.a), texColor.a);;
       }
     `
   }
