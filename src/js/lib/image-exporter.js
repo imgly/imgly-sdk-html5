@@ -56,47 +56,51 @@ class ImageExporter {
    * @param  {ImglyKit.RenderType} renderType
    * @param  {ImglyKit.ImageFormat} imageFormat
    * @param  {Number} quality = 0.8
-   * @return {string|image}
+   * @return {Promise}
    */
   static export (image, canvas, renderType, imageFormat, quality=0.8) {
-    let result
-    if (renderType === RenderType.IMAGE ||
-        renderType === RenderType.DATAURL) {
-      if (typeof window === 'undefined') {
-        // Quality not supported in node environment / node-canvas
-        result = canvas.toDataURL(imageFormat)
-      } else {
-        result = canvas.toDataURL(imageFormat, quality)
+    return new Promise((resolve, reject) => {
+      let result
+      if (renderType === RenderType.IMAGE ||
+          renderType === RenderType.DATAURL) {
+        if (typeof window === 'undefined') {
+          // Quality not supported in node environment / node-canvas
+          result = canvas.toDataURL(imageFormat)
+        } else {
+          result = canvas.toDataURL(imageFormat, quality)
+        }
+
+        // When image's `src` attribute is a jpeg data url, we can restore
+        // the exif information
+        if (image.src.match(/^data:image\/jpeg/i)) {
+          result = ExifRestorer.restore(image.src, result)
+        }
       }
 
-      // When image's `src` attribute is a jpeg data url, we can restore
-      // the exif information
-      if (image.src.match(/^data:image\/jpeg/i)) {
-        result = ExifRestorer.restore(image.src, result)
+      if (renderType === RenderType.IMAGE) {
+        let outputImage
+
+        /* istanbul ignore else  */
+        if (typeof window === 'undefined') {
+          // Not a browser environment
+          var CanvasImage = require('canvas').Image
+          outputImage = new CanvasImage()
+        } else {
+          outputImage = new Image()
+        }
+
+        outputImage.src = result
+        resolve(outputImage)
+      } else if (renderType === RenderType.DATAURL) {
+        resolve(result)
+      } else if (renderType === RenderType.BUFFER) {
+        resolve(canvas.toBuffer())
+      } else if (renderType === RenderType.BLOB) {
+        canvas.toBlob((blob) => {
+          resolve(blob)
+        }, imageFormat, quality)
       }
-    }
-
-    if (renderType === RenderType.IMAGE) {
-      let outputImage
-
-      /* istanbul ignore else  */
-      if (typeof window === 'undefined') {
-        // Not a browser environment
-        var CanvasImage = require('canvas').Image
-        outputImage = new CanvasImage()
-      } else {
-        outputImage = new Image()
-      }
-
-      outputImage.src = result
-      return outputImage
-    } else if (renderType === RenderType.DATAURL) {
-      return result
-    } else if (renderType === RenderType.BUFFER) {
-      return canvas.toBuffer()
-    } else if (renderType === RenderType.BLOB) {
-      return canvas.toBlob()
-    }
+    })
   }
 }
 
