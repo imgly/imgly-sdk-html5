@@ -25,6 +25,18 @@ class WebGLRenderer extends Renderer {
   }
 
   /**
+   * Returns the context options passed to getContext()
+   * @type {Object}
+   * @private
+   */
+  get _contextOptions () {
+    return {
+      alpha: true,
+      premultipliedAlpha: true
+    }
+  }
+
+  /**
    * A unique string that identifies this renderer
    * @type {String}
    */
@@ -132,6 +144,9 @@ class WebGLRenderer extends Renderer {
 
     gl.viewport(0, 0, size.x, size.y)
 
+    // Clear
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+
     // Draw the rectangle
     gl.drawArrays(gl.TRIANGLES, 0, 6)
 
@@ -194,8 +209,13 @@ class WebGLRenderer extends Renderer {
    */
   _getContext () {
     /* istanbul ignore next */
-    return this._canvas.getContext('webgl') ||
-      this._canvas.getContext('webgl-experimental')
+    let gl = this._canvas.getContext('webgl', this._contextOptions) ||
+      this._canvas.getContext('webgl-experimental', this._contextOptions)
+
+    gl.disable(gl.DEPTH_TEST)
+    gl.disable(gl.CULL_FACE)
+
+    return gl
   }
 
   /**
@@ -213,11 +233,26 @@ class WebGLRenderer extends Renderer {
     this._inputTexture = texture
     this.setLastTexture(texture)
 
+    // Set premultiplied alpha
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)
+
     // Upload the image into the texture
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image)
 
+    this._clear(gl)
+
     // Draw the rectangle
     gl.drawArrays(gl.TRIANGLES, 0, 6)
+  }
+
+  /**
+   * Clears the WebGL context
+   * @param {WebGLRenderingContext} gl
+   * @private
+   */
+  _clear (gl) {
+    gl.clearColor(0, 0, 0, 0)
+    gl.clear(gl.COLOR_BUFFER_BIT)
   }
 
   /**
@@ -243,6 +278,10 @@ class WebGLRenderer extends Renderer {
 
     // Resize the texture to canvas size
     gl.bindTexture(gl.TEXTURE_2D, currentTexture)
+
+    // Set premultiplied alpha
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)
+
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._canvas.width, this._canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
 
     // Make sure we select the current texture
@@ -282,6 +321,9 @@ class WebGLRenderer extends Renderer {
       }
     }
 
+    // Clear
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+
     // Draw the rectangle
     gl.drawArrays(gl.TRIANGLES, 0, 6)
 
@@ -306,6 +348,9 @@ class WebGLRenderer extends Renderer {
 
     // Select the last texture that has been rendered to
     gl.bindTexture(gl.TEXTURE_2D, this._lastTexture)
+
+    // Clear
+    this._clear(gl)
 
     // Draw the rectangle
     gl.drawArrays(gl.TRIANGLES, 0, 6)
@@ -461,6 +506,10 @@ class WebGLRenderer extends Renderer {
 
     // Create texture
     let texture = this.createTexture()
+
+    // Set premultiplied alpha
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)
+
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._canvas.width, this._canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
 
     // Create framebuffer
