@@ -39,7 +39,7 @@ class SoftColorOverlay extends Primitive {
       void main() {
         vec4 texColor = texture2D(u_image, v_texCoord);
         vec4 overlayVec4 = vec4(u_overlay, texColor.a);
-        gl_FragColor = max(overlayVec4, texColor);
+        gl_FragColor = max(overlayVec4 * texColor.a, texColor);
       }
     `
   }

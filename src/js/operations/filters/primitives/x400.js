@@ -36,7 +36,7 @@ class X400 extends Primitive {
         gray = clamp(gray, 0.0, 1.0);
         gray += 0.15;
         gray *= 1.4;
-        gl_FragColor = vec4(vec3(gray), 1.0);
+        gl_FragColor = vec4(vec3(gray) * texColor.a, texColor.a);
       }
     `
   }

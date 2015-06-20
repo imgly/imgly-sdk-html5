@@ -39,7 +39,7 @@ class LookupTable extends Primitive {
         float g = texture2D(u_lookupTable, vec2(texColor.g, 0.0)).g;
         float b = texture2D(u_lookupTable, vec2(texColor.b, 0.0)).b;
 
-        gl_FragColor = vec4(r, g, b, texColor.a);
+        gl_FragColor = vec4(vec3(r, g, b) * texColor.a, texColor.a);
       }
     `
   }

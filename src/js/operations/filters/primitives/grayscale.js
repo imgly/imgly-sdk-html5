@@ -31,9 +31,9 @@ class Grayscale extends Primitive {
       vec3 W = vec3(0.2125, 0.7154, 0.0721);
 
       void main() {
-        vec3 texColor = texture2D(u_image, v_texCoord).rgb;
-        float luminance = dot(texColor, W);
-        gl_FragColor = vec4(vec3(luminance), 1.0);
+        vec4 texColor = texture2D(u_image, v_texCoord);
+        float luminance = dot(texColor.rgb, W);
+        gl_FragColor = vec4(vec3(luminance) * texColor.a, texColor.a);
       }
     `
   }
