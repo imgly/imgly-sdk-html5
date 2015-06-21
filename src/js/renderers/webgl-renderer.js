@@ -215,12 +215,16 @@ class WebGLRenderer extends Renderer {
     gl.disable(gl.DEPTH_TEST)
     gl.disable(gl.CULL_FACE)
 
+    this._maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE)
+    this._maxTextureSize = 512
+
     return gl
   }
 
   /**
    * Draws the given image on the canvas
    * @param  {Image} image
+   * @returns {Promise}
    */
   /* istanbul ignore next */
   drawImage (image) {
