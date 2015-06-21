@@ -74,12 +74,6 @@ class Canvas extends EventEmitter {
     // Reset framebuffers
     this._renderer.reset()
 
-    // On first render, draw the image to the input texture
-    if (this._isFirstRender || this._renderer.constructor.identifier === 'canvas') {
-      this._renderer.drawImage(this._image)
-      this._isFirstRender = false
-    }
-
     // Run the operations stack
     let stack = this.sanitizedStack
     this._updateStackDirtyStates(stack)
@@ -90,6 +84,13 @@ class Canvas extends EventEmitter {
     }
 
     return Promise.all(validationPromises)
+      .then(() => {
+        // On first render, draw the image to the input texture
+        if (this._isFirstRender || this._renderer.constructor.identifier === 'canvas') {
+          this._isFirstRender = false
+          return this._renderer.drawImage(this._image)
+        }
+      })
       // Render the operations stack
       .then(() => {
         let promises = []

@@ -224,25 +224,29 @@ class WebGLRenderer extends Renderer {
    */
   /* istanbul ignore next */
   drawImage (image) {
-    var gl = this._context
-    gl.useProgram(this._defaultProgram)
+    return new Promise((resolve, reject) => {
+      var gl = this._context
+      gl.useProgram(this._defaultProgram)
 
-    // Create the texture
-    var texture = this.createTexture()
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true)
-    this._inputTexture = texture
-    this.setLastTexture(texture)
+      // Create the texture
+      var texture = this.createTexture()
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true)
+      this._inputTexture = texture
+      this.setLastTexture(texture)
 
-    // Set premultiplied alpha
-    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)
+      // Set premultiplied alpha
+      gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)
 
-    // Upload the image into the texture
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image)
+      // Upload the image into the texture
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image)
 
-    this._clear(gl)
+      this._clear(gl)
 
-    // Draw the rectangle
-    gl.drawArrays(gl.TRIANGLES, 0, 6)
+      // Draw the rectangle
+      gl.drawArrays(gl.TRIANGLES, 0, 6)
+
+      resolve()
+    })
   }
 
   /**
