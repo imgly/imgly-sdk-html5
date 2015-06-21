@@ -1,3 +1,4 @@
+/* global Image */
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -9,6 +10,7 @@
 
 import Renderer from './renderer'
 import Vector2 from '../lib/math/vector2'
+import ExifRestorer from '../lib/exif-restorer'
 
 /**
  * @class
@@ -216,7 +218,6 @@ class WebGLRenderer extends Renderer {
     gl.disable(gl.CULL_FACE)
 
     this._maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE)
-    this._maxTextureSize = 512
 
     return gl
   }
@@ -250,6 +251,53 @@ class WebGLRenderer extends Renderer {
       gl.drawArrays(gl.TRIANGLES, 0, 6)
 
       resolve()
+    })
+  }
+
+  /**
+   * Resizes the given image to fit the maximum texture size
+   * @param {Image}
+   * @returns {Promise}
+   * @private
+   */
+  prepareImage (image) {
+    if (image.width <= this._maxTextureSize &&
+        image.height <= this._maxTextureSize) {
+      return Promise.resolve(image)
+    }
+
+    // Calculate new size that fits the graphics card's max texture size
+    let maxSize = new Vector2(this._maxTextureSize, this._maxTextureSize)
+    let size = new Vector2(image.width, image.height)
+    let scale = Math.min(maxSize.x / size.x, maxSize.y / size.y)
+    let newSize = size.clone()
+      .multiply(scale)
+
+    // Create a new canvas to draw the image to
+    let canvas = this.createCanvas(newSize.x, newSize.y)
+    let context = canvas.getContext('2d')
+
+    // Draw the resized image
+    context.drawImage(image,
+      0, 0,
+      size.x, size.y,
+      0, 0,
+      newSize.x, newSize.y)
+
+    // Turn into a data url and make an image out of it
+    let data = canvas.toDataURL('image/jpeg')
+
+    let jpegMatch = /^data:image\/jpeg/i
+    if (image.src.match(jpegMatch) && data.match(jpegMatch)) {
+      data = ExifRestorer.restore(image.src, data)
+    }
+
+    return new Promise((resolve, reject) => {
+      let image = new Image()
+      image.addEventListener('load', () => {
+        resolve(image)
+      })
+      image.src = data
     })
   }
 
@@ -622,6 +670,10 @@ class WebGLRenderer extends Renderer {
 
     this._createFramebuffers()
     this.setLastTexture(this._inputTexture)
+  }
+
+  get maxTextureSize () {
+    return this._maxTextureSize
   }
 }
 
