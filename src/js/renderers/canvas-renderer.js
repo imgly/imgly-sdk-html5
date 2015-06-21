@@ -69,9 +69,13 @@ class CanvasRenderer extends Renderer {
   /**
    * Draws the given image on the canvas
    * @param  {Image} image
+   * @returns {Promis}
    */
   drawImage (image) {
-    this._context.drawImage(image, 0, 0, image.width, image.height, 0, 0, this._canvas.width, this._canvas.height)
+    return new Promise((resolve, reject) => {
+      this._context.drawImage(image, 0, 0, image.width, image.height, 0, 0, this._canvas.width, this._canvas.height)
+      resolve()
+    })
   }
 
   /**
