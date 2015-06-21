@@ -72,7 +72,8 @@ class ImageExporter {
 
         // When image's `src` attribute is a jpeg data url, we can restore
         // the exif information
-        if (image.src.match(/^data:image\/jpeg/i)) {
+        let jpegMatch = /^data:image\/jpeg/i
+        if (image.src.match(jpegMatch) && result.match(jpegMatch)) {
           result = ExifRestorer.restore(image.src, result)
         }
       }
