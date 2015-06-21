@@ -85,6 +85,31 @@ class Canvas extends EventEmitter {
 
     return Promise.all(validationPromises)
       .then(() => {
+        // When using WebGL, resize the image to max texture size if necessary
+        if (this._isFirstRender && this._renderer.identifier === 'webgl') {
+
+          if (this._image.width > this._renderer.maxTextureSize ||
+              this._image.height > this._renderer.maxTextureSize) {
+            this._ui.displayLoadingMessage('Resizing...')
+            return new Promise((resolve, reject) => {
+              setTimeout(() => {
+                this._renderer.prepareImage(this._image)
+                  .then((image) => {
+                    this._ui.hideLoadingMessage()
+                    this._options.image = image
+                    this._image = this._options.image
+                    resolve()
+                  })
+                  .catch((e) => {
+                    reject(e)
+                  })
+              }, 100)
+            })
+          }
+
+        }
+      })
+      .then(() => {
         // On first render, draw the image to the input texture
         if (this._isFirstRender || this._renderer.constructor.identifier === 'canvas') {
           this._isFirstRender = false
