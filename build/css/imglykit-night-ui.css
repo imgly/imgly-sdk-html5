@@ -447,6 +447,52 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
+/* line 12, ../../src/css/night/_loadingOverlay.sass */
+.imglykit-container .imglykit-loadingOverlay {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  left: 0;
+  display: none;
+  width: 100%;
+  height: 100%;
+  background: rgba(30, 30, 30, 0.9);
+}
+/* line 23, ../../src/css/night/_loadingOverlay.sass */
+.imglykit-container .imglykit-loadingOverlay-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -40px;
+  margin-left: -75px;
+  border-radius: 5px;
+  width: 150px;
+  height: 70px;
+  padding: 10px;
+  background: #1E1E1E;
+}
+/* line 35, ../../src/css/night/_loadingOverlay.sass */
+.imglykit-container .imglykit-loadingOverlay-content img {
+  display: block;
+  margin: auto;
+  margin-bottom: 10px;
+}
+/* line 40, ../../src/css/night/_loadingOverlay.sass */
+.imglykit-container .imglykit-loadingOverlay-content span {
+  display: block;
+  font: bold 11px Helvetica, Arial, sans-serif;
+  text-align: center;
+  color: white;
+}
+
+/*!
+ * Copyright (c) 2013-2015 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
 /* line 13, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls-container {
   -moz-user-select: -moz-none;
