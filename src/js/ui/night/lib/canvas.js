@@ -79,7 +79,8 @@ class Canvas extends EventEmitter {
     this._updateStackDirtyStates(stack)
 
     let validationPromises = []
-    for (let operation of stack) {
+    for (let i = 0; i < stack.length; i++) {
+      let operation = stack[i]
       validationPromises.push(operation.validateSettings())
     }
 
@@ -119,7 +120,8 @@ class Canvas extends EventEmitter {
       // Render the operations stack
       .then(() => {
         let promises = []
-        for (let operation of stack) {
+        for (let i = 0; i < stack.length; i++) {
+          let operation = stack[i]
           promises.push(operation.render(this._renderer))
         }
         return Promise.all(promises)
@@ -584,7 +586,8 @@ class Canvas extends EventEmitter {
    */
   get sanitizedStack () {
     let sanitizedStack = []
-    for (let operation of this._kit.operationsStack) {
+    for (let i = 0; i < this._kit.operationsStack.length; i++) {
+      let operation = this._kit.operationsStack[i]
       if (!operation) continue
       sanitizedStack.push(operation)
     }

@@ -102,14 +102,16 @@ class RenderImage {
     let stack = this.sanitizedStack
 
     let validationPromises = []
-    for (let operation of stack) {
+    for (let i = 0; i < stack.length; i++) {
+      let operation = stack[i]
       validationPromises.push(operation.validateSettings())
     }
 
     return Promise.all(validationPromises)
       .then(() => {
         let promises = []
-        for (let operation of stack) {
+        for (let i = 0; i < stack.length; i++) {
+          let operation = stack[i]
           promises.push(operation.render(this._renderer))
         }
         return Promise.all(promises)
@@ -144,7 +146,8 @@ class RenderImage {
    */
   get sanitizedStack () {
     let sanitizedStack = []
-    for (let operation of this._stack) {
+    for (let i = 0; i < this._stack.length; i++) {
+      let operation = this._stack[i]
       if (!operation) continue
       sanitizedStack.push(operation)
     }

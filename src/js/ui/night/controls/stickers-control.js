@@ -382,7 +382,8 @@ class StickersControl extends Control {
    * @private
    */
   _deactivateAllItems () {
-    for (let listItem of this._listItems) {
+    for (let i = 0; i < this._listItems.length; i++) {
+      let listItem = this._listItems[i]
       listItem.classList.remove('imglykit-controls-item-active')
     }
   }

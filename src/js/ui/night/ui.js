@@ -293,7 +293,8 @@ class NightUI extends UI {
     listItems = Array.prototype.slice.call(listItems)
 
     // Add click events to all items
-    for (let listItem of listItems) {
+    for (let i = 0; i < listItems.length; i++) {
+      let listItem = listItems[i]
       let { identifier } = listItem.dataset
       listItem.addEventListener('click', () => {
         this.switchToControl(identifier)
@@ -312,7 +313,8 @@ class NightUI extends UI {
     listItems = Array.prototype.slice.call(listItems)
 
     // Add click events to all items
-    for (let listItem of listItems) {
+    for (let i = 0; i < listItems.length; i++) {
+      let listItem = listItems[i]
       listItem.removeAttribute('data-disabled')
     }
   }

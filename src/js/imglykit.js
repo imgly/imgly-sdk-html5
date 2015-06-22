@@ -119,7 +119,8 @@ class ImglyKit {
       this._options.renderer)
 
     // Set all operations to dirty, since we have another webgl renderer
-    for (let operation of this.operationsStack) {
+    for (let i = 0; i < this.operationsStack.length; i++) {
+      let operation = this.operationsStack[i]
       if (!operation) { continue }
       operation.dirty = true
     }
