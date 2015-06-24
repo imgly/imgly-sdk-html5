@@ -91,7 +91,9 @@ class NightUI extends UI {
 
     if (this._options.image) {
       this._initCanvas()
-    } else {
+    }
+
+    if (this._options.ui.showNewButton) {
       this._initFileLoader()
     }
 
@@ -434,7 +436,7 @@ class NightUI extends UI {
   get context () {
     let context = super.context
     context.controls = this._registeredControls
-    context.renderDropArea = !this._options.image
+    context.renderDropArea = this._options.ui.showNewButton
     context.controlsDisabled = !this._options.image
     return context
   }

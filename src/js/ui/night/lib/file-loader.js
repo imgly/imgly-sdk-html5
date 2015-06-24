@@ -32,6 +32,9 @@ class FileLoader extends EventEmitter {
     this._hiddenInputField.addEventListener('change', this._onFileInputChange)
 
     this._handleDropArea()
+    if (this._ui.options.image) {
+      this.removeDOM()
+    }
   }
 
   /**
@@ -149,8 +152,8 @@ class FileLoader extends EventEmitter {
     this._dropArea.removeEventListener('dragdrop', this._onDropAreaDrop)
     this._dropArea.removeEventListener('click', this._onDropAreaClick)
 
-    if (this._container.parentNode) {
-      this._container.parentNode.removeChild(this._container)
+    if (this._container) {
+      this._container.style.display = 'none'
     }
   }
 }
