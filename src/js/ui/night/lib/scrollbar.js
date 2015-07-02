@@ -255,7 +255,7 @@ class Scrollbar {
     this._dom.button.removeEventListener('mousedown', this._onButtonDown)
     this._dom.button.removeEventListener('touchstart', this._onButtonDown)
 
-    this._dom.background.remove()
+    this._dom.background.parentNode.removeChild(this._dom.background)
   }
 
   /**
