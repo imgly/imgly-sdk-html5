@@ -289,10 +289,10 @@ class NightUI extends UI {
    * @private
    */
   _handleOverview () {
-    let listItems = this._overviewControlsContainer.querySelectorAll(':scope > ul > li')
-
-    // Turn NodeList into an Array
-    listItems = Array.prototype.slice.call(listItems)
+    let itemsList = this._overviewControlsContainer.querySelector('ul')
+    if (!itemsList.parentNode === this._overviewControlsContainer) { return }
+    let listItems = [].filter.call(itemsList.querySelectorAll('li'),
+      (el) => el.parentNode === itemsList)
 
     // Add click events to all items
     for (let i = 0; i < listItems.length; i++) {
@@ -309,10 +309,10 @@ class NightUI extends UI {
    * @private
    */
   _enableControls () {
-    let listItems = this._overviewControlsContainer.querySelectorAll(':scope > ul > li')
-
-    // Turn NodeList into an Array
-    listItems = Array.prototype.slice.call(listItems)
+    let itemsList = this._overviewControlsContainer.querySelector('ul')
+    if (!itemsList.parentNode === this._overviewControlsContainer) { return }
+    let listItems = [].filter.call(itemsList.querySelectorAll('li'),
+      (el) => el.parentNode === itemsList)
 
     // Add click events to all items
     for (let i = 0; i < listItems.length; i++) {
