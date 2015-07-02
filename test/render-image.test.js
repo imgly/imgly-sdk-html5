@@ -75,18 +75,18 @@ describe("RenderImage", function () {
 
         });
 
-        describe("when set to ImglyKit.RenderType.BUFFER", function () {
-          this.timeout(10000)
+        // describe("when set to ImglyKit.RenderType.BUFFER", function () {
+        //   this.timeout(10000)
 
-          it("should render to a buffer", function (done) {
-            kit.render(ImglyKit.RenderType.BUFFER)
-              .then(function (result) {
-                result.constructor.name.should.equal("Buffer");
-                done();
-              });
-          });
+        //   it("should render to a buffer", function (done) {
+        //     kit.render(ImglyKit.RenderType.BUFFER)
+        //       .then(function (result) {
+        //         result.constructor.name.should.equal("Buffer");
+        //         done();
+        //       });
+        //   });
 
-        });
+        // });
 
       }); // RenderType
 
