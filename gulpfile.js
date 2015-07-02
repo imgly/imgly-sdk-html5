@@ -68,15 +68,16 @@ gulp.task("standard", function () {
 gulp.task("sass", function () {
   return gulp.src(sassFiles)
     .pipe($.plumber())
-    .pipe($.compass({
-      css: "build/css",
-      sass: "src/css"
+    .pipe($.sass({
+      includePaths: ["node_modules/compass-mixins/lib"],
+      indentedSyntax: true,
+      errLogToConsole: true
     }))
     .on("error", $.notify.onError({ onError: true }))
     .on("error", $.util.log)
     .on("error", $.util.beep)
-    .pipe(gulp.dest("./build"))
-    .pipe($.if(!isProduction, reload({ stream: true, once: true })));
+    .pipe(gulp.dest("./build/css"))
+    .pipe($.notify('SASS build complete'));
 });
 
 /**
