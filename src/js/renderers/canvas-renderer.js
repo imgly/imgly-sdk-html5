@@ -8,6 +8,7 @@
  */
 import Renderer from './renderer'
 import Vector2 from '../lib/math/vector2'
+import Promise from '../vendor/promise'
 
 /**
  * @class

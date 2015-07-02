@@ -10,6 +10,7 @@
 import { RenderType, ImageFormat } from '../constants'
 import ExifRestorer from './exif-restorer'
 import Utils from './utils'
+import Promise from '../vendor/promise'
 
 /**
  * @class

@@ -11,6 +11,7 @@
 import Renderer from './renderer'
 import Vector2 from '../lib/math/vector2'
 import ExifRestorer from '../lib/exif-restorer'
+import Promise from '../vendor/promise'
 
 /**
  * @class

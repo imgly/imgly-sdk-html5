@@ -10,6 +10,7 @@
 
 import Operation from './operation'
 import Vector2 from '../lib/math/vector2'
+import Promise from '../vendor/promise'
 
 /**
  * An operation that can draw text on the canvas

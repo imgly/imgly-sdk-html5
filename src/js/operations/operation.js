@@ -13,6 +13,7 @@ import _ from 'lodash'
 import Vector2 from '../lib/math/vector2'
 import Color from '../lib/color'
 import EventEmitter from '../lib/event-emitter'
+import Promise from '../vendor/promise'
 
 /**
  * Base class for Operations. Extendable via {@link ImglyKit.Operation#extend}.
