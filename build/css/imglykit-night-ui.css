@@ -22,10 +22,11 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-/* line 10, ../../src/css/night/_basics.sass */
 .imglykit-container {
-  -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
   border-radius: 5px;
   -webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC);
   position: absolute;
@@ -33,67 +34,48 @@
   height: 100%;
   background: #1E1E1E;
   overflow: hidden;
-  text-align: left;
-}
-/* line 40, ../../../../../.rbenv/versions/2.2.0/lib/ruby/gems/2.2.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
-.imglykit-container div, .imglykit-container span, .imglykit-container applet, .imglykit-container object, .imglykit-container iframe,
-.imglykit-container h1, .imglykit-container h2, .imglykit-container h3, .imglykit-container h4, .imglykit-container h5, .imglykit-container h6, .imglykit-container p, .imglykit-container blockquote, .imglykit-container pre,
-.imglykit-container a, .imglykit-container abbr, .imglykit-container acronym, .imglykit-container address, .imglykit-container big, .imglykit-container cite, .imglykit-container code,
-.imglykit-container del, .imglykit-container dfn, .imglykit-container em, .imglykit-container img, .imglykit-container ins, .imglykit-container kbd, .imglykit-container q, .imglykit-container s, .imglykit-container samp,
-.imglykit-container small, .imglykit-container strike, .imglykit-container strong, .imglykit-container sub, .imglykit-container sup, .imglykit-container tt, .imglykit-container var,
-.imglykit-container b, .imglykit-container u, .imglykit-container i, .imglykit-container center,
-.imglykit-container dl, .imglykit-container dt, .imglykit-container dd, .imglykit-container ol, .imglykit-container ul, .imglykit-container li,
-.imglykit-container fieldset, .imglykit-container form, .imglykit-container label, .imglykit-container legend,
-.imglykit-container table, .imglykit-container caption, .imglykit-container tbody, .imglykit-container tfoot, .imglykit-container thead, .imglykit-container tr, .imglykit-container th, .imglykit-container td,
-.imglykit-container article, .imglykit-container aside, .imglykit-container canvas, .imglykit-container details, .imglykit-container embed,
-.imglykit-container figure, .imglykit-container figcaption, .imglykit-container footer, .imglykit-container header, .imglykit-container hgroup,
-.imglykit-container menu, .imglykit-container nav, .imglykit-container output, .imglykit-container ruby, .imglykit-container section, .imglykit-container summary,
-.imglykit-container time, .imglykit-container mark, .imglykit-container audio, .imglykit-container video {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font: inherit;
-  font-size: 100%;
-  vertical-align: baseline;
-}
-/* line 55, ../../../../../.rbenv/versions/2.2.0/lib/ruby/gems/2.2.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
-.imglykit-container table {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-/* line 57, ../../../../../.rbenv/versions/2.2.0/lib/ruby/gems/2.2.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
-.imglykit-container caption, .imglykit-container th, .imglykit-container td {
-  text-align: left;
-  font-weight: normal;
-  vertical-align: middle;
-}
-/* line 59, ../../../../../.rbenv/versions/2.2.0/lib/ruby/gems/2.2.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
-.imglykit-container q, .imglykit-container blockquote {
-  quotes: none;
-}
-/* line 103, ../../../../../.rbenv/versions/2.2.0/lib/ruby/gems/2.2.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
-.imglykit-container q:before, .imglykit-container q:after, .imglykit-container blockquote:before, .imglykit-container blockquote:after {
-  content: "";
-  content: none;
-}
-/* line 61, ../../../../../.rbenv/versions/2.2.0/lib/ruby/gems/2.2.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
-.imglykit-container a img {
-  border: none;
-}
-/* line 24, ../../src/css/night/_basics.sass */
-.imglykit-container * {
-  box-sizing: border-box;
-}
+  text-align: left; }
+  .imglykit-container div, .imglykit-container span, .imglykit-container applet, .imglykit-container object, .imglykit-container iframe,
+  .imglykit-container h1, .imglykit-container h2, .imglykit-container h3, .imglykit-container h4, .imglykit-container h5, .imglykit-container h6, .imglykit-container p, .imglykit-container blockquote, .imglykit-container pre,
+  .imglykit-container a, .imglykit-container abbr, .imglykit-container acronym, .imglykit-container address, .imglykit-container big, .imglykit-container cite, .imglykit-container code,
+  .imglykit-container del, .imglykit-container dfn, .imglykit-container em, .imglykit-container img, .imglykit-container ins, .imglykit-container kbd, .imglykit-container q, .imglykit-container s, .imglykit-container samp,
+  .imglykit-container small, .imglykit-container strike, .imglykit-container strong, .imglykit-container sub, .imglykit-container sup, .imglykit-container tt, .imglykit-container var,
+  .imglykit-container b, .imglykit-container u, .imglykit-container i, .imglykit-container center,
+  .imglykit-container dl, .imglykit-container dt, .imglykit-container dd, .imglykit-container ol, .imglykit-container ul, .imglykit-container li,
+  .imglykit-container fieldset, .imglykit-container form, .imglykit-container label, .imglykit-container legend,
+  .imglykit-container table, .imglykit-container caption, .imglykit-container tbody, .imglykit-container tfoot, .imglykit-container thead, .imglykit-container tr, .imglykit-container th, .imglykit-container td,
+  .imglykit-container article, .imglykit-container aside, .imglykit-container canvas, .imglykit-container details, .imglykit-container embed,
+  .imglykit-container figure, .imglykit-container figcaption, .imglykit-container footer, .imglykit-container header, .imglykit-container hgroup,
+  .imglykit-container menu, .imglykit-container nav, .imglykit-container output, .imglykit-container ruby, .imglykit-container section, .imglykit-container summary,
+  .imglykit-container time, .imglykit-container mark, .imglykit-container audio, .imglykit-container video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font: inherit;
+    font-size: 100%;
+    vertical-align: baseline; }
+  .imglykit-container table {
+    border-collapse: collapse;
+    border-spacing: 0; }
+  .imglykit-container caption, .imglykit-container th, .imglykit-container td {
+    text-align: left;
+    font-weight: normal;
+    vertical-align: middle; }
+  .imglykit-container q, .imglykit-container blockquote {
+    quotes: none; }
+    .imglykit-container q:before, .imglykit-container q:after, .imglykit-container blockquote:before, .imglykit-container blockquote:after {
+      content: "";
+      content: none; }
+  .imglykit-container a img {
+    border: none; }
+  .imglykit-container * {
+    box-sizing: border-box; }
 
-/* line 27, ../../src/css/night/_basics.sass */
 .imglykit-float-left {
-  float: left;
-}
+  float: left; }
 
-/* line 30, ../../src/css/night/_basics.sass */
 .imglykit-float-right {
-  float: right;
-}
+  float: right; }
 
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
@@ -103,10 +85,11 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-/* line 12, ../../src/css/night/_canvas.sass */
 .imglykit-container .imglykit-canvas-container {
-  -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
   border-radius: 5px;
   width: 100%;
   height: 100%;
@@ -114,32 +97,22 @@
   top: 0;
   left: 0;
   padding-top: 40px;
-  overflow: hidden;
-}
-/* line 25, ../../src/css/night/_canvas.sass */
-.imglykit-container .imglykit-canvas-container.imglykit-header-padding {
-  padding-top: 70px;
-}
-/* line 28, ../../src/css/night/_canvas.sass */
+  overflow: hidden; }
+  .imglykit-container .imglykit-canvas-container.imglykit-header-padding {
+    padding-top: 70px; }
+
 .imglykit-container .imglykit-canvas-inner-container {
-  position: relative;
-}
-/* line 31, ../../src/css/night/_canvas.sass */
-.imglykit-container .imglykit-canvas-inner-container canvas {
-  cursor: move;
-}
-/* line 34, ../../src/css/night/_canvas.sass */
-.imglykit-container .imglykit-canvas-inner-container .imglykit-canvas-controls {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-/* line 41, ../../src/css/night/_canvas.sass */
-.imglykit-container .imglykit-canvas-inner-container .imglykit-canvas-controls.imglykit-canvas-controls-disabled {
-  display: none;
-}
+  position: relative; }
+  .imglykit-container .imglykit-canvas-inner-container canvas {
+    cursor: move; }
+  .imglykit-container .imglykit-canvas-inner-container .imglykit-canvas-controls {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%; }
+    .imglykit-container .imglykit-canvas-inner-container .imglykit-canvas-controls.imglykit-canvas-controls-disabled {
+      display: none; }
 
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
@@ -149,7 +122,6 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-/* line 12, ../../src/css/night/_drop-area.sass */
 .imglykit-container .imglykit-drop-area-container {
   width: 100%;
   position: absolute;
@@ -161,57 +133,44 @@
   padding-top: 70px;
   padding-bottom: 110px;
   display: table;
-  table-layout: fixed;
-}
-/* line 29, ../../src/css/night/_drop-area.sass */
-.imglykit-container .imglykit-drop-area-container.imglykit-header-padding {
-  padding-top: 100px;
-}
-/* line 32, ../../src/css/night/_drop-area.sass */
-.imglykit-container .imglykit-drop-area-container .imglykit-drop-area {
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  border-radius: 5px;
-  text-align: center;
-  display: table-cell;
-  border: 1px dashed rgba(255, 255, 255, 0.2);
-  width: 100%;
-  height: 100%;
-  vertical-align: middle;
-  cursor: pointer;
-}
-/* line 45, ../../src/css/night/_drop-area.sass */
-.imglykit-container .imglykit-drop-area-container .imglykit-drop-area.imglykit-drop-area-active, .imglykit-container .imglykit-drop-area-container .imglykit-drop-area:hover {
-  background: rgba(255, 255, 255, 0.05);
-}
-/* line 48, ../../src/css/night/_drop-area.sass */
-.imglykit-container .imglykit-drop-area-container .imglykit-drop-area .imglykit-drop-area-content {
-  width: 250px;
-  margin: auto;
-  margin-top: 10px;
-  font-family: Helvetica, Arial, Verdana;
-}
-/* line 54, ../../src/css/night/_drop-area.sass */
-.imglykit-container .imglykit-drop-area-container .imglykit-drop-area .imglykit-drop-area-content h1 {
-  color: white;
-  font-weight: bold;
-  font-size: 20px;
-  margin-bottom: 5px;
-}
-/* line 60, ../../src/css/night/_drop-area.sass */
-.imglykit-container .imglykit-drop-area-container .imglykit-drop-area .imglykit-drop-area-content span {
-  color: rgba(255, 255, 255, 0.2);
-  font-size: 14px;
-}
-/* line 64, ../../src/css/night/_drop-area.sass */
-.imglykit-container .imglykit-drop-area-container .imglykit-drop-area .imglykit-drop-area-hidden-input {
-  visibility: hidden;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 0;
-  height: 0;
-}
+  table-layout: fixed; }
+  .imglykit-container .imglykit-drop-area-container.imglykit-header-padding {
+    padding-top: 100px; }
+  .imglykit-container .imglykit-drop-area-container .imglykit-drop-area {
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+    border-radius: 5px;
+    text-align: center;
+    display: table-cell;
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    width: 100%;
+    height: 100%;
+    vertical-align: middle;
+    cursor: pointer; }
+    .imglykit-container .imglykit-drop-area-container .imglykit-drop-area.imglykit-drop-area-active, .imglykit-container .imglykit-drop-area-container .imglykit-drop-area:hover {
+      background: rgba(255, 255, 255, 0.05); }
+    .imglykit-container .imglykit-drop-area-container .imglykit-drop-area .imglykit-drop-area-content {
+      width: 250px;
+      margin: auto;
+      margin-top: 10px;
+      font-family: Helvetica, Arial, Verdana; }
+      .imglykit-container .imglykit-drop-area-container .imglykit-drop-area .imglykit-drop-area-content h1 {
+        color: white;
+        font-weight: bold;
+        font-size: 20px;
+        margin-bottom: 5px; }
+      .imglykit-container .imglykit-drop-area-container .imglykit-drop-area .imglykit-drop-area-content span {
+        color: rgba(255, 255, 255, 0.2);
+        font-size: 14px; }
+    .imglykit-container .imglykit-drop-area-container .imglykit-drop-area .imglykit-drop-area-hidden-input {
+      visibility: hidden;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0; }
 
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
@@ -221,7 +180,6 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-/* line 11, ../../src/css/night/_header.sass */
 .imglykit-container .imglykit-header {
   background: #1A1A1A;
   text-align: center;
@@ -233,20 +191,15 @@
   left: 0;
   width: 100%;
   height: 30px;
-  z-index: 2;
-}
-/* line 27, ../../src/css/night/_header.sass */
-.imglykit-container .imglykit-header .imglykit-close-button {
-  position: absolute;
-  top: 0;
-  right: 0;
-  cursor: pointer;
-  margin-right: 10px;
-}
-/* line 34, ../../src/css/night/_header.sass */
-.imglykit-container .imglykit-header .imglykit-close-button img {
-  vertical-align: middle;
-}
+  z-index: 2; }
+  .imglykit-container .imglykit-header .imglykit-close-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    cursor: pointer;
+    margin-right: 10px; }
+    .imglykit-container .imglykit-header .imglykit-close-button img {
+      vertical-align: middle; }
 
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
@@ -256,11 +209,9 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-/* line 12, ../../src/css/night/_top.sass */
 .imglykit-container .imglykit-top-controls {
-  -moz-user-select: -moz-none;
-  -ms-user-select: none;
   -webkit-user-select: none;
+  -moz-user-select: none;
   user-select: none;
   position: absolute;
   top: 0;
@@ -272,102 +223,73 @@
   font-size: 16px;
   padding: 0 20px;
   z-index: 2;
-  background: #2B2B2B;
-}
-/* line 26, ../../src/css/night/_top.sass */
-.imglykit-container .imglykit-top-controls > * * {
-  display: inline-block;
-}
-/* line 29, ../../src/css/night/_top.sass */
-.imglykit-container .imglykit-top-controls, .imglykit-container .imglykit-top-controls * {
-  line-height: 30px;
-}
-/* line 32, ../../src/css/night/_top.sass */
-.imglykit-container .imglykit-top-controls.imglykit-header-padding {
-  top: 30px;
-}
-/* line 35, ../../src/css/night/_top.sass */
+  background: #2B2B2B; }
+  .imglykit-container .imglykit-top-controls > * * {
+    display: inline-block; }
+  .imglykit-container .imglykit-top-controls, .imglykit-container .imglykit-top-controls * {
+    line-height: 30px; }
+  .imglykit-container .imglykit-top-controls.imglykit-header-padding {
+    top: 30px; }
+
 .imglykit-container .imglykit-top-controls-left, .imglykit-container .imglykit-top-controls-right {
-  padding-top: 5px;
-}
-/* line 38, ../../src/css/night/_top.sass */
+  padding-top: 5px; }
+
 .imglykit-container .imglykit-top-controls-left {
-  float: left;
-}
-/* line 41, ../../src/css/night/_top.sass */
+  float: left; }
+
 .imglykit-container .imglykit-top-controls-right {
   float: right;
-  display: none;
-}
-/* line 45, ../../src/css/night/_top.sass */
-.imglykit-container .imglykit-top-controls-right .imglykit-zoom-in, .imglykit-container .imglykit-top-controls-right .imglykit-zoom-out {
-  padding: 0 15px;
-  cursor: pointer;
-  border-left: 1px solid #363636;
-}
-/* line 50, ../../src/css/night/_top.sass */
-.imglykit-container .imglykit-top-controls-right .imglykit-zoom-in img, .imglykit-container .imglykit-top-controls-right .imglykit-zoom-out img {
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
-  opacity: 0.4;
-  vertical-align: middle;
-}
-/* line 53, ../../src/css/night/_top.sass */
-.imglykit-container .imglykit-top-controls-right .imglykit-zoom-in:hover img, .imglykit-container .imglykit-top-controls-right .imglykit-zoom-out:hover img {
-  filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
-  opacity: 1;
-}
-/* line 56, ../../src/css/night/_top.sass */
-.imglykit-container .imglykit-top-controls-right .imglykit-zoom-out {
-  padding-right: 0;
-}
-/* line 59, ../../src/css/night/_top.sass */
-.imglykit-container .imglykit-top-controls-right .imglykit-zoom-level {
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
-  opacity: 0.4;
-  padding: 0 10px;
-}
-/* line 63, ../../src/css/night/_top.sass */
+  display: none; }
+  .imglykit-container .imglykit-top-controls-right .imglykit-zoom-in, .imglykit-container .imglykit-top-controls-right .imglykit-zoom-out {
+    padding: 0 15px;
+    cursor: pointer;
+    border-left: 1px solid #363636; }
+    .imglykit-container .imglykit-top-controls-right .imglykit-zoom-in img, .imglykit-container .imglykit-top-controls-right .imglykit-zoom-out img {
+      filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
+      opacity: 0.4;
+      vertical-align: middle; }
+    .imglykit-container .imglykit-top-controls-right .imglykit-zoom-in:hover img, .imglykit-container .imglykit-top-controls-right .imglykit-zoom-out:hover img {
+      filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+      opacity: 1; }
+  .imglykit-container .imglykit-top-controls-right .imglykit-zoom-out {
+    padding-right: 0; }
+  .imglykit-container .imglykit-top-controls-right .imglykit-zoom-level {
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
+    opacity: 0.4;
+    padding: 0 10px; }
+
 .imglykit-container .imglykit-undo {
   cursor: pointer;
   border-right: 1px solid #363636;
   color: rgba(255, 255, 255, 0.4);
   padding: 0 10px;
-  display: none;
-}
-/* line 69, ../../src/css/night/_top.sass */
-.imglykit-container .imglykit-undo img {
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
-  opacity: 0.4;
-  margin-right: 5px;
-  vertical-align: middle;
-}
-/* line 74, ../../src/css/night/_top.sass */
+  display: none; }
+  .imglykit-container .imglykit-undo img {
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
+    opacity: 0.4;
+    margin-right: 5px;
+    vertical-align: middle; }
+
 .imglykit-container .imglykit-export {
   cursor: pointer;
   border-right: 1px solid #363636;
   color: rgba(255, 255, 255, 0.4);
   padding: 0 10px;
-  display: none;
-}
-/* line 80, ../../src/css/night/_top.sass */
-.imglykit-container .imglykit-export img {
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
-  opacity: 0.4;
-  margin-right: 5px;
-  vertical-align: middle;
-}
-/* line 85, ../../src/css/night/_top.sass */
+  display: none; }
+  .imglykit-container .imglykit-export img {
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
+    opacity: 0.4;
+    margin-right: 5px;
+    vertical-align: middle; }
+
 .imglykit-container .imglykit-new {
   cursor: pointer;
   border-right: 1px solid #363636;
   color: rgba(255, 255, 255, 0.4);
-  padding-right: 10px;
-}
-/* line 90, ../../src/css/night/_top.sass */
-.imglykit-container .imglykit-new img {
-  margin-right: 5px;
-  vertical-align: middle;
-}
+  padding-right: 10px; }
+  .imglykit-container .imglykit-new img {
+    margin-right: 5px;
+    vertical-align: middle; }
 
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
@@ -385,18 +307,18 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-/* line 11, ../../src/css/night/generics/_knob.sass */
 .imglykit-container .imglykit-knob {
-  -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
   border-radius: 50%;
   position: absolute;
   background: white;
   width: 20px;
   height: 20px;
   border: 2px solid rgba(0, 0, 0, 0.3);
-  cursor: pointer;
-}
+  cursor: pointer; }
 
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
@@ -406,13 +328,11 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-/* line 11, ../../src/css/night/generics/_crosshair.sass */
 .imglykit-container .imglykit-crosshair {
   width: 34px;
   height: 34px;
   cursor: pointer;
-  float: left;
-}
+  float: left; }
 
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
@@ -422,22 +342,22 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-/* line 11, ../../src/css/night/generics/_transparent-knob.sass */
 .imglykit-container .imglykit-transparent-knob {
-  -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
   border-radius: 50%;
-  -moz-box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
-  -webkit-box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+  -webkit-box-shadow: compact(0 0 0 2px rgba(255, 255, 255, 0.5), false, false, false, false, false, false, false, false, false);
+  -moz-box-shadow: compact(0 0 0 2px rgba(255, 255, 255, 0.5), false, false, false, false, false, false, false, false, false);
+  box-shadow: compact(0 0 0 2px rgba(255, 255, 255, 0.5), false, false, false, false, false, false, false, false, false);
   position: absolute;
   width: 20px;
   height: 20px;
   border: 2px solid rgba(0, 0, 0, 0.5);
   margin-top: -10px;
   margin-left: -10px;
-  cursor: pointer;
-}
+  cursor: pointer; }
 
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
@@ -447,7 +367,6 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-/* line 12, ../../src/css/night/_loadingOverlay.sass */
 .imglykit-container .imglykit-loadingOverlay {
   position: absolute;
   z-index: 3;
@@ -456,9 +375,8 @@
   display: none;
   width: 100%;
   height: 100%;
-  background: rgba(30, 30, 30, 0.9);
-}
-/* line 23, ../../src/css/night/_loadingOverlay.sass */
+  background: rgba(30, 30, 30, 0.9); }
+
 .imglykit-container .imglykit-loadingOverlay-content {
   position: absolute;
   top: 50%;
@@ -469,21 +387,16 @@
   width: 150px;
   height: 70px;
   padding: 10px;
-  background: #1E1E1E;
-}
-/* line 35, ../../src/css/night/_loadingOverlay.sass */
-.imglykit-container .imglykit-loadingOverlay-content img {
-  display: block;
-  margin: auto;
-  margin-bottom: 10px;
-}
-/* line 40, ../../src/css/night/_loadingOverlay.sass */
-.imglykit-container .imglykit-loadingOverlay-content span {
-  display: block;
-  font: bold 11px Helvetica, Arial, sans-serif;
-  text-align: center;
-  color: white;
-}
+  background: #1E1E1E; }
+  .imglykit-container .imglykit-loadingOverlay-content img {
+    display: block;
+    margin: auto;
+    margin-bottom: 10px; }
+  .imglykit-container .imglykit-loadingOverlay-content span {
+    display: block;
+    font: bold 11px Helvetica, Arial, sans-serif;
+    text-align: center;
+    color: white; }
 
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
@@ -493,161 +406,118 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-/* line 13, ../../src/css/night/_controls.sass */
 .imglykit-container .imglykit-controls-container {
-  -moz-user-select: -moz-none;
-  -ms-user-select: none;
   -webkit-user-select: none;
+  -moz-user-select: none;
   user-select: none;
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
   height: 80px;
-  background: #2B2B2B;
-}
-/* line 26, ../../src/css/night/_controls.sass */
+  background: #2B2B2B; }
+
 .imglykit-container .imglykit-controls {
   width: 100%;
   text-align: center;
-  height: 80px;
-}
-/* line 30, ../../src/css/night/_controls.sass */
-.imglykit-container .imglykit-controls > div:not(.imglykit-scrollbar-background) > * {
-  width: 100%;
-  display: table;
-  table-layout: fixed;
-}
-/* line 34, ../../src/css/night/_controls.sass */
-.imglykit-container .imglykit-controls > div:not(.imglykit-scrollbar-background) > * > * {
-  display: table-cell;
-  vertical-align: top;
-}
-/* line 38, ../../src/css/night/_controls.sass */
-.imglykit-container .imglykit-controls .imglykit-controls-list {
-  overflow: hidden;
-  overflow-x: auto;
-  text-align: center;
-  white-space: nowrap;
-  height: 80px;
-  font-size: 0;
-}
-/* line 46, ../../src/css/night/_controls.sass */
-.imglykit-container .imglykit-controls li {
-  -moz-transition: background-color 0.2s ease-out;
-  -o-transition: background-color 0.2s ease-out;
-  -webkit-transition: background-color 0.2s ease-out;
-  transition: background-color 0.2s ease-out;
-  display: inline-block;
-  width: 80px;
-  height: 80px;
-  cursor: pointer;
-  line-height: 80px;
-  border-left: 1px solid #363636;
-}
-/* line 55, ../../src/css/night/_controls.sass */
-.imglykit-container .imglykit-controls li:last-child {
-  border-right: 1px solid #363636;
-}
-/* line 58, ../../src/css/night/_controls.sass */
-.imglykit-container .imglykit-controls li img {
-  -moz-transition: all 0.2s ease-out;
-  -o-transition: all 0.2s ease-out;
-  -webkit-transition: all 0.2s ease-out;
-  transition: all 0.2s ease-out;
-  width: 40px;
-  vertical-align: middle;
-}
-/* line 63, ../../src/css/night/_controls.sass */
-.imglykit-container .imglykit-controls li.imglykit-controls-item-active {
-  background: rgba(0, 0, 0, 0.3);
-}
-/* line 66, ../../src/css/night/_controls.sass */
-.imglykit-container .imglykit-controls .imglykit-controls-item-label {
-  color: white;
-  font-size: 10px;
-  font-family: Helvetica, Arial, sans-serif;
-  font-weight: bold;
-  margin-top: 10px;
-}
-/* line 73, ../../src/css/night/_controls.sass */
-.imglykit-container .imglykit-controls .imglykit-controls-icon {
-  width: 80px;
-  height: 80px;
-  line-height: 80px;
-  font-size: 0;
-}
-/* line 79, ../../src/css/night/_controls.sass */
-.imglykit-container .imglykit-controls .imglykit-controls-icon img {
-  vertical-align: middle;
-}
-/* line 82, ../../src/css/night/_controls.sass */
-.imglykit-container .imglykit-controls li[data-disabled] {
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=20);
-  opacity: 0.2;
-}
-/* line 85, ../../src/css/night/_controls.sass */
-.imglykit-container .imglykit-controls li:hover:not([data-disabled]), .imglykit-container .imglykit-controls .imglykit-controls-button:hover:not([data-disabled]) {
-  -moz-box-shadow: 0 -3px 0 0 #9FBDFF inset;
-  -webkit-box-shadow: 0 -3px 0 0 #9FBDFF inset;
-  box-shadow: 0 -3px 0 0 #9FBDFF inset;
-  background-color: rgba(0, 0, 0, 0.3);
-}
-/* line 89, ../../src/css/night/_controls.sass */
-.imglykit-container .imglykit-controls li:hover:not([data-disabled]) img, .imglykit-container .imglykit-controls .imglykit-controls-button:hover:not([data-disabled]) img {
-  -moz-transform: scale(1.1);
-  -ms-transform: scale(1.1);
-  -webkit-transform: scale(1.1);
-  transform: scale(1.1);
-}
-/* line 92, ../../src/css/night/_controls.sass */
-.imglykit-container .imglykit-controls .imglykit-controls-button {
-  -moz-transition: background-color 0.2s ease-out;
-  -o-transition: background-color 0.2s ease-out;
-  -webkit-transition: background-color 0.2s ease-out;
-  transition: background-color 0.2s ease-out;
-  width: 80px;
-  height: 80px;
-  line-height: 80px;
-  font-size: 0;
-  cursor: pointer;
-  position: relative;
-}
-/* line 102, ../../src/css/night/_controls.sass */
-.imglykit-container .imglykit-controls .imglykit-controls-button:first-child {
-  border-right: 1px solid #363636;
-}
-/* line 104, ../../src/css/night/_controls.sass */
-.imglykit-container .imglykit-controls .imglykit-controls-button:last-child {
-  border-left: 1px solid #363636;
-}
-/* line 107, ../../src/css/night/_controls.sass */
-.imglykit-container .imglykit-controls .imglykit-controls-button img {
-  vertical-align: middle;
-  width: 40px;
-  -moz-transition: all 0.2s ease-out;
-  -o-transition: all 0.2s ease-out;
-  -webkit-transition: all 0.2s ease-out;
-  transition: all 0.2s ease-out;
-}
-/* line 113, ../../src/css/night/_controls.sass */
-.imglykit-container .imglykit-controls .imglykit-controls-done .imglykit-controls-done-highlighted {
-  display: none;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 80px;
-  height: 80px;
-  line-height: 80px;
-}
-/* line 123, ../../src/css/night/_controls.sass */
-.imglykit-container .imglykit-controls .imglykit-controls-done.highlighted > img {
-  display: none;
-}
-/* line 125, ../../src/css/night/_controls.sass */
-.imglykit-container .imglykit-controls .imglykit-controls-done.highlighted .imglykit-controls-done-highlighted {
-  display: block;
-}
+  height: 80px; }
+  .imglykit-container .imglykit-controls > div:not(.imglykit-scrollbar-background) > * {
+    width: 100%;
+    display: table;
+    table-layout: fixed; }
+    .imglykit-container .imglykit-controls > div:not(.imglykit-scrollbar-background) > * > * {
+      display: table-cell;
+      vertical-align: top; }
+  .imglykit-container .imglykit-controls .imglykit-controls-list {
+    overflow: hidden;
+    overflow-x: auto;
+    text-align: center;
+    white-space: nowrap;
+    height: 80px;
+    font-size: 0; }
+  .imglykit-container .imglykit-controls li {
+    -webkit-transition: compact(compact(background-color 0.2s ease-out, false, false, false, false, false, false, false, false, false) false false);
+    -moz-transition: compact(compact(background-color 0.2s ease-out, false, false, false, false, false, false, false, false, false) false false false);
+    -o-transition: compact(compact(background-color 0.2s ease-out, false, false, false, false, false, false, false, false, false) false false false);
+    transition: compact(background-color 0.2s ease-out, false, false, false, false, false, false, false, false, false);
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+    line-height: 80px;
+    border-left: 1px solid #363636; }
+    .imglykit-container .imglykit-controls li:last-child {
+      border-right: 1px solid #363636; }
+    .imglykit-container .imglykit-controls li img {
+      -webkit-transition: compact(compact(all 0.2s ease-out, false, false, false, false, false, false, false, false, false) false false);
+      -moz-transition: compact(compact(all 0.2s ease-out, false, false, false, false, false, false, false, false, false) false false false);
+      -o-transition: compact(compact(all 0.2s ease-out, false, false, false, false, false, false, false, false, false) false false false);
+      transition: compact(all 0.2s ease-out, false, false, false, false, false, false, false, false, false);
+      width: 40px;
+      vertical-align: middle; }
+    .imglykit-container .imglykit-controls li.imglykit-controls-item-active {
+      background: rgba(0, 0, 0, 0.3); }
+  .imglykit-container .imglykit-controls .imglykit-controls-item-label {
+    color: white;
+    font-size: 10px;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    margin-top: 10px; }
+  .imglykit-container .imglykit-controls .imglykit-controls-icon {
+    width: 80px;
+    height: 80px;
+    line-height: 80px;
+    font-size: 0; }
+    .imglykit-container .imglykit-controls .imglykit-controls-icon img {
+      vertical-align: middle; }
+  .imglykit-container .imglykit-controls li[data-disabled] {
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=20);
+    opacity: 0.2; }
+  .imglykit-container .imglykit-controls li:hover:not([data-disabled]), .imglykit-container .imglykit-controls .imglykit-controls-button:hover:not([data-disabled]) {
+    -webkit-box-shadow: compact(0 -3px 0 0 #9FBDFF inset, false, false, false, false, false, false, false, false, false);
+    -moz-box-shadow: compact(0 -3px 0 0 #9FBDFF inset, false, false, false, false, false, false, false, false, false);
+    box-shadow: compact(0 -3px 0 0 #9FBDFF inset, false, false, false, false, false, false, false, false, false);
+    background-color: rgba(0, 0, 0, 0.3); }
+    .imglykit-container .imglykit-controls li:hover:not([data-disabled]) img, .imglykit-container .imglykit-controls .imglykit-controls-button:hover:not([data-disabled]) img {
+      -webkit-transform: scale(1.1);
+      -moz-transform: scale(1.1);
+      -ms-transform: scale(1.1);
+      -o-transform: scale(1.1);
+      transform: scale(1.1); }
+  .imglykit-container .imglykit-controls .imglykit-controls-button {
+    -webkit-transition: compact(compact(background-color 0.2s ease-out, false, false, false, false, false, false, false, false, false) false false);
+    -moz-transition: compact(compact(background-color 0.2s ease-out, false, false, false, false, false, false, false, false, false) false false false);
+    -o-transition: compact(compact(background-color 0.2s ease-out, false, false, false, false, false, false, false, false, false) false false false);
+    transition: compact(background-color 0.2s ease-out, false, false, false, false, false, false, false, false, false);
+    width: 80px;
+    height: 80px;
+    line-height: 80px;
+    font-size: 0;
+    cursor: pointer;
+    position: relative; }
+    .imglykit-container .imglykit-controls .imglykit-controls-button:first-child {
+      border-right: 1px solid #363636; }
+    .imglykit-container .imglykit-controls .imglykit-controls-button:last-child {
+      border-left: 1px solid #363636; }
+    .imglykit-container .imglykit-controls .imglykit-controls-button img {
+      vertical-align: middle;
+      width: 40px;
+      -webkit-transition: compact(compact(all 0.2s ease-out, false, false, false, false, false, false, false, false, false) false false);
+      -moz-transition: compact(compact(all 0.2s ease-out, false, false, false, false, false, false, false, false, false) false false false);
+      -o-transition: compact(compact(all 0.2s ease-out, false, false, false, false, false, false, false, false, false) false false false);
+      transition: compact(all 0.2s ease-out, false, false, false, false, false, false, false, false, false); }
+  .imglykit-container .imglykit-controls .imglykit-controls-done .imglykit-controls-done-highlighted {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 80px;
+    height: 80px;
+    line-height: 80px; }
+  .imglykit-container .imglykit-controls .imglykit-controls-done.highlighted > img {
+    display: none; }
+  .imglykit-container .imglykit-controls .imglykit-controls-done.highlighted .imglykit-controls-done-highlighted {
+    display: block; }
 
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
@@ -657,10 +527,8 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-/* line 11, ../../src/css/night/controls/_overview.sass */
 .imglykit-container .imglykit-controls-overview ul.imglykit-controls-list {
-  display: block;
-}
+  display: block; }
 
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
@@ -670,16 +538,12 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-/* line 11, ../../src/css/night/controls/_filters.sass */
 .imglykit-container .imglykit-controls-filters ul.imglykit-controls-list li {
-  line-height: normal;
-}
-/* line 13, ../../src/css/night/controls/_filters.sass */
-.imglykit-container .imglykit-controls-filters ul.imglykit-controls-list li img {
-  width: 40px;
-  height: 40px;
-  margin-top: 10px;
-}
+  line-height: normal; }
+  .imglykit-container .imglykit-controls-filters ul.imglykit-controls-list li img {
+    width: 40px;
+    height: 40px;
+    margin-top: 10px; }
 
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
@@ -689,12 +553,10 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-/* line 11, ../../src/css/night/controls/_stickers.sass */
 .imglykit-container .imglykit-controls-stickers ul.imglykit-controls-list li {
   background-size: 42px;
   background-repeat: no-repeat;
-  background-position: center center;
-}
+  background-position: center center; }
 
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
@@ -704,26 +566,20 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-/* line 10, ../../src/css/night/controls/_stickers_canvas.sass */
 .imglykit-container .imglykit-canvas-stickers-container {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden;
-}
-/* line 18, ../../src/css/night/controls/_stickers_canvas.sass */
-.imglykit-container .imglykit-canvas-stickers-container .imglykit-canvas-stickers {
-  position: relative;
-  display: inline-block;
-  cursor: move;
-}
-/* line 23, ../../src/css/night/controls/_stickers_canvas.sass */
-.imglykit-container .imglykit-canvas-stickers-container .imglykit-canvas-stickers .imglykit-knob {
-  bottom: 0;
-  right: 0;
-}
+  overflow: hidden; }
+  .imglykit-container .imglykit-canvas-stickers-container .imglykit-canvas-stickers {
+    position: relative;
+    display: inline-block;
+    cursor: move; }
+    .imglykit-container .imglykit-canvas-stickers-container .imglykit-canvas-stickers .imglykit-knob {
+      bottom: 0;
+      right: 0; }
 
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
@@ -733,12 +589,10 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-/* line 11, ../../src/css/night/controls/_text.sass */
 .imglykit-container .imglykit-controls-text ul.imglykit-controls-list li {
   color: white;
   font-size: 32px;
-  line-height: 80px;
-}
+  line-height: 80px; }
 
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
@@ -748,43 +602,31 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-/* line 10, ../../src/css/night/controls/_text_canvas.sass */
 .imglykit-container .imglykit-canvas-text-container {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
-}
-/* line 17, ../../src/css/night/controls/_text_canvas.sass */
-.imglykit-container .imglykit-canvas-text-container .imglykit-canvas-text {
-  position: relative;
-  display: inline-block;
-}
-/* line 21, ../../src/css/night/controls/_text_canvas.sass */
-.imglykit-container .imglykit-canvas-text-container .imglykit-canvas-text .imglykit-crosshair {
-  position: absolute;
-  width: 34px;
-  height: 34px;
-  left: -34px;
-}
-/* line 27, ../../src/css/night/controls/_text_canvas.sass */
-.imglykit-container .imglykit-canvas-text-container .imglykit-canvas-text .imglykit-canvas-text-textarea {
-  position: relative;
-  display: inline-block;
-}
-/* line 31, ../../src/css/night/controls/_text_canvas.sass */
-.imglykit-container .imglykit-canvas-text-container .imglykit-canvas-text .imglykit-canvas-text-textarea textarea {
-  background: transparent;
-  border: 2px solid white;
-  resize: none;
-  padding: 0;
-}
-/* line 37, ../../src/css/night/controls/_text_canvas.sass */
-.imglykit-container .imglykit-canvas-text-container .imglykit-canvas-text .imglykit-canvas-text-textarea .imglykit-knob {
-  bottom: -2px;
-  right: -8px;
-}
+  height: 100%; }
+  .imglykit-container .imglykit-canvas-text-container .imglykit-canvas-text {
+    position: relative;
+    display: inline-block; }
+    .imglykit-container .imglykit-canvas-text-container .imglykit-canvas-text .imglykit-crosshair {
+      position: absolute;
+      width: 34px;
+      height: 34px;
+      left: -34px; }
+    .imglykit-container .imglykit-canvas-text-container .imglykit-canvas-text .imglykit-canvas-text-textarea {
+      position: relative;
+      display: inline-block; }
+      .imglykit-container .imglykit-canvas-text-container .imglykit-canvas-text .imglykit-canvas-text-textarea textarea {
+        background: transparent;
+        border: 2px solid white;
+        resize: none;
+        padding: 0; }
+      .imglykit-container .imglykit-canvas-text-container .imglykit-canvas-text .imglykit-canvas-text-textarea .imglykit-knob {
+        bottom: -2px;
+        right: -8px; }
 
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
@@ -794,80 +636,74 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-/* line 10, ../../src/css/night/controls/_slider.sass */
 .imglykit-container .imglykit-slider {
   display: table;
   table-layout: fixed;
   width: 100%;
   height: 80px;
-  line-height: 80px;
-}
-/* line 16, ../../src/css/night/controls/_slider.sass */
-.imglykit-container .imglykit-slider > * {
-  display: table-cell;
-}
-/* line 19, ../../src/css/night/controls/_slider.sass */
-.imglykit-container .imglykit-slider .imglykit-slider-minus, .imglykit-container .imglykit-slider .imglykit-slider-plus {
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=20);
-  opacity: 0.2;
-  color: white;
-  font-size: 12px;
-  width: 40px;
-  text-align: center;
-}
-/* line 26, ../../src/css/night/controls/_slider.sass */
-.imglykit-container .imglykit-slider .imglykit-slider-slider {
-  width: auto;
-  position: relative;
-  z-index: 1;
-}
-/* line 31, ../../src/css/night/controls/_slider.sass */
-.imglykit-container .imglykit-slider .imglykit-slider-slider .imglykit-slider-background, .imglykit-container .imglykit-slider .imglykit-slider-slider .imglykit-slider-fill {
-  -moz-border-radius: 6px;
-  -webkit-border-radius: 6px;
-  border-radius: 6px;
-  background: #1A1A1A;
-  height: 12px;
-  top: 50%;
-  margin-top: -8px;
-  cursor: pointer;
-}
-/* line 39, ../../src/css/night/controls/_slider.sass */
-.imglykit-container .imglykit-slider .imglykit-slider-slider .imglykit-slider-fill {
-  position: absolute;
-  background: #9FBDFF;
-}
-/* line 43, ../../src/css/night/controls/_slider.sass */
-.imglykit-container .imglykit-slider .imglykit-slider-slider .imglykit-slider-center-dot {
-  -moz-border-radius: 50%;
-  -webkit-border-radius: 50%;
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  background: #9FBDFF;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  cursor: pointer;
-  margin: -14px 0 0 -12px;
-}
-/* line 55, ../../src/css/night/controls/_slider.sass */
-.imglykit-container .imglykit-slider .imglykit-slider-slider .imglykit-slider-dot {
-  -moz-border-radius: 50%;
-  -webkit-border-radius: 50%;
-  border-radius: 50%;
-  -moz-box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
-  -webkit-box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
-  width: 30px;
-  height: 30px;
-  background: white;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  margin: -17px 0 0 -15px;
-  cursor: pointer;
-}
+  line-height: 80px; }
+  .imglykit-container .imglykit-slider > * {
+    display: table-cell; }
+  .imglykit-container .imglykit-slider .imglykit-slider-content {
+    position: absolute;
+    top: 38px;
+    width: 100%; }
+  .imglykit-container .imglykit-slider .imglykit-slider-minus, .imglykit-container .imglykit-slider .imglykit-slider-plus {
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=20);
+    opacity: 0.2;
+    color: white;
+    font-size: 12px;
+    width: 40px;
+    text-align: center; }
+  .imglykit-container .imglykit-slider .imglykit-slider-slider {
+    width: auto;
+    position: relative;
+    z-index: 1; }
+    .imglykit-container .imglykit-slider .imglykit-slider-slider .imglykit-slider-background, .imglykit-container .imglykit-slider .imglykit-slider-slider .imglykit-slider-fill {
+      -webkit-border-radius: 6px;
+      -moz-border-radius: 6px;
+      -ms-border-radius: 6px;
+      -o-border-radius: 6px;
+      border-radius: 6px;
+      background: #1A1A1A;
+      height: 12px;
+      top: 50%;
+      margin-top: -8px;
+      cursor: pointer; }
+    .imglykit-container .imglykit-slider .imglykit-slider-slider .imglykit-slider-fill {
+      position: absolute;
+      background: #9FBDFF; }
+    .imglykit-container .imglykit-slider .imglykit-slider-slider .imglykit-slider-center-dot {
+      -webkit-border-radius: 50%;
+      -moz-border-radius: 50%;
+      -ms-border-radius: 50%;
+      -o-border-radius: 50%;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      background: #9FBDFF;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      cursor: pointer;
+      margin: -14px 0 0 -12px; }
+    .imglykit-container .imglykit-slider .imglykit-slider-slider .imglykit-slider-dot {
+      -webkit-border-radius: 50%;
+      -moz-border-radius: 50%;
+      -ms-border-radius: 50%;
+      -o-border-radius: 50%;
+      border-radius: 50%;
+      -webkit-box-shadow: compact(0 2px 4px 0 rgba(0, 0, 0, 0.5), false, false, false, false, false, false, false, false, false);
+      -moz-box-shadow: compact(0 2px 4px 0 rgba(0, 0, 0, 0.5), false, false, false, false, false, false, false, false, false);
+      box-shadow: compact(0 2px 4px 0 rgba(0, 0, 0, 0.5), false, false, false, false, false, false, false, false, false);
+      width: 30px;
+      height: 30px;
+      background: white;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      margin: -17px 0 0 -15px;
+      cursor: pointer; }
 
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
@@ -877,37 +713,29 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-/* line 11, ../../src/css/night/controls/_color-picker.sass */
 .imglykit-container .imglykit-color-picker {
   position: relative;
   border-left: 1px solid #363636;
-  height: 80px;
-}
-/* line 16, ../../src/css/night/controls/_color-picker.sass */
-.imglykit-container .imglykit-color-picker .imglykit-color-picker-color {
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-  background: black;
-  margin-top: 15px;
-}
-/* line 21, ../../src/css/night/controls/_color-picker.sass */
-.imglykit-container .imglykit-color-picker .imglykit-controls-item-label {
-  position: absolute;
-  line-height: 11px;
-  width: 100%;
-  bottom: 10px;
-  left: 0;
-}
-/* line 28, ../../src/css/night/controls/_color-picker.sass */
-.imglykit-container .imglykit-color-picker .imglykit-transparent-knob {
-  pointer-events: none;
-}
-/* line 31, ../../src/css/night/controls/_color-picker.sass */
-.imglykit-container .imglykit-color-picker canvas {
-  cursor: pointer;
-}
-/* line 34, ../../src/css/night/controls/_color-picker.sass */
+  height: 80px; }
+  .imglykit-container .imglykit-color-picker .imglykit-color-picker-color {
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -o-border-radius: 3px;
+    border-radius: 3px;
+    background: black;
+    margin-top: 15px; }
+  .imglykit-container .imglykit-color-picker .imglykit-controls-item-label {
+    position: absolute;
+    line-height: 11px;
+    width: 100%;
+    bottom: 10px;
+    left: 0; }
+  .imglykit-container .imglykit-color-picker .imglykit-transparent-knob {
+    pointer-events: none; }
+  .imglykit-container .imglykit-color-picker canvas {
+    cursor: pointer; }
+
 .imglykit-container .imglykit-color-picker-overlay {
   position: absolute;
   cursor: default;
@@ -919,79 +747,58 @@
   right: -80px;
   position: absolute;
   border-color: #353535;
-  display: none;
-}
-/* line 14, ../../src/css/night/_mixins.sass */
-.imglykit-container .imglykit-color-picker-overlay:before {
-  position: absolute;
-  content: "";
-  width: 0;
-  height: 0;
-  border-color: #353535;
-  top: 100%;
-  left: 50%;
-  margin-top: -1px;
-  margin-left: -15px;
-  border-left: 15px solid transparent;
-  border-right: 15px solid transparent;
-  border-top: 15px solid #353535;
-  border-top-color: inherit;
-}
-/* line 47, ../../src/css/night/controls/_color-picker.sass */
-.imglykit-container .imglykit-color-picker-overlay.imglykit-visible {
-  display: block;
-}
-/* line 50, ../../src/css/night/controls/_color-picker.sass */
-.imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-alpha-container {
-  width: 200px;
-  height: 30px;
-  position: relative;
-  margin-bottom: 10px;
-}
-/* line 55, ../../src/css/night/controls/_color-picker.sass */
-.imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-alpha-container canvas {
-  background: black;
-  position: absolute;
-  left: 0;
-  top: 0;
-}
-/* line 61, ../../src/css/night/controls/_color-picker.sass */
-.imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-alpha-container .imglykit-transparent-knob {
-  top: 50%;
-}
-/* line 64, ../../src/css/night/controls/_color-picker.sass */
-.imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-hue-container {
-  width: 30px;
-  height: 160px;
-  position: relative;
-  float: left;
-}
-/* line 69, ../../src/css/night/controls/_color-picker.sass */
-.imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-hue-container canvas {
-  background: black;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-/* line 75, ../../src/css/night/controls/_color-picker.sass */
-.imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-hue-container .imglykit-transparent-knob {
-  left: 50%;
-}
-/* line 78, ../../src/css/night/controls/_color-picker.sass */
-.imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-saturation-container {
-  width: 160px;
-  height: 160px;
-  position: relative;
-  float: left;
-  margin-right: 10px;
-}
-/* line 84, ../../src/css/night/controls/_color-picker.sass */
-.imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-saturation-container canvas {
-  background: black;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
+  display: none; }
+  .imglykit-container .imglykit-color-picker-overlay:before {
+    position: absolute;
+    content: "";
+    width: 0;
+    height: 0;
+    border-color: #353535;
+    top: 100%;
+    left: 50%;
+    margin-top: -1px;
+    margin-left: -15px;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 15px solid #353535;
+    border-top-color: inherit; }
+  .imglykit-container .imglykit-color-picker-overlay.imglykit-visible {
+    display: block; }
+  .imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-alpha-container {
+    width: 200px;
+    height: 30px;
+    position: relative;
+    margin-bottom: 10px; }
+    .imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-alpha-container canvas {
+      background: black;
+      position: absolute;
+      left: 0;
+      top: 0; }
+    .imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-alpha-container .imglykit-transparent-knob {
+      top: 50%; }
+  .imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-hue-container {
+    width: 30px;
+    height: 160px;
+    position: relative;
+    float: left; }
+    .imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-hue-container canvas {
+      background: black;
+      position: absolute;
+      top: 0;
+      left: 0; }
+    .imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-hue-container .imglykit-transparent-knob {
+      left: 50%; }
+  .imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-saturation-container {
+    width: 160px;
+    height: 160px;
+    position: relative;
+    float: left;
+    margin-right: 10px; }
+    .imglykit-container .imglykit-color-picker-overlay .imglykit-color-picker-saturation-container canvas {
+      background: black;
+      position: absolute;
+      top: 0;
+      left: 0; }
 
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
@@ -1001,7 +808,6 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-/* line 10, ../../src/css/night/controls/_crop_canvas.sass */
 .imglykit-container .imglykit-canvas-crop-container {
   position: absolute;
   top: 0;
@@ -1009,69 +815,51 @@
   width: 100%;
   height: 100%;
   display: table;
-  table-layout: fixed;
-}
-/* line 21, ../../src/css/night/controls/_crop_canvas.sass */
-.imglykit-container .imglykit-canvas-crop-container.imglykit-canvas-crop-container-hidden {
-  display: none;
-}
-/* line 24, ../../src/css/night/controls/_crop_canvas.sass */
-.imglykit-container .imglykit-canvas-crop-container > * {
-  display: table-row;
-}
-/* line 26, ../../src/css/night/controls/_crop_canvas.sass */
-.imglykit-container .imglykit-canvas-crop-container > * > * {
-  display: table-cell;
-  background: rgba(34, 34, 34, 0.9);
-}
-/* line 30, ../../src/css/night/controls/_crop_canvas.sass */
-.imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-center-center {
-  background: transparent;
-  cursor: move;
-  border: 1px solid white;
-}
-/* line 35, ../../src/css/night/controls/_crop_canvas.sass */
-.imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-center-center.imglykit-canvas-crop-center-center-nomove {
-  cursor: auto;
-}
-/* line 38, ../../src/css/night/controls/_crop_canvas.sass */
-.imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-knobs {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-/* line 42, ../../src/css/night/controls/_crop_canvas.sass */
-.imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-knobs > * {
-  -moz-border-radius: 50%;
-  -webkit-border-radius: 50%;
-  border-radius: 50%;
-  position: absolute;
-  background: white;
-  width: 20px;
-  height: 20px;
-  border: 2px solid rgba(0, 0, 0, 0.3);
-  cursor: pointer;
-}
-/* line 51, ../../src/css/night/controls/_crop_canvas.sass */
-.imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-knobs [data-corner=top-left] {
-  top: -10px;
-  left: -10px;
-}
-/* line 55, ../../src/css/night/controls/_crop_canvas.sass */
-.imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-knobs [data-corner=top-right] {
-  top: -10px;
-  right: -10px;
-}
-/* line 59, ../../src/css/night/controls/_crop_canvas.sass */
-.imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-knobs [data-corner=bottom-left] {
-  bottom: -10px;
-  left: -10px;
-}
-/* line 63, ../../src/css/night/controls/_crop_canvas.sass */
-.imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-knobs [data-corner=bottom-right] {
-  bottom: -10px;
-  right: -10px;
-}
+  table-layout: fixed; }
+  .imglykit-container .imglykit-canvas-crop-container.imglykit-canvas-crop-container-hidden {
+    display: none; }
+  .imglykit-container .imglykit-canvas-crop-container > * {
+    display: table-row; }
+    .imglykit-container .imglykit-canvas-crop-container > * > * {
+      display: table-cell;
+      background: rgba(34, 34, 34, 0.9); }
+  .imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-center-center {
+    position: relative;
+    background: transparent;
+    cursor: move;
+    border: 1px solid white; }
+    .imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-center-center.imglykit-canvas-crop-center-center-nomove {
+      cursor: auto; }
+  .imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-knobs {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%; }
+    .imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-knobs > * {
+      -webkit-border-radius: 50%;
+      -moz-border-radius: 50%;
+      -ms-border-radius: 50%;
+      -o-border-radius: 50%;
+      border-radius: 50%;
+      position: absolute;
+      background: white;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(0, 0, 0, 0.3);
+      cursor: pointer; }
+    .imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-knobs [data-corner=top-left] {
+      top: -10px;
+      left: -10px; }
+    .imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-knobs [data-corner=top-right] {
+      top: -10px;
+      right: -10px; }
+    .imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-knobs [data-corner=bottom-left] {
+      bottom: -10px;
+      left: -10px; }
+    .imglykit-container .imglykit-canvas-crop-container .imglykit-canvas-crop-knobs [data-corner=bottom-right] {
+      bottom: -10px;
+      right: -10px; }
 
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
@@ -1081,51 +869,47 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-/* line 10, ../../src/css/night/controls/_radial-blur_canvas.sass */
 .imglykit-container .imglykit-canvas-radial-blur-container {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
-}
-/* line 18, ../../src/css/night/controls/_radial-blur_canvas.sass */
-.imglykit-container .imglykit-canvas-radial-blur-container .imglykit-canvas-radial-blur-dot {
-  -moz-border-radius: 50%;
-  -webkit-border-radius: 50%;
-  border-radius: 50%;
-  position: absolute;
-  background: white;
-  width: 20px;
-  height: 20px;
-  border: 2px solid rgba(0, 0, 0, 0.3);
-  cursor: pointer;
-  margin-left: -10px;
-  margin-top: -10px;
-}
-/* line 29, ../../src/css/night/controls/_radial-blur_canvas.sass */
-.imglykit-container .imglykit-canvas-radial-blur-container .imglykit-canvas-radial-blur-circle-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  overflow: hidden;
-}
-/* line 38, ../../src/css/night/controls/_radial-blur_canvas.sass */
-.imglykit-container .imglykit-canvas-radial-blur-container .imglykit-canvas-radial-blur-circle {
-  -moz-border-radius: 50%;
-  -webkit-border-radius: 50%;
-  border-radius: 50%;
-  border: 2px solid white;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100px;
-  height: 100px;
-  pointer-events: none;
-}
+  height: 100%; }
+  .imglykit-container .imglykit-canvas-radial-blur-container .imglykit-canvas-radial-blur-dot {
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+    border-radius: 50%;
+    position: absolute;
+    background: white;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    margin-left: -10px;
+    margin-top: -10px; }
+  .imglykit-container .imglykit-canvas-radial-blur-container .imglykit-canvas-radial-blur-circle-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden; }
+  .imglykit-container .imglykit-canvas-radial-blur-container .imglykit-canvas-radial-blur-circle {
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+    border-radius: 50%;
+    border: 2px solid white;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100px;
+    height: 100px;
+    pointer-events: none; }
 
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
@@ -1135,48 +919,42 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-/* line 10, ../../src/css/night/controls/_tilt-shift_canvas.sass */
 .imglykit-container .imglykit-canvas-tilt-shift-container {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
-}
-/* line 18, ../../src/css/night/controls/_tilt-shift_canvas.sass */
-.imglykit-container .imglykit-canvas-tilt-shift-container .imglykit-canvas-tilt-shift-dot {
-  -moz-border-radius: 50%;
-  -webkit-border-radius: 50%;
-  border-radius: 50%;
-  position: absolute;
-  background: white;
-  width: 20px;
-  height: 20px;
-  border: 2px solid rgba(0, 0, 0, 0.3);
-  cursor: pointer;
-  margin-left: -10px;
-  margin-top: -10px;
-}
-/* line 29, ../../src/css/night/controls/_tilt-shift_canvas.sass */
-.imglykit-container .imglykit-canvas-tilt-shift-container .imglykit-canvas-tilt-shift-rect-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  overflow: hidden;
-}
-/* line 38, ../../src/css/night/controls/_tilt-shift_canvas.sass */
-.imglykit-container .imglykit-canvas-tilt-shift-container .imglykit-canvas-tilt-shift-rect {
-  border: 2px solid white;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100px;
-  height: 100px;
-  pointer-events: none;
-}
+  height: 100%; }
+  .imglykit-container .imglykit-canvas-tilt-shift-container .imglykit-canvas-tilt-shift-dot {
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+    border-radius: 50%;
+    position: absolute;
+    background: white;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    margin-left: -10px;
+    margin-top: -10px; }
+  .imglykit-container .imglykit-canvas-tilt-shift-container .imglykit-canvas-tilt-shift-rect-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden; }
+  .imglykit-container .imglykit-canvas-tilt-shift-container .imglykit-canvas-tilt-shift-rect {
+    border: 2px solid white;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100px;
+    height: 100px;
+    pointer-events: none; }
 
 /*!
  * Copyright (c) 2013-2015 9elements GmbH
@@ -1186,12 +964,11 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-/* line 12, ../../src/css/night/_scrollbars.sass */
 .imglykit-container .imglykit-scrollbar-background {
-  -moz-transition: all 0.3s ease-out;
-  -o-transition: all 0.3s ease-out;
-  -webkit-transition: all 0.3s ease-out;
-  transition: all 0.3s ease-out;
+  -webkit-transition: compact(compact(all 0.3s ease-out, false, false, false, false, false, false, false, false, false) false false);
+  -moz-transition: compact(compact(all 0.3s ease-out, false, false, false, false, false, false, false, false, false) false false false);
+  -o-transition: compact(compact(all 0.3s ease-out, false, false, false, false, false, false, false, false, false) false false false);
+  transition: compact(all 0.3s ease-out, false, false, false, false, false, false, false, false, false);
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
   opacity: 0;
   width: 100%;
@@ -1200,17 +977,16 @@
   position: absolute;
   bottom: 0;
   left: 0;
-  cursor: pointer;
-}
-/* line 22, ../../src/css/night/_scrollbars.sass */
-.imglykit-container .imglykit-scrollbar-background.visible {
-  filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
-  opacity: 1;
-}
-/* line 25, ../../src/css/night/_scrollbars.sass */
+  cursor: pointer; }
+  .imglykit-container .imglykit-scrollbar-background.visible {
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+    opacity: 1; }
+
 .imglykit-container .imglykit-scrollbar-button {
-  -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
   border-radius: 5px;
   background: #9FBDFF;
   height: 7px;
@@ -1219,5 +995,4 @@
   top: 0;
   width: 50px;
   margin: 2px;
-  cursor: pointer;
-}
+  cursor: pointer; }
