@@ -93,19 +93,19 @@ class RadialBlurOperation extends Operation {
     }
 
     // Setup program
-    if (!this._firstPassProgram) {
-      this._firstPassProgram = renderer.setupGLSLProgram(
+    if (!this._glslProgram) {
+      this._glslProgram = renderer.setupGLSLProgram(
         null,
         this.fragmentShader
       )
     }
 
-    renderer.runProgram(this._firstPassProgram, { uniforms })
+    renderer.runProgram(this._glslProgram, { uniforms })
 
     // Update delta for second pass
     uniforms.delta.value = [-1, 1]
 
-    renderer.runProgram(this._firstPassProgram, { uniforms })
+    renderer.runProgram(this._glslProgram, { uniforms })
   }
 
   /**
