@@ -24,10 +24,6 @@ class Operation extends EventEmitter {
   constructor (kit, options) {
     super()
 
-    if (kit.constructor.name !== 'ImglyKit') {
-      throw new Error('Operation: First parameter for constructor has to be an ImglyKit instance.')
-    }
-
     this._kit = kit
     this.availableOptions = _.extend(this.availableOptions || {}, {
       numberFormat: { type: 'string', default: 'relative', available: ['absolute', 'relative'] }
