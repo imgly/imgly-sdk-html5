@@ -42,13 +42,19 @@ class BrightnessOperation extends Operation {
    * @private
    */
   _render (renderer) {
-    var stack = new PrimitivesStack()
+    if (!this._stack) {
+      this._stack = new PrimitivesStack()
+      this._primitive = new BrightnessPrimitive({
+        brightness: this._options.brightness
+      })
+      this._stack.add(this._primitive)
+    }
 
-    stack.add(new BrightnessPrimitive({
-      brightness: this._options.brightness
-    }))
-
-    stack.render(renderer)
+    // @TODO
+    // Primitives should have the same option logic as operations - which
+    // should allow us to do `this._primitive.setBrightness`
+    this._primitive.options.brightness = this._options.brightness
+    this._stack.render(renderer)
   }
 }
 
