@@ -202,7 +202,11 @@ class WebGLRenderer extends Renderer {
    * @returns {boolean}
    */
   static isSupported () {
-    return !!(typeof window !== 'undefined' && window.WebGLRenderingContext)
+    if (typeof window === 'undefined') { return false }
+
+    let canvas = document.createElement('canvas')
+    let gl = canvas.getContext('webgl') || canvas.getContext('webgl-experimental')
+    return !!gl
   }
 
   /**
