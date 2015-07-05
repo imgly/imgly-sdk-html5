@@ -42,13 +42,19 @@ class ContrastOperation extends Operation {
    * @private
    */
   _render (renderer) {
-    var stack = new PrimitivesStack()
+    if (!this._stack) {
+      this._stack = new PrimitivesStack()
+      this._primitive = new ContrastPrimitive({
+        contrast: this._options.contrast
+      })
+      this._stack.add(this._primitive)
+    }
 
-    stack.add(new ContrastPrimitive({
-      contrast: this._options.contrast
-    }))
-
-    stack.render(renderer)
+    // @TODO
+    // Primitives should have the same option logic as operations - which
+    // should allow us to do `this._primitive.setContrast`
+    this._primitive.options.contrast = this._options.contrast
+    this._stack.render(renderer)
   }
 }
 
