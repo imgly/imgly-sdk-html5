@@ -64,12 +64,19 @@ class FramesOperation extends Operation {
     var thickness = this._options.thickness * canvas.height
     var thicknessVec2 = [thickness / canvas.width, thickness / canvas.height]
 
-    renderer.runShader(null, this._fragmentShader, {
-      uniforms: {
-        u_color: { type: '4f', value: color.toGLColor() },
-        u_thickness: { type: '2f', value: thicknessVec2 }
-      }
-    })
+    let uniforms = {
+      u_color: { type: '4f', value: color.toGLColor() },
+      u_thickness: { type: '2f', value: thicknessVec2 }
+    }
+
+    if (!this._glslProgram) {
+      this._glslProgram = renderer.setupGLSLProgram(
+        null,
+        this._fragmentShader
+      )
+    }
+
+    renderer.runProgram(this._glslProgram, { uniforms })
   }
 
   /**
