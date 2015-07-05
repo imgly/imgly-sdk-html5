@@ -51,6 +51,10 @@ class Primitive {
     /* istanbul ignore next */
     throw new Error('Primitive#renderCanvas is abstract and not implemented in inherited class.')
   }
+
+  get options () {
+    return this._options
+  }
 }
 
 export default Primitive
