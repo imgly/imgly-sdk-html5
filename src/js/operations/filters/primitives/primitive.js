@@ -17,6 +17,7 @@ class Primitive {
   constructor (options) {
     options = options || {}
 
+    this._glslPrograms = {}
     this._options = options
   }
 

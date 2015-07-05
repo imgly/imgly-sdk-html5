@@ -30,6 +30,7 @@ class Operation extends EventEmitter {
     })
     this._dirty = true
 
+    this._glslPrograms = {}
     this._uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
       let r = Math.random() * 16 | 0
       let v = c === 'x' ? r : (r & 0x3 | 0x8)

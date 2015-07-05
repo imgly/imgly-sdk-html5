@@ -25,6 +25,9 @@ class WebGLRenderer extends Renderer {
 
     this._defaultProgram = this.setupGLSLProgram()
     this.reset()
+
+    this.id = WebGLRenderer.contextId
+    WebGLRenderer.contextId++
   }
 
   /**
@@ -685,5 +688,7 @@ class WebGLRenderer extends Renderer {
     return this._maxTextureSize
   }
 }
+
+WebGLRenderer.contextId = 0
 
 export default WebGLRenderer

@@ -69,14 +69,14 @@ class FramesOperation extends Operation {
       u_thickness: { type: '2f', value: thicknessVec2 }
     }
 
-    if (!this._glslProgram) {
-      this._glslProgram = renderer.setupGLSLProgram(
+    if (!this._glslPrograms[renderer.id]) {
+      this._glslPrograms[renderer.id] = renderer.setupGLSLProgram(
         null,
         this._fragmentShader
       )
     }
 
-    renderer.runProgram(this._glslProgram, { uniforms })
+    renderer.runProgram(this._glslPrograms[renderer.id], { uniforms })
   }
 
   /**

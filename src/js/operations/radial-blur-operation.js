@@ -27,7 +27,7 @@ class RadialBlurOperation extends Operation {
      * @internal Based on evanw's glfx.js tilt shift shader:
      *           https://github.com/evanw/glfx.js/blob/master/src/filters/blur/tiltshift.js
      */
-    this.fragmentShader = `
+    this._fragmentShader = `
       precision mediump float;
       uniform sampler2D u_image;
       uniform float blurRadius;
@@ -93,19 +93,19 @@ class RadialBlurOperation extends Operation {
     }
 
     // Setup program
-    if (!this._glslProgram) {
-      this._glslProgram = renderer.setupGLSLProgram(
+    if (!this._glslPrograms[renderer.id]) {
+      this._glslPrograms[renderer.id] = renderer.setupGLSLProgram(
         null,
-        this.fragmentShader
+        this._fragmentShader
       )
     }
 
-    renderer.runProgram(this._glslProgram, { uniforms })
+    renderer.runProgram(this._glslPrograms[renderer.id], { uniforms })
 
     // Update delta for second pass
     uniforms.delta.value = [-1, 1]
 
-    renderer.runProgram(this._glslProgram, { uniforms })
+    renderer.runProgram(this._glslPrograms[renderer.id], { uniforms })
   }
 
   /**

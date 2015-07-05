@@ -54,14 +54,14 @@ class Saturation extends Primitive {
    */
   /* istanbul ignore next */
   renderWebGL (renderer) {
-    if (!this._glslProgram) {
-      this._glslProgram = renderer.setupGLSLProgram(
+    if (!this._glslPrograms[renderer.id]) {
+      this._glslPrograms[renderer.id] = renderer.setupGLSLProgram(
         null,
         this._fragmentShader
       )
     }
 
-    renderer.runProgram(this._glslProgram, {
+    renderer.runProgram(this._glslPrograms[renderer.id], {
       uniforms: {
         u_saturation: { type: 'f', value: this._options.saturation }
       }
