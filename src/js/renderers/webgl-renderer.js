@@ -316,18 +316,8 @@ class WebGLRenderer extends Renderer {
     gl.clear(gl.COLOR_BUFFER_BIT)
   }
 
-  /**
-   * Runs the given shader
-   * @param  {String} [vertexShader]
-   * @param  {String} [fragmentShader]
-   */
-  /* istanbul ignore next */
-  runShader (vertexShader, fragmentShader, options) {
-    if (typeof options === 'undefined') options = {}
-    if (typeof options.uniforms === 'undefined') options.uniforms = {}
-
-    var gl = this._context
-    var program = this.setupGLSLProgram(vertexShader, fragmentShader)
+  runProgram (program, options) {
+    let gl = this._context
     gl.useProgram(program)
 
     var fbo = this.getCurrentFramebuffer()
@@ -390,6 +380,20 @@ class WebGLRenderer extends Renderer {
 
     this.setLastTexture(currentTexture)
     this.selectNextBuffer()
+  }
+
+  /**
+   * Runs the given shader
+   * @param  {String} [vertexShader]
+   * @param  {String} [fragmentShader]
+   */
+  /* istanbul ignore next */
+  runShader (vertexShader, fragmentShader, options) {
+    if (typeof options === 'undefined') options = {}
+    if (typeof options.uniforms === 'undefined') options.uniforms = {}
+
+    var program = this.setupGLSLProgram(vertexShader, fragmentShader)
+    this.runProgram(program, options)
   }
 
   /**
