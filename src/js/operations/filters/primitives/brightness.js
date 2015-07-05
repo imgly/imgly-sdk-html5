@@ -48,7 +48,14 @@ class Brightness extends Primitive {
    */
   /* istanbul ignore next */
   renderWebGL (renderer) {
-    renderer.runShader(null, this._fragmentShader, {
+    if (!this._glslProgram) {
+      this._glslProgram = renderer.setupGLSLProgram(
+        null,
+        this._fragmentShader
+      )
+    }
+
+    renderer.runProgram(this._glslProgram, {
       uniforms: {
         u_brightness: { type: 'f', value: this._options.brightness }
       }
