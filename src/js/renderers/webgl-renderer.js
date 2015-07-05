@@ -205,7 +205,7 @@ class WebGLRenderer extends Renderer {
     if (typeof window === 'undefined') { return false }
 
     let canvas = document.createElement('canvas')
-    let gl = canvas.getContext('webgl') || canvas.getContext('webgl-experimental')
+    let gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
     return !!gl
   }
 
@@ -217,7 +217,7 @@ class WebGLRenderer extends Renderer {
   _getContext () {
     /* istanbul ignore next */
     let gl = this._canvas.getContext('webgl', this._contextOptions) ||
-      this._canvas.getContext('webgl-experimental', this._contextOptions)
+      this._canvas.getContext('experimental-webgl', this._contextOptions)
 
     gl.disable(gl.DEPTH_TEST)
     gl.disable(gl.CULL_FACE)
