@@ -103,15 +103,19 @@ class TiltShiftOperation extends Operation {
       texSize: { type: '2f', value: [canvas.width, canvas.height] }
     }
 
-    renderer.runShader(null, this.fragmentShader, {
-      uniforms: uniforms
-    })
+    if (!this._glslProgram) {
+      this._glslProgram = renderer.setupGLSLProgram(
+        null,
+        this.fragmentShader
+      )
+    }
 
+    renderer.runProgram(this._glslProgram, { uniforms })
+
+    // Update delta for second pass
     uniforms.delta.value = [-delta.y / d, delta.x / d]
 
-    renderer.runShader(null, this.fragmentShader, {
-      uniforms: uniforms
-    })
+    renderer.runProgram(this._glslProgram, { uniforms })
   }
 
   /**
