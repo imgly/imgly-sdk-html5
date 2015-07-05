@@ -509,21 +509,36 @@ class NightUI extends UI {
   export () {
     this.displayLoadingMessage('Exporting...')
 
+    let renderType = RenderType.DATAURL
+
+    // Check if msToBlob is available
+    let canvas = document.createElement('canvas')
+    if (typeof canvas.msToBlob !== 'undefined') {
+      renderType = RenderType.MSBLOB
+    }
+
     setTimeout(() => {
-      this._kit.render(RenderType.DATAURL,
+      this._kit.render(renderType,
         this._options.ui.export.type,
         this._options.ui.export.dimensions,
         this._options.ui.export.quality)
         .then((data) => {
-          let link = document.createElement('a')
-          let extension = this._options.ui.export.type.split('/').pop()
-          link.download = `imglykit-export.${extension}`
+          switch (renderType) {
+            case RenderType.DATAURL:
+              let link = document.createElement('a')
+              let extension = this._options.ui.export.type.split('/').pop()
+              link.download = `imglykit-export.${extension}`
 
-          link.href = data
-          document.body.appendChild(link)
-          link.click()
-          // Cleanup the DOM
-          document.body.removeChild(link)
+              link.href = data
+              document.body.appendChild(link)
+              link.click()
+              // Cleanup the DOM
+              document.body.removeChild(link)
+              break
+            case RenderType.MSBLOB:
+              navigator.msSaveBlob(data, 'imglykit-export.png')
+              break
+          }
 
           this.hideLoadingMessage()
         })

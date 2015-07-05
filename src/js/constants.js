@@ -16,7 +16,8 @@ export var RenderType = {
   IMAGE: 'image',
   DATAURL: 'data-url',
   BUFFER: 'buffer',
-  BLOB: 'blob'
+  BLOB: 'blob',
+  MSBLOB: 'ms-blob'
 }
 
 /**

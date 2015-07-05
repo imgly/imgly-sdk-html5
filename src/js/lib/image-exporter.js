@@ -97,6 +97,8 @@ class ImageExporter {
         resolve(result)
       } else if (renderType === RenderType.BUFFER) {
         resolve(canvas.toBuffer())
+      } else if (renderType === RenderType.MSBLOB) {
+        resolve(canvas.msToBlob())
       } else if (renderType === RenderType.BLOB) {
         canvas.toBlob((blob) => {
           resolve(blob)
