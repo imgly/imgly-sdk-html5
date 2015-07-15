@@ -1,14 +1,12 @@
-/**
- * Copyright (c) FILSH Media GmbH - All Rights Reserved
+/*!
+ * Copyright (c) 2013-2015 9elements GmbH
  *
- * This file is part of VLIGHT.MXR.TWO
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
  *
- * Unauthorized copying of this file, via any medium is strictly prohibited.
- * Proprietary and confidential.
+ * For commercial use, please contact us at contact@9elements.com
  *
- * Written by Sascha Gehlich <sascha@gehlich.us>, June 2015
- *
- * Extracted from MinifyJpeg:
+ * Extracted from MinifyJpeg (Copyright (c) 2014 Hiroaki Matoba, MIT License):
  * https://github.com/hMatoba/MinifyJpeg
  */
 
