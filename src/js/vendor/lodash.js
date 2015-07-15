@@ -1,5 +1,4 @@
-/**
- * @license
+/*!
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash include="defaults,extend"`
  * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
