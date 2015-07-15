@@ -90,9 +90,8 @@ gulp.task('copy', function () {
 gulp.task('uglify:js', function () {
   return gulp.src('./build/js/imglykit.js')
     .pipe($.plumber())
-    .pipe($.uglify({
-      mangle: false,
-      preserveComments: 'some'
+    .pipe($.yuicompressor({
+      type: 'js'
     }))
     .pipe($.rename({ suffix: '.min' }))
     .pipe(gulp.dest('./build/js'))
@@ -102,12 +101,14 @@ gulp.task('uglify:js', function () {
  * `gulp uglify:css`
  * Uglifies the compiled CSS files
  */
-gulp.task('cssmin:minify', function () {
-  return gulp.src('./build/*.css')
+gulp.task('uglify:css', function () {
+  return gulp.src('./build/css/imglykit-night-ui.css')
     .pipe($.plumber())
-    .pipe($.cssmin())
+    .pipe($.yuicompressor({
+      type: 'css'
+    }))
     .pipe($.rename({ suffix: '.min' }))
-    .pipe(gulp.dest('./build'))
+    .pipe(gulp.dest('./build/css'))
 })
 
 /**
@@ -245,7 +246,7 @@ gulp.task('release', function () {
     'build:js',
     'build:css',
     'uglify:js',
-    'cssmin:minify'
+    'uglify:css'
   )
 })
 
