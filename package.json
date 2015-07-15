@@ -28,7 +28,7 @@
     "gulp-rename": "~1.2.0",
     "gulp-sass": "^2.0.3",
     "gulp-standard": "0.0.3",
-    "gulp-uglifyjs": "^0.6.0",
+    "gulp-uglify": "^1.2.0",
     "gulp-util": "~2.2.16",
     "gulp-webpack": "^1.4.0",
     "istanbul": "^0.3.2",
