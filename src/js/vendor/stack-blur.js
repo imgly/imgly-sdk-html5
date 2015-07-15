@@ -1,5 +1,5 @@
 "use strict";
-/*
+/*!
 
 StackBlur - a fast almost Gaussian Blur For Canvas
 

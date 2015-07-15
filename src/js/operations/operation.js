@@ -1,6 +1,7 @@
 /* jshint unused:false */
 /* jshint -W083 */
-/*!
+/*
+ * Photo Editor SDK - photoeditorsdk.com
  * Copyright (c) 2013-2015 9elements GmbH
  *
  * Released under Attribution-NonCommercial 3.0 Unported

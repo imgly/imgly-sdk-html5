@@ -1,7 +1,9 @@
-/*! Native Promise Only
-    v0.8.0-a (c) Kyle Simpson
-    MIT License: http://getify.mit-license.org
-*/
+/*!
+ * Native Promise Only
+ * v0.8.0-a (c) Kyle Simpson
+ * MIT License: http://getify.mit-license.org
+ * @license
+ */
 
 (function UMD(name,context,definition){
   // special form of UMD for polyfilling across evironments
