@@ -8,7 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-const VERSION = '2.0.0-beta.16'
+const VERSION = '2.0.0-beta.17'
 
 import _ from 'lodash'
 import RenderImage from './lib/render-image'
