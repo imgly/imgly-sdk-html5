@@ -64,6 +64,11 @@ class StickersControl extends Control {
    */
   addSticker (identifier, path) {
     this._availableStickers[identifier] = path
+    this._stickers[identifier] = this._availableStickers[identifier]
+
+    if (this._active) {
+      this._renderControls()
+    }
   }
 
   /**
