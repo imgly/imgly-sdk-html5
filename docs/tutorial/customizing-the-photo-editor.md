@@ -71,7 +71,8 @@ cropControl.selectRatios({ only: "facebook-cover,twitter-cover" });
 Using the `addSticker` function of the `StickersControl`, you can register
 custom stickers. A sticker has an `identifier` and a `path`. The `identifier`
 is a unique string that you will use to select the stickers available to
-the user.
+the user. Please note that the `StickersControl` can only be retrieved
+after `kin.run()` function hase been called.
 
 ```js
 var stickersControl = kit.ui.controls.stickers;
