@@ -16,7 +16,14 @@ class Helpers {
   }
 
   assetPath (asset) {
-    return this._options.assetsUrl + '/' + asset
+    var path = this._options.assetsUrl + '/' + asset
+
+    var assetPathResolver = this._ui.options.ui.assetPathResolver
+    if (typeof assetPathResolver !== 'undefined') {
+      path = assetPathResolver(path)
+    }
+
+    return path
   }
 }
 
