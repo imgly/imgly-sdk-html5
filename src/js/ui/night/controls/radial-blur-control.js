@@ -1,3 +1,4 @@
+/* global __DOTJS_TEMPLATE */
 /*
  * Photo Editor SDK - photoeditorsdk.com
  * Copyright (c) 2013-2015 9elements GmbH
@@ -12,20 +13,22 @@ import Control from './control'
 import Vector2 from '../../../lib/math/vector2'
 import Utils from '../../../lib/utils'
 import SimpleSlider from '../lib/simple-slider'
-let fs = require('fs')
 
 class RadialBlurControl extends Control {
   /**
    * Entry point for this control
    */
   init () {
-    let controlsTemplate = fs.readFileSync(__dirname + '/../../../templates/night/operations/radial-blur_controls.jst', 'utf-8')
+    let controlsTemplate = __DOTJS_TEMPLATE('../../../templates/night/operations/radial-blur_controls.jst')
     this._controlsTemplate = controlsTemplate
 
-    let canvasControlsTemplate = fs.readFileSync(__dirname + '/../../../templates/night/operations/radial-blur_canvas.jst', 'utf-8')
+    let canvasControlsTemplate = __DOTJS_TEMPLATE('../../../templates/night/operations/radial-blur_canvas.jst')
     this._canvasControlsTemplate = canvasControlsTemplate
 
-    this._partialTemplates.push(SimpleSlider.template)
+    this._partialTemplates.slider = SimpleSlider.template
+    this._partialTemplates.slider.additionalContext = {
+      id: 'imglykit-blur-radius-slider'
+    }
   }
 
   /**

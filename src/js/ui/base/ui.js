@@ -7,7 +7,6 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-import dot from 'dot'
 import Utils from '../../lib/utils'
 import EventEmitter from '../../lib/event-emitter'
 import Helpers from './helpers'
@@ -64,8 +63,7 @@ class BaseUI extends EventEmitter {
       throw new Error('BaseUI#_render: No template set.')
     }
 
-    let renderFn = dot.template(this._template)
-    return renderFn(this.context)
+    return this._template(this.context)
   }
 
   /**

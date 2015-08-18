@@ -1,3 +1,4 @@
+/* global __DOTJS_TEMPLATE */
 /*
  * Photo Editor SDK - photoeditorsdk.com
  * Copyright (c) 2013-2015 9elements GmbH
@@ -11,17 +12,17 @@
 import Control from './control'
 import SimpleSlider from '../lib/simple-slider'
 import ColorPicker from '../lib/color-picker'
-let fs = require('fs')
 
 class FramesControl extends Control {
   /**
    * Entry point for this control
    */
   init () {
-    let controlsTemplate = fs.readFileSync(__dirname + '/../../../templates/night/operations/frames_controls.jst', 'utf-8')
+    let controlsTemplate = __DOTJS_TEMPLATE('../../../templates/night/operations/frames_controls.jst')
     this._controlsTemplate = controlsTemplate
-    this._partialTemplates.push(SimpleSlider.template)
-    this._partialTemplates.push(ColorPicker.template)
+    this._partialTemplates.slider = SimpleSlider.template
+    this._partialTemplates.colorPicker = ColorPicker.template
+    this._partialTemplates.colorPicker.additionalContext = { label: 'Color' }
   }
 
   /**

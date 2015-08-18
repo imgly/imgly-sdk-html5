@@ -1,3 +1,4 @@
+/* global __DOTJS_TEMPLATE */
 /*
  * Photo Editor SDK - photoeditorsdk.com
  * Copyright (c) 2013-2015 9elements GmbH
@@ -8,12 +9,9 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import dot from 'dot'
 import Helpers from '../../base/helpers'
 import EventEmitter from '../../../lib/event-emitter'
 import Scrollbar from '../lib/scrollbar'
-
-let fs = require('fs')
 
 class Control extends EventEmitter {
   constructor (kit, ui, operation) {
@@ -23,17 +21,11 @@ class Control extends EventEmitter {
     this._ui = ui
     this._operation = operation
     this._helpers = new Helpers(this._kit, this._ui, this._ui.options)
-    this._partialTemplates = [
-      fs.readFileSync(
-        __dirname + '/../../../templates/night/generics/done_button.jst',
-        'utf-8'
-      )
-    ]
+    this._partialTemplates = {
+      doneButton: __DOTJS_TEMPLATE('../../../templates/night/generics/done_button.jst')
+    }
 
-    this._template = fs.readFileSync(
-      __dirname + '/../../../templates/night/generics/control.jst',
-      'utf-8'
-    )
+    this._template = __DOTJS_TEMPLATE('../../../templates/night/generics/control.jst')
     this._active = false
 
     this.init()
@@ -75,15 +67,8 @@ class Control extends EventEmitter {
       throw new Error('Control#_renderOverviewControls: Control needs to define this._controlsTemplate.')
     }
 
-    let template = this._partialTemplates
-      .concat([
-        this._controlsTemplate,
-        this._template
-      ]).join('\r\n')
-
     // Render the template
-    let renderFn = dot.template(template)
-    let html = renderFn(this.context)
+    let html = this._template(this._context)
 
     if (typeof this._controls !== 'undefined' && this._controls.parentNode !== null) {
       this._controls.parentNode.removeChild(this._controls)
@@ -106,11 +91,8 @@ class Control extends EventEmitter {
       return // Canvas controls are optional
     }
 
-    let template = this._partialTemplates.concat([this._canvasControlsTemplate]).join('\r\n')
-
     // Render the template
-    let renderFn = dot.template(template)
-    let html = renderFn(this.context)
+    let html = this._canvasControlsTemplate(this._context)
 
     // Create a wrapper
     this._canvasControls = document.createElement('div')
@@ -261,11 +243,32 @@ class Control extends EventEmitter {
    * The data that is available to the template
    * @type {Object}
    */
-  get context () {
-    return {
+  get _context () {
+    let context = this.context
+
+    context = _.extend(context, {
       helpers: this._helpers,
       identifier: this.identifier
+    })
+
+    // Render partials before rendering control
+    context.partials = {}
+    for (let name in this._partialTemplates) {
+      let template = this._partialTemplates[name]
+      let partialContext = _.extend({}, context, template.additionalContext || {})
+      context.partials[name] = template(partialContext)
     }
+    context.partials.control = this._controlsTemplate(context)
+
+    return context
+  }
+
+  /**
+   * The data that is available to the template
+   * @abstract
+   */
+  get context () {
+    return {}
   }
 }
 

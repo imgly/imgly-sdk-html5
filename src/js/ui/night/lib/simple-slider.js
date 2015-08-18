@@ -1,3 +1,4 @@
+/* global __DOTJS_TEMPLATE */
 /*
  * Photo Editor SDK - photoeditorsdk.com
  * Copyright (c) 2013-2015 9elements GmbH
@@ -9,7 +10,6 @@
  */
 
 import Slider from './slider'
-let fs = require('fs')
 
 class SimpleSlider extends Slider {
   /**
@@ -17,7 +17,7 @@ class SimpleSlider extends Slider {
    * @type {String}
    */
   static get template () {
-    return fs.readFileSync(__dirname + '/../../../templates/night/generics/simple-slider_control.jst', 'utf-8')
+    return __DOTJS_TEMPLATE('../../../templates/night/generics/simple-slider_control.jst')
   }
 
   /**

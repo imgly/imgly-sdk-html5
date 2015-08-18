@@ -1,4 +1,4 @@
-/* global Image */
+/* global __DOTJS_TEMPLATE, Image */
 /*
  * Photo Editor SDK - photoeditorsdk.com
  * Copyright (c) 2013-2015 9elements GmbH
@@ -13,8 +13,6 @@ import EventEmitter from '../../../lib/event-emitter'
 import Utils from '../../../lib/utils'
 import Color from '../../../lib/color'
 import Vector2 from '../../../lib/math/vector2'
-
-let fs = require('fs')
 
 class ColorPicker extends EventEmitter {
   constructor (ui, element) {
@@ -70,7 +68,7 @@ class ColorPicker extends EventEmitter {
    * @type {String}
    */
   static get template () {
-    return fs.readFileSync(__dirname + '/../../../templates/night/generics/color-picker_control.jst', 'utf-8')
+    return __DOTJS_TEMPLATE('../../../templates/night/generics/color-picker_control.jst')
   }
 
   /**

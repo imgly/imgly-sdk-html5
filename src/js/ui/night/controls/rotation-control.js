@@ -1,3 +1,4 @@
+/* global __DOTJS_TEMPLATE */
 /*
  * Photo Editor SDK - photoeditorsdk.com
  * Copyright (c) 2013-2015 9elements GmbH
@@ -10,17 +11,16 @@
 
 import Control from './control'
 import Vector2 from '../../../lib/math/vector2'
-let fs = require('fs')
 
 class RotationControl extends Control {
   /**
    * Entry point for this control
    */
   init () {
-    let controlsTemplate = fs.readFileSync(__dirname + '/../../../templates/night/operations/rotation_controls.jst', 'utf-8')
+    let controlsTemplate = __DOTJS_TEMPLATE('../../../templates/night/operations/rotation_controls.jst')
     this._controlsTemplate = controlsTemplate
 
-    let canvasControlsTemplate = fs.readFileSync(__dirname + '/../../../templates/night/operations/rotation_canvas.jst', 'utf-8')
+    let canvasControlsTemplate = __DOTJS_TEMPLATE('../../../templates/night/operations/rotation_canvas.jst')
     this._canvasControlsTemplate = canvasControlsTemplate
   }
 

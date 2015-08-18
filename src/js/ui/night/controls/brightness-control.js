@@ -1,3 +1,4 @@
+/* global __DOTJS_TEMPLATE */
 /*
  * Photo Editor SDK - photoeditorsdk.com
  * Copyright (c) 2013-2015 9elements GmbH
@@ -10,16 +11,15 @@
 
 import Control from './control'
 import Slider from '../lib/slider'
-let fs = require('fs')
 
 class BrightnessControl extends Control {
   /**
    * The entry point for this control
    */
   init () {
-    let controlsTemplate = fs.readFileSync(__dirname + '/../../../templates/night/operations/brightness_controls.jst', 'utf-8')
+    let controlsTemplate = __DOTJS_TEMPLATE('../../../templates/night/operations/brightness_controls.jst')
     this._controlsTemplate = controlsTemplate
-    this._partialTemplates.push(Slider.template)
+    this._partialTemplates.slider = Slider.template
   }
 
   /**

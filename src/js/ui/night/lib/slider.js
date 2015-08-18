@@ -1,3 +1,4 @@
+/* global __DOTJS_TEMPLATE */
 /*
  * Photo Editor SDK - photoeditorsdk.com
  * Copyright (c) 2013-2015 9elements GmbH
@@ -12,8 +13,6 @@ import EventEmitter from '../../../lib/event-emitter'
 import Utils from '../../../lib/utils'
 import Vector2 from '../../../lib/math/vector2'
 import _ from 'lodash'
-
-let fs = require('fs')
 
 class Slider extends EventEmitter {
   constructor (element, options) {
@@ -52,7 +51,7 @@ class Slider extends EventEmitter {
    * @type {String}
    */
   static get template () {
-    return fs.readFileSync(__dirname + '/../../../templates/night/generics/slider_control.jst', 'utf-8')
+    return __DOTJS_TEMPLATE('../../../templates/night/generics/slider_control.jst')
   }
 
   /**

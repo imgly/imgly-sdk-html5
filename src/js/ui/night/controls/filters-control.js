@@ -1,3 +1,4 @@
+/* global __DOTJS_TEMPLATE */
 /*
  * Photo Editor SDK - photoeditorsdk.com
  * Copyright (c) 2013-2015 9elements GmbH
@@ -10,14 +11,13 @@
 
 import Control from './control'
 import Utils from '../../../lib/utils'
-let fs = require('fs')
 
 class FiltersControl extends Control {
   /**
    * Entry point for this control
    */
   init () {
-    let controlsTemplate = fs.readFileSync(__dirname + '/../../../templates/night/operations/filters_controls.jst', 'utf-8')
+    let controlsTemplate = __DOTJS_TEMPLATE('../../../templates/night/operations/filters_controls.jst')
     this._controlsTemplate = controlsTemplate
 
     this._availableFilters = {}
@@ -175,10 +175,10 @@ class FiltersControl extends Control {
    * @override
    */
   get context () {
-    let context = super.context
-    context.filters = this._filters
-    context.activeFilter = this._operation.getFilter()
-    return context
+    return {
+      filters: this._filters,
+      activeFilter: this._operation.getFilter()
+    }
   }
 }
 

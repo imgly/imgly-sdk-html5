@@ -1,4 +1,4 @@
-/* global FileReader, Image */
+/* global FileReader, Image, __DOTJS_TEMPLATE */
 /*
  * Photo Editor SDK - photoeditorsdk.com
  * Copyright (c) 2013-2015 9elements GmbH
@@ -9,7 +9,6 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-let fs = require('fs')
 import _ from 'lodash'
 import UI from '../base/ui'
 import Canvas from './lib/canvas'
@@ -23,7 +22,7 @@ class NightUI extends UI {
     super(...args)
 
     this._operationsMap = {}
-    this._template = fs.readFileSync(__dirname + '/../../templates/night/template.jst', 'utf-8')
+    this._template = __DOTJS_TEMPLATE('../../templates/night/template.jst')
     this._registeredControls = {}
     this._history = []
 
