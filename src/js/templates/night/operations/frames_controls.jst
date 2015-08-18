@@ -1,12 +1,9 @@
-{{##def.control:
-  <div>
-    {{#def.simpleSlider}}
-  </div>
+<div>
+  {{= it.partials.slider}}
+</div>
 
-  <div class="imglykit-controls-button">
-    {{var colorpickerLabel = "Color";}}
-    {{#def.colorpicker}}
-  </div>
+<div class="imglykit-controls-button">
+  {{= it.partials.colorPicker}}
+</div>
 
-  {{#def.doneButton}}
-#}}
+{{= it.partials.doneButton}}

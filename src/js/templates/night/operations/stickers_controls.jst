@@ -1,14 +1,12 @@
-{{##def.control:
-  <div>
-    <ul class="imglykit-controls-list imgly-controls-list-with-buttons">
-      {{ for(var identifier in it.stickers) { }}
-        {{ var stickerPath = it.stickers[identifier]; }}
-        {{ var enabled = it.activeSticker === identifier; }}
-        <li data-identifier="{{= identifier}}"{{? enabled}} class="imglykit-controls-item-active"{{?}} style="background-image: url('{{=it.helpers.assetPath(stickerPath)}}');">
-        </li>
-      {{ } }}
-    </ul>
-  </div>
+<div>
+  <ul class="imglykit-controls-list imgly-controls-list-with-buttons">
+    {{ for(var identifier in it.stickers) { }}
+      {{ var stickerPath = it.stickers[identifier]; }}
+      {{ var enabled = it.activeSticker === identifier; }}
+      <li data-identifier="{{= identifier}}"{{? enabled}} class="imglykit-controls-item-active"{{?}} style="background-image: url('{{=it.helpers.assetPath(stickerPath)}}');">
+      </li>
+    {{ } }}
+  </ul>
+</div>
 
-  {{#def.doneButton}}
-#}}
+{{= it.partials.doneButton }}

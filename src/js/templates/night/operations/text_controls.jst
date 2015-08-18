@@ -1,23 +1,17 @@
-{{##def.control:
-  <div>
-    <ul class="imglykit-controls-list imgly-controls-list-with-buttons">
-      {{~it.fonts :value:index}}
-        <li data-name="{{= value.name}}" data-weight="{{= value.weight}}" style="font-family: {{= value.name}}; font-weight: {{= value.weight}}">{{= value.name.substr(0, 2)}}</li>
-      {{~}}
-    </ul>
-  </div>
+<div>
+  <ul class="imglykit-controls-list imgly-controls-list-with-buttons">
+    {{~it.fonts :value:index}}
+      <li data-name="{{= value.name}}" data-weight="{{= value.weight}}" style="font-family: {{= value.name}}; font-weight: {{= value.weight}}">{{= value.name.substr(0, 2)}}</li>
+    {{~}}
+  </ul>
+</div>
 
-  <div class="imglykit-controls-button">
-    {{var colorpickerId = "imglykit-text-foreground-color-picker";}}
-    {{var colorpickerLabel = "Foreground";}}
-    {{#def.colorpicker}}
-  </div>
+<div class="imglykit-controls-button">
+  {{= it.partials.fgColorPicker}}
+</div>
 
-  <div class="imglykit-controls-button">
-    {{var colorpickerId = "imglykit-text-background-color-picker";}}
-    {{var colorpickerLabel = "Background";}}
-    {{#def.colorpicker}}
-  </div>
+<div class="imglykit-controls-button">
+  {{= it.partials.bgColorPicker}}
+</div>
 
-  {{#def.doneButton}}
-#}}
+{{= it.partials.doneButton}}

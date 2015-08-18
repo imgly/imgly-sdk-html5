@@ -1,12 +1,9 @@
-{{##def.control:
-  <div class="imglykit-controls-icon">
-    <img src="{{=it.helpers.assetPath('ui/night/blur/blur.png')}}" />
-  </div>
+<div class="imglykit-controls-icon">
+  <img src="{{=it.helpers.assetPath('ui/night/blur/blur.png')}}" />
+</div>
 
-  <div>
-    {{var sliderId = "imglykit-blur-radius-slider";}}
-    {{#def.simpleSlider}}
-  </div>
+<div>
+  {{= it.partials.slider}}
+</div>
 
-  {{#def.doneButton}}
-#}}
+{{= it.partials.doneButton}}
