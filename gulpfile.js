@@ -171,8 +171,8 @@ gulp.task('webpack', function () {
             test: /\.jsx?$/,
             include: /src\/js/,
             loaders: [
-              'transform?brfs',
-              'babel-loader?cacheDirectory'
+              path.resolve(__dirname, 'loaders', 'dotjs-loader'),
+              'babel-loader?cacheDirectory&sourceMap'
             ]
           }
         ]
