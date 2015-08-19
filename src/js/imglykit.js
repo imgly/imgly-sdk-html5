@@ -43,7 +43,8 @@ class ImglyKit {
     options = _.defaults(options, {
       assetsUrl: 'assets',
       container: null,
-      renderOnWindowResize: false
+      renderOnWindowResize: false,
+      versionCheck: true
     })
     options.ui = options.ui || {}
     options.ui = _.defaults(options.ui, {
@@ -86,7 +87,7 @@ class ImglyKit {
     // Register the default operations
     this._registerOperations()
 
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && this._options.versionCheck) {
       this._versionChecker = new VersionChecker(VERSION)
     }
 
