@@ -470,6 +470,11 @@
     font-size: 0; }
     .imglykit-container .imglykit-controls .imglykit-controls-icon img {
       vertical-align: middle; }
+  .imglykit-container .imglykit-controls .imglykit-controls-item-canvas {
+    display: inline-block;
+    width: 42px;
+    height: 50px;
+    vertical-align: middle; }
   .imglykit-container .imglykit-controls li[data-disabled] {
     filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=20);
     opacity: 0.2; }
