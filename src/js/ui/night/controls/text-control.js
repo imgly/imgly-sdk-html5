@@ -105,6 +105,7 @@ class TextControl extends Control {
     this._onBackgroundColorUpdate = this._onBackgroundColorUpdate.bind(this)
 
     this._initColorPickers()
+    this._renderListItems()
     this._handleListItems()
     this._handleTextarea()
     this._handleResizeKnob()
@@ -141,6 +142,34 @@ class TextControl extends Control {
     this._backgroundColorPicker.on('show', () => {
       this._foregroundColorPicker.hide()
     })
+  }
+
+  /**
+   * Renders the text on the list item canvas elements
+   * @private
+   */
+  _renderListItems () {
+    const canvasItems = this._controls.querySelectorAll('li canvas')
+    this._canvasItems = Array.prototype.slice.call(canvasItems)
+
+    for (let i = 0; i < this._canvasItems.length; i++) {
+      const canvas = this._canvasItems[i]
+      canvas.width = canvas.offsetWidth
+      canvas.height = canvas.offsetHeight
+
+      const listItem = canvas.parentNode
+
+      const context = canvas.getContext('2d')
+      const fontFamily = listItem.dataset.name
+      const fontWeight = listItem.dataset.weight
+
+      context.font = `${fontWeight} 30px ${fontFamily}`
+      context.textBaseline = 'middle'
+      context.textAlign = 'center'
+      context.fillStyle = 'white'
+
+      context.fillText(fontFamily.substr(0, 2), canvas.width / 2, canvas.height / 2)
+    }
   }
 
   /**
