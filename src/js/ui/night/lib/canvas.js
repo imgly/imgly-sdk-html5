@@ -396,7 +396,9 @@ class Canvas extends EventEmitter {
     if (e.type === 'mousedown' && e.button !== 0) return
     e.preventDefault()
 
-    let x = e.pageX, y = e.pageY
+    let x = e.pageX
+    let y = e.pageY
+
     if (e.type === 'touchstart') {
       x = e.touches[0].pageX
       y = e.touches[0].pageY
