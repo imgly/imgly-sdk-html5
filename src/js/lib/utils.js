@@ -119,6 +119,19 @@ class Utils {
     return new Vector2(x, y)
   }
 
+  /**
+   * Resizes the given vector to fit inside the given max size while maintaining
+   * the aspect ratio
+   * @param  {Vector2} vector
+   * @param  {Vector2} max
+   * @return {Vector2}
+   */
+  static resizeVectorToFit (vector, max) {
+    const scale = Math.min(max.x / vector.x, max.y / vector.y)
+    const newSize = vector.clone()
+      .multiply(scale)
+    return newSize
+  }
 }
 
 export default Utils

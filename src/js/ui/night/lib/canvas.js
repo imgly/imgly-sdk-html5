@@ -11,6 +11,7 @@
 import WebGLRenderer from '../../../renderers/webgl-renderer'
 import CanvasRenderer from '../../../renderers/canvas-renderer'
 import Vector2 from '../../../lib/math/vector2'
+import Utils from '../../../lib/utils'
 import EventEmitter from '../../../lib/event-emitter'
 import Promise from '../../../vendor/promise'
 
@@ -326,7 +327,7 @@ class Canvas extends EventEmitter {
       croppedSize.y = tempX
     }
 
-    finalSize = this._resizeVectorToFit(croppedSize)
+    finalSize = Utils.resizeVectorToFit(croppedSize, this._maxSize)
 
     // Rotate back to be able to find the final size
     if (rotationOperation && rotationOperation.getDegrees() % 180 !== 0) {
@@ -337,21 +338,6 @@ class Canvas extends EventEmitter {
 
     initialSize = finalSize.clone().divide(cropSize)
     return initialSize.x / inputSize.x
-  }
-
-  /**
-   * Resizes the given two-dimensional vector so that it fits
-   * the maximum size.
-   * @private
-   */
-  _resizeVectorToFit (size) {
-    let maxSize = this._maxSize
-    let scale = Math.min(maxSize.x / size.x, maxSize.y / size.y)
-
-    let newSize = size.clone()
-      .multiply(scale)
-
-    return newSize
   }
 
   /**
