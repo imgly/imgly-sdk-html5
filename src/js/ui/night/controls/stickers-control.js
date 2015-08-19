@@ -135,9 +135,48 @@ class StickersControl extends Control {
     this._onKnobDrag = this._onKnobDrag.bind(this)
     this._onKnobUp = this._onKnobUp.bind(this)
 
+    this._renderListItems()
     this._handleListItems()
     this._handleImage()
     this._handleKnob()
+  }
+
+  /**
+   * Renders the stickers on the list item canvas elements
+   * @private
+   */
+  _renderListItems () {
+    const canvasItems = this._controls.querySelectorAll('li canvas')
+    this._canvasItems = Array.prototype.slice.call(canvasItems)
+
+    for (let i = 0; i < this._canvasItems.length; i++) {
+      const canvas = this._canvasItems[i]
+      canvas.width = canvas.offsetWidth
+      canvas.height = canvas.offsetHeight
+
+      const context = canvas.getContext('2d')
+      const { image } = canvas.dataset
+      const imageEl = document.createElement('img')
+
+      const canvasSize = new Vector2(canvas.width, canvas.height)
+
+      imageEl.addEventListener('load', () => {
+        const imageSize = new Vector2(imageEl.width, imageEl.height)
+        const newSize = Utils.resizeVectorToFit(imageSize, canvasSize)
+
+        const offset = canvasSize.clone()
+          .divide(2)
+          .subtract(newSize.clone().divide(2))
+
+        context.drawImage(imageEl,
+          0, 0,
+          imageSize.x, imageSize.y,
+          offset.x, offset.y,
+          newSize.x, newSize.y)
+      })
+
+      imageEl.src = image
+    }
   }
 
   /**
