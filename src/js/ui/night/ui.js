@@ -98,7 +98,7 @@ class NightUI extends UI {
 
     if (this.context.renderSplashScreen) {
       this._initFileLoader()
-      if (this.context.showWebcamButton) {
+      if (this._options.ui.showWebcamButton) {
         this._handleWebcamButton()
       }
     }
