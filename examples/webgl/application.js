@@ -13,6 +13,7 @@ window.onload = function () {
       ui: {
         enabled: true,
         showExportButton: true,
+        showWebcamButton: false,
         export: {
           type: ImglyKit.ImageFormat.JPEG
         }
