@@ -52,8 +52,8 @@ class NightUI extends UI {
 
     this._options.ui = Utils.defaults(this._options.ui, {
       showNewButton: !this._options.image,
-      showUploadButton: !this._options.image,
-      showWebcamButton: !this._options.image,
+      showUploadButton: true,
+      showWebcamButton: true,
       showHeader: true,
       showCloseButton: false,
       showExportButton: false,
