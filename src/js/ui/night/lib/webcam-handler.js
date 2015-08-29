@@ -43,6 +43,12 @@ export default class WebcamHandler extends EventEmitter {
     const context = canvas.getContext('2d')
     context.drawImage(this._video, 0, 0)
 
+    this._stream.stop()
+    this._video.pause()
+
+    delete this._stream
+    delete this._video
+
     const image = new Image()
     image.addEventListener('load', () => {
       this.emit('image', image)
@@ -62,6 +68,7 @@ export default class WebcamHandler extends EventEmitter {
     }
 
     getUserMedia.call(navigator, { video: true }, (stream) => {
+      this._stream = stream
       this._video.onloadedmetadata = this._onVideoReady.bind(this)
       this._video.src = window.URL.createObjectURL(stream)
     }, (err) => {
