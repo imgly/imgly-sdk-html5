@@ -12,14 +12,13 @@
 import EventEmitter from '../../../lib/event-emitter'
 import Utils from '../../../lib/utils'
 import Vector2 from '../../../lib/math/vector2'
-import _ from 'lodash'
 
 class Slider extends EventEmitter {
   constructor (element, options) {
     super()
 
     this._element = element
-    this._options = _.defaults(options, {
+    this._options = Utils.defaults(options, {
       minValue: 0,
       maxValue: 1,
       defaultValue: 0

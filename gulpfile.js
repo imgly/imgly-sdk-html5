@@ -16,7 +16,7 @@ var WebpackNotifierPlugin = require('webpack-notifier')
 var config = {
   serverPort: 8080,
   externals: [
-    { require: './src/js/vendor/lodash', expose: 'lodash' }
+
   ]
 }
 
@@ -152,7 +152,7 @@ gulp.task('webpack', function () {
         root: path.resolve(sourceFiles + '/js'),
         modulesDirectories: ['node_modules'],
         alias: {
-          'lodash': path.resolve(sourceFiles + '/js/vendor/lodash.js')
+
         }
       },
       entry: {

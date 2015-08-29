@@ -8,7 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import _ from 'lodash'
+import Utils from '../../../lib/utils'
 import LookupTable from './lookup-table'
 
 /**
@@ -21,7 +21,7 @@ class ToneCurve extends LookupTable {
   constructor (...args) {
     super(...args)
 
-    this._options = _.defaults(this._options, {
+    this._options = Utils.defaults(this._options, {
       rgbControlPoints: {
         red: this._options.controlPoints,
         green: this._options.controlPoints,

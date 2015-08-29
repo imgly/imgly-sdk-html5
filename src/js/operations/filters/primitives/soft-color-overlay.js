@@ -8,7 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import _ from 'lodash'
+import Utils from '../../../lib/utils'
 import Primitive from './primitive'
 import Color from '../../../lib/color'
 
@@ -22,7 +22,7 @@ class SoftColorOverlay extends Primitive {
   constructor (...args) {
     super(...args)
 
-    this._options = _.defaults(this._options, {
+    this._options = Utils.defaults(this._options, {
       color: new Color(1.0, 1.0, 1.0)
     })
 

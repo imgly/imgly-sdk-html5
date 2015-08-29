@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import _ from 'lodash'
+import Utils from '../../lib/utils'
 import UI from '../base/ui'
 import Canvas from './lib/canvas'
 import FileLoader from './lib/file-loader'
@@ -50,7 +50,7 @@ class NightUI extends UI {
 
     this._paused = false
 
-    this._options.ui = _.defaults(this._options.ui, {
+    this._options.ui = Utils.defaults(this._options.ui, {
       showNewButton: !this._options.image,
       showUploadButton: !this._options.image,
       showWebcamButton: !this._options.image,
@@ -60,7 +60,7 @@ class NightUI extends UI {
       export: {}
     })
 
-    this._options.ui.export = _.defaults(this._options.ui.export, {
+    this._options.ui.export = Utils.defaults(this._options.ui.export, {
       type: ImageFormat.JPEG,
       quality: 0.8
     })

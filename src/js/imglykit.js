@@ -10,7 +10,6 @@
 
 const VERSION = '2.0.0-beta.18'
 
-import _ from 'lodash'
 import RenderImage from './lib/render-image'
 import ImageExporter from './lib/image-exporter'
 import VersionChecker from './lib/version-checker'
@@ -40,14 +39,14 @@ class ImglyKit {
     }
 
     // Set default options
-    options = _.defaults(options, {
+    options = Utils.defaults(options, {
       assetsUrl: 'assets',
       container: null,
       renderOnWindowResize: false,
       versionCheck: true
     })
     options.ui = options.ui || {}
-    options.ui = _.defaults(options.ui, {
+    options.ui = Utils.defaults(options.ui, {
       enabled: true
     })
 

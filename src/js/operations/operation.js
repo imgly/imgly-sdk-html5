@@ -10,9 +10,9 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import _ from 'lodash'
 import Vector2 from '../lib/math/vector2'
 import Color from '../lib/color'
+import Utils from '../lib/utils'
 import EventEmitter from '../lib/event-emitter'
 import Promise from '../vendor/promise'
 
@@ -26,7 +26,7 @@ class Operation extends EventEmitter {
     super()
 
     this._kit = kit
-    this.availableOptions = _.extend(this.availableOptions || {}, {
+    this.availableOptions = Utils.extend(this.availableOptions || {}, {
       numberFormat: { type: 'string', default: 'relative', available: ['absolute', 'relative'] }
     })
     this._dirty = true

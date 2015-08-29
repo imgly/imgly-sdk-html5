@@ -8,7 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import _ from 'lodash'
+import Utils from '../../../lib/utils'
 import Primitive from './primitive'
 
 /**
@@ -21,7 +21,7 @@ class Desaturation extends Primitive {
   constructor (...args) {
     super(...args)
 
-    this._options = _.defaults(this._options, {
+    this._options = Utils.defaults(this._options, {
       desaturation: 1.0
     })
 
