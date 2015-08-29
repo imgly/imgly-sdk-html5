@@ -93,7 +93,7 @@ class NightUI extends UI {
       this._initCanvas()
     }
 
-    if (this._options.ui.showNewButton) {
+    if (this.context.renderSplashScreen) {
       this._initFileLoader()
     }
 
@@ -108,7 +108,9 @@ class NightUI extends UI {
       this._handleCloseButton()
     }
 
-    this._topControls.updateExportButton()
+    if (this._topControls) {
+      this._topControls.updateExportButton()
+    }
   }
 
   /**
@@ -149,23 +151,7 @@ class NightUI extends UI {
    */
   _setImage (image) {
     this._options.image = image
-    if (this._canvas) {
-      this._canvas.reset()
-    }
-
-    this._fileLoader.removeDOM()
-
-    if (!this._canvas) {
-      this._initCanvas()
-    } else {
-      this._canvas.setImage(this._options.image)
-    }
-
-    this.showZoom()
-    this._topControls.init()
-    this._enableControls()
-
-    this._topControls.updateExportButton()
+    this.run()
   }
 
   /**
@@ -173,6 +159,8 @@ class NightUI extends UI {
    * @private
    */
   _initTopControls () {
+    if (!this.context.renderControls) return
+
     this._topControls = new TopControls(this._kit, this)
     this._topControls.run()
 
@@ -289,6 +277,8 @@ class NightUI extends UI {
    * @private
    */
   _handleOverview () {
+    if (!this.context.renderControls) return
+
     let itemsList = this._overviewControlsContainer.querySelector('ul')
     if (!itemsList.parentNode === this._overviewControlsContainer) { return }
     let listItems = [].filter.call(itemsList.querySelectorAll('li'),
@@ -387,6 +377,8 @@ class NightUI extends UI {
    * @private
    */
   _initScrollbar () {
+    if (!this.context.renderControls) return
+
     let container = this._controlsContainer.querySelector('.imglykit-controls-list').parentNode
     this._scrollbar = new Scrollbar(container)
   }
@@ -436,8 +428,8 @@ class NightUI extends UI {
   get context () {
     let context = super.context
     context.controls = this._registeredControls
-    context.renderDropArea = this._options.ui.showNewButton
-    context.controlsDisabled = !this._options.image
+    context.renderSplashScreen = !this._options.image
+    context.renderControls = !!this._options.image
     return context
   }
 

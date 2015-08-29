@@ -162,6 +162,7 @@ gulp.task('webpack', function () {
         fs: 'empty',
         path: 'empty'
       },
+      devtool: 'inline-source-map',
       externals: [
         'canvas'
       ],
@@ -203,7 +204,11 @@ gulp.task('serve', function () {
     notify: false,
     open: false,
     server: {
-      baseDir: ['.']
+      baseDir: ['.'],
+      middleware: function (req, res, next) {
+        res.setHeader('Content-Security-Policy', "default-src https: 'self'; connect-src https: 'self'; font-src https: 'self' data:; frame-src https: 'self'; img-src https: 'self' data:; media-src https: 'self'; object-src https: 'self'; script-src https: 'self'; style-src https: 'self' 'unsafe-inline';")
+        next()
+      }
     },
     ports: {
       min: config.serverPort

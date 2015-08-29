@@ -1,0 +1,22 @@
+body, html {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+
+  text-align: center;
+}
+
+#container {
+  width: 640px;
+  height: 480px;
+  margin: 20px auto;
+}
+
+#container.fullscreen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}

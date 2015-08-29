@@ -9,13 +9,13 @@
 
 .imglykit-container
 
+  .imglykit-controls-row
+    display: table-row
+
   // Outter controls container
   .imglykit-controls-container
     @include user-select(none)
-
-    position: absolute
-    bottom: 0
-    left: 0
+    display: table-cell
 
     width: 100%
     height: $controlsHeight
@@ -35,7 +35,13 @@
         display: table-cell
         vertical-align: top
 
+    .imglykit-controls-list-container
+      overflow: hidden
+      height: $controlsHeight
+
     .imglykit-controls-list
+      position: absolute
+      width: 100%
       overflow: hidden
       overflow-x: auto
       text-align: center

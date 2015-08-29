@@ -516,22 +516,7 @@ class Canvas extends EventEmitter {
    * @private
    */
   get _maxSize () {
-    let computedStyle = window.getComputedStyle(this._canvasContainer)
-    let size = new Vector2(this._canvasContainer.offsetWidth, this._canvasContainer.offsetHeight)
-
-    let paddingX = parseInt(computedStyle.getPropertyValue('padding-left'), 10)
-    paddingX += parseInt(computedStyle.getPropertyValue('padding-right'), 10)
-
-    let paddingY = parseInt(computedStyle.getPropertyValue('padding-top'), 10)
-    paddingY += parseInt(computedStyle.getPropertyValue('padding-bottom'), 10)
-
-    size.x -= paddingX
-    size.y -= paddingY
-
-    let controlsHeight = this._ui._controlsContainer.offsetHeight
-    size.y -= controlsHeight
-
-    return size
+    return new Vector2(this._canvasContainer.offsetWidth, this._canvasContainer.offsetHeight)
   }
 
   /**

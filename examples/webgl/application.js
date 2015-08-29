@@ -9,6 +9,7 @@ window.onload = function () {
       renderer: 'webgl', // Defaults to 'webgl', uses 'canvas' as fallback
       assetsUrl: '../../build/assets', // The URL / path where all assets are
       container: document.querySelector('#container'),
+      versionCheck: false,
       image: myImage,
       ui: {
         enabled: true,

@@ -244,6 +244,7 @@ class Scrollbar {
     // Resize the list and the container
     this._list.style.height = ''
     let listHeight = this._list.offsetHeight
+    console.log('listHeight', listHeight)
     listHeight += maxScrollbarWidth
     this._container.style.height = `${listHeight}px`
     this._list.style.height = `${listHeight}px`

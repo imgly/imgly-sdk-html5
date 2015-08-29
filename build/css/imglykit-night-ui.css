@@ -22,7 +22,7 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-.imglykit-container {
+.imglykit {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   -ms-border-radius: 5px;
@@ -35,40 +35,40 @@
   background: #1E1E1E;
   overflow: hidden;
   text-align: left; }
-  .imglykit-container div, .imglykit-container span, .imglykit-container applet, .imglykit-container object, .imglykit-container iframe,
-  .imglykit-container h1, .imglykit-container h2, .imglykit-container h3, .imglykit-container h4, .imglykit-container h5, .imglykit-container h6, .imglykit-container p, .imglykit-container blockquote, .imglykit-container pre,
-  .imglykit-container a, .imglykit-container abbr, .imglykit-container acronym, .imglykit-container address, .imglykit-container big, .imglykit-container cite, .imglykit-container code,
-  .imglykit-container del, .imglykit-container dfn, .imglykit-container em, .imglykit-container img, .imglykit-container ins, .imglykit-container kbd, .imglykit-container q, .imglykit-container s, .imglykit-container samp,
-  .imglykit-container small, .imglykit-container strike, .imglykit-container strong, .imglykit-container sub, .imglykit-container sup, .imglykit-container tt, .imglykit-container var,
-  .imglykit-container b, .imglykit-container u, .imglykit-container i, .imglykit-container center,
-  .imglykit-container dl, .imglykit-container dt, .imglykit-container dd, .imglykit-container ol, .imglykit-container ul, .imglykit-container li,
-  .imglykit-container fieldset, .imglykit-container form, .imglykit-container label, .imglykit-container legend,
-  .imglykit-container table, .imglykit-container caption, .imglykit-container tbody, .imglykit-container tfoot, .imglykit-container thead, .imglykit-container tr, .imglykit-container th, .imglykit-container td,
-  .imglykit-container article, .imglykit-container aside, .imglykit-container canvas, .imglykit-container details, .imglykit-container embed,
-  .imglykit-container figure, .imglykit-container figcaption, .imglykit-container footer, .imglykit-container header, .imglykit-container hgroup,
-  .imglykit-container menu, .imglykit-container nav, .imglykit-container output, .imglykit-container ruby, .imglykit-container section, .imglykit-container summary,
-  .imglykit-container time, .imglykit-container mark, .imglykit-container audio, .imglykit-container video {
+  .imglykit div, .imglykit span, .imglykit applet, .imglykit object, .imglykit iframe,
+  .imglykit h1, .imglykit h2, .imglykit h3, .imglykit h4, .imglykit h5, .imglykit h6, .imglykit p, .imglykit blockquote, .imglykit pre,
+  .imglykit a, .imglykit abbr, .imglykit acronym, .imglykit address, .imglykit big, .imglykit cite, .imglykit code,
+  .imglykit del, .imglykit dfn, .imglykit em, .imglykit img, .imglykit ins, .imglykit kbd, .imglykit q, .imglykit s, .imglykit samp,
+  .imglykit small, .imglykit strike, .imglykit strong, .imglykit sub, .imglykit sup, .imglykit tt, .imglykit var,
+  .imglykit b, .imglykit u, .imglykit i, .imglykit center,
+  .imglykit dl, .imglykit dt, .imglykit dd, .imglykit ol, .imglykit ul, .imglykit li,
+  .imglykit fieldset, .imglykit form, .imglykit label, .imglykit legend,
+  .imglykit table, .imglykit caption, .imglykit tbody, .imglykit tfoot, .imglykit thead, .imglykit tr, .imglykit th, .imglykit td,
+  .imglykit article, .imglykit aside, .imglykit canvas, .imglykit details, .imglykit embed,
+  .imglykit figure, .imglykit figcaption, .imglykit footer, .imglykit header, .imglykit hgroup,
+  .imglykit menu, .imglykit nav, .imglykit output, .imglykit ruby, .imglykit section, .imglykit summary,
+  .imglykit time, .imglykit mark, .imglykit audio, .imglykit video {
     margin: 0;
     padding: 0;
     border: 0;
     font: inherit;
     font-size: 100%;
     vertical-align: baseline; }
-  .imglykit-container table {
+  .imglykit table {
     border-collapse: collapse;
     border-spacing: 0; }
-  .imglykit-container caption, .imglykit-container th, .imglykit-container td {
+  .imglykit caption, .imglykit th, .imglykit td {
     text-align: left;
     font-weight: normal;
     vertical-align: middle; }
-  .imglykit-container q, .imglykit-container blockquote {
+  .imglykit q, .imglykit blockquote {
     quotes: none; }
-    .imglykit-container q:before, .imglykit-container q:after, .imglykit-container blockquote:before, .imglykit-container blockquote:after {
+    .imglykit q:before, .imglykit q:after, .imglykit blockquote:before, .imglykit blockquote:after {
       content: "";
       content: none; }
-  .imglykit-container a img {
+  .imglykit a img {
     border: none; }
-  .imglykit-container * {
+  .imglykit * {
     box-sizing: border-box; }
 
 .imglykit-float-left {
@@ -76,6 +76,15 @@
 
 .imglykit-float-right {
   float: right; }
+
+.imglykit-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: table;
+  width: 100%;
+  height: 100%;
+  table-layout: fixed; }
 
 /*
  * Copyright (c) 2013-2015 9elements GmbH
@@ -85,21 +94,18 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
+.imglykit-container .imglykit-canvas-container-row {
+  display: table-row; }
+
 .imglykit-container .imglykit-canvas-container {
+  position: relative;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   -ms-border-radius: 5px;
   -o-border-radius: 5px;
   border-radius: 5px;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  padding-top: 40px;
+  display: table-cell;
   overflow: hidden; }
-  .imglykit-container .imglykit-canvas-container.imglykit-header-padding {
-    padding-top: 70px; }
 
 .imglykit-container .imglykit-canvas-inner-container {
   position: relative; }
@@ -122,53 +128,50 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-.imglykit-container .imglykit-drop-area-container {
-  width: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
+.imglykit-container .imglykit-splash-container {
+  display: table;
   width: 100%;
   height: 100%;
   padding: 30px;
-  padding-top: 70px;
-  padding-bottom: 110px;
-  display: table;
   table-layout: fixed; }
-  .imglykit-container .imglykit-drop-area-container.imglykit-header-padding {
+  .imglykit-container .imglykit-splash-container.imglykit-header-padding {
     padding-top: 100px; }
-  .imglykit-container .imglykit-drop-area-container .imglykit-drop-area {
+  .imglykit-container .imglykit-splash-container .imglykit-splash-cell {
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     -ms-border-radius: 5px;
     -o-border-radius: 5px;
     border-radius: 5px;
-    text-align: center;
-    display: table-cell;
-    border: 1px dashed rgba(255, 255, 255, 0.2);
+    border: 1px dashed rgba(255, 255, 255, 0.2); }
+  .imglykit-container .imglykit-splash-container .imglykit-splash-row, .imglykit-container .imglykit-splash-container .imglykit-splash-cell {
     width: 100%;
     height: 100%;
-    vertical-align: middle;
+    text-align: center;
+    vertical-align: middle; }
+  .imglykit-container .imglykit-splash-container .imglykit-splash-row {
+    display: table-row;
+    height: 50%;
     cursor: pointer; }
-    .imglykit-container .imglykit-drop-area-container .imglykit-drop-area.imglykit-drop-area-active, .imglykit-container .imglykit-drop-area-container .imglykit-drop-area:hover {
+    .imglykit-container .imglykit-splash-container .imglykit-splash-row.imglykit-splash-active, .imglykit-container .imglykit-splash-container .imglykit-splash-row:hover {
       background: rgba(255, 255, 255, 0.05); }
-    .imglykit-container .imglykit-drop-area-container .imglykit-drop-area .imglykit-drop-area-content {
-      width: 250px;
+    .imglykit-container .imglykit-splash-container .imglykit-splash-row .imglykit-splash-content {
       margin: auto;
       margin-top: 10px;
+      width: 250px;
       font-family: Helvetica, Arial, Verdana; }
-      .imglykit-container .imglykit-drop-area-container .imglykit-drop-area .imglykit-drop-area-content h1 {
-        color: white;
-        font-weight: bold;
+      .imglykit-container .imglykit-splash-container .imglykit-splash-row .imglykit-splash-content h1 {
+        margin-bottom: 5px;
         font-size: 20px;
-        margin-bottom: 5px; }
-      .imglykit-container .imglykit-drop-area-container .imglykit-drop-area .imglykit-drop-area-content span {
-        color: rgba(255, 255, 255, 0.2);
-        font-size: 14px; }
-    .imglykit-container .imglykit-drop-area-container .imglykit-drop-area .imglykit-drop-area-hidden-input {
-      visibility: hidden;
+        font-weight: bold;
+        color: white; }
+      .imglykit-container .imglykit-splash-container .imglykit-splash-row .imglykit-splash-content span {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.2); }
+    .imglykit-container .imglykit-splash-container .imglykit-splash-row .imglykit-upload-hidden-input {
       position: absolute;
       top: 0;
       left: 0;
+      visibility: hidden;
       width: 0;
       height: 0; }
 
@@ -180,7 +183,12 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
+.imglykit-container .imglykit-header-row {
+  display: table-row;
+  height: 30px; }
+
 .imglykit-container .imglykit-header {
+  display: table-cell;
   background: #1A1A1A;
   text-align: center;
   color: white;
@@ -209,13 +217,14 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
+.imglykit-container .imglykit-top-controls-row {
+  display: table-row; }
+
 .imglykit-container .imglykit-top-controls {
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
-  position: absolute;
-  top: 0;
-  left: 0;
+  display: table-cell;
   width: 100%;
   height: 40px;
   color: white;
@@ -406,13 +415,14 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
+.imglykit-container .imglykit-controls-row {
+  display: table-row; }
+
 .imglykit-container .imglykit-controls-container {
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
-  position: absolute;
-  bottom: 0;
-  left: 0;
+  display: table-cell;
   width: 100%;
   height: 80px;
   background: #2B2B2B; }
@@ -428,7 +438,12 @@
     .imglykit-container .imglykit-controls > div:not(.imglykit-scrollbar-background) > * > * {
       display: table-cell;
       vertical-align: top; }
+  .imglykit-container .imglykit-controls .imglykit-controls-list-container {
+    overflow: hidden;
+    height: 80px; }
   .imglykit-container .imglykit-controls .imglykit-controls-list {
+    position: absolute;
+    width: 100%;
     overflow: hidden;
     overflow-x: auto;
     text-align: center;

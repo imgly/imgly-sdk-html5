@@ -8,13 +8,12 @@
  */
 
 .imglykit-container
+  .imglykit-top-controls-row
+    display: table-row
 
   .imglykit-top-controls
     @include user-select(none)
-
-    position: absolute
-    top: 0
-    left: 0
+    display: table-cell
     width: 100%
     height: $topControlsHeight
     color: white

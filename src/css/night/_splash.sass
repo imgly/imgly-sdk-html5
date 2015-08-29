@@ -9,62 +9,55 @@
 
 .imglykit-container
 
-  .imglykit-drop-area-container
-    width: 100%
-
-    position: absolute
-    top: 0
-    left: 0
-
+  .imglykit-splash-container
+    display: table
     width: 100%
     height: 100%
 
     padding: 30px
-    padding-top: $topControlsHeight + 30px
-    padding-bottom: $controlsHeight + 30px
-
-    display: table
     table-layout: fixed
 
     &.imglykit-header-padding
       padding-top: $headerHeight + $topControlsHeight + 30px
 
-    .imglykit-drop-area
+    .imglykit-splash-cell
       @include border-radius(5px)
-      text-align: center
-      display: table-cell
-
       border: 1px dashed $lightBorderColor
+
+    .imglykit-splash-row, .imglykit-splash-cell
       width: 100%
       height: 100%
-
+      text-align: center
       vertical-align: middle
 
+    .imglykit-splash-row
+      display: table-row
+      height: 50%
       cursor: pointer
 
-      &.imglykit-drop-area-active, &:hover
+      &.imglykit-splash-active, &:hover
         background: rgba(white, 0.05)
 
-      .imglykit-drop-area-content
-        width: 250px
+      .imglykit-splash-content
         margin: auto
         margin-top: 10px
+        width: 250px
         font-family: Helvetica, Arial, Verdana
 
         h1
-          color: white
-          font-weight: bold
-          font-size: 20px
           margin-bottom: 5px
+          font-size: 20px
+          font-weight: bold
+          color: white
 
         span
-          color: $lightBorderColor
           font-size: 14px
+          color: $lightBorderColor
 
-      .imglykit-drop-area-hidden-input
-        visibility: hidden
+      .imglykit-upload-hidden-input
         position: absolute
         top: 0
         left: 0
+        visibility: hidden
         width: 0
         height: 0
