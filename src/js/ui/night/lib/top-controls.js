@@ -92,9 +92,7 @@ class TopControls extends EventEmitter {
    */
   _onNewClick (e) {
     e.preventDefault()
-
-    let { fileLoader } = this._ui
-    fileLoader.openFileDialog()
+    this.emit('new')
   }
 
   /**

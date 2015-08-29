@@ -201,6 +201,11 @@ class NightUI extends UI {
     this._topControls = new TopControls(this._kit, this)
     this._topControls.run()
 
+    this._topControls.on('new', () => {
+      this._options.image = null
+      this.run()
+    })
+
     this._topControls.on('undo', () => {
       this.undo()
     })
