@@ -75,9 +75,18 @@
               <img src="{{=it.helpers.assetPath('ui/night/upload.png')}}" />
 
               <div class="imglykit-splash-content">
-                <h1>Upload a picture</h1>
-                <span>Click here to upload a picture from your library or just drag and drop</span>
+                <div class="imglykit-splash-button">Upload a picture</div>
+                <div class="imglykit-splash-text">Click here to upload a picture from your library or just drag and drop</div>
               </div>
+            </div>
+          </div>
+          {{?}}
+          {{? it.options.ui.showNewButton && it.options.ui.showWebcamButton }}
+          <div class="imglykit-splash-row imglykit-splash-row--or">
+            <div class="imglykit-splash-or">
+              <div class="imglykit-splash-or-line"></div>
+              <div class="imglykit-splash-or-word">or</div>
+              <div class="imglykit-splash-or-line"></div>
             </div>
           </div>
           {{?}}
@@ -87,8 +96,8 @@
               <img src="{{=it.helpers.assetPath('ui/night/shutter.png')}}" />
 
               <div class="imglykit-splash-content">
-                <h1>Take a picture</h1>
-                <span>Click here to take a picture with your webcam or phone</span>
+                <div class="imglykit-splash-button">Take a picture</div>
+                <div class="imglykit-splash-text">Click here to take a picture with your webcam or phone</div>
               </div>
             </div>
           </div>

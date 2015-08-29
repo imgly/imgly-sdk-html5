@@ -72,7 +72,6 @@ export default class WebcamHandler extends EventEmitter {
       this._video.onloadedmetadata = this._onVideoReady.bind(this)
       this._video.src = window.URL.createObjectURL(stream)
     }, (err) => {
-      console.log(err)
       throw err
     })
   }

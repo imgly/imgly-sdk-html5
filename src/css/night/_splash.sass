@@ -22,7 +22,44 @@
 
     .imglykit-splash-cell
       @include border-radius(5px)
-      border: 1px dashed $lightBorderColor
+
+    .imglykit-splash-button
+      @include border-radius(5px)
+      display: inline-block
+      margin-bottom: 10px
+      padding: 0 15px
+      background: $primaryColor
+      font-family: Helvetica, Arial, sans-serif
+      font-size: 18px
+      line-height: 38px
+      font-weight: bold
+      color: white
+
+    .imglykit-splash-or
+      display: table
+      table-layout: fixed
+      width: 100%
+
+      &-line
+        position: relative
+        display: table-cell
+
+        &:before
+          position: absolute
+          top: 50%
+          left: 0
+          display: block
+          border-top: 1px solid $lightBorderColor
+          width: 100%
+          height: 1px
+          content: ''
+
+      &-word
+        display: table-cell
+        width: 30px
+        font-family: Helvetica, Arial, sans-serif
+        font-size: 12px
+        color: $lightBorderColor
 
     .imglykit-splash-row, .imglykit-splash-cell
       width: 100%
@@ -32,11 +69,8 @@
 
     .imglykit-splash-row
       display: table-row
-      height: 50%
+      height: 45%
       cursor: pointer
-
-      &.imglykit-splash-active, &:hover
-        background: rgba(white, 0.05)
 
       .imglykit-splash-content
         margin: auto
@@ -50,7 +84,7 @@
           font-weight: bold
           color: white
 
-        span
+        .imglykit-splash-text
           font-size: 14px
           color: $lightBorderColor
 
