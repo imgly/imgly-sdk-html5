@@ -55,7 +55,12 @@
     {{?}}
     <div class="imglykit-canvas-container-row">
       <div class="imglykit-canvas-container">
-        {{? !it.renderSplashScreen}}
+        {{? it.renderWebcam }}
+        <div class="imglykit-canvas-inner-container">
+          <video class="imglykit-webcam-video" autoplay></video>
+        </div>
+        {{?}}
+        {{? !(it.renderSplashScreen || it.renderWebcam) }}
         <div class="imglykit-canvas-inner-container">
           <canvas class="imglykit-canvas-draggable"></canvas>
           <div class="imglykit-canvas-controls imglykit-canvas-controls-disabled"></div>
@@ -63,6 +68,7 @@
         {{?}}
         {{? it.renderSplashScreen }}
         <div class="imglykit-splash-container">
+          {{? it.options.ui.showNewButton }}
           <div class="imglykit-splash-row imglykit-splash-row--upload">
             <div class="imglykit-splash-cell">
               <input type="file" class="imglykit-upload-hidden-input" />
@@ -74,9 +80,10 @@
               </div>
             </div>
           </div>
+          {{?}}
+          {{? it.options.ui.showWebcamButton }}
           <div class="imglykit-splash-row imglykit-splash-row--camera">
             <div class="imglykit-splash-cell">
-              <!-- <input type="file" class="imglykit-camera-hidden-input" /> -->
               <img src="{{=it.helpers.assetPath('ui/night/shutter.png')}}" />
 
               <div class="imglykit-splash-content">
@@ -85,11 +92,23 @@
               </div>
             </div>
           </div>
+          {{?}}
         </div>
         {{?}}
       </div>
     </div>
 
+    {{? it.renderWebcam }}
+    <div class="imglykit-controls-row">
+      <div class="imglykit-controls-container">
+        <div class="imglykit-controls">
+          <div class="imglykit-webcam-button">
+            <img src="{{=it.helpers.assetPath('ui/night/shutter-button.png')}}" />
+          </div>
+        </div>
+      </div>
+    </div>
+    {{?}}
     {{? it.renderControls }}
     <div class="imglykit-controls-row">
       <div class="imglykit-controls-container">

@@ -13,6 +13,7 @@ import _ from 'lodash'
 import UI from '../base/ui'
 import Canvas from './lib/canvas'
 import FileLoader from './lib/file-loader'
+import WebcamHandler from './lib/webcam-handler'
 import TopControls from './lib/top-controls'
 import Scrollbar from './lib/scrollbar'
 import { RenderType, ImageFormat } from '../../constants'
@@ -51,6 +52,8 @@ class NightUI extends UI {
 
     this._options.ui = _.defaults(this._options.ui, {
       showNewButton: !this._options.image,
+      showUploadButton: !this._options.image,
+      showWebcamButton: !this._options.image,
       showHeader: true,
       showCloseButton: false,
       showExportButton: false,
@@ -95,6 +98,11 @@ class NightUI extends UI {
 
     if (this.context.renderSplashScreen) {
       this._initFileLoader()
+      this._handleWebcamButton()
+    }
+
+    if (this.context.renderWebcam) {
+      this._initWebcam()
     }
 
     this._initTopControls()
@@ -111,6 +119,33 @@ class NightUI extends UI {
     if (this._topControls) {
       this._topControls.updateExportButton()
     }
+  }
+
+  /**
+   * Initializes the webcam
+   * @private
+   */
+  _initWebcam () {
+    this._webcam = new WebcamHandler(this._kit, this)
+    this._webcam.on('image', this._onWebcamImageTaken.bind(this))
+  }
+
+  _onWebcamImageTaken (image) {
+    this._options.ui.startWithWebcam = false
+    this._setImage(image)
+  }
+
+  /**
+   * Handles the webcam button
+   * @private
+   */
+  _handleWebcamButton () {
+    const { container } = this._options
+    const webcamButton = container.querySelector('.imglykit-splash-row--camera')
+    webcamButton.addEventListener('click', () => {
+      this._options.ui.startWithWebcam = true
+      this.run()
+    })
   }
 
   /**
@@ -428,8 +463,9 @@ class NightUI extends UI {
   get context () {
     let context = super.context
     context.controls = this._registeredControls
-    context.renderSplashScreen = !this._options.image
+    context.renderSplashScreen = !this._options.image && !this._options.ui.startWithWebcam
     context.renderControls = !!this._options.image
+    context.renderWebcam = this._options.ui.startWithWebcam
     return context
   }
 

@@ -10,7 +10,6 @@ window.onload = function () {
       assetsUrl: '../../build/assets', // The URL / path where all assets are
       container: document.querySelector('#container'),
       versionCheck: false,
-      image: myImage,
       ui: {
         enabled: true,
         showExportButton: true,
@@ -43,8 +42,6 @@ window.onload = function () {
           var dimensions = end
             .subtract(start)
             .multiply(inputImage.width, inputImage.height)
-
-          console.log('image dimensions', dimensions)
 
           document.body.appendChild(image)
         })
