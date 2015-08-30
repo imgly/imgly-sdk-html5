@@ -417,9 +417,9 @@
   -ms-border-radius: 50%;
   -o-border-radius: 50%;
   border-radius: 50%;
-  -webkit-box-shadow: compact(0 0 0 2px rgba(255, 255, 255, 0.5), false, false, false, false, false, false, false, false, false);
-  -moz-box-shadow: compact(0 0 0 2px rgba(255, 255, 255, 0.5), false, false, false, false, false, false, false, false, false);
-  box-shadow: compact(0 0 0 2px rgba(255, 255, 255, 0.5), false, false, false, false, false, false, false, false, false);
+  -webkit-box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+  -moz-box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
   position: absolute;
   width: 20px;
   height: 20px;
@@ -511,11 +511,12 @@
     height: 80px;
     font-size: 0; }
   .imglykit-container .imglykit-controls li {
-    -webkit-transition: compact(compact(background-color 0.2s ease-out, false, false, false, false, false, false, false, false, false) false false);
-    -moz-transition: compact(compact(background-color 0.2s ease-out, false, false, false, false, false, false, false, false, false) false false false);
-    -o-transition: compact(compact(background-color 0.2s ease-out, false, false, false, false, false, false, false, false, false) false false false);
-    transition: compact(background-color 0.2s ease-out, false, false, false, false, false, false, false, false, false);
+    -webkit-transition: background-color 0.2s ease-out;
+    -moz-transition: background-color 0.2s ease-out false;
+    -o-transition: background-color 0.2s ease-out false;
+    transition: background-color 0.2s ease-out;
     display: inline-block;
+    position: relative;
     width: 80px;
     height: 80px;
     cursor: pointer;
@@ -523,15 +524,34 @@
     border-left: 1px solid #363636; }
     .imglykit-container .imglykit-controls li:last-child {
       border-right: 1px solid #363636; }
+    .imglykit-container .imglykit-controls li.imglykit-controls-item--with-label:hover img {
+      margin-bottom: 20px; }
     .imglykit-container .imglykit-controls li img {
-      -webkit-transition: compact(compact(all 0.2s ease-out, false, false, false, false, false, false, false, false, false) false false);
-      -moz-transition: compact(compact(all 0.2s ease-out, false, false, false, false, false, false, false, false, false) false false false);
-      -o-transition: compact(compact(all 0.2s ease-out, false, false, false, false, false, false, false, false, false) false false false);
-      transition: compact(all 0.2s ease-out, false, false, false, false, false, false, false, false, false);
+      -webkit-transition: all 0.2s ease-out;
+      -moz-transition: all 0.2s ease-out false;
+      -o-transition: all 0.2s ease-out false;
+      transition: all 0.2s ease-out;
       width: 40px;
       vertical-align: middle; }
     .imglykit-container .imglykit-controls li.imglykit-controls-item-active {
       background: rgba(0, 0, 0, 0.3); }
+    .imglykit-container .imglykit-controls li .imglykit-controls-label {
+      -webkit-transition: all 0.2s ease-out;
+      -moz-transition: all 0.2s ease-out false;
+      -o-transition: all 0.2s ease-out false;
+      transition: all 0.2s ease-out;
+      filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+      opacity: 0;
+      position: absolute;
+      bottom: -20px;
+      width: 100%;
+      color: white;
+      font: bold 10px Helvetica, Arial, sans-serif;
+      text-align: center; }
+    .imglykit-container .imglykit-controls li:hover .imglykit-controls-label {
+      filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+      opacity: 1;
+      bottom: 13px; }
   .imglykit-container .imglykit-controls .imglykit-controls-item-label {
     color: white;
     font-size: 10px;
@@ -554,9 +574,9 @@
     filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=20);
     opacity: 0.2; }
   .imglykit-container .imglykit-controls li:hover:not([data-disabled]), .imglykit-container .imglykit-controls .imglykit-controls-button:hover:not([data-disabled]) {
-    -webkit-box-shadow: compact(0 -3px 0 0 #43ADEB inset, false, false, false, false, false, false, false, false, false);
-    -moz-box-shadow: compact(0 -3px 0 0 #43ADEB inset, false, false, false, false, false, false, false, false, false);
-    box-shadow: compact(0 -3px 0 0 #43ADEB inset, false, false, false, false, false, false, false, false, false);
+    -webkit-box-shadow: 0 -3px 0 0 #43ADEB inset;
+    -moz-box-shadow: 0 -3px 0 0 #43ADEB inset;
+    box-shadow: 0 -3px 0 0 #43ADEB inset;
     background-color: rgba(0, 0, 0, 0.3); }
     .imglykit-container .imglykit-controls li:hover:not([data-disabled]) img, .imglykit-container .imglykit-controls .imglykit-controls-button:hover:not([data-disabled]) img {
       -webkit-transform: scale(1.1);
@@ -565,10 +585,10 @@
       -o-transform: scale(1.1);
       transform: scale(1.1); }
   .imglykit-container .imglykit-controls .imglykit-controls-button {
-    -webkit-transition: compact(compact(background-color 0.2s ease-out, false, false, false, false, false, false, false, false, false) false false);
-    -moz-transition: compact(compact(background-color 0.2s ease-out, false, false, false, false, false, false, false, false, false) false false false);
-    -o-transition: compact(compact(background-color 0.2s ease-out, false, false, false, false, false, false, false, false, false) false false false);
-    transition: compact(background-color 0.2s ease-out, false, false, false, false, false, false, false, false, false);
+    -webkit-transition: background-color 0.2s ease-out;
+    -moz-transition: background-color 0.2s ease-out false;
+    -o-transition: background-color 0.2s ease-out false;
+    transition: background-color 0.2s ease-out;
     width: 80px;
     height: 80px;
     line-height: 80px;
@@ -582,10 +602,10 @@
     .imglykit-container .imglykit-controls .imglykit-controls-button img {
       vertical-align: middle;
       width: 40px;
-      -webkit-transition: compact(compact(all 0.2s ease-out, false, false, false, false, false, false, false, false, false) false false);
-      -moz-transition: compact(compact(all 0.2s ease-out, false, false, false, false, false, false, false, false, false) false false false);
-      -o-transition: compact(compact(all 0.2s ease-out, false, false, false, false, false, false, false, false, false) false false false);
-      transition: compact(all 0.2s ease-out, false, false, false, false, false, false, false, false, false); }
+      -webkit-transition: all 0.2s ease-out;
+      -moz-transition: all 0.2s ease-out false;
+      -o-transition: all 0.2s ease-out false;
+      transition: all 0.2s ease-out; }
   .imglykit-container .imglykit-controls .imglykit-controls-done .imglykit-controls-done-highlighted {
     display: none;
     position: absolute;
@@ -773,9 +793,9 @@
       -ms-border-radius: 50%;
       -o-border-radius: 50%;
       border-radius: 50%;
-      -webkit-box-shadow: compact(0 2px 4px 0 rgba(0, 0, 0, 0.5), false, false, false, false, false, false, false, false, false);
-      -moz-box-shadow: compact(0 2px 4px 0 rgba(0, 0, 0, 0.5), false, false, false, false, false, false, false, false, false);
-      box-shadow: compact(0 2px 4px 0 rgba(0, 0, 0, 0.5), false, false, false, false, false, false, false, false, false);
+      -webkit-box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+      -moz-box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+      box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
       width: 30px;
       height: 30px;
       background: white;
@@ -1045,10 +1065,10 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 .imglykit-container .imglykit-scrollbar-background {
-  -webkit-transition: compact(compact(all 0.3s ease-out, false, false, false, false, false, false, false, false, false) false false);
-  -moz-transition: compact(compact(all 0.3s ease-out, false, false, false, false, false, false, false, false, false) false false false);
-  -o-transition: compact(compact(all 0.3s ease-out, false, false, false, false, false, false, false, false, false) false false false);
-  transition: compact(all 0.3s ease-out, false, false, false, false, false, false, false, false, false);
+  -webkit-transition: all 0.3s ease-out;
+  -moz-transition: all 0.3s ease-out false;
+  -o-transition: all 0.3s ease-out false;
+  transition: all 0.3s ease-out;
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
   opacity: 0;
   width: 100%;
