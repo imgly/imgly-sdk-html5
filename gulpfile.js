@@ -21,7 +21,8 @@ var config = {
 }
 
 var sassFiles = [
-  './src/css/imglykit-night-ui.sass'
+  './src/css/imglykit-night-ui.sass',
+  './src/css/imglykit-night-react-ui.sass'
 ]
 
 /**
