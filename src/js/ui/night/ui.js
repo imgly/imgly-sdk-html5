@@ -57,6 +57,7 @@ class NightUI extends UI {
       showHeader: true,
       showCloseButton: false,
       showExportButton: false,
+      language: 'en',
       export: {}
     })
 
@@ -79,6 +80,9 @@ class NightUI extends UI {
    */
   run () {
     this._registerControls()
+    this._registerLanguages()
+
+    this._loadLanguage()
 
     super.run()
 
@@ -120,6 +124,14 @@ class NightUI extends UI {
 
     if (this._topControls) {
       this._topControls.updateExportButton()
+    }
+  }
+
+  _loadLanguage () {
+    this._language = this._languages[this._options.ui.language]
+    if (!this._language) {
+      const availableLanguages = Object.keys(this._languages).join(', ')
+      throw new Error(`Unknown language '${this._options.ui.language}'. Available languages are: ${availableLanguages}`)
     }
   }
 
@@ -312,6 +324,15 @@ class NightUI extends UI {
     this.registerControl('frames', 'frames', require('./controls/frames-control'))
     this.registerControl('stickers', 'stickers', require('./controls/stickers-control'))
     this.registerControl('text', 'text', require('./controls/text-control'))
+  }
+
+  /**
+   * Register all default languages
+   * @private
+   */
+  _registerLanguages () {
+    this.registerLanguage('en', require('./lang/en.json'))
+    this.registerLanguage('de', require('./lang/de.json'))
   }
 
   /**

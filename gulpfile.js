@@ -169,6 +169,10 @@ gulp.task('webpack', function () {
       module: {
         loaders: [
           {
+            test: /\.json?$/,
+            loader: 'json'
+          },
+          {
             test: /\.jsx?$/,
             include: /src\/js/,
             loaders: [

@@ -1,0 +1,16 @@
+{
+  "operations": {
+    "brightness": "Brightness",
+    "contrast": "Contrast",
+    "filters": "Filters",
+    "flip": "Flip",
+    "frames": "Frames",
+    "radial-blur": "Radial Blur",
+    "rotation": "Rotation",
+    "saturation": "Saturation",
+    "stickers": "Stickers",
+    "text": "Text",
+    "tilt-shift": "Tilt-Shift",
+    "crop": "Crop"
+  }
+}

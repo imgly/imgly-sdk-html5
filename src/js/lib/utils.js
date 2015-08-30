@@ -186,6 +186,32 @@ class Utils {
 
     return newObject
   }
+
+  /**
+   * Gets the property value at `path` of `object`
+   * @param  {Object} object
+   * @param  {String} key
+   * @param  {?} [defaultValue]
+   * @return {?}
+   */
+  static fetch (object, path, defaultValue) {
+    // Replace indexes with property accessors
+    path = path.replace(/\[(\w+)\]/g, '.$1')
+    // Strip leading dot (when path begins with [0] for example)
+    path = path.replace(/^\./, '')
+
+    const pathSegments = path.split('.')
+    for (let i = 0; i < pathSegments.length; i++) {
+      const segment = pathSegments[i]
+      object = object[segment]
+    }
+
+    if (typeof object === 'undefined') {
+      object = defaultValue
+    }
+
+    return object
+  }
 }
 
 export default Utils

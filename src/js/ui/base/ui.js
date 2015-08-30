@@ -20,6 +20,7 @@ class BaseUI extends EventEmitter {
     this._options.ui = this._options.ui || {}
     this._operations = []
     this._helpers = new Helpers(this.kit, this, options)
+    this._languages = {}
     this.selectOperations(null)
   }
 
@@ -28,6 +29,24 @@ class BaseUI extends EventEmitter {
    */
   run () {
     this._attach()
+  }
+
+  /**
+   * Registers a language
+   * @param  {String} identifier
+   * @param  {Object} object
+   */
+  registerLanguage (identifier, object) {
+    this._languages[identifier] = object
+  }
+
+  /**
+   * Returns the translation for `key`
+   * @param  {String} key
+   * @return {String}
+   */
+  translate (key) {
+    return Utils.fetch(this._language, key, 'translation-missing')
   }
 
   /**

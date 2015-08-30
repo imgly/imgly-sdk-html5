@@ -25,6 +25,10 @@ class Helpers {
 
     return path
   }
+
+  translate (key) {
+    return this._ui.translate(key)
+  }
 }
 
 export default Helpers

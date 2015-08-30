@@ -47,6 +47,7 @@
   "dependencies": {
     "babel": "^5.5.3",
     "brfs": "^1.2.0",
-    "dot": "^1.0.3"
+    "dot": "^1.0.3",
+    "json-loader": "^0.5.2"
   }
 }

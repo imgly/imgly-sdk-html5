@@ -1,0 +1,16 @@
+{
+  "operations": {
+    "brightness": "Helligkeit",
+    "contrast": "Kontrast",
+    "filters": "Filter",
+    "flip": "Spiegeln",
+    "frames": "Rahmen",
+    "radial-blur": "Radial Blur",
+    "rotation": "Drehung",
+    "saturation": "Sättigung",
+    "stickers": "Sticker",
+    "text": "Text",
+    "tilt-shift": "Tilt-Shift",
+    "crop": "Zuschneiden"
+  }
+}
