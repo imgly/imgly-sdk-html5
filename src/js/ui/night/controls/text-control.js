@@ -27,18 +27,22 @@ class TextControl extends Control {
 
     this._partialTemplates.fgColorPicker = ColorPicker.template
     this._partialTemplates.fgColorPicker.additionalContext = {
-      id: 'imglykit-text-foreground-color-picker',
-      label: 'Foreground'
+      id: 'imglykit-text-foreground-color-picker'
     }
 
     this._partialTemplates.bgColorPicker = ColorPicker.template
     this._partialTemplates.bgColorPicker.additionalContext = {
-      id: 'imglykit-text-background-color-picker',
-      label: 'Background'
+      id: 'imglykit-text-background-color-picker'
     }
 
     this._fonts = []
     this._addFonts()
+  }
+
+  _renderControls () {
+    this._partialTemplates.fgColorPicker.additionalContext.label = this._ui.translate('controls.text.foreground')
+    this._partialTemplates.bgColorPicker.additionalContext.label = this._ui.translate('controls.text.background')
+    super._renderControls()
   }
 
   /**

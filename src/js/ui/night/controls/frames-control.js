@@ -22,7 +22,12 @@ class FramesControl extends Control {
     this._controlsTemplate = controlsTemplate
     this._partialTemplates.slider = SimpleSlider.template
     this._partialTemplates.colorPicker = ColorPicker.template
-    this._partialTemplates.colorPicker.additionalContext = { label: 'Color' }
+  }
+
+  _renderControls () {
+    this._partialTemplates.colorPicker.additionalContext = { label: this._ui.translate('controls.frames.color') }
+
+    super._renderControls()
   }
 
   /**

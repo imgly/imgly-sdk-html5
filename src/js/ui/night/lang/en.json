@@ -12,5 +12,36 @@
     "text": "Text",
     "tilt-shift": "Tilt-Shift",
     "crop": "Crop"
+  },
+  "top-controls": {
+    "new": "New",
+    "undo": "Undo",
+    "export": "Export",
+    "zoom": "Zoom"
+  },
+  "splash": {
+    "upload": {
+      "headline": "Upload a picture",
+      "description": "Click here to upload a picture from your library or just drag and drop"
+    },
+    "or": "or",
+    "webcam": {
+      "headline": "Take a picture",
+      "description": "Click here to take a picture with your webcam or phone"
+    }
+  },
+  "generic": {
+    "loading": "Loading",
+    "exporting": "Exporting",
+    "color": "Color"
+  },
+  "controls": {
+    "frames": {
+      "color": "Color"
+    },
+    "text": {
+      "foreground": "Foreground",
+      "background": "Background"
+    }
   }
 }

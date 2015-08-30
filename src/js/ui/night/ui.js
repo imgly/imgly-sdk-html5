@@ -563,7 +563,7 @@ class NightUI extends UI {
    * Exports the current image with the default settings
    */
   export () {
-    this.displayLoadingMessage('Exporting...')
+    this.displayLoadingMessage(this.translate('generic.exporting') + '...')
 
     let renderType = RenderType.DATAURL
 
