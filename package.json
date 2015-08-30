@@ -39,6 +39,7 @@
     "mocha": "^2.0.1",
     "mocha-lcov-reporter": "0.0.1",
     "node-libs-browser": "^0.5.2",
+    "react": "^0.13.3",
     "run-sequence": "~0.3.6",
     "should": "^4.3.0",
     "sinon": "^1.12.1",
