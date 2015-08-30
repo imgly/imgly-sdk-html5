@@ -9,6 +9,19 @@ var gulpLoadPlugins = require('gulp-load-plugins')
 var $ = gulpLoadPlugins()
 var WebpackNotifierPlugin = require('webpack-notifier')
 
+var handleErrors = function() {
+  var args = Array.prototype.slice.call(arguments);
+
+  // Send error to notification center with gulp-notify
+  $.notify.onError({
+    title: 'Compile Error',
+    message: '<%= error %>'
+  }).apply(this, args);
+
+  // Keep gulp from hanging on this task
+  this.emit('end');
+};
+
 /**
  * Configuration
  * @type {Object}
@@ -58,20 +71,31 @@ gulp.task('standard', function () {
  * `gulp sass`
  * Compiles the main .sass file to .css
  */
+var watching = false
 gulp.task('sass', function () {
-  return gulp.src(sassFiles)
+  var task = gulp.src(sassFiles)
     .pipe($.plumber())
     .pipe($.sass({
       includePaths: ['node_modules/compass-mixins/lib'],
       indentedSyntax: true,
       errLogToConsole: true
     }))
-    .on('error', $.notify.onError({ onError: true }))
-    .on('error', $.util.log)
-    .on('error', $.util.beep)
+    .on('error', handleErrors)
     .pipe(gulp.dest('./build/css'))
     .pipe($.notify('SASS build complete'))
+
+  if (config.env === 'development' && !watching) {
+    watching = true
+
+    // Watch for changes
+    $.watch(sassFiles, { verbose: true }, function () {
+      gulp.start('sass')
+    })
+  }
+
+  return task
 })
+
 
 /**
  * `gulp copy`
