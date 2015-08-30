@@ -10,7 +10,8 @@
 
 import React from 'react'
 import BEM from './lib/bem'
+import Classnames from 'classnames'
 
 export default {
-  React, BEM
+  React, BEM, Classnames
 }

@@ -20,11 +20,20 @@ export default class NightReactUI extends BaseUI {
     this._options = options
   }
 
+  // TODO Remove this later, avoid SDK calling it on resize
+  render () {}
+
   /**
    * Main entry point for the UI
    * @private
    */
-  run () {
-    React.render(<EditorComponent />, this._options.container)
+  _attach () {
+    // Container has to be position: relative
+    this._options.container.style.position = 'relative'
+
+    React.render(<EditorComponent
+      kit={this._kit}
+      options={this._options} />,
+      this._options.container)
   }
 }

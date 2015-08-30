@@ -11,41 +11,31 @@
 const blockPrefix = 'pesdk-night-'
 
 export default {
-  _elementClass (block, element) {
-    return element ? `${block}__${element}` : block
-  },
-
-  _modifierClass (block, modifier) {
-    return modifier ? `${block}--${modifier}` : block
-  },
-
-  _prefixBlock (block) {
-    return `${blockPrefix}${block}`
-  },
-
-  elementClass (block) {
-    const prefixedBlock = this._prefixBlock(block)
-    return (elements) => {
-      if (elements == null) {
-        return prefixedBlock
-      }
-      return elements
-        .trim().split(/\s+/)
-        .map((element) => this._elementClass(prefixedBlock, element))
-        .join(' ')
+  block (blockName) {
+    const fn = () => {
+      return `${blockPrefix}${blockName}`
     }
+
+    fn.element = (elementName) => {
+      return this._element(blockName, elementName)
+    }
+
+    fn.modifier = (modifierName) => {
+      return `${blockPrefix}${blockName}--${modifierName}`
+    }
+
+    return fn
   },
 
-  modifierClass (block) {
-    const prefixedBlock = this._prefixBlock(block)
-    return (modifiers) => {
-      if (modifiers == null) {
-        return prefixedBlock
-      }
-      return modifiers
-        .trim().split(/\s+/)
-        .map((modifier) => this._modifierClass(prefixedBlock, modifier))
-        .join(' ')
+  _element (blockName, elementName) {
+    const fn = () => {
+      return `${blockPrefix}${blockName}__${elementName}`
     }
+
+    fn.modifier = (modifierName) => {
+      return `${blockPrefix}${blockName}__${elementName}--${modifierName}`
+    }
+
+    return fn
   }
 }
