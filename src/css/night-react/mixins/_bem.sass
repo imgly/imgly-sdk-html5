@@ -1,0 +1,56 @@
+/*
+ * Photo Editor SDK - photoeditorsdk.com
+ * Copyright (c) 2013-2015 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+
+// Prefix all block names with this
+$blockPrefix: 'pesdk-night-'
+
+$elementSeparator: '__'
+$modifierSeparator: '--'
+
+// BEM mixins
+// See https://css-tricks.com/snippets/sass/bem-mixins/
+
+// Generates a block class selector
+// e.g. “.prefix-block”
+@mixin block($name)
+  .#{$blockPrefix}#{$name}
+    @content
+
+// Inside a block, generates an element class selector
+// e.g. “.prefix-block__element”
+@mixin element($name)
+  &#{$elementSeparator}#{$name}
+    @content
+
+// Same styles for multiple elements
+// e.g. “@include elements(element1 element2)”
+// becomes “.prefix-block__element1, .prefix-block__element2”
+@mixin elements($names...)
+  $selector: ()
+  @each $name in $names
+    $selector: append($selector, unquote('&#{$elementSeparator}#{$name}'), comma)
+  #{$selector}
+    @content
+
+// Inside a block, generates an modifier class selector
+// e.g. “.prefix-block--modifier”
+@mixin modifier($name)
+  &#{$modifierSeparator}#{$name}
+    @content
+
+// Generate a class selector for several modifiers applied
+// e.g. “+block-with-modifiers(block, modifier1, modifier2)
+// becomes “.prefix-block--modifier1.prefix-block--modifier2”
+@mixin block-with-modifiers($block, $modifiers...)
+  $selector: ''
+  @each $modifier in $modifiers
+    $selector: '#{$selector}.#{$blockPrefix}#{$block}#{$modifierSeparator}#{$modifier}'
+  #{$selector}
+    @content
