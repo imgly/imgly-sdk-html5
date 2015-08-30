@@ -1,4 +1,4 @@
-/*!
+/*
  * Photo Editor SDK - photoeditorsdk.com
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,11 +8,15 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-@import compass
++block(screen)
+  @include border-radius(5px)
+  position: absolute
+  top: 0
+  left: 0
+  display: table
 
-@import night-react/variables
-@import night-react/mixins/bem
+  width: 100%
+  height: 100%
 
-// Components
-@import night-react/components/editor
-@import night-react/components/screen
+  table-layout: fixed
+  background: $secondaryBackgroundColor
