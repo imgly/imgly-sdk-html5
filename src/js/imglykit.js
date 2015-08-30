@@ -254,6 +254,7 @@ class ImglyKit extends EventEmitter {
    * @private
    */
   _registerUIs () {
+    this.registerUI(ImglyKit.NightReactUI)
     this.registerUI(ImglyKit.NightUI)
   }
 
@@ -408,5 +409,6 @@ ImglyKit.Vector2 = require('./lib/math/vector2')
 
 // UI
 ImglyKit.NightUI = require('./ui/night/ui')
+ImglyKit.NightReactUI = require('./ui/night-react/ui')
 
 export default ImglyKit
