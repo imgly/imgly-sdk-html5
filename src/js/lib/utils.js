@@ -204,6 +204,9 @@ class Utils {
     for (let i = 0; i < pathSegments.length; i++) {
       const segment = pathSegments[i]
       object = object[segment]
+      if (!object) {
+        break
+      }
     }
 
     if (typeof object === 'undefined') {
