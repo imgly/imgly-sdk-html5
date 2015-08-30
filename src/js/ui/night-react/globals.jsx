@@ -8,13 +8,9 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { React, BEM } from '../globals'
+import React from 'react'
+import BEM from './lib/bem'
 
-const c = BEM.elementClass('editor')
-
-export default class EditorComponent extends React.Component {
-  render () {
-    const className = c()
-    return (<div className={className}></div>)
-  }
+export default {
+  React, BEM
 }
