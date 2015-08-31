@@ -436,7 +436,7 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-.imglykit-container .imglykit-loadingOverlay {
+.imglykit .imglykit-loadingOverlay {
   position: absolute;
   z-index: 3;
   top: 0;
@@ -446,7 +446,7 @@
   height: 100%;
   background: rgba(30, 30, 30, 0.9); }
 
-.imglykit-container .imglykit-loadingOverlay-content {
+.imglykit .imglykit-loadingOverlay-content {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -457,11 +457,11 @@
   height: 70px;
   padding: 10px;
   background: #1E1E1E; }
-  .imglykit-container .imglykit-loadingOverlay-content img {
+  .imglykit .imglykit-loadingOverlay-content img {
     display: block;
     margin: auto;
     margin-bottom: 10px; }
-  .imglykit-container .imglykit-loadingOverlay-content span {
+  .imglykit .imglykit-loadingOverlay-content span {
     display: block;
     font: bold 11px Helvetica, Arial, sans-serif;
     text-align: center;
