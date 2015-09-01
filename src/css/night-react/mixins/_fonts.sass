@@ -1,4 +1,4 @@
-/*!
+/*
  * Photo Editor SDK - photoeditorsdk.com
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -8,15 +8,12 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-@import compass
+$fontName: "__pesdk_Montserrat"
 
-@import night-react/variables
-@import night-react/mixins/bem
-@import night-react/mixins/fonts
+@mixin font-regular
+  font-family: $fontName
+  font-weight: normal
 
-// Components
-@import night-react/components/editor
-@import night-react/components/screen
-
-// Screens
-@import night-react/components/screens/splash-screen
+@mixin font-semibold
+  font-family: $fontName
+  font-weight: bold
