@@ -10,6 +10,8 @@
 
 +block(editor)
   +block(splashScreen)
+    padding: 20px
+
     +element(row)
       display: table-row
 
@@ -44,7 +46,9 @@
             content: ''
 
         +modifier(text)
+          @include font-regular
           width: 50px
+          font-size: 12px
           line-height: 30px
           text-align: center
           color: $lightBorderColor

@@ -18,10 +18,45 @@ export default class NightReactUI extends BaseUI {
 
     this._kit = kit
     this._options = options
+    this._registerWebFonts()
   }
 
   // TODO Remove this later, avoid SDK calling it on resize
   render () {}
+
+  /**
+   * Creates a <style> block in <head> that specifies the web fonts
+   * that we use in this UI. We're doing this in JS because the assets
+   * path is dynamic.
+   * @private
+   */
+  _registerWebFonts () {
+    const normalFontPath = this._helpers.assetPath('fonts/montserrat-regular.woff')
+    const boldFontPath = this._helpers.assetPath('fonts/montserrat-semibold.woff')
+
+    const css = `
+      // Injected by PhotoEditorSDK
+      @font-face {
+        font-family: "__pesdk_Montserrat";
+        src: url('${normalFontPath}') format('woff');
+        font-weight: normal;
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: "__pesdk_Montserrat";
+        src: url('${boldFontPath}') format('woff');
+        font-weight: bold;
+        font-style: normal;
+      }
+    `
+
+    const style = document.createElement('style')
+    style.innerHTML = css
+
+    const head = document.getElementsByTagName('head')[0]
+    head.appendChild(style)
+  }
 
   /**
    * Main entry point for the UI
