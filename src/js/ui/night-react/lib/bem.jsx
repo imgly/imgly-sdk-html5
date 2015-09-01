@@ -8,34 +8,44 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+const elementSeparator = '__'
+const modifierSeparator = '--'
 const blockPrefix = 'pesdk-night-'
+
+class BEMObject {
+  constructor (parent, type, name) {
+    this._parent = parent
+    this._type = type
+    this._name = name
+  }
+
+  element (name) {
+    return new BEMObject(this, 'element', name)
+  }
+
+  modifier (name) {
+    return new BEMObject(this, 'modifier', name)
+  }
+
+  get str () {
+    let response = this._parent ? this._parent.str : ''
+    switch (this._type) {
+      case 'block':
+        response += `${blockPrefix}${this._name}`
+        break
+      case 'element':
+        response += `${elementSeparator}${this._name}`
+        break
+      case 'modifier':
+        response += `${modifierSeparator}${this._name}`
+        break
+    }
+    return response
+  }
+}
 
 export default {
   block (blockName) {
-    const fn = () => {
-      return `${blockPrefix}${blockName}`
-    }
-
-    fn.element = (elementName) => {
-      return this._element(blockName, elementName)
-    }
-
-    fn.modifier = (modifierName) => {
-      return `${blockPrefix}${blockName}--${modifierName}`
-    }
-
-    return fn
-  },
-
-  _element (blockName, elementName) {
-    const fn = () => {
-      return `${blockPrefix}${blockName}__${elementName}`
-    }
-
-    fn.modifier = (modifierName) => {
-      return `${blockPrefix}${blockName}__${elementName}--${modifierName}`
-    }
-
-    return fn
+    return new BEMObject(null, 'block', blockName)
   }
 }

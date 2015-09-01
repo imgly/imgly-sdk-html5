@@ -31,9 +31,13 @@ export default class NightReactUI extends BaseUI {
     // Container has to be position: relative
     this._options.container.style.position = 'relative'
 
-    React.render(<EditorComponent
-      kit={this._kit}
-      options={this._options} />,
-      this._options.container)
+    const context = this.context
+
+    React.withContext(context, () => {
+      React.render(<EditorComponent
+        kit={this._kit}
+        options={this._options} />,
+        this._options.container)
+    })
   }
 }

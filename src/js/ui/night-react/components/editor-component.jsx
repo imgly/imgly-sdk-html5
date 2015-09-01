@@ -9,7 +9,7 @@
  */
 
 import { React, BEM, Classnames } from '../globals'
-import SplashScreen from './screens/splash-screen'
+import SplashScreen from './screens/splash/splash-screen'
 
 const block = BEM.block('editor')
 
@@ -33,15 +33,19 @@ export default class EditorComponent extends React.Component {
     const row = block.element('row')
     const cell = block.element('cell')
 
-    return (<div className={block()}>
-      <div className={Classnames(row(), row.modifier('header'))}>
-        <div className={Classnames(cell(), cell.modifier('header'))}></div>
+    return (<div className={block.str}>
+      <div className={Classnames(row.str, row.modifier('header').str)}>
+        <div className={Classnames(cell.str, cell.modifier('header').str)}></div>
       </div>
-      <div className={Classnames(row(), row.modifier('screen'))}>
-        <div className={Classnames(cell(), cell.modifier('header'))}>
+      <div className={Classnames(row.str, row.modifier('screen').str)}>
+        <div className={Classnames(cell.str, cell.modifier('screen').str)}>
           <Screen {...this._props} />
         </div>
       </div>
     </div>)
   }
+}
+
+EditorComponent.contextTypes = {
+  activeItem: React.PropTypes.any
 }

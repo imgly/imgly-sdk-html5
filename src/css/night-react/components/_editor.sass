@@ -9,7 +9,7 @@
  */
 
 +block(editor)
-  @include nested-reset()
+  @include global-reset()
   @include border-radius(5px)
 
   // Webkit bugfix for rounded border with overflow: hidden
@@ -28,12 +28,16 @@
   &, *
     box-sizing: border-box
 
-  +element(headerBar)
+  +element(row)
     display: table-row
-    height: 30px
 
-  +element(screen)
-    @include border-radius(5px)
+    +modifier(header)
+      height: 30px
 
-    position: relative
-    display: table-row
+  +element(cell)
+    display: table-cell
+
+    +modifier(screen)
+      @include border-radius(5px)
+      position: relative
+      background: $secondaryBackgroundColor
