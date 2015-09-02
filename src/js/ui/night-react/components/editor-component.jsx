@@ -13,7 +13,7 @@ import SplashScreen from './screens/splash/splash-screen'
 
 const block = BEM.block('editor')
 
-export default class EditorComponent extends React.Component {
+class EditorComponent extends React.Component {
   constructor (...args) {
     super(...args)
 
@@ -21,6 +21,18 @@ export default class EditorComponent extends React.Component {
       splash: SplashScreen
     }
     this._currentScreenClass = this._screens.splash
+  }
+
+  /**
+   * Returns the context passed to all children
+   * @return {Object}
+   */
+  getChildContext () {
+    return {
+      ui: this.props.ui,
+      kit: this.props.kit,
+      options: this.props.options
+    }
   }
 
   /**
@@ -46,6 +58,16 @@ export default class EditorComponent extends React.Component {
   }
 }
 
-EditorComponent.contextTypes = {
-  activeItem: React.PropTypes.any
+EditorComponent.childContextTypes = {
+  ui: React.PropTypes.object.isRequired,
+  kit: React.PropTypes.object.isRequired,
+  options: React.PropTypes.object.isRequired
 }
+
+EditorComponent.propTypes = {
+  ui: React.PropTypes.object.isRequired,
+  kit: React.PropTypes.object.isRequired,
+  options: React.PropTypes.object.isRequired
+}
+
+export default EditorComponent

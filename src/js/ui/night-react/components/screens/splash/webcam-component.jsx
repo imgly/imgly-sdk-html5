@@ -8,25 +8,40 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { React, BEM, Classnames } from '../../../globals'
+import { React, BEM, Classnames, BaseChildComponent } from '../../../globals'
+import ButtonComponent from '../../button-component'
 const block = BEM.block('splashScreen')
 
-export default class WebcamComponent extends React.Component {
+export default class WebcamComponent extends BaseChildComponent {
   render () {
     const rowElement = block.element('row')
     const cellElement = block.element('cell')
     const rowClassName = Classnames(
       rowElement.str,
-      rowElement.modifier('upload').str
+      rowElement.modifier('withContent').str,
+      rowElement.modifier('webcam').str
     )
+    const cellModifier = cellElement.modifier('webcam')
     const cellClassName = Classnames(
       cellElement.str,
-      cellElement.modifier('upload').str
+      cellModifier.str
     )
+
+    const imageClassName = cellElement.element('image').str
+    const descriptionClassName = cellElement.element('description').str
+    const buttonClassName = cellElement.element('button').str
 
     return (<div className={rowClassName}>
       <div className={cellClassName}>
-
+        <img
+          className={imageClassName}
+          src={this._getAssetPath('splash/shutter@2x.png', true)} />
+        <ButtonComponent
+          className={buttonClassName}
+          onClick={this._onClick}>Take a photo</ButtonComponent>
+        <div className={descriptionClassName}>
+          Click to take a photo with your webcam or your phone
+        </div>
       </div>
     </div>)
   }
