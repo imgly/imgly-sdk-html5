@@ -7,17 +7,17 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-import Renderer from './renderer'
+import BaseRenderer from './base-renderer'
 import Vector2 from '../lib/math/vector2'
 import Promise from '../vendor/promise'
 
 /**
  * @class
  * @alias ImglyKit.CanvasRenderer
- * @extends {ImglyKit.Renderer}
+ * @extends {ImglyKit.BaseRenderer}
  * @private
  */
-class CanvasRenderer extends Renderer {
+class CanvasRenderer extends BaseRenderer {
   /**
    * A unique string that identifies this renderer
    * @type {String}

@@ -12,22 +12,24 @@ import EventEmitter from '../../lib/event-emitter'
 import Helpers from './helpers'
 
 class BaseUI extends EventEmitter {
-  constructor (kit, options) {
+  constructor (renderer, options) {
     super()
 
-    this._kit = kit
-    this._options = options
-    this._options.ui = this._options.ui || {}
+    this._renderer = renderer
+    this._options = Utils.defaults(options, {
+      assetPathResolver: null
+    })
+
+    this._options.assets = Utils.defaults(options.assets, {
+      baseUrl: '/',
+      resolver: null
+    })
+
     this._operations = []
-    this._helpers = new Helpers(this.kit, this, options)
+    this._helpers = new Helpers(this._renderer, this, options)
     this._languages = {}
     this.selectOperations(null)
-  }
 
-  /**
-   * Prepares the UI for use
-   */
-  run () {
     this._attach()
   }
 
@@ -96,7 +98,7 @@ class BaseUI extends EventEmitter {
    * @param {ImglyKit.Selector}
    */
   selectOperations (selector) {
-    let { registeredOperations } = this._kit
+    let { registeredOperations } = this._renderer
     let operationIdentifiers = Object.keys(registeredOperations)
 
     let selectedOperations = Utils.select(operationIdentifiers, selector)

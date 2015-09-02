@@ -1,4 +1,4 @@
-/*jshint unused:false */
+/* jshint unused:false */
 /*
  * Photo Editor SDK - photoeditorsdk.com
  * Copyright (c) 2013-2015 9elements GmbH
@@ -14,7 +14,7 @@ import EventEmitter from '../lib/event-emitter'
 
 /**
  * @class
- * @alias ImglyKit.Renderer
+ * @alias ImglyKit.BaseRenderer
  * @param {Vector2} dimensions
  * @private
  */
@@ -232,5 +232,3 @@ class Renderer extends EventEmitter {
 
   setSize (size) { this._size.copy(size) }
 }
-
-export default Renderer
