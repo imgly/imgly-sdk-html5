@@ -30,7 +30,7 @@ class EditorComponent extends React.Component {
   getChildContext () {
     return {
       ui: this.props.ui,
-      kit: this.props.kit,
+      renderer: this.props.renderer,
       options: this.props.options
     }
   }
@@ -60,13 +60,13 @@ class EditorComponent extends React.Component {
 
 EditorComponent.childContextTypes = {
   ui: React.PropTypes.object.isRequired,
-  kit: React.PropTypes.object.isRequired,
+  renderer: React.PropTypes.object.isRequired,
   options: React.PropTypes.object.isRequired
 }
 
 EditorComponent.propTypes = {
   ui: React.PropTypes.object.isRequired,
-  kit: React.PropTypes.object.isRequired,
+  renderer: React.PropTypes.object.isRequired,
   options: React.PropTypes.object.isRequired
 }
 

@@ -43,15 +43,17 @@ export default class UploadComponent extends BaseChildComponent {
 
     return (<div className={rowClassName}>
       <div className={cellClassName}>
-        <div className={orClassName}>or</div>
+        <div className={orClassName}>{this._t('splash.or')}</div>
         <img
           className={imageClassName}
           src={this._getAssetPath('splash/add-photo@2x.png', true)} />
         <ButtonComponent
           className={buttonClassName}
-          onClick={this._onClick}>Upload a picture</ButtonComponent>
+          onClick={this._onClick}>
+            {this._t('splash.upload.button')}
+        </ButtonComponent>
         <div className={descriptionClassName}>
-          Click to upload a picture from your library or just drag and drop
+          {this._t('splash.upload.description')}
         </div>
       </div>
     </div>)

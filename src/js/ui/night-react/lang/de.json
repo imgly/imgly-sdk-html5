@@ -1,0 +1,46 @@
+{
+  "operations": {
+    "brightness": "Helligkeit",
+    "contrast": "Kontrast",
+    "filters": "Filter",
+    "flip": "Spiegeln",
+    "frames": "Rahmen",
+    "radial-blur": "Radial Blur",
+    "rotation": "Drehung",
+    "saturation": "Sättigung",
+    "stickers": "Sticker",
+    "text": "Text",
+    "tilt-shift": "Tilt-Shift",
+    "crop": "Zuschneiden"
+  },
+  "top-controls": {
+    "new": "Neu",
+    "undo": "Rückgängig",
+    "export": "Exportieren",
+    "zoom": "Zoom"
+  },
+  "splash": {
+    "upload": {
+      "headline": "Bild hochladen",
+      "description": "Klicke hier, um ein Bild hochzuladen oder ziehe eine Bilddatei hier her"
+    },
+    "or": "oder",
+    "webcam": {
+      "headline": "Foto machen",
+      "description": "Klicke hier, um ein Foto mit deiner Webcam oder deinem Smartphone zu machen"
+    }
+  },
+  "generic": {
+    "loading": "Laden",
+    "exporting": "Exportiere"
+  },
+  "controls": {
+    "frames": {
+      "color": "Farbe"
+    },
+    "text": {
+      "foreground": "Text",
+      "background": "Hintergrund"
+    }
+  }
+}

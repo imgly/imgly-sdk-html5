@@ -10,6 +10,7 @@
 import Utils from '../../lib/utils'
 import EventEmitter from '../../lib/event-emitter'
 import Helpers from './helpers'
+import Polyglot from 'node-polyglot'
 
 class BaseUI extends EventEmitter {
   constructor (renderer, options) {
@@ -17,7 +18,8 @@ class BaseUI extends EventEmitter {
 
     this._renderer = renderer
     this._options = Utils.defaults(options, {
-      assetPathResolver: null
+      assetPathResolver: null,
+      language: 'en'
     })
 
     this._options.assets = Utils.defaults(options.assets, {
@@ -30,7 +32,21 @@ class BaseUI extends EventEmitter {
     this._languages = {}
     this.selectOperations(null)
 
+    this._registerLanguages()
+    this.selectLanguage(this._options.language)
+
     this._attach()
+  }
+
+  /**
+   * Sets the current language to the one with the given key
+   * @param  {string} key
+   */
+  selectLanguage (key) {
+    this._language = new Polyglot({
+      locale: key,
+      phrases: this._languages[key]
+    })
   }
 
   /**
@@ -45,16 +61,11 @@ class BaseUI extends EventEmitter {
   /**
    * Returns the translation for `key`
    * @param  {String} key
-   * @param  {Array.<String>} args
+   * @param  {Object} [interpolationOptions]
    * @return {String}
    */
-  translate (key, ...args) {
-    let str = Utils.fetch(this._language, key, 'translation-missing')
-    for (let i = 0; i < args.length; i++) {
-      const arg = args[i]
-      str = str.replace(`$${i + 1}`, arg)
-    }
-    return str
+  translate (key, interpolationOptions) {
+    return this._language.t(key, interpolationOptions)
   }
 
   /**

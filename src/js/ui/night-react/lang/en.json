@@ -1,0 +1,47 @@
+{
+  "operations": {
+    "brightness": "Brightness",
+    "contrast": "Contrast",
+    "filters": "Filters",
+    "flip": "Flip",
+    "frames": "Frames",
+    "radial-blur": "Radial Blur",
+    "rotation": "Rotation",
+    "saturation": "Saturation",
+    "stickers": "Stickers",
+    "text": "Text",
+    "tilt-shift": "Tilt-Shift",
+    "crop": "Crop"
+  },
+  "top-controls": {
+    "new": "New",
+    "undo": "Undo",
+    "export": "Export",
+    "zoom": "Zoom"
+  },
+  "splash": {
+    "upload": {
+      "button": "Upload a picture",
+      "description": "Click here to upload a picture from your library or just drag and drop"
+    },
+    "or": "or",
+    "webcam": {
+      "button": "Take a picture",
+      "description": "Click here to take a picture with your webcam or phone"
+    }
+  },
+  "generic": {
+    "loading": "Loading",
+    "exporting": "Exporting",
+    "color": "Color"
+  },
+  "controls": {
+    "frames": {
+      "color": "Color"
+    },
+    "text": {
+      "foreground": "Foreground",
+      "background": "Background"
+    }
+  }
+}
