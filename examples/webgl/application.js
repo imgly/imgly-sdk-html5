@@ -5,26 +5,17 @@ window.onload = function () {
     /*
      * Initialize ImglyKit
      */
-    var kit = new ImglyKit({
-      renderer: 'webgl', // Defaults to 'webgl', uses 'canvas' as fallback
-      assetsUrl: '../../build/assets', // The URL / path where all assets are
-      container: document.querySelector('#container'),
-      versionCheck: false,
-      image: myImage,
-      ui: {
-        enabled: true,
-        showExportButton: true,
-        showWebcamButton: false,
-        export: {
-          type: ImglyKit.ImageFormat.JPEG
-        }
-      },
-      renderOnWindowResize: true // Our editor's size is relative to the window size
+
+    var renderer = new ImglyKit.Renderer('webgl', {
+      versionCheck: false
     })
 
-    kit.ui.selectOperations('brush,frames')
-
-    kit.run()
+    var editor = new ImglyKit.UI.NightReact(renderer, {
+      container: document.querySelector('#container'),
+      assets: {
+        baseUrl: '/build/assets'
+      }
+    })
 
     /*
      * We have a 'Render' button which (on click) will request the rendered
@@ -37,13 +28,13 @@ window.onload = function () {
       // This will render the image with 100 pixels in width while
       // respecting the aspect ratio
       // Possible render types: image, data-url
-      kit.render('image', 'image/png')
+      renderer.render('image', 'image/png')
         .then(function (image) {
-          // document.body.appendChild(image)
+          document.body.appendChild(image)
         })
     })
 
-    window.kit = kit
+    window.editor = editor
   })
 
   myImage.src = 'test.jpg'
