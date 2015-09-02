@@ -27,6 +27,16 @@ export default class BaseChildComponent extends React.Component {
   }
 
   /**
+   * Returns the translation for `key`
+   * @param  {String} key
+   * @param  {Object} [interpolationOptions]
+   * @return {String}
+   */
+  _t (key, interpolationOptions) {
+    return this.context.ui.translate(key, interpolationOptions)
+  }
+
+  /**
    * A helper method for UI.helpers.assetPath
    * @param {?} ...args
    * @private

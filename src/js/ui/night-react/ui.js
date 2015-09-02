@@ -13,16 +13,24 @@ import React from 'react'
 import EditorComponent from './components/editor-component'
 
 export default class NightReactUI extends BaseUI {
-  constructor (kit, options) {
-    super(kit, options)
+  constructor (renderer, options) {
+    super(renderer, options)
 
-    this._kit = kit
-    this._options = options
+    this._renderer = renderer
     this._registerWebFonts()
   }
 
   // TODO Remove this later, avoid SDK calling it on resize
   render () {}
+
+  /**
+   * Register all default languages
+   * @private
+   */
+  _registerLanguages () {
+    this.registerLanguage('en', require('./lang/en.json'))
+    this.registerLanguage('de', require('./lang/de.json'))
+  }
 
   /**
    * A unique string that represents this UI
@@ -76,7 +84,7 @@ export default class NightReactUI extends BaseUI {
 
     React.render(<EditorComponent
       ui={this}
-      kit={this._kit}
+      renderer={this._renderer}
       options={this._options} />,
       this._options.container)
   }

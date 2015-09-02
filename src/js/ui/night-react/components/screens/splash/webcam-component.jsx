@@ -38,9 +38,11 @@ export default class WebcamComponent extends BaseChildComponent {
           src={this._getAssetPath('splash/shutter@2x.png', true)} />
         <ButtonComponent
           className={buttonClassName}
-          onClick={this._onClick}>Take a photo</ButtonComponent>
+          onClick={this._onClick}>
+          {this._t('splash.webcam.button')}
+        </ButtonComponent>
         <div className={descriptionClassName}>
-          Click to take a photo with your webcam or your phone
+          {this._t('splash.webcam.description')}
         </div>
       </div>
     </div>)

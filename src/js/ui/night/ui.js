@@ -87,7 +87,6 @@ class NightUI extends UI {
   run () {
     this._fixOperationsStack()
     this._registerControls()
-    this._registerLanguages()
 
     this._loadLanguage()
 
