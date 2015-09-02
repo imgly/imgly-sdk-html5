@@ -1,5 +1,4 @@
 var path = require('path')
-var webpack = require('webpack')
 var WebpackNotifierPlugin = require('webpack-notifier')
 
 var destination = 'build'
