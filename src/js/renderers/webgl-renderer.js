@@ -9,19 +9,17 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-const MAX_CONTEXT_LOST_COUNT = 3
-
-import Renderer from './renderer'
+import BaseRenderer from './base-renderer'
 import Vector2 from '../lib/math/vector2'
 import Promise from '../vendor/promise'
 
 /**
  * @class
  * @alias ImglyKit.WebGLRenderer
- * @extends {ImglyKit.Renderer}
+ * @extends {ImglyKit.BaseRenderer}
  * @private
  */
-class WebGLRenderer extends Renderer {
+class WebGLRenderer extends BaseRenderer {
   constructor (...args) {
     super(...args)
     this._contextLostCount = 0

@@ -9,22 +9,22 @@
  */
 
 class Helpers {
-  constructor (kit, ui, options) {
-    this._kit = kit
+  constructor (renderer, ui, options) {
+    this._renderer = renderer
     this._ui = ui
     this._options = options
   }
 
   assetPath (asset, uiAsset = false) {
-    var path = this._options.assetsUrl + '/' + asset
+    const { baseUrl, resolver } = this._ui.options.assets
 
+    let path = `${baseUrl}/${asset}`
     if (uiAsset) {
-      path = `${this._options.assetsUrl}/ui/${this._ui.identifier}/${asset}`
+      path = `${baseUrl}/ui/${this._ui.identifier}/${asset}`
     }
 
-    var assetPathResolver = this._ui.options.ui.assetPathResolver
-    if (typeof assetPathResolver !== 'undefined') {
-      path = assetPathResolver(path)
+    if (typeof resolver !== 'undefined' && resolver !== null) {
+      path = resolver(path)
     }
 
     return path
