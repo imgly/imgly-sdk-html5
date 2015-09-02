@@ -1,2 +1,2 @@
-var requireDir = require('require-dir');
-requireDir('./gulp', { recurse: false });
+var requireDir = require('require-dir')
+requireDir('./gulp', { recurse: false })
