@@ -25,14 +25,22 @@ export default class NightReactUI extends BaseUI {
   render () {}
 
   /**
+   * A unique string that represents this UI
+   * @type {String}
+   */
+  get identifier () {
+    return 'night-react'
+  }
+
+  /**
    * Creates a <style> block in <head> that specifies the web fonts
    * that we use in this UI. We're doing this in JS because the assets
    * path is dynamic.
    * @private
    */
   _registerWebFonts () {
-    const normalFontPath = this._helpers.assetPath('fonts/montserrat-regular.woff')
-    const boldFontPath = this._helpers.assetPath('fonts/montserrat-semibold.woff')
+    const normalFontPath = this._helpers.assetPath('fonts/montserrat-regular.woff', true)
+    const lightFontPath = this._helpers.assetPath('fonts/montserrat-light.woff', true)
 
     const css = `
       // Injected by PhotoEditorSDK
@@ -45,8 +53,8 @@ export default class NightReactUI extends BaseUI {
 
       @font-face {
         font-family: "__pesdk_Montserrat";
-        src: url('${boldFontPath}') format('woff');
-        font-weight: bold;
+        src: url('${lightFontPath}') format('woff');
+        font-weight: 100;
         font-style: normal;
       }
     `
@@ -66,13 +74,10 @@ export default class NightReactUI extends BaseUI {
     // Container has to be position: relative
     this._options.container.style.position = 'relative'
 
-    const context = this.context
-
-    React.withContext(context, () => {
-      React.render(<EditorComponent
-        kit={this._kit}
-        options={this._options} />,
-        this._options.container)
-    })
+    React.render(<EditorComponent
+      ui={this}
+      kit={this._kit}
+      options={this._options} />,
+      this._options.container)
   }
 }

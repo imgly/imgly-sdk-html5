@@ -15,8 +15,12 @@ class Helpers {
     this._options = options
   }
 
-  assetPath (asset) {
+  assetPath (asset, uiAsset = false) {
     var path = this._options.assetsUrl + '/' + asset
+
+    if (uiAsset) {
+      path = `${this._options.assetsUrl}/ui/${this._ui.identifier}/${asset}`
+    }
 
     var assetPathResolver = this._ui.options.ui.assetPathResolver
     if (typeof assetPathResolver !== 'undefined') {
