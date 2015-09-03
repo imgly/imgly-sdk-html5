@@ -11,7 +11,7 @@
 
 import Renderer from './renderer'
 import Vector2 from '../lib/math/vector2'
-import ExifRestorer from '../lib/exif-restorer'
+import Exif from '../lib/exif'
 import Promise from '../vendor/promise'
 
 /**
@@ -298,7 +298,7 @@ class WebGLRenderer extends Renderer {
 
     let jpegMatch = /^data:image\/jpeg/i
     if (image.src.match(jpegMatch) && data.match(jpegMatch)) {
-      data = ExifRestorer.restore(image.src, data)
+      data = Exif.restore(image.src, data)
     }
 
     return new Promise((resolve, reject) => {

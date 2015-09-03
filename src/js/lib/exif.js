@@ -15,7 +15,7 @@ import Base64 from './base64'
 
 const DATA_JPEG_PREFIX = 'data:image/jpeg;base64,'
 
-export default class ExifRestorer {
+export default class Exif {
   static restore (originalData, newData) {
     // Only for jpeg
     if (!originalData.match(DATA_JPEG_PREFIX)) {

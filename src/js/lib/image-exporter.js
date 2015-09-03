@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 import { RenderType, ImageFormat } from '../constants'
-import ExifRestorer from './exif-restorer'
+import Exif from './exif'
 import Utils from './utils'
 import Promise from '../vendor/promise'
 
@@ -76,7 +76,7 @@ class ImageExporter {
         // the exif information
         let jpegMatch = /^data:image\/jpeg/i
         if (image.src.match(jpegMatch) && result.match(jpegMatch)) {
-          result = ExifRestorer.restore(image.src, result)
+          result = Exif.restore(image.src, result)
         }
       }
 
