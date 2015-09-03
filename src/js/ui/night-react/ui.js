@@ -47,14 +47,14 @@ export default class NightReactUI extends BaseUI {
    * @private
    */
   _registerWebFonts () {
-    const normalFontPath = this._helpers.assetPath('fonts/montserrat-regular.woff', true)
+    const regularFontPath = this._helpers.assetPath('fonts/montserrat-regular.woff', true)
     const lightFontPath = this._helpers.assetPath('fonts/montserrat-light.woff', true)
 
     const css = `
       // Injected by PhotoEditorSDK
       @font-face {
         font-family: "__pesdk_Montserrat";
-        src: url('${normalFontPath}') format('woff');
+        src: url('${regularFontPath}') format('woff');
         font-weight: normal;
         font-style: normal;
       }
