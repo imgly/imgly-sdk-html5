@@ -1,3 +1,4 @@
+/** @jsx ReactBEM.createElement **/
 /*
  * Photo Editor SDK - photoeditorsdk.com
  * Copyright (c) 2013-2015 9elements GmbH
@@ -8,10 +9,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { React, BEM, Classnames } from '../globals'
+import { React, ReactBEM } from '../globals'
 import SplashScreen from './screens/splash/splash-screen'
-
-const block = BEM.block('editor')
 
 class EditorComponent extends React.Component {
   constructor (...args) {
@@ -42,15 +41,12 @@ class EditorComponent extends React.Component {
   render () {
     const Screen = this._currentScreenClass
 
-    const row = block.element('row')
-    const cell = block.element('cell')
-
-    return (<div className={block.str}>
-      <div className={Classnames(row.str, row.modifier('header').str)}>
-        <div className={Classnames(cell.str, cell.modifier('header').str)}></div>
+    return ReactBEM.transform(<div bem='$b:editor'>
+      <div bem='e:row m:header'>
+        <div bem='e:cell m:header'></div>
       </div>
-      <div className={Classnames(row.str, row.modifier('screen').str)}>
-        <div className={Classnames(cell.str, cell.modifier('screen').str)}>
+      <div bem='e:row m:screen'>
+        <div bem='e:cell m:screen'>
           <Screen {...this._props} />
         </div>
       </div>

@@ -1,3 +1,4 @@
+/** @jsx ReactBEM.createElement **/
 /*
  * Photo Editor SDK - photoeditorsdk.com
  * Copyright (c) 2013-2015 9elements GmbH
@@ -8,9 +9,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { React, BEM, Classnames, BaseChildComponent } from '../../../globals'
+import { BaseChildComponent, ReactBEM } from '../../../globals'
 import ButtonComponent from '../../button-component'
-const block = BEM.block('splashScreen')
 
 export default class UploadComponent extends BaseChildComponent {
   constructor () {
@@ -22,40 +22,24 @@ export default class UploadComponent extends BaseChildComponent {
 
   }
 
-  render () {
-    const rowElement = block.element('row')
-    const cellElement = block.element('cell')
-    const rowClassName = Classnames(
-      rowElement.str,
-      rowElement.modifier('withContent').str,
-      rowElement.modifier('upload').str
-    )
-    const cellModifier = cellElement.modifier('upload')
-    const cellClassName = Classnames(
-      cellElement.str,
-      cellModifier.str
-    )
-
-    const imageClassName = cellElement.element('image').str
-    const descriptionClassName = cellElement.element('description').str
-    const buttonClassName = cellElement.element('button').str
-    const orClassName = cellModifier.element('or').str
-
-    return (<div className={rowClassName}>
-      <div className={cellClassName}>
-        <div className={orClassName}>{this._t('splash.or')}</div>
-        <img
-          className={imageClassName}
-          src={this._getAssetPath('splash/add-photo@2x.png', true)} />
-        <ButtonComponent
-          className={buttonClassName}
-          onClick={this._onClick}>
-            {this._t('splash.upload.button')}
-        </ButtonComponent>
-        <div className={descriptionClassName}>
-          {this._t('splash.upload.description')}
+  renderWithBEM () {
+    return (<bem specifier='b:splashScreen'>
+      <div bem='e:row m:withContent m:upload'>
+        <div bem='$e:cell m:upload'>
+          <bem specifier='m:upload'>
+            <div bem='e:or'>{this._t('splash.or')}</div>
+          </bem>
+          <img bem='e:image'
+            src={this._getAssetPath('splash/add-photo@2x.png', true)} />
+          <ButtonComponent bem='e:button'
+            onClick={this._onClick}>
+              {this._t('splash.upload.button')}
+          </ButtonComponent>
+          <div bem='e:description'>
+            {this._t('splash.upload.description')}
+          </div>
         </div>
       </div>
-    </div>)
+    </bem>)
   }
 }

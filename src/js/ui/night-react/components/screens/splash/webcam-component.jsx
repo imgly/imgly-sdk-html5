@@ -1,3 +1,4 @@
+/** @jsx ReactBEM.createElement **/
 /*
  * Photo Editor SDK - photoeditorsdk.com
  * Copyright (c) 2013-2015 9elements GmbH
@@ -8,43 +9,25 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { React, BEM, Classnames, BaseChildComponent } from '../../../globals'
+import { ReactBEM, BaseChildComponent } from '../../../globals'
 import ButtonComponent from '../../button-component'
-const block = BEM.block('splashScreen')
 
 export default class WebcamComponent extends BaseChildComponent {
-  render () {
-    const rowElement = block.element('row')
-    const cellElement = block.element('cell')
-    const rowClassName = Classnames(
-      rowElement.str,
-      rowElement.modifier('withContent').str,
-      rowElement.modifier('webcam').str
-    )
-    const cellModifier = cellElement.modifier('webcam')
-    const cellClassName = Classnames(
-      cellElement.str,
-      cellModifier.str
-    )
-
-    const imageClassName = cellElement.element('image').str
-    const descriptionClassName = cellElement.element('description').str
-    const buttonClassName = cellElement.element('button').str
-
-    return (<div className={rowClassName}>
-      <div className={cellClassName}>
-        <img
-          className={imageClassName}
-          src={this._getAssetPath('splash/shutter@2x.png', true)} />
-        <ButtonComponent
-          className={buttonClassName}
-          onClick={this._onClick}>
-          {this._t('splash.webcam.button')}
-        </ButtonComponent>
-        <div className={descriptionClassName}>
-          {this._t('splash.webcam.description')}
+  renderWithBEM () {
+    return (<bem specifier='b:splashScreen'>
+      <div bem='e:row m:withContent m:webcam'>
+        <div bem='$e:cell m:webcam'>
+          <img bem='e:image'
+            src={this._getAssetPath('splash/shutter@2x.png', true)} />
+          <ButtonComponent bem='e:button'
+            onClick={this._onClick}>
+              {this._t('splash.webcam.button')}
+          </ButtonComponent>
+          <div bem='e:description'>
+            {this._t('splash.webcam.description')}
+          </div>
         </div>
       </div>
-    </div>)
+    </bem>)
   }
 }

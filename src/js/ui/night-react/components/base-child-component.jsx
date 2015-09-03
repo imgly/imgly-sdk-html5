@@ -9,6 +9,7 @@
  */
 
 import React from 'react'
+import ReactBEM from '../lib/react-bem'
 
 export default class BaseChildComponent extends React.Component {
   /**
@@ -43,6 +44,14 @@ export default class BaseChildComponent extends React.Component {
    */
   _getAssetPath (...args) {
     return this.context.ui.helpers.assetPath(...args)
+  }
+
+  renderWithBEM () {
+
+  }
+
+  render () {
+    return ReactBEM.transform(this.renderWithBEM())
   }
 }
 

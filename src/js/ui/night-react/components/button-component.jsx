@@ -1,3 +1,4 @@
+/** @jsx ReactBEM.createElement **/
 /*
  * Photo Editor SDK - photoeditorsdk.com
  * Copyright (c) 2013-2015 9elements GmbH
@@ -8,19 +9,15 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { React, BEM, Classnames, BaseChildComponent } from '../globals'
-const block = BEM.block('button')
+import { React, ReactBEM, BaseChildComponent } from '../globals'
 
 export default class ButtonComponent extends BaseChildComponent {
-  constructor () {
-    super()
-  }
-
-  render () {
-    const className = Classnames(block.str, this.props.className)
-    return (<button className={className} onClick={this.props.onClick}>
-      {this.props.children}
-    </button>)
+  renderWithBEM () {
+    return (
+      <button bem='b:button' className={this.props.className} onClick={this.props.onClick}>
+        {this.props.children}
+      </button>
+    )
   }
 }
 
