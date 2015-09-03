@@ -10,6 +10,7 @@
  */
 
 import { React, ReactBEM } from '../globals'
+import HeaderComponent from './header-component'
 import SplashScreenComponent from './screens/splash/splash-screen-component'
 import WebcamScreenComponent from './screens/webcam/webcam-screen-component'
 
@@ -66,9 +67,7 @@ class EditorComponent extends React.Component {
     const Screen = this.state.screen
 
     return ReactBEM.transform(<div bem='$b:editor'>
-      <div bem='e:row m:header'>
-        <div bem='e:cell m:header'></div>
-      </div>
+      <HeaderComponent />
       <div bem='e:row m:screen'>
         <div bem='e:cell m:screen'>
           <Screen editor={this} {...this._props} />
