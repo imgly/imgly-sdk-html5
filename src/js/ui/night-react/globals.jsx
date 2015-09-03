@@ -10,9 +10,10 @@
 
 import React from 'react'
 import BEM from './lib/bem'
+import ReactBEM from './lib/react-bem'
 import Classnames from 'classnames'
 import BaseChildComponent from './components/base-child-component'
 
-export default {
-  React, BEM, Classnames, BaseChildComponent
+export {
+  React, BEM, Classnames, BaseChildComponent, ReactBEM
 }
