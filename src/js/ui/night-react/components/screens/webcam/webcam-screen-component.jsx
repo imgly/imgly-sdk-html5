@@ -12,11 +12,20 @@ import { ReactBEM } from '../../../globals'
 import ScreenComponent from '../screen-component'
 import SubHeaderComponent from '../../sub-header-component'
 import CanvasContainerComponent from '../../canvas-container-component'
+import WebcamComponent from './webcam-component'
 
 export default class WebcamScreenComponent extends ScreenComponent {
   constructor () {
     super()
-    this._bindAll('_onCancel')
+    this._bindAll('_onCancel', '_onWebcamReady')
+  }
+
+  /**
+   * Gets called when the webcam is ready
+   * @private
+   */
+  _onWebcamReady () {
+
   }
 
   /**
@@ -38,7 +47,9 @@ export default class WebcamScreenComponent extends ScreenComponent {
         cancelButton={true}
         onCancel={this._onCancel} />
 
-      <CanvasContainerComponent></CanvasContainerComponent>
+      <CanvasContainerComponent>
+        <WebcamComponent onReady={this._onWebcamReady} />
+      </CanvasContainerComponent>
 
       <div bem='$b:controls e:row'>
         <div bem='e:cell'>
