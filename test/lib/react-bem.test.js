@@ -29,7 +29,7 @@ const render = (content) => {
   return React.renderToStaticMarkup(componentFactory(content))
 }
 
-describe.only('ReactBEM', () => {
+describe('ReactBEM', () => {
   describe('<div bem="b:editor">', () => {
     it('should render a div with a proper class name', () => {
       const content = (<div bem='b:editor'></div>)
@@ -51,6 +51,14 @@ describe.only('ReactBEM', () => {
       const content = (<div bem='b:editor e:row m:upload'></div>)
       const html = render(content)
       html.should.equal('<div class="pesdk-night-editor pesdk-night-editor__row pesdk-night-editor__row--upload"></div>')
+    })
+  })
+
+  describe('<div bem="b:editor"> with a className property', () => {
+    it('should render the className as well', () => {
+      const content = (<div bem='b:editor' className='is-active'></div>)
+      const html = render(content)
+      html.should.equal('<div class="is-active pesdk-night-editor"></div>')
     })
   })
 
