@@ -171,5 +171,33 @@ describe('ReactBEM', () => {
         })
       })
     })
+
+    describe('<div specifier="$b:editor"> with a child that has another block with another child that has an element', () => {
+      it('should render the first child with a block class and the second one with the first block class', () => {
+        const content = (
+          <div bem='b:screen $b:webcamScreen'>
+            <div bem='b:controls'>
+              <div bem='e:shutterButton'></div>
+            </div>
+          </div>
+        )
+        const html = render(content)
+        html.should.equal('<div class="pesdk-night-screen pesdk-night-webcamScreen"><div class="pesdk-night-controls"><div class="pesdk-night-webcamScreen__shutterButton"></div></div></div>')
+      })
+    })
+  })
+
+  describe('bugs', () => {
+    describe('with undefined children', () => {
+      it('should succeed', () => {
+        const content = (
+          <div bem='b:screen'>
+            {undefined}
+          </div>
+        )
+        const html = render(content)
+        html.should.equal('<div class="pesdk-night-screen"></div>')
+      })
+    })
   })
 })
