@@ -47,6 +47,11 @@ export default class UploadComponent extends BaseChildComponent {
     e.preventDefault()
   }
 
+  /**
+   * Gets called when the cell emits a `dragLeave` event
+   * @param  {Event} e
+   * @private
+   */
   _onDragLeave (e) {
     e.preventDefault()
 
@@ -56,6 +61,11 @@ export default class UploadComponent extends BaseChildComponent {
     }
   }
 
+  /**
+   * Gets called when the cell emits a `drop` Event
+   * @param  {Event} e
+   * @private
+   */
   _onDrop (e) {
     e.stopPropagation()
     e.preventDefault()
@@ -111,6 +121,10 @@ export default class UploadComponent extends BaseChildComponent {
     this._handleFile(file)
   }
 
+  /**
+   * Renders this component
+   * @return {ReactBEM.Element}
+   */
   renderWithBEM () {
     const cellProps = {
       onDragEnter: this._onDragEnter,

@@ -34,10 +34,16 @@
     +modifier(header)
       height: 30px
 
+    +modifier(subHeader)
+      height: 50px
+
   +element(cell)
     display: table-cell
 
     +modifier(screen)
       @include border-radius(5px)
       position: relative
+      background: $secondaryBackgroundColor
+
+    +modifier(subHeader)
       background: $secondaryBackgroundColor

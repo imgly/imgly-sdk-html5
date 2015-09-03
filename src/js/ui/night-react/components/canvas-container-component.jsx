@@ -11,22 +11,20 @@
 
 import { React, ReactBEM, BaseChildComponent } from '../globals'
 
-export default class ButtonComponent extends BaseChildComponent {
+export default class CanvasContainerComponent extends BaseChildComponent {
   /**
    * Renders this component
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
-    return (
-      <button bem='b:button' className={this.props.className} onClick={this.props.onClick}>
+    return (<div bem='$b:canvasContainer e:row'>
+      <div bem='e:cell'>
         {this.props.children}
-      </button>
-    )
+      </div>
+    </div>)
   }
 }
 
-ButtonComponent.propTypes = {
-  onClick: React.PropTypes.func,
-  children: React.PropTypes.any.isRequired,
-  className: React.PropTypes.string
+CanvasContainerComponent.propTypes = {
+  children: React.PropTypes.any
 }

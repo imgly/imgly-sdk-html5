@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 import { ReactBEM } from '../../../globals'
-import ScreenComponent from './screen-component'
+import ScreenComponent from '../screen-component'
 import SplashScreenUploadComponent from './upload-component'
 import SplashScreenWebcamComponent from './webcam-component'
 
@@ -37,6 +37,10 @@ export default class SplashScreenComponent extends ScreenComponent {
     this.props.editor.setImage(image)
   }
 
+  /**
+   * Renders this component
+   * @return {ReactBEM.Element}
+   */
   renderWithBEM () {
     return (<div bem='b:screen b:splashScreen'>
       <SplashScreenWebcamComponent onClick={this._onWebcamClick} />
