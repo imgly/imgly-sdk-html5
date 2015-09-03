@@ -26,7 +26,7 @@ describe("RenderImage", function () {
       var buffer = fs.readFileSync(imagePath);
       image.src = buffer;
 
-      kit = new ImglyKit({ image: image, ui: { enabled: false } });
+      kit = new ImglyKit.Renderer('canvas', { image: image, ui: { enabled: false } });
     });
 
     describe("validations", function () {

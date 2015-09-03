@@ -10,7 +10,7 @@
  */
 
 var ImglyKit = require("../");
-var kit = new ImglyKit({ image: null, ui: { enabled: false } });
+var kit = new ImglyKit.Renderer('canvas', { image: null, ui: { enabled: false } });
 var testOperation = ImglyKit.Operation.extend({
   availableOptions: {
     vec: { type: "vector2", default: new ImglyKit.Vector2(100, 200) },
