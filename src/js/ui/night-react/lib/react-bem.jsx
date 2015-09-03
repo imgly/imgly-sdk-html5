@@ -53,6 +53,11 @@ export default {
   _getBemInfoForNode (node) {
     const isBemNode = node.type === 'bem'
     const specifier = isBemNode ? node.props.specifier : node.props.bem
+
+    if (isBemNode && !specifier) {
+      throw new Error('<bem> elements should always have a `specifier` property')
+    }
+
     const data = this._parseBemSpecifier(specifier)
 
     // <bem> nodes pass all bem information to the children
@@ -102,12 +107,20 @@ export default {
         }
         classNames.push(ownBemObject.str)
       } else if (obj.type === 'element') {
+        if (!ownBemObject) {
+          throw new Error('Tried to create an element, but no parent block has been found.')
+        }
+
         ownBemObject = ownBemObject.element(obj.name)
         if (obj.pass) {
           childrenBemObject = childrenBemObject.element(obj.name)
         }
         classNames.push(ownBemObject.str)
       } else if (obj.type === 'modifier') {
+        if (!ownBemObject) {
+          throw new Error('Tried to create a modifier, but no parent block has been found.')
+        }
+
         if (obj.pass) {
           childrenBemObject = childrenBemObject.modifier(obj.name)
         }
@@ -115,8 +128,11 @@ export default {
       }
     })
 
-    // Apply classname
-    node.props.className = Classnames(classNames)
+    // Apply classname (if necessary)
+    const className = Classnames(classNames)
+    if (className) {
+      node.props.className = className
+    }
 
     // Pass `childrenBemObject` to child nodes
     node.children.forEach((child) => {
@@ -129,6 +145,19 @@ export default {
       return this._applyBEMClasses(child)
     })
 
+    // There are cases where node.children is a nested array ([ [ el, el ] ])
+    // (e.g. when using a <bem> node with multiple children). This flattens
+    // the array.
+    if (node.children.length > 0 && node.children[0] instanceof Array) {
+      node.children = node.children.reduce((a, b) => {
+        return a.concat(b)
+      })
+    }
+
+    // Remove unnecessary props
+    delete node.props.__bemObject
+    delete node.props.bem
+
     if (bemInfo.isBemNode) {
       if (node.children instanceof Array && node.children.length === 1) {
         node = node.children[0]
@@ -136,9 +165,6 @@ export default {
         node = node.children
       }
     }
-
-    delete node.props.__bemObject
-    delete node.props.bem
 
     return node
   },
@@ -166,6 +192,13 @@ export default {
    */
   transform (root) {
     root = this._applyBEMClasses(root)
+
+    // Root node should be a single node, not an array. Returning the array
+    // here will cause React to throw an error saying that this is a no-go
+    if (root instanceof Array) {
+      return root
+    }
+
     root = this._transformToReact(root)
     return root
   }
