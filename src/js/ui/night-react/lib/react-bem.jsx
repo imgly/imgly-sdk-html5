@@ -80,6 +80,10 @@ export default {
    */
   createElement (type, props, ...children) {
     props = props || {}
+    children = children
+      .filter((child) =>
+        child !== null && typeof child !== 'undefined'
+      )
     return { type, props, children }
   },
 
