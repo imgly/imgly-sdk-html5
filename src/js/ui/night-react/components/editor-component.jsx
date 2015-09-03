@@ -22,10 +22,17 @@ class EditorComponent extends React.Component {
     this._currentScreenClass = this._screens.splash
   }
 
+  /**
+   * Switches to the webcam screen
+   */
   switchToWebcamScreen () {
 
   }
 
+  /**
+   * Gets called when an image is ready for editing
+   * @param {Image} image
+   */
   setImage (image) {
 
   }
