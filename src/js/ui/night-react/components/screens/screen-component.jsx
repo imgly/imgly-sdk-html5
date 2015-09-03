@@ -8,7 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { React, BaseChildComponent } from '../../../globals'
+import { React, BaseChildComponent } from '../../globals'
 
 export default class ScreenComponent extends BaseChildComponent {
 

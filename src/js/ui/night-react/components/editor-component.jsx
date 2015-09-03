@@ -10,23 +10,32 @@
  */
 
 import { React, ReactBEM } from '../globals'
-import SplashScreen from './screens/splash/splash-screen-component'
+import SplashScreenComponent from './screens/splash/splash-screen-component'
+import WebcamScreenComponent from './screens/webcam/webcam-screen-component'
 
 class EditorComponent extends React.Component {
   constructor (...args) {
     super(...args)
 
     this._screens = {
-      splash: SplashScreen
+      splash: SplashScreenComponent,
+      webcam: WebcamScreenComponent
     }
-    this._currentScreenClass = this._screens.splash
+    this.state = { screen: this._screens.splash }
   }
 
   /**
    * Switches to the webcam screen
    */
   switchToWebcamScreen () {
+    this.setState({ screen: this._screens.webcam })
+  }
 
+  /**
+   * Switches to the splash screen
+   */
+  switchToSplashScreen () {
+    this.setState({ screen: this._screens.splash })
   }
 
   /**
@@ -54,7 +63,7 @@ class EditorComponent extends React.Component {
    * @return {React.Component}
    */
   render () {
-    const Screen = this._currentScreenClass
+    const Screen = this.state.screen
 
     return ReactBEM.transform(<div bem='$b:editor'>
       <div bem='e:row m:header'>

@@ -19,6 +19,9 @@
     "export": "Export",
     "zoom": "Zoom"
   },
+  "webcam": {
+    "headline": "Take a photo!"
+  },
   "splash": {
     "upload": {
       "button": "Upload a picture",
@@ -33,7 +36,8 @@
   "generic": {
     "loading": "Loading",
     "exporting": "Exporting",
-    "color": "Color"
+    "color": "Color",
+    "cancel": "Cancel"
   },
   "controls": {
     "frames": {
