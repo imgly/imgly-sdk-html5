@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent } from '../../../globals'
+import { ReactBEM, React, BaseChildComponent } from '../../../globals'
 import ButtonComponent from '../../button-component'
 
 export default class WebcamComponent extends BaseChildComponent {
@@ -20,7 +20,7 @@ export default class WebcamComponent extends BaseChildComponent {
           <img bem='e:image'
             src={this._getAssetPath('splash/shutter@2x.png', true)} />
           <ButtonComponent bem='e:button'
-            onClick={this._onClick}>
+            onClick={this.props.onClick}>
               {this._t('splash.webcam.button')}
           </ButtonComponent>
           <div bem='e:description'>
@@ -30,4 +30,8 @@ export default class WebcamComponent extends BaseChildComponent {
       </div>
     </bem>)
   }
+}
+
+WebcamComponent.propTypes = {
+  onClick: React.PropTypes.func.isRequired
 }
