@@ -31,7 +31,7 @@ describe("ImglyKit", function () {
 
       it("should throw an error", function () {
         var throwable = function () {
-          new ImglyKit();
+          new ImglyKit.Renderer('canvas');
         };
         throwable.should.throw();
       });
@@ -42,7 +42,7 @@ describe("ImglyKit", function () {
 
       it("should throw an error", function () {
         var throwable = function () {
-          new ImglyKit({ ui: { enabled: false } });
+          new ImglyKit.Renderer('canvas', { ui: { enabled: false } });
         };
         throwable.should.throw();
       });
@@ -54,7 +54,7 @@ describe("ImglyKit", function () {
       describe("when `options.ui.enabled` is set to false", function () {
 
         it("should not initialize the UI", function () {
-          kit = new ImglyKit({ image: null, ui: { enabled: false } });
+          kit = new ImglyKit.Renderer('canvas', { image: null, ui: { enabled: false } });
           should.not.exist(kit.ui);
         });
 
@@ -72,7 +72,7 @@ describe("ImglyKit", function () {
       var buffer = fs.readFileSync(imagePath);
       image.src = buffer;
 
-      kit = new ImglyKit({ image: image, ui: { enabled: false } });
+      kit = new ImglyKit.Renderer('canvas', { image: image, ui: { enabled: false } });
     });
 
     describe("validations", function () {

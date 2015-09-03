@@ -24,7 +24,7 @@ beforeEach(function () {
   var buffer = fs.readFileSync(imagePath);
   image.src = buffer;
 
-  kit = new ImglyKit({ image: image, assetsUrl: "src/assets", ui: { enabled: false } });
+  kit = new ImglyKit.Renderer('canvas', { image: image, assetsUrl: "src/assets", ui: { enabled: false } });
 });
 
 describe("StickersOperation", function () {

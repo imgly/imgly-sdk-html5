@@ -15,7 +15,7 @@ var fs = require("fs");
 var canvas = require("canvas");
 var ImglyKit = require("../..");
 var FiltersOperation = ImglyKit.Operations.Filters;
-var dummyFiltersOperation = new FiltersOperation(new ImglyKit({ image: null, ui: { enabled: false } }));
+var dummyFiltersOperation = new FiltersOperation(new ImglyKit.Renderer('canvas', { image: null, ui: { enabled: false } }));
 var kit, image, filtersOperation;
 
 beforeEach(function () {
@@ -24,7 +24,7 @@ beforeEach(function () {
   var buffer = fs.readFileSync(imagePath);
   image.src = buffer;
 
-  kit = new ImglyKit({ image: image, ui: { enabled: false } });
+  kit = new ImglyKit.Renderer('canvas', { image: image, ui: { enabled: false } });
   filtersOperation = dummyFiltersOperation;
   filtersOperation.kit = kit;
   kit.operationsStack.push(filtersOperation);
