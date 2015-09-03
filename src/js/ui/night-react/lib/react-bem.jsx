@@ -27,6 +27,8 @@ export default {
    * @private
    */
   _parseBemSpecifier (specifier) {
+    if (!specifier) return []
+
     const parts = specifier.split(' ')
     let data = parts.map((part) => {
       const match = part.match(/^(\$)?([bem])\:(.*)$/i)
@@ -68,10 +70,11 @@ export default {
    *
    * @param  {String} type
    * @param  {Object} props
-   * @param  {Array.<Object>} ...children
+   * @param  {Array.<Object>} [...children]
    * @return {Object}
    */
   createElement (type, props, ...children) {
+    props = props || {}
     return { type, props, children }
   },
 
