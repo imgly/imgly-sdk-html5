@@ -46,10 +46,19 @@ export default class BaseChildComponent extends React.Component {
     return this.context.ui.helpers.assetPath(...args)
   }
 
+  /**
+   * Method we are using for rendering
+   * @return {ReactBEM.element}
+   */
   renderWithBEM () {
 
   }
 
+  /**
+   * Transforms the ReactBEM.element returned by `renderWithBEM` into
+   * React.Element objects with proper class names
+   * @return {React.Element}
+   */
   render () {
     return ReactBEM.transform(this.renderWithBEM())
   }
