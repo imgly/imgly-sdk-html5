@@ -10,7 +10,7 @@
  */
 
 import { React, ReactBEM } from '../globals'
-import SplashScreen from './screens/splash/splash-screen'
+import SplashScreen from './screens/splash/splash-screen-component'
 
 class EditorComponent extends React.Component {
   constructor (...args) {
@@ -20,6 +20,14 @@ class EditorComponent extends React.Component {
       splash: SplashScreen
     }
     this._currentScreenClass = this._screens.splash
+  }
+
+  switchToWebcamScreen () {
+
+  }
+
+  setImage (image) {
+
   }
 
   /**
@@ -47,7 +55,7 @@ class EditorComponent extends React.Component {
       </div>
       <div bem='e:row m:screen'>
         <div bem='e:cell m:screen'>
-          <Screen {...this._props} />
+          <Screen editor={this} {...this._props} />
         </div>
       </div>
     </div>)
