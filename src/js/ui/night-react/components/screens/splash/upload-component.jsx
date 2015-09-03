@@ -27,6 +27,7 @@ export default class UploadComponent extends BaseChildComponent {
       <div bem='e:row m:withContent m:upload'>
         <div bem='$e:cell m:upload'>
           <bem specifier='m:upload'>
+            <input type='file' bem='e:hiddenFileInput' ref='fileInput' />
             <div bem='e:or'>{this._t('splash.or')}</div>
           </bem>
           <img bem='e:image'

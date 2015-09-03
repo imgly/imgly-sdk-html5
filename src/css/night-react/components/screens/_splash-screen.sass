@@ -43,6 +43,14 @@
         position: relative
         border: 1px dashed $lightGreyColor
 
+        +element(hiddenFileInput)
+          position: absolute
+          top: 0
+          left: 0
+          visibility: hidden
+          width: 0
+          height: 0
+
         +element(or)
           @include font-light
           position: absolute
