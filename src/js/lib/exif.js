@@ -1,3 +1,8 @@
+/*!
+ * Based on https://github.com/exif-js/exif-js by Jacob Seidelin
+ * Licensed under MIT
+ */
+
 /*
  * Photo Editor SDK - photoeditorsdk.com
  * Copyright (c) 2013-2015 9elements GmbH
@@ -6,11 +11,6 @@
  * http://creativecommons.org/licenses/by-nc/3.0/
  *
  * For commercial use, please contact us at contact@9elements.com
- */
-
-/**
- * Based on https://github.com/exif-js/exif-js by Jacob Seidelin
- * Licensed under MIT
  */
 
 import Base64 from './base64'
