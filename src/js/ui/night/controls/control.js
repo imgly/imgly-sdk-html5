@@ -28,6 +28,7 @@ class Control extends EventEmitter {
 
     this._template = __DOTJS_TEMPLATE('../../../templates/night/generics/control.jst')
     this._active = false
+    this._historyItem = null
 
     this.init()
   }
@@ -50,6 +51,22 @@ class Control extends EventEmitter {
   }
 
   /**
+   * Resets the control to display the current values
+   */
+  update () {
+    this._renderAllControls()
+    this._onEnter()
+  }
+
+  /**
+   * Updates the control to represent the initial values
+   * @private
+   */
+  _setInitialValues () {
+
+  }
+
+  /**
    * Renders the controls
    * @private
    */
@@ -57,6 +74,9 @@ class Control extends EventEmitter {
     this._renderControls()
     this._renderCanvasControls()
     this._initScrollbar()
+
+    this._handleBackAndDoneButtons()
+    this._enableCanvasControls()
   }
 
   /**
@@ -181,9 +201,8 @@ class Control extends EventEmitter {
     this._ui.hideZoom()
 
     this._renderAllControls()
-    this._handleBackAndDoneButtons()
-    this._enableCanvasControls()
     this._onEnter()
+    this._setInitialValues()
   }
 
   /**

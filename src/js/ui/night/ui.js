@@ -541,10 +541,13 @@ class NightUI extends UI {
    * @param {Operation} operation
    * @param {Object.<String, *>} options
    * @param {Boolean} existent
+   * @returns {Object} The history item
    */
   addHistory (operation, options, existent) {
-    this._history.push({ operation, options, existent })
+    const historyItem = { operation, options, existent }
+    this._history.push(historyItem)
     this._topControls.updateUndoButton()
+    return historyItem
   }
 
   /**
@@ -577,6 +580,11 @@ class NightUI extends UI {
       this.canvas.zoomToFit(true)
     }
     this._topControls.updateUndoButton()
+
+    // Make sure the current control represents the new value
+    if (this._currentControl) {
+      this._currentControl.update()
+    }
   }
 
   /**
