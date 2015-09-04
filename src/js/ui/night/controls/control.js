@@ -204,7 +204,9 @@ class Control extends EventEmitter {
   enter () {
     this._active = true
 
-    this._ui.hideZoom()
+    if (typeof this._canvasControlsTemplate !== 'undefined') {
+      this._ui.hideZoom()
+    }
 
     this._renderAllControls()
     this._onEnter()
