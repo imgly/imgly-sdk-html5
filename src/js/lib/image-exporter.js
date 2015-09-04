@@ -11,7 +11,7 @@
 import { RenderType, ImageFormat } from '../constants'
 import Utils from './utils'
 import Promise from '../vendor/promise'
-import ExifParser from './exif-parser'
+import Exif from './exif'
 
 /**
  * @class
@@ -75,9 +75,9 @@ class ImageExporter {
 
         // When image's `src` attribute is a jpeg data url, we can restore
         // the exif information
-        if (ExifParser.isJPEG(image.src) && ExifParser.isJPEG(result)) {
-          const { exifParser } = kit
-          result = exifParser.restoreExifTags(result)
+        if (Exif.isJPEG(image.src) && Exif.isJPEG(result)) {
+          const { exif } = kit
+          result = exif.restoreExifTags(result)
         }
       }
 

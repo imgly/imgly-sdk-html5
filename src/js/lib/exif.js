@@ -56,7 +56,7 @@ const JPEG_REGEX = new RegExp(`^${DATA_JPEG_PREFIX}`, 'i')
 
 import ArrayStream from './array-stream'
 
-export default class ExifParser {
+export default class Exif {
   constructor (buf) {
     this._buf = buf
     this._stream = new ArrayStream(this._buf)
@@ -115,15 +115,15 @@ export default class ExifParser {
   }
 
   /**
-   * Creates a new instance of ExifParser from the given base64-encoded
+   * Creates a new instance of Exif from the given base64-encoded
    * string
    * @param  {String} base64String
-   * @return {ExifParser}
+   * @return {Exif}
    */
   static fromBase64String (base64String) {
     const raw = base64String.replace(DATA_JPEG_PREFIX, '')
     const data = Base64.decode(raw)
-    return new ExifParser(data)
+    return new Exif(data)
   }
 
   /**

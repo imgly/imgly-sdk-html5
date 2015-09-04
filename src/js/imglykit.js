@@ -15,7 +15,7 @@ import ImageExporter from './lib/image-exporter'
 import VersionChecker from './lib/version-checker'
 import { RenderType, ImageFormat } from './constants'
 import Utils from './lib/utils'
-import ExifParser from './lib/exif-parser'
+import Exif from './lib/exif'
 import RotationOperation from './operations/rotation-operation'
 import FlipOperation from './operations/flip-operation'
 
@@ -152,14 +152,14 @@ class ImglyKit {
    * @private
    */
   _parseExif (image) {
-    if (ExifParser.isJPEG(image.src)) {
-      this._exifParser = null
+    if (Exif.isJPEG(image.src)) {
+      this._exif = null
       try {
-        this._exifParser = ExifParser.fromBase64String(image.src)
+        this._exif = Exif.fromBase64String(image.src)
       } catch(e) {}
-      if (!this._exifParser) return
+      if (!this._exif) return
 
-      let exifTags = this._exifParser.getTags()
+      let exifTags = this._exif.getTags()
 
       if (exifTags && exifTags.Orientation) {
         if (exifTags.Orientation !== 1 && exifTags.Orientation !== 2) {
@@ -189,7 +189,7 @@ class ImglyKit {
           this.operationsStack.push(flipOperation)
         }
 
-        this._exifParser.setOrientation(1)
+        this._exif.setOrientation(1)
       }
     }
   }
@@ -319,7 +319,7 @@ class ImglyKit {
     }
   }
 
-  get exifParser () { return this._exifParser }
+  get exif () { return this._exif }
 
   get registeredOperations () {
     return this._registeredOperations
