@@ -71,7 +71,9 @@ export default class WebcamComponent extends BaseChildComponent {
    */
   componentWillUnmount () {
     const video = React.findDOMNode(this.refs.video)
-    this._stream.stop()
+    const track = this._stream.getTracks()[0]
+    track && track.stop()
+    this._stream.stop && this._stream.stop()
     video.pause()
   }
 
