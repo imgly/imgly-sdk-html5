@@ -199,5 +199,49 @@ describe('ReactBEM', () => {
         html.should.equal('<div class="pesdk-night-screen"></div>')
       })
     })
+
+    describe('when rendering a component and passing a single child', () => {
+      it('should succeed', () => {
+        class MyComponent extends React.Component {
+          render () {
+            return ReactBEM.transform(
+              <div>
+                {this.props.children}
+              </div>
+            )
+          }
+        }
+
+        const content = (
+          <MyComponent>
+            <span></span>
+          </MyComponent>
+        )
+        const html = render(content)
+        html.should.equal('<div><span></span></div>')
+      })
+    })
+
+    describe('when rendering a component with a bem element and passing a single child', () => {
+      it('should not pass the element', () => {
+        class MyComponent extends React.Component {
+          render () {
+            return ReactBEM.transform(
+              <div bem='$b:foo'>
+                {this.props.children}
+              </div>
+            )
+          }
+        }
+
+        const content = (
+          <MyComponent>
+            <span></span>
+          </MyComponent>
+        )
+        const html = render(content)
+        html.should.equal('<div class="pesdk-night-foo"><span></span></div>')
+      })
+    })
   })
 })

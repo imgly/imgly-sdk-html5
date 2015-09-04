@@ -88,6 +88,16 @@ export default {
   },
 
   /**
+   * Checks whether we can apply a bem class to the given node
+   * @param  {?}  node
+   * @return {Boolean}
+   * @private
+   */
+  _isNodeBEMable (node) {
+    return typeof node !== 'string' && !React.isValidElement(node)
+  },
+
+  /**
    * Sets the BEM class for the given node. Iterates through its
    * children and sets their BEM class as well
    * @param  {Object} node
@@ -95,7 +105,7 @@ export default {
    * @private
    */
   _applyBEMClasses (node) {
-    if (typeof node === 'string') return node
+    if (!this._isNodeBEMable(node)) return node
 
     let classNames = node.props.className ? [node.props.className] : []
 
@@ -140,7 +150,7 @@ export default {
 
     // Pass `childrenBemObject` to child nodes
     node.children.forEach((child) => {
-      if (typeof child === 'string') return
+      if (!this._isNodeBEMable(child)) return
       child.props.__bemObject = childrenBemObject
     })
 
@@ -180,7 +190,7 @@ export default {
    * @return {React.Element}
    */
   _transformToReact (node) {
-    if (typeof node === 'string') return node
+    if (!this._isNodeBEMable(node)) return node
 
     node.children = node.children.map((child) => {
       return this._transformToReact(child)
@@ -202,7 +212,6 @@ export default {
     if (root instanceof Array) {
       return root
     }
-
     root = this._transformToReact(root)
     return root
   }
