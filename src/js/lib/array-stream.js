@@ -59,40 +59,40 @@ export default class ArrayStream {
     }
   }
 
-  writeInt16 (int) {
-    this._buf[this._head] = int >> 8 // upper
-    this._buf[this._head + 1] = int & 0xff // lower
+  writeInt16 (num) {
+    this._buf[this._head] = num >> 8 // upper
+    this._buf[this._head + 1] = num & 0xff // lower
   }
 
   readInt8 () {
-    const int = this.peekInt8()
+    const num = this.peekInt8()
     this._head += 1
-    return int
+    return num
   }
 
   readInt16 (littleEndian = false) {
-    const int = this.peekInt16(littleEndian)
+    const num = this.peekInt16(littleEndian)
     this._head += 2
-    return int
+    return num
   }
 
   readInt24 (littleEndian = false) {
-    const int = this.peekInt24(littleEndian)
+    const num = this.peekInt24(littleEndian)
     this._head += 3
-    return int
+    return num
   }
 
   readInt32 (littleEndian = false) {
-    const int = this.peekInt32(littleEndian)
+    const num = this.peekInt32(littleEndian)
     this._head += 4
-    return int
+    return num
   }
 
   readString (length) {
     let str = ''
     for (let i = 0; i < length; i++) {
-      const char = this.readInt8()
-      str += String.fromCharCode(char)
+      const character = this.readInt8()
+      str += String.fromCharCode(character)
     }
     return str
   }
