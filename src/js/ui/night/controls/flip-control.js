@@ -24,6 +24,7 @@ class FlipControl extends Control {
    * Gets called when this control is activated
    */
   _onEnter () {
+    this._historyItem = null
     this._operationExistedBefore = !!this._ui.operations.flip
     this._operation = this._ui.getOrCreateOperation('flip')
 
@@ -57,16 +58,28 @@ class FlipControl extends Control {
     let { direction } = item.dataset
     let active = false
 
+    let currentHorizontal = this._operation.getHorizontal()
+    let currentVertical = this._operation.getVertical()
+
     if (direction === 'horizontal') {
-      let currentHorizontal = this._operation.getHorizontal()
       this._operation.setHorizontal(!currentHorizontal)
+      currentHorizontal = !currentHorizontal
       this._ui.canvas.render()
       active = !currentHorizontal
     } else if (direction === 'vertical') {
-      let currentVertical = this._operation.getVertical()
       this._operation.setVertical(!currentVertical)
+      currentVertical = !currentVertical
       this._ui.canvas.render()
       active = !currentVertical
+    }
+
+    if ((this._initialVertical !== currentVertical ||
+      this._initialHorizontal !== currentHorizontal) &&
+      !this._historyItem) {
+      this._historyItem = this._ui.addHistory(this._operation, {
+        vertical: this._initialVertical,
+        horizontal: this._initialHorizontal
+      }, this._operationExistedBefore)
     }
 
     this._toggleItem(item, active)
@@ -94,13 +107,6 @@ class FlipControl extends Control {
   _onBack () {
     let currentVertical = this._operation.getVertical()
     let currentHorizontal = this._operation.getHorizontal()
-
-    if (this._initialVertical !== currentVertical || this._initialHorizontal !== currentHorizontal) {
-      this._ui.addHistory(this._operation, {
-        vertical: this._initialVertical,
-        horizontal: this._initialHorizontal
-      }, this._operationExistedBefore)
-    }
 
     if (!currentVertical && !currentHorizontal) {
       this._ui.removeOperation('flip')

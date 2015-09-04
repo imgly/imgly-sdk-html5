@@ -28,15 +28,16 @@ class RotationControl extends Control {
    * Gets called when this control is activated
    */
   _onEnter () {
+    this._historyItem = null
+
     this._operationExistedBefore = !!this._ui.operations.rotation
     this._operation = this._ui.getOrCreateOperation('rotation')
-
     this._cropOperation = this._ui.operations.crop
 
     this._initialZoomLevel = this._ui.canvas.zoomLevel
     this._ui.canvas.zoomToFit(false)
 
-    if (this._cropOperation) {
+    if (this._cropOperation && !this._initialStart && !this._initialEnd) {
       // Store initial settings for 'back' and 'done' buttons
       this._initialStart = this._cropOperation.getStart().clone()
       this._initialEnd = this._cropOperation.getEnd().clone()
@@ -98,6 +99,13 @@ class RotationControl extends Control {
     degrees = parseInt(degrees, 10)
 
     let currentDegrees = this._operation.getDegrees()
+
+    if (!this._historyItem) {
+      this._historyItem = this._ui.addHistory(this._operation, {
+        degrees: this._initialDegrees
+      }, this._operationExistedBefore)
+    }
+
     this._operation.setDegrees(currentDegrees + degrees)
     this._ui.canvas.zoomToFit()
       .then(() => {
@@ -153,12 +161,6 @@ class RotationControl extends Control {
    */
   _onBack () {
     let currentDegrees = this._operation.getDegrees()
-    if (this._initialDegrees !== currentDegrees) {
-      this._ui.addHistory(this._operation, {
-        degrees: this._initialDegrees
-      }, this._operationExistedBefore)
-    }
-
     if (currentDegrees === 0) {
       this._ui.removeOperation('rotation')
     }

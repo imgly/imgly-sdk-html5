@@ -27,6 +27,7 @@ class ContrastControl extends Control {
    * @override
    */
   _onEnter () {
+    this._historyItem = null
     this._operationExistedBefore = !!this._ui.operations.contrast
     this._operation = this._ui.getOrCreateOperation('contrast')
 
@@ -51,12 +52,6 @@ class ContrastControl extends Control {
   _onBack () {
     let currentContrast = this._operation.getContrast()
 
-    if (this._initialContrast !== currentContrast) {
-      this._ui.addHistory(this._operation, {
-        contrast: this._initialContrast
-      }, this._operationExistedBefore)
-    }
-
     if (currentContrast === 1.0) {
       this._ui.removeOperation('contrast')
     }
@@ -71,6 +66,13 @@ class ContrastControl extends Control {
   _onUpdate (value) {
     this._operation.setContrast(value)
     this._ui.canvas.render()
+
+    let currentContrast = this._operation.getContrast()
+    if (this._initialContrast !== currentContrast && !this._historyItem) {
+      this._historyItem = this._ui.addHistory(this._operation, {
+        contrast: this._initialContrast
+      }, this._operationExistedBefore)
+    }
   }
 }
 
