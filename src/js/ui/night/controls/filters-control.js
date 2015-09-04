@@ -39,8 +39,6 @@ class FiltersControl extends Control {
     this._operationExistedBefore = !!this._ui.operations.filters
     this._operation = this._ui.getOrCreateOperation('filters')
 
-    console.log(this._operation)
-
     super._renderAllControls(...args)
   }
 
