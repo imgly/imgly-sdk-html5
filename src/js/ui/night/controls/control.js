@@ -226,10 +226,12 @@ class Control extends EventEmitter {
   }
 
   _enableCanvasControls () {
+    if (typeof this._canvasControlsTemplate === 'undefined') { return }
     this._canvasControlsContainer.classList.remove('imglykit-canvas-controls-disabled')
   }
 
   _disableCanvasControls () {
+    if (typeof this._canvasControlsTemplate === 'undefined') { return }
     this._canvasControlsContainer.classList.add('imglykit-canvas-controls-disabled')
   }
 
