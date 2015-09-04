@@ -307,7 +307,11 @@ class TiltShiftControl extends Control {
     let dist = gradientPosition.clone()
       .subtract(position)
     let degrees = Math.atan2(dist.x, dist.y) * (180 / Math.PI)
-    this._rect.style.transform = `rotate(${(-degrees).toFixed(2)}deg)`
+    const transform = `rotate(${(-degrees).toFixed(2)}deg)`
+    this._rect.style.transform = transform
+    this._rect.style['-moz-transform'] = transform
+    this._rect.style['-ms-transform'] = transform
+    this._rect.style['-webkit-transform'] = transform
   }
 
   /**
