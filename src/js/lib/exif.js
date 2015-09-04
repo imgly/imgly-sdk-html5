@@ -140,7 +140,7 @@ export default class Exif {
 
     const header = this._exifStream.readString(4)
     if (header !== 'Exif') {
-      throw new Error('No Exif header found')
+      return
     }
 
     // Skip 2 bytes
@@ -282,7 +282,7 @@ export default class Exif {
    */
   _getExifBuffer () {
     const segments = this._segments
-    for (let i = 0; segments.length; i++) {
+    for (let i = 0; i < segments.length; i++) {
       const [offset, end] = segments[i]
       this._stream.setHead(offset)
       const marker = this._stream.peekInt16()
