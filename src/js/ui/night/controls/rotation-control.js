@@ -34,10 +34,10 @@ class RotationControl extends Control {
     this._operation = this._ui.getOrCreateOperation('rotation')
     this._cropOperation = this._ui.operations.crop
 
-    this._initialZoomLevel = this._ui.canvas.zoomLevel
-    this._ui.canvas.zoomToFit(false)
-
     if (this._cropOperation && !this._initialStart && !this._initialEnd) {
+      this._initialZoomLevel = this._ui.canvas.zoomLevel
+      this._ui.canvas.zoomToFit(false)
+
       // Store initial settings for 'back' and 'done' buttons
       this._initialStart = this._cropOperation.getStart().clone()
       this._initialEnd = this._cropOperation.getEnd().clone()
