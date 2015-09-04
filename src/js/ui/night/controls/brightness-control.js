@@ -37,15 +37,13 @@ class BrightnessControl extends Control {
     const brightness = this._operation.getBrightness()
     this._initialBrightness = brightness
 
-    if (!this._slider) {
-      const sliderElement = this._controls.querySelector('.imglykit-slider')
-      this._slider = new Slider(sliderElement, {
-        minValue: -1,
-        maxValue: 1,
-        defaultValue: brightness
-      })
-      this._slider.on('update', this._onUpdate)
-    }
+    const sliderElement = this._controls.querySelector('.imglykit-slider')
+    this._slider = new Slider(sliderElement, {
+      minValue: -1,
+      maxValue: 1,
+      defaultValue: brightness
+    })
+    this._slider.on('update', this._onUpdate)
     this._slider.setValue(brightness)
   }
 
