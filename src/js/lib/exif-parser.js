@@ -61,6 +61,48 @@ export default class ExifParser {
     this._buf = buf
     this._stream = new ArrayStream(this._buf)
     this._stream.setHead(0)
+
+    this._segments = this._sliceIntoSegments(this._buf)
+    this._exifBuffer = this._getExifBuffer()
+    this._exifStream = new ArrayStream(this._exifBuffer)
+    this._parseExif()
+  }
+
+  getTags () { return this._tags }
+  getTagData () { return this._tagData }
+
+  /**
+   * Restores the exif tags into the given data url
+   * @return {String} base64String
+   */
+  restoreExifTags (base64String) {
+    // First, make the given string a data array
+    const raw = base64String.replace(DATA_JPEG_PREFIX, '')
+    const data = Base64.decode(raw)
+
+    const segments = this._sliceIntoSegments(data)
+    const [ segmentStart, segmentEnd ] = segments[1]
+    const dataBefore = data.slice(0, segmentStart)
+    const dataAfter = data.slice(segmentStart)
+
+    let newData = dataBefore.concat(this._exifBuffer)
+    newData = newData.concat(dataAfter)
+
+    // Make it a base64 string again
+    return DATA_JPEG_PREFIX + Base64.encode(newData)
+  }
+
+  /**
+   * Overwrites the orientation with the given 16 bit integer
+   * @param {Number} orientation
+   */
+  setOrientation (orientation) {
+    if (this._tagData.Orientation) {
+      const { entryOffset } = this._tagData.Orientation
+      // Replace value in buffer
+      this._exifStream.setHead(entryOffset + 8)
+      this._exifStream.writeInt16(orientation)
+    }
   }
 
   /**
@@ -85,39 +127,30 @@ export default class ExifParser {
   }
 
   /**
-   * Parses the exif data
-   * @return {Object}
-   */
-  parse () {
-    this._segments = this._sliceIntoSegments()
-    this._setHeadToExifSegment()
-
-    // Skip marker
-    this._stream.readInt16()
-    // Skip length
-    this._stream.readInt16()
-
-    const header = this._stream.readString(4)
-    if (header !== 'Exif') {
-      throw new Error('No Exif header found')
-    }
-    return this._parseExif()
-  }
-
-  /**
    * Parses the exif tags
    * @return {Object}
    * @private
    */
   _parseExif () {
-    // Skip 2 bytes
-    this._stream.readInt16()
+    this._exifStream.setHead(0)
+    // Skip marker
+    this._exifStream.readInt16()
+    // Skip length
+    this._exifStream.readInt16()
 
-    const tiffOffset = this._stream.getHead()
+    const header = this._exifStream.readString(4)
+    if (header !== 'Exif') {
+      throw new Error('No Exif header found')
+    }
+
+    // Skip 2 bytes
+    this._exifStream.readInt16()
+
+    const tiffOffset = this._exifStream.getHead()
 
     // Find endian type
     let bigEndian = false
-    const endian = this._stream.readInt16()
+    const endian = this._exifStream.readInt16()
     if (endian === 0x4949) {
       bigEndian = false
     } else if (endian === 0x4d4d) {
@@ -126,96 +159,101 @@ export default class ExifParser {
       throw new Error('Invalid TIFF data: No endian type found')
     }
 
-    if (this._stream.readInt16(!bigEndian) !== 0x002A) {
+    if (this._exifStream.readInt16(!bigEndian) !== 0x002A) {
       throw new Error('Invalid TIFF data: No 0x002A')
     }
 
-    const firstIFDOffset = this._stream.readInt32(!bigEndian)
+    const firstIFDOffset = this._exifStream.readInt32(!bigEndian)
     if (firstIFDOffset < 8) {
       throw new Error('Invalid TIFF data: First IFD offset < 8')
     }
 
     const ifdOffset = tiffOffset + firstIFDOffset
-    const tags = this._readTags(tiffOffset, ifdOffset, bigEndian)
-    return tags
+    const tags = this._readTags(this._exifStream, tiffOffset, ifdOffset, bigEndian)
+    this._tags = tags.tags
+    this._tagData = tags.tagData
   }
 
   /**
    * Reads the TIFF tags from the stream
+   * @param  {ArrayBuffer} stream
    * @param  {Number} tiffStart The position where tiff data starts
    * @param  {Number} ifdStart  The position where the IFD starts
    * @param  {Boolean} bigEndian
    * @return {Object}
    * @private
    */
-  _readTags (tiffStart, ifdStart, bigEndian) {
-    this._stream.setHead(ifdStart)
-    const entriesCount = this._stream.readInt16(!bigEndian)
+  _readTags (stream, tiffStart, ifdStart, bigEndian) {
+    stream.setHead(ifdStart)
+    const entriesCount = stream.readInt16(!bigEndian)
     let tags = {}
+    let tagData = []
 
     for (let i = 0; i < entriesCount; i++) {
       const entryOffset = ifdStart + i*12 + 2
-      this._stream.setHead(entryOffset)
-      let tag = this._stream.readInt16(!bigEndian)
-
+      stream.setHead(entryOffset)
+      let tag = stream.readInt16(!bigEndian)
+      let type
+      let numValues
+      let valueOffset
       if (EXIF_TAGS[tag]) {
         tag = EXIF_TAGS[tag]
-        const type = this._stream.readInt16(!bigEndian)
-        const numValues = this._stream.readInt32(!bigEndian)
-        const valueOffset = this._stream.readInt32(!bigEndian) + tiffStart
+        type = stream.readInt16(!bigEndian)
+        numValues = stream.readInt32(!bigEndian)
+        valueOffset = stream.readInt32(!bigEndian) + tiffStart
         let value = null
 
         switch (type) {
           case 1: // byte, 8-bit unsigned int
           case 7: // undefined, 8-bit byte, value depending on field
             if (numValues === 1) {
-              value = this._stream.readInt8(!bigEndian)
+              value = stream.readInt8(!bigEndian)
             } else {
               value = []
               for (let i = 0; i < numValues; i++) {
-                value.push(this._stream.readInt8(!bigEndian))
+                value.push(stream.readInt8(!bigEndian))
               }
             }
             break
           case 2: // 8-bit ascii char
-            this._stream.setHead(numValues > 4 ? valueOffset : (entryOffset + 8))
-            value = this._stream.readString(numValues)
+            stream.setHead(numValues > 4 ? valueOffset : (entryOffset + 8))
+            value = stream.readString(numValues)
             break
           case 3: // short
-            this._stream.setHead(numValues > 2 ? valueOffset : (entryOffset + 8))
+            stream.setHead(numValues > 2 ? valueOffset : (entryOffset + 8))
             if (numValues === 1) {
-              value = this._stream.readInt16(!bigEndian)
+              value = stream.readInt16(!bigEndian)
             } else {
               value = []
               for (let i = 0; i < numValues; i++) {
-                value.push(this._stream.readInt16(!bigEndian))
+                value.push(stream.readInt16(!bigEndian))
               }
             }
             break
           case 4: // long
           case 9: // slong
-            this._stream.setHead(numValues > 1 ? valueOffset : (entryOffset + 8))
+            stream.setHead(numValues > 1 ? valueOffset : (entryOffset + 8))
             if (numValues === 1) {
-              value = this._stream.readInt32(!bigEndian)
+              value = stream.readInt32(!bigEndian)
             } else {
               value = []
               for (let i = 0; i < numValues; i++) {
-                value.push(this._stream.readInt32(!bigEndian))
+                value.push(stream.readInt32(!bigEndian))
               }
             }
             break
           case 5: // rational (two long values, first numerator, second denominator)
           case 10: // rational (two slongs)
-            this._stream.setHead(valueOffset)
+            stream.setHead(valueOffset)
             if (numValues === 1) {
-              const numerator = this._stream.readInt32(!bigEndian)
-              const denominator = this._stream.readInt32(!bigEndian)
+              const numerator = stream.readInt32(!bigEndian)
+              const denominator = stream.readInt32(!bigEndian)
               value = numerator / denominator
             } else {
               value = []
               for (let i = 0; i < numValues; i++) {
-                const numerator = this._stream.readInt32(!bigEndian)
-                const denominator = this._stream.readInt32(!bigEndian)
+                const numerator = stream.readInt32(!bigEndian)
+                const denominator = stream.readInt32(!bigEndian)
                 const val = numerator / denominator
                 value.push(val)
               }
@@ -224,49 +262,56 @@ export default class ExifParser {
         }
 
         tags[tag] = value
+        tagData[tag] = {
+          value,
+          numValues,
+          entryOffset,
+          valueOffset,
+          type
+        }
       }
     }
 
-    return tags
+    return { tags, tagData }
   }
 
   /**
-   * Gets the exif segment
+   * Returns a new buffer containing the Exif segment
    * @return {Array}
    * @private
    */
-  _setHeadToExifSegment () {
+  _getExifBuffer () {
     const segments = this._segments
     for (let i = 0; segments.length; i++) {
       const [offset, end] = segments[i]
       this._stream.setHead(offset)
       const marker = this._stream.peekInt16()
       if (marker === 0xffe1) {
-        return
+        return this._buf.slice(offset, end)
       }
     }
-
     return false
   }
-
   /**
    * Slices the array into segments
+   * @param  {Array.<Number>} buf
    * @return {Array}
    * @private
    */
-  _sliceIntoSegments () {
+  _sliceIntoSegments (buf) {
+    let stream = new ArrayStream(buf)
     let segments = []
-    while (this._stream.getHead() < this._buf.length) {
-      const marker = this._stream.readInt16()
+    while (stream.getHead() < buf.length) {
+      const marker = stream.readInt16()
       if (marker === 0xffd8) { continue } // SOI
       if (marker === 0xffda) { break } // SOS Marker
 
       if (marker >= 0xff00 && marker <= 0xffff) {
         // Marker (FF-XX-HL-LL)
-        const length = this._stream.readInt16()
-        const end = this._stream.getHead() + length - 2
-        segments.push([this._stream.getHead() - 4, end])
-        this._stream.setHead(end)
+        const length = stream.readInt16()
+        const end = stream.getHead() + length - 2
+        segments.push([stream.getHead() - 4, end])
+        stream.setHead(end)
       } else {
         throw new Error('Invalid marker: 0x' + marker.toString(16))
       }

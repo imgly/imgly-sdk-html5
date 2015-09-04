@@ -59,6 +59,11 @@ export default class ArrayStream {
     }
   }
 
+  writeInt16 (int) {
+    this._buf[this._head] = int >> 8 // upper
+    this._buf[this._head + 1] = int & 0xff // lower
+  }
+
   readInt8 () {
     const int = this.peekInt8()
     this._head += 1

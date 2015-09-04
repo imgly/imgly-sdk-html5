@@ -15,6 +15,9 @@ import ImageExporter from './lib/image-exporter'
 import VersionChecker from './lib/version-checker'
 import { RenderType, ImageFormat } from './constants'
 import Utils from './lib/utils'
+import ExifParser from './lib/exif-parser'
+import RotationOperation from './operations/rotation-operation'
+import FlipOperation from './operations/flip-operation'
 
 /**
  * @class
@@ -130,8 +133,65 @@ class ImglyKit {
     return renderImage.render()
       .then(() => {
         var canvas = renderImage.getRenderer().getCanvas()
-        return ImageExporter.export(this._options.image, canvas, renderType, imageFormat, quality)
+        return ImageExporter.export(this, this._options.image, canvas, renderType, imageFormat, quality)
       })
+  }
+
+  /**
+   * Sets the image and parses the exif data
+   * @param {Image} image
+   */
+  setImage (image) {
+    this._options.image = image
+    this._parseExif(image)
+  }
+
+  /**
+   * Parses the exif data and fixes the orientation if necessary
+   * @param {Image} image
+   * @private
+   */
+  _parseExif (image) {
+    if (ExifParser.isJPEG(image.src)) {
+      this._exifParser = null
+      try {
+        this._exifParser = ExifParser.fromBase64String(image.src)
+      } catch(e) {}
+      if (!this._exifParser) return
+
+      let exifTags = this._exifParser.getTags()
+
+      if (exifTags && exifTags.Orientation) {
+        if (exifTags.Orientation !== 1 && exifTags.Orientation !== 2) {
+          // We need to rotate
+          let degrees = 0
+          switch (exifTags.Orientation) {
+            case 7:
+            case 8:
+              degrees = -90
+              break
+            case 3:
+            case 4:
+              degrees = -180
+              break
+            case 5:
+            case 6:
+              degrees = 90
+              break
+          }
+
+          const rotationOperation = new RotationOperation(this, { degrees: degrees })
+          this.operationsStack.push(rotationOperation)
+        }
+
+        if ([2, 4, 5, 7].indexOf(exifTags.Orientation) !== -1) {
+          const flipOperation = new FlipOperation(this, { horizontal: true })
+          this.operationsStack.push(flipOperation)
+        }
+
+        this._exifParser.setOrientation(1)
+      }
+    }
   }
 
   /**
@@ -258,6 +318,8 @@ class ImglyKit {
       this.ui.run()
     }
   }
+
+  get exifParser () { return this._exifParser }
 
   get registeredOperations () {
     return this._registeredOperations

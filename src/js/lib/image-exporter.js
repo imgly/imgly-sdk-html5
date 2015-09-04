@@ -9,9 +9,9 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 import { RenderType, ImageFormat } from '../constants'
-import Exif from './exif'
 import Utils from './utils'
 import Promise from '../vendor/promise'
+import ExifParser from './exif-parser'
 
 /**
  * @class
@@ -53,6 +53,7 @@ class ImageExporter {
 
   /**
    * Exports the image from the given canvas with the given options
+   * @param  {ImglyKit} kit
    * @param  {Image} image
    * @param  {Canvas} canvas
    * @param  {ImglyKit.RenderType} renderType
@@ -60,7 +61,7 @@ class ImageExporter {
    * @param  {Number} quality = 0.8
    * @return {Promise}
    */
-  static export (image, canvas, renderType, imageFormat, quality=0.8) {
+  static export (kit, image, canvas, renderType, imageFormat, quality=0.8) {
     return new Promise((resolve, reject) => {
       let result
       if (renderType === RenderType.IMAGE ||
@@ -74,9 +75,9 @@ class ImageExporter {
 
         // When image's `src` attribute is a jpeg data url, we can restore
         // the exif information
-        let jpegMatch = /^data:image\/jpeg/i
-        if (image.src.match(jpegMatch) && result.match(jpegMatch)) {
-          result = Exif.restore(image.src, result)
+        if (ExifParser.isJPEG(image.src) && ExifParser.isJPEG(result)) {
+          const { exifParser } = kit
+          result = exifParser.restoreExifTags(result)
         }
       }
 
