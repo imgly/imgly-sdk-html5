@@ -91,7 +91,8 @@ class Control extends EventEmitter {
     // Render the template
     let html = this._template(this._context)
 
-    if (typeof this._controls !== 'undefined' && this._controls.parentNode !== null) {
+    if (typeof this._controls !== 'undefined' &&
+        this._controls.parentNode !== null) {
       this._controls.parentNode.removeChild(this._controls)
     }
 
@@ -114,6 +115,11 @@ class Control extends EventEmitter {
 
     // Render the template
     let html = this._canvasControlsTemplate(this._context)
+
+    if (typeof this._canvasControls !== 'undefined' &&
+        this._canvasControls.parentNode !== null) {
+      this._canvasControls.parentNode.removeChild(this._canvasControls)
+    }
 
     // Create a wrapper
     this._canvasControls = document.createElement('div')
