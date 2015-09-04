@@ -39,6 +39,8 @@ class FiltersControl extends Control {
     this._operationExistedBefore = !!this._ui.operations.filters
     this._operation = this._ui.getOrCreateOperation('filters')
 
+    console.log(this._operation)
+
     super._renderAllControls(...args)
   }
 
@@ -47,6 +49,7 @@ class FiltersControl extends Control {
    * @override
    */
   _onEnter () {
+    this._historyItem = null
     this._initialFilter = this._operation.getFilter()
     this._defaultFilter = this._operation.availableOptions.filter.default
 
@@ -68,11 +71,6 @@ class FiltersControl extends Control {
    */
   _onBack () {
     let currentFilter = this._operation.getFilter()
-    if (currentFilter !== this._initialFilter) {
-      this._ui.addHistory(this._operation, {
-        filter: this._initialFilter
-      }, this._operationExistedBefore)
-    }
     if (currentFilter === this._defaultFilter) {
       this._ui.removeOperation('filters')
     }
@@ -91,6 +89,13 @@ class FiltersControl extends Control {
     this._ui.canvas.render()
 
     item.classList.add('imglykit-controls-item-active')
+
+    let currentFilter = this._operation.getFilter()
+    if (currentFilter !== this._initialFilter && !this._historyItem) {
+      this._historyItem = this._ui.addHistory(this._operation, {
+        filter: this._initialFilter
+      }, this._operationExistedBefore)
+    }
   }
 
   /**
@@ -163,6 +168,7 @@ class FiltersControl extends Control {
       let identifier = selectedFilters[i]
       this._filters[identifier] = this._availableFilters[identifier]
     }
+
 
     if (this._active) {
       this._renderControls()
