@@ -27,8 +27,7 @@ class SaturationControl extends Control {
    * @override
    */
   _onEnter () {
-    super._onEnter()
-
+    this._historyItem = null
     this._operationExistedBefore = !!this._ui.operations.saturation
     this._operation = this._ui.getOrCreateOperation('saturation')
 
@@ -53,12 +52,6 @@ class SaturationControl extends Control {
   _onBack () {
     let currentSaturation = this._operation.getSaturation()
 
-    if (this._initialSaturation !== currentSaturation) {
-      this._ui.addHistory(this._operation, {
-        saturation: this._initialSaturation
-      }, this._operationExistedBefore)
-    }
-
     if (currentSaturation === 1) {
       this._ui.removeOperation('saturation')
     }
@@ -73,6 +66,13 @@ class SaturationControl extends Control {
   _onUpdate (value) {
     this._operation.setSaturation(value)
     this._ui.canvas.render()
+
+    let currentSaturation = this._operation.getSaturation()
+    if (this._initialSaturation !== currentSaturation && !this._historyItem) {
+      this._historyItem = this._ui.addHistory(this._operation, {
+        saturation: this._initialSaturation
+      }, this._operationExistedBefore)
+    }
   }
 }
 
