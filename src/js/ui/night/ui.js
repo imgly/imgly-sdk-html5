@@ -79,6 +79,7 @@ class NightUI extends UI {
    * Prepares the UI for use
    */
   run () {
+    this._fixOperationsStack()
     this._registerControls()
     this._registerLanguages()
 
@@ -133,6 +134,25 @@ class NightUI extends UI {
       const availableLanguages = Object.keys(this._languages).join(', ')
       throw new Error(`Unknown language '${this._options.ui.language}'. Available languages are: ${availableLanguages}`)
     }
+  }
+
+  /**
+   * The SDK automatically adds Rotation and Flip operations for images
+   * that have the wrong rotation (in the Exif tags). Since we have a specific
+   * operation order for this UI, we need to place them correctly
+   * @private
+   */
+  _fixOperationsStack () {
+    const { operationsStack } = this._kit
+    const newStack = []
+    for (let i = 0; i < operationsStack.length; i++) {
+      const operation = operationsStack[i]
+      const { identifier } = operation
+      const indexInStack = this._preferredOperationOrder.indexOf(identifier)
+      newStack[indexInStack] = operation
+      this._operationsMap[identifier] = operation
+    }
+    this._kit.operationsStack = newStack
   }
 
   /**
