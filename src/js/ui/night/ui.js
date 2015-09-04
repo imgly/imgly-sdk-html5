@@ -311,6 +311,7 @@ class NightUI extends UI {
     } else {
       return this._operationsMap[identifier]
     }
+
   }
 
   /**
@@ -324,7 +325,7 @@ class NightUI extends UI {
     delete this._operationsMap[identifier]
 
     let index = this._kit.operationsStack.indexOf(operation)
-    this._kit.operationsStack.splice(index, 1)
+    this._kit.operationsStack[index] = null
   }
 
   /**
