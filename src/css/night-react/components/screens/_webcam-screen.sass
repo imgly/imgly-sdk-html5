@@ -14,6 +14,7 @@
       display: table-row
 
     +element(cell)
+      position: relative
       display: table-cell
 
     +element(shutterButton)
@@ -23,5 +24,8 @@
       margin: auto
       width: 115px
       height: 53px
-      background: $primaryColor
+      background: grayscale($primaryColor)
       cursor: pointer
+
+      &.is-active
+        background: $primaryColor
