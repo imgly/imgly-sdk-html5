@@ -20,6 +20,8 @@ class BrightnessControl extends Control {
     let controlsTemplate = __DOTJS_TEMPLATE('../../../templates/night/operations/brightness_controls.jst')
     this._controlsTemplate = controlsTemplate
     this._partialTemplates.slider = Slider.template
+
+    this._onUpdate = this._onUpdate.bind(this)
   }
 
   /**
@@ -27,21 +29,24 @@ class BrightnessControl extends Control {
    * @override
    */
   _onEnter () {
+    this._historyItem = null
     this._operationExistedBefore = !!this._ui.operations.brightness
     this._operation = this._ui.getOrCreateOperation('brightness')
 
     // Initially set value
-    let brightness = this._operation.getBrightness()
+    const brightness = this._operation.getBrightness()
     this._initialBrightness = brightness
 
-    let sliderElement = this._controls.querySelector('.imglykit-slider')
-    this._slider = new Slider(sliderElement, {
-      minValue: -1,
-      maxValue: 1,
-      defaultValue: brightness
-    })
-    this._slider.on('update', this._onUpdate.bind(this))
-    this._slider.setValue(this._initialBrightness)
+    if (!this._slider) {
+      const sliderElement = this._controls.querySelector('.imglykit-slider')
+      this._slider = new Slider(sliderElement, {
+        minValue: -1,
+        maxValue: 1,
+        defaultValue: brightness
+      })
+      this._slider.on('update', this._onUpdate)
+    }
+    this._slider.setValue(brightness)
   }
 
   /**
@@ -51,17 +56,12 @@ class BrightnessControl extends Control {
   _onBack () {
     let currentBrightness = this._operation.getBrightness()
 
-    if (this._initialBrightness !== currentBrightness) {
-      this._ui.addHistory(this._operation, {
-        brightness: this._initialBrightness
-      }, this._operationExistedBefore)
-    }
-
     if (currentBrightness === 1.0) {
       this._ui.removeOperation('brightness')
     }
 
     this._ui.canvas.render()
+    this._slider = null
   }
 
   /**
@@ -71,6 +71,12 @@ class BrightnessControl extends Control {
   _onUpdate (value) {
     this._operation.setBrightness(value)
     this._ui.canvas.render()
+
+    if (!this._historyItem) {
+      this._historyItem = this._ui.addHistory(this._operation, {
+        brightness: this._initialBrightness
+      }, this._operationExistedBefore)
+    }
   }
 }
 
