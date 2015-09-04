@@ -8,16 +8,10 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-+block(editor)
-  +block(webcam)
-    position: absolute
-    top: 0
-    left: 0
-    display: block
-    width: 100%
-    height: 100%
-    padding: 25px
-
-    +element(video)
-      display: block
-      margin: auto
+export default {
+  error (e) {
+    if (!console) return
+    console.error('Error: ' + e.message)
+    console.error(e.stack)
+  }
+}

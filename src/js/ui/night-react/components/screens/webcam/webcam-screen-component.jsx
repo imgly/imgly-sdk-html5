@@ -8,16 +8,16 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-import { ReactBEM } from '../../../globals'
+import { Log, ReactBEM } from '../../../globals'
 import ScreenComponent from '../screen-component'
 import SubHeaderComponent from '../../sub-header-component'
-import CanvasContainerComponent from '../../canvas-container-component'
 import WebcamComponent from './webcam-component'
 
 export default class WebcamScreenComponent extends ScreenComponent {
   constructor () {
     super()
-    this._bindAll('_onCancel', '_onWebcamReady')
+    this._bindAll('_onCancel', '_onWebcamReady', '_onShutterClicked')
+    this.state = { webcamReady: false }
   }
 
   /**
@@ -25,7 +25,7 @@ export default class WebcamScreenComponent extends ScreenComponent {
    * @private
    */
   _onWebcamReady () {
-
+    this.setState({ webcamReady: true })
   }
 
   /**
@@ -34,6 +34,21 @@ export default class WebcamScreenComponent extends ScreenComponent {
    */
   _onCancel () {
     this.props.editor.switchToSplashScreen()
+  }
+
+  /**
+   * Gets called when the shutter button has been clicked
+   * @private
+   */
+  _onShutterClicked () {
+    const webcam = this.refs.webcam
+    webcam.makePhoto()
+      .then((image) => {
+        this.props.editor.setImage(image)
+      })
+      .catch((e) => {
+        Log.error(e)
+      })
   }
 
   /**
@@ -47,14 +62,19 @@ export default class WebcamScreenComponent extends ScreenComponent {
         cancelButton={true}
         onCancel={this._onCancel} />
 
-      <CanvasContainerComponent>
-        <WebcamComponent onReady={this._onWebcamReady} />
-      </CanvasContainerComponent>
+      <div bem='$b:canvasContainer e:row'>
+        <div bem='e:cell'>
+          <WebcamComponent ref='webcam' onReady={this._onWebcamReady} />
+        </div>
+      </div>
 
       <div bem='$b:controls e:row'>
         <div bem='e:cell'>
           <bem specifier='b:webcamScreen'>
-            <div bem='e:shutterButton'></div>
+            <div
+              bem='e:shutterButton'
+              onClick={this._onShutterClicked}
+              className={this.state.webcamReady ? 'is-active' : false}></div>
           </bem>
         </div>
       </div>
