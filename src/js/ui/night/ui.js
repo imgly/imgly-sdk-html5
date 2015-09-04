@@ -17,6 +17,7 @@ import WebcamHandler from './lib/webcam-handler'
 import TopControls from './lib/top-controls'
 import Scrollbar from './lib/scrollbar'
 import { RenderType, ImageFormat } from '../../constants'
+import ExifParser from '../../lib/exif-parser'
 
 class NightUI extends UI {
   constructor (...args) {
@@ -136,6 +137,48 @@ class NightUI extends UI {
   }
 
   /**
+   * Reads the exif data from the image. If a rotation is present, it
+   * tells the rotation operation to rotate it accordingly
+   * @private
+   */
+  _handleExifData () {
+    const { image } = this._options
+    if (ExifParser.isJPEG(image.src)) {
+      const parser = ExifParser.fromBase64String(image.src)
+      let exifData = null
+      try {
+        exifData = parser.parse()
+      } catch (e) {}
+
+      if (exifData && exifData.Orientation) {
+        if (exifData.Orientation !== 1 && exifData.Orientation !== 2) {
+          // We need to rotate
+          const rotationOperation = this.getOrCreateOperation('rotation')
+          switch (exifData.Orientation) {
+            case 7:
+            case 8:
+              rotationOperation.setDegrees(-90)
+              break
+            case 3:
+            case 4:
+              rotationOperation.setDegrees(-180)
+              break
+            case 5:
+            case 6:
+              rotationOperation.setDegrees(90)
+              break
+          }
+        }
+
+        if ([2, 4, 5, 7].indexOf(exifData.Orientation) !== -1) {
+          const flipOperation = this.getOrCreateOperation('flip')
+          flipOperation.setHorizontal(true)
+        }
+      }
+    }
+  }
+
+  /**
    * Initializes the webcam
    * @private
    */
@@ -200,6 +243,7 @@ class NightUI extends UI {
    */
   _setImage (image) {
     this._options.image = image
+    this._handleExifData()
     this.run()
   }
 
