@@ -148,6 +148,15 @@ export default {
       node.props.className = className
     }
 
+    // There are cases where node.children is a nested array ([ [ el, el ] ])
+    // (e.g. when using a <bem> node with multiple children). This flattens
+    // the array.
+    if (node.children.length > 0 && node.children[0] instanceof Array) {
+      node.children = node.children.reduce((a, b) => {
+        return a.concat(b)
+      })
+    }
+
     // Pass `childrenBemObject` to child nodes
     node.children.forEach((child) => {
       if (!this._isNodeBEMable(child)) return
@@ -158,15 +167,6 @@ export default {
     node.children = node.children.map((child) => {
       return this._applyBEMClasses(child)
     })
-
-    // There are cases where node.children is a nested array ([ [ el, el ] ])
-    // (e.g. when using a <bem> node with multiple children). This flattens
-    // the array.
-    if (node.children.length > 0 && node.children[0] instanceof Array) {
-      node.children = node.children.reduce((a, b) => {
-        return a.concat(b)
-      })
-    }
 
     // Remove unnecessary props
     delete node.props.__bemObject
