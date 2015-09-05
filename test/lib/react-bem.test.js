@@ -222,6 +222,29 @@ describe('ReactBEM', () => {
       })
     })
 
+    describe.only('when rendering a component and passing multiple children', () => {
+      it('should succeed', () => {
+        class MyComponent extends React.Component {
+          render () {
+            return ReactBEM.transform(
+              <div bem='$b:foo e:bar'>
+                {this.props.children}
+              </div>
+            )
+          }
+        }
+
+        const content = (
+          <MyComponent>
+            <div></div>
+            <div></div>
+          </MyComponent>
+        )
+        const html = render(content)
+        html.should.equal('<div class="pesdk-night-foo pesdk-night-foo__bar"><div></div><div></div></div>')
+      })
+    })
+
     describe('when rendering a component with a bem element and passing a single child', () => {
       it('should not pass the element', () => {
         class MyComponent extends React.Component {
