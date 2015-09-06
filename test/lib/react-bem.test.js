@@ -222,7 +222,7 @@ describe('ReactBEM', () => {
       })
     })
 
-    describe.only('when rendering a component and passing multiple children', () => {
+    describe('when rendering a component and passing multiple children', () => {
       it('should succeed', () => {
         class MyComponent extends React.Component {
           render () {
