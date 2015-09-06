@@ -29,7 +29,7 @@ Visit [our website](https://www.photoeditorsdk.com/documentation/html5/getting-s
 </p>
 
 ## Examples
-See the examples folder for implementation examples or play with the [demo on our website](http://sdk.img.ly/).
+See the examples folder for implementation examples or play with the [demo on our website](https://www.photoeditorsdk.com/).
 
 ## Setting up the development environment
 

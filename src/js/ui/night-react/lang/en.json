@@ -22,6 +22,9 @@
   "webcam": {
     "headline": "Take a photo!"
   },
+  "editor": {
+    "headline": "Edit Photo"
+  },
   "splash": {
     "upload": {
       "button": "Upload a picture",

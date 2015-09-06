@@ -19,6 +19,12 @@
     "export": "Exportieren",
     "zoom": "Zoom"
   },
+  "webcam": {
+    "headline": "Mach ein Foto!"
+  },
+  "editor": {
+    "headline": "Foto bearbeiten"
+  },
   "splash": {
     "upload": {
       "headline": "Bild hochladen",

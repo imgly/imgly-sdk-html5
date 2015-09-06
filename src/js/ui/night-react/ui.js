@@ -8,16 +8,59 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import BaseUI from '../base/ui'
+import Polyglot from 'node-polyglot'
+import EventEmitter from '../../lib/event-emitter'
+import Utils from '../../lib/utils'
+import Helpers from './helpers'
 import React from 'react'
 import EditorComponent from './components/editor-component'
 
-export default class NightReactUI extends BaseUI {
+export default class NightReactUI extends EventEmitter {
   constructor (renderer, options) {
-    super(renderer, options)
+    super()
 
     this._renderer = renderer
-    this._registerWebFonts()
+    this._options = options
+    this._helpers = new Helpers(this._renderer, this._options)
+
+    this._initOptions()
+    this._init()
+  }
+
+  _init () {
+    this._languages = {
+      de: require('./lang/de.json'),
+      en: require('./lang/en.json')
+    }
+
+    this._language = new Polyglot({
+      locale: this._options.language,
+      phrases: this._languages[this._options.language]
+    })
+  }
+
+  /**
+   * Initializes the default options
+   * @return {[type]} [description]
+   */
+  _initOptions () {
+    this._options = Utils.defaults(this._options, {
+      language: 'en',
+      operations: 'all',
+      assets: {},
+      extensions: {}
+    })
+
+    this._options.extensions = Utils.defaults(this._options.extensions || {}, {
+      languages: [],
+      operations: [],
+      controls: []
+    })
+
+    this._options.assets = Utils.defaults(this._options.assets || {}, {
+      baseUrl: '/',
+      resolver: null
+    })
   }
 
   // TODO Remove this later, avoid SDK calling it on resize
@@ -78,7 +121,9 @@ export default class NightReactUI extends BaseUI {
    * Main entry point for the UI
    * @private
    */
-  _attach () {
+  run () {
+    this._registerWebFonts()
+
     // Container has to be position: relative
     this._options.container.style.position = 'relative'
 
@@ -88,4 +133,36 @@ export default class NightReactUI extends BaseUI {
       options={this._options} />,
       this._options.container)
   }
+
+  /**
+   * Returns the translation for `key`
+   * @param  {String} key
+   * @param  {Object} [interpolationOptions]
+   * @return {String}
+   */
+  translate (key, interpolationOptions) {
+    return this._language.t(key, interpolationOptions)
+  }
+
+  /**
+   * Sets the current language to the one with the given key
+   * @param  {string} key
+   */
+  selectLanguage (key) {
+    this._language = new Polyglot({
+      locale: key,
+      phrases: this._languages[key]
+    })
+  }
+
+  /**
+   * Registers a language
+   * @param  {String} identifier
+   * @param  {Object} object
+   */
+  registerLanguage (identifier, object) {
+    this._languages[identifier] = object
+  }
+
+  get helpers () { return this._helpers }
 }

@@ -34,8 +34,6 @@ class BaseUI extends EventEmitter {
 
     this._registerLanguages()
     this.selectLanguage(this._options.language)
-
-    this._attach()
   }
 
   /**
@@ -66,6 +64,10 @@ class BaseUI extends EventEmitter {
    */
   translate (key, interpolationOptions) {
     return this._language.t(key, interpolationOptions)
+  }
+
+  run () {
+    this._attach()
   }
 
   /**

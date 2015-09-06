@@ -17,24 +17,14 @@ export default class SubHeaderComponent extends BaseChildComponent {
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
-    let cancelButton
-    if (this.props.cancelButton) {
-      cancelButton = <div bem='e:cancelButton' onClick={this.props.onCancel}>
-        Cancel
-      </div>
-    }
-
     return (<div bem='$b:subHeader e:row'>
       <div bem='e:cell'>
-        {cancelButton}
-        <div bem='e:label'>{this.props.label}</div>
+        {this.props.children}
       </div>
     </div>)
   }
 }
 
 SubHeaderComponent.propTypes = {
-  label: React.PropTypes.string,
-  cancelButton: React.PropTypes.bool,
-  onCancel: React.PropTypes.func
+  children: React.PropTypes.any
 }

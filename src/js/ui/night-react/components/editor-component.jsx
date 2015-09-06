@@ -13,6 +13,7 @@ import { Promise, React, ReactBEM } from '../globals'
 import HeaderComponent from './header-component'
 import SplashScreenComponent from './screens/splash/splash-screen-component'
 import WebcamScreenComponent from './screens/webcam/webcam-screen-component'
+import EditorScreenComponent from './screens/editor/editor-screen-component'
 
 class EditorComponent extends React.Component {
   constructor (...args) {
@@ -20,7 +21,8 @@ class EditorComponent extends React.Component {
 
     this._screens = {
       splash: SplashScreenComponent,
-      webcam: WebcamScreenComponent
+      webcam: WebcamScreenComponent,
+      editor: EditorScreenComponent
     }
     this.state = { screen: this._screens.splash }
   }
@@ -44,7 +46,7 @@ class EditorComponent extends React.Component {
    * @param {Image} image
    */
   setImage (image) {
-    this.setState({ screen: this._screens.splash })
+    this.setState({ screen: this._screens.editor })
   }
 
   /**
