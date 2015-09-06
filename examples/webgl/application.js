@@ -3,19 +3,42 @@ window.onload = function () {
   var myImage = new Image()
   myImage.addEventListener('load', function () {
     /*
-     * Initialize ImglyKit
+     * Initialize Renderer
      */
 
     var renderer = new ImglyKit.Renderer('webgl', {
-      versionCheck: false
+
     })
 
+    /**
+     * Initialize the UI
+     */
     var editor = new ImglyKit.UI.NightReact(renderer, {
       container: document.querySelector('#container'),
       assets: {
-        baseUrl: '/build/assets'
-      }
+        baseUrl: '/build/assets',
+        resolver: function (path) {
+          return path
+        }
+      },
+      operations: [
+        'crop',
+        'rotation',
+        'flip',
+        'text',
+        'noise'
+      ],
+      additionalOperations: [
+        // NoiseOperation
+      ],
+      additionalControls: [
+        // {
+        //   canvasControls: NoiseCanvasControls,
+        //   controls: NoiseControl
+        // }
+      ]
     })
+    editor.run()
 
     /*
      * We have a 'Render' button which (on click) will request the rendered

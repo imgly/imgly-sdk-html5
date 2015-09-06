@@ -58,9 +58,16 @@ export default class WebcamScreenComponent extends ScreenComponent {
   renderWithBEM () {
     return (<div bem='b:screen $b:webcamScreen'>
       <SubHeaderComponent
-        label={this._t('webcam.headline')}
-        cancelButton={true}
-        onCancel={this._onCancel} />
+        label={this._t('webcam.headline')}>
+        <bem specifier='$b:subHeader'>
+          <div bem='e:cancelButton' onClick={this._onCancel}>
+            {this._t('generic.cancel')}
+          </div>
+          <div bem='e:label'>
+            {this._t('webcam.headline')}
+          </div>
+        </bem>
+      </SubHeaderComponent>
 
       <div bem='$b:canvasContainer e:row'>
         <div bem='e:cell'>
