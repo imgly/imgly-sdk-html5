@@ -12,6 +12,18 @@ import React from 'react'
 import Classnames from 'classnames'
 import BEM from './bem'
 
+function flatten (arr) {
+  let result = []
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] instanceof Array) {
+      result = result.concat(flatten(arr[i]))
+    } else {
+      result.push(arr[i])
+    }
+  }
+  return result
+}
+
 const BEM_TYPES = {
   b: 'block',
   e: 'element',
@@ -148,14 +160,7 @@ export default {
       node.props.className = className
     }
 
-    // There are cases where node.children is a nested array ([ [ el, el ] ])
-    // (e.g. when using a <bem> node with multiple children). This flattens
-    // the array.
-    if (node.children.length > 0 && node.children[0] instanceof Array) {
-      node.children = node.children.reduce((a, b) => {
-        return a.concat(b)
-      })
-    }
+    node.children = flatten(node.children)
 
     // Pass `childrenBemObject` to child nodes
     node.children.forEach((child) => {
@@ -168,9 +173,10 @@ export default {
       return this._applyBEMClasses(child)
     })
 
+    node.children = flatten(node.children)
+
     // Remove unnecessary props
     delete node.props.__bemObject
-    delete node.props.bem
 
     if (bemInfo.isBemNode) {
       if (node.children instanceof Array && node.children.length === 1) {
@@ -212,6 +218,7 @@ export default {
     if (root instanceof Array) {
       return root
     }
+
     root = this._transformToReact(root)
     return root
   }
