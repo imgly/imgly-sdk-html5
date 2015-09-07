@@ -61,7 +61,7 @@ class Glow extends Primitive {
   renderWebGL (renderer) {
     renderer.runShader(null, this._fragmentShader, {
       uniforms: {
-        u_color: { type: '3f', value: this._options.color.toRGBGLColor()}
+        u_color: { type: '3f', value: this._options.color.toRGBGLColor() }
       }
     })
   }
