@@ -1,3 +1,4 @@
+/* global PhotoEditorSDK */
 /*
  * Photo Editor SDK - photoeditorsdk.com
  * Copyright (c) 2013-2015 9elements GmbH
@@ -9,14 +10,12 @@
  */
 
 import Polyglot from 'node-polyglot'
-import EventEmitter from '../../lib/event-emitter'
-import Utils from '../../lib/utils'
 import Helpers from './helpers'
 import React from 'react'
 import EditorComponent from './components/editor-component'
 import OverviewControlsComponent from './components/screens/editor/controls/overview/overview-controls-component'
 
-export default class NightReactUI extends EventEmitter {
+export default class NightReactUI extends PhotoEditorSDK.EventEmitter {
   constructor (renderer, options) {
     super()
 
@@ -37,7 +36,7 @@ export default class NightReactUI extends EventEmitter {
    * @private
    */
   _initOperations () {
-    this._availableOperations = Utils.extend({
+    this._availableOperations = PhotoEditorSDK.Utils.extend({
       brightness: PhotoEditorSDK.Operations.Brightness,
       contrast: PhotoEditorSDK.Operations.Contrast,
       crop: PhotoEditorSDK.Operations.Crop,
@@ -72,7 +71,7 @@ export default class NightReactUI extends EventEmitter {
    */
   _initControls () {
     this._overviewControls = OverviewControlsComponent
-    this._availableControls = Utils.extend({
+    this._availableControls = PhotoEditorSDK.Utils.extend({
 
     }, this._options.additionalControls)
 
@@ -105,20 +104,20 @@ export default class NightReactUI extends EventEmitter {
    * @return {[type]} [description]
    */
   _initOptions () {
-    this._options = Utils.defaults(this._options, {
+    this._options = PhotoEditorSDK.Utils.defaults(this._options, {
       language: 'en',
       operations: 'all',
       assets: {},
       extensions: {}
     })
 
-    this._options.extensions = Utils.defaults(this._options.extensions || {}, {
+    this._options.extensions = PhotoEditorSDK.Utils.defaults(this._options.extensions || {}, {
       languages: [],
       operations: [],
       controls: []
     })
 
-    this._options.assets = Utils.defaults(this._options.assets || {}, {
+    this._options.assets = PhotoEditorSDK.Utils.defaults(this._options.assets || {}, {
       baseUrl: '/',
       resolver: null
     })
@@ -198,3 +197,6 @@ export default class NightReactUI extends EventEmitter {
 
   get helpers () { return this._helpers }
 }
+
+PhotoEditorSDK.UI = PhotoEditorSDK.UI || {}
+PhotoEditorSDK.UI.NightReact = NightReactUI

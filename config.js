@@ -1,5 +1,6 @@
 var path = require('path')
 var WebpackNotifierPlugin = require('webpack-notifier')
+var CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin')
 
 var destination = 'build'
 var source = 'src'
@@ -17,16 +18,16 @@ module.exports = {
   // node-sass / libsass configuration
   sass: {
     src: [
-      source + '/css/imglykit-night-ui.sass',
-      source + '/css/imglykit-night-react-ui.sass'
+      source + '/css/pesdk-night-ui.sass',
+      source + '/css/pesdk-night-react-ui.sass'
     ],
     allSrc: [
       source + '/**/*.sass'
     ],
     dest: destination + '/css',
     destFiles: [
-      destination + '/css/imglykit-night-ui.css',
-      destination + '/css/imglykit-night-react-ui.css'
+      destination + '/css/pesdk-night-ui.css',
+      destination + '/css/pesdk-night-react-ui.css'
     ],
     settings: {
       indentedSyntax: true,
@@ -60,9 +61,9 @@ module.exports = {
     watch: env === 'development',
     context: path.resolve(source + '/js'),
     output: {
-      library: 'ImglyKit',
+      library: 'PhotoEditor[name]',
       libraryTarget: 'umd',
-      filename: '[name].js',
+      filename: 'PhotoEditor-[name].js',
       path: path.resolve(destination + '/js')
     },
     resolve: {
@@ -75,7 +76,8 @@ module.exports = {
       path: 'empty'
     },
     entry: {
-      imglykit: './imglykit'
+      SDK: './sdk/photoeditorsdk',
+      'NightReactUI': './night-react-ui/ui'
     },
     devtool: 'inline-source-map',
     externals: [

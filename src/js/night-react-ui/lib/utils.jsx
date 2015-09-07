@@ -8,7 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Vector2 from '../../../lib/math/vector2'
+const Vector2 = PhotoEditorSDK.Vector2
 
 export default {
   /**

@@ -1,19 +1,18 @@
-/* global ImglyKit, Image */
+/* global PhotoEditorSDK, Image */
 window.onload = function () {
   var myImage = new Image()
   myImage.addEventListener('load', function () {
     /*
      * Initialize Renderer
      */
-
-    var renderer = new ImglyKit.Renderer('webgl', {
+    var renderer = new PhotoEditorSDK.Renderer('webgl', {
 
     })
 
     /**
      * Initialize the UI
      */
-    var editor = new ImglyKit.UI.NightReact(renderer, {
+    var editor = new PhotoEditorSDK.UI.NightReact(renderer, {
       container: document.querySelector('#container'),
       assets: {
         baseUrl: '/build/assets',
@@ -42,7 +41,7 @@ window.onload = function () {
 
     /*
      * We have a 'Render' button which (on click) will request the rendered
-     * image from ImglyKit and add it to the DOM
+     * image from PhotoEditorSDK and add it to the DOM
      */
     var button = document.getElementById('render-button')
     button.addEventListener('click', function (e) {

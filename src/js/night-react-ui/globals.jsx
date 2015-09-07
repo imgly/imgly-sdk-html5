@@ -14,8 +14,9 @@ import ReactBEM from './lib/react-bem'
 import Classnames from 'classnames'
 import BaseChildComponent from './components/base-child-component'
 import Utils from './lib/utils'
-import Promise from '../../vendor/native-promise-only'
-import Log from '../../lib/log'
+
+const Promise = PhotoEditorSDK.Promise
+const Log = PhotoEditorSDK.Log
 
 export {
   Log, Promise, Utils, React, BEM, Classnames, BaseChildComponent, ReactBEM
