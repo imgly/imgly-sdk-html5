@@ -17,5 +17,23 @@
 
     +element(cell)
       display: table-cell
-      line-height: 77px
+      height: 77px
       text-align: center
+
+    +element(button)
+      display: inline-block
+      width: 77px
+      cursor: pointer
+      line-height: 77px
+
+      *
+        line-height: 1
+
+      +element(icon)
+        width: 40px
+        vertical-align: middle
+
+      +element(label)
+        @include font-light
+        font-size: 11px
+        color: white

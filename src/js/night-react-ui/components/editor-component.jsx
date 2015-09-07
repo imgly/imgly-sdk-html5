@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { Promise, React, ReactBEM } from '../globals'
+import { React, ReactBEM } from '../globals'
 import HeaderComponent from './header-component'
 import SplashScreenComponent from './screens/splash/splash-screen-component'
 import WebcamScreenComponent from './screens/webcam/webcam-screen-component'
@@ -24,7 +24,12 @@ class EditorComponent extends React.Component {
       webcam: WebcamScreenComponent,
       editor: EditorScreenComponent
     }
-    this.state = { screen: this._screens.splash }
+
+    let initialScreen = this._screens.splash
+    if (this.props.ui.hasImage()) {
+      initialScreen = this._screens.editor
+    }
+    this.state = { screen: initialScreen }
   }
 
   /**

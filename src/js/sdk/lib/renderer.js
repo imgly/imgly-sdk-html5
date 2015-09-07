@@ -226,6 +226,14 @@ export default class Renderer {
     }
   }
 
+  /**
+   * Checks whether the renderer has an image as input
+   * @return {Boolean}
+   */
+  hasImage () {
+    return !!this._options.image
+  }
+
   get registeredOperations () {
     return this._registeredOperations
   }

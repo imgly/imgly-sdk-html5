@@ -21,10 +21,13 @@ export default class OverviewControlsComponent extends BaseChildComponent {
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
-    const listItems = this.context.ui.getSelectedControls()
+    const ui = this.context.ui
+    const listItems = ui.getSelectedControls()
       .map((control) => {
-        console.log(control)
-        return ''
+        return (<li bem='$e:button m:withLabel m:labelOnHover'>
+          <img bem='e:icon' src={ui.helpers.assetPath(`controls/overview/${control.identifier}@2x.png`, true)} />
+          <div bem='e:label'>{this._t(`controls.overview.${control.identifier}`)}</div>
+        </li>)
       })
 
     return (<div bem='$b:controls e:row'>
