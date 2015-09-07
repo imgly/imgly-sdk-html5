@@ -1,3 +1,4 @@
+/* eslint-disable */
 /*!
  * Native Promise Only
  * v0.8.0-a (c) Kyle Simpson
