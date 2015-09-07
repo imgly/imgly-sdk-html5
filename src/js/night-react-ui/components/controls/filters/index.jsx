@@ -8,9 +8,13 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import OverviewControlsComponent from './overview/overview-controls-component'
+import FiltersControlsComponent from './filters-controls-component'
 
 export default {
   canvasControls: null,
-  controls: OverviewControlsComponent
+  controls: FiltersControlsComponent,
+  icon: 'operations/filters.png',
+  isSelectable: (ui) => {
+    return ui.isOperationSelected('filters')
+  }
 }
