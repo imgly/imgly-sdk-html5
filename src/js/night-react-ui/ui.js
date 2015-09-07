@@ -13,7 +13,7 @@ import Polyglot from 'node-polyglot'
 import Helpers from './helpers'
 import React from 'react'
 import EditorComponent from './components/editor-component'
-import OverviewControlsComponent from './components/screens/editor/controls/overview/overview-controls-component'
+import OverviewControlsComponent from './components/controls/overview/overview-controls-component'
 
 export default class NightReactUI extends PhotoEditorSDK.EventEmitter {
   constructor (renderer, options) {
@@ -30,25 +30,28 @@ export default class NightReactUI extends PhotoEditorSDK.EventEmitter {
   }
 
   getSelectedOperations () { return this._selectedOperations }
+  getSelectedControls () { return this._selectedControls }
+
+  /**
+   * Checks whether the operation with the given identifier is selected
+   * @param  {String}  name
+   * @return {Boolean}
+   */
+  isOperationSelected (name) {
+    return this._selectedOperations.indexOf(name) !== -1
+  }
 
   /**
    * Initializes the available and selected controls
    * @private
    */
   _initOperations () {
-    this._availableOperations = PhotoEditorSDK.Utils.extend({
-      brightness: PhotoEditorSDK.Operations.Brightness,
-      contrast: PhotoEditorSDK.Operations.Contrast,
-      crop: PhotoEditorSDK.Operations.Crop,
-      flip: PhotoEditorSDK.Operations.Flip,
-      frames: PhotoEditorSDK.Operations.Frames,
-      'radial-blur': PhotoEditorSDK.Operations.RadialBlur,
-      rotation: PhotoEditorSDK.Operations.Rotation,
-      saturation: PhotoEditorSDK.Operations.Saturation,
-      stickers: PhotoEditorSDK.Operations.Stickers,
-      text: PhotoEditorSDK.Operations.Text,
-      'tilt-shift': PhotoEditorSDK.Operations.TiltShift
-    }, this._options.additionalOperations)
+    const availableOperations = {}
+    for (let identifier in PhotoEditorSDK.Operations) {
+      availableOperations[identifier] = PhotoEditorSDK.Operations[identifier]
+    }
+    this._availableOperations = PhotoEditorSDK.Utils.extend(availableOperations,
+      this._options.additionalOperations)
 
     this._selectedOperations = []
     let operationIdentifiers = this._options.operations
@@ -57,6 +60,7 @@ export default class NightReactUI extends PhotoEditorSDK.EventEmitter {
         .replace(/\s+?/ig, '')
         .split(',')
     }
+
     for (let identifier in this._availableOperations) {
       if (this._options.operations === 'all' ||
           operationIdentifiers.indexOf(identifier) !== -1) {
@@ -72,7 +76,7 @@ export default class NightReactUI extends PhotoEditorSDK.EventEmitter {
   _initControls () {
     this._overviewControls = OverviewControlsComponent
     this._availableControls = PhotoEditorSDK.Utils.extend({
-
+      filters: require('./components/controls/filters/')
     }, this._options.additionalControls)
 
     this._selectedControls = []

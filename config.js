@@ -1,6 +1,6 @@
 var path = require('path')
 var WebpackNotifierPlugin = require('webpack-notifier')
-var CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin')
+var ProvidePlugin = require('webpack/lib/ProvidePlugin')
 
 var destination = 'build'
 var source = 'src'
@@ -95,12 +95,15 @@ module.exports = {
           include: /src\/js/,
           loaders: [
             path.resolve(__dirname, 'loaders', 'dotjs-loader'),
-            'babel-loader?cacheDirectory&sourceMap'
+            'babel-loader?cacheDirectory&sourceMap&externalHelpers'
           ]
         }
       ]
     },
     plugins: [
+      new ProvidePlugin({
+        babelHelpers: path.resolve(source, 'js/sdk/vendor/babel-helpers')
+      }),
       new WebpackNotifierPlugin()
     ]
   }

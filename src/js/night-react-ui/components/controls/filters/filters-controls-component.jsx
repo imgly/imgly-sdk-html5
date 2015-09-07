@@ -9,9 +9,9 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent } from '../../../../../globals'
+import { ReactBEM, BaseChildComponent } from '../../../globals'
 
-export default class OverviewControlsComponent extends BaseChildComponent {
+export default class FiltersControlsComponent extends BaseChildComponent {
   constructor () {
     super()
   }
@@ -21,16 +21,10 @@ export default class OverviewControlsComponent extends BaseChildComponent {
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
-    const listItems = this.context.ui.getSelectedOperations()
-      .map((operation) => {
-        console.log(operation)
-        return ''
-      })
-
     return (<div bem='$b:controls e:row'>
       <div bem='e:cell m:list'>
         <ul bem='e:list'>
-          {listItems}
+
         </ul>
       </div>
     </div>)

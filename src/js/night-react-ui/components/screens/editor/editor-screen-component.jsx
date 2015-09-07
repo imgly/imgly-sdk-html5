@@ -12,7 +12,7 @@ import { ReactBEM } from '../../../globals'
 import ScreenComponent from '../screen-component'
 import SubHeaderComponent from '../../sub-header-component'
 
-import OverviewControls from './controls/overview'
+import OverviewControls from '../../controls/overview/'
 
 export default class EditorScreenComponent extends ScreenComponent {
   constructor () {
