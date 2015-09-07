@@ -77,7 +77,8 @@ module.exports = {
     },
     entry: {
       SDK: './sdk/photoeditorsdk',
-      'NightReactUI': './night-react-ui/ui'
+      NightUI: './night-ui/ui',
+      NightReactUI: './night-react-ui/ui'
     },
     devtool: 'inline-source-map',
     externals: [

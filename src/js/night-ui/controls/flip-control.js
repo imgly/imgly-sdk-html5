@@ -17,7 +17,7 @@ class FlipControl extends Control {
    * Entry point for this control
    */
   init () {
-    let controlsTemplate = __DOTJS_TEMPLATE('../../../templates/night/operations/flip_controls.jst')
+    let controlsTemplate = __DOTJS_TEMPLATE('../templates/operations/flip_controls.jst')
     this._controlsTemplate = controlsTemplate
   }
 

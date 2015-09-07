@@ -17,7 +17,7 @@ class SimpleSlider extends Slider {
    * @type {String}
    */
   static get template () {
-    return __DOTJS_TEMPLATE('../../../templates/night/generics/simple-slider_control.jst')
+    return __DOTJS_TEMPLATE('../templates/generics/simple-slider_control.jst')
   }
 
   /**

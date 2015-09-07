@@ -9,20 +9,19 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+const { Utils, Vector2 } = PhotoEditorSDK
 import Control from './control'
 import ColorPicker from '../lib/color-picker'
-import Vector2 from '../../../lib/math/vector2'
-import Utils from '../../../lib/utils'
 
 class TextControl extends Control {
   /**
    * Entry point for this control
    */
   init () {
-    let controlsTemplate = __DOTJS_TEMPLATE('../../../templates/night/operations/text_controls.jst')
+    let controlsTemplate = __DOTJS_TEMPLATE('../templates/operations/text_controls.jst')
     this._controlsTemplate = controlsTemplate
 
-    let canvasControlsTemplate = __DOTJS_TEMPLATE('../../../templates/night/operations/text_canvas.jst')
+    let canvasControlsTemplate = __DOTJS_TEMPLATE('../templates/operations/text_canvas.jst')
     this._canvasControlsTemplate = canvasControlsTemplate
 
     this._partialTemplates.fgColorPicker = ColorPicker.template

@@ -8,10 +8,7 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-
-import EventEmitter from '../../../lib/event-emitter'
-import Utils from '../../../lib/utils'
-import Vector2 from '../../../lib/math/vector2'
+const { EventEmitter, Utils, Vector2 } = PhotoEditorSDK
 
 class Slider extends EventEmitter {
   constructor (element, options) {
@@ -50,7 +47,7 @@ class Slider extends EventEmitter {
    * @type {String}
    */
   static get template () {
-    return __DOTJS_TEMPLATE('../../../templates/night/generics/slider_control.jst')
+    return __DOTJS_TEMPLATE('../templates/generics/slider_control.jst')
   }
 
   /**

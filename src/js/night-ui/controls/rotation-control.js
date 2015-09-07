@@ -9,15 +9,16 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+const { Vector2 } = PhotoEditorSDK
+
 import Control from './control'
-import Vector2 from '../../../lib/math/vector2'
 
 class RotationControl extends Control {
   /**
    * Entry point for this control
    */
   init () {
-    let controlsTemplate = __DOTJS_TEMPLATE('../../../templates/night/operations/rotation_controls.jst')
+    let controlsTemplate = __DOTJS_TEMPLATE('../templates/operations/rotation_controls.jst')
     this._controlsTemplate = controlsTemplate
   }
 

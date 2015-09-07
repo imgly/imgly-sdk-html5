@@ -9,9 +9,9 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+const { Utils, Vector2 } = PhotoEditorSDK
+
 import Control from './control'
-import Vector2 from '../../../lib/math/vector2'
-import Utils from '../../../lib/utils'
 import SimpleSlider from '../lib/simple-slider'
 
 class RadialBlurControl extends Control {
@@ -19,10 +19,10 @@ class RadialBlurControl extends Control {
    * Entry point for this control
    */
   init () {
-    let controlsTemplate = __DOTJS_TEMPLATE('../../../templates/night/operations/radial-blur_controls.jst')
+    let controlsTemplate = __DOTJS_TEMPLATE('../templates/operations/radial-blur_controls.jst')
     this._controlsTemplate = controlsTemplate
 
-    let canvasControlsTemplate = __DOTJS_TEMPLATE('../../../templates/night/operations/radial-blur_canvas.jst')
+    let canvasControlsTemplate = __DOTJS_TEMPLATE('../templates/operations/radial-blur_canvas.jst')
     this._canvasControlsTemplate = canvasControlsTemplate
 
     this._partialTemplates.slider = SimpleSlider.template

@@ -9,10 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import EventEmitter from '../../../lib/event-emitter'
-import Utils from '../../../lib/utils'
-import Color from '../../../lib/color'
-import Vector2 from '../../../lib/math/vector2'
+const { EventEmitter, Vector, Utils, Color } = PhotoEditorSDK
 
 class ColorPicker extends EventEmitter {
   constructor (ui, element) {
@@ -68,7 +65,7 @@ class ColorPicker extends EventEmitter {
    * @type {String}
    */
   static get template () {
-    return __DOTJS_TEMPLATE('../../../templates/night/generics/color-picker_control.jst')
+    return __DOTJS_TEMPLATE('../templates/generics/color-picker_control.jst')
   }
 
   /**

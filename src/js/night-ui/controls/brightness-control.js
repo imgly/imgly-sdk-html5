@@ -17,7 +17,7 @@ class BrightnessControl extends Control {
    * The entry point for this control
    */
   init () {
-    let controlsTemplate = __DOTJS_TEMPLATE('../../../templates/night/operations/brightness_controls.jst')
+    let controlsTemplate = __DOTJS_TEMPLATE('../templates/operations/brightness_controls.jst')
     this._controlsTemplate = controlsTemplate
     this._partialTemplates.slider = Slider.template
 

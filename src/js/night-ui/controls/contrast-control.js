@@ -9,15 +9,15 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Slider from '../lib/slider'
 import Control from './control'
+import Slider from '../lib/slider'
 
-class SaturationControl extends Control {
+class ContrastControl extends Control {
   /**
    * Entry point for this control
    */
   init () {
-    let controlsTemplate = __DOTJS_TEMPLATE('../../../templates/night/operations/saturation_controls.jst')
+    let controlsTemplate = __DOTJS_TEMPLATE('../templates/operations/contrast_controls.jst')
     this._controlsTemplate = controlsTemplate
     this._partialTemplates.slider = Slider.template
   }
@@ -28,21 +28,21 @@ class SaturationControl extends Control {
    */
   _onEnter () {
     this._historyItem = null
-    this._operationExistedBefore = !!this._ui.operations.saturation
-    this._operation = this._ui.getOrCreateOperation('saturation')
+    this._operationExistedBefore = !!this._ui.operations.contrast
+    this._operation = this._ui.getOrCreateOperation('contrast')
 
     // Initially set value
-    let saturation = this._operation.getSaturation()
-    this._initialSaturation = saturation
+    let contrast = this._operation.getContrast()
+    this._initialContrast = contrast
 
     let sliderElement = this._controls.querySelector('.imglykit-slider')
     this._slider = new Slider(sliderElement, {
       minValue: 0,
       maxValue: 2,
-      defaultValue: saturation
+      defaultValue: contrast
     })
     this._slider.on('update', this._onUpdate.bind(this))
-    this._slider.setValue(this._initialSaturation)
+    this._slider.setValue(this._initialContrast)
   }
 
   /**
@@ -50,10 +50,10 @@ class SaturationControl extends Control {
    * @override
    */
   _onBack () {
-    let currentSaturation = this._operation.getSaturation()
+    let currentContrast = this._operation.getContrast()
 
-    if (currentSaturation === 1) {
-      this._ui.removeOperation('saturation')
+    if (currentContrast === 1.0) {
+      this._ui.removeOperation('contrast')
     }
 
     this._ui.canvas.render()
@@ -64,13 +64,13 @@ class SaturationControl extends Control {
    * @override
    */
   _onUpdate (value) {
-    this._operation.setSaturation(value)
+    this._operation.setContrast(value)
     this._ui.canvas.render()
 
-    let currentSaturation = this._operation.getSaturation()
-    if (this._initialSaturation !== currentSaturation && !this._historyItem) {
+    let currentContrast = this._operation.getContrast()
+    if (this._initialContrast !== currentContrast && !this._historyItem) {
       this._historyItem = this._ui.addHistory(this._operation, {
-        saturation: this._initialSaturation
+        contrast: this._initialContrast
       }, this._operationExistedBefore)
     }
   }
@@ -80,6 +80,6 @@ class SaturationControl extends Control {
  * A unique string that identifies this control.
  * @type {String}
  */
-SaturationControl.prototype.identifier = 'saturation'
+ContrastControl.prototype.identifier = 'contrast'
 
-export default SaturationControl
+export default ContrastControl
