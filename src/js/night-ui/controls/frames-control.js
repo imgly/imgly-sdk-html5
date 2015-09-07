@@ -18,7 +18,7 @@ class FramesControl extends Control {
    * Entry point for this control
    */
   init () {
-    let controlsTemplate = __DOTJS_TEMPLATE('../../../templates/night/operations/frames_controls.jst')
+    let controlsTemplate = __DOTJS_TEMPLATE('../templates/operations/frames_controls.jst')
     this._controlsTemplate = controlsTemplate
     this._partialTemplates.slider = SimpleSlider.template
     this._partialTemplates.colorPicker = ColorPicker.template

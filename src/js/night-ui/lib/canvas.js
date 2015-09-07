@@ -8,12 +8,10 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import WebGLRenderer from '../../../renderers/webgl-renderer'
-import CanvasRenderer from '../../../renderers/canvas-renderer'
-import Vector2 from '../../../lib/math/vector2'
-import Utils from '../../../lib/utils'
-import EventEmitter from '../../../lib/event-emitter'
-import Promise from '../../../vendor/promise'
+const {
+  Promise, EventEmitter, Utils, Vector2,
+  WebGLRenderer, CanvasRenderer
+} = PhotoEditorSDK
 
 class Canvas extends EventEmitter {
   constructor (kit, ui, options) {

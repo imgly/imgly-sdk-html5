@@ -9,15 +9,15 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+const { Utils } = PhotoEditorSDK
 import Control from './control'
-import Utils from '../../../lib/utils'
 
 class FiltersControl extends Control {
   /**
    * Entry point for this control
    */
   init () {
-    let controlsTemplate = __DOTJS_TEMPLATE('../../../templates/night/operations/filters_controls.jst')
+    let controlsTemplate = __DOTJS_TEMPLATE('../templates/operations/filters_controls.jst')
     this._controlsTemplate = controlsTemplate
 
     this._availableFilters = {}
@@ -112,35 +112,9 @@ class FiltersControl extends Control {
    * @private
    */
   _addDefaultFilters () {
-    this.addFilter(require('../../../operations/filters/identity-filter'))
-    this.addFilter(require('../../../operations/filters/k1-filter'))
-    this.addFilter(require('../../../operations/filters/k2-filter'))
-    this.addFilter(require('../../../operations/filters/k6-filter'))
-    this.addFilter(require('../../../operations/filters/kdynamic-filter'))
-    this.addFilter(require('../../../operations/filters/fridge-filter'))
-    this.addFilter(require('../../../operations/filters/breeze-filter'))
-    this.addFilter(require('../../../operations/filters/orchid-filter'))
-    this.addFilter(require('../../../operations/filters/chest-filter'))
-    this.addFilter(require('../../../operations/filters/front-filter'))
-    this.addFilter(require('../../../operations/filters/fixie-filter'))
-    this.addFilter(require('../../../operations/filters/x400-filter'))
-    this.addFilter(require('../../../operations/filters/bw-filter'))
-    this.addFilter(require('../../../operations/filters/bwhard-filter'))
-    this.addFilter(require('../../../operations/filters/lenin-filter'))
-    this.addFilter(require('../../../operations/filters/quozi-filter'))
-    this.addFilter(require('../../../operations/filters/pola669-filter'))
-    this.addFilter(require('../../../operations/filters/pola-filter'))
-    this.addFilter(require('../../../operations/filters/food-filter'))
-    this.addFilter(require('../../../operations/filters/glam-filter'))
-    this.addFilter(require('../../../operations/filters/celsius-filter'))
-    this.addFilter(require('../../../operations/filters/texas-filter'))
-    this.addFilter(require('../../../operations/filters/morning-filter'))
-    this.addFilter(require('../../../operations/filters/lomo-filter'))
-    this.addFilter(require('../../../operations/filters/gobblin-filter'))
-    this.addFilter(require('../../../operations/filters/mellow-filter'))
-    this.addFilter(require('../../../operations/filters/sunny-filter'))
-    this.addFilter(require('../../../operations/filters/a15-filter'))
-    this.addFilter(require('../../../operations/filters/semired-filter'))
+    for (let identifier in PhotoEditorSDK.Filters) {
+      this.addFilter(PhotoEditorSDK.Filters[identifier])
+    }
   }
 
   /**
@@ -166,7 +140,6 @@ class FiltersControl extends Control {
       let identifier = selectedFilters[i]
       this._filters[identifier] = this._availableFilters[identifier]
     }
-
 
     if (this._active) {
       this._renderControls()

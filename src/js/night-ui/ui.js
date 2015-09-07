@@ -10,23 +10,37 @@
  */
 
 import Promise from '../../vendor/native-promise-only'
-import Utils from '../../lib/utils'
-import Vector2 from '../../lib/math/vector2'
-import UI from '../base/ui'
 import Canvas from './lib/canvas'
 import FileLoader from './lib/file-loader'
 import ImageResizer from './lib/image-resizer'
 import WebcamHandler from './lib/webcam-handler'
 import TopControls from './lib/top-controls'
 import Scrollbar from './lib/scrollbar'
-import { RenderType, ImageFormat } from '../../constants'
 
-class NightUI extends UI {
-  constructor (...args) {
-    super(...args)
+class NightUI extends PhotoEditorSDK.EventEmitter {
+  constructor (renderer, options) {
+    super()
+    this._renderer = renderer
+    this._options = PhotoEditorSDK.Utils.defaults(options, {
+      assetPathResolver: null,
+      language: 'en'
+    })
+
+    this._options.assets = PhotoEditorSDK.Utils.defaults(options.assets, {
+      baseUrl: '/',
+      resolver: null
+    })
+
+    this._operations = []
+    this._helpers = new Helpers(this._renderer, this, options)
+    this._languages = {}
+    this.selectOperations(null)
+
+    this._registerLanguages()
+    this.selectLanguage(this._options.language)
 
     this._operationsMap = {}
-    this._template = __DOTJS_TEMPLATE('../../templates/night/template.jst')
+    this._template = __DOTJS_TEMPLATE('./templates/template.jst')
     this._registeredControls = {}
     this._history = []
     this._imageResized = false
@@ -55,7 +69,7 @@ class NightUI extends UI {
 
     this._paused = false
 
-    this._options.ui = Utils.defaults(this._options.ui, {
+    this._options.ui = PhotoEditorSDK.Utils.defaults(this._options.ui, {
       showNewButton: !this._options.image,
       showUploadButton: true,
       showWebcamButton: true,
@@ -67,7 +81,7 @@ class NightUI extends UI {
       export: {}
     })
 
-    this._options.ui.export = Utils.defaults(this._options.ui.export, {
+    this._options.ui.export = PhotoEditorSDK.Utils.defaults(this._options.ui.export, {
       type: ImageFormat.JPEG,
       quality: 0.8
     })

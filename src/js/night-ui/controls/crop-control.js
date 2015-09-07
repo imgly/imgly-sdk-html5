@@ -9,9 +9,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+const { Utils, Vector2 } = PhotoEditorSDK
 import Control from './control'
-import Vector2 from '../../../lib/math/vector2'
-import Utils from '../../../lib/utils'
 
 class CropControl extends Control {
   /**
@@ -21,10 +20,10 @@ class CropControl extends Control {
     this._availableRatios = {}
     this._ratios = {}
 
-    let controlsTemplate = __DOTJS_TEMPLATE('../../../templates/night/operations/crop_controls.jst')
+    let controlsTemplate = __DOTJS_TEMPLATE('../templates/operations/crop_controls.jst')
     this._controlsTemplate = controlsTemplate
 
-    let canvasControlsTemplate = __DOTJS_TEMPLATE('../../../templates/night/operations/crop_canvas.jst')
+    let canvasControlsTemplate = __DOTJS_TEMPLATE('../templates/operations/crop_canvas.jst')
     this._canvasControlsTemplate = canvasControlsTemplate
 
     // Mouse event callbacks bound to the class context

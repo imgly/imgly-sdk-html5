@@ -9,9 +9,9 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Helpers from '../../base/helpers'
-import EventEmitter from '../../../lib/event-emitter'
-import Utils from '../../../lib/utils'
+const { EventEmitter, Utils } = PhotoEditorSDK
+
+import Helpers from '../helpers'
 import Scrollbar from '../lib/scrollbar'
 
 class Control extends EventEmitter {
@@ -23,10 +23,10 @@ class Control extends EventEmitter {
     this._operation = operation
     this._helpers = new Helpers(this._kit, this._ui, this._ui.options)
     this._partialTemplates = {
-      doneButton: __DOTJS_TEMPLATE('../../../templates/night/generics/done_button.jst')
+      doneButton: __DOTJS_TEMPLATE('../templates/generics/done_button.jst')
     }
 
-    this._template = __DOTJS_TEMPLATE('../../../templates/night/generics/control.jst')
+    this._template = __DOTJS_TEMPLATE('../templates/generics/control.jst')
     this._active = false
     this._historyItem = null
 
@@ -314,7 +314,6 @@ Control.prototype.identifier = null
  * this method and provide instance properties and functions.
  * @function
  */
-import extend from '../../../lib/extend'
-Control.extend = extend
+Control.extend = PhotoEditorSDK.extend
 
 export default Control
