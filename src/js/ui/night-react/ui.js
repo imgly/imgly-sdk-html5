@@ -14,6 +14,7 @@ import Utils from '../../lib/utils'
 import Helpers from './helpers'
 import React from 'react'
 import EditorComponent from './components/editor-component'
+import OverviewControlsComponent from './components/screens/editor/controls/overview/overview-controls-component'
 
 export default class NightReactUI extends EventEmitter {
   constructor (renderer, options) {
@@ -24,15 +25,75 @@ export default class NightReactUI extends EventEmitter {
     this._helpers = new Helpers(this._renderer, this._options)
 
     this._initOptions()
-    this._init()
+    this._initLanguage()
+    this._initOperations()
+    this._initControls()
   }
 
-  _init () {
+  getSelectedOperations () { return this._selectedOperations }
+
+  /**
+   * Initializes the available and selected controls
+   * @private
+   */
+  _initOperations () {
+    this._availableOperations = Utils.extend({
+      brightness: PhotoEditorSDK.Operations.Brightness,
+      contrast: PhotoEditorSDK.Operations.Contrast,
+      crop: PhotoEditorSDK.Operations.Crop,
+      flip: PhotoEditorSDK.Operations.Flip,
+      frames: PhotoEditorSDK.Operations.Frames,
+      'radial-blur': PhotoEditorSDK.Operations.RadialBlur,
+      rotation: PhotoEditorSDK.Operations.Rotation,
+      saturation: PhotoEditorSDK.Operations.Saturation,
+      stickers: PhotoEditorSDK.Operations.Stickers,
+      text: PhotoEditorSDK.Operations.Text,
+      'tilt-shift': PhotoEditorSDK.Operations.TiltShift
+    }, this._options.additionalOperations)
+
+    this._selectedOperations = []
+    let operationIdentifiers = this._options.operations
+    if (!(operationIdentifiers instanceof Array)) {
+      operationIdentifiers = operationIdentifiers
+        .replace(/\s+?/ig, '')
+        .split(',')
+    }
+    for (let identifier in this._availableOperations) {
+      if (this._options.operations === 'all' ||
+          operationIdentifiers.indexOf(identifier) !== -1) {
+        this._selectedOperations.push(identifier)
+      }
+    }
+  }
+
+  /**
+   * Initializes the available and selected controls
+   * @private
+   */
+  _initControls () {
+    this._overviewControls = OverviewControlsComponent
+    this._availableControls = Utils.extend({
+
+    }, this._options.additionalControls)
+
+    this._selectedControls = []
+    for (let identifier in this._availableControls) {
+      const controls = this._availableControls[identifier]
+      if (controls.isSelectable(this)) {
+        this._selectedControls.push(controls)
+      }
+    }
+  }
+
+  /**
+   * Initializes the internationalization
+   * @private
+   */
+  _initLanguage () {
     this._languages = {
       de: require('./lang/de.json'),
       en: require('./lang/en.json')
     }
-
     this._language = new Polyglot({
       locale: this._options.language,
       phrases: this._languages[this._options.language]
@@ -65,15 +126,6 @@ export default class NightReactUI extends EventEmitter {
 
   // TODO Remove this later, avoid SDK calling it on resize
   render () {}
-
-  /**
-   * Register all default languages
-   * @private
-   */
-  _registerLanguages () {
-    this.registerLanguage('en', require('./lang/en.json'))
-    this.registerLanguage('de', require('./lang/de.json'))
-  }
 
   /**
    * A unique string that represents this UI
@@ -142,26 +194,6 @@ export default class NightReactUI extends EventEmitter {
    */
   translate (key, interpolationOptions) {
     return this._language.t(key, interpolationOptions)
-  }
-
-  /**
-   * Sets the current language to the one with the given key
-   * @param  {string} key
-   */
-  selectLanguage (key) {
-    this._language = new Polyglot({
-      locale: key,
-      phrases: this._languages[key]
-    })
-  }
-
-  /**
-   * Registers a language
-   * @param  {String} identifier
-   * @param  {Object} object
-   */
-  registerLanguage (identifier, object) {
-    this._languages[identifier] = object
   }
 
   get helpers () { return this._helpers }
