@@ -62,7 +62,7 @@ export default class Renderer {
     this._registerOperations()
 
     if (typeof window !== 'undefined' && this._options.versionCheck) {
-      const { version } = require('../../../package.json')
+      const { version } = require('../../../../package.json')
       this._versionChecker = new VersionChecker(version)
     }
   }
