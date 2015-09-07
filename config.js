@@ -53,7 +53,11 @@ module.exports = {
       '!' + source + '/js/vendor/**/*.js'
     ],
     dest: destination + '/js/',
-    destFile: destination + '/js/imglykit.js'
+    destFiles: [
+      destination + '/js/PhotoEditor-SDK.js',
+      destination + '/js/PhotoEditor-NightReactUI.js',
+      destination + '/js/PhotoEditor-NightUI.js'
+    ]
   },
 
   // Webpack configuration
