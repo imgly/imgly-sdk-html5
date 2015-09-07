@@ -5,7 +5,7 @@ var rename = require('gulp-rename')
 var config = require('../config')
 
 gulp.task('uglify:js', function () {
-  return gulp.src(config.js.destFile)
+  return gulp.src(config.js.destFiles)
     .pipe(yuicompressor({
       type: 'js'
     }))
