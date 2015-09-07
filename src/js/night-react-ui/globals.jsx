@@ -1,3 +1,4 @@
+/* global PhotoEditorSDK */
 /*
  * Photo Editor SDK - photoeditorsdk.com
  * Copyright (c) 2013-2015 9elements GmbH

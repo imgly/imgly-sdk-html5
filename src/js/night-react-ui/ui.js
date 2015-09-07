@@ -9,13 +9,15 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+const { Operations, Utils, EventEmitter } = PhotoEditorSDK
+
 import Polyglot from 'node-polyglot'
 import Helpers from './helpers'
 import React from 'react'
 import EditorComponent from './components/editor-component'
 import OverviewControlsComponent from './components/controls/overview/overview-controls-component'
 
-export default class NightReactUI extends PhotoEditorSDK.EventEmitter {
+export default class NightReactUI extends EventEmitter {
   constructor (renderer, options) {
     super()
 
@@ -47,10 +49,11 @@ export default class NightReactUI extends PhotoEditorSDK.EventEmitter {
    */
   _initOperations () {
     const availableOperations = {}
-    for (let identifier in PhotoEditorSDK.Operations) {
-      availableOperations[identifier] = PhotoEditorSDK.Operations[identifier]
+    for (let identifier in Operations) {
+      const operation = Operations[identifier]
+      availableOperations[operation.prototype.identifier] = operation
     }
-    this._availableOperations = PhotoEditorSDK.Utils.extend(availableOperations,
+    this._availableOperations = Utils.extend(availableOperations,
       this._options.additionalOperations)
 
     this._selectedOperations = []
@@ -75,8 +78,15 @@ export default class NightReactUI extends PhotoEditorSDK.EventEmitter {
    */
   _initControls () {
     this._overviewControls = OverviewControlsComponent
-    this._availableControls = PhotoEditorSDK.Utils.extend({
-      filters: require('./components/controls/filters/')
+    this._availableControls = Utils.extend({
+      filters: require('./components/controls/filters/'),
+      orientation: require('./components/controls/orientation/'),
+      adjustments: require('./components/controls/adjustments/'),
+      crop: require('./components/controls/crop/'),
+      blur: require('./components/controls/blur/'),
+      frames: require('./components/controls/frames/'),
+      stickers: require('./components/controls/stickers/'),
+      text: require('./components/controls/text/')
     }, this._options.additionalControls)
 
     this._selectedControls = []
@@ -108,27 +118,32 @@ export default class NightReactUI extends PhotoEditorSDK.EventEmitter {
    * @return {[type]} [description]
    */
   _initOptions () {
-    this._options = PhotoEditorSDK.Utils.defaults(this._options, {
+    this._options = Utils.defaults(this._options, {
       language: 'en',
       operations: 'all',
       assets: {},
       extensions: {}
     })
 
-    this._options.extensions = PhotoEditorSDK.Utils.defaults(this._options.extensions || {}, {
+    this._options.extensions = Utils.defaults(this._options.extensions || {}, {
       languages: [],
       operations: [],
       controls: []
     })
 
-    this._options.assets = PhotoEditorSDK.Utils.defaults(this._options.assets || {}, {
+    this._options.assets = Utils.defaults(this._options.assets || {}, {
       baseUrl: '/',
       resolver: null
     })
   }
 
-  // TODO Remove this later, avoid SDK calling it on resize
-  render () {}
+  /**
+   * Checks whether the renderer has an image
+   * @return {Boolean}
+   */
+  hasImage () {
+    return this._renderer.hasImage()
+  }
 
   /**
    * A unique string that represents this UI

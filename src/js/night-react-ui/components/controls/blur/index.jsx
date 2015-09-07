@@ -8,13 +8,12 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import FiltersControlsComponent from './filters-controls-component'
-
 export default {
   canvasControls: null,
-  controls: FiltersControlsComponent,
-  identifier: 'filters',
+  controls: null,
+  identifier: 'blur',
   isSelectable: (ui) => {
-    return ui.isOperationSelected('filters')
+    return ui.isOperationSelected('radial-blur') ||
+      ui.isOperationSelected('tilt-shift')
   }
 }
