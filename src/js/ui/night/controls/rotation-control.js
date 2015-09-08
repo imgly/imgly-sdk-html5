@@ -32,15 +32,15 @@ class RotationControl extends Control {
 
     this._operationExistedBefore = !!this._ui.operations.rotation
     this._operation = this._ui.getOrCreateOperation('rotation')
+    this._operation.dirty = true
     this._cropOperation = this._ui.operations.crop
 
-    if (this._cropOperation && !this._initialStart && !this._initialEnd) {
-      this._initialZoomLevel = this._ui.canvas.zoomLevel
-      this._ui.canvas.zoomToFit(false)
-
-      // Store initial settings for 'back' and 'done' buttons
-      this._initialStart = this._cropOperation.getStart().clone()
-      this._initialEnd = this._cropOperation.getEnd().clone()
+    if (this._cropOperation) {
+      if (!this._initialStart && !this._initialEnd) {
+        // Store initial settings for 'back' and 'done' buttons
+        this._initialStart = this._cropOperation.getStart().clone()
+        this._initialEnd = this._cropOperation.getEnd().clone()
+      }
 
       // Make sure we see the whole input image
       this._cropOperation.set({
@@ -48,6 +48,9 @@ class RotationControl extends Control {
         end: new Vector2(1, 1)
       })
     }
+
+    this._initialZoomLevel = this._ui.canvas.zoomLevel
+    this._ui.canvas.zoomToFit(false)
 
     this._initialDegrees = this._operation.getDegrees()
 
@@ -171,7 +174,7 @@ class RotationControl extends Control {
         end: this._initialEnd
       })
     }
-    this._ui.canvas.render()
+    this._ui.canvas.setZoomLevel(this._initialZoomLevel, true)
   }
 }
 

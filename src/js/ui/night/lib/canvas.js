@@ -266,11 +266,14 @@ class Canvas extends EventEmitter {
    * Sets the zoom level, re-renders the canvas and
    * repositions it
    * @param {Number} zoomLevel
-   * @param {Boolean} render
+   * @param {Boolean} render = true
+   * @param {Boolean} isInitialZoom = false
    * @private
    */
-  setZoomLevel (zoomLevel, render=true) {
+  setZoomLevel (zoomLevel, render=true, isInitialZoom=false) {
     this._zoomLevel = zoomLevel
+    this._isInitialZoom = isInitialZoom
+
     if (render) {
       this.setAllOperationsToDirty()
       return this.render()
@@ -546,7 +549,7 @@ class Canvas extends EventEmitter {
    */
   zoomToFit (render=true) {
     let initialZoomLevel = this._getInitialZoomLevel()
-    return this.setZoomLevel(initialZoomLevel, render)
+    return this.setZoomLevel(initialZoomLevel, render, true)
   }
 
   /**
