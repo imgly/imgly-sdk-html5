@@ -108,7 +108,7 @@
   overflow: hidden; }
 
 .imglykit-container .imglykit-canvas-inner-container {
-  position: relative; }
+  position: absolute; }
   .imglykit-container .imglykit-canvas-inner-container canvas {
     cursor: move; }
   .imglykit-container .imglykit-canvas-inner-container .imglykit-canvas-controls {
