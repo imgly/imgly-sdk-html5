@@ -3,9 +3,9 @@
     "overview": {
       "filters": "Filters",
       "orientation": "Orientation",
-      "adjustments": "Adjustments",
+      "adjustments": "Adjust",
       "crop": "Crop",
-      "blur": "Blur",
+      "blur": "Focus",
       "frames": "Frames",
       "stickers": "Stickers",
       "text": "Text"

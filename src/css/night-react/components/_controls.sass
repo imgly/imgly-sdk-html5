@@ -8,10 +8,9 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-$controlsHeight: 80px
-$controlsButtonWidth: 80px
-$controlsItemPadding: 5px
-$buttonSize: $controlsHeight - $controlsItemPadding * 2
+$controlsHeight: 84px
+$controlsButtonWidth: 64px
+$controlsButtonHeight: 60px
 
 +block(editor)
   +block(controls)
@@ -36,10 +35,10 @@ $buttonSize: $controlsHeight - $controlsItemPadding * 2
     +element(cell)
       display: table-cell
       vertical-align: top
+      padding: 12px 0
 
       +modifier(button)
-        width: $controlsButtonWidth
-        padding: 5px
+        width: $controlsButtonWidth + 10px
 
       +modifier(withBorderRight)
         border-right: 2px solid $backgroundColor
@@ -49,32 +48,34 @@ $buttonSize: $controlsHeight - $controlsItemPadding * 2
         overflow-y: hidden
 
     +element(button)
+      @include opacity(0.8)
       @include border-radius(4px)
       position: relative
       display: inline-block
-      width: $buttonSize
-      height: $buttonSize
+      width: $controlsButtonWidth
+      height: $controlsButtonHeight
       cursor: pointer
-      line-height: $buttonSize
+      line-height: $controlsButtonHeight
 
       &:hover
+        @include opacity(1)
         background: $primaryColor
 
       *
         line-height: 1
 
       +element(icon)
-        width: 40px
+        width: 36px
         vertical-align: middle
 
       +element(label)
-        @include font-light
+        @include font-regular
         @include border-radius(4px)
         @include transform(translateX(-50%))
         position: absolute
-        bottom: 10px
+        bottom: 7px
         left: 50%
-        font-size: 9px
+        font-size: 10px
         color: white
 
     +element(list)
@@ -83,9 +84,8 @@ $buttonSize: $controlsHeight - $controlsItemPadding * 2
       +element(item)
         position: relative
         display: inline-block
-        width: $controlsHeight
-        height: $controlsHeight
-        padding: 5px
+        vertical-align: middle
+        padding: 0 5px
 
 +block(controls)
   +element(button)

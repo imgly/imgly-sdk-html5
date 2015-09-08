@@ -14,8 +14,19 @@ import { ReactBEM, BaseChildComponent } from '../../../globals'
 export default class FiltersControlsComponent extends BaseChildComponent {
   constructor (...args) {
     super(...args)
+
+    this._bindAll('_onBackClick')
     this._operation = this.context.ui.getOrCreateOperation('filters')
     this._filters = this._operation.getFilters()
+  }
+
+  /**
+   * Gets called when the user clicks the back button
+   * @param {Event} e
+   * @private
+   */
+  _onBackClick (e) {
+    this.props.onSwitchControls('back')
   }
 
   /**
@@ -41,7 +52,7 @@ export default class FiltersControlsComponent extends BaseChildComponent {
 
     return (<div bem='$b:controls e:table'>
       <div bem='e:cell m:button m:withBorderRight'>
-        <div bem='$e:button'>
+        <div bem='$e:button' onClick={this._onBackClick}>
           <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/back@2x.png`, true)} />
         </div>
       </div>
