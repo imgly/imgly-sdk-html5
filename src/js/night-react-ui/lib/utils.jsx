@@ -25,5 +25,20 @@ export default {
     size.y -= parseInt(computedStyle.getPropertyValue('padding-top'), 10)
     size.y -= parseInt(computedStyle.getPropertyValue('padding-bottom'), 10)
     return size
+  },
+
+  /**
+   * Gets the x and y position for the given event.
+   * @param {Event} e
+   * @return {Vector2}
+   */
+  getEventPosition (e) {
+    let x = e.pageX
+    let y = e.pageY
+    if (e.type.indexOf('touch') !== -1) {
+      x = e.touches[0].pageX
+      y = e.touches[0].pageY
+    }
+    return new Vector2(x, y)
   }
 }

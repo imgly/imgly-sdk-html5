@@ -10,6 +10,7 @@
  */
 
 import { ReactBEM, BaseChildComponent } from '../../../globals'
+import ScrollbarComponent from '../../scrollbar-component'
 
 export default class OverviewControlsComponent extends BaseChildComponent {
   constructor () {
@@ -48,6 +49,7 @@ export default class OverviewControlsComponent extends BaseChildComponent {
 
     return (<div bem='$b:controls e:table'>
       <div bem='e:cell m:list'>
+        <ScrollbarComponent />
         <ul bem='$e:list'>
           {listItems}
         </ul>
