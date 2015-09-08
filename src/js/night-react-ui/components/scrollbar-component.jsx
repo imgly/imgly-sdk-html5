@@ -19,7 +19,8 @@ export default class ScrollbarComponent extends BaseChildComponent {
     this._bindAll(
       '_onButtonDown',
       '_onButtonMove',
-      '_onButtonUp'
+      '_onButtonUp',
+      '_onListScroll'
     )
     this.state = { buttonWidth: 0, buttonLeft: 0, buttonVisible: false }
   }
@@ -119,6 +120,24 @@ export default class ScrollbarComponent extends BaseChildComponent {
         parentNodeHeight += NATIVE_SCROLLBAR_HEIGHT
       }
       this._parentNode.style.height = `${parentNodeHeight}px`
+    })
+
+    this._parentNode.addEventListener('scroll', this._onListScroll)
+  }
+
+  /**
+   * Gets called when the user scrolls the list
+   * @private
+   */
+  _onListScroll () {
+    const listScrollWidth = this._parentNode.scrollWidth - this._parentNode.offsetWidth
+    const listScrollPosition = this._parentNode.scrollLeft
+
+    const backgroundScrollWidth = this._node.offsetWidth - this.state.buttonWidth
+    const progress = listScrollPosition / listScrollWidth
+
+    this.setState({
+      buttonLeft: backgroundScrollWidth * progress
     })
   }
 
