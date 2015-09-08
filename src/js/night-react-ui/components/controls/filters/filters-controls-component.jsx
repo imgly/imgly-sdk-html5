@@ -40,10 +40,9 @@ export default class FiltersControlsComponent extends BaseChildComponent {
     }
 
     return (<div bem='$b:controls e:table'>
-      <div bem='e:cell m:button'>
-        <div bem='$e:button m:withLabel'>
+      <div bem='e:cell m:button m:withBorderRight'>
+        <div bem='$e:button'>
           <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/back@2x.png`, true)} />
-          <div bem='e:label'>{this._t(`generic.back`)}</div>
         </div>
       </div>
       <div bem='e:cell m:list'>

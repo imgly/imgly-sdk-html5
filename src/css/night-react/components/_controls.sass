@@ -41,6 +41,9 @@ $buttonSize: $controlsHeight - $controlsItemPadding * 2
         width: $controlsButtonWidth
         padding: 5px
 
+      +modifier(withBorderRight)
+        border-right: 2px solid $backgroundColor
+
       +modifier(list)
         overflow-x: auto
         overflow-y: hidden
@@ -55,7 +58,7 @@ $buttonSize: $controlsHeight - $controlsItemPadding * 2
       line-height: $buttonSize
 
       &:hover
-        background: $backgroundColor
+        background: $primaryColor
 
       *
         line-height: 1
