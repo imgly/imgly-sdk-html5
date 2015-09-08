@@ -244,7 +244,7 @@ class RadialBlurOperation extends Operation {
  * operations.
  * @type {String}
  */
-RadialBlurOperation.prototype.identifier = 'radial-blur'
+RadialBlurOperation.identifier = 'radial-blur'
 
 /**
  * Specifies the available options for this operation

@@ -18,10 +18,24 @@ export default class EditorScreenComponent extends ScreenComponent {
   constructor () {
     super()
 
-    this._controls = {
-      overview: OverviewControls
+    this._bindAll('_onSwitchControls')
+    this.state = { controls: OverviewControls }
+  }
+
+  /**
+   * Switches to the given controls
+   * @param  {Component} controls
+   * @private
+   */
+  _onSwitchControls (controls) {
+    let newControls = null
+    if (controls === 'back') {
+      newControls = this._previousControls
+    } else {
+      newControls = controls
     }
-    this.state = { controls: this._controls.overview }
+    this._previousControls = this.state.controls
+    this.setState({ controls: newControls })
   }
 
   /**
@@ -31,14 +45,14 @@ export default class EditorScreenComponent extends ScreenComponent {
   renderWithBEM () {
     const Controls = this.state.controls.controls
     return (<div bem='b:screen $b:editorScreen'>
-    <SubHeaderComponent
-      label={this._t('webcam.headline')}>
-      <bem specifier='$b:subHeader'>
-        <div bem='e:label'>
-          {this._t('editor.headline')}
-        </div>
-      </bem>
-    </SubHeaderComponent>
+      <SubHeaderComponent
+        label={this._t('webcam.headline')}>
+        <bem specifier='$b:subHeader'>
+          <div bem='e:label'>
+            {this._t('editor.headline')}
+          </div>
+        </bem>
+      </SubHeaderComponent>
 
       <div bem='$b:canvasContainer e:row'>
         <div bem='e:cell'>
@@ -46,7 +60,11 @@ export default class EditorScreenComponent extends ScreenComponent {
         </div>
       </div>
 
-      <Controls />
+      <div bem='$b:controls $e:container e:row'>
+        <div bem='e:cell'>
+          <Controls onSwitchControls={this._onSwitchControls} />
+        </div>
+      </div>
     </div>)
   }
 }

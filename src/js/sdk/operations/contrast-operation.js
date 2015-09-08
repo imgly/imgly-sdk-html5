@@ -64,7 +64,7 @@ class ContrastOperation extends Operation {
  * operations.
  * @type {String}
  */
-ContrastOperation.prototype.identifier = 'contrast'
+ContrastOperation.identifier = 'contrast'
 
 /**
  * Specifies the available options for this operation

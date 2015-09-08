@@ -135,7 +135,7 @@ class BaseUI extends EventEmitter {
    */
   isOperationSelected (identifier) {
     let operationIdentifiers = this._operations.map((operation) => {
-      return operation.prototype.identifier
+      return operation.identifier
     })
     return operationIdentifiers.indexOf(identifier) !== -1
   }

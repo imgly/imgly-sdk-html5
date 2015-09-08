@@ -17,6 +17,15 @@ export default class OverviewControlsComponent extends BaseChildComponent {
   }
 
   /**
+   * Gets called when an item has been clicked
+   * @param  {Event} e
+   * @private
+   */
+  _onItemClick (controls) {
+    this.props.onSwitchControls(controls)
+  }
+
+  /**
    * Renders this component
    * @return {ReactBEM.Element}
    */
@@ -24,15 +33,22 @@ export default class OverviewControlsComponent extends BaseChildComponent {
     const ui = this.context.ui
     const listItems = ui.getSelectedControls()
       .map((control) => {
-        return (<li bem='$e:button m:withLabel m:labelOnHover'>
-          <img bem='e:icon' src={ui.helpers.assetPath(`controls/overview/${control.identifier}@2x.png`, true)} />
-          <div bem='e:label'>{this._t(`controls.overview.${control.identifier}`)}</div>
+        return (<li
+          bem='e:item'
+          key={control.identifier}
+          onClick={this._onItemClick.bind(this, control)}>
+            <bem specifier='$b:controls'>
+              <div bem='$e:button m:withLabel'>
+                <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/overview/${control.identifier}@2x.png`, true)} />
+                <div bem='e:label'>{this._t(`controls.overview.${control.identifier}`)}</div>
+              </div>
+            </bem>
         </li>)
       })
 
-    return (<div bem='$b:controls e:row'>
+    return (<div bem='$b:controls e:table'>
       <div bem='e:cell m:list'>
-        <ul bem='e:list'>
+        <ul bem='$e:list'>
           {listItems}
         </ul>
       </div>

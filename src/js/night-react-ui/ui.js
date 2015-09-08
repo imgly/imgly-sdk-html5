@@ -25,14 +25,14 @@ export default class NightReactUI extends EventEmitter {
     this._options = options
     this._helpers = new Helpers(this._renderer, this._options)
 
+    this._operationsStack = this._renderer.operationsStack
+    this._operationsMap = {}
+
     this._initOptions()
     this._initLanguage()
     this._initOperations()
     this._initControls()
   }
-
-  getSelectedOperations () { return this._selectedOperations }
-  getSelectedControls () { return this._selectedControls }
 
   /**
    * Checks whether the operation with the given identifier is selected
@@ -48,15 +48,9 @@ export default class NightReactUI extends EventEmitter {
    * @private
    */
   _initOperations () {
-    const availableOperations = {}
-    for (let identifier in Operations) {
-      const operation = Operations[identifier]
-      availableOperations[operation.prototype.identifier] = operation
-    }
-    this._availableOperations = Utils.extend(availableOperations,
-      this._options.additionalOperations)
-
+    this._availableOperations = this._renderer.getOperations()
     this._selectedOperations = []
+
     let operationIdentifiers = this._options.operations
     if (!(operationIdentifiers instanceof Array)) {
       operationIdentifiers = operationIdentifiers
@@ -214,7 +208,27 @@ export default class NightReactUI extends EventEmitter {
     return this._language.t(key, interpolationOptions)
   }
 
-  get helpers () { return this._helpers }
+  /**
+   * If the operation with the given identifier already exists, it returns
+   * the existing operation. Otherwise, it creates and returns a new one.
+   * @param  {String} identifier
+   * @return {PhotoEditorSDK.operation}
+   */
+  getOrCreateOperation (identifier) {
+    if (this._operationsMap[identifier]) {
+      return this._operationsMap[identifier]
+    } else {
+      const Operation = this._availableOperations[identifier]
+      const operation = new Operation(this._renderer)
+      this._operationsStack.push(operation)
+      this._operationsMap[identifier] = operation
+      return operation
+    }
+  }
+
+  getSelectedOperations () { return this._selectedOperations }
+  getSelectedControls () { return this._selectedControls }
+  getHelpers () { return this._helpers }
 }
 
 PhotoEditorSDK.UI = PhotoEditorSDK.UI || {}

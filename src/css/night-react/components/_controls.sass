@@ -8,23 +8,54 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+$controlsHeight: 80px
+$controlsButtonWidth: 80px
+$controlsItemPadding: 5px
+$buttonSize: $controlsHeight - $controlsItemPadding * 2
+
 +block(editor)
   +block(controls)
-    +element(row)
-      display: table-row
-      height: 77px
-      background: $secondaryBackgroundColor
+    +element(container)
+      +element(row)
+        display: table-row
+        height: $controlsHeight
+        background: $secondaryBackgroundColor
+
+      +element(cell)
+        display: table-cell
+        height: $controlsHeight
+        text-align: center
+
+    +element(table)
+      position: absolute
+      display: table
+      width: 100%
+      height: $controlsHeight
+      table-layout: fixed
 
     +element(cell)
       display: table-cell
-      height: 77px
-      text-align: center
+      vertical-align: top
+
+      +modifier(button)
+        width: $controlsButtonWidth
+        padding: 5px
+
+      +modifier(list)
+        overflow-x: auto
+        overflow-y: hidden
 
     +element(button)
+      @include border-radius(4px)
+      position: relative
       display: inline-block
-      width: 77px
+      width: $buttonSize
+      height: $buttonSize
       cursor: pointer
-      line-height: 77px
+      line-height: $buttonSize
+
+      &:hover
+        background: $backgroundColor
 
       *
         line-height: 1
@@ -35,5 +66,26 @@
 
       +element(label)
         @include font-light
-        font-size: 11px
+        @include border-radius(4px)
+        @include transform(translateX(-50%))
+        position: absolute
+        bottom: 10px
+        left: 50%
+        font-size: 9px
         color: white
+
+    +element(list)
+      white-space: nowrap
+
+      +element(item)
+        position: relative
+        display: inline-block
+        width: $controlsHeight
+        height: $controlsHeight
+        padding: 5px
+
++block(controls)
+  +element(button)
+    // Thanks Sass! >:(
+    &#{$modifierSeparator}withLabel &#{$elementSeparator}icon
+      margin-top: -20px

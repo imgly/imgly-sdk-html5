@@ -101,7 +101,7 @@ class FlipOperation extends Operation {
  * operations.
  * @type {String}
  */
-FlipOperation.prototype.identifier = 'flip'
+FlipOperation.identifier = 'flip'
 
 /**
  * Specifies the available options for this operation

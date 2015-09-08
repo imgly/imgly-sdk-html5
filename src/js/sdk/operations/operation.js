@@ -315,7 +315,7 @@ class Operation extends EventEmitter {
  * operations.
  * @type {String}
  */
-Operation.prototype.identifier = null
+Operation.identifier = null
 
 /**
  * To create an {@link ImglyKit.Operation} class of your own, call this

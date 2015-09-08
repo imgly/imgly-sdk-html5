@@ -64,7 +64,7 @@ class SaturationOperation extends Operation {
  * operations.
  * @type {String}
  */
-SaturationOperation.prototype.identifier = 'saturation'
+SaturationOperation.identifier = 'saturation'
 
 /**
  * Specifies the available options for this operation

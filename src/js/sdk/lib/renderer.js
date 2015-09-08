@@ -12,7 +12,7 @@ import RenderImage from './render-image'
 import ImageExporter from './image-exporter'
 import VersionChecker from './version-checker'
 import Utils from './utils'
-import Operations from '../operations/operations'
+import Operations from '../operations/'
 import Exif from './exif'
 import RotationOperation from '../operations/rotation-operation'
 import FlipOperation from '../operations/flip-operation'
@@ -20,30 +20,19 @@ import FlipOperation from '../operations/flip-operation'
 /**
  * @class
  * @param {String} renderer
- * @param {Object} options
- * @param {Image} [options.image] - The source image
- * @param {HTMLElement} [options.container] - Specifies where the UI should be
- *                                          added to. If none is given, the UI
- *                                          will automatically be disabled.
+ * @param {Object} options = {}
+ * @param {Object} operationsOptions = {}
  */
 export default class Renderer {
-  constructor (renderer, options) {
-    // `options` is required
-    if (typeof options === 'undefined') {
-      throw new Error('No options given.')
-    }
-
+  constructor (renderer, options = {}, operationsOptions = {}) {
     // Set default options
-    options = Utils.defaults(options, {
+    this._options = Utils.defaults(options, {
+      additionalOperations: {},
       versionCheck: true,
       image: null
     })
 
-    /**
-     * @type {Object}
-     * @private
-     */
-    this._options = options
+    this._operationsOptions = operationsOptions
 
     /**
      * The stack of {@link Operation} instances that will be used
@@ -52,13 +41,6 @@ export default class Renderer {
      */
     this.operationsStack = []
 
-    /**
-     * The registered operations
-     * @type {Object.<String, ImglyKit.Operation>}
-     */
-    this._registeredOperations = {}
-
-    // Register the default operations
     this._registerOperations()
 
     if (typeof window !== 'undefined' && this._options.versionCheck) {
@@ -168,40 +150,19 @@ export default class Renderer {
   }
 
   /**
-   * Returns the asset path for the given filename
-   * @param  {String} asset
-   * @return {String}
-   */
-  getAssetPath (asset) {
-    var isBrowser = typeof window !== 'undefined'
-    if (isBrowser) {
-      /* istanbul ignore next */
-      return this._options.assetsUrl + '/' + asset
-    } else {
-      var path = require('path')
-      return path.resolve(this._options.assetsUrl, asset)
-    }
-  }
-
-  /**
    * Registers all default operations
    * @private
    */
   _registerOperations () {
-    for (let operationName in Operations) {
-      this.registerOperation(Operations[operationName])
-    }
-  }
+    this._operations = {}
 
-  /**
-   * Registers the given operation
-   * @param {ImglyKit.Operation} operation - The operation class
-   */
-  registerOperation (operation) {
-    this._registeredOperations[operation.prototype.identifier] = operation
-    if (this.ui) {
-      this.ui.addOperation(operation)
+    for (let operationName in Operations) {
+      const operation = Operations[operationName]
+      this._operations[operation.identifier] = operation
     }
+
+    this._operations = Utils.extend(this._operations,
+      this._options.additionalOperations)
   }
 
   /**
@@ -217,24 +178,8 @@ export default class Renderer {
     return operation
   }
 
-  /**
-   * Runs the UI, if present
-   */
-  run () {
-    if (typeof this.ui !== 'undefined') {
-      this.ui.run()
-    }
-  }
-
-  /**
-   * Checks whether the renderer has an image as input
-   * @return {Boolean}
-   */
-  hasImage () {
-    return !!this._options.image
-  }
-
-  get registeredOperations () {
-    return this._registeredOperations
-  }
+  hasImage () { return !!this._options.image }
+  getOperations () { return this._operations }
+  getOptions () { return this._options }
+  getOperationsOptions () { return this._operationsOptions }
 }

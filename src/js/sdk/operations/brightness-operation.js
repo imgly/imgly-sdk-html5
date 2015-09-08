@@ -64,7 +64,7 @@ class BrightnessOperation extends Operation {
  * operations.
  * @type {String}
  */
-BrightnessOperation.prototype.identifier = 'brightness'
+BrightnessOperation.identifier = 'brightness'
 
 /**
  * Specifies the available options for this operation
