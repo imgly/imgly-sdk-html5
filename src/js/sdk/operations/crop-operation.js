@@ -119,7 +119,7 @@ class CropOperation extends Operation {
  * operations.
  * @type {String}
  */
-CropOperation.prototype.identifier = 'crop'
+CropOperation.identifier = 'crop'
 
 /**
  * Specifies the available options for this operation

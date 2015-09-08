@@ -262,7 +262,7 @@ class TiltShiftOperation extends Operation {
  * operations.
  * @type {String}
  */
-TiltShiftOperation.prototype.identifier = 'tilt-shift'
+TiltShiftOperation.identifier = 'tilt-shift'
 
 /**
  * Specifies the available options for this operation

@@ -107,7 +107,7 @@ class FramesOperation extends Operation {
  * operations.
  * @type {String}
  */
-FramesOperation.prototype.identifier = 'frames'
+FramesOperation.identifier = 'frames'
 
 /**
  * Specifies the available options for this operation

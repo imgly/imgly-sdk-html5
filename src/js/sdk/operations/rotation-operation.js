@@ -122,7 +122,7 @@ class RotationOperation extends Operation {
  * operations.
  * @type {String}
  */
-RotationOperation.prototype.identifier = 'rotation'
+RotationOperation.identifier = 'rotation'
 
 /**
  * Specifies the available options for this operation

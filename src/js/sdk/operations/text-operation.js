@@ -323,7 +323,7 @@ class TextOperation extends Operation {
  * operations.
  * @type {String}
  */
-TextOperation.prototype.identifier = 'text'
+TextOperation.identifier = 'text'
 
 /**
  * Specifies the available options for this operation

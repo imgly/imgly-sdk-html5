@@ -8,7 +8,9 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+import Utils from '../lib/utils'
 import Operation from './operation'
+import Filters from './filters/'
 import IdentityFilter from './filters/identity-filter'
 
 /**
@@ -19,6 +21,26 @@ import IdentityFilter from './filters/identity-filter'
  * @extends ImglyKit.Operation
  */
 class FiltersOperation extends Operation {
+  constructor (...args) {
+    super(...args)
+
+    this._registerFilters()
+  }
+
+  /**
+   * Registers the available filters
+   * @private
+   */
+  _registerFilters () {
+    this._filters = {}
+    for (let name in Filters) {
+      const filter = Filters[name]
+      this._filters[filter.identifier] = filter
+    }
+
+    this._filters = Utils.extend(this._filters, this._options.additionalFilters)
+  }
+
   /**
    * Renders the filter using WebGL
    * @param  {WebGLRenderer} renderer
@@ -46,6 +68,8 @@ class FiltersOperation extends Operation {
   _render (renderer) {
     this._selectedFilter.render(renderer)
   }
+
+  getFilters () { return this._filters }
 }
 
 /**
@@ -53,13 +77,13 @@ class FiltersOperation extends Operation {
  * operations.
  * @type {String}
  */
-FiltersOperation.prototype.identifier = 'filters'
+FiltersOperation.identifier = 'filters'
 
 /**
  * Specifies the available options for this operation
  * @type {Object}
  */
-FiltersOperation.prototype.availableOptions = {
+FiltersOperation.availableOptions = {
   filter: { type: 'object', default: IdentityFilter,
     setter: function (Filter) {
       this._selectedFilter = new Filter()

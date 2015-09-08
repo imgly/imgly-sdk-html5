@@ -260,7 +260,7 @@ class StickersOperation extends Operation {
  * operations.
  * @type {String}
  */
-StickersOperation.prototype.identifier = 'stickers'
+StickersOperation.identifier = 'stickers'
 
 /**
  * Specifies the available options for this operation

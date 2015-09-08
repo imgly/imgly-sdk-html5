@@ -26,13 +26,14 @@ PhotoEditorSDK.RenderImage = require('./lib/render-image')
 PhotoEditorSDK.Color = require('./lib/color')
 PhotoEditorSDK.Filter = require('./operations/filters/filter')
 PhotoEditorSDK.Operation = require('./operations/operation')
-PhotoEditorSDK.Operations = require('./operations/operations')
-PhotoEditorSDK.Filters = require('./operations/filters/filters')
 PhotoEditorSDK.WebGLRenderer = require('./renderers/webgl-renderer')
 PhotoEditorSDK.CanvasRenderer = require('./renderers/canvas-renderer')
 PhotoEditorSDK.Vector2 = require('./lib/math/vector2')
 PhotoEditorSDK.EventEmitter = require('./lib/event-emitter')
 PhotoEditorSDK.Utils = require('./lib/utils')
+
+PhotoEditorSDK.Operations = require('./operations/')
+PhotoEditorSDK.Filters = require('./operations/filters/')
 
 // Exposed constants
 PhotoEditorSDK.RenderType = RenderType

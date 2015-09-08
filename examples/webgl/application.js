@@ -6,7 +6,22 @@ window.onload = function () {
      * Initialize Renderer
      */
     var renderer = new PhotoEditorSDK.Renderer('webgl', {
-
+      image: myImage,
+      additionalOperations: {
+        // noise: NoiseOperation
+      }
+    }, {
+      filters: {
+        additionalFilters: {
+          // night: NightFilter
+        }
+      },
+      stickers: {
+        additionalStickers: {
+          // foo: 'foo.png',
+          // bar: 'bar.png'
+        }
+      }
     })
 
     /**
@@ -20,16 +35,7 @@ window.onload = function () {
           return path
         }
       },
-      operations: [
-        'crop',
-        'rotation',
-        'flip',
-        'text',
-        'noise'
-      ],
-      additionalOperations: [
-        // NoiseOperation
-      ],
+      operations: 'all',
       additionalControls: [
         // {
         //   canvasControls: NoiseCanvasControls,
