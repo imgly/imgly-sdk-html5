@@ -33,6 +33,7 @@ $controlsButtonHeight: 60px
       table-layout: fixed
 
     +element(cell)
+      position: relative
       display: table-cell
       vertical-align: top
       padding: 12px 0
@@ -42,10 +43,6 @@ $controlsButtonHeight: 60px
 
       +modifier(withBorderRight)
         border-right: 2px solid $backgroundColor
-
-      +modifier(list)
-        overflow-x: auto
-        overflow-y: hidden
 
     +element(button)
       @include opacity(0.8)
@@ -79,6 +76,8 @@ $controlsButtonHeight: 60px
         color: white
 
     +element(list)
+      overflow-x: auto
+      overflow-y: hidden
       white-space: nowrap
 
       +element(item)

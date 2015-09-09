@@ -49,10 +49,11 @@ export default class OverviewControlsComponent extends BaseChildComponent {
 
     return (<div bem='$b:controls e:table'>
       <div bem='e:cell m:list'>
-        <ScrollbarComponent />
-        <ul bem='$e:list'>
-          {listItems}
-        </ul>
+        <ScrollbarComponent>
+          <ul bem='$e:list'>
+            {listItems}
+          </ul>
+        </ScrollbarComponent>
       </div>
     </div>)
   }

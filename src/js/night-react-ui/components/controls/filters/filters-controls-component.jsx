@@ -10,6 +10,7 @@
  */
 
 import { ReactBEM, BaseChildComponent } from '../../../globals'
+import ScrollbarComponent from '../../scrollbar-component'
 
 export default class FiltersControlsComponent extends BaseChildComponent {
   constructor (...args) {
@@ -57,9 +58,11 @@ export default class FiltersControlsComponent extends BaseChildComponent {
         </div>
       </div>
       <div bem='e:cell m:list'>
-        <ul bem='$e:list'>
-          {listItems}
-        </ul>
+        <ScrollbarComponent>
+          <ul bem='$e:list'>
+            {listItems}
+          </ul>
+        </ScrollbarComponent>
       </div>
     </div>)
   }
