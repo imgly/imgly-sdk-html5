@@ -19,6 +19,7 @@ export default class EditorScreenComponent extends ScreenComponent {
     super()
 
     this._bindAll('switchToControls')
+    this._previousControlsStack = []
     this.state = { controls: OverviewControls }
   }
 
@@ -29,11 +30,12 @@ export default class EditorScreenComponent extends ScreenComponent {
   switchToControls (controls) {
     let newControls = null
     if (controls === 'back') {
-      newControls = this._previousControls
+      newControls = this._previousControlsStack.pop()
     } else {
       newControls = controls
+      this._previousControlsStack.push(this.state.controls)
     }
-    this._previousControls = this.state.controls
+
     this.setState({ controls: newControls })
   }
 
