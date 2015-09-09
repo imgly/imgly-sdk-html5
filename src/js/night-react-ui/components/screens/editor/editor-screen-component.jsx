@@ -18,16 +18,15 @@ export default class EditorScreenComponent extends ScreenComponent {
   constructor () {
     super()
 
-    this._bindAll('_onSwitchControls')
+    this._bindAll('switchToControls')
     this.state = { controls: OverviewControls }
   }
 
   /**
    * Switches to the given controls
    * @param  {Component} controls
-   * @private
    */
-  _onSwitchControls (controls) {
+  switchToControls (controls) {
     let newControls = null
     if (controls === 'back') {
       newControls = this._previousControls
@@ -62,7 +61,7 @@ export default class EditorScreenComponent extends ScreenComponent {
 
       <div bem='$b:controls $e:container e:row'>
         <div bem='e:cell'>
-          <Controls onSwitchControls={this._onSwitchControls} />
+          <Controls onSwitchControls={this.switchToControls} editor={this} />
         </div>
       </div>
     </div>)

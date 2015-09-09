@@ -8,15 +8,13 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import AdjustmentsControlsComponent from './adjustments-controls-component'
+import SaturationControlsComponent from './saturation-controls-component'
 
 export default {
   canvasControls: null,
-  controls: AdjustmentsControlsComponent,
-  identifier: 'adjustments',
+  controls: SaturationControlsComponent,
+  identifier: 'saturation',
   isSelectable: (ui) => {
-    return ui.isOperationSelected('brightness') ||
-      ui.isOperationSelected('contrast') ||
-      ui.isOperationSelected('saturation')
+    return ui.isOperationSelected('saturation')
   }
 }
