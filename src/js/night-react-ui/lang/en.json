@@ -33,6 +33,10 @@
       "square": "Square",
       "4-3": "4:3",
       "16-9": "16:9"
+    },
+    "blur": {
+      "radial-blur": "Radial Blur",
+      "tilt-shift": "Tilt-Shift"
     }
   },
   "webcam": {

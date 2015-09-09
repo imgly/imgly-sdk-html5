@@ -8,14 +8,13 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import BlurControlsComponent from './blur-controls-component'
+import RadialBlurControls from './radial-blur-controls-component'
 
 export default {
   canvasControls: null,
-  controls: BlurControlsComponent,
-  identifier: 'blur',
+  controls: RadialBlurControls,
+  identifier: 'radial-blur',
   isSelectable: (ui) => {
-    return ui.isOperationSelected('radial-blur') ||
-      ui.isOperationSelected('tilt-shift')
+    return ui.isOperationSelected('radial-blur')
   }
 }
