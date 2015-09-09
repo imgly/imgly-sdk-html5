@@ -10,12 +10,13 @@
  */
 
 import { React, ReactBEM, BaseChildComponent, Utils } from '../globals'
-const NATIVE_SCROLLBAR_HEIGHT = 18
+const NATIVE_SCROLLBAR_HEIGHT = 25
 
 export default class ScrollbarComponent extends BaseChildComponent {
   constructor () {
     super()
 
+    this._isDragging = false
     this._bindAll(
       '_onButtonDown',
       '_onButtonMove',
@@ -32,6 +33,7 @@ export default class ScrollbarComponent extends BaseChildComponent {
    */
   _onButtonDown (e) {
     e.preventDefault()
+    this._isDragging = true
 
     this._initialMousePosition = Utils.getEventPosition(e)
     this._initialButtonPosition = this.state.buttonLeft || 0
@@ -70,9 +72,9 @@ export default class ScrollbarComponent extends BaseChildComponent {
     this.setState({ buttonLeft })
 
     // Update list scroll position
-    const progress = buttonLeft / this._parentNode.scrollWidth
-    const scrollPosition = this._parentNode.scrollWidth * progress
-    this._parentNode.scrollLeft = scrollPosition
+    const progress = buttonLeft / this._list.scrollWidth
+    const scrollPosition = this._list.scrollWidth * progress
+    this._list.scrollLeft = scrollPosition
   }
 
   /**
@@ -82,6 +84,7 @@ export default class ScrollbarComponent extends BaseChildComponent {
    */
   _onButtonUp (e) {
     e.preventDefault()
+    this._isDragging = false
     document.removeEventListener('mousemove', this._onButtonMove)
     document.removeEventListener('touchmove', this._onButtonMove)
     document.removeEventListener('mouseup', this._onButtonUp)
@@ -97,8 +100,8 @@ export default class ScrollbarComponent extends BaseChildComponent {
     let buttonWidth = 0
     let buttonVisible = false
 
-    const parentWidth = this._parentNode.offsetWidth
-    const parentScrollWidth = this._parentNode.scrollWidth
+    const parentWidth = this._list.offsetWidth
+    const parentScrollWidth = this._list.scrollWidth
     buttonWidth = parentWidth / parentScrollWidth * parentWidth
     buttonVisible = parentScrollWidth > parentWidth
 
@@ -111,18 +114,18 @@ export default class ScrollbarComponent extends BaseChildComponent {
   componentDidMount () {
     const root = React.findDOMNode(this.refs.root)
     this._node = root
-    this._parentNode = root.parentNode
-    this._parentNodeDefaultHeight = this._parentNode.clientHeight
+    this._list = React.findDOMNode(this.refs.list)
+    this._listDefaultHeight = this._list.clientHeight
 
     this._updateButtonWidth(() => {
-      let parentNodeHeight = this._parentNodeDefaultHeight
+      let parentNodeHeight = this._listDefaultHeight
       if (this.state.buttonVisible) {
         parentNodeHeight += NATIVE_SCROLLBAR_HEIGHT
       }
-      this._parentNode.style.height = `${parentNodeHeight}px`
+      this._list.style.height = `${parentNodeHeight}px`
     })
 
-    this._parentNode.addEventListener('scroll', this._onListScroll)
+    this._list.addEventListener('scroll', this._onListScroll)
   }
 
   /**
@@ -130,8 +133,9 @@ export default class ScrollbarComponent extends BaseChildComponent {
    * @private
    */
   _onListScroll () {
-    const listScrollWidth = this._parentNode.scrollWidth - this._parentNode.offsetWidth
-    const listScrollPosition = this._parentNode.scrollLeft
+    if (this._isDragging) return
+    const listScrollWidth = this._list.scrollWidth - this._list.offsetWidth
+    const listScrollPosition = this._list.scrollLeft
 
     const backgroundScrollWidth = this._node.offsetWidth - this.state.buttonWidth
     const progress = listScrollPosition / listScrollWidth
@@ -146,17 +150,26 @@ export default class ScrollbarComponent extends BaseChildComponent {
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
-    const barStyle = {
+    const buttonStyle = {
       left: this.state.buttonLeft,
-      width: this.state.buttonWidth,
+      width: this.state.buttonWidth
+    }
+    const scrollbarStyle = {
       display: this.state.buttonVisible ? 'block' : 'none'
     }
 
-    return (<div bem='$b:scrollbar' ref='root'>
-      <div
-        bem='e:bar'
-        style={barStyle}
-        onMouseDown={this._onButtonDown}></div>
+    const child = React.cloneElement(this.props.children, {
+      ref: 'list'
+    })
+
+    return (<div>
+      {child}
+      <div bem='$b:scrollbar' ref='root' style={scrollbarStyle}>
+        <div
+            bem='e:bar'
+            style={buttonStyle}
+            onMouseDown={this._onButtonDown}></div>
+      </div>
     </div>)
   }
 }
