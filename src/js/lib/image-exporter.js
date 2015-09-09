@@ -77,7 +77,9 @@ class ImageExporter {
         // the exif information
         if (Exif.isJPEG(image.src) && Exif.isJPEG(result)) {
           const { exif } = kit
-          result = exif.restoreExifTags(result)
+          if (exif) {
+            result = exif.restoreExifTags(result)
+          }
         }
       }
 
