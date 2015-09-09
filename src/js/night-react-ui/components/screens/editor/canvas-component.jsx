@@ -32,9 +32,11 @@ export default class CanvasComponent extends BaseChildComponent {
    */
   renderWithBEM () {
     return (
-      <div bem='$b:canvas $e:container e:row'>
-        <div bem='e:cell' ref='canvasCell'>
-          <canvas ref='canvas' />
+      <div bem='$b:canvas e:container e:row'>
+        <div bem='e:container e:cell' ref='canvasCell'>
+          <div bem='$e:canvas m:draggable'>
+            <canvas ref='canvas' />
+          </div>
         </div>
       </div>
     )
