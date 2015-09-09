@@ -8,9 +8,11 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+import StickersControlsComponent from './stickers-controls-component'
+
 export default {
   canvasControls: null,
-  controls: null,
+  controls: StickersControlsComponent,
   identifier: 'stickers',
   isSelectable: (ui) => {
     return ui.isOperationSelected('stickers')

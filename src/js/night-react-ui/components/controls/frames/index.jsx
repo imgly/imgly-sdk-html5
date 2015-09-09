@@ -8,9 +8,11 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+import FramesControlsComponent from './frames-controls-component'
+
 export default {
   canvasControls: null,
-  controls: null,
+  controls: FramesControlsComponent,
   identifier: 'frames',
   isSelectable: (ui) => {
     return ui.isOperationSelected('frames')

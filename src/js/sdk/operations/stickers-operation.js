@@ -62,7 +62,34 @@ class StickersOperation extends Operation {
       }
     `
 
+    this._registerStickers()
     this._loadedStickers = {}
+  }
+
+  /**
+   * Registers the existing stickers
+   * @private
+   */
+  _registerStickers () {
+    this._stickers = [
+      'glasses-nerd',
+      'glasses-normal',
+      'glasses-shutter-green',
+      'glasses-shutter-yellow',
+      'glasses-sun',
+      'hat-cap',
+      'hat-cylinder',
+      'hat-party',
+      'hat-sheriff',
+      'heart',
+      'mustache-long',
+      'mustache1',
+      'mustache2',
+      'mustache3',
+      'pipe',
+      'snowflake',
+      'star'
+    ]
   }
 
   /**
@@ -246,13 +273,7 @@ class StickersOperation extends Operation {
     })
   }
 
-  /**
-   * The registered stickers
-   * @type {Object.<String,String>}
-   */
-  get stickers () {
-    return this._stickers
-  }
+  getStickers () { return this._stickers }
 }
 
 /**
