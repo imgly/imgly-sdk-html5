@@ -114,14 +114,16 @@ class RenderImage {
     return Promise.all(validationPromises)
       .then(() => {
         // Set initial size
-        const imageDimensions = new Vector2(
-          this._image.width, this._image.height
-        )
-        let size = imageDimensions
+        let size = new Vector2(this._image.width, this._image.height)
+
+        stack.forEach((operation) => {
+          size = operation.getNewDimensions(this._renderer, size)
+        })
 
         if (this._dimensions.bothSidesGiven()) {
-          size = Utils.resizeVectorToFit(imageDimensions, this._dimensions.getVector())
+          size = Utils.resizeVectorToFit(size, this._dimensions.getVector())
         }
+
         this._renderer.setSize(size)
       })
       .then(() => {
