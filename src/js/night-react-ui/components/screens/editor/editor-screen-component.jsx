@@ -8,7 +8,7 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-import { ReactBEM } from '../../../globals'
+import { React, ReactBEM, Vector2 } from '../../../globals'
 import ScreenComponent from '../screen-component'
 import SubHeaderComponent from '../../sub-header-component'
 
@@ -21,6 +21,20 @@ export default class EditorScreenComponent extends ScreenComponent {
     this._bindAll('switchToControls')
     this._previousControlsStack = []
     this.state = { controls: OverviewControls }
+  }
+
+  /**
+   * Gets called after this component has been mounted
+   */
+  componentDidMount () {
+    this._canvas = React.findDOMNode(this.refs.canvas)
+    const { renderer } = this.context
+
+    const canvasCell = React.findDOMNode(this.refs.canvasCell)
+    const canvasDimensions = new Vector2(canvasCell.offsetWidth, canvasCell.offsetHeight)
+    renderer.setDimensions(`${canvasDimensions.x}x${canvasDimensions.y}`)
+    renderer.setCanvas(this._canvas)
+    renderer.render()
   }
 
   /**
@@ -56,8 +70,8 @@ export default class EditorScreenComponent extends ScreenComponent {
       </SubHeaderComponent>
 
       <div bem='$b:canvasContainer e:row'>
-        <div bem='e:cell'>
-          {/* CanvasComponent */}
+        <div bem='e:cell' ref='canvasCell'>
+          <canvas bem='e:canvas' ref='canvas' />
         </div>
       </div>
 

@@ -15,7 +15,7 @@ import EventEmitter from '../lib/event-emitter'
 /**
  * @class
  * @alias ImglyKit.BaseRenderer
- * @param {Vector2} dimensions
+ * @param {Vector2} imageDimensions
  * @private
  */
 class Renderer extends EventEmitter {
@@ -29,10 +29,6 @@ class Renderer extends EventEmitter {
      * @private
      */
     this._canvas = canvas || this.createCanvas()
-
-    if (!canvas) {
-      this.setSize(dimensions)
-    }
 
     /**
      * @type {RenderingContext}

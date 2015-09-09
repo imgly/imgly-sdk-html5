@@ -8,6 +8,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+import Vector2 from './math/vector2'
+
 /**
  * Parses the dimensions string and provides calculation functions
  * @class
@@ -39,6 +41,14 @@ class ImageDimensions {
     this._rules = this._parse()
 
     this._validateRules()
+  }
+
+  bothSidesGiven () {
+    return this._rules.x && this._rules.y
+  }
+
+  getVector () {
+    return new Vector2(this._rules.x, this._rules.y)
   }
 
   /**

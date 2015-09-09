@@ -11,6 +11,7 @@
 import EventEmitter from './event-emitter'
 import ImageDimensions from './image-dimensions'
 import Vector2 from './math/vector2'
+import Utils from './utils'
 import CanvasRenderer from '../renderers/canvas-renderer'
 import WebGLRenderer from '../renderers/webgl-renderer'
 import Utils from './utils'
@@ -25,9 +26,9 @@ import Utils from './utils'
  * @param {string} preferredRenderer
  * @private
  */
-class RenderImage extends EventEmitter {
-  constructor (image, operationsStack, dimensions, preferredRenderer) {
-    super()
+class RenderImage {
+  constructor (canvas, image, operationsStack, dimensions, preferredRenderer) {
+    this._canvas = canvas
 
     /**
      * @type {Object}
@@ -68,12 +69,6 @@ class RenderImage extends EventEmitter {
      */
     this._dimensions = new ImageDimensions(dimensions)
 
-    /**
-     * @type {Vector2}
-     * @private
-     */
-    this._initialDimensions = new Vector2(this._image.width, this._image.height)
-
     this._initRenderer()
   }
 
@@ -85,10 +80,10 @@ class RenderImage extends EventEmitter {
   _initRenderer () {
     /* istanbul ignore if */
     if (WebGLRenderer.isSupported() && this._options.preferredRenderer !== 'canvas') {
-      this._renderer = new WebGLRenderer(this._initialDimensions, null, this._image)
+      this._renderer = new WebGLRenderer(this._initialDimensions, this._canvas, this._image)
       this._webglEnabled = true
     } else if (CanvasRenderer.isSupported()) {
-      this._renderer = new CanvasRenderer(this._initialDimensions, null, this._image)
+      this._renderer = new CanvasRenderer(this._initialDimensions, this._canvas, this._image)
       this._webglEnabled = false
     }
 
@@ -117,6 +112,18 @@ class RenderImage extends EventEmitter {
     }
 
     return Promise.all(validationPromises)
+      .then(() => {
+        // Set initial size
+        const imageDimensions = new Vector2(
+          this._image.width, this._image.height
+        )
+        let size = imageDimensions
+
+        if (this._dimensions.bothSidesGiven()) {
+          size = Utils.resizeVectorToFit(imageDimensions, this._dimensions.getVector())
+        }
+        this._renderer.setSize(size)
+      })
       .then(() => {
         let promise = Promise.resolve()
         for (let i = 0; i < stack.length; i++) {

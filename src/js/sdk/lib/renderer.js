@@ -25,11 +25,15 @@ import FlipOperation from '../operations/flip-operation'
  */
 export default class Renderer {
   constructor (renderer, options = {}, operationsOptions = {}) {
+    this._preferredRenderer = renderer
+
     // Set default options
     this._options = Utils.defaults(options, {
       additionalOperations: {},
       versionCheck: true,
-      image: null
+      image: null,
+      dimensions: null,
+      canvas: null
     })
 
     this._operationsOptions = operationsOptions
@@ -49,15 +53,28 @@ export default class Renderer {
     }
   }
 
+  render () {
+    if (!this._renderImage) {
+      this._renderImage = new RenderImage(
+        this._options.canvas,
+        this._options.image,
+        this.operationsStack,
+        this._options.dimensions,
+        this._preferredRenderer)
+    }
+
+    return this._renderImage.render()
+  }
+
   /**
-   * Renders the image
+   * Exports the image
    * @param  {ImglyKit.RenderType} [renderType=ImglyKit.RenderType.DATAURL] - The output type
    * @param  {ImglyKit.ImageFormat} [imageFormat=ImglyKit.ImageFormat.PNG] - The output image format
    * @param  {string} [dimensions] - The final dimensions of the image
    * @param  {Number} [quality] - The image quality, between 0 and 1
    * @return {Promise}
    */
-  render (renderType, imageFormat, dimensions, quality) {
+  export (renderType, imageFormat, dimensions, quality) {
     var settings = ImageExporter.validateSettings(renderType, imageFormat)
 
     renderType = settings.renderType
@@ -146,7 +163,7 @@ export default class Renderer {
    * Resets all custom and selected operations
    */
   reset () {
-
+    this._renderImage = null
   }
 
   /**
@@ -178,6 +195,8 @@ export default class Renderer {
     return operation
   }
 
+  setDimensions (dimensions) { this._options.dimensions = dimensions }
+  setCanvas (canvas) { this._options.canvas = canvas }
   hasImage () { return !!this._options.image }
   getOperations () { return this._operations }
   getOptions () { return this._options }
