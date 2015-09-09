@@ -53,6 +53,30 @@ export default class Renderer {
     }
   }
 
+  /**
+   * Creates an operation with the given identifier
+   * @param {String} identifier
+   * @param {Object} options = {}
+   * @param {Boolean} addToStack = true
+   * @returns {Operation}
+   */
+  createOperation (identifier, options = {}, addToStack = true) {
+    const Operation = this._operations[identifier]
+    if (!Operation) {
+      throw new Error(`No operation with identifier \`${identifier}\` found.`)
+    }
+
+    const operation = new Operation(this, options)
+    if (addToStack) {
+      this.operationsStack.push(operation)
+    }
+    return operation
+  }
+
+  /**
+   * Renders the image
+   * @return {Promise}
+   */
   render () {
     if (!this._renderImage) {
       this._renderImage = new RenderImage(
