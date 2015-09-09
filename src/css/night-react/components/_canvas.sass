@@ -9,11 +9,12 @@
  */
 
 +block(editor)
-  +block(canvasContainer)
-    +element(row)
-      display: table-row
-      background: $backgroundColor
+  +block(canvas)
+    +element(container)
+      +element(row)
+        display: table-row
+        background: $backgroundColor
 
-    +element(cell)
-      position: relative
-      display: table-cell
+      +element(cell)
+        position: relative
+        display: table-cell
