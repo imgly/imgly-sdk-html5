@@ -99,6 +99,10 @@ class ImglyKit {
         this._handleWindowResize()
       }
     }
+
+    if (this._options.image) {
+      this._parseExif(this._options.image)
+    }
   }
 
   /**
