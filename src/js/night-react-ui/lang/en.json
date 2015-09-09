@@ -16,6 +16,12 @@
     "text": {
       "foreground": "Foreground",
       "background": "Background"
+    },
+    "orientation": {
+      "rotate-l": "Rotate -90°",
+      "rotate-r": "Rotate +90°",
+      "flip-h": "Flip (H)",
+      "flip-v": "Flip (V)"
     }
   },
   "webcam": {
