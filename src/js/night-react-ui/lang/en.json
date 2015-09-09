@@ -27,6 +27,12 @@
       "brightness": "Brightness",
       "contrast": "Contrast",
       "saturation": "Saturation"
+    },
+    "crop": {
+      "custom": "Custom",
+      "square": "Square",
+      "4-3": "4:3",
+      "16-9": "16:9"
     }
   },
   "webcam": {

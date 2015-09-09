@@ -8,9 +8,11 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+import CropControlsComponent from './crop-controls-component'
+
 export default {
   canvasControls: null,
-  controls: null,
+  controls: CropControlsComponent,
   identifier: 'crop',
   isSelectable: (ui) => {
     return ui.isOperationSelected('crop')
