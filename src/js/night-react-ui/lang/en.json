@@ -22,6 +22,11 @@
       "rotate-r": "Rotate +90°",
       "flip-h": "Flip (H)",
       "flip-v": "Flip (V)"
+    },
+    "adjustments": {
+      "brightness": "Brightness",
+      "contrast": "Contrast",
+      "saturation": "Saturation"
     }
   },
   "webcam": {
