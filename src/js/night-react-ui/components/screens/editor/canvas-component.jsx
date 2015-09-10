@@ -21,6 +21,16 @@ export default class CanvasComponent extends BaseChildComponent {
   }
 
   /**
+   * Returns the default zoom level
+   * @return {Number}
+   */
+  getDefaultZoom () {
+    const canvasDimensions = new Vector2(this._canvas.width, this._canvas.height)
+    const nativeDimensions = this.context.renderer.getNativeDimensions()
+    return canvasDimensions.divide(nativeDimensions).x
+  }
+
+  /**
    * Gets called after this component has been mounted
    */
   componentDidMount () {
@@ -28,12 +38,17 @@ export default class CanvasComponent extends BaseChildComponent {
     const { renderer } = this.context
 
     const canvasCell = React.findDOMNode(this.refs.canvasCell)
-    const canvasDimensions = new Vector2(canvasCell.offsetWidth, canvasCell.offsetHeight)
-    renderer.setDimensions(`${canvasDimensions.x}x${canvasDimensions.y}`)
+    let containerDimensions = new Vector2(canvasCell.offsetWidth, canvasCell.offsetHeight)
+    if (this.props.zoom !== null) {
+      containerDimensions = containerDimensions.multiply(this.props.zoom)
+    }
+    renderer.setDimensions(`${containerDimensions.x}x${containerDimensions.y}`)
     renderer.setCanvas(this._canvas)
     renderer.render()
       .then(() => {
         this._repositionCanvas()
+
+        this.props.onFirstRender && this.props.onFirstRender()
       })
   }
 

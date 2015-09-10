@@ -43,7 +43,7 @@ export default class BaseChildComponent extends React.Component {
    * @private
    */
   _getAssetPath (...args) {
-    return this.context.ui.helpers.assetPath(...args)
+    return this.context.ui.getHelpers().assetPath(...args)
   }
 
   /**
