@@ -96,6 +96,21 @@ class RenderImage {
   }
 
   /**
+   * Returns the dimensions of the image after all operations
+   * have been applied
+   * @returns {Vector2}
+   */
+  getNativeDimensions () {
+    const stack = this.sanitizedStack
+
+    let size = new Vector2(this._image.width, this._image.height)
+    stack.forEach((operation) => {
+      size = operation.getNewDimensions(this._renderer, size)
+    })
+    return size
+  }
+
+  /**
    * Renders the image
    * @return {Promise}
    */
@@ -113,18 +128,13 @@ class RenderImage {
 
     return Promise.all(validationPromises)
       .then(() => {
-        // Set initial size
-        let size = new Vector2(this._image.width, this._image.height)
-
-        stack.forEach((operation) => {
-          size = operation.getNewDimensions(this._renderer, size)
-        })
+        let dimensions = this.getNativeDimensions()
 
         if (this._dimensions.bothSidesGiven()) {
-          size = Utils.resizeVectorToFit(size, this._dimensions.getVector())
+          dimensions = Utils.resizeVectorToFit(dimensions, this._dimensions.getVector())
         }
 
-        this._renderer.setSize(size)
+        this._renderer.setSize(dimensions)
       })
       .then(() => {
         let promise = Promise.resolve()

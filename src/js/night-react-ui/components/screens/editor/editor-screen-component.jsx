@@ -8,10 +8,11 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-import { React, ReactBEM, Vector2 } from '../../../globals'
+import { ReactBEM } from '../../../globals'
 import ScreenComponent from '../screen-component'
 import SubHeaderComponent from '../../sub-header-component'
 import CanvasComponent from './canvas-component'
+import ZoomComponent from './zoom-component'
 
 import OverviewControls from '../../controls/overview/'
 
@@ -19,9 +20,44 @@ export default class EditorScreenComponent extends ScreenComponent {
   constructor () {
     super()
 
-    this._bindAll('switchToControls')
+    this._bindAll(
+      'switchToControls',
+      '_onFirstCanvasRender',
+      '_onZoomIn',
+      '_onZoomOut'
+    )
+
     this._previousControlsStack = []
-    this.state = { controls: OverviewControls }
+    this.state = {
+      zoom: null,
+      controls: OverviewControls
+    }
+  }
+
+  /**
+   * We only know the canvas dimensions after the first rendering has been done.
+   * On the first render, we should set the initial zoom level
+   * @private
+   */
+  _onFirstCanvasRender () {
+    const canvasComponent = this.refs.canvas
+    this.setState({ zoom: canvasComponent.getDefaultZoom() })
+  }
+
+  /**
+   * Gets called when the user clicked the zoom in button
+   * @private
+   */
+  _onZoomIn () {
+    this.setState({ zoom: this.state.zoom + 0.1 })
+  }
+
+  /**
+   * Gets called when the user clicked the zoom out button
+   * @private
+   */
+  _onZoomOut () {
+    this.setState({ zoom: this.state.zoom - 0.1 })
   }
 
   /**
@@ -50,13 +86,17 @@ export default class EditorScreenComponent extends ScreenComponent {
       <SubHeaderComponent
         label={this._t('webcam.headline')}>
         <bem specifier='$b:subHeader'>
-          <div bem='e:label'>
-            {this._t('editor.headline')}
-          </div>
+          <ZoomComponent
+            zoom={this.state.zoom}
+            onZoomIn={this._onZoomIn}
+            onZoomOut={this._onZoomOut} />
         </bem>
       </SubHeaderComponent>
 
-      <CanvasComponent />
+      <CanvasComponent
+        ref='canvas'
+        onFirstRender={this._onFirstCanvasRender}
+        zoom={this.state.zoom} />
 
       <div bem='$b:controls $e:container e:row'>
         <div bem='e:cell'>

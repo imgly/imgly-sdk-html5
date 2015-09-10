@@ -78,6 +78,15 @@ export default class Renderer {
    * @return {Promise}
    */
   render () {
+    this._ensureRenderImage()
+    return this._renderImage.render()
+  }
+
+  /**
+   * Makes sure that a render image exists
+   * @private
+   */
+  _ensureRenderImage () {
     if (!this._renderImage) {
       this._renderImage = new RenderImage(
         this._options.canvas,
@@ -86,8 +95,16 @@ export default class Renderer {
         this._options.dimensions,
         this._preferredRenderer)
     }
+  }
 
-    return this._renderImage.render()
+  /**
+   * Returns the dimensions of the image after all operations
+   * have been applied
+   * @returns {Vector2}
+   */
+  getNativeDimensions () {
+    this._ensureRenderImage()
+    return this._renderImage.getNativeDimensions()
   }
 
   /**
