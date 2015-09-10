@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { React, ReactBEM, Vector2, BaseChildComponent } from '../../../globals'
+import { SDKUtils, React, ReactBEM, Vector2, BaseChildComponent } from '../../../globals'
 
 export default class CanvasComponent extends BaseChildComponent {
   constructor (...args) {
@@ -25,31 +25,58 @@ export default class CanvasComponent extends BaseChildComponent {
    * @return {Number}
    */
   getDefaultZoom () {
-    const canvasDimensions = new Vector2(this._canvas.width, this._canvas.height)
+    const canvasCell = React.findDOMNode(this.refs.canvasCell)
+    const containerDimensions = new Vector2(canvasCell.offsetWidth, canvasCell.offsetHeight)
     const nativeDimensions = this.context.renderer.getNativeDimensions()
-    return canvasDimensions.divide(nativeDimensions).x
+    const defaultDimensions = SDKUtils.resizeVectorToFit(nativeDimensions, containerDimensions)
+    return defaultDimensions.divide(nativeDimensions).x
+  }
+
+  /**
+   * Gets called when the dimensions or zoom has been changed
+   * @param {Number} zoom = this.props.zoom
+   * @private
+   */
+  _onCanvasUpdate (zoom = this.props.zoom) {
+    const { renderer } = this.context
+    const canvasCell = React.findDOMNode(this.refs.canvasCell)
+
+    let containerDimensions = new Vector2(canvasCell.offsetWidth, canvasCell.offsetHeight)
+    if (zoom !== null) {
+      containerDimensions = renderer.getNativeDimensions()
+        .multiply(zoom)
+        .floor()
+    }
+    renderer.setDimensions(`${containerDimensions.x}x${containerDimensions.y}`)
+
+    return renderer.render()
+      .then(() => {
+        this._repositionCanvas()
+      })
   }
 
   /**
    * Gets called after this component has been mounted
    */
   componentDidMount () {
-    this._canvas = React.findDOMNode(this.refs.canvas)
     const { renderer } = this.context
-
-    const canvasCell = React.findDOMNode(this.refs.canvasCell)
-    let containerDimensions = new Vector2(canvasCell.offsetWidth, canvasCell.offsetHeight)
-    if (this.props.zoom !== null) {
-      containerDimensions = containerDimensions.multiply(this.props.zoom)
-    }
-    renderer.setDimensions(`${containerDimensions.x}x${containerDimensions.y}`)
+    this._canvas = React.findDOMNode(this.refs.canvas)
     renderer.setCanvas(this._canvas)
-    renderer.render()
-      .then(() => {
-        this._repositionCanvas()
 
+    this._onCanvasUpdate()
+      .then(() => {
         this.props.onFirstRender && this.props.onFirstRender()
       })
+  }
+
+  /**
+   * Gets called when the component has received new properties
+   * @param {Object} nextProps
+   */
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.zoom !== this.props.zoom) {
+      this._onCanvasUpdate(nextProps.zoom)
+    }
   }
 
   /**

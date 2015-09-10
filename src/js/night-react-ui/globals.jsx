@@ -19,7 +19,9 @@ import Utils from './lib/utils'
 const Promise = PhotoEditorSDK.Promise
 const Log = PhotoEditorSDK.Log
 const Vector2 = PhotoEditorSDK.Vector2
+const SDKUtils = PhotoEditorSDK.Utils
 
 export {
-  Log, Promise, Utils, React, BEM, Classnames, BaseChildComponent, ReactBEM, Vector2
+  Log, Promise, Utils, React, BEM, Classnames, BaseChildComponent, ReactBEM, Vector2,
+  SDKUtils
 }

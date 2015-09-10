@@ -49,7 +49,14 @@ export default class EditorScreenComponent extends ScreenComponent {
    * @private
    */
   _onZoomIn () {
-    this.setState({ zoom: this.state.zoom + 0.1 })
+    const canvasComponent = this.refs.canvas
+    const defaultZoom = canvasComponent.getDefaultZoom()
+
+    let newZoom = this.state.zoom
+    newZoom += 0.1
+    newZoom = Math.min(defaultZoom * 2, newZoom)
+
+    this.setState({ zoom: newZoom })
   }
 
   /**
@@ -57,7 +64,14 @@ export default class EditorScreenComponent extends ScreenComponent {
    * @private
    */
   _onZoomOut () {
-    this.setState({ zoom: this.state.zoom - 0.1 })
+    const canvasComponent = this.refs.canvas
+    const defaultZoom = canvasComponent.getDefaultZoom()
+
+    let newZoom = this.state.zoom
+    newZoom -= 0.1
+    newZoom = Math.max(defaultZoom, newZoom)
+
+    this.setState({ zoom: newZoom })
   }
 
   /**

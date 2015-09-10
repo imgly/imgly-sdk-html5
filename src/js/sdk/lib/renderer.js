@@ -236,7 +236,13 @@ export default class Renderer {
     return operation
   }
 
-  setDimensions (dimensions) { this._options.dimensions = dimensions }
+  setDimensions (dimensions) {
+    this._options.dimensions = dimensions
+    if (this._renderImage) {
+      this._renderImage.setDimensions(dimensions)
+    }
+  }
+
   setCanvas (canvas) { this._options.canvas = canvas }
   hasImage () { return !!this._options.image }
   getOperations () { return this._operations }
