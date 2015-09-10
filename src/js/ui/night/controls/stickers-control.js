@@ -155,7 +155,7 @@ class StickersControl extends Control {
       canvas.height = canvas.offsetHeight
 
       const context = canvas.getContext('2d')
-      const { image } = canvas.dataset
+      const image = canvas.getAttribute('data-image')
       const imageEl = document.createElement('img')
 
       const canvasSize = new Vector2(canvas.width, canvas.height)
@@ -190,7 +190,7 @@ class StickersControl extends Control {
     // Listen to click events
     for (let i = 0; i < this._listItems.length; i++) {
       let listItem = this._listItems[i]
-      let { identifier } = listItem.dataset
+      const identifier = listItem.getAttribute('data-identifier')
       listItem.addEventListener('click', () => {
         this._onListItemClick(listItem)
       })
@@ -404,7 +404,7 @@ class StickersControl extends Control {
   _onListItemClick (item, manually=true) {
     this._deactivateAllItems()
 
-    let { identifier } = item.dataset
+    const identifier = item.getAttribute('data-identifier')
     let stickerPath = this._availableStickers[identifier]
     stickerPath = this._kit.getAssetPath(stickerPath)
 

@@ -98,7 +98,7 @@ class RotationControl extends Control {
    * @private
    */
   _onListItemClick (item) {
-    let { degrees } = item.dataset
+    let degrees = item.getAttribute('data-degrees')
     degrees = parseInt(degrees, 10)
 
     let currentDegrees = this._operation.getDegrees()

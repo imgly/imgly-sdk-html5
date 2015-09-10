@@ -41,7 +41,7 @@ class FlipControl extends Control {
         this._onListItemClick(listItem)
       })
 
-      let { direction } = listItem.dataset
+      const direction = listItem.getAttribute('data-direction')
       if (direction === 'horizontal' && this._operation.getHorizontal()) {
         this._toggleItem(listItem, true)
       } else if (direction === 'vertical' && this._operation.getVertical()) {
@@ -55,7 +55,7 @@ class FlipControl extends Control {
    * @private
    */
   _onListItemClick (item) {
-    let { direction } = item.dataset
+    const direction = item.getAttribute('data-direction')
     let active = false
 
     let currentHorizontal = this._operation.getHorizontal()

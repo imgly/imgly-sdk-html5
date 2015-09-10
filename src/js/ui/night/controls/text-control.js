@@ -164,8 +164,8 @@ class TextControl extends Control {
       const listItem = canvas.parentNode
 
       const context = canvas.getContext('2d')
-      const fontFamily = listItem.dataset.name
-      const fontWeight = listItem.dataset.weight
+      const fontFamily = listItem.getAttribute('data-name')
+      const fontWeight = listItem.getAttribute('data-weight')
 
       context.font = `${fontWeight} 30px ${fontFamily}`
       context.textBaseline = 'middle'
@@ -187,7 +187,7 @@ class TextControl extends Control {
     // Listen to click events
     for (let i = 0; i < this._listItems.length; i++) {
       let listItem = this._listItems[i]
-      let { name } = listItem.dataset
+      const name = listItem.getAttribute('data-name')
       listItem.addEventListener('click', () => {
         this._onListItemClick(listItem)
       })
@@ -423,7 +423,8 @@ class TextControl extends Control {
   _onListItemClick (item, manually=true) {
     this._deactivateAllItems()
 
-    let { name, weight } = item.dataset
+    const name = item.getAttribute('data-name')
+    const weight = item.getAttribute('data-weight')
     this._settings.fontFamily = name
     this._settings.fontWeight = weight
 

@@ -82,7 +82,7 @@ class FiltersControl extends Control {
   _onListItemClick (item) {
     this._deactivateAllItems()
 
-    let { identifier } = item.dataset
+    const identifier = item.getAttribute('data-identifier')
     this._operation.setFilter(this._filters[identifier])
     this._ui.canvas.render()
 

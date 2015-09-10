@@ -139,9 +139,11 @@ class CropControl extends Control {
       centerCenter: this._canvasControls.querySelector(`${prefix}-center-center`)
     }
 
+    this._knobsContainer = this._canvasControls.querySelector(`.imglykit-canvas-crop-knobs`)
+
     this._handleControls()
     this._handleKnobs()
-    this._handleCenter()
+    this._handleKnobsContainer()
 
     // Resume the rendering
     this._ui.canvas.render()
@@ -160,8 +162,10 @@ class CropControl extends Control {
 
     for (let i = 0; i < this._ratioItems.length; i++) {
       let item = this._ratioItems[i]
-      let { selected, ratio, identifier } = item.dataset
-      if (typeof selected !== 'undefined' && !this._operationExistedBefore) {
+      const selected = item.getAttribute('data-selected')
+      const ratio = item.getAttribute('data-ratio')
+      const identifier = item.getAttribute('data-identifier')
+      if ((typeof selected !== 'undefined' && selected !== null) && !this._operationExistedBefore) {
         this._setRatio(identifier, ratio, false)
         this._selectRatio(item)
       }
@@ -201,7 +205,8 @@ class CropControl extends Control {
    */
   _selectRatio (item) {
     item.classList.add('imglykit-controls-item-active')
-    let { ratio, identifier } = item.dataset
+    const ratio = item.getAttribute('data-ratio')
+    const identifier = item.getAttribute('data-identifier')
     this._setRatio(identifier, ratio)
   }
 
@@ -273,6 +278,10 @@ class CropControl extends Control {
     // heights are defined by top left and center left areas
     this._areas.topLeft.style.height = `${top}px`
     this._areas.centerLeft.style.height = `${height}px`
+
+    // define height on center div to make sure the knobs are positioned
+    // correctly (bug in IE10)
+    this._knobsContainer.style.height = `${height}px`
   }
 
   /**
@@ -324,7 +333,7 @@ class CropControl extends Control {
 
     let mousePosition = Utils.getEventPosition(e)
     let mouseDiff = mousePosition.subtract(this._initialMousePosition)
-    let corner = this._currentKnob.dataset.corner
+    let corner = this._currentKnob.getAttribute('data-corner')
     let canvasSize = this._ui.canvas.size
 
     let absoluteStart = this._startBeforeDrag.clone()
@@ -444,9 +453,9 @@ class CropControl extends Control {
    * Handles the center dragging
    * @private
    */
-  _handleCenter () {
-    this._areas.centerCenter.addEventListener('mousedown', this._onCenterDown)
-    this._areas.centerCenter.addEventListener('touchstart', this._onCenterDown)
+  _handleKnobsContainer () {
+    this._knobsContainer.addEventListener('mousedown', this._onCenterDown)
+    this._knobsContainer.addEventListener('touchstart', this._onCenterDown)
   }
 
   /**
@@ -455,6 +464,7 @@ class CropControl extends Control {
    * @private
    */
   _onCenterDown (e) {
+    console.log('_onCenterDown')
     this._initialMousePosition = Utils.getEventPosition(e)
 
     // Remember the current values

@@ -371,7 +371,7 @@ class NightUI extends UI {
     // Add click events to all items
     for (let i = 0; i < listItems.length; i++) {
       let listItem = listItems[i]
-      let { identifier } = listItem.dataset
+      const identifier = listItem.getAttribute('data-identifier')
       listItem.addEventListener('click', () => {
         this.switchToControl(identifier)
       })
