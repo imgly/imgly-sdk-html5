@@ -173,7 +173,12 @@ class CanvasComponent extends BaseChildComponent {
    * @param {Object} nextProps
    */
   componentWillReceiveProps (nextProps) {
-    let rerender = nextProps.zoom !== this.props.zoom
+    const zoomChanged = nextProps.zoom !== this.props.zoom
+    let rerender = zoomChanged
+
+    if (zoomChanged) {
+      this.context.renderer.setAllOperationsToDirty()
+    }
 
     // Check for operation options equality
     let optionsDiffer = false

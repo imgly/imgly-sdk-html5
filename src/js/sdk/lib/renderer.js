@@ -129,11 +129,7 @@ export default class Renderer {
       this._options.renderer)
 
     // Set all operations to dirty, since we have another webgl renderer
-    for (let i = 0; i < this.operationsStack.length; i++) {
-      let operation = this.operationsStack[i]
-      if (!operation) { continue }
-      operation.dirty = true
-    }
+    this.setAllOperationsToDirty()
 
     // Initiate image rendering
     return renderImage.render()
@@ -247,6 +243,14 @@ export default class Renderer {
     this.operationsStack = operationsStack
     if (this._renderImage) {
       this._renderImage.setOperationsStack(operationsStack)
+    }
+  }
+
+  setAllOperationsToDirty () {
+    for (let i = 0; i < this.operationsStack.length; i++) {
+      let operation = this.operationsStack[i]
+      if (!operation) { continue }
+      operation.dirty = true
     }
   }
 
