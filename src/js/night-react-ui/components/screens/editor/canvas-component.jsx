@@ -9,9 +9,9 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { Constants, Utils, SDKUtils, React, ReactBEM, Vector2, BaseChildComponent } from '../../../globals'
+import { Utils, SDKUtils, React, ReactBEM, Vector2, BaseChildComponent, ReactRedux } from '../../../globals'
 
-export default class CanvasComponent extends BaseChildComponent {
+class CanvasComponent extends BaseChildComponent {
   constructor (...args) {
     super(...args)
 
@@ -26,9 +26,24 @@ export default class CanvasComponent extends BaseChildComponent {
       canvasPosition: new Vector2(),
       canvasOffset: new Vector2()
     }
+  }
 
-    const { mediator } = this.context
-    mediator.on(Constants.EVENTS.RENDER_CANVAS, this._onCanvasUpdate)
+  /**
+   * Maps the given state to properties for this component
+   * @param {*} state
+   * @return {Object}
+   */
+  static mapStateToProps (state) {
+    const { operationsStack } = state
+
+    let props = {
+      operations: operationsStack.map((operation) => {
+        return SDKUtils.clone(operation.getOptions())
+      })
+    }
+    props.operationsStack = state.operationsStack.slice(0)
+
+    return props
   }
 
   /**
@@ -130,6 +145,7 @@ export default class CanvasComponent extends BaseChildComponent {
         .multiply(zoom)
         .floor()
     }
+    renderer.setOperationsStack(this.props.operationsStack)
     renderer.setDimensions(`${containerDimensions.x}x${containerDimensions.y}`)
 
     return renderer.render()
@@ -157,7 +173,25 @@ export default class CanvasComponent extends BaseChildComponent {
    * @param {Object} nextProps
    */
   componentWillReceiveProps (nextProps) {
-    if (nextProps.zoom !== this.props.zoom) {
+    let rerender = nextProps.zoom !== this.props.zoom
+
+    // Check for operation options equality
+    let optionsDiffer = false
+    nextProps.operations.forEach((options, i) => {
+      const prevOptions = this.props.operations[i] || {}
+      for (let optionName in options) {
+        if (options[optionName] !== prevOptions[optionName]) {
+          optionsDiffer = true
+          break
+        }
+      }
+    })
+
+    if (optionsDiffer) {
+      rerender = true
+    }
+
+    if (rerender) {
       this._onCanvasUpdate(nextProps.zoom)
         .then(() => {
           this._updateOffset()
@@ -212,3 +246,5 @@ export default class CanvasComponent extends BaseChildComponent {
     )
   }
 }
+
+export default ReactRedux.connect(CanvasComponent.mapStateToProps)(CanvasComponent)

@@ -199,6 +199,19 @@ class Utils {
   }
 
   /**
+   * Creates a shallow clone of the given object
+   * @param {Object} object
+   * @returns {Object}
+   */
+  static clone (object) {
+    let newObject = {}
+    for (let key in object) {
+      newObject[key] = object[key]
+    }
+    return newObject
+  }
+
+  /**
    * Gets the property value at `path` of `object`
    * @param  {Object} object
    * @param  {String} key

@@ -243,6 +243,13 @@ export default class Renderer {
     }
   }
 
+  setOperationsStack (operationsStack) {
+    this.operationsStack = operationsStack
+    if (this._renderImage) {
+      this._renderImage.setOperationsStack(operationsStack)
+    }
+  }
+
   setCanvas (canvas) { this._options.canvas = canvas }
   hasImage () { return !!this._options.image }
   getOperations () { return this._operations }

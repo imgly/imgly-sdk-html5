@@ -86,6 +86,23 @@
     }
   };
 
+  babelHelpers.interopRequireWildcard = function (obj) {
+    if (obj && obj.__esModule) {
+      return obj;
+    } else {
+      var newObj = {};
+
+      if (obj != null) {
+        for (var key in obj) {
+          if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
+        }
+      }
+
+      newObj["default"] = obj;
+      return newObj;
+    }
+  };
+
   babelHelpers.interopRequireDefault = function (obj) {
     return obj && obj.__esModule ? obj : {
       "default": obj
