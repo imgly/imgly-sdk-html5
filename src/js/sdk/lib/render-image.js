@@ -111,6 +111,27 @@ class RenderImage {
   }
 
   /**
+   * Finds the first dirty operation and sets all following operations
+   * to dirty
+   * @param {Array.<Operation>} stack
+   * @private
+   */
+  _updateStackDirtiness (stack) {
+    let dirtyFound = false
+    for (let i = 0; i < stack.length; i++) {
+      let operation = stack[i]
+      if (!operation) continue
+      if (operation.dirty) {
+        dirtyFound = true
+      }
+
+      if (dirtyFound) {
+        operation.dirty = true
+      }
+    }
+  }
+
+  /**
    * Renders the image
    * @return {Promise}
    */
@@ -119,6 +140,10 @@ class RenderImage {
     const initialDimensions = this._renderer.getInitialDimensionsForStack(stack, this._dimensions)
     this._renderer.resizeTo(initialDimensions)
     this._renderer.drawImage(this._image)
+    this._updateStackDirtiness(stack)
+
+    // Reset frame buffers
+    this._renderer.reset()
 
     let validationPromises = []
     for (let i = 0; i < stack.length; i++) {

@@ -54,7 +54,7 @@ $controlsButtonHeight: 60px
       cursor: pointer
       line-height: $controlsButtonHeight
 
-      &:hover
+      &:hover, &.is-active
         @include opacity(1)
         background: $primaryColor
 
@@ -94,3 +94,23 @@ $controlsButtonHeight: 60px
     // Thanks Sass! >:(
     &#{$modifierSeparator}withLabel &#{$elementSeparator}icon
       margin-top: -20px
+
++block(controls)
+  +element(button)
+    &#{$modifierSeparator}withInlineLabel &#{$elementSeparator}icon
+      @include border-radius(4px)
+      width: $controlsButtonWidth
+      height: $controlsButtonHeight
+
+    &#{$modifierSeparator}withInlineLabel &#{$elementSeparator}label
+      position: absolute
+      bottom: 0
+      left: 0
+      transform: none
+      width: 100%
+      background: $backgroundColor
+      line-height: 20px
+      text-align: center
+
+    &#{$modifierSeparator}withInlineLabel.is-active &#{$elementSeparator}label
+      background: $primaryColor

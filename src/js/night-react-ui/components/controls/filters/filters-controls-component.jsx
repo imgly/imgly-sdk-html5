@@ -9,16 +9,49 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent } from '../../../globals'
+import { ReactBEM, BaseChildComponent, Constants } from '../../../globals'
 import ScrollbarComponent from '../../scrollbar-component'
 
 export default class FiltersControlsComponent extends BaseChildComponent {
   constructor (...args) {
     super(...args)
 
-    this._bindAll('_onBackClick')
+    this._bindAll(
+      '_onBackClick',
+      '_onItemClick',
+      '_onComponentUpdate'
+    )
     this._operation = this.context.ui.getOrCreateOperation('filters')
+    this._operation.on('update', this._onComponentUpdate)
     this._filters = this._operation.getFilters()
+  }
+
+  /**
+   * Gets called when the component has been updated
+   * @private
+   */
+  _onComponentUpdate () {
+    this.forceUpdate()
+  }
+
+  /**
+   * Gets called when the component is about to be unmounted. Cleans
+   * up.
+   */
+  componentWillUnmount () {
+    this._operation.off('update', this._onComponentUpdate)
+  }
+
+  /**
+   * Gets called when the user clicks an item
+   * @param {Filter} filter
+   * @param {Event} e
+   * @private
+   */
+  _onItemClick (filter, e) {
+    this._operation.setFilter(filter)
+    this.forceUpdate()
+    this.context.mediator.emit(Constants.EVENTS.RENDER_CANVAS)
   }
 
   /**
@@ -36,16 +69,22 @@ export default class FiltersControlsComponent extends BaseChildComponent {
    */
   renderWithBEM () {
     const ui = this.context.ui
+    const currentFilter = this._operation.getFilter()
 
     let listItems = []
     for (let identifier in this._filters) {
+      const filter = this._filters[identifier]
+
       listItems.push(<li
         bem='e:item'
-        key={identifier}>
+        key={identifier}
+        onClick={this._onItemClick.bind(this, filter)}>
         <bem specifier='$b:controls'>
-          <div bem='$e:button m:withLabel'>
-            <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/filters/${identifier}@2x.png`, true)} />
-            <div bem='e:label'>Filter</div>
+          <div
+            bem='$e:button m:withInlineLabel'
+            className={filter === currentFilter ? 'is-active' : null}>
+            <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/filters/${identifier}.png`, true)} />
+            <div bem='e:label'>{filter.prototype.name}</div>
           </div>
         </bem>
       </li>)

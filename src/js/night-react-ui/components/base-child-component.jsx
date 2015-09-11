@@ -67,5 +67,6 @@ export default class BaseChildComponent extends React.Component {
 BaseChildComponent.contextTypes = {
   ui: React.PropTypes.object,
   renderer: React.PropTypes.object,
-  options: React.PropTypes.object
+  options: React.PropTypes.object,
+  mediator: React.PropTypes.object
 }

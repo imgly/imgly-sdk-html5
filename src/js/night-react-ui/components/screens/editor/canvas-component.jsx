@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { Utils, SDKUtils, React, ReactBEM, Vector2, BaseChildComponent } from '../../../globals'
+import { Constants, Utils, SDKUtils, React, ReactBEM, Vector2, BaseChildComponent } from '../../../globals'
 
 export default class CanvasComponent extends BaseChildComponent {
   constructor (...args) {
@@ -18,13 +18,17 @@ export default class CanvasComponent extends BaseChildComponent {
     this._bindAll(
       '_onDragStart',
       '_onDragMove',
-      '_onDragEnd'
+      '_onDragEnd',
+      '_onCanvasUpdate'
     )
 
     this.state = {
       canvasPosition: new Vector2(),
       canvasOffset: new Vector2()
     }
+
+    const { mediator } = this.context
+    mediator.on(Constants.EVENTS.RENDER_CANVAS, this._onCanvasUpdate)
   }
 
   /**
@@ -58,6 +62,11 @@ export default class CanvasComponent extends BaseChildComponent {
     this._updateOffset(newOffset)
   }
 
+  /**
+   * Clamps and updates the canvas positioning offset
+   * @param {Vector2} [offset]
+   * @private
+   */
   _updateOffset (offset = this.state.canvasOffset) {
     const canvasCell = React.findDOMNode(this.refs.canvasCell)
     const containerDimensions = new Vector2(canvasCell.offsetWidth, canvasCell.offsetHeight)

@@ -33,6 +33,7 @@ class FiltersOperation extends Operation {
    */
   _registerFilters () {
     this._filters = {}
+    this._filters.identity = Filters.IdentityFilter
     for (let name in Filters) {
       const filter = Filters[name]
       this._filters[filter.identifier] = filter
@@ -83,7 +84,7 @@ FiltersOperation.identifier = 'filters'
  * Specifies the available options for this operation
  * @type {Object}
  */
-FiltersOperation.availableOptions = {
+FiltersOperation.prototype.availableOptions = {
   filter: { type: 'object', default: IdentityFilter,
     setter: function (Filter) {
       this._selectedFilter = new Filter()
