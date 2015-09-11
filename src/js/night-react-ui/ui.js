@@ -30,7 +30,8 @@ export default class NightReactUI extends EventEmitter {
     this._helpers = new Helpers(this._renderer, this._options)
     this._store = Redux.createStore(Reducer, {
       operationsStack: [],
-      operationsMap: {}
+      operationsMap: {},
+      operationsOptions: {}
     })
 
     this._initOptions()

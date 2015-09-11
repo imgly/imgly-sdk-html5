@@ -31,24 +31,34 @@ const OPERATIONS_ORDER = [
   'text'
 ]
 
-export default (store = {}, action) => {
+export default (state = {}, action) => {
+  const { operation } = action
   switch (action.type) {
-    case 'ADD_OPERATION':
-      const { operation } = action
-      store = Utils.clone(store)
+    case 'OPERATION_UPDATED':
+      state = Utils.clone(state)
 
-      let operationsStack = store.operationsStack.slice(0)
+      state.operationsOptions = Utils.clone(state.operationsOptions)
+      state.operationsOptions[operation.constructor.identifier] =
+        Utils.clone(operation.getOptions())
+      break
+    case 'ADD_OPERATION':
+      state = Utils.clone(state)
+
+      let operationsStack = state.operationsStack.slice(0)
       let index = OPERATIONS_ORDER.indexOf(operation.constructor.identifier)
       if (index === -1) {
         index = operationsStack.length
       }
       operationsStack[index] = operation
-      store.operationsStack = operationsStack
+      state.operationsStack = operationsStack
 
-      let operationsMap = Utils.clone(store.operationsMap)
+      let operationsMap = Utils.clone(state.operationsMap)
       operationsMap[operation.constructor.identifier] = operation
-      store.operationsMap = operationsMap
+      state.operationsMap = operationsMap
+
+      state.operationsOptions[operation.constructor.identifier] =
+        Utils.clone(operation.getOptions())
       break
   }
-  return store
+  return state
 }

@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent, ReactRedux, ActionCreators, SDKUtils } from '../../../globals'
+import { ReactBEM, BaseChildComponent, ReactRedux, ActionCreators } from '../../../globals'
 import ScrollbarComponent from '../../scrollbar-component'
 
 class FiltersControlsComponent extends BaseChildComponent {
@@ -30,14 +30,10 @@ class FiltersControlsComponent extends BaseChildComponent {
    * @return {Object}
    */
   static mapStateToProps (state) {
-    const { operationsMap } = state
-    const operation = operationsMap.filters
-
-    let props = {}
-    if (operation) {
-      props.operationOptions = SDKUtils.clone(operation.getOptions())
+    const { operationsOptions } = state
+    return {
+      operationOptions: operationsOptions.filters
     }
-    return props
   }
 
   /**

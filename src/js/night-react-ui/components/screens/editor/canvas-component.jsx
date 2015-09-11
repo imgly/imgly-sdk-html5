@@ -34,12 +34,10 @@ class CanvasComponent extends BaseChildComponent {
    * @return {Object}
    */
   static mapStateToProps (state) {
-    const { operationsStack } = state
+    const { operationsOptions } = state
 
     let props = {
-      operations: operationsStack.map((operation) => {
-        return SDKUtils.clone(operation.getOptions())
-      })
+      operationsOptions: SDKUtils.clone(operationsOptions)
     }
     props.operationsStack = state.operationsStack.slice(0)
 
@@ -173,24 +171,27 @@ class CanvasComponent extends BaseChildComponent {
    * @param {Object} nextProps
    */
   componentWillReceiveProps (nextProps) {
-    const zoomChanged = nextProps.zoom !== this.props.zoom
-    let rerender = zoomChanged
+    let rerender = false
 
-    if (zoomChanged) {
+    if (nextProps.zoom !== this.props.zoom) {
       this.context.renderer.setAllOperationsToDirty()
+      rerender = true
     }
 
     // Check for operation options equality
     let optionsDiffer = false
-    nextProps.operations.forEach((options, i) => {
-      const prevOptions = this.props.operations[i] || {}
-      for (let optionName in options) {
-        if (options[optionName] !== prevOptions[optionName]) {
+    const newOptions = nextProps.operationsOptions
+    const oldOptions = this.props.operationsOptions
+    for (let operationIdentifier in newOptions) {
+      const newOperationOptions = newOptions[operationIdentifier]
+      const previousOperationOptions = oldOptions[operationIdentifier]
+      for (let optionName in previousOperationOptions) {
+        if (newOperationOptions[optionName] !== previousOperationOptions[optionName]) {
           optionsDiffer = true
           break
         }
       }
-    })
+    }
 
     if (optionsDiffer) {
       rerender = true
