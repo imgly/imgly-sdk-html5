@@ -9,37 +9,35 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent, Constants } from '../../../globals'
+import { ReactBEM, BaseChildComponent, ReactRedux, ActionCreators, SDKUtils } from '../../../globals'
 import ScrollbarComponent from '../../scrollbar-component'
 
-export default class FiltersControlsComponent extends BaseChildComponent {
+class FiltersControlsComponent extends BaseChildComponent {
   constructor (...args) {
     super(...args)
 
     this._bindAll(
       '_onBackClick',
-      '_onItemClick',
-      '_onComponentUpdate'
+      '_onItemClick'
     )
     this._operation = this.context.ui.getOrCreateOperation('filters')
-    this._operation.on('update', this._onComponentUpdate)
     this._filters = this._operation.getFilters()
   }
 
   /**
-   * Gets called when the component has been updated
-   * @private
+   * Maps the given state to properties for this component
+   * @param {*} state
+   * @return {Object}
    */
-  _onComponentUpdate () {
-    this.forceUpdate()
-  }
+  static mapStateToProps (state) {
+    const { operationsMap } = state
+    const operation = operationsMap.filters
 
-  /**
-   * Gets called when the component is about to be unmounted. Cleans
-   * up.
-   */
-  componentWillUnmount () {
-    this._operation.off('update', this._onComponentUpdate)
+    let props = {}
+    if (operation) {
+      props.operationOptions = SDKUtils.clone(operation.getOptions())
+    }
+    return props
   }
 
   /**
@@ -50,8 +48,7 @@ export default class FiltersControlsComponent extends BaseChildComponent {
    */
   _onItemClick (filter, e) {
     this._operation.setFilter(filter)
-    this.forceUpdate()
-    this.context.mediator.emit(Constants.EVENTS.RENDER_CANVAS)
+    this.props.dispatch(ActionCreators.operationUpdated(this._operation))
   }
 
   /**
@@ -69,7 +66,8 @@ export default class FiltersControlsComponent extends BaseChildComponent {
    */
   renderWithBEM () {
     const ui = this.context.ui
-    const currentFilter = this._operation.getFilter()
+    const { operationOptions } = this.props
+    const currentFilter = operationOptions && operationOptions.filter
 
     let listItems = []
     for (let identifier in this._filters) {
@@ -106,3 +104,5 @@ export default class FiltersControlsComponent extends BaseChildComponent {
     </div>)
   }
 }
+
+export default ReactRedux.connect(FiltersControlsComponent.mapStateToProps)(FiltersControlsComponent)

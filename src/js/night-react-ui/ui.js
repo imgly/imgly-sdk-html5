@@ -9,13 +9,17 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-const { Operations, Utils, EventEmitter } = PhotoEditorSDK
+const { Utils, EventEmitter } = PhotoEditorSDK
 
 import Polyglot from 'node-polyglot'
 import Helpers from './helpers'
 import React from 'react'
 import EditorComponent from './components/editor-component'
 import OverviewControlsComponent from './components/controls/overview/overview-controls-component'
+import * as ReactRedux from 'react-redux'
+import * as Redux from 'redux'
+import Reducer from './store/reducer'
+import ActionCreators from './store/action-creators'
 
 export default class NightReactUI extends EventEmitter {
   constructor (renderer, options) {
@@ -24,9 +28,10 @@ export default class NightReactUI extends EventEmitter {
     this._renderer = renderer
     this._options = options
     this._helpers = new Helpers(this._renderer, this._options)
-
-    this._operationsStack = this._renderer.operationsStack
-    this._operationsMap = {}
+    this._store = Redux.createStore(Reducer, {
+      operationsStack: [],
+      operationsMap: {}
+    })
 
     this._initOptions()
     this._initLanguage()
@@ -191,11 +196,12 @@ export default class NightReactUI extends EventEmitter {
     // Container has to be position: relative
     this._options.container.style.position = 'relative'
 
-    React.render(<EditorComponent
+    React.render(<ReactRedux.Provider store={this._store}>
+      {() => <EditorComponent
       ui={this}
       renderer={this._renderer}
-      options={this._options} />,
-      this._options.container)
+      options={this._options} />}
+    </ReactRedux.Provider>, this._options.container)
   }
 
   /**
@@ -215,13 +221,13 @@ export default class NightReactUI extends EventEmitter {
    * @return {PhotoEditorSDK.operation}
    */
   getOrCreateOperation (identifier) {
-    if (this._operationsMap[identifier]) {
-      return this._operationsMap[identifier]
+    const { operationsMap } = this._store.getState()
+    if (operationsMap[identifier]) {
+      return operationsMap[identifier]
     } else {
       const Operation = this._availableOperations[identifier]
       const operation = new Operation(this._renderer)
-      this._operationsStack.push(operation)
-      this._operationsMap[identifier] = operation
+      this._store.dispatch(ActionCreators.addOperation(operation))
       return operation
     }
   }

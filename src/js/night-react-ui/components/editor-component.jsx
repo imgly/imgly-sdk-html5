@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { React, ReactBEM, EventEmitter } from '../globals'
+import { React, ReactBEM } from '../globals'
 import HeaderComponent from './header-component'
 import SplashScreenComponent from './screens/splash/splash-screen-component'
 import WebcamScreenComponent from './screens/webcam/webcam-screen-component'
@@ -24,8 +24,6 @@ class EditorComponent extends React.Component {
       webcam: WebcamScreenComponent,
       editor: EditorScreenComponent
     }
-
-    this._mediator = new EventEmitter()
 
     let initialScreen = this._screens.splash
     if (this.props.ui.hasImage()) {
@@ -64,8 +62,7 @@ class EditorComponent extends React.Component {
     return {
       ui: this.props.ui,
       renderer: this.props.renderer,
-      options: this.props.options,
-      mediator: this._mediator
+      options: this.props.options
     }
   }
 
@@ -90,8 +87,7 @@ class EditorComponent extends React.Component {
 EditorComponent.childContextTypes = {
   ui: React.PropTypes.object.isRequired,
   renderer: React.PropTypes.object.isRequired,
-  options: React.PropTypes.object.isRequired,
-  mediator: React.PropTypes.object.isRequired
+  options: React.PropTypes.object.isRequired
 }
 
 EditorComponent.propTypes = {

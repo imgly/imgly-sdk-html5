@@ -308,6 +308,8 @@ class Operation extends EventEmitter {
   get dirty () {
     return this._dirty
   }
+
+  getOptions () { return this._options }
 }
 
 /**

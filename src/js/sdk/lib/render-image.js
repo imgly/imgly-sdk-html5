@@ -209,6 +209,10 @@ class RenderImage {
   setDimensions (dimensions) {
     this._dimensions = new ImageDimensions(dimensions)
   }
+
+  setOperationsStack (operationsStack) {
+    this._stack = operationsStack
+  }
 }
 
 export default RenderImage
