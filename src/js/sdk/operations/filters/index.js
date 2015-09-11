@@ -8,6 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+exports.IdentityFilter = require('./identity-filter')
 exports.A15 = require('./a15-filter')
 exports.Breeze = require('./breeze-filter')
 exports.BW = require('./bw-filter')

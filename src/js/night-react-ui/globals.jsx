@@ -15,13 +15,15 @@ import ReactBEM from './lib/react-bem'
 import Classnames from 'classnames'
 import BaseChildComponent from './components/base-child-component'
 import Utils from './lib/utils'
+import Constants from './lib/constants'
 
 const Promise = PhotoEditorSDK.Promise
 const Log = PhotoEditorSDK.Log
 const Vector2 = PhotoEditorSDK.Vector2
 const SDKUtils = PhotoEditorSDK.Utils
+const EventEmitter = PhotoEditorSDK.EventEmitter
 
 export {
   Log, Promise, Utils, React, BEM, Classnames, BaseChildComponent, ReactBEM, Vector2,
-  SDKUtils
+  SDKUtils, EventEmitter, Constants
 }
