@@ -67,7 +67,6 @@ class FiltersOperation extends Operation {
    * @private
    */
   _render (renderer) {
-    console.log('rendering yo')
     this._selectedFilter.render(renderer)
   }
 
