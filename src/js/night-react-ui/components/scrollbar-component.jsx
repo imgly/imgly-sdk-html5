@@ -64,16 +64,19 @@ export default class ScrollbarComponent extends BaseChildComponent {
    * @private
    */
   _setButtonLeft (buttonLeft) {
+    const scrollableButtonWidth = this._node.offsetWidth - this.state.buttonWidth
+    const scrollableListWidth = this._list.scrollWidth - this._list.offsetWidth
+
     // Clamp button position
     buttonLeft = Math.max(0, buttonLeft)
-    buttonLeft = Math.min(buttonLeft, this._node.offsetWidth - this.state.buttonWidth)
+    buttonLeft = Math.min(buttonLeft, scrollableButtonWidth)
 
     // Set button position
     this.setState({ buttonLeft })
 
     // Update list scroll position
-    const progress = buttonLeft / this._list.scrollWidth
-    const scrollPosition = this._list.scrollWidth * progress
+    const progress = buttonLeft / scrollableButtonWidth
+    const scrollPosition = scrollableListWidth * progress
     this._list.scrollLeft = scrollPosition
   }
 
