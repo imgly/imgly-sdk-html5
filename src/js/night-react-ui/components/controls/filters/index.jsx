@@ -9,9 +9,10 @@
  */
 
 import FiltersControlsComponent from './filters-controls-component'
+import FiltersCanvasControlsComponent from './filters-canvas-controls-component'
 
 export default {
-  canvasControls: null,
+  canvasControls: FiltersCanvasControlsComponent,
   controls: FiltersControlsComponent,
   identifier: 'filters',
   isSelectable: (ui) => {
