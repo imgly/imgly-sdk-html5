@@ -106,7 +106,7 @@ export default {
    * @private
    */
   _isNodeBEMable (node) {
-    return typeof node === 'object' && !React.isValidElement(node)
+    return node !== null && typeof node === 'object' && !React.isValidElement(node)
   },
 
   /**

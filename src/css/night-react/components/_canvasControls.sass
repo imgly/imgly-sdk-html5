@@ -1,0 +1,46 @@
+
+/*
+ * Photo Editor SDK - photoeditorsdk.com
+ * Copyright (c) 2013-2015 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+
++block(editor)
+  +block(canvasControls)
+    +element(container)
+      position: absolute
+
+      +modifier(full)
+        top: 0
+        left: 0
+        width: 100%
+        height: 100%
+
+      +modifier(bottom)
+        bottom: 0
+        left: 0
+        width: 100%
+
+      +modifier(dark)
+        background: rgba($secondaryBackgroundColor, 0.7)
+
+    +element(table)
+      position: absolute
+      top: 0
+      left: 0
+      display: table
+      table-layout: fixed
+      width: 100%
+      height: 100%
+
+    +element(row)
+      display: table-row
+
+    +element(cell)
+      display: table-cell
+      +modifier(empty)
+

@@ -247,6 +247,7 @@ class CanvasComponent extends BaseChildComponent {
             style={this._getDraggableStyle()}>
             <canvas ref='canvas' />
           </div>
+          {this.props.children}
         </div>
       </div>
     )

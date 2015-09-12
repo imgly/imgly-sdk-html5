@@ -95,7 +95,14 @@ export default class EditorScreenComponent extends ScreenComponent {
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
+    const CanvasControls = this.state.controls.canvasControls
     const Controls = this.state.controls.controls
+
+    let canvasControls = null
+    if (CanvasControls) {
+      canvasControls = <CanvasControls editor={this} />
+    }
+
     return (<div bem='b:screen $b:editorScreen'>
       <SubHeaderComponent
         label={this._t('webcam.headline')}>
@@ -110,7 +117,9 @@ export default class EditorScreenComponent extends ScreenComponent {
       <CanvasComponent
         ref='canvas'
         onFirstRender={this._onFirstCanvasRender}
-        zoom={this.state.zoom} />
+        zoom={this.state.zoom}>
+        {canvasControls}
+      </CanvasComponent>
 
       <div bem='$b:controls $e:container e:row'>
         <div bem='e:cell'>
