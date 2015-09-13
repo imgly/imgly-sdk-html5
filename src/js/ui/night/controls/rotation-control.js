@@ -19,9 +19,6 @@ class RotationControl extends Control {
   init () {
     let controlsTemplate = __DOTJS_TEMPLATE('../../../templates/night/operations/rotation_controls.jst')
     this._controlsTemplate = controlsTemplate
-
-    let canvasControlsTemplate = __DOTJS_TEMPLATE('../../../templates/night/operations/rotation_canvas.jst')
-    this._canvasControlsTemplate = canvasControlsTemplate
   }
 
   /**
@@ -35,26 +32,16 @@ class RotationControl extends Control {
     this._operation.dirty = true
     this._cropOperation = this._ui.operations.crop
 
+    this._initialDegrees = this._operation.getDegrees()
+
+    let listItems = this._controls.querySelectorAll('li')
     if (this._cropOperation) {
       if (!this._initialStart && !this._initialEnd) {
         // Store initial settings for 'back' and 'done' buttons
         this._initialStart = this._cropOperation.getStart().clone()
         this._initialEnd = this._cropOperation.getEnd().clone()
       }
-
-      // Make sure we see the whole input image
-      this._cropOperation.set({
-        start: new Vector2(0, 0),
-        end: new Vector2(1, 1)
-      })
     }
-
-    this._initialZoomLevel = this._ui.canvas.zoomLevel
-    this._ui.canvas.zoomToFit(false)
-
-    this._initialDegrees = this._operation.getDegrees()
-
-    let listItems = this._controls.querySelectorAll('li')
     this._listItems = Array.prototype.slice.call(listItems)
 
     // Listen to click events
@@ -64,32 +51,6 @@ class RotationControl extends Control {
         this._onListItemClick(listItem)
       })
     }
-
-    // Find the div areas that affect the displayed crop size
-    let prefix = '.imglykit-canvas-crop'
-    this._cropAreas = {
-      topLeft: this._canvasControls.querySelector(`${prefix}-top-left`),
-      topCenter: this._canvasControls.querySelector(`${prefix}-top-center`),
-      centerLeft: this._canvasControls.querySelector(`${prefix}-center-left`),
-      centerCenter: this._canvasControls.querySelector(`${prefix}-center-center`)
-    }
-
-    // Resume the rendering
-    this._ui.canvas.render()
-      .then(() => {
-        this._showCropContainer()
-        this._updateCropDOM()
-      })
-  }
-
-  /**
-   * Shows the crop container which is hidden initially to avoid flickering
-   * when resizing after the rendering
-   * @private
-   */
-  _showCropContainer () {
-    let container = this._canvasControls.querySelector('.imglykit-canvas-crop-container')
-    container.classList.remove('imglykit-canvas-crop-container-hidden')
   }
 
   /**
@@ -109,53 +70,35 @@ class RotationControl extends Control {
       }, this._operationExistedBefore)
     }
 
+    this._rotateCrop(degrees)
     this._operation.setDegrees(currentDegrees + degrees)
     this._ui.canvas.zoomToFit()
-      .then(() => {
-        this._updateCropDOM()
-      })
   }
 
   /**
-   * Gets called when the zoom level has been changed while
-   * this control is active
-   */
-  onZoom () {
-    this._updateCropDOM()
-  }
-
-  /**
-   * Updates the cropping divs for the current operation settings
+   * Rotates the current crop options by the given degrees
+   * @param {Number} degrees
    * @private
    */
-  _updateCropDOM () {
-    let start, end
-    if (this._cropOperation) {
-      start = this._initialStart.clone()
-      end = this._initialEnd.clone()
-    } else {
-      start = new Vector2(0, 0)
-      end = new Vector2(1, 1)
+  _rotateCrop (degrees) {
+    if (!this._cropOperation) return
+
+    let start = this._cropOperation.getStart().clone()
+    let end = this._cropOperation.getEnd().clone()
+
+    const _start = start.clone()
+    switch (degrees) {
+      case 90:
+        start = new Vector2(1.0 - end.y, _start.x)
+        end = new Vector2(1.0 - _start.y, end.x)
+        break
+      case -90:
+        start = new Vector2(_start.y, 1.0 - end.x)
+        end = new Vector2(end.y, 1.0 - _start.x)
+        break
     }
 
-    let canvasSize = this._ui.canvas.size
-
-    let startAbsolute = start.multiply(canvasSize)
-    let endAbsolute = end.multiply(canvasSize)
-    let size = endAbsolute.clone().subtract(startAbsolute)
-
-    let top = Math.max(1, startAbsolute.y)
-    let left = Math.max(1, startAbsolute.x)
-    let width = Math.max(1, size.x)
-    let height = Math.max(1, size.y)
-
-    // widths are defined by top left and top center areas
-    this._cropAreas.topLeft.style.width = `${left}px`
-    this._cropAreas.topCenter.style.width = `${width}px`
-
-    // heights are defined by top left and center left areas
-    this._cropAreas.topLeft.style.height = `${top}px`
-    this._cropAreas.centerLeft.style.height = `${height}px`
+    this._cropOperation.set({ start, end })
   }
 
   /**
@@ -174,7 +117,6 @@ class RotationControl extends Control {
         end: this._initialEnd
       })
     }
-    this._ui.canvas.setZoomLevel(this._initialZoomLevel, true)
   }
 }
 

@@ -34,7 +34,8 @@ class CropOperation extends Operation {
 
       void main() {
         vec2 size = u_cropEnd - u_cropStart;
-        gl_FragColor = texture2D(u_image, v_texCoord * size + u_cropStart);
+        vec2 offset = vec2(u_cropStart.x, 1.0 - u_cropEnd.y);
+        gl_FragColor = texture2D(u_image, (v_texCoord * size) + offset);
       }
     `
   }
@@ -57,11 +58,6 @@ class CropOperation extends Operation {
       start.divide(canvasSize)
       end.divide(canvasSize)
     }
-
-    // 0..1 > 1..0 on y-axis
-    var originalStartY = start.y
-    start.y = 1 - end.y
-    end.y = 1 - originalStartY
 
     // The new size
     var newDimensions = this.getNewDimensions(renderer)
