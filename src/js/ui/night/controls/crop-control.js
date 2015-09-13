@@ -464,7 +464,6 @@ class CropControl extends Control {
    * @private
    */
   _onCenterDown (e) {
-    console.log('_onCenterDown')
     this._initialMousePosition = Utils.getEventPosition(e)
 
     // Remember the current values
