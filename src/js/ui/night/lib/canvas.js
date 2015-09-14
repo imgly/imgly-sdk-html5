@@ -46,8 +46,6 @@ class Canvas extends EventEmitter {
 
     // Calculate the initial zoom level
     this._zoomLevel = this._getInitialZoomLevel()
-    this._initialZoomLevel = this._zoomLevel
-    this._isInitialZoom = true
     this._size = null
 
     this.render()
@@ -55,23 +53,23 @@ class Canvas extends EventEmitter {
     this._handleDrag()
   }
 
+  getNativeDimensions () {
+    const stack = this.sanitizedStack
+
+    let size = new Vector2(this._image.width, this._image.height)
+    stack.forEach((operation) => {
+      size = operation.getNewDimensions(this._renderer, size)
+    })
+
+    return size
+  }
+
   /**
    * Renders the current operations stack
    */
   render () {
-    this._initialZoomLevel = this._getInitialZoomLevel()
-
-    // Reset the zoom level to initial
-    // Some operations change the texture resolution (e.g. rotation)
-    // If we're on initial zoom level, we still want to make the canvas
-    // fit into the container. Find the new initial zoom level and set it.
-    if (this._isInitialZoom) {
-      this.setZoomLevel(this._initialZoomLevel, false)
-    }
-
     // Calculate the initial size
-    let imageSize = new Vector2(this._image.width, this._image.height)
-    let initialSize = imageSize.multiply(this._zoomLevel)
+    const initialSize = this.getNativeDimensions().multiply(this._zoomLevel)
     this._setCanvasSize(initialSize)
 
     // Reset framebuffers
@@ -164,7 +162,7 @@ class Canvas extends EventEmitter {
 
     let zoomLevel = Math.round(this._zoomLevel * 100)
     let roundZoomBy = Math.round(this._roundZoomBy * 100)
-    let initialZoomLevel = Math.round(this._initialZoomLevel * 100)
+    let initialZoomLevel = Math.round(this._getInitialZoomLevel() * 100)
 
     // Round up if needed
     if (zoomLevel % roundZoomBy !== 0) {
@@ -185,7 +183,7 @@ class Canvas extends EventEmitter {
 
     let zoomLevel = Math.round(this._zoomLevel * 100)
     let roundZoomBy = Math.round(this._roundZoomBy * 100)
-    let initialZoomLevel = Math.round(this._initialZoomLevel * 100)
+    let initialZoomLevel = Math.round(this._getInitialZoomLevel() * 100)
 
     // Round up if needed
     if (zoomLevel % roundZoomBy !== 0) {
@@ -307,40 +305,12 @@ class Canvas extends EventEmitter {
    * @private
    */
   _getInitialZoomLevel () {
-    let inputSize = new Vector2(this._image.width, this._image.height)
+    const nativeDimensions = this.getNativeDimensions()
+    const fitDimensions = Utils.resizeVectorToFit(nativeDimensions, this._maxSize)
 
-    let cropOperation = this._ui.operations.crop
-    let rotationOperation = this._ui.operations.rotation
-
-    let cropSize, croppedSize, finalSize, initialSize
-
-    if (cropOperation) {
-      cropSize = cropOperation.getEnd().clone()
-        .subtract(cropOperation.getStart())
-    } else {
-      cropSize = new Vector2(1.0, 1.0)
-    }
-
-    croppedSize = inputSize.clone().multiply(cropSize)
-
-    // Has the image been rotated?
-    if (rotationOperation && rotationOperation.getDegrees() % 180 !== 0) {
-      let tempX = croppedSize.x
-      croppedSize.x = croppedSize.y
-      croppedSize.y = tempX
-    }
-
-    finalSize = Utils.resizeVectorToFit(croppedSize, this._maxSize)
-
-    // Rotate back to be able to find the final size
-    if (rotationOperation && rotationOperation.getDegrees() % 180 !== 0) {
-      let tempX = finalSize.x
-      finalSize.x = finalSize.y
-      finalSize.y = tempX
-    }
-
-    initialSize = finalSize.clone().divide(cropSize)
-    return initialSize.x / inputSize.x
+    return fitDimensions
+      .divide(nativeDimensions)
+      .x
   }
 
   /**
