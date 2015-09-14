@@ -53,7 +53,7 @@ class Canvas extends EventEmitter {
     this._handleDrag()
   }
 
-  getNativeDimensions () {
+  getProcessedDimensions () {
     const stack = this.sanitizedStack
 
     let size = new Vector2(this._image.width, this._image.height)
@@ -68,8 +68,10 @@ class Canvas extends EventEmitter {
    * Renders the current operations stack
    */
   render () {
+    this._renderer.setSize(new Vector2(this._image.width, this._image.height))
+
     // Calculate the initial size
-    const initialSize = this.getNativeDimensions().multiply(this._zoomLevel)
+    const initialSize = this.getProcessedDimensions().multiply(this._zoomLevel)
     this._setCanvasSize(initialSize)
 
     // Reset framebuffers
@@ -305,7 +307,7 @@ class Canvas extends EventEmitter {
    * @private
    */
   _getInitialZoomLevel () {
-    const nativeDimensions = this.getNativeDimensions()
+    const nativeDimensions = this.getProcessedDimensions()
     const fitDimensions = Utils.resizeVectorToFit(nativeDimensions, this._maxSize)
 
     return fitDimensions

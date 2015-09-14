@@ -31,9 +31,9 @@ class CropOperation extends Operation {
    */
   /* istanbul ignore next */
   _renderWebGL (renderer) {
-    var start = this._options.start.clone()
-    var end = this._options.end.clone()
-
+    const start = this._options.start.clone()
+    const end = this._options.end.clone()
+    const size = end.clone().subtract(start)
     const fragmentShader = null
 
     if (!this._program) {
@@ -51,6 +51,7 @@ class CropOperation extends Operation {
         end.x, 1.0 - end.y,
         end.x, 1.0 - start.y
       ])
+    renderer.setSize(renderer.getSize().multiply(size))
     renderer.runProgram(this._program, { textureCoordinates })
   }
 

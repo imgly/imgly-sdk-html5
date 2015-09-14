@@ -23,6 +23,7 @@ class WebGLRenderer extends Renderer {
   constructor (...args) {
     super(...args)
 
+    this._size = new Vector2()
     this._defaultProgram = this.setupGLSLProgram()
     this.reset()
 
@@ -55,8 +56,6 @@ class WebGLRenderer extends Renderer {
    * @param {String} identifier
    */
   cache (identifier) {
-    let size = new Vector2(this._canvas.width, this._canvas.height)
-
     // Re-use FBO and textures
     let fbo, texture, cacheObject
     if (!this._cache[identifier]) {
@@ -76,46 +75,18 @@ class WebGLRenderer extends Renderer {
 
     // Resize cached texture
     gl.bindTexture(gl.TEXTURE_2D, texture)
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size.x, size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._size.x, this._size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
 
     // Render to FBO
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo)
-    gl.viewport(0, 0, size.x, size.y)
+    gl.viewport(0, 0, this._size.x, this._size.y)
 
     // Use last fbo texture as input
     gl.bindTexture(gl.TEXTURE_2D, this._lastTexture)
 
     gl.drawArrays(gl.TRIANGLES, 0, 6)
 
-    this._cache[identifier] = { fbo, texture, size }
-  }
-
-  /**
-   * Debugging method to draw a cached texture to the canvas instead
-   * to an FBO
-   * @private
-   */
-  _drawCachedFinal (identifier) {
-    const { texture, size } = this._cache[identifier]
-    const program = this._defaultProgram
-
-    let gl = this._context
-    gl.useProgram(program)
-    this._setCoordinates(program)
-
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null)
-
-    // Use the cached texture as input
-    gl.bindTexture(gl.TEXTURE_2D, texture)
-
-    // Resize the canvas
-    this._canvas.width = size.x
-    this._canvas.height = size.y
-
-    gl.viewport(0, 0, size.x, size.y)
-
-    // Draw the rectangle
-    gl.drawArrays(gl.TRIANGLES, 0, 6)
+    this._cache[identifier] = { fbo, texture, size: this._size.clone() }
   }
 
   /**
@@ -131,10 +102,6 @@ class WebGLRenderer extends Renderer {
     let gl = this._context
     gl.useProgram(this._defaultProgram)
     this._setCoordinates(this._defaultProgram)
-
-    // Resize the canvas
-    this._canvas.width = size.x
-    this._canvas.height = size.y
 
     // Resize all textures
     for (let i = 0; i < this._textures.length; i++) {
@@ -163,6 +130,8 @@ class WebGLRenderer extends Renderer {
 
     this.setLastTexture(currentTexture)
     this.selectNextBuffer()
+
+    this._size = size.clone()
   }
 
   /**
@@ -242,10 +211,20 @@ class WebGLRenderer extends Renderer {
    */
   /* istanbul ignore next */
   drawImage (image) {
+    this._size = new Vector2(image.width, image.height)
     return new Promise((resolve, reject) => {
       var gl = this._context
       gl.useProgram(this._defaultProgram)
       this._setCoordinates(this._defaultProgram)
+
+      var fbo = this.getCurrentFramebuffer()
+      var currentTexture = this.getCurrentTexture()
+
+      // Select the current framebuffer
+      gl.bindFramebuffer(gl.FRAMEBUFFER, fbo)
+      gl.viewport(0, 0, this._size.x, this._size.y)
+      gl.bindTexture(gl.TEXTURE_2D, currentTexture)
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._size.x, this._size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
 
       // Create the texture
       var texture = this.createTexture()
@@ -258,8 +237,6 @@ class WebGLRenderer extends Renderer {
 
       // Upload the image into the texture
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image)
-
-      this._clear(gl)
 
       // Draw the rectangle
       gl.drawArrays(gl.TRIANGLES, 0, 6)
@@ -366,6 +343,14 @@ class WebGLRenderer extends Renderer {
     gl.bufferData(gl.ARRAY_BUFFER, triangleCoordinates, gl.STATIC_DRAW)
   }
 
+  setSize (size) {
+    this._size.copy(size)
+  }
+
+  getSize () {
+    return this._size.clone()
+  }
+
   runProgram (program, options) {
     let gl = this._context
     gl.useProgram(program)
@@ -376,7 +361,7 @@ class WebGLRenderer extends Renderer {
 
     // Select the current framebuffer
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo)
-    gl.viewport(0, 0, this._canvas.width, this._canvas.height)
+    gl.viewport(0, 0, this._size.x, this._size.y)
 
     // Resize the texture to canvas size
     gl.bindTexture(gl.TEXTURE_2D, currentTexture)
@@ -384,7 +369,7 @@ class WebGLRenderer extends Renderer {
     // Set premultiplied alpha
     gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)
 
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._canvas.width, this._canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._size.x, this._size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
 
     // Make sure we select the current texture
     gl.bindTexture(gl.TEXTURE_2D, this._lastTexture)
@@ -589,7 +574,7 @@ class WebGLRenderer extends Renderer {
     // Set premultiplied alpha
     gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)
 
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._canvas.width, this._canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._size.x, this._size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
 
     // Create framebuffer
     let fbo = gl.createFramebuffer()

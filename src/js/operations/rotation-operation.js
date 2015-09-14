@@ -48,15 +48,7 @@ class RotationOperation extends Operation {
 
     var actualDegrees = this._options.degrees % 360
 
-    // If we're not rotating by 180 degrees, we need to resize the canvas
-    // and the texture
-    if (actualDegrees % 180 !== 0) {
-      let newDimensions = this.getNewDimensions(renderer)
-
-      // Resize the canvas
-      canvas.width = newDimensions.x
-      canvas.height = newDimensions.y
-    }
+    let newDimensions = this.getNewDimensions(renderer)
 
     // Build the rotation matrix
     var radians = actualDegrees * (Math.PI / 180)
@@ -69,6 +61,7 @@ class RotationOperation extends Operation {
     ]
 
     // Run the shader
+    renderer.setSize(newDimensions)
     renderer.runShader(this.vertexShader, null, {
       uniforms: {
         u_matrix: { type: 'mat3fv', value: rotationMatrix }
@@ -118,8 +111,7 @@ class RotationOperation extends Operation {
    * @return {Vector2}
    */
   getNewDimensions (renderer, dimensions) {
-    let canvas = renderer.getCanvas()
-    dimensions = dimensions || new Vector2(canvas.width, canvas.height)
+    dimensions = dimensions || renderer.getSize()
 
     let actualDegrees = this._options.degrees % 360
     if (actualDegrees % 180 !== 0) {
