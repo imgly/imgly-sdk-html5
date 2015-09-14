@@ -110,13 +110,6 @@ class RotationControl extends Control {
     if (currentDegrees === 0) {
       this._ui.removeOperation('rotation')
     }
-
-    if (this._cropOperation) {
-      this._cropOperation.set({
-        start: this._initialStart,
-        end: this._initialEnd
-      })
-    }
   }
 }
 
