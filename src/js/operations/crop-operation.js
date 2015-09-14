@@ -21,23 +21,6 @@ import Vector2 from '../lib/math/vector2'
 class CropOperation extends Operation {
   constructor (...args) {
     super(...args)
-
-    /**
-     * The fragment shader used for this operation
-     */
-    this.fragmentShader = `
-      precision mediump float;
-      uniform sampler2D u_image;
-      varying vec2 v_texCoord;
-      uniform vec2 u_cropStart;
-      uniform vec2 u_cropEnd;
-
-      void main() {
-        vec2 size = u_cropEnd - u_cropStart;
-        vec2 offset = vec2(u_cropStart.x, 1.0 - u_cropEnd.y);
-        gl_FragColor = texture2D(u_image, (v_texCoord * size) + offset);
-      }
-    `
   }
 
   /**
@@ -48,31 +31,27 @@ class CropOperation extends Operation {
    */
   /* istanbul ignore next */
   _renderWebGL (renderer) {
-    var canvas = renderer.getCanvas()
-    var canvasSize = new Vector2(canvas.width, canvas.height)
-
     var start = this._options.start.clone()
     var end = this._options.end.clone()
 
-    if (this._options.numberFormat === 'absolute') {
-      start.divide(canvasSize)
-      end.divide(canvasSize)
+    const fragmentShader = null
+
+    if (!this._program) {
+      this._program = renderer.setupGLSLProgram(null, fragmentShader, textureCoordinates)
     }
 
-    // The new size
-    var newDimensions = this.getNewDimensions(renderer)
+    const textureCoordinates = new Float32Array([
+        // First triangle
+        start.x, 1.0 - end.y,
+        end.x, 1.0 - end.y,
+        start.x, 1.0 - start.y,
 
-    // Resize the canvas
-    canvas.width = newDimensions.x
-    canvas.height = newDimensions.y
-
-    // Run the cropping shader
-    renderer.runShader(null, this.fragmentShader, {
-      uniforms: {
-        u_cropStart: { type: '2f', value: [start.x, start.y] },
-        u_cropEnd: { type: '2f', value: [end.x, end.y] }
-      }
-    })
+        // Second triangle
+        start.x, 1.0 - start.y,
+        end.x, 1.0 - end.y,
+        end.x, 1.0 - start.y
+      ])
+    renderer.runProgram(this._program, { textureCoordinates })
   }
 
   /**
