@@ -72,6 +72,7 @@ class WebGLRenderer extends Renderer {
     // Resize output texture
     let gl = this._context
     gl.useProgram(this._defaultProgram)
+    this._setCoordinates(this._defaultProgram)
 
     // Resize cached texture
     gl.bindTexture(gl.TEXTURE_2D, texture)
@@ -95,10 +96,13 @@ class WebGLRenderer extends Renderer {
    * @private
    */
   _drawCachedFinal (identifier) {
-    let { texture, size } = this._cache[identifier]
+    const { texture, size } = this._cache[identifier]
+    const program = this._defaultProgram
 
     let gl = this._context
-    gl.useProgram(this._defaultProgram)
+    gl.useProgram(program)
+    this._setCoordinates(program)
+
     gl.bindFramebuffer(gl.FRAMEBUFFER, null)
 
     // Use the cached texture as input
@@ -126,6 +130,7 @@ class WebGLRenderer extends Renderer {
 
     let gl = this._context
     gl.useProgram(this._defaultProgram)
+    this._setCoordinates(this._defaultProgram)
 
     // Resize the canvas
     this._canvas.width = size.x
@@ -240,6 +245,7 @@ class WebGLRenderer extends Renderer {
     return new Promise((resolve, reject) => {
       var gl = this._context
       gl.useProgram(this._defaultProgram)
+      this._setCoordinates(this._defaultProgram)
 
       // Create the texture
       var texture = this.createTexture()
@@ -314,9 +320,56 @@ class WebGLRenderer extends Renderer {
     gl.clear(gl.COLOR_BUFFER_BIT)
   }
 
+  _setCoordinates (program, textureCoordinates, triangleCoordinates) {
+    const gl = this._context
+
+    // Lookup texture coordinates location
+    var positionLocation = gl.getAttribLocation(program, 'a_position')
+    var texCoordLocation = gl.getAttribLocation(program, 'a_texCoord')
+
+    textureCoordinates = textureCoordinates || new Float32Array([
+        // First triangle
+        0.0, 0.0,
+        1.0, 0.0,
+        0.0, 1.0,
+
+        // Second triangle
+        0.0, 1.0,
+        1.0, 0.0,
+        1.0, 1.0
+      ])
+
+    // Provide texture coordinates
+    var texCoordBuffer = gl.createBuffer()
+    gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer)
+    gl.bufferData(gl.ARRAY_BUFFER, textureCoordinates, gl.STATIC_DRAW)
+    gl.enableVertexAttribArray(texCoordLocation)
+    gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 0, 0)
+
+    triangleCoordinates = triangleCoordinates || new Float32Array([
+      // First triangle
+      -1.0, -1.0,
+       1.0, -1.0,
+      -1.0, 1.0,
+
+      // Second triangle
+      -1.0, 1.0,
+       1.0, -1.0,
+       1.0, 1.0
+    ])
+
+    // Create a buffer for the rectangle positions
+    var buffer = gl.createBuffer()
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
+    gl.enableVertexAttribArray(positionLocation)
+    gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0)
+    gl.bufferData(gl.ARRAY_BUFFER, triangleCoordinates, gl.STATIC_DRAW)
+  }
+
   runProgram (program, options) {
     let gl = this._context
     gl.useProgram(program)
+    this._setCoordinates(program, options.textureCoordinates, options.triangleCoordinates)
 
     var fbo = this.getCurrentFramebuffer()
     var currentTexture = this.getCurrentTexture()
@@ -424,10 +477,11 @@ class WebGLRenderer extends Renderer {
    * if none are given.
    * @param {String} [vertexShader]
    * @param {String} [fragmentShader]
+   * @param {Float32Array} textureCoordinates
    * @return {WebGLProgram}
    */
   /* istanbul ignore next */
-  setupGLSLProgram (vertexShader, fragmentShader) {
+  setupGLSLProgram (vertexShader, fragmentShader, textureCoordinates) {
     var gl = this._context
     var shaders = []
 
@@ -457,44 +511,6 @@ class WebGLRenderer extends Renderer {
       gl.deleteProgram(program)
       throw new Error('WebGL program linking error: ' + lastError)
     }
-
-    // Lookup texture coordinates location
-    var positionLocation = gl.getAttribLocation(program, 'a_position')
-    var texCoordLocation = gl.getAttribLocation(program, 'a_texCoord')
-
-    // Provide texture coordinates
-    var texCoordBuffer = gl.createBuffer()
-    gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer)
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-      // First triangle
-      0.0, 0.0,
-      1.0, 0.0,
-      0.0, 1.0,
-
-      // Second triangle
-      0.0, 1.0,
-      1.0, 0.0,
-      1.0, 1.0
-    ]), gl.STATIC_DRAW)
-    gl.enableVertexAttribArray(texCoordLocation)
-    gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 0, 0)
-
-    // Create a buffer for the rectangle positions
-    var buffer = gl.createBuffer()
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
-    gl.enableVertexAttribArray(positionLocation)
-    gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0)
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-      // First triangle
-      -1.0, -1.0,
-       1.0, -1.0,
-      -1.0, 1.0,
-
-      // Second triangle
-      -1.0, 1.0,
-       1.0, -1.0,
-       1.0, 1.0
-    ]), gl.STATIC_DRAW)
 
     return program
   }
