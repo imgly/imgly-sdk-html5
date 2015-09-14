@@ -95,13 +95,12 @@ class CropControl extends Control {
     this._defaultStart = new Vector2(0.1, 0.1)
     this._defaultEnd = new Vector2(0.9, 0.9)
 
-    this._initialOptions = {
-      start: this._operation.getStart(),
-      end: this._operation.getEnd()
-    }
+    // Store initial settings for 'back' button
+    this._initialStart = this._operation.getStart().clone()
+    this._initialEnd = this._operation.getEnd().clone()
 
-    this._start = this._initialOptions.start || this._defaultStart
-    this._end = this._initialOptions.end || this._defaultEnd
+    this._start = this._initialStart || this._defaultStart
+    this._end = this._initialEnd || this._defaultEnd
 
     // Minimum size in pixels
     this._minimumSize = new Vector2(50, 50)
@@ -112,10 +111,6 @@ class CropControl extends Control {
     let prefix = '.imglykit-canvas-crop'
     let container = this._canvasControls
     let knobsContainer = container.querySelector(`${prefix}-knobs`)
-
-    // Store initial settings for 'back' button
-    this._initialStart = this._operation.getStart().clone()
-    this._initialEnd = this._operation.getEnd().clone()
 
     // Make sure we see the whole input image
     this._operation.set({
@@ -146,7 +141,7 @@ class CropControl extends Control {
     this._handleKnobsContainer()
 
     // Resume the rendering
-    this._ui.canvas.render()
+    this._ui.canvas.zoomToFit()
       .then(() => {
         this._updateDOM()
       })
@@ -223,8 +218,8 @@ class CropControl extends Control {
 
     if (ratio === '*') {
       this._ratio = null
-      this._start = new Vector2(0.1, 0.1)
-      this._end = new Vector2(0.9, 0.9)
+      this._start = new Vector2(0.0, 0.0)
+      this._end = new Vector2(0.1, 1.0)
     } else {
       if (ratio === 'original') {
         this._ratio = canvasSize.x / canvasSize.y
