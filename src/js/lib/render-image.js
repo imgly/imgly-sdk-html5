@@ -91,8 +91,6 @@ class RenderImage {
     if (this._renderer === null) {
       throw new Error('Neither Canvas nor WebGL renderer are supported.')
     }
-
-    this._renderer.drawImage(this._image)
   }
 
   /**
@@ -102,8 +100,8 @@ class RenderImage {
   render () {
     const stack = this.sanitizedStack
     const initialDimensions = this._renderer.getInitialDimensionsForStack(stack)
-
     this._renderer.resizeTo(initialDimensions)
+    this._renderer.drawImage(this._image)
 
     let validationPromises = []
     for (let i = 0; i < stack.length; i++) {
