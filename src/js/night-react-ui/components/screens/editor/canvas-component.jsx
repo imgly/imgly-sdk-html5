@@ -26,6 +26,7 @@ class CanvasComponent extends BaseChildComponent {
       canvasPosition: new Vector2(),
       canvasOffset: new Vector2()
     }
+    this._mounted = false
   }
 
   /**
@@ -116,15 +117,17 @@ class CanvasComponent extends BaseChildComponent {
    * @return {Number}
    */
   getDefaultZoom () {
-    const canvasCell = React.findDOMNode(this.refs.canvasCell)
+    const { kit } = this.context
 
+    const canvasCell = React.findDOMNode(this.refs.canvasCell)
     const containerDimensions = new Vector2(canvasCell.offsetWidth, canvasCell.offsetHeight)
-    const nativeDimensions = this.context.renderer.getNativeDimensions()
-    const defaultDimensions = SDKUtils.resizeVectorToFit(nativeDimensions, containerDimensions)
+
+    const outputDimensions = kit.getOutputDimensions()
+    const defaultDimensions = SDKUtils.resizeVectorToFit(outputDimensions, containerDimensions)
 
     // Since default and native dimensions have the same ratio, we can take either x or y here
     return defaultDimensions
-      .divide(nativeDimensions)
+      .divide(outputDimensions)
       .x
   }
 
@@ -134,19 +137,20 @@ class CanvasComponent extends BaseChildComponent {
    * @private
    */
   _onCanvasUpdate (zoom = this.props.zoom) {
-    const { renderer } = this.context
+    const { kit } = this.context
+    const renderer = kit.getRenderer()
     const canvasCell = React.findDOMNode(this.refs.canvasCell)
 
     let containerDimensions = new Vector2(canvasCell.offsetWidth, canvasCell.offsetHeight)
+    kit.setOperationsStack(this.props.operationsStack)
     if (zoom !== null) {
-      containerDimensions = renderer.getNativeDimensions()
+      containerDimensions = renderer.getInitialDimensionsForStack(kit.getSanitizedStack())
         .multiply(zoom)
         .floor()
     }
-    renderer.setOperationsStack(this.props.operationsStack)
-    renderer.setDimensions(`${containerDimensions.x}x${containerDimensions.y}`)
+    kit.setDimensions(`${containerDimensions.x}x${containerDimensions.y}`)
 
-    return renderer.render()
+    return kit.render()
       .then(() => {
         this._repositionCanvas()
       })
@@ -156,9 +160,11 @@ class CanvasComponent extends BaseChildComponent {
    * Gets called after this component has been mounted
    */
   componentDidMount () {
-    const { renderer } = this.context
+    const { kit } = this.context
     this._canvas = React.findDOMNode(this.refs.canvas)
-    renderer.setCanvas(this._canvas)
+    kit.setCanvas(this._canvas)
+
+    this._mounted = true
 
     this._onCanvasUpdate()
       .then(() => {
@@ -174,7 +180,7 @@ class CanvasComponent extends BaseChildComponent {
     let rerender = false
 
     if (nextProps.zoom !== this.props.zoom) {
-      this.context.renderer.setAllOperationsToDirty()
+      this.context.kit.setAllOperationsToDirty()
       rerender = true
     }
 
@@ -197,7 +203,7 @@ class CanvasComponent extends BaseChildComponent {
       rerender = true
     }
 
-    if (rerender) {
+    if (rerender && this._mounted) {
       this._onCanvasUpdate(nextProps.zoom)
         .then(() => {
           this._updateOffset()

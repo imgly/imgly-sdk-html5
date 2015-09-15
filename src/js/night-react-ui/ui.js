@@ -22,12 +22,12 @@ import Reducer from './store/reducer'
 import ActionCreators from './store/action-creators'
 
 export default class NightReactUI extends EventEmitter {
-  constructor (renderer, options) {
+  constructor (kit, options) {
     super()
 
-    this._renderer = renderer
+    this._kit = kit
     this._options = options
-    this._helpers = new Helpers(this._renderer, this._options)
+    this._helpers = new Helpers(this._kit, this._options)
     this._store = Redux.createStore(Reducer, {
       operationsStack: [],
       operationsMap: {},
@@ -54,7 +54,7 @@ export default class NightReactUI extends EventEmitter {
    * @private
    */
   _initOperations () {
-    this._availableOperations = this._renderer.getOperations()
+    this._availableOperations = this._kit.getOperations()
     this._selectedOperations = []
 
     let operationIdentifiers = this._options.operations
@@ -138,11 +138,11 @@ export default class NightReactUI extends EventEmitter {
   }
 
   /**
-   * Checks whether the renderer has an image
+   * Checks whether the kit has an image
    * @return {Boolean}
    */
   hasImage () {
-    return this._renderer.hasImage()
+    return this._kit.hasImage()
   }
 
   /**
@@ -200,7 +200,7 @@ export default class NightReactUI extends EventEmitter {
     React.render(<ReactRedux.Provider store={this._store}>
       {() => <EditorComponent
       ui={this}
-      renderer={this._renderer}
+      kit={this._kit}
       options={this._options} />}
     </ReactRedux.Provider>, this._options.container)
   }
@@ -227,7 +227,7 @@ export default class NightReactUI extends EventEmitter {
       return operationsMap[identifier]
     } else {
       const Operation = this._availableOperations[identifier]
-      const operation = new Operation(this._renderer)
+      const operation = new Operation(this._kit)
       this._store.dispatch(ActionCreators.addOperation(operation))
       return operation
     }

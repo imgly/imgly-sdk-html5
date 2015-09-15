@@ -22,7 +22,6 @@ PhotoEditorSDK.Renderer = require('./lib/renderer')
 PhotoEditorSDK.version = require('../../../package.json').version
 
 // Exposed classes
-PhotoEditorSDK.RenderImage = require('./lib/render-image')
 PhotoEditorSDK.Color = require('./lib/color')
 PhotoEditorSDK.Filter = require('./operations/filters/filter')
 PhotoEditorSDK.Operation = require('./operations/operation')
