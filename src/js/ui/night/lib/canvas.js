@@ -71,7 +71,9 @@ class Canvas extends EventEmitter {
     this._renderer.setSize(new Vector2(this._image.width, this._image.height))
 
     // Calculate the initial size
-    const initialSize = this.getProcessedDimensions().multiply(this._zoomLevel)
+    const initialSize = this._renderer
+      .getInitialDimensionsForStack(this.sanitizedStack)
+      .multiply(this._zoomLevel)
     this._setCanvasSize(initialSize)
 
     // Reset framebuffers
@@ -307,7 +309,7 @@ class Canvas extends EventEmitter {
    * @private
    */
   _getInitialZoomLevel () {
-    const nativeDimensions = this.getProcessedDimensions()
+    const nativeDimensions = this._renderer.getOutputDimensionsForStack(this.sanitizedStack)
     const fitDimensions = Utils.resizeVectorToFit(nativeDimensions, this._maxSize)
 
     return fitDimensions
@@ -321,10 +323,10 @@ class Canvas extends EventEmitter {
    */
   _initRenderer () {
     if (WebGLRenderer.isSupported() && this._options.renderer !== 'canvas') {
-      this._renderer = new WebGLRenderer(null, this._canvas)
+      this._renderer = new WebGLRenderer(null, this._canvas, this._image)
       this._webglEnabled = true
     } else if (CanvasRenderer.isSupported()) {
-      this._renderer = new CanvasRenderer(null, this._canvas)
+      this._renderer = new CanvasRenderer(null, this._canvas, this._image)
       this._webglEnabled = false
     }
 

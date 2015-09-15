@@ -44,10 +44,7 @@ class RotationOperation extends Operation {
    */
   /* istanbul ignore next */
   _renderWebGL (renderer) {
-    var canvas = renderer.getCanvas()
-
     var actualDegrees = this._options.degrees % 360
-
     let newDimensions = this.getNewDimensions(renderer)
 
     // Build the rotation matrix
@@ -115,9 +112,7 @@ class RotationOperation extends Operation {
 
     let actualDegrees = this._options.degrees % 360
     if (actualDegrees % 180 !== 0) {
-      let tempX = dimensions.x
-      dimensions.x = dimensions.y
-      dimensions.y = tempX
+      dimensions.flip()
     }
 
     return dimensions

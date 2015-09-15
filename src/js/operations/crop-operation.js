@@ -10,6 +10,7 @@
 
 import Operation from './operation'
 import Vector2 from '../lib/math/vector2'
+import WebGLRenderer from '../renderers/webgl-renderer.js'
 
 /**
  * An operation that can crop out a part of the image

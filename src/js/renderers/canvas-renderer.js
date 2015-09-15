@@ -133,6 +133,16 @@ class CanvasRenderer extends Renderer {
       this._cache = []
     }
   }
+
+  /**
+   * Returns the initial dimensions before any operations have been applied
+   * @param {Array.<Operation>} stack
+   */
+  getInitialDimensionsForStack (stack) {
+    // Since canvas operations resize the canvas, the initial
+    // dimensions is the same as the image dimensions
+    return new Vector2(this._image.width, this._image.height)
+  }
 }
 
 export default CanvasRenderer

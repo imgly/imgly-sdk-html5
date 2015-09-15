@@ -19,7 +19,7 @@ import EventEmitter from '../lib/event-emitter'
  * @private
  */
 class Renderer extends EventEmitter {
-  constructor (dimensions, canvas) {
+  constructor (dimensions, canvas, image) {
     super()
 
     /**
@@ -43,6 +43,8 @@ class Renderer extends EventEmitter {
      * @type {Object.<String, *>}
      */
     this._cache = {}
+
+    this._image = image
   }
 
   /**
@@ -185,6 +187,26 @@ class Renderer extends EventEmitter {
     this._context = this._getContext()
 
     this.emit('new-canvas', this._canvas)
+  }
+
+  /**
+   * Returns the canvas size after all operations have been applied
+   * @param {Array.<Operation>} stack
+   */
+  getOutputDimensionsForStack (stack) {
+    let size = new Vector2(this._image.width, this._image.height)
+    stack.forEach((operation) => {
+      size = operation.getNewDimensions(this, size)
+    })
+    return size
+  }
+
+  /**
+   * Returns the initial dimensions before any operations have been applied
+   * @param {Array.<Operation>} stack
+   */
+  getInitialDimensionsForStack (stack) {
+    return this.getOutputDimensionsForStack(stack)
   }
 
   /**
