@@ -18,7 +18,7 @@ import EventEmitter from '../lib/event-emitter'
  * @param {Vector2} imageDimensions
  * @private
  */
-class Renderer extends EventEmitter {
+export default class BaseRenderer extends EventEmitter {
   constructor (dimensions, canvas, image) {
     super()
 
