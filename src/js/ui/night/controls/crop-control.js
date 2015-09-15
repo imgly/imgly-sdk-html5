@@ -218,8 +218,8 @@ class CropControl extends Control {
 
     if (ratio === '*') {
       this._ratio = null
-      this._start = new Vector2(0.0, 0.0)
-      this._end = new Vector2(0.1, 1.0)
+      this._start = new Vector2(0.1, 0.1)
+      this._end = new Vector2(0.9, 0.9)
     } else {
       if (ratio === 'original') {
         this._ratio = canvasSize.x / canvasSize.y
