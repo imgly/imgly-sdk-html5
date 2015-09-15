@@ -6,6 +6,7 @@
   "author": "Photo Editor SDK <contact@photoeditorsdk.com>",
   "license": "BSD",
   "scripts": {
+    "build": "ENV=production node_modules/.bin/gulp release"
     "test": "NODE_ENV=test node_modules/.bin/mocha --harmony --require should --require babel/register --reporter spec test/*.test.js test/**/*.test.js",
     "coveralls": "npm run coverage && cat ./coverage/lcov.info | node_modules/.bin/coveralls && rm -rf ./coverage",
     "coverage": "NODE_ENV=test node_modules/.bin/istanbul cover node_modules/.bin/_mocha -x **/ui/** -x **webgl** -- --harmony --require should --require babel/register -R spec test/*.test.js test/**/*.test.js"
