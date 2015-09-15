@@ -162,7 +162,7 @@ gulp.task('webpack', function () {
         fs: 'empty',
         path: 'empty'
       },
-      devtool: 'inline-source-map',
+      devtool: isProduction ? null : 'inline-source-map',
       externals: [
         'canvas'
       ],
