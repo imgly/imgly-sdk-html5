@@ -210,7 +210,7 @@ class WebGLRenderer extends Renderer {
    */
   /* istanbul ignore next */
   drawImage (image) {
-    this._size = new Vector2(image.width, image.height)
+    this._size = new Vector2(this._canvas.width, this._canvas.height)
     return new Promise((resolve, reject) => {
       var gl = this._context
       gl.useProgram(this._defaultProgram)

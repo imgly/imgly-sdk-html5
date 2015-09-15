@@ -68,13 +68,13 @@ class Canvas extends EventEmitter {
    * Renders the current operations stack
    */
   render () {
-    this._renderer.setSize(new Vector2(this._image.width, this._image.height))
-
     // Calculate the initial size
     const initialSize = this._renderer
       .getInitialDimensionsForStack(this.sanitizedStack)
       .multiply(this._zoomLevel)
     this._setCanvasSize(initialSize)
+
+    this._renderer.setSize(initialSize)
 
     // Reset framebuffers
     this._renderer.reset()
