@@ -8,7 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import RenderImage from './render-image'
+import ImageDimensions from './image-dimensions'
 import ImageExporter from './image-exporter'
 import VersionChecker from './version-checker'
 import Utils from './utils'
@@ -16,16 +16,19 @@ import Operations from '../operations/'
 import Exif from './exif'
 import RotationOperation from '../operations/rotation-operation'
 import FlipOperation from '../operations/flip-operation'
+import Vector2 from './math/vector2'
+import WebGLRenderer from '../renderers/webgl-renderer'
+import CanvasRenderer from '../renderers/canvas-renderer'
 
 /**
  * @class
- * @param {String} renderer
+ * @param {String} preferredRenderer
  * @param {Object} options = {}
  * @param {Object} operationsOptions = {}
  */
 export default class Renderer {
-  constructor (renderer, options = {}, operationsOptions = {}) {
-    this._preferredRenderer = renderer
+  constructor (preferredRenderer, options = {}, operationsOptions = {}) {
+    this._preferredRenderer = preferredRenderer
 
     // Set default options
     this._options = Utils.defaults(options, {
@@ -36,17 +39,19 @@ export default class Renderer {
       canvas: null
     })
 
+    this._image = this._options.image
     this._operationsOptions = operationsOptions
-
-    /**
-     * The stack of {@link Operation} instances that will be used
-     * to render the final Image
-     * @type {Array.<ImglyKit.Operation>}
-     */
     this.operationsStack = []
 
+    this._checkForUpdates()
     this._registerOperations()
+  }
 
+  /**
+   * Checks for version updates
+   * @private
+   */
+  _checkForUpdates () {
     if (typeof window !== 'undefined' && this._options.versionCheck) {
       const { version } = require('../../../../package.json')
       this._versionChecker = new VersionChecker(version)
@@ -78,33 +83,56 @@ export default class Renderer {
    * @return {Promise}
    */
   render () {
-    this._ensureRenderImage()
-    return this._renderImage.render()
-  }
+    if (!this._renderer) this._initRenderer()
 
-  /**
-   * Makes sure that a render image exists
-   * @private
-   */
-  _ensureRenderImage () {
-    if (!this._renderImage) {
-      this._renderImage = new RenderImage(
-        this._options.canvas,
-        this._options.image,
-        this.operationsStack,
-        this._options.dimensions,
-        this._preferredRenderer)
+    const stack = this.getSanitizedStack()
+    this._updateStackDirtiness(stack)
+
+    // Reset frame buffers
+    this._renderer.reset()
+
+    let validationPromises = []
+    for (let i = 0; i < stack.length; i++) {
+      let operation = stack[i]
+      validationPromises.push(operation.validateSettings())
     }
-  }
 
-  /**
-   * Returns the dimensions of the image after all operations
-   * have been applied
-   * @returns {Vector2}
-   */
-  getNativeDimensions () {
-    this._ensureRenderImage()
-    return this._renderImage.getNativeDimensions()
+    return Promise.all(validationPromises)
+      .then(() => {
+        let dimensions = this._renderer
+          .getInitialDimensionsForStack(stack)
+
+        if (this._dimensions.bothSidesGiven()) {
+          dimensions = Utils.resizeVectorToFit(dimensions, this._dimensions.getVector())
+        }
+
+        this._renderer.resizeTo(dimensions)
+      })
+      .then(() => {
+        this._renderer.drawImage(this._image)
+      })
+      .then(() => {
+        let promises = []
+        for (let i = 0; i < stack.length; i++) {
+          let operation = stack[i]
+          promises.push(operation.render(this._renderer))
+        }
+        return Promise.all(promises)
+      })
+      .then(() => {
+        return this._renderer.renderFinal()
+      })
+      .then(() => {
+        let initialSize = this._renderer.getSize()
+        let finalDimensions = this._dimensions.calculateFinalDimensions(initialSize)
+
+        if (finalDimensions.equals(initialSize)) {
+          // No need to resize
+          return
+        }
+
+        return this._renderer.resizeTo(finalDimensions)
+      })
   }
 
   /**
@@ -200,7 +228,7 @@ export default class Renderer {
    * Resets all custom and selected operations
    */
   reset () {
-    this._renderImage = null
+    this._renderer = null
   }
 
   /**
@@ -232,13 +260,6 @@ export default class Renderer {
     return operation
   }
 
-  setDimensions (dimensions) {
-    this._options.dimensions = dimensions
-    if (this._renderImage) {
-      this._renderImage.setDimensions(dimensions)
-    }
-  }
-
   setOperationsStack (operationsStack) {
     this.operationsStack = operationsStack
     if (this._renderImage) {
@@ -254,9 +275,79 @@ export default class Renderer {
     }
   }
 
+  /**
+   * Returns the operations stack without falsy values
+   * @type {Array.<Operation>}
+   */
+  getSanitizedStack () {
+    let sanitizedStack = []
+    for (let i = 0; i < this.operationsStack.length; i++) {
+      let operation = this.operationsStack[i]
+      if (!operation) continue
+      sanitizedStack.push(operation)
+    }
+    return sanitizedStack
+  }
+
+  /**
+   * Finds the first dirty operation and sets all following operations
+   * to dirty
+   * @param {Array.<Operation>} stack
+   * @private
+   */
+  _updateStackDirtiness (stack) {
+    let dirtyFound = false
+    for (let i = 0; i < stack.length; i++) {
+      let operation = stack[i]
+      if (!operation) continue
+      if (operation.dirty) {
+        dirtyFound = true
+      }
+
+      if (dirtyFound) {
+        operation.dirty = true
+      }
+    }
+  }
+
+  /**
+   * Creates a renderer (canvas or webgl, depending on support)
+   * @return {Promise}
+   * @private
+   */
+  _initRenderer () {
+    /* istanbul ignore if */
+    if (WebGLRenderer.isSupported() && this._options.preferredRenderer !== 'canvas') {
+      this._renderer = new WebGLRenderer(this._initialDimensions, this._options.canvas, this._image)
+      this._webglEnabled = true
+    } else if (CanvasRenderer.isSupported()) {
+      this._renderer = new CanvasRenderer(this._initialDimensions, this._options.canvas, this._image)
+      this._webglEnabled = false
+    }
+
+    /* istanbul ignore if */
+    if (this._renderer === null) {
+      throw new Error('Neither Canvas nor WebGL renderer are supported.')
+    }
+  }
+
+  getOutputDimensions () {
+    const stack = this.getSanitizedStack()
+    return this._renderer
+      .getOutputDimensionsForStack(stack)
+  }
+
+  getInitialDimensions () {
+    const stack = this.getSanitizedStack()
+    return this._renderer
+      .getInitialDimensionsForStack(stack)
+  }
+
   setCanvas (canvas) { this._options.canvas = canvas }
+  getRenderer () { return this._renderer }
   hasImage () { return !!this._options.image }
   getOperations () { return this._operations }
   getOptions () { return this._options }
   getOperationsOptions () { return this._operationsOptions }
+  setDimensions (dimensions) { this._dimensions = new ImageDimensions(dimensions) }
 }
