@@ -143,6 +143,16 @@ class CanvasRenderer extends Renderer {
     // dimensions is the same as the image dimensions
     return new Vector2(this._image.width, this._image.height)
   }
+
+  /**
+   * Sets the canvas dimensions
+   * @param {Vector2} dimensions
+   */
+  setSize (dimensions) {
+    this._canvas.width = dimensions.x
+    this._canvas.height = dimensions.y
+    this._size.copy(dimensions)
+  }
 }
 
 export default CanvasRenderer

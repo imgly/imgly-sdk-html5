@@ -23,7 +23,6 @@ class WebGLRenderer extends Renderer {
   constructor (...args) {
     super(...args)
 
-    this._size = new Vector2()
     this._defaultProgram = this.setupGLSLProgram()
     this.reset()
 
@@ -341,14 +340,6 @@ class WebGLRenderer extends Renderer {
     gl.enableVertexAttribArray(positionLocation)
     gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0)
     gl.bufferData(gl.ARRAY_BUFFER, triangleCoordinates, gl.STATIC_DRAW)
-  }
-
-  setSize (size) {
-    this._size.copy(size)
-  }
-
-  getSize () {
-    return this._size.clone()
   }
 
   runProgram (program, options) {

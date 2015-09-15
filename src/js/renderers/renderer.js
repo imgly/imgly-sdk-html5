@@ -22,6 +22,8 @@ class Renderer extends EventEmitter {
   constructor (dimensions, canvas, image) {
     super()
 
+    this._size = new Vector2()
+
     /**
      * @type {Canvas}
      * @private
@@ -114,15 +116,6 @@ class Renderer extends EventEmitter {
    */
   getSize () {
     return new Vector2(this._canvas.width, this._canvas.height)
-  }
-
-  /**
-   * Sets the canvas dimensions
-   * @param {Vector2} dimensions
-   */
-  setSize (dimensions) {
-    this._canvas.width = dimensions.x
-    this._canvas.height = dimensions.y
   }
 
   /**
@@ -223,6 +216,14 @@ class Renderer extends EventEmitter {
    */
   reset (resetCache=false) {
 
+  }
+
+  setSize (size) {
+    this._size.copy(size)
+  }
+
+  getSize () {
+    return this._size.clone()
   }
 }
 

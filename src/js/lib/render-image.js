@@ -80,10 +80,10 @@ class RenderImage {
   _initRenderer () {
     /* istanbul ignore if */
     if (WebGLRenderer.isSupported() && this._options.preferredRenderer !== 'canvas') {
-      this._renderer = new WebGLRenderer(this._initialDimensions)
+      this._renderer = new WebGLRenderer(this._initialDimensions, null, this._image)
       this._webglEnabled = true
     } else if (CanvasRenderer.isSupported()) {
-      this._renderer = new CanvasRenderer(this._initialDimensions)
+      this._renderer = new CanvasRenderer(this._initialDimensions, null, this._image)
       this._webglEnabled = false
     }
 
@@ -100,7 +100,10 @@ class RenderImage {
    * @return {Promise}
    */
   render () {
-    let stack = this.sanitizedStack
+    const stack = this.sanitizedStack
+    const initialDimensions = this._renderer.getInitialDimensionsForStack(stack)
+
+    this._renderer.resizeTo(initialDimensions)
 
     let validationPromises = []
     for (let i = 0; i < stack.length; i++) {
