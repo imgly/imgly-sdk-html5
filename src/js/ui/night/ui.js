@@ -610,11 +610,11 @@ class NightUI extends UI {
         .then((data) => {
           switch (renderType) {
             case RenderType.DATAURL:
+              const url = Utils.createBlobURIFromDataURI(data)
               let link = document.createElement('a')
-              let extension = this._options.ui.export.type.split('/').pop()
+              const extension = this._options.ui.export.type.split('/').pop()
               link.download = `imglykit-export.${extension}`
-
-              link.href = data
+              link.href = url
               document.body.appendChild(link)
               link.click()
               // Cleanup the DOM

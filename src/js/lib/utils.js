@@ -9,6 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+import Base64 from './base64'
 import Vector2 from './math/vector2'
 
 /**
@@ -214,6 +215,32 @@ class Utils {
     }
 
     return object
+  }
+
+  /**
+   * Creates a Blob URI from the given Data URI
+   * @param {String} data
+   */
+  static createBlobURIFromDataURI (data) {
+    if (!window.Blob || !window.URL || !ArrayBuffer || !Uint8Array) {
+      return data
+    }
+
+    const rawData = Base64.decode(data.split(',')[1])
+    const mimeString = data.split(',')[0].split(':')[1].split(';')[0]
+
+    // write the bytes of the string to an ArrayBuffer
+    const arrayBuffer = new ArrayBuffer(rawData.length)
+    const intArray = new Uint8Array(arrayBuffer)
+    for (let i = 0; i < rawData.length; i++) {
+      intArray[i] = rawData[i]
+    }
+
+    // write the ArrayBuffer to a blob, and you're done
+    const blob = new window.Blob([arrayBuffer], {
+      type: mimeString
+    })
+    return window.URL.createObjectURL(blob)
   }
 }
 
