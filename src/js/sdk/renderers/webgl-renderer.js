@@ -223,7 +223,11 @@ class WebGLRenderer extends BaseRenderer {
 
     // Debug if possible
     if (window.WebGLDebugUtils) {
-      gl = window.WebGLDebugUtils.makeDebugContext(gl)
+      const logGL = (functionName, args) => {
+        // console.error('gl.' + functionName + '(' +
+        //   window.WebGLDebugUtils.glFunctionArgsToString(functionName, args) + ')')
+      }
+      gl = window.WebGLDebugUtils.makeDebugContext(gl, undefined, logGL)
     }
 
     gl.disable(gl.DEPTH_TEST)
@@ -242,36 +246,60 @@ class WebGLRenderer extends BaseRenderer {
   /* istanbul ignore next */
   drawImage (image) {
     var gl = this._context
+
+    if (this._imageTexture) {
+      return this.setLastTexture(this._imageTexture)
+    }
+
     this._size = new Vector2(gl.drawingBufferWidth, gl.drawingBufferHeight)
+    this._resizeAllTexture(this._size)
+
     return new Promise((resolve, reject) => {
       gl.useProgram(this._defaultProgram)
       this._setCoordinates(this._defaultProgram)
 
-      var fbo = this.getCurrentFramebuffer()
-      var currentTexture = this.getCurrentTexture()
+      const fbo = this.getCurrentFramebuffer()
+      const texture = this.getCurrentTexture()
 
       // Select the current framebuffer
       gl.bindFramebuffer(gl.FRAMEBUFFER, fbo)
       gl.viewport(0, 0, this._size.x, this._size.y)
-      gl.bindTexture(gl.TEXTURE_2D, currentTexture)
+
+      // Resize fbo texture
+      gl.bindTexture(gl.TEXTURE_2D, texture)
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._size.x, this._size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
 
-      // Create the texture
-      var texture = this.createTexture()
-      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true)
-      this._inputTexture = texture
-      this.setLastTexture(texture)
-
-      // Set premultiplied alpha
+      // Set some settings...
       gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true)
 
       // Upload the image into the texture
+      const imageTexture = this.createTexture()
+      gl.bindTexture(gl.TEXTURE_2D, imageTexture)
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image)
 
       // Draw the rectangle
       gl.drawArrays(gl.TRIANGLES, 0, 6)
 
+      // Make sure the next render call uses the new
+      // image texture as an input
+      this._imageTexture = imageTexture
+      this.setLastTexture(imageTexture)
+
       resolve()
+    })
+  }
+
+  /**
+   * Resizes all FBO textures to the given size
+   * @param  {Vector2} size
+   * @private
+   */
+  _resizeAllTexture (size) {
+    const gl = this._context
+    this._textures.forEach((texture) => {
+      gl.bindTexture(gl.TEXTURE_2D, texture)
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size.x, size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
     })
   }
 
@@ -694,7 +722,7 @@ class WebGLRenderer extends BaseRenderer {
     }
 
     this._createFramebuffers()
-    this.setLastTexture(this._inputTexture)
+    this.setLastTexture(this._imageTexture)
   }
 
   get maxTextureSize () {
