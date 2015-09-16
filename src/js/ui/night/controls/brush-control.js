@@ -122,10 +122,10 @@ class BrushControl extends Control {
   _onDone () {
     this._ui.canvas.setZoomLevel(this._initialZoomLevel, false)
     this._ui.addHistory(this, {
-      color: this._initialSettings.color,
-      thickness: this._initialSettings.thickness,
-      controlPoints: this._initialSettings.controlPoints,
-      buttonStatus: this._initialSettings.buttonStatus
+      color: this._initialOptions.color,
+      thickness: this._initialOptions.thickness,
+      controlPoints: this._initialOptions.controlPoints,
+      buttonStatus: this._initialOptions.buttonStatus
     }, this._operationExistedBefore)
   }
 
