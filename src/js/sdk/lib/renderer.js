@@ -89,9 +89,6 @@ export default class Renderer {
     const stack = this.operationsStack
     stack.updateDirtiness()
 
-    // Reset frame buffers
-    this._renderer.reset()
-
     return stack.validateSettings()
       .then(() => {
         let dimensions = this._renderer
@@ -105,8 +102,6 @@ export default class Renderer {
       })
       .then(() => {
         this._renderer.drawImage(this._image)
-      })
-      .then(() => {
         return stack.render(this._renderer)
       })
       .then(() => {

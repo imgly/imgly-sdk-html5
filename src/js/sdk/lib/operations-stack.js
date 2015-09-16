@@ -25,6 +25,11 @@ export default class OperationsStack {
       .forEach(iterator)
   }
 
+  /**
+   * Renders all operations
+   * @param  {Renderer} renderer
+   * @return {Promise}
+   */
   render (renderer) {
     return Promise.all(
       this._stack
