@@ -15,13 +15,29 @@
  * @alias ImglyKit.Filter.PrimitivesStack
  */
 class PrimitivesStack {
-  constructor (...args) {
+  constructor (intensity) {
+    this._intensity = intensity
+
     /**
      * The stack of {@link ImglyKit.Filter.Primitive} instances
      * @type {Array}
      * @private
      */
     this._stack = []
+
+    this._blendFragmentShader = `
+      precision mediump float;
+      varying vec2 v_texCoord;
+      uniform sampler2D u_image;
+      uniform sampler2D u_filteredImage;
+      uniform float u_intensity;
+
+      void main() {
+        vec4 color0 = texture2D(u_image, v_texCoord);
+        vec4 color1 = texture2D(u_filteredImage, v_texCoord);
+        gl_FragColor = mix(color0, color1, u_intensity);
+      }
+    `
   }
 
   /**
@@ -32,16 +48,48 @@ class PrimitivesStack {
     this._stack.push(primitive)
   }
 
-  /**
-   * Renders the stack of primitives on the renderer
-   * @param  {Renderer} renderer
-   */
-  render (renderer) {
+  renderWebGL (renderer) {
+    const { fbo, texture } = renderer.createFramebuffer()
+    let inputTexture = renderer.getCurrentTexture()
+    for (var i = 0; i < this._stack.length; i++) {
+      var primitive = this._stack[i]
+      primitive.render(renderer, inputTexture, fbo, texture)
+      inputTexture = texture
+    }
+
+    const gl = renderer.getContext()
+    gl.activeTexture(gl.TEXTURE1)
+    gl.bindTexture(gl.TEXTURE_2D, inputTexture)
+    gl.activeTexture(gl.TEXTURE0)
+
+    renderer.runShader(null, this._blendFragmentShader, {
+      uniforms: {
+        u_intensity: { type: 'f', value: this._intensity },
+        u_filteredImage: { type: 'i', value: 1 }
+      }
+    })
+  }
+
+  renderCanvas (renderer) {
     for (var i = 0; i < this._stack.length; i++) {
       var primitive = this._stack[i]
       primitive.render(renderer)
     }
   }
+
+  /**
+   * Renders the stack of primitives on the renderer
+   * @param  {Renderer} renderer
+   */
+  render (renderer) {
+    if (renderer.identifier === 'webgl') {
+      this.renderWebGL(renderer)
+    } else {
+      this.renderCanvas(renderer)
+    }
+  }
+
+  setIntensity (intensity) { this._intensity = intensity }
 }
 
 export default PrimitivesStack
