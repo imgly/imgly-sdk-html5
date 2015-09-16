@@ -9,6 +9,7 @@
  */
 
 import Operation from './operation'
+import Vector2 from '../lib/math/vector2'
 import Color from '../lib/color'
 
 /**
@@ -22,6 +23,7 @@ class BrushOperation extends Operation {
   constructor (...args) {
     super(...args)
 
+    this._textureIndex = 1
     /**
      * The vertex shader used for this operation
      */
@@ -43,10 +45,27 @@ class BrushOperation extends Operation {
       precision mediump float;
       varying vec2 v_texCoord;
       uniform sampler2D u_image;
+      uniform sampler2D u_textImage;
+      uniform vec2 u_position;
+      uniform vec2 u_size;
 
       void main() {
-        vec4 fragColor = texture2D(u_image, v_texCoord);
-        gl_FragColor = fragColor;
+        vec4 color0 = texture2D(u_image, v_texCoord);
+        vec2 relative = (v_texCoord - u_position) / u_size;
+
+        if (relative.x >= 0.0 && relative.x <= 1.0 &&
+          relative.y >= 0.0 && relative.y <= 1.0) {
+
+            vec4 color1 = texture2D(u_textImage, relative);
+
+            // GL_SOURCE_ALPHA, GL_ONE_MINUS_SOURCE_ALPHA
+            gl_FragColor = color1 + color0 * (1.0 - color1.a);
+
+        } else {
+
+          gl_FragColor = color0;
+
+        }
       }
     `
   }
@@ -58,18 +77,49 @@ class BrushOperation extends Operation {
    */
   /* istanbul ignore next */
   _renderWebGL (renderer) {
-    // Setup program
+    var pathCanvas = this._renderBrushCanvas(renderer)
+    var gl = renderer.getContext()
+    this._setupProgram(renderer)
+    this._uploadCanvasToTexture(gl, pathCanvas)
+
+    // use the complete area available
+    var position = new Vector2(0, 0)
+    var size = new Vector2(1, 1)
+
+    // Execute the shader
+    renderer.runShader(null, this._fragmentShader, {
+      uniforms: {
+        u_textImage: { type: 'i', value: this._textureIndex },
+        u_position: { type: '2f', value: [position.x, position.y] },
+        u_size: { type: '2f', value: [size.x, size.y] }
+      }
+    })
+  }
+
+  _uploadCanvasToTexture (gl, canvas) {
+    gl.activeTexture(gl.TEXTURE0 + this._textureIndex)
+    this._texture = gl.createTexture()
+    gl.bindTexture(gl.TEXTURE_2D, this._texture)
+
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+
+    // Set premultiplied alpha
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)
+
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas)
+    gl.activeTexture(gl.TEXTURE0)
+  }
+
+  _setupProgram (renderer) {
     if (!this._glslPrograms[renderer.id]) {
       this._glslPrograms[renderer.id] = renderer.setupGLSLProgram(
         this._vertexShader,
         this._fragmentShader
       )
     }
-
-    const uniforms = {
-      exampleUniform: { type: 'f', value: 0.1 }
-    }
-    renderer.runProgram(this._glslPrograms[renderer.id], { uniforms })
   }
 
   /**
@@ -82,6 +132,25 @@ class BrushOperation extends Operation {
     var context = renderer.getContext()
 
     // Use `context` for drawing stuff
+  }
+
+  /**
+   * Renders the text canvas that will be used as a texture in WebGL
+   * and as an image in canvas
+   * @return {Canvas}
+   * @private
+   */
+  _renderBrushCanvas (renderer) {
+    let canvas = renderer.createCanvas()
+    let context = canvas.getContext('2d')
+
+    let outputCanvas = renderer.getCanvas()
+    let canvasSize = new Vector2(outputCanvas.width, outputCanvas.height)
+    canvas.width = canvasSize.x
+    canvas.height = canvasSize.y
+
+    context.fillRect(20, 20, 150, 100)
+    return canvas
   }
 }
 
@@ -98,7 +167,9 @@ BrushOperation.prototype.identifier = 'brush'
  */
 BrushOperation.prototype.availableOptions = {
   color: { type: 'color', default: new Color(0, 0, 0, 1) },
-  thickness: { type: 'number', default: 0.02 }
+  thickness: { type: 'number', default: 0.02 },
+  controlPoints: { type: 'object', default: [] },
+  buttonStatus: { type: 'object', default: [] }
 }
 
 export default BrushOperation

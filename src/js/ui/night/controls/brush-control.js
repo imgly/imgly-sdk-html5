@@ -23,6 +23,8 @@ class BrushControl extends Control {
 
     let canvasControlsTemplate = __DOTJS_TEMPLATE('../../../templates/night/operations/brush_canvas.jst')
     this._canvasControlsTemplate = canvasControlsTemplate
+
+    this._painting = false
   }
 
   /**
@@ -39,11 +41,15 @@ class BrushControl extends Control {
   _prepareSettings () {
     this._initialSettings = {
       color: this._operation.getColor(),
-      thickness: this._operation.getThickness()
+      thickness: this._operation.getThickness(),
+      controlPoints: this._operation.getControlPoints(),
+      buttonStatus: this._operation.getButtonStatus()
     }
     this._settings = {
       color: this._initialSettings.color,
-      thickness: this._initialSettings.thickness
+      thickness: this._initialSettings.thickness,
+      buttonStatus: this._initialSettings.buttonStatus,
+      controlPoints: this._initialSettings.controlPoints
     }
   }
 
@@ -54,11 +60,16 @@ class BrushControl extends Control {
 
   _prepareContainer () {
     this._onMouseDown = this._onMouseDown.bind(this)
+    this._onMouseUp = this._onMouseUp.bind(this)
+    this._onMouseMove = this._onMouseMove.bind(this)
+    this._onMouseLeave = this._onMouseLeave.bind(this)
+
     this._container = this._canvasControls.querySelector('.imglykit-canvas-brush-container')
     this._container.addEventListener('mousedown', this._onMouseDown)
+    this._container.addEventListener('mouseup', this._onMouseUp)
+    this._container.addEventListener('mousemove', this._onMouseMove)
+    this._container.addEventListener('mouseleave', this._onMouseLeave)
   }
-
-
 
   /**
    * Gets called when the back button has been clicked
@@ -94,8 +105,37 @@ class BrushControl extends Control {
     return context
   }
 
-  _onMouseDown () {
-    console.log('mouse down')
+  _onMouseDown (e) {
+    var mousePosition = Utils.getEventPosition(e)
+    this._painting = true
+    this._addControlPoint(mousePosition, false)
+    this._redrawPath()
+  }
+
+  _onMouseUp (e) {
+    this._painting = false
+  }
+
+  _onMouseMove (e) {
+    if (this._painting) {
+      var mousePosition = Utils.getEventPosition(e)
+      this._logControlPoint(mousePosition, true)
+      this._redrawPath()
+    }
+  }
+
+  _onMouseLeave (e) {
+    this._painting = false
+  }
+
+  _addControlPoint (position, mouseButtonPressed = false) {
+    this._settings.controlPoints.push(position)
+    this._settings.buttonStatus.push(mouseButtonPressed)
+  }
+
+  _redrawPath () {
+    this._operation.set(this._settings)
+    this._ui.canvas.render()
   }
 }
 
