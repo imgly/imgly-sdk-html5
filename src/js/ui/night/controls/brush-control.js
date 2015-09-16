@@ -140,7 +140,7 @@ class BrushControl extends Control {
 
   _getRelativeMousePositionFromEvent (e) {
     var clientRect = this._container.getBoundingClientRect()
-    var offset = new Vector2(clientRect.left, clientRect.top)
+    var offset = new Vector2(clientRect.left, clientRect.top + document.body.scrollTop)
     return Utils.getEventPosition(e).subtract(offset)
   }
 }
