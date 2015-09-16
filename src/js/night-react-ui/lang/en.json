@@ -37,6 +37,9 @@
     "blur": {
       "radial-blur": "Radial Blur",
       "tilt-shift": "Tilt-Shift"
+    },
+    "filters": {
+      "intensity": "Intensity"
     }
   },
   "webcam": {

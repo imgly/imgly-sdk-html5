@@ -25,6 +25,20 @@ $modifierSeparator: '--'
   &#{$elementSeparator}#{$name}
     @content
 
+@mixin elements($names...)
+  $selector: ()
+  @each $name in $names
+    $selector: append($selector, unquote('&#{$elementSeparator}#{$name}'), comma)
+  #{$selector}
+    @content
+
 @mixin modifier($name)
   &#{$modifierSeparator}#{$name}
+    @content
+
+@mixin modifiers($names...)
+  $selector: ()
+  @each $name in $names
+    $selector: append($selector, unquote('&#{$modifierSeparator}#{$name}'), comma)
+  #{$selector}
     @content

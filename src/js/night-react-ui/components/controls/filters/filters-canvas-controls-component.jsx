@@ -48,17 +48,17 @@ class FiltersCanvasControlsComponent extends BaseChildComponent {
    */
   renderWithBEM () {
     const options = this.props.operationOptions
-    if (!options) {
+    if (!options || options.filter.isIdentity) {
       return null
     }
 
     return (<div bem='$b:canvasControls e:container m:bottom m:dark'>
       <SliderComponent
-        minValue='0'
-        maxValue='100'
+        minValue={0}
+        maxValue={100}
+        label={this._t('controls.filters.intensity')}
         onChange={this._onSliderValueChange}
-        value={options.intensity / 100}
-        />
+        value={options.intensity * 100} />
     </div>)
   }
 }
