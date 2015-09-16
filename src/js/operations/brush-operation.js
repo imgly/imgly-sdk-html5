@@ -128,10 +128,9 @@ class BrushOperation extends Operation {
    * @private
    */
   _renderCanvas (renderer) {
-    var canvas = renderer.getCanvas()
+    var pathCanvas = this._renderBrushCanvas(renderer)
     var context = renderer.getContext()
-
-    // Use `context` for drawing stuff
+    context.drawImage(pathCanvas, 0, 0)
   }
 
   /**
@@ -187,7 +186,7 @@ BrushOperation.prototype.identifier = 'brush'
  * @type {Object}
  */
 BrushOperation.prototype.availableOptions = {
-  color: { type: 'color', default: new Color(0, 0, 0, 1) },
+  color: { type: 'color', default: new Color(1, 0, 0, 1) },
   thickness: { type: 'number', default: 5 },
   controlPoints: { type: 'object', default: [] },
   buttonStatus: { type: 'object', default: [] }
