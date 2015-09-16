@@ -20,6 +20,7 @@ class PrimitivesStack {
 
     this._stack = []
 
+    this._dirty = true
     this._bufferIndex = 0
     this._textures = []
     this._framebuffers = []
@@ -67,22 +68,25 @@ class PrimitivesStack {
   renderWebGL (renderer) {
     if (!this._fbosAvailable) this._createFramebuffers(renderer)
 
-    let inputTexture = renderer.getCurrentTexture()
-    let texture
-    let fbo
-    for (var i = 0; i < this._stack.length; i++) {
-      texture = this._getCurrentTexture()
-      fbo = this._getCurrentFramebuffer()
+    if (this._dirty) {
+      let inputTexture = renderer.getCurrentTexture()
+      let texture, fbo
+      for (var i = 0; i < this._stack.length; i++) {
+        texture = this._getCurrentTexture()
+        fbo = this._getCurrentFramebuffer()
 
-      var primitive = this._stack[i]
-      primitive.render(renderer, inputTexture, fbo, texture)
-
-      this._bufferIndex++
+        var primitive = this._stack[i]
+        primitive.render(renderer, inputTexture, fbo, texture)
+        inputTexture = texture
+        this._lastTexture = texture
+        this._bufferIndex++
+      }
+      this._dirty = false
     }
 
     const gl = renderer.getContext()
     gl.activeTexture(gl.TEXTURE1)
-    gl.bindTexture(gl.TEXTURE_2D, texture)
+    gl.bindTexture(gl.TEXTURE_2D, this._lastTexture)
     gl.activeTexture(gl.TEXTURE0)
 
     renderer.runShader(null, this._blendFragmentShader, {
