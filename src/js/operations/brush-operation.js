@@ -149,7 +149,25 @@ class BrushOperation extends Operation {
     canvas.width = canvasSize.x
     canvas.height = canvasSize.y
 
-    context.fillRect(20, 20, 150, 100)
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height) // Clears the canvas
+
+    context.strokeStyle = '#df4b26'
+    context.lineJoin = 'round'
+    context.lineWidth = 5
+
+    //console.log(this._options)
+
+    for (var i = 0; i < this._options.controlPoints.length; i++) {
+      context.beginPath()
+      if (this._options.buttonStatus[i] && i) {
+        context.moveTo(this._options.controlPoints[i - 1].x, this._options.controlPoints[i - 1].y)
+      } else {
+        context.moveTo(this._options.controlPoints[i].x - 1, this._options.controlPoints[i].y)
+      }
+      context.lineTo(this._options.controlPoints[i].x, this._options.controlPoints[i].y)
+      context.closePath()
+      context.stroke()
+    }
     return canvas
   }
 }

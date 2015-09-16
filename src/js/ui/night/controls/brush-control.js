@@ -106,7 +106,7 @@ class BrushControl extends Control {
   }
 
   _onMouseDown (e) {
-    var mousePosition = Utils.getEventPosition(e)
+    var mousePosition = this._getRelativeMousePositionFromEvent(e)
     this._painting = true
     this._addControlPoint(mousePosition, false)
     this._redrawPath()
@@ -118,8 +118,8 @@ class BrushControl extends Control {
 
   _onMouseMove (e) {
     if (this._painting) {
-      var mousePosition = Utils.getEventPosition(e)
-      this._logControlPoint(mousePosition, true)
+      var mousePosition = this._getRelativeMousePositionFromEvent(e)
+      this._addControlPoint(mousePosition, true)
       this._redrawPath()
     }
   }
@@ -136,6 +136,12 @@ class BrushControl extends Control {
   _redrawPath () {
     this._operation.set(this._settings)
     this._ui.canvas.render()
+  }
+
+  _getRelativeMousePositionFromEvent (e) {
+    var clientRect = this._container.getBoundingClientRect()
+    var offset = new Vector2(clientRect.left, clientRect.top)
+    return Utils.getEventPosition(e).subtract(offset)
   }
 }
 
