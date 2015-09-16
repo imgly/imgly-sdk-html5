@@ -20,6 +20,7 @@ class PrimitivesStack {
 
     this._stack = []
 
+    this._glslPrograms = {}
     this._dirty = true
     this._bufferIndex = 0
     this._textures = []
@@ -89,7 +90,14 @@ class PrimitivesStack {
     gl.bindTexture(gl.TEXTURE_2D, this._lastTexture)
     gl.activeTexture(gl.TEXTURE0)
 
-    renderer.runShader(null, this._blendFragmentShader, {
+    if (!this._glslPrograms[renderer.id]) {
+      this._glslPrograms[renderer.id] = renderer.setupGLSLProgram(
+        null,
+        this._blendFragmentShader
+      )
+    }
+
+    renderer.runProgram(this._glslPrograms[renderer.id], {
       uniforms: {
         u_intensity: { type: 'f', value: this._intensity },
         u_filteredImage: { type: 'i', value: 1 }
