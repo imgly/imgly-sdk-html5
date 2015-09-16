@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-const { Utils, EventEmitter } = PhotoEditorSDK
+const { Utils, EventEmitter, OperationsStack } = PhotoEditorSDK
 
 import Polyglot from 'node-polyglot'
 import Helpers from './helpers'
@@ -29,7 +29,7 @@ export default class NightReactUI extends EventEmitter {
     this._options = options
     this._helpers = new Helpers(this._kit, this._options)
     this._store = Redux.createStore(Reducer, {
-      operationsStack: [],
+      operationsStack: new OperationsStack(),
       operationsMap: {},
       operationsOptions: {}
     })

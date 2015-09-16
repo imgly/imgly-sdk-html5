@@ -67,8 +67,7 @@ class FiltersOperation extends Operation {
    * @private
    */
   _render (renderer) {
-    const { intensity } = this._options
-    this._selectedFilter.render(renderer, { intensity })
+    this._selectedFilter.render(renderer)
   }
 
   getFilters () { return this._filters }

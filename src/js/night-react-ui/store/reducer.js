@@ -44,12 +44,12 @@ export default (state = {}, action) => {
     case 'ADD_OPERATION':
       state = Utils.clone(state)
 
-      let operationsStack = state.operationsStack.slice(0)
+      let operationsStack = state.operationsStack.clone()
       let index = OPERATIONS_ORDER.indexOf(operation.constructor.identifier)
       if (index === -1) {
         index = operationsStack.length
       }
-      operationsStack[index] = operation
+      operationsStack.set(index, operation)
       state.operationsStack = operationsStack
 
       let operationsMap = Utils.clone(state.operationsMap)

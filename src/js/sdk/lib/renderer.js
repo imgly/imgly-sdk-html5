@@ -16,6 +16,7 @@ import Operations from '../operations/'
 import Exif from './exif'
 import RotationOperation from '../operations/rotation-operation'
 import FlipOperation from '../operations/flip-operation'
+import OperationsStack from './operations-stack'
 import Vector2 from './math/vector2'
 import WebGLRenderer from '../renderers/webgl-renderer'
 import CanvasRenderer from '../renderers/canvas-renderer'
@@ -41,7 +42,7 @@ export default class Renderer {
 
     this._image = this._options.image
     this._operationsOptions = operationsOptions
-    this.operationsStack = []
+    this.operationsStack = new OperationsStack()
 
     this._checkForUpdates()
     this._registerOperations()
@@ -85,19 +86,13 @@ export default class Renderer {
   render () {
     if (!this._renderer) this._initRenderer()
 
-    const stack = this.getSanitizedStack()
-    this._updateStackDirtiness(stack)
+    const stack = this.operationsStack
+    stack.updateDirtiness()
 
     // Reset frame buffers
     this._renderer.reset()
 
-    let validationPromises = []
-    for (let i = 0; i < stack.length; i++) {
-      let operation = stack[i]
-      validationPromises.push(operation.validateSettings())
-    }
-
-    return Promise.all(validationPromises)
+    return stack.validateSettings()
       .then(() => {
         let dimensions = this._renderer
           .getInitialDimensionsForStack(stack)
@@ -112,12 +107,7 @@ export default class Renderer {
         this._renderer.drawImage(this._image)
       })
       .then(() => {
-        let promises = []
-        for (let i = 0; i < stack.length; i++) {
-          let operation = stack[i]
-          promises.push(operation.render(this._renderer))
-        }
-        return Promise.all(promises)
+        return stack.render(this._renderer)
       })
       .then(() => {
         return this._renderer.renderFinal()
@@ -276,41 +266,6 @@ export default class Renderer {
   }
 
   /**
-   * Returns the operations stack without falsy values
-   * @type {Array.<Operation>}
-   */
-  getSanitizedStack () {
-    let sanitizedStack = []
-    for (let i = 0; i < this.operationsStack.length; i++) {
-      let operation = this.operationsStack[i]
-      if (!operation) continue
-      sanitizedStack.push(operation)
-    }
-    return sanitizedStack
-  }
-
-  /**
-   * Finds the first dirty operation and sets all following operations
-   * to dirty
-   * @param {Array.<Operation>} stack
-   * @private
-   */
-  _updateStackDirtiness (stack) {
-    let dirtyFound = false
-    for (let i = 0; i < stack.length; i++) {
-      let operation = stack[i]
-      if (!operation) continue
-      if (operation.dirty) {
-        dirtyFound = true
-      }
-
-      if (dirtyFound) {
-        operation.dirty = true
-      }
-    }
-  }
-
-  /**
    * Creates a renderer (canvas or webgl, depending on support)
    * @return {Promise}
    * @private
@@ -332,13 +287,13 @@ export default class Renderer {
   }
 
   getOutputDimensions () {
-    const stack = this.getSanitizedStack()
+    const stack = this.operationsStack
     return this._renderer
       .getOutputDimensionsForStack(stack)
   }
 
   getInitialDimensions () {
-    const stack = this.getSanitizedStack()
+    const stack = this.operationsStack
     return this._renderer
       .getInitialDimensionsForStack(stack)
   }
