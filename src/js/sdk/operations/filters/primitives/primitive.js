@@ -27,11 +27,12 @@ class Primitive {
    * @param  {Renderer} renderer
    * @param  {WebGLTexture} inputTexture
    * @param  {WebGLFramebuffer} outputFBO
+   * @param  {WebGLTexture} outputTexture
    * @return {Promise}
    */
-  render (renderer, inputTexture, outputFBO) {
+  render (renderer, inputTexture, outputFBO, outputTexture) {
     if (renderer.identifier === 'webgl') {
-      this.renderWebGL(renderer, inputTexture, outputFBO)
+      this.renderWebGL(renderer, inputTexture, outputFBO, outputTexture)
     } else {
       this.renderCanvas(renderer)
     }
@@ -42,9 +43,10 @@ class Primitive {
    * @param  {CanvasRenderer} renderer
    * @param  {WebGLTexture} inputTexture
    * @param  {WebGLFramebuffer} outputFBO
+   * @param  {WebGLTexture} outputTexture
    */
   /* istanbul ignore next */
-  renderWebGL (renderer, inputTexture, outputFBO) {
+  renderWebGL (renderer, inputTexture, outputFBO, outputTexture) {
     /* istanbul ignore next */
     throw new Error('Primitive#renderWebGL is abstract and not implemented in inherited class.')
   }
