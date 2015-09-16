@@ -48,10 +48,18 @@ class SoftColorOverlay extends Primitive {
   /**
    * Renders the primitive (WebGL)
    * @param  {WebGLRenderer} renderer
+   * @param  {WebGLTexture} inputTexture
+   * @param  {WebGLFramebuffer} outputFBO
+   * @param  {WebGLTexture} outputTexture
+   * @return {Promise}
    */
   /* istanbul ignore next */
-  renderWebGL (renderer) {
+  renderWebGL (renderer, inputTexture, outputFBO, outputTexture) {
     renderer.runShader(null, this._fragmentShader, {
+      inputTexture,
+      outputFBO,
+      outputTexture,
+      switchBuffer: false,
       uniforms: {
         u_overlay: { type: '3f', value: this._options.color.toRGBGLColor() }
       }
