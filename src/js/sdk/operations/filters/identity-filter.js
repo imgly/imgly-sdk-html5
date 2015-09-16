@@ -35,6 +35,12 @@ class IdentityFilter extends Filter {
   }
 
   /**
+   * Specifies whether this filter is an identity filter
+   * @return {Boolean}
+   */
+  static get isIdentity () { return true }
+
+  /**
    * Renders the filter
    * @return {Promise}
    */
