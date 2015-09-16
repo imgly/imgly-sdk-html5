@@ -18,12 +18,12 @@ class PrimitivesStack {
   constructor (intensity) {
     this._intensity = intensity
 
-    /**
-     * The stack of {@link ImglyKit.Filter.Primitive} instances
-     * @type {Array}
-     * @private
-     */
     this._stack = []
+
+    this._bufferIndex = 0
+    this._textures = []
+    this._framebuffers = []
+    this._fbosAvailable = false
 
     this._blendFragmentShader = `
       precision mediump float;
@@ -41,6 +41,22 @@ class PrimitivesStack {
   }
 
   /**
+   * Creates two textures and framebuffers that are used for the stack
+   * rendering
+   * @param {WebGLRenderer} renderer
+   * @private
+   */
+  /* istanbul ignore next */
+  _createFramebuffers (renderer) {
+    for (var i = 0; i < 2; i++) {
+      let { fbo, texture } = renderer.createFramebuffer()
+      this._textures.push(texture)
+      this._framebuffers.push(fbo)
+    }
+    this._fbosAvailable = true
+  }
+
+  /**
    * Adds the given primitive to the stack
    * @param {ImglyKit.Filter.Primitive} primitive
    */
@@ -49,17 +65,24 @@ class PrimitivesStack {
   }
 
   renderWebGL (renderer) {
-    const { fbo, texture } = renderer.createFramebuffer()
+    if (!this._fbosAvailable) this._createFramebuffers(renderer)
+
     let inputTexture = renderer.getCurrentTexture()
+    let texture
+    let fbo
     for (var i = 0; i < this._stack.length; i++) {
+      texture = this._getCurrentTexture()
+      fbo = this._getCurrentFramebuffer()
+
       var primitive = this._stack[i]
       primitive.render(renderer, inputTexture, fbo, texture)
-      inputTexture = texture
+
+      this._bufferIndex++
     }
 
     const gl = renderer.getContext()
     gl.activeTexture(gl.TEXTURE1)
-    gl.bindTexture(gl.TEXTURE_2D, inputTexture)
+    gl.bindTexture(gl.TEXTURE_2D, texture)
     gl.activeTexture(gl.TEXTURE0)
 
     renderer.runShader(null, this._blendFragmentShader, {
@@ -68,6 +91,14 @@ class PrimitivesStack {
         u_filteredImage: { type: 'i', value: 1 }
       }
     })
+  }
+
+  _getCurrentTexture () {
+    return this._textures[this._bufferIndex % this._textures.length]
+  }
+
+  _getCurrentFramebuffer () {
+    return this._framebuffers[this._bufferIndex % this._framebuffers.length]
   }
 
   renderCanvas (renderer) {
