@@ -9,12 +9,18 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+import PrimitivesStack from './primitives-stack'
+
 /**
  * Base class for filters. Extendable via {@link ImglyKit.Filter#extend}
  * @class
  * @alias ImglyKit.Filter
  */
 class Filter {
+  constructor (intensity = 1.0) {
+    this._intensity = intensity
+    this._stack = new PrimitivesStack(intensity)
+  }
   /**
    * A unique string that identifies this operation. Can be used to select
    * the active filter.
@@ -28,8 +34,16 @@ class Filter {
    * @return {Promise}
    */
   render (renderer) {
-    /* istanbul ignore next */
-    throw new Error('Filter#render is abstract and not implemented in inherited class.')
+    this._stack.render(renderer)
+  }
+
+  /**
+   * Sets the intensity to the given value
+   * @param {Number} intensity
+   */
+  setIntensity (intensity) {
+    this._intensity = intensity
+    this._stack.setIntensity(intensity)
   }
 }
 
@@ -41,7 +55,7 @@ class Filter {
 Filter.extend = require('../../lib/extend')
 
 // Exposed classes
-Filter.PrimitivesStack = require('./primitives-stack')
+Filter.PrimitivesStack = PrimitivesStack
 Filter.Primitives = {}
 Filter.Primitives.Saturation = require('./primitives/saturation')
 Filter.Primitives.LookupTable = require('./primitives/lookup-table')

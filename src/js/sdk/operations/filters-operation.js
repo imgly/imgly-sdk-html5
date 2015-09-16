@@ -67,7 +67,8 @@ class FiltersOperation extends Operation {
    * @private
    */
   _render (renderer) {
-    this._selectedFilter.render(renderer)
+    const { intensity } = this._options
+    this._selectedFilter.render(renderer, { intensity })
   }
 
   getFilters () { return this._filters }
@@ -85,9 +86,18 @@ FiltersOperation.identifier = 'filters'
  * @type {Object}
  */
 FiltersOperation.prototype.availableOptions = {
+  intensity: {
+    type: 'number',
+    default: 1,
+    setter: function (intensity) {
+      this._selectedFilter &&
+        this._selectedFilter.setIntensity(intensity)
+      return intensity
+    }
+  },
   filter: { type: 'object', default: IdentityFilter,
     setter: function (Filter) {
-      this._selectedFilter = new Filter()
+      this._selectedFilter = new Filter(this._options.intensity)
       return Filter
     }
   }
