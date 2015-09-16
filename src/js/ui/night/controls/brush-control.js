@@ -32,6 +32,9 @@ class BrushControl extends Control {
     this._painting = false
   }
 
+  /**
+   * Renders the controls
+   */
   _renderControls () {
     this._partialTemplates.colorPicker.additionalContext = { label: this._ui.translate('controls.brush.color') }
     super._renderControls()
@@ -44,9 +47,8 @@ class BrushControl extends Control {
   _onEnter () {
     super._onEnter()
     this._prepareOperation()
-    this._prepareSettings()
+    this._prepareOptions()
     this._prepareContainer()
-    this._prepareSettings()
     this._prepareSlider()
     this._prepareColorPicker()
     this._initialZoomLevel = this._ui.canvas.zoomLevel
@@ -54,7 +56,10 @@ class BrushControl extends Control {
     this._redrawPath()
   }
 
-  _prepareSettings () {
+  /**
+   * Sets the initital options up
+   */
+  _prepareOptions () {
     this._initialOptions = {
       color: this._operation.getColor(),
       thickness: this._operation.getThickness(),
@@ -63,11 +68,17 @@ class BrushControl extends Control {
     }
   }
 
+  /**
+   * Sets up the operation
+   */
   _prepareOperation () {
     this._operationExistedBefore = !!this._ui.operations.brush
     this._operation = this._ui.getOrCreateOperation('brush')
   }
 
+  /**
+   * Sets up the container, adds events, etc
+   */
   _prepareContainer () {
     this._onMouseDown = this._onMouseDown.bind(this)
     this._onMouseUp = this._onMouseUp.bind(this)
@@ -76,11 +87,17 @@ class BrushControl extends Control {
 
     this._container = this._canvasControls.querySelector('.imglykit-canvas-brush-container')
     this._container.addEventListener('mousedown', this._onMouseDown)
+    this._container.addEventListener('touchstart', this._onMouseDown)
     this._container.addEventListener('mouseup', this._onMouseUp)
+    this._container.addEventListener('touchend', this._onMouseUp)
     this._container.addEventListener('mousemove', this._onMouseMove)
+    this._container.addEventListener('touchmove', this._onMouseMove)
     this._container.addEventListener('mouseleave', this._onMouseLeave)
   }
 
+  /**
+   * Sets up the slider used to change the brush size
+   */
   _prepareSlider () {
     let sliderElement = this._controls.querySelector('.imglykit-slider')
     this._slider = new SimpleSlider(sliderElement, {
@@ -92,6 +109,9 @@ class BrushControl extends Control {
     console.log(this._slider)
   }
 
+  /**
+   * Sets up the color picker used to change the brush color
+   */
   _prepareColorPicker () {
     let colorPickerElement = this._controls.querySelector('.imglykit-color-picker')
     this._colorPicker = new ColorPicker(this._ui, colorPickerElement)
@@ -107,13 +127,16 @@ class BrushControl extends Control {
     this._ui.canvas.setZoomLevel(this._initialZoomLevel, false)
     console.log(this._operationExistedBefore)
     if (this._operationExistedBefore) {
-      this._operation.set(this._resetOperationSettings)
+      this._resetOperationSettings()
     } else {
       this._ui.removeOperation('brush')
     }
     this._ui.canvas.render()
   }
 
+  /**
+   * Resets the operation options to the initial options
+   */
   _resetOperationSettings () {
     this._operation.setControlPoints(this._initialOptions.controlPoints)
     this._operation.setButtonStatus(this._initialOptions.buttonStatus)
@@ -147,6 +170,11 @@ class BrushControl extends Control {
     return context
   }
 
+  /**
+   * Gets called when the user presses the mouse button.
+   * Here the painting phase is started
+   * @param  {Event} e
+   */
   _onMouseDown (e) {
     e.preventDefault()
     var mousePosition = this._getRelativeMousePositionFromEvent(e)
@@ -156,10 +184,21 @@ class BrushControl extends Control {
     this._highlightDoneButton()
   }
 
+  /**
+   * Gets called the the users releases the mouse button.
+   * Here the painting phase is stopped
+   * @param  {Event} e
+   */
   _onMouseUp (e) {
     this._painting = false
   }
 
+  /**
+   * Gets called when the user drags the mouse.
+   * If this happends while the mouse button is pressed,
+   * the visited points get added to the path
+   * @param  {Event} e
+   */
   _onMouseMove (e) {
     if (this._painting) {
       var mousePosition = this._getRelativeMousePositionFromEvent(e)
@@ -168,10 +207,22 @@ class BrushControl extends Control {
     }
   }
 
+  /**
+   * Gets called when the user leaves the canvas.
+   * This will also stop the painting phase
+   * @param  {[type]} e [description]
+   * @return {[type]}   [description]
+   */
   _onMouseLeave (e) {
     this._painting = false
   }
 
+  /**
+   * Adds a control point to the path.
+   * Also the status of the mouse button, i.e. pressed or not, will be logged
+   * @param {Vector2} position
+   * @param {Boolean} mouseButtonPressed = false
+   */
   _addControlPoint (position, mouseButtonPressed = false) {
     var controlPoints = this._operation.getControlPoints()
     controlPoints.push(position)
@@ -182,10 +233,19 @@ class BrushControl extends Control {
     this._operation.setButtonStatus(buttonStatus)
   }
 
+  /**
+   * Triggers a path-redraw
+   */
   _redrawPath () {
     this._ui.canvas.render()
   }
 
+  /**
+   * Calculates the mouse position, relative to the upper-left corner
+   * of the canvas
+   * @param  {Event} e
+   * @return {Vector2} The Mouse Position
+   */
   _getRelativeMousePositionFromEvent (e) {
     var clientRect = this._container.getBoundingClientRect()
     var offset = new Vector2(clientRect.left, clientRect.top + document.body.scrollTop)

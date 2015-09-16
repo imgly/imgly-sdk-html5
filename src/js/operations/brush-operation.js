@@ -96,6 +96,11 @@ class BrushOperation extends Operation {
     })
   }
 
+  /**
+   * Uploads pixel-data contained in a canvas onto a texture
+   * @param  {Context} gl    gl-context (use renderer.getContext())
+   * @param  {Canvas} canvas A canvas that contains the pixel data for the texture
+   */
   _uploadCanvasToTexture (gl, canvas) {
     gl.activeTexture(gl.TEXTURE0 + this._textureIndex)
     this._texture = gl.createTexture()
@@ -113,6 +118,11 @@ class BrushOperation extends Operation {
     gl.activeTexture(gl.TEXTURE0)
   }
 
+  /**
+   * This method initializes the shaders once
+   * @param  {WebGLRenderer} renderer WebGLRenderer that is used to compile the
+   * shafers
+   */
   _setupProgram (renderer) {
     if (!this._glslPrograms[renderer.id]) {
       this._glslPrograms[renderer.id] = renderer.setupGLSLProgram(
