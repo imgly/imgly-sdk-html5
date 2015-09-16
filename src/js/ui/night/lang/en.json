@@ -43,6 +43,9 @@
     "frames": {
       "color": "Color"
     },
+    "brush": {
+      "color": "Color"
+    },
     "text": {
       "foreground": "Foreground",
       "background": "Background"

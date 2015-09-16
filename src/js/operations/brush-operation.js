@@ -151,7 +151,7 @@ class BrushOperation extends Operation {
 
     context.clearRect(0, 0, context.canvas.width, context.canvas.height)
 
-    context.strokeStyle = '#df4b26'
+    context.strokeStyle = this._options.color.toHex()
     context.lineJoin = 'round'
     context.lineWidth = 5
 

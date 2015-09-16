@@ -12,6 +12,8 @@
 import Control from './control'
 import Vector2 from '../../../lib/math/vector2'
 import Utils from '../../../lib/utils'
+import SimpleSlider from '../lib/simple-slider'
+import ColorPicker from '../lib/color-picker'
 
 class BrushControl extends Control {
   /**
@@ -24,7 +26,15 @@ class BrushControl extends Control {
     let canvasControlsTemplate = __DOTJS_TEMPLATE('../../../templates/night/operations/brush_canvas.jst')
     this._canvasControlsTemplate = canvasControlsTemplate
 
+    this._partialTemplates.slider = SimpleSlider.template
+    this._partialTemplates.colorPicker = ColorPicker.template
+
     this._painting = false
+  }
+
+  _renderControls () {
+    this._partialTemplates.colorPicker.additionalContext = { label: this._ui.translate('controls.brush.color') }
+    super._renderControls()
   }
 
   /**
@@ -36,20 +46,17 @@ class BrushControl extends Control {
     this._prepareOperation()
     this._prepareSettings()
     this._prepareContainer()
+    this._prepareSettings()
+    this._prepareSlider()
+    this._prepareColorPicker()
   }
 
   _prepareSettings () {
-    this._initialSettings = {
+    this._initialOptions = {
       color: this._operation.getColor(),
       thickness: this._operation.getThickness(),
       controlPoints: this._operation.getControlPoints(),
       buttonStatus: this._operation.getButtonStatus()
-    }
-    this._settings = {
-      color: this._initialSettings.color,
-      thickness: this._initialSettings.thickness,
-      buttonStatus: this._initialSettings.buttonStatus,
-      controlPoints: this._initialSettings.controlPoints
     }
   }
 
@@ -69,6 +76,24 @@ class BrushControl extends Control {
     this._container.addEventListener('mouseup', this._onMouseUp)
     this._container.addEventListener('mousemove', this._onMouseMove)
     this._container.addEventListener('mouseleave', this._onMouseLeave)
+  }
+
+  _prepareSlider () {
+    let sliderElement = this._controls.querySelector('.imglykit-slider')
+    this._slider = new SimpleSlider(sliderElement, {
+      minValue: 0.0,
+      maxValue: 0.5
+    })
+    this._slider.on('update', this._onThicknessUpdate.bind(this))
+    this._slider.setValue(this._initialOptions.thickness)
+    console.log(this._slider)
+  }
+
+  _prepareColorPicker () {
+    let colorPickerElement = this._controls.querySelector('.imglykit-color-picker')
+    this._colorPicker = new ColorPicker(this._ui, colorPickerElement)
+    this._colorPicker.on('update', this._onColorUpdate.bind(this))
+    this._colorPicker.setValue(this._initialOptions.color)
   }
 
   /**
@@ -110,6 +135,7 @@ class BrushControl extends Control {
     this._painting = true
     this._addControlPoint(mousePosition, false)
     this._redrawPath()
+    this._highlightDoneButton()
   }
 
   _onMouseUp (e) {
@@ -129,12 +155,16 @@ class BrushControl extends Control {
   }
 
   _addControlPoint (position, mouseButtonPressed = false) {
-    this._settings.controlPoints.push(position)
-    this._settings.buttonStatus.push(mouseButtonPressed)
+    var controlPoints = this._operation.getControlPoints()
+    controlPoints.push(position)
+    this._operation.setControlPoints(controlPoints)
+
+    var buttonStatus = this._operation.getButtonStatus()
+    buttonStatus.push(mouseButtonPressed)
+    this._operation.setButtonStatus(buttonStatus)
   }
 
   _redrawPath () {
-    this._operation.set(this._settings)
     this._ui.canvas.render()
   }
 
@@ -143,6 +173,26 @@ class BrushControl extends Control {
     var offset = new Vector2(clientRect.left, clientRect.top + document.body.scrollTop)
     var absolutePosition = Utils.getEventPosition(e).subtract(offset)
     return absolutePosition.divide(this._ui.canvas.size)
+  }
+
+  /**
+   * Gets called when the thickness has been changed
+   * @override
+   */
+  _onThicknessUpdate (value) {
+    this._operation.setThickness(value)
+    this._ui.canvas.render()
+    this._highlightDoneButton()
+  }
+
+  /**
+   * Gets called when the color has been changed
+   * @override
+   */
+  _onColorUpdate (value) {
+    this._operation.setColor(value)
+    this._ui.canvas.render()
+    this._highlightDoneButton()
   }
 }
 
