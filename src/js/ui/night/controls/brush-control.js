@@ -49,14 +49,16 @@ class BrushControl extends Control {
     this._prepareSettings()
     this._prepareSlider()
     this._prepareColorPicker()
+    this._initialZoomLevel = this._ui.canvas.zoomLevel
+    this._ui.canvas.zoomToFit()
   }
 
   _prepareSettings () {
     this._initialOptions = {
       color: this._operation.getColor(),
       thickness: this._operation.getThickness(),
-      controlPoints: this._operation.getControlPoints(),
-      buttonStatus: this._operation.getButtonStatus()
+      controlPoints: this._operation.getControlPoints().slice(0),
+      buttonStatus: this._operation.getButtonStatus().slice(0)
     }
   }
 
@@ -102,12 +104,15 @@ class BrushControl extends Control {
    */
   _onBack () {
     this._ui.canvas.setZoomLevel(this._initialZoomLevel, false)
-
-    // When operation did not exist before, remove it when clicking 'back'
-    if (!this._operationExistedBefore) {
-      this._ui.removeOperation('brush')
-    }
+    this._resetOperationSettings()
     this._ui.canvas.render()
+  }
+
+  _resetOperationSettings () {
+    this._operation.setControlPoints(this._initialOptions.controlPoints)
+    this._operation.setButtonStatus(this._initialOptions.buttonStatus)
+    this._operation.setColor(this._initialOptions.color)
+    this._operation.setThickness(this._initialOptions.thickness)
   }
 
   /**
@@ -115,7 +120,13 @@ class BrushControl extends Control {
    * @protected
    */
   _onDone () {
-
+    this._ui.canvas.setZoomLevel(this._initialZoomLevel, false)
+    this._ui.addHistory(this, {
+      color: this._initialSettings.color,
+      thickness: this._initialSettings.thickness,
+      controlPoints: this._initialSettings.controlPoints,
+      buttonStatus: this._initialSettings.buttonStatus
+    }, this._operationExistedBefore)
   }
 
   /**
