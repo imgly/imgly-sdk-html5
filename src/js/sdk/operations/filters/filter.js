@@ -30,6 +30,12 @@ class Filter {
   static get identifier () { return null }
 
   /**
+   * Specifies whether this filter is an identity filter
+   * @return {Boolean}
+   */
+  static get isIdentity () { return false }
+
+  /**
    * Renders the filter
    * @param  {Renderer} renderer
    * @return {Promise}
