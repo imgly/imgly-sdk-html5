@@ -48,7 +48,8 @@ class NightUI extends UI {
       'tilt-shift',
       'frames',
       'stickers',
-      'text'
+      'text',
+      'brush'
     ]
 
     this._paused = false
@@ -433,6 +434,7 @@ class NightUI extends UI {
     this.registerControl('frames', 'frames', require('./controls/frames-control'))
     this.registerControl('stickers', 'stickers', require('./controls/stickers-control'))
     this.registerControl('text', 'text', require('./controls/text-control'))
+    this.registerControl('brush', 'brush', require('./controls/brush-control'))
   }
 
   /**
