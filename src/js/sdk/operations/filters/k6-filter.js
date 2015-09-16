@@ -17,6 +17,15 @@ import Filter from './filter'
  * @extends {ImglyKit.Filter}
  */
 class K6Filter extends Filter {
+  constructor (...args) {
+    super(...args)
+
+    // Saturation
+    this._stack.add(new Filter.Primitives.Saturation({
+      saturation: 0.5
+    }))
+  }
+
   /**
    * A unique string that identifies this operation. Can be used to select
    * the active filter.
@@ -32,22 +41,6 @@ class K6Filter extends Filter {
    */
   get name () {
     return 'K6'
-  }
-
-  /**
-   * Renders the filter
-   * @param  {Renderer} renderer
-   * @return {Promise}
-   */
-  render (renderer) {
-    var stack = new Filter.PrimitivesStack()
-
-    // Saturation
-    stack.add(new Filter.Primitives.Saturation({
-      saturation: 0.5
-    }))
-
-    stack.render(renderer)
   }
 }
 

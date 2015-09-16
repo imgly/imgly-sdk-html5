@@ -17,33 +17,11 @@ import Filter from './filter'
  * @extends {ImglyKit.Filter}
  */
 class OrchidFilter extends Filter {
-  /**
-   * A unique string that identifies this operation. Can be used to select
-   * the active filter.
-   * @type {String}
-   */
-  static get identifier () {
-    return 'orchid'
-  }
-
-  /**
-   * The name that is displayed in the UI
-   * @type {String}
-   */
-  get name () {
-    return 'Orchid'
-  }
-
-  /**
-   * Renders the filter
-   * @param  {Renderer} renderer
-   * @return {Promise}
-   */
-  render (renderer) {
-    var stack = new Filter.PrimitivesStack()
+  constructor (...args) {
+    super(...args)
 
     // Tone curve
-    stack.add(new Filter.Primitives.ToneCurve({
+    this._stack.add(new Filter.Primitives.ToneCurve({
       rgbControlPoints: {
         red: [
           [0, 0],
@@ -67,7 +45,7 @@ class OrchidFilter extends Filter {
     }))
 
     // Tone curve
-    stack.add(new Filter.Primitives.ToneCurve({
+    this._stack.add(new Filter.Primitives.ToneCurve({
       controlPoints: [
         [0, 0],
         [117, 151],
@@ -77,11 +55,26 @@ class OrchidFilter extends Filter {
     }))
 
     // Desaturation
-    stack.add(new Filter.Primitives.Desaturation({
+    this._stack.add(new Filter.Primitives.Desaturation({
       desaturation: 0.65
     }))
+  }
 
-    stack.render(renderer)
+  /**
+   * A unique string that identifies this operation. Can be used to select
+   * the active filter.
+   * @type {String}
+   */
+  static get identifier () {
+    return 'orchid'
+  }
+
+  /**
+   * The name that is displayed in the UI
+   * @type {String}
+   */
+  get name () {
+    return 'Orchid'
   }
 }
 

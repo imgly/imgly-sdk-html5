@@ -17,32 +17,10 @@ import Filter from './filter'
  * @extends {ImglyKit.Filter}
  */
 class MorningFilter extends Filter {
-  /**
-   * A unique string that identifies this operation. Can be used to select
-   * the active filter.
-   * @type {String}
-   */
-  static get identifier () {
-    return 'morning'
-  }
+  constructor (...args) {
+    super(...args)
 
-  /**
-   * The name that is displayed in the UI
-   * @type {String}
-   */
-  get name () {
-    return 'Morning'
-  }
-
-  /**
-   * Renders the filter
-   * @param  {Renderer} renderer
-   * @return {Promise}
-   */
-  render (renderer) {
-    var stack = new Filter.PrimitivesStack()
-
-    stack.add(new Filter.Primitives.ToneCurve({
+    this._stack.add(new Filter.Primitives.ToneCurve({
       rgbControlPoints: {
         red: [
           [0, 40],
@@ -59,9 +37,24 @@ class MorningFilter extends Filter {
       }
     }))
 
-    stack.add(new Filter.Primitives.Glow())
+    this._stack.add(new Filter.Primitives.Glow())
+  }
 
-    stack.render(renderer)
+  /**
+   * A unique string that identifies this operation. Can be used to select
+   * the active filter.
+   * @type {String}
+   */
+  static get identifier () {
+    return 'morning'
+  }
+
+  /**
+   * The name that is displayed in the UI
+   * @type {String}
+   */
+  get name () {
+    return 'Morning'
   }
 }
 

@@ -19,6 +19,7 @@ import Filter from './filter'
 class BWFilter extends Filter {
   constructor (...args) {
     super(...args)
+
     this._stack.add(new Filter.Primitives.Grayscale())
   }
 

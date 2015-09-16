@@ -17,6 +17,19 @@ import Filter from './filter'
  * @extends {ImglyKit.Filter}
  */
 class LomoFilter extends Filter {
+  constructor (...args) {
+    super(...args)
+
+    this._stack.add(new Filter.Primitives.ToneCurve({
+      controlPoints: [
+        [0, 0],
+        [87, 20],
+        [131, 156],
+        [183, 205],
+        [255, 200]
+      ]
+    }))
+  }
 
   /**
    * A unique string that identifies this operation. Can be used to select
@@ -33,27 +46,6 @@ class LomoFilter extends Filter {
    */
   get name () {
     return 'Lomo'
-  }
-
-  /**
-   * Renders the filter
-   * @param  {Renderer} renderer
-   * @return {Promise}
-   */
-  render (renderer) {
-    var stack = new Filter.PrimitivesStack()
-
-    stack.add(new Filter.Primitives.ToneCurve({
-      controlPoints: [
-        [0, 0],
-        [87, 20],
-        [131, 156],
-        [183, 205],
-        [255, 200]
-      ]
-    }))
-
-    stack.render(renderer)
   }
 }
 

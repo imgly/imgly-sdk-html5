@@ -17,6 +17,12 @@ import Filter from './filter'
  * @extends {ImglyKit.Filter}
  */
 class GobblinFilter extends Filter {
+  constructor (...args) {
+    super(...args)
+
+    this._stack.add(new Filter.Primitives.Gobblin())
+  }
+
   /**
    * A unique string that identifies this operation. Can be used to select
    * the active filter.
@@ -32,19 +38,6 @@ class GobblinFilter extends Filter {
    */
   get name () {
     return 'Gobblin'
-  }
-
-  /**
-   * Renders the filter
-   * @param  {Renderer} renderer
-   * @return {Promise}
-   */
-  render (renderer) {
-    var stack = new Filter.PrimitivesStack()
-
-    stack.add(new Filter.Primitives.Gobblin())
-
-    stack.render(renderer)
   }
 }
 

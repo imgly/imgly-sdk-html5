@@ -17,32 +17,10 @@ import Filter from './filter'
  * @extends {ImglyKit.Filter}
  */
 class Pola669Filter extends Filter {
-  /**
-   * A unique string that identifies this operation. Can be used to select
-   * the active filter.
-   * @type {String}
-   */
-  static get identifier () {
-    return 'pola669'
-  }
+  constructor (...args) {
+    super(...args)
 
-  /**
-   * The name that is displayed in the UI
-   * @type {String}
-   */
-  get name () {
-    return 'Pola 669'
-  }
-
-  /**
-   * Renders the filter
-   * @param  {Renderer} renderer
-   * @return {Promise}
-   */
-  render (renderer) {
-    var stack = new Filter.PrimitivesStack()
-
-    stack.add(new Filter.Primitives.ToneCurve({
+    this._stack.add(new Filter.Primitives.ToneCurve({
       rgbControlPoints: {
         red: [
           [0, 0],
@@ -64,15 +42,30 @@ class Pola669Filter extends Filter {
       }
     }))
 
-    stack.add(new Filter.Primitives.Saturation({
+    this._stack.add(new Filter.Primitives.Saturation({
       saturation: 0.8
     }))
 
-    stack.add(new Filter.Primitives.Contrast({
+    this._stack.add(new Filter.Primitives.Contrast({
       contrast: 1.5
     }))
+  }
 
-    stack.render(renderer)
+  /**
+   * A unique string that identifies this operation. Can be used to select
+   * the active filter.
+   * @type {String}
+   */
+  static get identifier () {
+    return 'pola669'
+  }
+
+  /**
+   * The name that is displayed in the UI
+   * @type {String}
+   */
+  get name () {
+    return 'Pola 669'
   }
 }
 
