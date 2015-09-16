@@ -188,8 +188,8 @@ BrushOperation.prototype.identifier = 'brush'
 BrushOperation.prototype.availableOptions = {
   color: { type: 'color', default: new Color(1, 0, 0, 1) },
   thickness: { type: 'number', default: 5 },
-  controlPoints: { type: 'object', default: [] },
-  buttonStatus: { type: 'object', default: [] }
+  controlPoints: { type: 'array', default: [] },
+  buttonStatus: { type: 'array', default: [] }
 }
 
 export default BrushOperation

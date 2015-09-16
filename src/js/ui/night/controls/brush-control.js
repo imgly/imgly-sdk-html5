@@ -51,6 +51,7 @@ class BrushControl extends Control {
     this._prepareColorPicker()
     this._initialZoomLevel = this._ui.canvas.zoomLevel
     this._ui.canvas.zoomToFit()
+    this._redrawPath()
   }
 
   _prepareSettings () {
@@ -104,7 +105,12 @@ class BrushControl extends Control {
    */
   _onBack () {
     this._ui.canvas.setZoomLevel(this._initialZoomLevel, false)
-    this._resetOperationSettings()
+    console.log(this._operationExistedBefore)
+    if (this._operationExistedBefore) {
+      this._operation.set(this._resetOperationSettings)
+    } else {
+      this._ui.removeOperation('brush')
+    }
     this._ui.canvas.render()
   }
 
