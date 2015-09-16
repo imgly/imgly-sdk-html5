@@ -17,6 +17,17 @@ import Filter from './filter'
  * @extends {ImglyKit.Filter}
  */
 class FoodFilter extends Filter {
+  constructor (...args) {
+    super(...args)
+    this._stack.add(new Filter.Primitives.Saturation({
+      saturation: 1.35
+    }))
+
+    this._stack.add(new Filter.Primitives.Contrast({
+      contrast: 1.1
+    }))
+  }
+
   /**
    * A unique string that identifies this operation. Can be used to select
    * the active filter.
@@ -32,25 +43,6 @@ class FoodFilter extends Filter {
    */
   get name () {
     return 'Food'
-  }
-
-  /**
-   * Renders the filter
-   * @param  {Renderer} renderer
-   * @return {Promise}
-   */
-  render (renderer) {
-    var stack = new Filter.PrimitivesStack()
-
-    stack.add(new Filter.Primitives.Saturation({
-      saturation: 1.35
-    }))
-
-    stack.add(new Filter.Primitives.Contrast({
-      contrast: 1.1
-    }))
-
-    stack.render(renderer)
   }
 }
 

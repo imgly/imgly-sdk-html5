@@ -21,6 +21,7 @@ class Filter {
     this._intensity = intensity
     this._stack = new PrimitivesStack(intensity)
   }
+
   /**
    * A unique string that identifies this operation. Can be used to select
    * the active filter.

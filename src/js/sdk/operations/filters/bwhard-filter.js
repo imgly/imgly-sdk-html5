@@ -17,6 +17,15 @@ import Filter from './filter'
  * @extends {ImglyKit.Filter}
  */
 class BWHardFilter extends Filter {
+  constructor (...args) {
+    super(...args)
+
+    this._stack.add(new Filter.Primitives.Grayscale())
+    this._stack.add(new Filter.Primitives.Contrast({
+      contrast: 1.5
+    }))
+  }
+
   /**
    * A unique string that identifies this operation. Can be used to select
    * the active filter.
@@ -32,22 +41,6 @@ class BWHardFilter extends Filter {
    */
   get name () {
     return '1920'
-  }
-
-  /**
-   * Renders the filter
-   * @param  {Renderer} renderer
-   * @return {Promise}
-   */
-  render (renderer) {
-    var stack = new Filter.PrimitivesStack()
-
-    stack.add(new Filter.Primitives.Grayscale())
-    stack.add(new Filter.Primitives.Contrast({
-      contrast: 1.5
-    }))
-
-    stack.render(renderer)
   }
 }
 

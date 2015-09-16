@@ -17,40 +17,17 @@ import Filter from './filter'
  * @extends {ImglyKit.Filter}
  */
 class A15Filter extends Filter {
-  /**
-   * A unique string that identifies this operation. Can be used to select
-   * the active filter.
-   * @type {String}
-   */
-  static get identifier () {
-    return 'a15'
-  }
-
-  /**
-   * The name that is displayed in the UI
-   * @type {String}
-   */
-  get name () {
-    return '15'
-  }
-
-  /**
-   * Renders the filter
-   * @param  {Renderer} renderer
-   * @return {Promise}
-   */
-  render (renderer) {
-    var stack = new Filter.PrimitivesStack()
-
-    stack.add(new Filter.Primitives.Contrast({
+  constructor (...args) {
+    super(...args)
+    this._stack.add(new Filter.Primitives.Contrast({
       contrast: 0.63
     }))
 
-    stack.add(new Filter.Primitives.Brightness({
+    this._stack.add(new Filter.Primitives.Brightness({
       brightness: 0.12
     }))
 
-    stack.add(new Filter.Primitives.ToneCurve({
+    this._stack.add(new Filter.Primitives.ToneCurve({
       rgbControlPoints: {
         red: [
           [0, 38],
@@ -73,8 +50,23 @@ class A15Filter extends Filter {
         ]
       }
     }))
+  }
 
-    stack.render(renderer)
+  /**
+   * A unique string that identifies this operation. Can be used to select
+   * the active filter.
+   * @type {String}
+   */
+  static get identifier () {
+    return 'a15'
+  }
+
+  /**
+   * The name that is displayed in the UI
+   * @type {String}
+   */
+  get name () {
+    return '15'
   }
 }
 

@@ -17,6 +17,12 @@ import Filter from './filter'
  * @extends {ImglyKit.Filter}
  */
 class X400Filter extends Filter {
+  constructor (...args) {
+    super(...args)
+
+    this._stack.add(new Filter.Primitives.X400())
+  }
+
   /**
    * A unique string that identifies this operation. Can be used to select
    * the active filter.
@@ -32,19 +38,6 @@ class X400Filter extends Filter {
    */
   get name () {
     return 'X400'
-  }
-
-  /**
-   * Renders the filter
-   * @param  {Renderer} renderer
-   * @return {Promise}
-   */
-  render (renderer) {
-    var stack = new Filter.PrimitivesStack()
-
-    stack.add(new Filter.Primitives.X400())
-
-    stack.render(renderer)
   }
 }
 

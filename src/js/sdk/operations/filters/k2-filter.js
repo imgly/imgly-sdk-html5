@@ -18,6 +18,29 @@ import Color from '../../lib/color'
  * @extends {ImglyKit.Filter}
  */
 class K2Filter extends Filter {
+  constructor (...args) {
+    super(...args)
+
+    // Tone curve
+    this._stack.add(new Filter.Primitives.ToneCurve({
+      controlPoints: [
+        [0, 0],
+        [54, 33],
+        [77, 82],
+        [94, 103],
+        [122, 126],
+        [177, 193],
+        [229, 232],
+        [255, 255]
+      ]
+    }))
+
+    // Soft color overlay
+    this._stack.add(new Filter.Primitives.SoftColorOverlay({
+      color: new Color(40 / 255, 40 / 255, 40 / 255)
+    }))
+  }
+
   /**
    * A unique string that identifies this operation. Can be used to select
    * the active filter.
@@ -33,36 +56,6 @@ class K2Filter extends Filter {
    */
   get name () {
     return 'K2'
-  }
-
-  /**
-   * Renders the filter
-   * @param  {Renderer} renderer
-   * @return {Promise}
-   */
-  render (renderer) {
-    var stack = new Filter.PrimitivesStack()
-
-    // Tone curve
-    stack.add(new Filter.Primitives.ToneCurve({
-      controlPoints: [
-        [0, 0],
-        [54, 33],
-        [77, 82],
-        [94, 103],
-        [122, 126],
-        [177, 193],
-        [229, 232],
-        [255, 255]
-      ]
-    }))
-
-    // Soft color overlay
-    stack.add(new Filter.Primitives.SoftColorOverlay({
-      color: new Color(40 / 255, 40 / 255, 40 / 255)
-    }))
-
-    stack.render(renderer)
   }
 }
 

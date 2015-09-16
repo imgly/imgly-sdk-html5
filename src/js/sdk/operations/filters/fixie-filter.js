@@ -17,33 +17,11 @@ import Filter from './filter'
  * @extends {ImglyKit.Filter}
  */
 class FixieFilter extends Filter {
-  /**
-   * A unique string that identifies this operation. Can be used to select
-   * the active filter.
-   * @type {String}
-   */
-  static get identifier () {
-    return 'fixie'
-  }
-
-  /**
-   * The name that is displayed in the UI
-   * @type {String}
-   */
-  get name () {
-    return 'Fixie'
-  }
-
-  /**
-   * Renders the filter
-   * @param  {Renderer} renderer
-   * @return {Promise}
-   */
-  render (renderer) {
-    var stack = new Filter.PrimitivesStack()
+  constructor (...args) {
+    super(...args)
 
     // Tone curve
-    stack.add(new Filter.Primitives.ToneCurve({
+    this._stack.add(new Filter.Primitives.ToneCurve({
       rgbControlPoints: {
         red: [
           [0, 0],
@@ -70,8 +48,23 @@ class FixieFilter extends Filter {
         ]
       }
     }))
+  }
 
-    stack.render(renderer)
+  /**
+   * A unique string that identifies this operation. Can be used to select
+   * the active filter.
+   * @type {String}
+   */
+  static get identifier () {
+    return 'fixie'
+  }
+
+  /**
+   * The name that is displayed in the UI
+   * @type {String}
+   */
+  get name () {
+    return 'Fixie'
   }
 }
 

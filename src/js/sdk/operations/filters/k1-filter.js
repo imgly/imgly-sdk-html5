@@ -17,6 +17,26 @@ import Filter from './filter'
  * @extends {ImglyKit.Filter}
  */
 class K1Filter extends Filter {
+  constructor (...args) {
+    super(...args)
+
+    // Tone curve
+    this._stack.add(new Filter.Primitives.ToneCurve({
+      controlPoints: [
+        [0, 0],
+        [53, 32],
+        [91, 80],
+        [176, 205],
+        [255, 255]
+      ]
+    }))
+
+    // Saturation
+    this._stack.add(new Filter.Primitives.Saturation({
+      saturation: 0.9
+    }))
+  }
+
   /**
    * A unique string that identifies this operation. Can be used to select
    * the active filter.
@@ -32,33 +52,6 @@ class K1Filter extends Filter {
    */
   get name () {
     return 'K1'
-  }
-
-  /**
-   * Renders the filter
-   * @param  {Renderer} renderer
-   * @return {Promise}
-   */
-  render (renderer) {
-    var stack = new Filter.PrimitivesStack()
-
-    // Tone curve
-    stack.add(new Filter.Primitives.ToneCurve({
-      controlPoints: [
-        [0, 0],
-        [53, 32],
-        [91, 80],
-        [176, 205],
-        [255, 255]
-      ]
-    }))
-
-    // Saturation
-    stack.add(new Filter.Primitives.Saturation({
-      saturation: 0.9
-    }))
-
-    stack.render(renderer)
   }
 }
 
