@@ -81,8 +81,8 @@ class BrushControl extends Control {
   _prepareSlider () {
     let sliderElement = this._controls.querySelector('.imglykit-slider')
     this._slider = new SimpleSlider(sliderElement, {
-      minValue: 0.0,
-      maxValue: 0.5
+      minValue: 1,
+      maxValue: 30
     })
     this._slider.on('update', this._onThicknessUpdate.bind(this))
     this._slider.setValue(this._initialOptions.thickness)
@@ -131,6 +131,7 @@ class BrushControl extends Control {
   }
 
   _onMouseDown (e) {
+    e.preventDefault()
     var mousePosition = this._getRelativeMousePositionFromEvent(e)
     this._painting = true
     this._addControlPoint(mousePosition, false)

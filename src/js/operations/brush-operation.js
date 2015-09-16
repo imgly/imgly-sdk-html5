@@ -153,7 +153,7 @@ class BrushOperation extends Operation {
 
     context.strokeStyle = this._options.color.toHex()
     context.lineJoin = 'round'
-    context.lineWidth = 5
+    context.lineWidth = this._options.thickness
 
     var controlPoints = this._options.controlPoints.map((point) => {
       return point.clone().multiply(canvasSize)
@@ -188,7 +188,7 @@ BrushOperation.prototype.identifier = 'brush'
  */
 BrushOperation.prototype.availableOptions = {
   color: { type: 'color', default: new Color(0, 0, 0, 1) },
-  thickness: { type: 'number', default: 0.02 },
+  thickness: { type: 'number', default: 5 },
   controlPoints: { type: 'object', default: [] },
   buttonStatus: { type: 'object', default: [] }
 }
