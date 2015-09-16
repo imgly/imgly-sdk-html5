@@ -22,7 +22,7 @@ class Renderer extends EventEmitter {
   constructor (dimensions, canvas, image) {
     super()
 
-    this._size = new Vector2()
+    this._size = new Vector2(image.width, image.height)
 
     /**
      * @type {Canvas}
