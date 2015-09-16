@@ -84,7 +84,7 @@ class WebGLRenderer extends BaseRenderer {
     // Re-use FBO and textures
     let fbo, texture, cacheObject
     if (!this._cache[identifier]) {
-      cacheObject = this._createFramebuffer()
+      cacheObject = this.createFramebuffer()
     } else {
       cacheObject = this._cache[identifier]
     }
@@ -221,6 +221,7 @@ class WebGLRenderer extends BaseRenderer {
     let gl = this._canvas.getContext('webgl', this._contextOptions) ||
       this._canvas.getContext('experimental-webgl', this._contextOptions)
 
+    // Debug if possible
     if (window.WebGLDebugUtils) {
       gl = window.WebGLDebugUtils.makeDebugContext(gl)
     }
@@ -373,32 +374,28 @@ class WebGLRenderer extends BaseRenderer {
   }
 
   runProgram (program, options) {
-    let gl = this._context
+    const gl = this._context
     gl.useProgram(program)
     this._setCoordinates(program, options.textureCoordinates, options.triangleCoordinates)
 
-    var fbo = this.getCurrentFramebuffer()
-    var currentTexture = this.getCurrentTexture()
+    const fbo = options.outputFBO || this.getCurrentFramebuffer()
+    const currentTexture = options.outputTexture || this.getCurrentTexture()
+    const lastTexture = options.inputTexture || this._lastTexture
 
     // Select the current framebuffer
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo)
     gl.viewport(0, 0, this._size.x, this._size.y)
 
-    // Resize the texture to canvas size
-    gl.bindTexture(gl.TEXTURE_2D, currentTexture)
-
     // Set premultiplied alpha
     gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)
 
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._size.x, this._size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
-
     // Make sure we select the current texture
-    gl.bindTexture(gl.TEXTURE_2D, this._lastTexture)
+    gl.bindTexture(gl.TEXTURE_2D, lastTexture)
 
     // Set the uniforms
-    for (var name in options.uniforms) {
-      var location = gl.getUniformLocation(program, name)
-      var uniform = options.uniforms[name]
+    for (let name in options.uniforms) {
+      const location = gl.getUniformLocation(program, name)
+      const uniform = options.uniforms[name]
 
       switch (uniform.type) {
         case 'i':
@@ -435,8 +432,10 @@ class WebGLRenderer extends BaseRenderer {
     // Draw the rectangle
     gl.drawArrays(gl.TRIANGLES, 0, 6)
 
-    this.setLastTexture(currentTexture)
-    this.selectNextBuffer()
+    if (options.switchBuffer !== false) {
+      this.setLastTexture(currentTexture)
+      this.selectNextBuffer()
+    }
   }
 
   /**
@@ -574,7 +573,7 @@ class WebGLRenderer extends BaseRenderer {
   /* istanbul ignore next */
   _createFramebuffers () {
     for (var i = 0; i < 2; i++) {
-      let { fbo, texture } = this._createFramebuffer()
+      let { fbo, texture } = this.createFramebuffer()
       this._textures.push(texture)
       this._framebuffers.push(fbo)
     }
@@ -585,7 +584,7 @@ class WebGLRenderer extends BaseRenderer {
    * @return {Object}
    * @private
    */
-  _createFramebuffer () {
+  createFramebuffer () {
     let gl = this._context
 
     // Create texture
@@ -613,9 +612,6 @@ class WebGLRenderer extends BaseRenderer {
    */
   /* istanbul ignore next */
   resizeTo (dimensions) {
-    var gl = this._context
-
-    // Resize the canvas
     this._canvas.width = dimensions.x
     this._canvas.height = dimensions.y
   }
