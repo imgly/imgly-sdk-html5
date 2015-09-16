@@ -30,6 +30,7 @@ PhotoEditorSDK.CanvasRenderer = require('./renderers/canvas-renderer')
 PhotoEditorSDK.Vector2 = require('./lib/math/vector2')
 PhotoEditorSDK.EventEmitter = require('./lib/event-emitter')
 PhotoEditorSDK.Utils = require('./lib/utils')
+PhotoEditorSDK.OperationsStack = require('./lib/operations-stack')
 
 PhotoEditorSDK.Operations = require('./operations/')
 PhotoEditorSDK.Filters = require('./operations/filters/')

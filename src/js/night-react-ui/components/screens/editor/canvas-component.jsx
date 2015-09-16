@@ -40,7 +40,7 @@ class CanvasComponent extends BaseChildComponent {
     let props = {
       operationsOptions: SDKUtils.clone(operationsOptions)
     }
-    props.operationsStack = state.operationsStack.slice(0)
+    props.operationsStack = state.operationsStack.clone()
 
     return props
   }
@@ -144,7 +144,7 @@ class CanvasComponent extends BaseChildComponent {
     let containerDimensions = new Vector2(canvasCell.offsetWidth, canvasCell.offsetHeight)
     kit.setOperationsStack(this.props.operationsStack)
     if (zoom !== null) {
-      containerDimensions = renderer.getInitialDimensionsForStack(kit.getSanitizedStack())
+      containerDimensions = renderer.getInitialDimensionsForStack(kit.operationsStack)
         .multiply(zoom)
         .floor()
     }
