@@ -31,10 +31,34 @@ class BrushControl extends Control {
    */
   _onEnter () {
     super._onEnter()
+    this._prepareOperation()
+    this._prepareSettings()
+    this._prepareContainer()
+  }
 
+  _prepareSettings () {
+    this._initialSettings = {
+      color: this._operation.getColor(),
+      thickness: this._operation.getThickness()
+    }
+    this._settings = {
+      color: this._initialSettings.color,
+      thickness: this._initialSettings.thickness
+    }
+  }
+
+  _prepareOperation () {
     this._operationExistedBefore = !!this._ui.operations.brush
     this._operation = this._ui.getOrCreateOperation('brush')
   }
+
+  _prepareContainer () {
+    this._onMouseDown = this._onMouseDown.bind(this)
+    this._container = this._canvasControls.querySelector('.imglykit-canvas-brush-container')
+    this._container.addEventListener('mousedown', this._onMouseDown)
+  }
+
+
 
   /**
    * Gets called when the back button has been clicked
@@ -68,6 +92,10 @@ class BrushControl extends Control {
     // Extend context like this...
     context.myVariable = 'myValue'
     return context
+  }
+
+  _onMouseDown () {
+    console.log('mouse down')
   }
 }
 
