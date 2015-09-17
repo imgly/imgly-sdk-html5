@@ -1081,7 +1081,8 @@
   top: 0;
   left: 0;
   border-radius: 50%;
-  z-index: 10000; }
+  z-index: 10000;
+  border: 2px solid white; }
 
 /*
  * Copyright (c) 2013-2015 9elements GmbH

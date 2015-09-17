@@ -54,6 +54,7 @@ class BrushControl extends Control {
     this._initialZoomLevel = this._ui.canvas.zoomLevel
     this._ui.canvas.zoomToFit()
     this._setCursorSize(this._initialOptions.thickness * this._getLongerSideSize())
+    this._setCursorColor()
     this._redrawPath()
   }
 
@@ -276,6 +277,7 @@ class BrushControl extends Control {
     this._operation.setColor(value)
     this._ui.canvas.render()
     this._highlightDoneButton()
+    this._setCursorColor(value)
   }
 
   /**
@@ -307,6 +309,12 @@ class BrushControl extends Control {
   _hideCursor () {
     let myCursor = this._canvasControls.querySelector('#mycursor')
     myCursor.style.display = 'none'
+  }
+
+  _setCursorColor () {
+    let myCursor = this._canvasControls.querySelector('#mycursor')
+    console.log(this._operation.getColor())
+    myCursor.style.background = this._operation.getColor().toHex()
   }
 }
 
