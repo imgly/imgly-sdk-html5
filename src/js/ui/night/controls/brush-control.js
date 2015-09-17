@@ -222,6 +222,10 @@ class BrushControl extends Control {
     this._startPaint(e)
   }
 
+  /**
+   * start painting
+   * @param  {Event} event
+   */
   _startPaint (event) {
     event.preventDefault()
     var mousePosition = this._getRelativeMousePositionFromEvent(event)
@@ -233,6 +237,10 @@ class BrushControl extends Control {
     this._highlightDoneButton()
   }
 
+  /**
+   * Gets called when the user ends the touch
+   * @param  {Event} e
+   */
   _onTouchEnd (e) {
     this._hideCursor()
     this._stopPaint()
@@ -247,6 +255,9 @@ class BrushControl extends Control {
     this._stopPaint()
   }
 
+  /**
+   * Stops the paint phase
+   */
   _stopPaint () {
     this._painting = false
   }
@@ -267,6 +278,12 @@ class BrushControl extends Control {
     }
   }
 
+  /**
+   * Gets called when the user drags the finger.
+   * If this happends while the finger is pressed,
+   * the visited points get added to the path
+   * @param  {Event} e
+   */
   _onTouchMove (e) {
     if (this._painting) {
       var mousePosition = this._getRelativeMousePositionFromEvent(e)
