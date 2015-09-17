@@ -53,6 +53,7 @@ class BrushControl extends Control {
     this._prepareColorPicker()
     this._initialZoomLevel = this._ui.canvas.zoomLevel
     this._ui.canvas.zoomToFit()
+    this._setCursorSize(this._initialOptions.thickness * this._getLongerSideSize())
     this._redrawPath()
   }
 
@@ -200,8 +201,10 @@ class BrushControl extends Control {
    * @param  {Event} e
    */
   _onMouseMove (e) {
+    var mousePosition = this._getRelativeMousePositionFromEvent(e)
+    this._moveCursorTo(mousePosition)
+    this._showCursor()
     if (this._painting) {
-      var mousePosition = this._getRelativeMousePositionFromEvent(e)
       this._addControlPoint(mousePosition, true)
       this._redrawPath()
     }
@@ -215,6 +218,7 @@ class BrushControl extends Control {
    */
   _onMouseLeave (e) {
     this._painting = false
+    this._hideCursor()
   }
 
   /**
@@ -261,6 +265,7 @@ class BrushControl extends Control {
     this._operation.setThickness(value / this._getLongerSideSize())
     this._ui.canvas.render()
     this._highlightDoneButton()
+  this._setCursorSize(this._operation.getThickness() * this._getLongerSideSize())
   }
 
   /**
@@ -279,6 +284,29 @@ class BrushControl extends Control {
    */
   _getLongerSideSize () {
     return this._ui.canvas.size.x > this._ui.canvas.size.y ? this._ui.canvas.size.x : this._ui.canvas.size.y
+  }
+
+  _moveCursorTo (position) {
+    let myCursor = this._canvasControls.querySelector('#mycursor')
+    let halfThickness = this._operation.getThickness() * this._getLongerSideSize() / 2.0
+    myCursor.style.left = position.x * this._ui.canvas.size.x - halfThickness + 'px'
+    myCursor.style.top = position.y * this._ui.canvas.size.y - halfThickness + 'px'
+  }
+
+  _setCursorSize (size) {
+    let myCursor = this._canvasControls.querySelector('#mycursor')
+    myCursor.style.width = size + 'px'
+    myCursor.style.height = size + 'px'
+  }
+
+  _showCursor () {
+    let myCursor = this._canvasControls.querySelector('#mycursor')
+    myCursor.style.display = 'block'
+  }
+
+  _hideCursor () {
+    let myCursor = this._canvasControls.querySelector('#mycursor')
+    myCursor.style.display = 'none'
   }
 }
 
