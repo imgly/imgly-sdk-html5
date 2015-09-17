@@ -162,7 +162,6 @@ class BrushOperation extends Operation {
     let metaIndex = 0
     context.clearRect(0, 0, context.canvas.width, context.canvas.height)
     context.lineJoin = 'round'
-    context.lineWidth = this._options.thicknesses[0] * longerSide
 
     var controlPoints = this._options.controlPoints.map((point) => {
       return point.clone().multiply(canvasSize)
@@ -174,6 +173,7 @@ class BrushOperation extends Operation {
         context.moveTo(controlPoints[i - 1].x, controlPoints[i - 1].y)
       } else {
         context.strokeStyle = this._options.colors[metaIndex].toHex()
+        context.lineWidth = this._options.thicknesses[metaIndex] * longerSide
         metaIndex++
         context.moveTo(controlPoints[i].x - 1, controlPoints[i].y)
       }
@@ -218,7 +218,7 @@ BrushOperation.prototype.identifier = 'brush'
  */
 BrushOperation.prototype.availableOptions = {
   colors: { type: 'array', default: [] },
-  thicknesses: { type: 'array', default: [0.02] },
+  thicknesses: { type: 'array', default: [] },
   controlPoints: { type: 'array', default: [] },
   buttonStatus: { type: 'array', default: [] }
 }

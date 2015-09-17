@@ -59,8 +59,18 @@ class BrushControl extends Control {
     this._redrawPath()
   }
 
+  /**
+   * This method sets the inital values for thickness and color.
+   * It will retrieve them from the opteration unless it has no values yet.
+   * In that case it will default some vales
+   */
   _initCurrentValues () {
-    this._currentThickness = this._operation.getLastThickness()
+    if (this._operation.getThicknesses().length > 0) {
+      this._currentThickness = this._operation.getLastThickness()
+    } else {
+      this._currentThickness = 0.02
+    }
+
     if (this._operation.getColors().length > 0) {
       this._currentColor = this._operation.getLastColor()
     } else {
@@ -68,6 +78,9 @@ class BrushControl extends Control {
     }
   }
 
+  /**
+   * Setsup the cursor
+   */
   _setupCursor () {
     this._setCursorSize(this._currentThickness * this._getLongerSideSize())
     this._setCursorColor(this._currentColor)
@@ -123,7 +136,7 @@ class BrushControl extends Control {
     })
     this._onThicknessUpdate = this._onThicknessUpdate.bind(this)
     this._slider.on('update', this._onThicknessUpdate)
-    this._slider.setValue(this._operation.getLastThickness() * this._getLongerSideSize())
+    this._slider.setValue(this._currentThickness * this._getLongerSideSize())
   }
 
   /**
@@ -196,7 +209,7 @@ class BrushControl extends Control {
     var mousePosition = this._getRelativeMousePositionFromEvent(e)
     this._painting = true
     this._addCurrentColor()
-    //this._addCurrentThickness()
+    this._addCurrentThickness()
     this._addControlPoint(mousePosition, false)
     this._redrawPath()
     this._highlightDoneButton()
@@ -254,16 +267,24 @@ class BrushControl extends Control {
     this._operation.setButtonStatus(buttonStatus)
   }
 
+  /**
+   * Adds the current selected color to the array of colors of the operation.
+   * That color will be used to paint the next stroke
+   */
   _addCurrentColor () {
     var colors = this._operation.getColors()
     colors.push(this._currentColor.clone())
     this._operation.setColors(colors)
   }
 
+  /**
+   * Adds the current selected thickness to the array of thicknesses of the operation.
+   * That thickness will be used to paint the next stroke
+   */
   _addCurrentThickness () {
-//    var thicknesses = this._operation.getThicknesses()
-//    thicknesses.push(this._currentThickness)
-//    this._operation.setThicknesses(thicknesses)
+    var thicknesses = this._operation.getThicknesses()
+    thicknesses.push(this._currentThickness)
+    this._operation.setThicknesses(thicknesses)
   }
 
   /**
@@ -291,9 +312,9 @@ class BrushControl extends Control {
    * @override
    */
   _onThicknessUpdate (value) {
-    //this._operation.setThicknesses(value / this._getLongerSideSize())
+    this._currentThickness = value / this._getLongerSideSize()
     this._highlightDoneButton()
-    this._setCursorSize(this._operation.getThicknesses() * this._getLongerSideSize())
+    this._setCursorSize(this._currentThickness * this._getLongerSideSize())
   }
 
   /**
@@ -320,7 +341,7 @@ class BrushControl extends Control {
    */
   _moveCursorTo (position) {
     let myCursor = this._canvasControls.querySelector('#mycursor')
-    let halfThickness = this._operation.getThicknesses() * this._getLongerSideSize() / 2.0
+    let halfThickness = this._currentThickness * this._getLongerSideSize() / 2.0
     myCursor.style.left = position.x * this._ui.canvas.size.x - halfThickness + 'px'
     myCursor.style.top = position.y * this._ui.canvas.size.y - halfThickness + 'px'
   }
