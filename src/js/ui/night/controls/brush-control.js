@@ -47,12 +47,12 @@ class BrushControl extends Control {
    */
   _onEnter () {
     super._onEnter()
-    this._prepareOperation()
-    this._prepareOptions()
-    this._prepareContainer()
+    this._setupOperation()
+    this._setupOptions()
+    this._setupContainer()
     this._initCurrentValues()
-    this._prepareSlider()
-    this._prepareColorPicker()
+    this._setupSlider()
+    this._setupColorPicker()
     this._initialZoomLevel = this._ui.canvas.zoomLevel
     this._ui.canvas.zoomToFit()
     this._setupCursor()
@@ -89,7 +89,7 @@ class BrushControl extends Control {
   /**
    * Sets the initital options up
    */
-  _prepareOptions () {
+  _setupOptions () {
     this._initialOptions = {
       color: this._operation.getColors().slice(0),
       thickness: this._operation.getThicknesses().slice(0),
@@ -101,7 +101,7 @@ class BrushControl extends Control {
   /**
    * Sets up the operation
    */
-  _prepareOperation () {
+  _setupOperation () {
     this._operationExistedBefore = !!this._ui.operations.brush
     this._operation = this._ui.getOrCreateOperation('brush')
   }
@@ -109,7 +109,7 @@ class BrushControl extends Control {
   /**
    * Sets up the container, adds events, etc
    */
-  _prepareContainer () {
+  _setupContainer () {
     this._onMouseDown = this._onMouseDown.bind(this)
     this._onMouseUp = this._onMouseUp.bind(this)
     this._onMouseMove = this._onMouseMove.bind(this)
@@ -128,7 +128,7 @@ class BrushControl extends Control {
   /**
    * Sets up the slider used to change the brush size
    */
-  _prepareSlider () {
+  _setupSlider () {
     let sliderElement = this._controls.querySelector('.imglykit-slider')
     this._slider = new SimpleSlider(sliderElement, {
       minValue: 1,
@@ -142,7 +142,7 @@ class BrushControl extends Control {
   /**
    * Sets up the color picker used to change the brush color
    */
-  _prepareColorPicker () {
+  _setupColorPicker () {
     let colorPickerElement = this._controls.querySelector('.imglykit-color-picker')
     this._colorPicker = new ColorPicker(this._ui, colorPickerElement)
     this._colorPicker.on('update', this._onColorUpdate.bind(this))
