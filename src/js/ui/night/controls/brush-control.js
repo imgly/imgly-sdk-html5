@@ -49,6 +49,7 @@ class BrushControl extends Control {
     super._onEnter()
     this._setupOperation()
     this._setupOptions()
+    this._bindEventHandler()
     this._setupContainer()
     this._initCurrentValues()
     this._setupSlider()
@@ -110,19 +111,27 @@ class BrushControl extends Control {
    * Sets up the container, adds events, etc
    */
   _setupContainer () {
+    this._container = this._canvasControls.querySelector('.imglykit-canvas-brush-container')
+    this._container.addEventListener('mousedown', this._onMouseDown)
+    this._container.addEventListener('touchstart', this._onTouchStart)
+    this._container.addEventListener('mouseup', this._onMouseUp)
+    this._container.addEventListener('touchend', this._onTouchEnd)
+    this._container.addEventListener('mousemove', this._onMouseMove)
+    this._container.addEventListener('touchmove', this._onTouchMove)
+    this._container.addEventListener('mouseleave', this._onMouseLeave)
+  }
+
+  /**
+   * Bind event handlers
+   */
+  _bindEventHandler () {
     this._onMouseDown = this._onMouseDown.bind(this)
     this._onMouseUp = this._onMouseUp.bind(this)
     this._onMouseMove = this._onMouseMove.bind(this)
     this._onMouseLeave = this._onMouseLeave.bind(this)
-
-    this._container = this._canvasControls.querySelector('.imglykit-canvas-brush-container')
-    this._container.addEventListener('mousedown', this._onMouseDown)
-    this._container.addEventListener('touchstart', this._onMouseDown)
-    this._container.addEventListener('mouseup', this._onMouseUp)
-    this._container.addEventListener('touchend', this._onMouseUp)
-    this._container.addEventListener('mousemove', this._onMouseMove)
-    this._container.addEventListener('touchmove', this._onMouseMove)
-    this._container.addEventListener('mouseleave', this._onMouseLeave)
+    this._onTouchStart = this._onTouchStart.bind(this)
+    this._onTouchEnd = this._onTouchEnd.bind(this)
+    this._onTouchMove = this._onTouchMove.bind(this)
   }
 
   /**
@@ -199,14 +208,23 @@ class BrushControl extends Control {
     return context
   }
 
+  _onTouchStart (e) {
+    this._showCursor()
+    this._startPaint(e)
+  }
+
   /**
    * Gets called when the user presses the mouse button.
    * Here the painting phase is started
    * @param  {Event} e
    */
   _onMouseDown (e) {
-    e.preventDefault()
-    var mousePosition = this._getRelativeMousePositionFromEvent(e)
+    this._startPaint(e)
+  }
+
+  _startPaint (event) {
+    event.preventDefault()
+    var mousePosition = this._getRelativeMousePositionFromEvent(event)
     this._painting = true
     this._addCurrentColor()
     this._addCurrentThickness()
@@ -215,12 +233,21 @@ class BrushControl extends Control {
     this._highlightDoneButton()
   }
 
+  _onTouchEnd (e) {
+    this._hideCursor()
+    this._stopPaint()
+  }
+
   /**
    * Gets called the the users releases the mouse button.
    * Here the painting phase is stopped
    * @param  {Event} e
    */
   _onMouseUp (e) {
+    this._stopPaint()
+  }
+
+  _stopPaint () {
     this._painting = false
   }
 
@@ -235,6 +262,15 @@ class BrushControl extends Control {
     this._moveCursorTo(mousePosition)
     this._showCursor()
     if (this._painting) {
+      this._addControlPoint(mousePosition, true)
+      this._redrawPath()
+    }
+  }
+
+  _onTouchMove (e) {
+    if (this._painting) {
+      var mousePosition = this._getRelativeMousePositionFromEvent(e)
+      this._moveCursorTo(mousePosition)
       this._addControlPoint(mousePosition, true)
       this._redrawPath()
     }
