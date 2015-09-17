@@ -160,9 +160,9 @@ class BrushOperation extends Operation {
     let longerSide = this._getLongerSideSize(outputCanvas)
 
     context.clearRect(0, 0, context.canvas.width, context.canvas.height)
-    context.strokeStyle = this._options.color.toHex()
+    context.strokeStyle = this._options.colors[0].toHex()
     context.lineJoin = 'round'
-    context.lineWidth = this._options.thickness * longerSide
+    context.lineWidth = this._options.thicknesses[0] * longerSide
 
     var controlPoints = this._options.controlPoints.map((point) => {
       return point.clone().multiply(canvasSize)
@@ -191,6 +191,16 @@ class BrushOperation extends Operation {
   _getLongerSideSize (canvas) {
     return canvas.width > canvas.height ? canvas.width : canvas.height
   }
+
+  getLastColor () {
+    var colors = this.getColors()
+    return colors[colors.length - 1]
+  }
+
+  getLastThickness () {
+    var thicknesses = this.getThicknesses()
+    return thicknesses[thicknesses.length - 1]
+  }
 }
 
 /**
@@ -205,8 +215,8 @@ BrushOperation.prototype.identifier = 'brush'
  * @type {Object}
  */
 BrushOperation.prototype.availableOptions = {
-  color: { type: 'color', default: new Color(1, 0, 0, 1) },
-  thickness: { type: 'number', default: 0.02 },
+  colors: { type: 'array', default: [new Color(1, 0, 0, 1)] },
+  thicknesses: { type: 'array', default: [0.02] },
   controlPoints: { type: 'array', default: [] },
   buttonStatus: { type: 'array', default: [] }
 }

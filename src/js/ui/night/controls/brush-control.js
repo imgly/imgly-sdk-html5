@@ -53,9 +53,19 @@ class BrushControl extends Control {
     this._prepareColorPicker()
     this._initialZoomLevel = this._ui.canvas.zoomLevel
     this._ui.canvas.zoomToFit()
-    this._setCursorSize(this._initialOptions.thickness * this._getLongerSideSize())
-    this._setCursorColor()
+    this._initCurrentValues()
+    this._setupCursor()
     this._redrawPath()
+  }
+
+  _initCurrentValues () {
+    this._currentThickness = this._operation.getLastThickness()
+    this._currentColor = this._operation.getLastColor()
+  }
+
+  _setupCursor () {
+    this._setCursorSize(this._currentThickness * this._getLongerSideSize())
+    this._setCursorColor(this._currentColor)
   }
 
   /**
@@ -63,8 +73,8 @@ class BrushControl extends Control {
    */
   _prepareOptions () {
     this._initialOptions = {
-      color: this._operation.getColor(),
-      thickness: this._operation.getThickness(),
+      color: this._operation.getColors().slice(0),
+      thickness: this._operation.getThicknesses().slice(0),
       controlPoints: this._operation.getControlPoints().slice(0),
       buttonStatus: this._operation.getButtonStatus().slice(0)
     }
@@ -108,7 +118,7 @@ class BrushControl extends Control {
     })
     this._onThicknessUpdate = this._onThicknessUpdate.bind(this)
     this._slider.on('update', this._onThicknessUpdate)
-    this._slider.setValue(this._initialOptions.thickness * this._getLongerSideSize())
+    this._slider.setValue(this._operation.getLastThickness() * this._getLongerSideSize())
   }
 
   /**
@@ -118,7 +128,7 @@ class BrushControl extends Control {
     let colorPickerElement = this._controls.querySelector('.imglykit-color-picker')
     this._colorPicker = new ColorPicker(this._ui, colorPickerElement)
     this._colorPicker.on('update', this._onColorUpdate.bind(this))
-    this._colorPicker.setValue(this._initialOptions.color)
+    this._colorPicker.setValue(this._operation.getLastColor())
   }
 
   /**
@@ -142,8 +152,8 @@ class BrushControl extends Control {
   _resetOperationSettings () {
     this._operation.setControlPoints(this._initialOptions.controlPoints)
     this._operation.setButtonStatus(this._initialOptions.buttonStatus)
-    this._operation.setColor(this._initialOptions.color)
-    this._operation.setThickness(this._initialOptions.thickness)
+    this._operation.setColors(this._initialOptions.color)
+    this._operation.setThicknesses(this._initialOptions.thickness)
   }
 
   /**
@@ -238,6 +248,18 @@ class BrushControl extends Control {
     this._operation.setButtonStatus(buttonStatus)
   }
 
+  _addCurrentColor () {
+    var colors = this._operation.getColors()
+    colors.push(this._currentColor)
+    this._operation.setColors(colors)
+  }
+
+  _addCurrentThickness () {
+    var thicknesses = this._operation.getThicknesses()
+    thicknesses.push(this._currentThickness)
+    this._operation.setThicknesses(thicknesses)
+  }
+
   /**
    * Triggers a path-redraw
    */
@@ -263,10 +285,9 @@ class BrushControl extends Control {
    * @override
    */
   _onThicknessUpdate (value) {
-    this._operation.setThickness(value / this._getLongerSideSize())
-    this._ui.canvas.render()
+    this._operation.setThicknesses(value / this._getLongerSideSize())
     this._highlightDoneButton()
-    this._setCursorSize(this._operation.getThickness() * this._getLongerSideSize())
+    this._setCursorSize(this._operation.getThicknesses() * this._getLongerSideSize())
   }
 
   /**
@@ -274,8 +295,7 @@ class BrushControl extends Control {
    * @override
    */
   _onColorUpdate (value) {
-    this._operation.setColor(value)
-    this._ui.canvas.render()
+    this._operation.setColors(value)
     this._highlightDoneButton()
     this._setCursorColor(value)
   }
@@ -294,7 +314,7 @@ class BrushControl extends Control {
    */
   _moveCursorTo (position) {
     let myCursor = this._canvasControls.querySelector('#mycursor')
-    let halfThickness = this._operation.getThickness() * this._getLongerSideSize() / 2.0
+    let halfThickness = this._operation.getThicknesses() * this._getLongerSideSize() / 2.0
     myCursor.style.left = position.x * this._ui.canvas.size.x - halfThickness + 'px'
     myCursor.style.top = position.y * this._ui.canvas.size.y - halfThickness + 'px'
   }
@@ -307,6 +327,15 @@ class BrushControl extends Control {
     let myCursor = this._canvasControls.querySelector('#mycursor')
     myCursor.style.width = size + 'px'
     myCursor.style.height = size + 'px'
+  }
+
+  /**
+   * Sets the cursor color
+   * @param {Color} color
+   */
+  _setCursorColor (color) {
+    let myCursor = this._canvasControls.querySelector('#mycursor')
+    myCursor.style.background = color.toHex()
   }
 
   /**
@@ -323,15 +352,6 @@ class BrushControl extends Control {
   _hideCursor () {
     let myCursor = this._canvasControls.querySelector('#mycursor')
     myCursor.style.display = 'none'
-  }
-
-  /**
-   * Sets the cursor color
-   */
-  _setCursorColor () {
-    let myCursor = this._canvasControls.querySelector('#mycursor')
-    console.log(this._operation.getColor())
-    myCursor.style.background = this._operation.getColor().toHex()
   }
 }
 
