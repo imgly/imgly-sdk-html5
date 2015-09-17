@@ -228,11 +228,7 @@ export default class Renderer {
   }
 
   setAllOperationsToDirty () {
-    for (let i = 0; i < this.operationsStack.length; i++) {
-      let operation = this.operationsStack[i]
-      if (!operation) { continue }
-      operation.dirty = true
-    }
+    this.operationsStack.setAllToDirty()
   }
 
   /**

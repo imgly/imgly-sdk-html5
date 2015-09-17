@@ -54,7 +54,7 @@ export default class OperationsStack {
    * Sets all operations to dirty
    */
   setAllToDirty () {
-    this._stack.forEach((op) => op.dirty = true)
+    this._stack.forEach((op) => op.setDirty(true))
   }
 
   /**
@@ -66,12 +66,12 @@ export default class OperationsStack {
     for (let i = 0; i < this._stack.length; i++) {
       let operation = this._stack[i]
       if (!operation) continue
-      if (operation.dirty) {
+      if (operation.isDirty()) {
         dirtyFound = true
       }
 
       if (dirtyFound) {
-        operation.dirty = true
+        operation.setDirty(true)
       }
     }
   }

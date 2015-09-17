@@ -296,7 +296,7 @@ class Operation extends EventEmitter {
    * Sets this operation to dirty, so that it will re-render next time
    * @param {Boolean} dirty = true
    */
-  set dirty (dirty) {
+  setDirty (dirty) {
     this._dirty = dirty
     this._onDirty && this._onDirty()
   }
@@ -305,7 +305,7 @@ class Operation extends EventEmitter {
    * Returns the dirty state
    * @type {Boolean}
    */
-  get dirty () {
+  isDirty () {
     return this._dirty
   }
 

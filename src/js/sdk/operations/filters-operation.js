@@ -71,6 +71,13 @@ class FiltersOperation extends Operation {
   }
 
   getFilters () { return this._filters }
+
+  setDirty (dirty) {
+    super.setDirty(dirty)
+    if (dirty) {
+      this._selectedFilter.setDirty(dirty)
+    }
+  }
 }
 
 /**

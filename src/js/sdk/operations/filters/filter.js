@@ -52,6 +52,10 @@ class Filter {
     this._intensity = intensity
     this._stack.setIntensity(intensity)
   }
+
+  setDirty (dirty) {
+    this._stack.setDirty(dirty)
+  }
 }
 
 /**
