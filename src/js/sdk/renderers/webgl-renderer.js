@@ -642,6 +642,10 @@ class WebGLRenderer extends BaseRenderer {
    */
   /* istanbul ignore next */
   resizeTo (dimensions) {
+    if (this._canvas.width !== dimensions.x ||
+      this._canvas.height !== dimensions.y) {
+      this._imageTexture = null
+    }
     this._canvas.width = dimensions.x
     this._canvas.height = dimensions.y
   }
