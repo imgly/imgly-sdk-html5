@@ -266,7 +266,7 @@ class BrushControl extends Control {
     this._operation.setThickness(value / this._getLongerSideSize())
     this._ui.canvas.render()
     this._highlightDoneButton()
-  this._setCursorSize(this._operation.getThickness() * this._getLongerSideSize())
+    this._setCursorSize(this._operation.getThickness() * this._getLongerSideSize())
   }
 
   /**
