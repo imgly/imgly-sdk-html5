@@ -9,7 +9,12 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent, ReactRedux, ActionCreators } from '../../../globals'
+import {
+  ReactBEM,
+  BaseChildComponent,
+  ReactRedux,
+  ActionCreators
+} from '../../../globals'
 import ScrollbarComponent from '../../scrollbar-component'
 
 class FiltersControlsComponent extends BaseChildComponent {

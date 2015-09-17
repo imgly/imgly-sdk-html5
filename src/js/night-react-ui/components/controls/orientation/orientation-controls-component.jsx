@@ -9,14 +9,24 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent } from '../../../globals'
+import {
+  ActionCreators,
+  ReactRedux,
+  ReactBEM,
+  BaseChildComponent
+} from '../../../globals'
 import ScrollbarComponent from '../../scrollbar-component'
 
-export default class OrientationControlsComponent extends BaseChildComponent {
+class OrientationControlsComponent extends BaseChildComponent {
   constructor (...args) {
     super(...args)
 
-    this._bindAll('_onBackClick')
+    this._bindAll(
+      '_onRotateClick',
+      '_onFlipClick',
+      '_onBackClick'
+    )
+
     this._rotationOperation = this.context.ui.getOrCreateOperation('rotation')
     this._flipOperation = this.context.ui.getOrCreateOperation('flip')
   }
@@ -36,7 +46,11 @@ export default class OrientationControlsComponent extends BaseChildComponent {
    * @private
    */
   _onRotateClick (direction) {
-
+    const degrees = this._rotationOperation.getDegrees()
+    const additionalDegrees = 90 * (direction === 'left' ? -1 : 1)
+    const newDegrees = (degrees + additionalDegrees) % 360
+    this._rotationOperation.setDegrees(newDegrees)
+    this.props.dispatch(ActionCreators.operationUpdated(this._rotationOperation))
   }
 
   /**
@@ -45,7 +59,17 @@ export default class OrientationControlsComponent extends BaseChildComponent {
    * @private
    */
   _onFlipClick (direction) {
-
+    switch (direction) {
+      case 'horizontal':
+        const horizontal = this._flipOperation.getHorizontal()
+        this._flipOperation.setHorizontal(!horizontal)
+        break
+      case 'vertical':
+        const vertical = this._flipOperation.getVertical()
+        this._flipOperation.setVertical(!vertical)
+        break
+    }
+    this.props.dispatch(ActionCreators.operationUpdated(this._flipOperation))
   }
 
   /**
@@ -67,11 +91,11 @@ export default class OrientationControlsComponent extends BaseChildComponent {
       null, // gap
       {
         identifier: 'flip-h',
-        onClick: this._onFlipClick.bind(this, 'horizontally')
+        onClick: this._onFlipClick.bind(this, 'horizontal')
       },
       {
         identifier: 'flip-v',
-        onClick: this._onFlipClick.bind(this, 'vertically')
+        onClick: this._onFlipClick.bind(this, 'vertical')
       }
     ]
 
@@ -84,7 +108,7 @@ export default class OrientationControlsComponent extends BaseChildComponent {
         bem='e:item'
         key={item.identifier}>
         <bem specifier='$b:controls'>
-          <div bem='$e:button m:withLabel'>
+          <div bem='$e:button m:withLabel' onClick={item.onClick}>
             <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/orientation/${item.identifier}@2x.png`, true)} />
             <div bem='e:label'>{this._t(`controls.orientation.${item.identifier}`)}</div>
           </div>
@@ -108,3 +132,5 @@ export default class OrientationControlsComponent extends BaseChildComponent {
     </div>)
   }
 }
+
+export default ReactRedux.connect(OrientationControlsComponent.mapStateToProps)(OrientationControlsComponent)

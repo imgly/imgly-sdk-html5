@@ -191,6 +191,10 @@ class CanvasComponent extends BaseChildComponent {
     for (let operationIdentifier in newOptions) {
       const newOperationOptions = newOptions[operationIdentifier]
       const previousOperationOptions = oldOptions[operationIdentifier]
+      if (!previousOperationOptions) {
+        optionsDiffer = true
+        break
+      }
       for (let optionName in previousOperationOptions) {
         if (newOperationOptions[optionName] !== previousOperationOptions[optionName]) {
           optionsDiffer = true

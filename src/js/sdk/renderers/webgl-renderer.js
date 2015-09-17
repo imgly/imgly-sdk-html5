@@ -295,7 +295,7 @@ class WebGLRenderer extends BaseRenderer {
    * @param  {Vector2} size
    * @private
    */
-  _resizeAllTexture (size) {
+  _resizeAllTextures (size) {
     const gl = this._context
     this._textures.forEach((texture) => {
       gl.bindTexture(gl.TEXTURE_2D, texture)
@@ -641,8 +641,10 @@ class WebGLRenderer extends BaseRenderer {
   /* istanbul ignore next */
   resizeTo (dimensions) {
     if (this._canvas.width !== dimensions.x ||
-      this._canvas.height !== dimensions.y) {
+        this._canvas.height !== dimensions.y) {
+      this._size = dimensions.clone()
       this._imageTexture = null
+      this.reset()
     }
     this._canvas.width = dimensions.x
     this._canvas.height = dimensions.y
