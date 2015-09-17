@@ -365,16 +365,16 @@ class WebGLRenderer extends BaseRenderer {
     var texCoordLocation = gl.getAttribLocation(program, 'a_texCoord')
 
     textureCoordinates = textureCoordinates || new Float32Array([
-        // First triangle
-        0.0, 0.0,
-        1.0, 0.0,
-        0.0, 1.0,
+      // First triangle
+      0.0, 0.0,
+      1.0, 0.0,
+      0.0, 1.0,
 
-        // Second triangle
-        0.0, 1.0,
-        1.0, 0.0,
-        1.0, 1.0
-      ])
+      // Second triangle
+      0.0, 1.0,
+      1.0, 0.0,
+      1.0, 1.0
+    ])
 
     // Provide texture coordinates
     var texCoordBuffer = gl.createBuffer()
@@ -386,13 +386,13 @@ class WebGLRenderer extends BaseRenderer {
     triangleCoordinates = triangleCoordinates || new Float32Array([
       // First triangle
       -1.0, -1.0,
-       1.0, -1.0,
+      1.0, -1.0,
       -1.0, 1.0,
 
       // Second triangle
       -1.0, 1.0,
-       1.0, -1.0,
-       1.0, 1.0
+      1.0, -1.0,
+      1.0, 1.0
     ])
 
     // Create a buffer for the rectangle positions
@@ -715,6 +715,7 @@ class WebGLRenderer extends BaseRenderer {
    * @override
    */
   reset (resetCache=false, newContext=false) {
+    this._imageTexture = null
     this._lastTexture = null
     this._textures = []
     this._framebuffers = []
