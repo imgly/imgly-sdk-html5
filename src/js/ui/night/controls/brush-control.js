@@ -104,9 +104,9 @@ class BrushControl extends Control {
       minValue: 1,
       maxValue: 30
     })
-    this._slider.on('update', this._onThicknessUpdate.bind(this))
-    this._slider.setValue(this._initialOptions.thickness)
-    console.log(this._slider)
+    this._onThicknessUpdate = this._onThicknessUpdate.bind(this)
+    this._slider.on('update', this._onThicknessUpdate)
+    this._slider.setValue(this._initialOptions.thickness * this._getLongerSideSize())
   }
 
   /**
@@ -258,7 +258,7 @@ class BrushControl extends Control {
    * @override
    */
   _onThicknessUpdate (value) {
-    this._operation.setThickness(value)
+    this._operation.setThickness(value / this._getLongerSideSize())
     this._ui.canvas.render()
     this._highlightDoneButton()
   }
@@ -271,6 +271,14 @@ class BrushControl extends Control {
     this._operation.setColor(value)
     this._ui.canvas.render()
     this._highlightDoneButton()
+  }
+
+  /**
+   * returns the longer size of the ui canvas
+   * @return {Number}
+   */
+  _getLongerSideSize () {
+    return this._ui.canvas.size.x > this._ui.canvas.size.y ? this._ui.canvas.size.x : this._ui.canvas.size.y
   }
 }
 

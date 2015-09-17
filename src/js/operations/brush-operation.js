@@ -157,12 +157,12 @@ class BrushOperation extends Operation {
     let canvasSize = new Vector2(outputCanvas.width, outputCanvas.height)
     canvas.width = canvasSize.x
     canvas.height = canvasSize.y
+    let longerSide = this._getLongerSideSize(outputCanvas)
 
     context.clearRect(0, 0, context.canvas.width, context.canvas.height)
-
     context.strokeStyle = this._options.color.toHex()
     context.lineJoin = 'round'
-    context.lineWidth = this._options.thickness
+    context.lineWidth = this._options.thickness * longerSide
 
     var controlPoints = this._options.controlPoints.map((point) => {
       return point.clone().multiply(canvasSize)
@@ -182,6 +182,15 @@ class BrushOperation extends Operation {
 
     return canvas
   }
+
+  /**
+   * returns the longer size of the canvas
+   * @param {Canvas}
+   * @return {Number}
+   */
+  _getLongerSideSize (canvas) {
+    return canvas.width > canvas.height ? canvas.width : canvas.height
+  }
 }
 
 /**
@@ -197,7 +206,7 @@ BrushOperation.prototype.identifier = 'brush'
  */
 BrushOperation.prototype.availableOptions = {
   color: { type: 'color', default: new Color(1, 0, 0, 1) },
-  thickness: { type: 'number', default: 5 },
+  thickness: { type: 'number', default: 0.02 },
   controlPoints: { type: 'array', default: [] },
   buttonStatus: { type: 'array', default: [] }
 }
