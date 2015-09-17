@@ -89,6 +89,7 @@ export default class Renderer {
     const stack = this.operationsStack
     stack.updateDirtiness()
 
+    this._renderer.preRender()
     return stack.validateSettings()
       .then(() => {
         let dimensions = this._renderer

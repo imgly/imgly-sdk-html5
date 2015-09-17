@@ -700,6 +700,13 @@ class WebGLRenderer extends BaseRenderer {
   }
 
   /**
+   * Gets called before each render pass. Resets the input texture.
+   */
+  preRender () {
+    this.setLastTexture(this._imageTexture)
+  }
+
+  /**
    * Resets the renderer
    * @param {Boolean} resetCache = false
    * @param {Boolean} newContext = false
