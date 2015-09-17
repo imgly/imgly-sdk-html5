@@ -51,6 +51,13 @@ export default class OperationsStack {
   }
 
   /**
+   * Sets all operations to dirty
+   */
+  setAllToDirty () {
+    this._stack.forEach((op) => op.dirty = true)
+  }
+
+  /**
    * Finds the first dirty operation and sets all following operations
    * to dirty
    */
