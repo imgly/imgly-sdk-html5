@@ -66,10 +66,17 @@ class PrimitivesStack {
     this._stack.push(primitive)
   }
 
+  _resizeAllTextures (renderer) {
+    this._textures.forEach((texture) => {
+      renderer.resizeTexture(texture)
+    })
+  }
+
   renderWebGL (renderer) {
     if (!this._fbosAvailable) this._createFramebuffers(renderer)
 
     if (this._dirty) {
+      this._resizeAllTextures(renderer)
       let inputTexture = renderer.getLastTexture()
       let texture, fbo
       for (var i = 0; i < this._stack.length; i++) {
@@ -132,6 +139,7 @@ class PrimitivesStack {
     }
   }
 
+  setDirty (dirty) { this._dirty = dirty }
   setIntensity (intensity) { this._intensity = intensity }
 }
 

@@ -296,11 +296,15 @@ class WebGLRenderer extends BaseRenderer {
    * @private
    */
   _resizeAllTextures (size) {
-    const gl = this._context
     this._textures.forEach((texture) => {
-      gl.bindTexture(gl.TEXTURE_2D, texture)
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size.x, size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
+      this.resizeTexture(texture, size)
     })
+  }
+
+  resizeTexture (texture, size = this._size) {
+    const gl = this._context
+    gl.bindTexture(gl.TEXTURE_2D, texture)
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size.x, size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
   }
 
   /**
@@ -644,6 +648,7 @@ class WebGLRenderer extends BaseRenderer {
         this._canvas.height !== dimensions.y) {
       this._size = dimensions.clone()
       this._imageTexture = null
+      this._resizeAllTextures(this._size)
       this.reset()
     }
     this._canvas.width = dimensions.x
