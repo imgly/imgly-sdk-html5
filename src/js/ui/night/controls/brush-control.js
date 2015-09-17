@@ -281,13 +281,17 @@ class BrushControl extends Control {
   }
 
   /**
-   * returns the longer size of the ui canvas
+   * Returns the longer size of the ui canvas
    * @return {Number}
    */
   _getLongerSideSize () {
     return this._ui.canvas.size.x > this._ui.canvas.size.y ? this._ui.canvas.size.x : this._ui.canvas.size.y
   }
 
+  /**
+   * Moves our custom cursor to the specified position
+   * @param  {Vector2} position
+   */
   _moveCursorTo (position) {
     let myCursor = this._canvasControls.querySelector('#mycursor')
     let halfThickness = this._operation.getThickness() * this._getLongerSideSize() / 2.0
@@ -295,22 +299,35 @@ class BrushControl extends Control {
     myCursor.style.top = position.y * this._ui.canvas.size.y - halfThickness + 'px'
   }
 
+  /**
+   * Sets the curser size
+   * @param {Float} size
+   */
   _setCursorSize (size) {
     let myCursor = this._canvasControls.querySelector('#mycursor')
     myCursor.style.width = size + 'px'
     myCursor.style.height = size + 'px'
   }
 
+  /**
+   * Shows the cursor
+   */
   _showCursor () {
     let myCursor = this._canvasControls.querySelector('#mycursor')
     myCursor.style.display = 'block'
   }
 
+  /**
+   * Hides the cursor
+   */
   _hideCursor () {
     let myCursor = this._canvasControls.querySelector('#mycursor')
     myCursor.style.display = 'none'
   }
 
+  /**
+   * Sets the cursor color
+   */
   _setCursorColor () {
     let myCursor = this._canvasControls.querySelector('#mycursor')
     console.log(this._operation.getColor())
