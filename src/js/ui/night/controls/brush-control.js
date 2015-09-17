@@ -14,6 +14,7 @@ import Vector2 from '../../../lib/math/vector2'
 import Utils from '../../../lib/utils'
 import SimpleSlider from '../lib/simple-slider'
 import ColorPicker from '../lib/color-picker'
+import Color from '../../../lib/color'
 
 class BrushControl extends Control {
   /**
@@ -49,18 +50,22 @@ class BrushControl extends Control {
     this._prepareOperation()
     this._prepareOptions()
     this._prepareContainer()
+    this._initCurrentValues()
     this._prepareSlider()
     this._prepareColorPicker()
     this._initialZoomLevel = this._ui.canvas.zoomLevel
     this._ui.canvas.zoomToFit()
-    this._initCurrentValues()
     this._setupCursor()
     this._redrawPath()
   }
 
   _initCurrentValues () {
     this._currentThickness = this._operation.getLastThickness()
-    this._currentColor = this._operation.getLastColor()
+    if (this._operation.getColors().length > 0) {
+      this._currentColor = this._operation.getLastColor()
+    } else {
+      this._currentColor = new Color(1, 0, 0, 1)
+    }
   }
 
   _setupCursor () {
@@ -128,7 +133,7 @@ class BrushControl extends Control {
     let colorPickerElement = this._controls.querySelector('.imglykit-color-picker')
     this._colorPicker = new ColorPicker(this._ui, colorPickerElement)
     this._colorPicker.on('update', this._onColorUpdate.bind(this))
-    this._colorPicker.setValue(this._operation.getLastColor())
+    this._colorPicker.setValue(this._currentColor)
   }
 
   /**
@@ -137,7 +142,6 @@ class BrushControl extends Control {
    */
   _onBack () {
     this._ui.canvas.setZoomLevel(this._initialZoomLevel, false)
-    console.log(this._operationExistedBefore)
     if (this._operationExistedBefore) {
       this._resetOperationSettings()
     } else {
@@ -152,7 +156,7 @@ class BrushControl extends Control {
   _resetOperationSettings () {
     this._operation.setControlPoints(this._initialOptions.controlPoints)
     this._operation.setButtonStatus(this._initialOptions.buttonStatus)
-    this._operation.setColors(this._initialOptions.color)
+    this._operation.setColors(this._initialOptions.colors)
     this._operation.setThicknesses(this._initialOptions.thickness)
   }
 
@@ -191,6 +195,8 @@ class BrushControl extends Control {
     e.preventDefault()
     var mousePosition = this._getRelativeMousePositionFromEvent(e)
     this._painting = true
+    this._addCurrentColor()
+    //this._addCurrentThickness()
     this._addControlPoint(mousePosition, false)
     this._redrawPath()
     this._highlightDoneButton()
@@ -250,14 +256,14 @@ class BrushControl extends Control {
 
   _addCurrentColor () {
     var colors = this._operation.getColors()
-    colors.push(this._currentColor)
+    colors.push(this._currentColor.clone())
     this._operation.setColors(colors)
   }
 
   _addCurrentThickness () {
-    var thicknesses = this._operation.getThicknesses()
-    thicknesses.push(this._currentThickness)
-    this._operation.setThicknesses(thicknesses)
+//    var thicknesses = this._operation.getThicknesses()
+//    thicknesses.push(this._currentThickness)
+//    this._operation.setThicknesses(thicknesses)
   }
 
   /**
@@ -285,7 +291,7 @@ class BrushControl extends Control {
    * @override
    */
   _onThicknessUpdate (value) {
-    this._operation.setThicknesses(value / this._getLongerSideSize())
+    //this._operation.setThicknesses(value / this._getLongerSideSize())
     this._highlightDoneButton()
     this._setCursorSize(this._operation.getThicknesses() * this._getLongerSideSize())
   }
@@ -295,7 +301,7 @@ class BrushControl extends Control {
    * @override
    */
   _onColorUpdate (value) {
-    this._operation.setColors(value)
+    this._currentColor = value
     this._highlightDoneButton()
     this._setCursorColor(value)
   }
