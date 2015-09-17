@@ -70,7 +70,7 @@ class PrimitivesStack {
     if (!this._fbosAvailable) this._createFramebuffers(renderer)
 
     if (this._dirty) {
-      let inputTexture = renderer.getCurrentTexture()
+      let inputTexture = renderer.getLastTexture()
       let texture, fbo
       for (var i = 0; i < this._stack.length; i++) {
         texture = this._getCurrentTexture()
