@@ -9,7 +9,7 @@
  */
 
 import ImageDimensions from './image-dimensions'
-import ImageExporter from './image-exporter'
+// import ImageExporter from './image-exporter'
 import VersionChecker from './version-checker'
 import Utils from './utils'
 import Operations from '../operations/'
@@ -17,7 +17,6 @@ import Exif from './exif'
 import RotationOperation from '../operations/rotation-operation'
 import FlipOperation from '../operations/flip-operation'
 import OperationsStack from './operations-stack'
-import Vector2 from './math/vector2'
 import WebGLRenderer from '../renderers/webgl-renderer'
 import CanvasRenderer from '../renderers/canvas-renderer'
 
@@ -98,26 +97,21 @@ export default class Renderer {
         if (this._dimensions.bothSidesGiven()) {
           dimensions = Utils.resizeVectorToFit(dimensions, this._dimensions.getVector())
         }
+        dimensions.floor()
 
         this._renderer.resizeTo(dimensions)
       })
       .then(() => {
-        this._renderer.drawImage(this._image)
+        return this._renderer.drawImage(this._image)
+      })
+      .then(() => {
         return stack.render(this._renderer)
       })
       .then(() => {
         return this._renderer.renderFinal()
       })
       .then(() => {
-        let initialSize = this._renderer.getSize()
-        let finalDimensions = this._dimensions.calculateFinalDimensions(initialSize)
-
-        if (finalDimensions.equals(initialSize)) {
-          // No need to resize
-          return
-        }
-
-        return this._renderer.resizeTo(finalDimensions)
+        // TODO: Resize if necessary
       })
   }
 
@@ -130,27 +124,7 @@ export default class Renderer {
    * @return {Promise}
    */
   export (renderType, imageFormat, dimensions, quality) {
-    var settings = ImageExporter.validateSettings(renderType, imageFormat)
-
-    renderType = settings.renderType
-    imageFormat = settings.imageFormat
-
-    // Create a RenderImage
-    var renderImage = new RenderImage(
-      this._options.image,
-      this.operationsStack,
-      dimensions,
-      this._options.renderer)
-
-    // Set all operations to dirty, since we have another webgl renderer
-    this.setAllOperationsToDirty()
-
-    // Initiate image rendering
-    return renderImage.render()
-      .then(() => {
-        var canvas = renderImage.getRenderer().getCanvas()
-        return ImageExporter.export(this, this._options.image, canvas, renderType, imageFormat, quality)
-      })
+    // TODO Rewrite
   }
 
   /**
