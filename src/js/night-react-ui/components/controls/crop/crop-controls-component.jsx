@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent } from '../../../globals'
+import { ReactBEM, BaseChildComponent, Constants } from '../../../globals'
 import ScrollbarComponent from '../../scrollbar-component'
 
 const RATIOS = [
@@ -40,12 +40,23 @@ export default class OrientationControlsComponent extends BaseChildComponent {
   }
 
   /**
+   * Gets called when this component has been mounted
+   */
+  componentDidMount () {
+    super.componentDidMount()
+
+    this._emitEvent(Constants.EVENTS.CANVAS_ZOOM, 'auto')
+  }
+
+  /**
    * Gets called when the user clicks the back button
    * @param {Event} e
    * @private
    */
   _onBackClick (e) {
     this.props.onSwitchControls('back')
+
+    this._emitEvent(Constants.EVENTS.CANVAS_UNDO_ZOOM)
   }
 
   /**
