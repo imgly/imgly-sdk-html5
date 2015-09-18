@@ -12,32 +12,35 @@
 import {
   ReactBEM,
   BaseChildComponent,
-  ReactRedux,
-  ActionCreators
+  Constants
 } from '../../../globals'
 import ScrollbarComponent from '../../scrollbar-component'
 
-class FiltersControlsComponent extends BaseChildComponent {
+export default class FiltersControlsComponent extends BaseChildComponent {
   constructor (...args) {
     super(...args)
 
     this._bindAll(
       '_onBackClick',
-      '_onItemClick'
+      '_onItemClick',
+      '_onOperationUpdated'
     )
     this._operation = this.context.ui.getOrCreateOperation('filters')
     this._filters = this._operation.getFilters()
+
+    this._events = {
+      [Constants.EVENTS.OPERATION_UPDATED]: this._onOperationUpdated
+    }
   }
 
   /**
-   * Maps the given state to properties for this component
-   * @param {*} state
-   * @return {Object}
+   * Gets called when an operation has been updated
+   * @param  {Operation} operation
+   * @private
    */
-  static mapStateToProps (state) {
-    const { operationsOptions } = state
-    return {
-      operationOptions: operationsOptions.filters
+  _onOperationUpdated (operation) {
+    if (operation === this._operation) {
+      this.forceUpdate()
     }
   }
 
@@ -49,7 +52,8 @@ class FiltersControlsComponent extends BaseChildComponent {
    */
   _onItemClick (filter, e) {
     this._operation.setFilter(filter)
-    this.props.dispatch(ActionCreators.operationUpdated(this._operation))
+    this.context.mediator.emit('canvas:render')
+    // this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
   }
 
   /**
@@ -67,8 +71,7 @@ class FiltersControlsComponent extends BaseChildComponent {
    */
   renderWithBEM () {
     const ui = this.context.ui
-    const { operationOptions } = this.props
-    const currentFilter = operationOptions && operationOptions.filter
+    const currentFilter = this._operation.getFilter()
 
     let listItems = []
     for (let identifier in this._filters) {
@@ -105,5 +108,3 @@ class FiltersControlsComponent extends BaseChildComponent {
     </div>)
   }
 }
-
-export default ReactRedux.connect(FiltersControlsComponent.mapStateToProps)(FiltersControlsComponent)

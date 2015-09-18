@@ -10,14 +10,12 @@
  */
 
 import {
-  ActionCreators,
-  ReactRedux,
   ReactBEM,
   BaseChildComponent
 } from '../../../globals'
 import ScrollbarComponent from '../../scrollbar-component'
 
-class OrientationControlsComponent extends BaseChildComponent {
+export default class OrientationControlsComponent extends BaseChildComponent {
   constructor (...args) {
     super(...args)
 
@@ -50,7 +48,6 @@ class OrientationControlsComponent extends BaseChildComponent {
     const additionalDegrees = 90 * (direction === 'left' ? -1 : 1)
     const newDegrees = (degrees + additionalDegrees) % 360
     this._rotationOperation.setDegrees(newDegrees)
-    this.props.dispatch(ActionCreators.operationUpdated(this._rotationOperation))
   }
 
   /**
@@ -69,7 +66,6 @@ class OrientationControlsComponent extends BaseChildComponent {
         this._flipOperation.setVertical(!vertical)
         break
     }
-    this.props.dispatch(ActionCreators.operationUpdated(this._flipOperation))
   }
 
   /**
@@ -132,5 +128,3 @@ class OrientationControlsComponent extends BaseChildComponent {
     </div>)
   }
 }
-
-export default ReactRedux.connect(OrientationControlsComponent.mapStateToProps)(OrientationControlsComponent)

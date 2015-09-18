@@ -10,6 +10,7 @@
 
 export default {
   EVENTS: {
-    RENDER_CANVAS: 'render_canvas'
+    CANVAS_RENDER: 'canvas:render',
+    OPERATION_UPDATED: 'operation:update'
   }
 }

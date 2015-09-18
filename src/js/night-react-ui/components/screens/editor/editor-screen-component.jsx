@@ -8,7 +8,7 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-import { ReactBEM } from '../../../globals'
+import { ReactBEM, Constants } from '../../../globals'
 import ScreenComponent from '../screen-component'
 import SubHeaderComponent from '../../sub-header-component'
 import CanvasComponent from './canvas-component'
@@ -40,7 +40,7 @@ export default class EditorScreenComponent extends ScreenComponent {
    * @private
    */
   _onFirstCanvasRender () {
-    const canvasComponent = this.refs.canvas.getWrappedInstance()
+    const canvasComponent = this.refs.canvas
     this.setState({ zoom: canvasComponent.getDefaultZoom() })
   }
 
@@ -49,7 +49,7 @@ export default class EditorScreenComponent extends ScreenComponent {
    * @private
    */
   _onZoomIn () {
-    const canvasComponent = this.refs.canvas.getWrappedInstance()
+    const canvasComponent = this.refs.canvas
     const defaultZoom = canvasComponent.getDefaultZoom()
 
     let newZoom = this.state.zoom
@@ -64,7 +64,7 @@ export default class EditorScreenComponent extends ScreenComponent {
    * @private
    */
   _onZoomOut () {
-    const canvasComponent = this.refs.canvas.getWrappedInstance()
+    const canvasComponent = this.refs.canvas
     const defaultZoom = canvasComponent.getDefaultZoom()
 
     let newZoom = this.state.zoom

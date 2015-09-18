@@ -9,9 +9,9 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { Utils, SDKUtils, React, ReactBEM, Vector2, BaseChildComponent, ReactRedux } from '../../../globals'
+import { Utils, SDKUtils, React, ReactBEM, Vector2, BaseChildComponent, Constants } from '../../../globals'
 
-class CanvasComponent extends BaseChildComponent {
+export default class CanvasComponent extends BaseChildComponent {
   constructor (...args) {
     super(...args)
 
@@ -27,22 +27,10 @@ class CanvasComponent extends BaseChildComponent {
       canvasOffset: new Vector2()
     }
     this._mounted = false
-  }
 
-  /**
-   * Maps the given state to properties for this component
-   * @param {*} state
-   * @return {Object}
-   */
-  static mapStateToProps (state) {
-    const { operationsOptions } = state
-
-    let props = {
-      operationsOptions: SDKUtils.clone(operationsOptions)
+    this._events = {
+      [Constants.EVENTS.CANVAS_RENDER]: this._onCanvasUpdate
     }
-    props.operationsStack = state.operationsStack.clone()
-
-    return props
   }
 
   /**
@@ -112,6 +100,12 @@ class CanvasComponent extends BaseChildComponent {
     document.removeEventListener('touchend', this._onDragEnd)
   }
 
+  componentWillReceiveProps (props) {
+    if (props.zoom !== this.props.zoom) {
+      this._onCanvasUpdate(props.zoom)
+    }
+  }
+
   /**
    * Returns the default zoom level
    * @return {Number}
@@ -137,14 +131,13 @@ class CanvasComponent extends BaseChildComponent {
    * @private
    */
   _onCanvasUpdate (zoom = this.props.zoom) {
-    const { kit } = this.context
+    const { kit, operationsStack } = this.context
     const renderer = kit.getRenderer()
     const canvasCell = React.findDOMNode(this.refs.canvasCell)
 
     let containerDimensions = new Vector2(canvasCell.offsetWidth, canvasCell.offsetHeight)
-    kit.setOperationsStack(this.props.operationsStack)
     if (zoom !== null) {
-      containerDimensions = renderer.getInitialDimensionsForStack(kit.operationsStack)
+      containerDimensions = renderer.getInitialDimensionsForStack(operationsStack)
         .multiply(zoom)
         .floor()
     }
@@ -160,59 +153,17 @@ class CanvasComponent extends BaseChildComponent {
    * Gets called after this component has been mounted
    */
   componentDidMount () {
+    super.componentDidMount()
+
     const { kit } = this.context
     this._canvas = React.findDOMNode(this.refs.canvas)
     kit.setCanvas(this._canvas)
-
     this._mounted = true
 
     this._onCanvasUpdate()
       .then(() => {
         this.props.onFirstRender && this.props.onFirstRender()
       })
-  }
-
-  /**
-   * Gets called when the component has received new properties
-   * @param {Object} nextProps
-   */
-  componentWillReceiveProps (nextProps) {
-    let rerender = false
-
-    if (nextProps.zoom !== this.props.zoom) {
-      this.context.kit.setAllOperationsToDirty()
-      rerender = true
-    }
-
-    // Check for operation options equality
-    let optionsDiffer = false
-    const newOptions = nextProps.operationsOptions
-    const oldOptions = this.props.operationsOptions
-    for (let operationIdentifier in newOptions) {
-      const newOperationOptions = newOptions[operationIdentifier]
-      const previousOperationOptions = oldOptions[operationIdentifier]
-      if (!previousOperationOptions) {
-        optionsDiffer = true
-        break
-      }
-      for (let optionName in previousOperationOptions) {
-        if (newOperationOptions[optionName] !== previousOperationOptions[optionName]) {
-          optionsDiffer = true
-          break
-        }
-      }
-    }
-
-    if (optionsDiffer) {
-      rerender = true
-    }
-
-    if (rerender && this._mounted) {
-      this._onCanvasUpdate(nextProps.zoom)
-        .then(() => {
-          this._updateOffset()
-        })
-    }
   }
 
   /**
@@ -263,5 +214,3 @@ class CanvasComponent extends BaseChildComponent {
     )
   }
 }
-
-export default ReactRedux.connect(CanvasComponent.mapStateToProps)(CanvasComponent)

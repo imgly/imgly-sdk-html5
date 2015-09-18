@@ -1,4 +1,3 @@
-/* eslint-disable */
 (function (root, factory) {
   if (typeof define === "function" && define.amd) {
     define(["exports"], factory);
@@ -84,6 +83,15 @@
     } else {
       throw new TypeError("Invalid attempt to destructure non-iterable instance");
     }
+  };
+
+  babelHelpers.defineProperty = function (obj, key, value) {
+    return Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
   };
 
   babelHelpers.interopRequireWildcard = function (obj) {

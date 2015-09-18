@@ -12,11 +12,16 @@ import React from 'react'
 import ReactBEM from '../lib/react-bem'
 
 export default class BaseChildComponent extends React.Component {
+  constructor (...args) {
+    super(...args)
+    this._events = {}
+  }
+
   /**
    * Binds the instance methods with the given names
    * to the class context
    * @param  {Array.<String>} ...fnNames
-   * @private
+   * @protected
    */
   _bindAll (...fnNames) {
     fnNames.forEach((name) => {
@@ -40,7 +45,7 @@ export default class BaseChildComponent extends React.Component {
   /**
    * A helper method for UI.helpers.assetPath
    * @param {?} ...args
-   * @private
+   * @protected
    */
   _getAssetPath (...args) {
     return this.context.ui.getHelpers().assetPath(...args)
@@ -52,6 +57,53 @@ export default class BaseChildComponent extends React.Component {
    */
   renderWithBEM () {
 
+  }
+
+  /**
+   * Gets called when this component has been mounted
+   */
+  componentDidMount () {
+    this._bindEvents()
+  }
+
+  /**
+   * Gets called before this component is unmounted
+   */
+  componentWillUnmount () {
+    this._unbindEvents()
+  }
+
+  /**
+   * Binds the events in _events
+   * @protected
+   */
+  _bindEvents () {
+    for (let eventName in this._events) {
+      const handler = this._events[eventName]
+      this.context.mediator.on(eventName, handler)
+    }
+  }
+
+  /**
+   * Unbinds the events in _events
+   * @protected
+   */
+  _unbindEvents () {
+    for (let eventName in this._events) {
+      const handler = this._events[eventName]
+      this.context.mediator.off(eventName, handler)
+    }
+  }
+
+  /**
+   * Emits an event with the given event name and arguments through
+   * the mediator
+   * @param  {String} eventName
+   * @param  {Array.<*>} ...args
+   * @protected
+   */
+  _emitEvent (eventName, ...args) {
+    this.context.mediator.emit(eventName, ...args)
   }
 
   /**
@@ -68,5 +120,6 @@ BaseChildComponent.contextTypes = {
   ui: React.PropTypes.object,
   kit: React.PropTypes.object,
   options: React.PropTypes.object,
+  operationsStack: React.PropTypes.object,
   mediator: React.PropTypes.object
 }
