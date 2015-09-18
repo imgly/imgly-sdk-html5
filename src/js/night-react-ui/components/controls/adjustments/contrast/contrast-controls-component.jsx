@@ -55,7 +55,7 @@ export default class ContrastControlsComponent extends BaseChildComponent {
           <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/back@2x.png`, true)} />
         </div>
       </div>
-      <div bem='e:cell'>
+      <div bem='e:cell m:slider'>
         <SliderComponent
           style='large'
           minValue={-100}
