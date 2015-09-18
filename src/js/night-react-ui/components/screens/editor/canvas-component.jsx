@@ -102,6 +102,7 @@ export default class CanvasComponent extends BaseChildComponent {
 
   componentWillReceiveProps (props) {
     if (props.zoom !== this.props.zoom) {
+      this.context.kit.setAllOperationsToDirty()
       this._onCanvasUpdate(props.zoom)
     }
   }
