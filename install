@@ -22,6 +22,13 @@ fetch() {
   local tarball=`basename $1`
   echo "... downloading $tarball"
   local dir=`basename $tarball .tar.gz`
+
+  if [ -d $HOME/$dir ]
+    then
+      echo "... skipping $tarball - found $HOME/$dir"
+      return
+  fi
+
   curl -# -L $1 -o $tarball \
     && echo "... unpacking" \
     && tar -zxf $tarball \
