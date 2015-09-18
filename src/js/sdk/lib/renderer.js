@@ -220,13 +220,9 @@ export default class Renderer {
     return operation
   }
 
-  setOperationsStack (operationsStack) {
-    this.operationsStack = operationsStack
-    if (this._renderImage) {
-      this._renderImage.setOperationsStack(operationsStack)
-    }
-  }
-
+  /**
+   * Sets all operations to dirty
+   */
   setAllOperationsToDirty () {
     this.operationsStack.setAllToDirty()
   }
@@ -252,12 +248,20 @@ export default class Renderer {
     }
   }
 
+  /**
+   * Returns the output dimensions for the current stack
+   * @return {Vector2}
+   */
   getOutputDimensions () {
     const stack = this.operationsStack
     return this._renderer
       .getOutputDimensionsForStack(stack)
   }
 
+  /**
+   * Returns the initial dimensions for the current stack
+   * @return {Vector2}
+   */
   getInitialDimensions () {
     const stack = this.operationsStack
     return this._renderer
