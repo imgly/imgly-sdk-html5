@@ -9,13 +9,18 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent } from '../../../../globals'
+import { ReactBEM, BaseChildComponent, Constants } from '../../../../globals'
+import SliderComponent from '../../../slider-component.jsx'
 
 export default class BrightnessControlsComponent extends BaseChildComponent {
   constructor (...args) {
     super(...args)
 
-    this._bindAll('_onBackClick')
+    this._bindAll(
+      '_onBackClick',
+      '_onSliderValueChange'
+    )
+    this._operation = this.context.ui.getOrCreateOperation('brightness')
   }
 
   /**
@@ -25,6 +30,16 @@ export default class BrightnessControlsComponent extends BaseChildComponent {
    */
   _onBackClick (e) {
     this.props.onSwitchControls('back')
+  }
+
+  /**
+   * Gets called when the slider value has changed
+   * @param {Number} value
+   * @private
+   */
+  _onSliderValueChange (value) {
+    this._operation.setBrightness(value / 100)
+    this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
   }
 
   /**
@@ -40,8 +55,16 @@ export default class BrightnessControlsComponent extends BaseChildComponent {
           <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/back@2x.png`, true)} />
         </div>
       </div>
-      <div bem='e:cell'>
-        Slider goes here yo!
+      <div bem='e:cell m:slider'>
+        <SliderComponent
+          style='large'
+          minValue={-100}
+          maxValue={100}
+          valueUnit='%'
+          positiveValuePrefix='+'
+          label={this._t('controls.adjustments.brightness')}
+          onChange={this._onSliderValueChange}
+          value={this._operation.getBrightness() * 100} />
       </div>
     </div>)
   }
