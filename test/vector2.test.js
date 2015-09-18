@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var Vector2 = require("../src/js/lib/math/vector2");
+var Vector2 = require("../src/js/sdk/lib/math/vector2");
 
 describe("Vector2", function () {
 

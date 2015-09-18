@@ -12,7 +12,7 @@
 'use strict'
 
 import React from 'react'
-import ReactBEM from '../../src/js/ui/night-react/lib/react-bem'
+import ReactBEM from '../../src/js/night-react-ui/lib/react-bem'
 
 class SpecComponent extends React.Component {
   constructor (content) {

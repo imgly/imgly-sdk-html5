@@ -10,7 +10,7 @@
  */
 
 var should = require("should");
-var EventEmitter = require("../src/js/lib/event-emitter");
+var EventEmitter = require("../src/js/sdk/lib/event-emitter");
 var ee;
 
 describe("EventEmitter", function () {
