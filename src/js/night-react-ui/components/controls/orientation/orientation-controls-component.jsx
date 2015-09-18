@@ -11,7 +11,8 @@
 
 import {
   ReactBEM,
-  BaseChildComponent
+  BaseChildComponent,
+  Constants
 } from '../../../globals'
 import ScrollbarComponent from '../../scrollbar-component'
 
@@ -22,11 +23,28 @@ export default class OrientationControlsComponent extends BaseChildComponent {
     this._bindAll(
       '_onRotateClick',
       '_onFlipClick',
-      '_onBackClick'
+      '_onBackClick',
+      '_onOperationUpdated'
     )
 
     this._rotationOperation = this.context.ui.getOrCreateOperation('rotation')
     this._flipOperation = this.context.ui.getOrCreateOperation('flip')
+
+    this._events = {
+      [Constants.EVENTS.OPERATION_UPDATED]: this._onOperationUpdated
+    }
+  }
+
+  /**
+   * Gets called when an operation has been updated
+   * @param  {Operation} operation
+   * @private
+   */
+  _onOperationUpdated (operation) {
+    if (operation === this._rotationOperation ||
+        operation === this._flipOperation) {
+      this.forceUpdate()
+    }
   }
 
   /**
@@ -48,6 +66,7 @@ export default class OrientationControlsComponent extends BaseChildComponent {
     const additionalDegrees = 90 * (direction === 'left' ? -1 : 1)
     const newDegrees = (degrees + additionalDegrees) % 360
     this._rotationOperation.setDegrees(newDegrees)
+    this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
   }
 
   /**
@@ -66,6 +85,7 @@ export default class OrientationControlsComponent extends BaseChildComponent {
         this._flipOperation.setVertical(!vertical)
         break
     }
+    this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
   }
 
   /**
