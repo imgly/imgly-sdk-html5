@@ -59,8 +59,6 @@
     "babel": "^5.5.3",
     "brfs": "^1.2.0",
     "dot": "^1.0.3",
-    "json-loader": "^0.5.2",
-    "react-redux": "^2.1.1",
-    "redux": "^2.0.0"
+    "json-loader": "^0.5.2"
   }
 }

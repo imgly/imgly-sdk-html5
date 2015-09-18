@@ -9,26 +9,32 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent, ReactRedux, ActionCreators } from '../../../globals'
+import { ReactBEM, BaseChildComponent, Constants } from '../../../globals'
 import SliderComponent from '../../slider-component'
 
-class FiltersCanvasControlsComponent extends BaseChildComponent {
+export default class FiltersCanvasControlsComponent extends BaseChildComponent {
   constructor (...args) {
     super(...args)
 
-    this._bindAll('_onSliderValueChange')
+    this._bindAll(
+      '_onSliderValueChange',
+      '_onOperationUpdated'
+    )
     this._operation = this.context.ui.getOrCreateOperation('filters')
+
+    this._events = {
+      [Constants.EVENTS.OPERATION_UPDATED]: this._onOperationUpdated
+    }
   }
 
   /**
-   * Maps the given state to properties for this component
-   * @param {*} state
-   * @return {Object}
+   * Gets called when an operation has been updated
+   * @param  {Operation} operation
+   * @private
    */
-  static mapStateToProps (state) {
-    const { operationsOptions } = state
-    return {
-      operationOptions: operationsOptions.filters
+  _onOperationUpdated (operation) {
+    if (operation === this._operation) {
+      this.forceUpdate()
     }
   }
 
@@ -39,7 +45,7 @@ class FiltersCanvasControlsComponent extends BaseChildComponent {
    */
   _onSliderValueChange (value) {
     this._operation.setIntensity(value / 100)
-    this.props.dispatch(ActionCreators.operationUpdated(this._operation))
+    this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
   }
 
   /**
@@ -47,10 +53,8 @@ class FiltersCanvasControlsComponent extends BaseChildComponent {
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
-    const options = this.props.operationOptions
-    if (!options || options.filter.isIdentity) {
-      return null
-    }
+    const currentFilter = this._operation.getFilter()
+    if (currentFilter.isIdentity) return null
 
     return (<div bem='$b:canvasControls e:container m:bottom m:dark'>
       <SliderComponent
@@ -58,9 +62,7 @@ class FiltersCanvasControlsComponent extends BaseChildComponent {
         maxValue={100}
         label={this._t('controls.filters.intensity')}
         onChange={this._onSliderValueChange}
-        value={options.intensity * 100} />
+        value={this._operation.getIntensity() * 100} />
     </div>)
   }
 }
-
-export default ReactRedux.connect(FiltersCanvasControlsComponent.mapStateToProps)(FiltersCanvasControlsComponent)

@@ -62,7 +62,9 @@ class EditorComponent extends React.Component {
     return {
       ui: this.props.ui,
       kit: this.props.kit,
-      options: this.props.options
+      options: this.props.options,
+      operationsStack: this.props.operationsStack,
+      mediator: this.props.mediator
     }
   }
 
@@ -87,12 +89,15 @@ class EditorComponent extends React.Component {
 EditorComponent.childContextTypes = {
   ui: React.PropTypes.object.isRequired,
   kit: React.PropTypes.object.isRequired,
+  operationsStack: React.PropTypes.object.isRequired,
+  mediator: React.PropTypes.object.isRequired,
   options: React.PropTypes.object.isRequired
 }
 
 EditorComponent.propTypes = {
   ui: React.PropTypes.object.isRequired,
   kit: React.PropTypes.object.isRequired,
+  operationsStack: React.PropTypes.object.isRequired,
   options: React.PropTypes.object.isRequired
 }
 

@@ -9,30 +9,44 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-const { Utils, EventEmitter, OperationsStack } = PhotoEditorSDK
+import { SDKUtils, EventEmitter, Constants } from './globals'
 
 import Polyglot from 'node-polyglot'
 import Helpers from './helpers'
 import React from 'react'
 import EditorComponent from './components/editor-component'
 import OverviewControlsComponent from './components/controls/overview/overview-controls-component'
-import * as ReactRedux from 'react-redux'
-import * as Redux from 'redux'
-import Reducer from './store/reducer'
-import ActionCreators from './store/action-creators'
 
 export default class NightReactUI extends EventEmitter {
   constructor (kit, options) {
     super()
 
+    this._mediator = new EventEmitter()
     this._kit = kit
     this._options = options
     this._helpers = new Helpers(this._kit, this._options)
-    this._store = Redux.createStore(Reducer, {
-      operationsStack: new OperationsStack(),
-      operationsMap: {},
-      operationsOptions: {}
-    })
+    this._operationsMap = {}
+    this._operationsStack = this._kit.operationsStack
+
+    this._preferredOperationOrder = [
+      // First, all operations that affect the image dimensions
+      'rotation',
+      'crop',
+      'flip',
+
+      // Then color operations (first filters, then fine-tuning)
+      'filters',
+      'contrast',
+      'brightness',
+      'saturation',
+
+      // Then post-processing
+      'radial-blur',
+      'tilt-shift',
+      'frames',
+      'stickers',
+      'text'
+    ]
 
     this._initOptions()
     this._initLanguage()
@@ -78,7 +92,7 @@ export default class NightReactUI extends EventEmitter {
    */
   _initControls () {
     this._overviewControls = OverviewControlsComponent
-    this._availableControls = Utils.extend({
+    this._availableControls = SDKUtils.extend({
       filters: require('./components/controls/filters/'),
       orientation: require('./components/controls/orientation/'),
       adjustments: require('./components/controls/adjustments/'),
@@ -118,20 +132,20 @@ export default class NightReactUI extends EventEmitter {
    * @return {[type]} [description]
    */
   _initOptions () {
-    this._options = Utils.defaults(this._options, {
+    this._options = SDKUtils.defaults(this._options, {
       language: 'en',
       operations: 'all',
       assets: {},
       extensions: {}
     })
 
-    this._options.extensions = Utils.defaults(this._options.extensions || {}, {
+    this._options.extensions = SDKUtils.defaults(this._options.extensions || {}, {
       languages: [],
       operations: [],
       controls: []
     })
 
-    this._options.assets = Utils.defaults(this._options.assets || {}, {
+    this._options.assets = SDKUtils.defaults(this._options.assets || {}, {
       baseUrl: '/',
       resolver: null
     })
@@ -197,12 +211,12 @@ export default class NightReactUI extends EventEmitter {
     // Container has to be position: relative
     this._options.container.style.position = 'relative'
 
-    React.render(<ReactRedux.Provider store={this._store}>
-      {() => <EditorComponent
+    React.render(<EditorComponent
       ui={this}
       kit={this._kit}
-      options={this._options} />}
-    </ReactRedux.Provider>, this._options.container)
+      mediator={this._mediator}
+      operationsStack={this._operationsStack}
+      options={this._options} />, this._options.container)
   }
 
   /**
@@ -222,13 +236,17 @@ export default class NightReactUI extends EventEmitter {
    * @return {PhotoEditorSDK.operation}
    */
   getOrCreateOperation (identifier) {
-    const { operationsMap } = this._store.getState()
-    if (operationsMap[identifier]) {
-      return operationsMap[identifier]
+    if (this._operationsMap[identifier]) {
+      return this._operationsMap[identifier]
     } else {
       const Operation = this._availableOperations[identifier]
       const operation = new Operation(this._kit)
-      this._store.dispatch(ActionCreators.addOperation(operation))
+      operation.on('update', () => {
+        this._mediator.emit(Constants.EVENTS.OPERATION_UPDATED, operation)
+      })
+      const index = this._preferredOperationOrder.indexOf(identifier)
+      this._operationsStack.set(index, operation)
+      this._operationsMap[identifier] = operation
       return operation
     }
   }
