@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var Utils = require("../src/js/lib/utils");
+var Utils = require("../src/js/sdk/lib/utils");
 
 describe("Utils", function () {
 

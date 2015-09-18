@@ -12,10 +12,11 @@
 var path = require("path");
 var fs = require("fs");
 var ImglyKit = require("..");
+global.PhotoEditorSDK = ImglyKit;
 var canvas = require("canvas");
 var image, kit;
 var should = require("should");
-var NightUI = require("../src/js/ui/night/ui");
+var NightUI = require("../src/js/night-ui/ui");
 
 // A fake container that passes Utils#isDOMElement
 var stubContainer = {

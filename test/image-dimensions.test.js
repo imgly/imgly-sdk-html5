@@ -9,8 +9,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var ImageDimensions = require("../src/js/lib/image-dimensions");
-var Vector2 = require("../src/js/lib/math/vector2");
+var ImageDimensions = require("../src/js/sdk/lib/image-dimensions");
+var Vector2 = require("../src/js/sdk/lib/math/vector2");
 var initialDimensions = new Vector2(800, 600);
 var dimensions, calculatedDimensions;
 
