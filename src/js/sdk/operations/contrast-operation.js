@@ -18,6 +18,18 @@ import ContrastPrimitive from './filters/primitives/contrast'
  * @extends ImglyKit.Operation
  */
 class ContrastOperation extends Operation {
+  constructor (...args) {
+    super(...args)
+
+    if (!this._stack) {
+      this._stack = new PrimitivesStack()
+      this._primitive = new ContrastPrimitive({
+        contrast: this._options.contrast
+      })
+      this._stack.add(this._primitive)
+    }
+  }
+
   /**
    * Renders the contrast using WebGL
    * @param  {WebGLRenderer} renderer
@@ -43,18 +55,8 @@ class ContrastOperation extends Operation {
    * @private
    */
   _render (renderer) {
-    if (!this._stack) {
-      this._stack = new PrimitivesStack()
-      this._primitive = new ContrastPrimitive({
-        contrast: this._options.contrast
-      })
-      this._stack.add(this._primitive)
-    }
-
-    // @TODO
-    // Primitives should have the same option logic as operations - which
-    // should allow us to do `this._primitive.setContrast`
     this._primitive.options.contrast = this._options.contrast
+    this._stack.setDirty(true)
     this._stack.render(renderer)
   }
 }

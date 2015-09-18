@@ -9,13 +9,18 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent } from '../../../../globals'
+import { ReactBEM, BaseChildComponent, Constants } from '../../../../globals'
+import SliderComponent from '../../../slider-component.jsx'
 
 export default class ContrastControlsComponent extends BaseChildComponent {
   constructor (...args) {
     super(...args)
 
-    this._bindAll('_onBackClick')
+    this._bindAll(
+      '_onBackClick',
+      '_onSliderValueChange'
+    )
+    this._operation = this.context.ui.getOrCreateOperation('contrast')
   }
 
   /**
@@ -25,6 +30,16 @@ export default class ContrastControlsComponent extends BaseChildComponent {
    */
   _onBackClick (e) {
     this.props.onSwitchControls('back')
+  }
+
+  /**
+   * Gets called when the slider value has changed
+   * @param {Number} value
+   * @private
+   */
+  _onSliderValueChange (value) {
+    this._operation.setContrast((value + 100) / 100)
+    this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
   }
 
   /**
@@ -41,7 +56,15 @@ export default class ContrastControlsComponent extends BaseChildComponent {
         </div>
       </div>
       <div bem='e:cell'>
-        Slider goes here yo!
+        <SliderComponent
+          style='large'
+          minValue={-100}
+          maxValue={100}
+          valueUnit='%'
+          positiveValuePrefix='+'
+          label={this._t('controls.adjustments.contrast')}
+          onChange={this._onSliderValueChange}
+          value={this._operation.getContrast() * 100 - 100} />
       </div>
     </div>)
   }
