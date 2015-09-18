@@ -18,6 +18,16 @@ import SaturationPrimitive from './filters/primitives/saturation'
  * @extends ImglyKit.Operation
  */
 class SaturationOperation extends Operation {
+  constructor (...args) {
+    super(...args)
+
+    this._stack = new PrimitivesStack()
+    this._primitive = new SaturationPrimitive({
+      saturation: this._options.saturation
+    })
+    this._stack.add(this._primitive)
+  }
+
   /**
    * Renders the saturation using WebGL
    * @param  {WebGLRenderer} renderer
@@ -43,18 +53,8 @@ class SaturationOperation extends Operation {
    * @private
    */
   _render (renderer) {
-    if (!this._stack) {
-      this._stack = new PrimitivesStack()
-      this._primitive = new SaturationPrimitive({
-        saturation: this._options.saturation
-      })
-      this._stack.add(this._primitive)
-    }
-
-    // @TODO
-    // Primitives should have the same option logic as operations - which
-    // should allow us to do `this._primitive.setSaturation`
     this._primitive.options.saturation = this._options.saturation
+    this._stack.setDirty(true)
     this._stack.render(renderer)
   }
 }
