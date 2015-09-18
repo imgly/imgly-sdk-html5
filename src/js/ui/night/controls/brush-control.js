@@ -80,7 +80,7 @@ class BrushControl extends Control {
   }
 
   /**
-   * Setsup the cursor
+   * Sets up the cursor
    */
   _setupCursor () {
     this._setCursorSize(this._currentThickness * this._getLongerSideSize())
@@ -92,8 +92,8 @@ class BrushControl extends Control {
    */
   _setupOptions () {
     this._initialOptions = {
-      color: this._operation.getColors().slice(0),
-      thickness: this._operation.getThicknesses().slice(0),
+      colors: this._operation.getColors().slice(0),
+      thicknesses: this._operation.getThicknesses().slice(0),
       controlPoints: this._operation.getControlPoints().slice(0),
       buttonStatus: this._operation.getButtonStatus().slice(0)
     }
@@ -176,10 +176,11 @@ class BrushControl extends Control {
    * Resets the operation options to the initial options
    */
   _resetOperationSettings () {
+    console.log (this._initialOptions)
     this._operation.setControlPoints(this._initialOptions.controlPoints)
     this._operation.setButtonStatus(this._initialOptions.buttonStatus)
     this._operation.setColors(this._initialOptions.colors)
-    this._operation.setThicknesses(this._initialOptions.thickness)
+    this._operation.setThicknesses(this._initialOptions.thicknesses)
   }
 
   /**
@@ -189,8 +190,8 @@ class BrushControl extends Control {
   _onDone () {
     this._ui.canvas.setZoomLevel(this._initialZoomLevel, false)
     this._ui.addHistory(this, {
-      color: this._initialOptions.color,
-      thickness: this._initialOptions.thickness,
+      colors: this._initialOptions.colors,
+      thicknesses: this._initialOptions.thicknesses,
       controlPoints: this._initialOptions.controlPoints,
       buttonStatus: this._initialOptions.buttonStatus
     }, this._operationExistedBefore)
