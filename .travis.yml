@@ -19,3 +19,10 @@ sudo: false
 
 before_install:
   - sh install
+
+addons:
+  apt:
+    packages:
+      - libgif-dev
+      - g++
+      - build-essential
