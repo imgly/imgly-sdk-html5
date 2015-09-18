@@ -11,6 +11,8 @@
 export default {
   EVENTS: {
     CANVAS_RENDER: 'canvas:render',
+    CANVAS_ZOOM: 'canvas:zoom',
+    CANVAS_UNDO_ZOOM: 'canvas:zoom_undo',
     OPERATION_UPDATED: 'operation:update'
   }
 }

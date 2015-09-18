@@ -204,11 +204,7 @@ class Utils {
    * @returns {Object}
    */
   static clone (object) {
-    let newObject = {}
-    for (let key in object) {
-      newObject[key] = object[key]
-    }
-    return newObject
+    return this.extend({}, object)
   }
 
   /**

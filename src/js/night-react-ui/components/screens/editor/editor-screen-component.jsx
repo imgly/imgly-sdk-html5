@@ -8,7 +8,7 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-import { ReactBEM, Constants } from '../../../globals'
+import { ReactBEM, Constants, SDKUtils } from '../../../globals'
 import ScreenComponent from '../screen-component'
 import SubHeaderComponent from '../../sub-header-component'
 import CanvasComponent from './canvas-component'
@@ -24,7 +24,9 @@ export default class EditorScreenComponent extends ScreenComponent {
       'switchToControls',
       '_onFirstCanvasRender',
       '_onZoomIn',
-      '_onZoomOut'
+      '_onZoomOut',
+      '_zoom',
+      '_undoZoom'
     )
 
     this._previousControlsStack = []
@@ -32,6 +34,46 @@ export default class EditorScreenComponent extends ScreenComponent {
       zoom: null,
       controls: OverviewControls
     }
+
+    this._events = {
+      [Constants.EVENTS.CANVAS_ZOOM]: this._zoom,
+      [Constants.EVENTS.CANVAS_UNDO_ZOOM]: this._undoZoom
+    }
+  }
+
+  /**
+   * Undos the last zoom
+   * @private
+   */
+  _undoZoom () {
+    const canvasComponent = this.refs.canvas
+    const { zoom, canvasState } = this._previousZoomState
+
+    // Couldn't come up with something clean here :(
+    canvasComponent.setState(canvasState)
+    this.setState({ zoom })
+    this._previousZoomState = null
+  }
+
+  /**
+   * Zooms to the given level
+   * @param {Number|String} zoom
+   * @private
+   */
+  _zoom (zoom) {
+    const canvasComponent = this.refs.canvas
+
+    let newZoom = zoom
+    if (zoom === 'auto') {
+      newZoom = canvasComponent.getDefaultZoom()
+    }
+
+    this._previousZoomState = SDKUtils.extend({
+      zoom: this.state.zoom,
+      canvasState: SDKUtils.clone(canvasComponent.state)
+    }, canvasComponent.state)
+
+    this.setState({ zoom: newZoom })
   }
 
   /**
@@ -40,8 +82,7 @@ export default class EditorScreenComponent extends ScreenComponent {
    * @private
    */
   _onFirstCanvasRender () {
-    const canvasComponent = this.refs.canvas
-    this.setState({ zoom: canvasComponent.getDefaultZoom() })
+    this._zoom('auto')
   }
 
   /**
