@@ -29,19 +29,26 @@ fetch() {
       return
   fi
 
-  curl -# -L $1 -o $tarball \
+  curl -# -L $1 -o $HOME/$tarball \
     && echo "... unpacking" \
     && tar -zxf $tarball \
     && echo "... removing tarball" \
     && rm -fr $tarball \
-    && install $dir
+    && install $HOME/$dir
 }
 
 fetch_xz() {
   local tarball=`basename $1`
   echo "... downloading $tarball"
   local dir=`basename $tarball .tar.xz`
-  curl -# -L $1 -o $tarball \
+
+  if [ -d $HOME/$dir ]
+    then
+      echo "... skipping $tarball - found $HOME/$dir"
+      return
+  fi
+
+  curl -# -L $1 -o $HOME/$tarball \
     && echo "... unpacking" \
     && tar -xJf $tarball \
     && echo "... removing tarball" \
