@@ -146,6 +146,7 @@ export default class CanvasComponent extends BaseChildComponent {
     return kit.render()
       .then(() => {
         this._repositionCanvas()
+        this._updateOffset()
       })
   }
 
