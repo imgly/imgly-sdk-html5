@@ -6,6 +6,11 @@ node_js:
 cache:
   directories:
     - node_modules
+    - $HOME/pixman-0.32.4
+    - $HOME/cairo-1.12.16
+    - $HOME/freetype-2.4.10
+    - $HOME/libpng-1.6.18
+    - $HOME/giflib-4.1.6
 
 after_script:
   - npm run coveralls
