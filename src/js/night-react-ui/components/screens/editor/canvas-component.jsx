@@ -100,6 +100,10 @@ export default class CanvasComponent extends BaseChildComponent {
     document.removeEventListener('touchend', this._onDragEnd)
   }
 
+  /**
+   * Gets called when this component receives some new props
+   * @param {Object} props
+   */
   componentWillReceiveProps (props) {
     if (props.zoom !== this.props.zoom) {
       this.context.kit.setAllOperationsToDirty()
