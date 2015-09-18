@@ -22,7 +22,9 @@ export default class SliderComponent extends BaseChildComponent {
 
     this.state = {
       value: this.props.value || 0,
-      sliderPosition: 0
+      sliderPosition: 0,
+      foregroundLeft: 0,
+      foregroundWidth: 0
     }
   }
 
@@ -96,21 +98,68 @@ export default class SliderComponent extends BaseChildComponent {
     const { minValue, maxValue } = this.props
     const progress = (value - minValue) / (maxValue - minValue)
 
+    // Calculate slider position
     const barWidth = React.findDOMNode(this.refs.bar).offsetWidth
     const sliderPosition = barWidth * progress
-    this.setState({ value, sliderPosition })
+
+    // Calculate foreground position and width
+    let foregroundWidth = progress * barWidth
+    let foregroundLeft = 0
+    if (this._displayMiddleDot()) {
+      foregroundWidth = Math.abs(progress - 0.5) * barWidth
+      foregroundLeft = progress < 0.5 ?
+        (barWidth * 0.5 - foregroundWidth) :
+        '50%'
+    }
+
+    this.setState({ value, sliderPosition, foregroundWidth, foregroundLeft })
 
     this.props.onChange && this.props.onChange(value)
   }
 
   /**
    * Returns the style for the knob (position)
+   * @return {Object}
    * @private
    */
   _getKnobStyle () {
     return { left: this.state.sliderPosition }
   }
 
+  /**
+   * Returns the style for the foreground bar
+   * @return {Object}
+   * @private
+   */
+  _getForegroundStyle () {
+    return {
+      left: this.state.foregroundLeft,
+      width: this.state.foregroundWidth
+    }
+  }
+
+  /**
+   * Builds a display value from the given props
+   * @param {Number} value
+   * @return {String}
+   * @private
+   */
+  _buildValue (value) {
+    if (this.props.positiveValuePrefix && value >= 0) {
+      value = `${this.props.positiveValuePrefix}${value}`
+    }
+
+    if (this.props.valueUnit) {
+      value += this.props.valueUnit
+    }
+
+    return value
+  }
+
+  /**
+   * Renders this component
+   * @return {ReactBEM.Element}
+   */
   renderWithBEM () {
     const middleDot =
       this._displayMiddleDot() ? <div bem='e:middleDot'></div> : null
@@ -121,18 +170,22 @@ export default class SliderComponent extends BaseChildComponent {
       onTouchStart: this._onKnobDown
     }
 
-    return (<div bem='$b:slider'>
+    const foregroundProps = {
+      style: this._getForegroundStyle()
+    }
+
+    const componentBem = '$b:slider' + (this.props.style ? ' m:' + this.props.style : '')
+    return (<div bem={componentBem}>
       <div bem='$e:bar' ref='bar'>
-        <div bem='$e:background'></div>
-        <div bem='$e:foreground'>
-          <div bem='e:knob b:knob m:slider' {...knobProps}></div>
-        </div>
+        <div bem='$e:background' />
+        <div bem='$e:foreground' {...foregroundProps}/>
+        <div bem='e:knob b:knob m:slider' {...knobProps}></div>
         {middleDot}
       </div>
       <div bem='$e:labels'>
-        <div bem='e:label m:lowerBoundary'>{this.props.minValue}</div>
-        <div bem='e:label m:value'>{this.props.label} {this.state.value}</div>
-        <div bem='e:label m:upperBoundary'>{this.props.maxValue}</div>
+        <div bem='e:label m:lowerBoundary'>{this._buildValue(this.props.minValue)}</div>
+        <div bem='e:label m:value'>{this.props.label} {this._buildValue(this.state.value)}</div>
+        <div bem='e:label m:upperBoundary'>{this._buildValue(this.props.maxValue)}</div>
       </div>
     </div>)
   }
