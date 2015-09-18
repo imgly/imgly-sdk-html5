@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var Color = require("../src/js/lib/color");
+var Color = require("../src/js/sdk/lib/color");
 var color;
 
 describe("Color", function () {
