@@ -11,5 +11,6 @@ after_script:
   - npm run coveralls
 
 before_install:
-  - sudo chown -R $USER /usr/local
   - sh install
+
+sudo: false
