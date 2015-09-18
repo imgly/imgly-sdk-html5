@@ -15,7 +15,7 @@
  * @alias ImglyKit.Filter.PrimitivesStack
  */
 class PrimitivesStack {
-  constructor (intensity) {
+  constructor (intensity = 1) {
     this._intensity = intensity
 
     this._stack = []
