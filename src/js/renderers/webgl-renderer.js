@@ -593,12 +593,6 @@ class WebGLRenderer extends Renderer {
     // Resize the canvas
     this._canvas.width = dimensions.x
     this._canvas.height = dimensions.y
-
-    // Update the viewport dimensions
-    gl.viewport(0, 0, this._canvas.width, this._canvas.height)
-
-    // Draw the rectangle
-    gl.drawArrays(gl.TRIANGLES, 0, 6)
   }
 
   /**
