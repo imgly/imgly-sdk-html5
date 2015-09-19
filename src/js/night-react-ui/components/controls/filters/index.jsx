@@ -14,6 +14,7 @@ import FiltersCanvasControlsComponent from './filters-canvas-controls-component'
 export default {
   canvasControls: FiltersCanvasControlsComponent,
   controls: FiltersControlsComponent,
+  largeCanvasControls: true,
   identifier: 'filters',
   isSelectable: (ui) => {
     return ui.isOperationSelected('filters')
