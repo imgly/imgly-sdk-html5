@@ -195,6 +195,10 @@ class WebGLRenderer extends Renderer {
     let gl = this._canvas.getContext('webgl', this._contextOptions) ||
       this._canvas.getContext('experimental-webgl', this._contextOptions)
 
+    if (window.WebGLDebugUtils) {
+      gl = window.WebGLDebugUtils.makeDebugContext(gl)
+    }
+
     gl.disable(gl.DEPTH_TEST)
     gl.disable(gl.CULL_FACE)
 
