@@ -36,7 +36,7 @@ window.onload = function () {
       // Possible render types: image, data-url
       kit.render('image', 'image/png')
         .then(function (image) {
-          document.body.appendChild(image)
+          // document.body.appendChild(image)
         })
     })
 

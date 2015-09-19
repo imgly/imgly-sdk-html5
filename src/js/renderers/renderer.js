@@ -87,6 +87,7 @@ class Renderer extends EventEmitter {
    * @private
    */
   createCanvas (width, height) {
+    console.log('create canvas')
     var isBrowser = typeof window !== 'undefined'
     var canvas
     if (isBrowser) {

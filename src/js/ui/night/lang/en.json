@@ -34,7 +34,8 @@
     "loading": "Loading",
     "exporting": "Exporting",
     "importing": "Importing",
-    "color": "Color"
+    "color": "Color",
+    "error_headline": "An error has occurred."
   },
   "controls": {
     "frames": {
@@ -44,5 +45,8 @@
       "foreground": "Foreground",
       "background": "Background"
     }
+  },
+  "errors": {
+    "context_lost": "Your browser took too long to render the image. Please try applying less operations."
   }
 }

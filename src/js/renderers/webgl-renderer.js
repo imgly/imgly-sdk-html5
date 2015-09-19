@@ -22,12 +22,29 @@ import Promise from '../vendor/promise'
 class WebGLRenderer extends Renderer {
   constructor (...args) {
     super(...args)
+    console.log('new webgl renderer')
+    this._handleContextLoss()
 
     this._defaultProgram = this.setupGLSLProgram()
     this.reset()
 
     this.id = WebGLRenderer.contextId
     WebGLRenderer.contextId++
+  }
+
+  /**
+   * Gets called when the webgl context has been lost
+   * @private
+   */
+  _handleContextLoss () {
+    this._canvas.addEventListener('webglcontextlost', (e) => {
+      e.preventDefault()
+      this.emit('error', 'context_lost')
+    })
+    this._canvas.addEventListener('webglcontextrestored', () => {
+      this.emit('reset')
+      this.reset(true, true)
+    })
   }
 
   /**
@@ -653,9 +670,10 @@ class WebGLRenderer extends Renderer {
   /**
    * Resets the renderer
    * @param {Boolean} resetCache = false
+   * @param {Boolean} newContext = false
    * @override
    */
-  reset (resetCache=false) {
+  reset (resetCache=false, newContext=false) {
     this._lastTexture = null
     this._textures = []
     this._framebuffers = []
@@ -663,6 +681,12 @@ class WebGLRenderer extends Renderer {
 
     if (resetCache) {
       this._cache = []
+    }
+
+    if (newContext) {
+      this._inputTexture = null
+      this._context = this._getContext()
+      this._defaultProgram = this.setupGLSLProgram()
     }
 
     this._createFramebuffers()

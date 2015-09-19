@@ -1,0 +1,47 @@
+/*
+ * Copyright (c) 2013-2015 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+
+.imglykit
+
+  .imglykit-flashOverlay
+    @include box-shadow(0 2px rgba(white, 0.5) inset)
+    @include transform(translateX(-50%) translateY(-50%))
+    position: absolute
+    z-index: 3
+    top: 50%
+    left: 50%
+    display: none
+    border-radius: 5px
+    max-width: 90%
+    padding: 20px
+    background: rgba($controlsBackgroundColor, 0.9)
+
+    &-headline, &-text
+      display: block
+      font: bold 15px Helvetica, Arial, sans-serif
+      text-align: center
+      color: white
+
+    &-headline
+      margin-bottom: 0.5em
+
+    &-close
+      position: absolute
+      top: 10px
+      right: 10px
+      cursor: pointer
+
+    &-text
+      font: normal 13px Helvetica, Arial, sans-serif
+
+    &--error
+      @include box-shadow(0 2px $redColor inset)
+
+    &--warning
+      @include box-shadow(0 2px $yellowColor inset)

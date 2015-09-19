@@ -5,6 +5,15 @@
       <span>{{= it.helpers.translate('generic.loading') }}...</span>
     </div>
   </div>
+
+  <div class="imglykit-flashOverlay">
+    <div class="imglykit-flashOverlay-close">
+      <img src="{{= it.helpers.assetPath('ui/night/close.png')}}" />
+    </div>
+    <div class="imglykit-flashOverlay-headline"></div>
+    <div class="imglykit-flashOverlay-text"></div>
+  </div>
+
   <div class="imglykit-container">
     {{? !it.options.ui.hideHeader }}
     <div class="imglykit-header-row">

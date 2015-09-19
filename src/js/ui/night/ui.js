@@ -89,11 +89,18 @@ class NightUI extends UI {
 
     let { container } = this._options
 
+    this.hideFlashMessage = this.hideFlashMessage.bind(this)
+
     this._controlsContainer = container.querySelector('.imglykit-controls')
     this._canvasControlsContainer = container.querySelector('.imglykit-canvas-controls')
     this._overviewControlsContainer = container.querySelector('.imglykit-controls-overview')
     this._loadingOverlay = container.querySelector('.imglykit-loadingOverlay')
     this._loadingSpan = container.querySelector('.imglykit-loadingOverlay span')
+    this._flashOverlay = container.querySelector('.imglykit-flashOverlay')
+    this._flashHeadline = this._flashOverlay.querySelector('.imglykit-flashOverlay-headline')
+    this._flashText = this._flashOverlay.querySelector('.imglykit-flashOverlay-text')
+    this._flashCloseButton = this._flashOverlay.querySelector('.imglykit-flashOverlay-close')
+    this._flashCloseButton.addEventListener('click', this.hideFlashMessage)
 
     this._handleOverview()
 
@@ -277,6 +284,38 @@ class NightUI extends UI {
     this._canvas.on('zoom', () => {
       this._topControls.updateZoomLevel()
     })
+    this._canvas.on('error', (key) => {
+      this.displayErrorMessage(this.translate(`errors.${key}`))
+    })
+  }
+
+  /**
+   * Displays the given error message
+   * @param {String} message
+   */
+  displayErrorMessage (message) {
+    this.displayFlashMessage('An error has occurred!', message, 'error')
+  }
+
+  /**
+   * Displays a flash message with the given title and type
+   * @param {String} message
+   * @param {String} message
+   * @param {String} type = 'notice'
+   */
+  displayFlashMessage (headline, message, type = 'notice') {
+    this._flashText.innerText = message
+    this._flashHeadline.innerText = headline
+    this._flashOverlay.style.display = 'block'
+
+    this._flashOverlay.className = `imglykit-flashOverlay imglykit-flashOverlay--${type}`
+  }
+
+  /**
+   * Hides the flash message
+   */
+  hideFlashMessage () {
+    this._flashOverlay.style.display = 'none'
   }
 
   /**

@@ -304,6 +304,18 @@ class Canvas extends EventEmitter {
   }
 
   /**
+   * Resets all operations
+   */
+  resetAllOperations () {
+    let { operationsStack } = this._kit
+    for (let i = 0; i < operationsStack.length; i++) {
+      let operation = operationsStack[i]
+      if (!operation) continue
+      operation.reset()
+    }
+  }
+
+  /**
    * Gets the initial zoom level so that the image fits the maximum
    * canvas size
    * @private
@@ -336,6 +348,14 @@ class Canvas extends EventEmitter {
 
     this._renderer.on('new-canvas', (canvas) => {
       this._setCanvas(canvas)
+    })
+    this._renderer.on('error', (...args) => {
+      this.emit('error', ...args)
+    })
+    this._renderer.on('reset', () => {
+      this.resetAllOperations()
+      this._isFirstRender = true
+      this.render()
     })
   }
 

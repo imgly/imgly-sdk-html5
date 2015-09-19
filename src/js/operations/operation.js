@@ -272,6 +272,14 @@ class Operation extends EventEmitter {
   }
 
   /**
+   * Resets this operation
+   */
+  reset () {
+    this._dirty = true
+    this._glslPrograms = {}
+  }
+
+  /**
    * Sets this operation to dirty, so that it will re-render next time
    * @param {Boolean} dirty = true
    */

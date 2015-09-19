@@ -7,6 +7,7 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
+
 import ImageDimensions from './image-dimensions'
 import Vector2 from './math/vector2'
 import CanvasRenderer from '../renderers/canvas-renderer'
@@ -91,6 +92,8 @@ class RenderImage {
     if (this._renderer === null) {
       throw new Error('Neither Canvas nor WebGL renderer are supported.')
     }
+
+    this._renderer.on('error', (err) => this.emit('error', err))
   }
 
   /**
