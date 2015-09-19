@@ -32,7 +32,8 @@
   },
   "generic": {
     "loading": "Laden",
-    "exporting": "Exportiere"
+    "exporting": "Exportiere",
+    "importing": "Importiere"
   },
   "controls": {
     "frames": {

@@ -33,6 +33,7 @@
   "generic": {
     "loading": "Loading",
     "exporting": "Exporting",
+    "importing": "Importing",
     "color": "Color"
   },
   "controls": {
