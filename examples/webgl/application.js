@@ -36,14 +36,6 @@ window.onload = function () {
       // Possible render types: image, data-url
       kit.render('image', 'image/png')
         .then(function (image) {
-          var cropOperation = kit.getOperationFromStack('crop')
-          var start = cropOperation.getStart()
-          var end = cropOperation.getEnd()
-          var inputImage = kit.ui.options.image
-          var dimensions = end
-            .subtract(start)
-            .multiply(inputImage.width, inputImage.height)
-
           document.body.appendChild(image)
         })
     })
