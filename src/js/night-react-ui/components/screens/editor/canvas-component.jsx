@@ -204,6 +204,14 @@ export default class CanvasComponent extends BaseChildComponent {
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
+    let canvasContent = null
+    let containerContent = null
+    if (this.props.largeCanvasControls) {
+      containerContent = this.props.children
+    } else {
+      canvasContent = this.props.children
+    }
+
     return (
       <div bem='$b:canvas e:container e:row'>
         <div bem='e:container e:cell' ref='canvasCell'>
@@ -213,8 +221,9 @@ export default class CanvasComponent extends BaseChildComponent {
             onMouseDown={this._onDragStart}
             style={this._getDraggableStyle()}>
             <canvas ref='canvas' />
+            {canvasContent}
           </div>
-          {this.props.children}
+          {containerContent}
         </div>
       </div>
     )

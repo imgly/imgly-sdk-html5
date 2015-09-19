@@ -9,9 +9,10 @@
  */
 
 import CropControlsComponent from './crop-controls-component'
+import CropCanvasControlsComponent from './crop-canvas-controls-component'
 
 export default {
-  canvasControls: null,
+  canvasControls: CropCanvasControlsComponent,
   controls: CropControlsComponent,
   identifier: 'crop',
   isSelectable: (ui) => {

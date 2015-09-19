@@ -46,6 +46,8 @@ export default class EditorScreenComponent extends ScreenComponent {
    * @private
    */
   _undoZoom () {
+    if (!this._previousZoomState) return
+
     const canvasComponent = this.refs.canvas
     const { zoom, canvasState } = this._previousZoomState
 
@@ -158,7 +160,8 @@ export default class EditorScreenComponent extends ScreenComponent {
       <CanvasComponent
         ref='canvas'
         onFirstRender={this._onFirstCanvasRender}
-        zoom={this.state.zoom}>
+        zoom={this.state.zoom}
+        largeControls={this.state.controls.largeCanvasControls}>
         {canvasControls}
       </CanvasComponent>
 
