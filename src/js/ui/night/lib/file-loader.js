@@ -119,6 +119,8 @@ class FileLoader extends EventEmitter {
 
     if (!e.dataTransfer) return
 
+    this._ui.displayLoadingMessage('Importing...')
+
     this._handleFile(e.dataTransfer.files[0])
   }
 
