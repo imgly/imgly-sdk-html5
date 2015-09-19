@@ -37,8 +37,8 @@ class CropOperation extends Operation {
     const size = end.clone().subtract(start)
     const fragmentShader = null
 
-    if (!this._program) {
-      this._program = renderer.setupGLSLProgram(null, fragmentShader, textureCoordinates)
+    if (!this._glslPrograms[renderer.id]) {
+      this._glslPrograms[renderer.id] = renderer.setupGLSLProgram(null, fragmentShader, textureCoordinates)
     }
 
     const textureCoordinates = new Float32Array([
@@ -53,7 +53,7 @@ class CropOperation extends Operation {
         end.x, 1.0 - start.y
       ])
     renderer.setSize(renderer.getSize().multiply(size))
-    renderer.runProgram(this._program, { textureCoordinates })
+    renderer.runProgram(this._glslPrograms[renderer.id], { textureCoordinates })
   }
 
   /**
