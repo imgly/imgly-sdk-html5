@@ -43,10 +43,16 @@ class BaseUI extends EventEmitter {
   /**
    * Returns the translation for `key`
    * @param  {String} key
+   * @param  {Array.<String>} args
    * @return {String}
    */
-  translate (key) {
-    return Utils.fetch(this._language, key, 'translation-missing')
+  translate (key, ...args) {
+    let str = Utils.fetch(this._language, key, 'translation-missing')
+    for (let i = 0; i < args.length; i++) {
+      const arg = args[i]
+      str = str.replace(`$${i + 1}`, arg)
+    }
+    return str
   }
 
   /**
