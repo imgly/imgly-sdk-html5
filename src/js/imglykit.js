@@ -93,15 +93,15 @@ class ImglyKit {
       this._versionChecker = new VersionChecker(VERSION)
     }
 
+    if (this._options.image) {
+      this._parseExif(this._options.image)
+    }
+
     if (this._options.ui.enabled) {
       this._initUI()
       if (this._options.renderOnWindowResize) {
         this._handleWindowResize()
       }
-    }
-
-    if (this._options.image) {
-      this._parseExif(this._options.image)
     }
   }
 
