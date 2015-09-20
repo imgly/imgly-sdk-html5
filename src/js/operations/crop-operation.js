@@ -52,7 +52,6 @@ class CropOperation extends Operation {
         end.x, 1.0 - end.y,
         end.x, 1.0 - start.y
       ])
-    renderer.setSize(renderer.getSize().multiply(size))
     renderer.runProgram(this._glslPrograms[renderer.id], { textureCoordinates })
   }
 

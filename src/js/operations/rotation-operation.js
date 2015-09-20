@@ -58,7 +58,6 @@ class RotationOperation extends Operation {
     ]
 
     // Run the shader
-    renderer.setSize(newDimensions)
     renderer.runShader(this.vertexShader, null, {
       uniforms: {
         u_matrix: { type: 'mat3fv', value: rotationMatrix }
