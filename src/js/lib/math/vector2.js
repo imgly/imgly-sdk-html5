@@ -184,6 +184,46 @@ class Vector2 {
   }
 
   /**
+   * Rounds the values of this vector
+   * @returns {Vector2}
+   */
+  round () {
+    this.x = Math.round(this.x)
+    this.y = Math.round(this.y)
+    return this
+  }
+
+  /**
+   * Rounds up the values of this vector
+   * @returns {Vector2}
+   */
+  ceil () {
+    this.x = Math.ceil(this.x)
+    this.y = Math.ceil(this.y)
+    return this
+  }
+
+  /**
+   * Rounds down the values of this vector
+   * @returns {Vector2}
+   */
+  floor () {
+    this.x = Math.floor(this.x)
+    this.y = Math.floor(this.y)
+    return this
+  }
+
+  /**
+   * Makes both numbers of this vector positive
+   * @returns {Vector2}
+   */
+  abs () {
+    this.x = Math.abs(this.x)
+    this.y = Math.abs(this.y)
+    return this
+  }
+
+  /**
    * Returns a string representation of this vector
    * @return {String}
    */
