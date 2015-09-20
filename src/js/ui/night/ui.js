@@ -10,6 +10,7 @@
  */
 
 import Utils from '../../lib/utils'
+import Vector2 from '../../lib/math/vector2'
 import UI from '../base/ui'
 import Canvas from './lib/canvas'
 import FileLoader from './lib/file-loader'
@@ -26,6 +27,7 @@ class NightUI extends UI {
     this._template = __DOTJS_TEMPLATE('../../templates/night/template.jst')
     this._registeredControls = {}
     this._history = []
+    this._imageResized = false
 
     // The `Night` UI has a fixed operation order
     this._preferredOperationOrder = [
@@ -58,6 +60,7 @@ class NightUI extends UI {
       showCloseButton: false,
       showExportButton: false,
       language: 'en',
+      maxMegaPixels: 10,
       export: {}
     })
 
@@ -133,6 +136,11 @@ class NightUI extends UI {
     if (this._topControls) {
       this._topControls.updateExportButton()
     }
+
+    if (this._canvas) {
+      this._resizeImageIfNecessary()
+      this._canvas.run()
+    }
   }
 
   _loadLanguage () {
@@ -171,6 +179,11 @@ class NightUI extends UI {
     this._webcam.on('image', this._onWebcamImageTaken.bind(this))
   }
 
+  /**
+   * Gets called when the webcam image has been taken
+   * @param {Image} image
+   * @private
+   */
   _onWebcamImageTaken (image) {
     this._options.ui.startWithWebcam = false
     this._setImage(image)
@@ -275,12 +288,45 @@ class NightUI extends UI {
   }
 
   /**
+   * Resizes the image to fit the maximum texture size
+   * @private
+   */
+  _resizeImageIfNecessary () {
+    const { image } = this._options
+    const imageDimensions = new Vector2(image.width, image.height)
+    const megaPixels = (imageDimensions.x * imageDimensions.y) / 1000000
+
+    if (megaPixels > this._options.ui.maxMegaPixels) {
+      // Dimensions exceed `maxMegaPixels`. Calculate new size
+      const pixelsCount = this._options.ui.maxMegaPixels * 1000000
+      const ratioHV = imageDimensions.x / imageDimensions.y
+      const ratioVH = imageDimensions.y / imageDimensions.x
+      const newDimensions = new Vector2(
+        Math.sqrt(pixelsCount * ratioHV),
+        Math.sqrt(pixelsCount * ratioVH)
+      ).floor()
+
+      this.displayFlashMessage(
+        this.translate('generic.warning_headline'),
+        this.translate('warnings.image_resized',
+          this._options.ui.maxMegaPixels,
+          newDimensions.x,
+          newDimensions.y),
+        'warning'
+      )
+      this._imageResized = true
+
+      this._options.image.width = newDimensions.x
+      this._options.image.height = newDimensions.y
+    }
+  }
+
+  /**
    * Inititializes the canvas
    * @private
    */
   _initCanvas () {
     this._canvas = new Canvas(this._kit, this, this._options)
-    this._canvas.run()
     this._canvas.on('zoom', () => {
       this._topControls.updateZoomLevel()
     })
@@ -699,6 +745,14 @@ class NightUI extends UI {
    */
   get fileLoader () {
     return this._fileLoader
+  }
+
+  /**
+   * Has the image been resized initially?
+   * @type {Boolean}
+   */
+  get imageResized () {
+    return this._imageResized
   }
 }
 

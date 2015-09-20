@@ -34,7 +34,8 @@
     "loading": "Laden",
     "exporting": "Exportiere",
     "importing": "Importiere",
-    "error_headline": "Es ist ein Fehler aufgetreten."
+    "error_headline": "Es ist ein Fehler aufgetreten.",
+    "warning_headline": "Warnung!"
   },
   "controls": {
     "frames": {
@@ -47,5 +48,8 @@
   },
   "errors": {
     "context_lost": "Dein Browser hat zu lange gebraucht, um das Bild zu generieren. Bitte versuche es noch einmal."
+  },
+  "warnings": {
+    "image_resized": "Dein Bild überschreitet die maximale Größe von $1 Megapixeln und wurde daher auf $2x$3 Pixel verkleinert."
   }
 }
