@@ -8,6 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+import EventEmitter from './event-emitter'
 import ImageDimensions from './image-dimensions'
 import Vector2 from './math/vector2'
 import CanvasRenderer from '../renderers/canvas-renderer'
@@ -23,8 +24,10 @@ import WebGLRenderer from '../renderers/webgl-renderer'
  * @param {string} preferredRenderer
  * @private
  */
-class RenderImage {
+class RenderImage extends EventEmitter {
   constructor (image, operationsStack, dimensions, preferredRenderer) {
+    super()
+
     /**
      * @type {Object}
      * @private
