@@ -14,6 +14,7 @@ import Vector2 from '../../lib/math/vector2'
 import UI from '../base/ui'
 import Canvas from './lib/canvas'
 import FileLoader from './lib/file-loader'
+import ImageResizer from './lib/image-resizer'
 import WebcamHandler from './lib/webcam-handler'
 import TopControls from './lib/top-controls'
 import Scrollbar from './lib/scrollbar'
@@ -316,8 +317,7 @@ class NightUI extends UI {
       )
       this._imageResized = true
 
-      this._options.image.width = newDimensions.x
-      this._options.image.height = newDimensions.y
+      this._options.image = ImageResizer.resize(this._options.image, newDimensions)
     }
   }
 
