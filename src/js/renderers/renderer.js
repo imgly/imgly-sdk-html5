@@ -185,21 +185,26 @@ class Renderer extends EventEmitter {
   /**
    * Returns the canvas size after all operations have been applied
    * @param {Array.<Operation>} stack
+   * @param {ImageDimensions} dimensions
    */
-  getOutputDimensionsForStack (stack) {
+  getOutputDimensionsForStack (stack, dimensions) {
     let size = new Vector2(this._image.width, this._image.height)
     stack.forEach((operation) => {
       size = operation.getNewDimensions(this, size)
     })
+    if (dimensions) {
+      size = dimensions.calculateFinalDimensions(size)
+    }
     return size
   }
 
   /**
    * Returns the initial dimensions before any operations have been applied
    * @param {Array.<Operation>} stack
+   * @param {ImageDimensions} dimensions
    */
-  getInitialDimensionsForStack (stack) {
-    return this.getOutputDimensionsForStack(stack)
+  getInitialDimensionsForStack (stack, dimensions) {
+    return this.getOutputDimensionsForStack(stack, dimensions)
   }
 
   /**

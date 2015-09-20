@@ -102,7 +102,7 @@ class RenderImage {
    */
   render () {
     const stack = this.sanitizedStack
-    const initialDimensions = this._renderer.getInitialDimensionsForStack(stack)
+    const initialDimensions = this._renderer.getInitialDimensionsForStack(stack, this._dimensions)
     this._renderer.resizeTo(initialDimensions)
     this._renderer.drawImage(this._image)
 
@@ -123,17 +123,6 @@ class RenderImage {
       })
       .then(() => {
         return this._renderer.renderFinal()
-      })
-      .then(() => {
-        let initialSize = this._renderer.getSize()
-        let finalDimensions = this._dimensions.calculateFinalDimensions(initialSize)
-
-        if (finalDimensions.equals(initialSize)) {
-          // No need to resize
-          return
-        }
-
-        return this._renderer.resizeTo(finalDimensions)
       })
   }
 
