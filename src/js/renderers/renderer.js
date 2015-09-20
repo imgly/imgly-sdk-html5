@@ -223,13 +223,15 @@ class Renderer extends EventEmitter {
 
   }
 
-  setSize (size) {
-    this._size.copy(size)
+  /**
+   * Gets called after the rendering has been done.
+   */
+  postRender (dimensions) {
+
   }
 
-  getSize () {
-    return this._size.clone()
-  }
+  setSize (size) { this._size.copy(size) }
+  getSize () { return this._size.clone() }
 }
 
 export default Renderer

@@ -137,8 +137,9 @@ class CanvasRenderer extends Renderer {
   /**
    * Returns the initial dimensions before any operations have been applied
    * @param {Array.<Operation>} stack
+   * @param {ImageDimensions} dimensions
    */
-  getInitialDimensionsForStack (stack) {
+  getInitialDimensionsForStack (stack, dimensions) {
     // Since canvas operations resize the canvas, the initial
     // dimensions is the same as the image dimensions
     return new Vector2(this._image.width, this._image.height)
@@ -152,6 +153,17 @@ class CanvasRenderer extends Renderer {
     this._canvas.width = dimensions.x
     this._canvas.height = dimensions.y
     this._size.copy(dimensions)
+  }
+
+  /**
+   * Gets called after the rendering has been done. Resizes the canvas
+   * to its final size
+   * @param {ImageDimensions} dimensions
+   */
+  postRender (dimensions) {
+    const canvasDimensions = new Vector2(this._canvas.width, this._canvas.height)
+    const newDimensions = dimensions.calculateFinalDimensions(canvasDimensions)
+    this.resizeTo(newDimensions)
   }
 }
 

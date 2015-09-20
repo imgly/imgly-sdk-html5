@@ -124,6 +124,9 @@ class RenderImage {
       .then(() => {
         return this._renderer.renderFinal()
       })
+      .then(() => {
+        return this._renderer.postRender(this._dimensions)
+      })
   }
 
   /**
