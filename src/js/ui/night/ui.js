@@ -109,6 +109,10 @@ class NightUI extends UI {
     this._handleOverview()
 
     if (this._options.image) {
+      this._resizeImageIfNecessary()
+    }
+
+    if (this._options.image) {
       this._initCanvas()
     }
 
@@ -138,9 +142,6 @@ class NightUI extends UI {
       this._topControls.updateExportButton()
     }
 
-    if (this._options.image) {
-      this._resizeImageIfNecessary()
-    }
     if (this._canvas) {
       this._canvas.run()
     }
