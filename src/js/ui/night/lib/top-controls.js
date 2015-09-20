@@ -92,6 +92,7 @@ class TopControls extends EventEmitter {
    */
   _onNewClick (e) {
     e.preventDefault()
+    e.stopPropagation()
     this.emit('new')
   }
 
@@ -102,6 +103,7 @@ class TopControls extends EventEmitter {
    */
   _onExportClick (e) {
     e.preventDefault()
+    e.stopPropagation()
 
     this.emit('export')
   }
@@ -147,6 +149,7 @@ class TopControls extends EventEmitter {
    */
   _onZoomInClick (e) {
     e.preventDefault()
+    e.stopPropagation()
 
     this.emit('zoom-in')
     this.updateZoomLevel()
@@ -159,6 +162,7 @@ class TopControls extends EventEmitter {
    */
   _onZoomOutClick (e) {
     e.preventDefault()
+    e.stopPropagation()
 
     this.emit('zoom-out')
     this.updateZoomLevel()

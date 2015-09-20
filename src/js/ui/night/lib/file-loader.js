@@ -65,7 +65,8 @@ class FileLoader extends EventEmitter {
    * @param {Event} e
    * @private
    */
-  _onDropAreaClick () {
+  _onDropAreaClick (e) {
+    e.stopPropagation()
     this.openFileDialog()
   }
 
