@@ -230,9 +230,9 @@ class WebGLRenderer extends Renderer {
    */
   /* istanbul ignore next */
   drawImage (image) {
-    this._size = new Vector2(this._canvas.width, this._canvas.height)
+    var gl = this._context
+    this._size = new Vector2(gl.drawingBufferWidth, gl.drawingBufferHeight)
     return new Promise((resolve, reject) => {
-      var gl = this._context
       gl.useProgram(this._defaultProgram)
       this._setCoordinates(this._defaultProgram)
 
@@ -456,7 +456,7 @@ class WebGLRenderer extends Renderer {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null)
 
     // Make sure the viewport size is correct
-    gl.viewport(0, 0, this._canvas.width, this._canvas.height)
+    gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight)
 
     // Select the last texture that has been rendered to
     gl.bindTexture(gl.TEXTURE_2D, this._lastTexture)
@@ -473,7 +473,6 @@ class WebGLRenderer extends Renderer {
    * if none are given.
    * @param {String} [vertexShader]
    * @param {String} [fragmentShader]
-   * @param {Float32Array} textureCoordinates
    * @return {WebGLProgram}
    */
   /* istanbul ignore next */
