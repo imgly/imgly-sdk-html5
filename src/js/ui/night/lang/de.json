@@ -47,7 +47,8 @@
     }
   },
   "errors": {
-    "context_lost": "Dein Browser hat zu lange gebraucht, um das Bild zu generieren. Bitte versuche es noch einmal."
+    "context_lost": "Dein Browser hat zu lange gebraucht, um das Bild zu generieren. Bitte versuche es noch einmal.",
+    "context_lost_limit": "Bild-Generierung ist mehrmals fehlgeschlagen."
   },
   "warnings": {
     "image_resized": "Dein Bild überschreitet die maximale Größe von $1 Megapixeln und wurde daher auf $2x$3 Pixel verkleinert."

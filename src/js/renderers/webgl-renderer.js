@@ -22,6 +22,7 @@ import Promise from '../vendor/promise'
 class WebGLRenderer extends Renderer {
   constructor (...args) {
     super(...args)
+    this._contextLostCount = 0
     this._handleContextLoss()
 
     this._defaultProgram = this.setupGLSLProgram()
@@ -38,9 +39,11 @@ class WebGLRenderer extends Renderer {
   _handleContextLoss () {
     this._canvas.addEventListener('webglcontextlost', (e) => {
       e.preventDefault()
+      this._contextLostCount++
       this.emit('error', 'context_lost')
     })
     this._canvas.addEventListener('webglcontextrestored', () => {
+      if (this._contextLostCount >= 3) return this.emit('error', 'context_lost_limit')
       this.emit('reset')
       this.reset(true, true)
     })

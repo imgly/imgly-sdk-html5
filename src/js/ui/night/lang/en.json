@@ -48,7 +48,8 @@
     }
   },
   "errors": {
-    "context_lost": "Your browser took too long to render the image. Please try applying less operations."
+    "context_lost": "Your browser took too long to render the image. Please try applying less operations.",
+    "context_lost_limit": "Your browser failed multiple times while rendering the image."
   },
   "warnings": {
     "image_resized": "Your image exceeds the maximum size of $1 megapixels and has therefore been resized to $2x$3 pixels."
