@@ -22,7 +22,6 @@ import Promise from '../vendor/promise'
 class WebGLRenderer extends Renderer {
   constructor (...args) {
     super(...args)
-    console.log('new webgl renderer')
     this._handleContextLoss()
 
     this._defaultProgram = this.setupGLSLProgram()
