@@ -318,7 +318,6 @@ class NightUI extends UI {
         'warning'
       )
       this._imageResized = true
-
       this._options.image = ImageResizer.resize(this._options.image, newDimensions)
     }
   }
@@ -333,16 +332,17 @@ class NightUI extends UI {
       this._topControls.updateZoomLevel()
     })
     this._canvas.on('error', (key) => {
-      this.displayErrorMessage(this.translate(`errors.${key}`))
+      this.displayErrorMessage(key)
     })
   }
 
   /**
-   * Displays the given error message
-   * @param {String} message
+   * Displays the given error key
+   * @param {String} key
    */
-  displayErrorMessage (message) {
-    this.displayFlashMessage('An error has occurred!', message, 'error')
+  displayErrorMessage (key) {
+    const err = this.translate(`errors.${key}`)
+    this.displayFlashMessage('An error has occurred!', `${err} (${key})`, 'error')
   }
 
   /**
