@@ -43,7 +43,7 @@ window.onload = function () {
         // }
       ]
     })
-    editor.run()
+    window.editorComponent = editor.run()
 
     /*
      * We have a 'Render' button which (on click) will request the rendered

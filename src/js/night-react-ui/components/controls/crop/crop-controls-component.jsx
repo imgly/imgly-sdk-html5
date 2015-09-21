@@ -109,7 +109,7 @@ export default class OrientationControlsComponent extends BaseChildComponent {
       }
     }
 
-    this._operation.set({ start, end })
+    this.props.sharedState.set({ start, end })
   }
 
   // -------------------------------------------------------------------------- RENDERING

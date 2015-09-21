@@ -47,7 +47,7 @@ class ImageDimensions {
     return this._rules.x && this._rules.y
   }
 
-  getVector () {
+  toVector () {
     return new Vector2(this._rules.x, this._rules.y)
   }
 
