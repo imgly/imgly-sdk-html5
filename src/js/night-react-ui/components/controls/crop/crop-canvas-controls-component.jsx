@@ -12,6 +12,8 @@
 import { React, ReactBEM, BaseChildComponent, Vector2, Constants } from '../../../globals'
 import DraggableComponent from '../../draggable-component.jsx'
 
+const MIN_DIMENSIONS = new Vector2(50, 50)
+
 export default class CropCanvasControlsComponent extends BaseChildComponent {
   constructor (...args) {
     super(...args)
@@ -55,12 +57,36 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
    * @private
    */
   _onDrag (optionName, offset) {
-    const canvasDimensions = this.props.editor.getCanvasDimensions()
-    const cropDifference = offset.clone()
-      .divide(canvasDimensions)
+    const start = this._operation.getStart()
+    const end = this._operation.getEnd()
 
-    const newValue = this._initialDragValue.clone()
-      .add(cropDifference)
+    const canvasDimensions = this.props.editor.getCanvasDimensions()
+    const cropDifference = offset.clone().divide(canvasDimensions)
+    const newValue = this._initialDragValue.clone().add(cropDifference)
+
+    // Clamp values
+    let minValue, maxValue
+    switch (optionName) {
+      case 'start':
+        minValue = new Vector2(0, 0)
+        maxValue = end.clone()
+          .subtract(
+            MIN_DIMENSIONS.clone()
+              .divide(canvasDimensions)
+          )
+        newValue.clamp(minValue, maxValue)
+        break
+      case 'end':
+        minValue = start.clone()
+          .add(
+            MIN_DIMENSIONS.clone()
+              .divide(canvasDimensions)
+          )
+        maxValue = new Vector2(1, 1)
+        newValue.clamp(minValue, maxValue)
+        break
+    }
+
     this._operation.setOption(this._currentDragOption, newValue)
   }
 
@@ -103,8 +129,8 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
       container.offsetHeight
     )
 
-    const start = this._operation.getStart().clone().multiply(containerDimensions)
-    const end = this._operation.getEnd().clone().multiply(containerDimensions)
+    const start = this._operation.getStart().clone().multiply(containerDimensions).floor()
+    const end = this._operation.getEnd().clone().multiply(containerDimensions).ceil()
     const size = end.clone().subtract(start)
 
     return {
@@ -123,7 +149,11 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
    * @private
    */
   _getDimensionsStyles (x, y) {
-    return { width: x, height: y }
+    // Table cells and rows can't have a width / height of 0
+    return {
+      width: Math.max(1, x),
+      height: Math.max(1, y)
+    }
   }
 
   /**
