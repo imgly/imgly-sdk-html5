@@ -355,6 +355,7 @@ ImglyKit.Operations.RadialBlur = require('./operations/radial-blur-operation')
 ImglyKit.Operations.Text = require('./operations/text-operation')
 ImglyKit.Operations.Stickers = require('./operations/stickers-operation')
 ImglyKit.Operations.Frames = require('./operations/frames-operation')
+ImglyKit.Operations.Brush = require('./operations/brush-operation')
 
 ImglyKit.Filters = {}
 ImglyKit.Filters.A15 = require('./operations/filters/a15-filter')

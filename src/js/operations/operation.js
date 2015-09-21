@@ -249,6 +249,11 @@ class Operation extends EventEmitter {
       case 'object':
         this._options[optionName] = value
         break
+
+      // Array options
+      case 'array':
+        this._options[optionName] = value.slice(0)
+        break
     }
 
     this._dirty = true

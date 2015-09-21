@@ -10,6 +10,7 @@ window.onload = function () {
       assetsUrl: '../../build/assets', // The URL / path where all assets are
       container: document.querySelector('#container'),
       versionCheck: false,
+      image: myImage,
       ui: {
         enabled: true,
         showExportButton: true,
@@ -20,6 +21,8 @@ window.onload = function () {
       },
       renderOnWindowResize: true // Our editor's size is relative to the window size
     })
+
+    kit.ui.selectOperations('brush,frames')
 
     kit.run()
 

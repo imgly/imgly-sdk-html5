@@ -11,7 +11,8 @@
     "stickers": "Stickers",
     "text": "Text",
     "tilt-shift": "Tilt-Shift",
-    "crop": "Crop"
+    "crop": "Crop",
+    "brush": "Brush"
   },
   "top-controls": {
     "new": "New",
@@ -40,6 +41,9 @@
   },
   "controls": {
     "frames": {
+      "color": "Color"
+    },
+    "brush": {
       "color": "Color"
     },
     "text": {

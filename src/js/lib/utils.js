@@ -121,6 +121,15 @@ class Utils {
   }
 
   /**
+   * Checks if th given event is a touch event
+   * @param  {Event}  e
+   * @return {Boolean}
+   */
+  static isTouchEvent (e) {
+    return (e.type.indexOf('touch') !== -1)
+  }
+
+  /**
    * Resizes the given vector to fit inside the given max size while maintaining
    * the aspect ratio
    * @param  {Vector2} vector
