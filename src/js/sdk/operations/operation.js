@@ -122,12 +122,12 @@ class Operation extends EventEmitter {
       // Create setter and getter
       let fn = function (optionName, option) {
         self['set' + capitalized] = function (value) {
-          self._setOption(optionName, value)
+          self.setOption(optionName, value)
         }
 
         // Default getter
         self['get' + capitalized] = function () {
-          return self._getOption(optionName)
+          return self.getOption(optionName)
         }
       }
       fn(optionName, option)
@@ -157,7 +157,7 @@ class Operation extends EventEmitter {
    */
   set (options) {
     for (let optionName in options) {
-      this._setOption(optionName, options[optionName], false)
+      this.setOption(optionName, options[optionName], false)
     }
 
     this.emit('update')
@@ -169,7 +169,7 @@ class Operation extends EventEmitter {
    * @return {*}
    * @private
    */
-  _getOption (optionName) {
+  getOption (optionName) {
     return this._options[optionName]
   }
 
@@ -180,7 +180,7 @@ class Operation extends EventEmitter {
    * @param {Boolean} update
    * @private
    */
-  _setOption (optionName, value, update=true) {
+  setOption (optionName, value, update=true) {
     var optionConfig = this.availableOptions[optionName]
     var identifier = this.identifier
 
