@@ -10,7 +10,6 @@
 
 import Operation from './operation'
 import Vector2 from '../lib/math/vector2'
-import Color from '../lib/color'
 
 /**
  * An operation that can draw brushes on the canvas
@@ -133,7 +132,7 @@ class BrushOperation extends Operation {
   }
 
   /**
-   * Crops the image using Canvas2D
+   * Renders the brush operation to a canvas
    * @param  {CanvasRenderer} renderer
    * @private
    */
@@ -144,19 +143,21 @@ class BrushOperation extends Operation {
   }
 
   /**
-   * Renders the text canvas that will be used as a texture in WebGL
+   * Renders the brush canvas that will be used as a texture in WebGL
    * and as an image in canvas
    * @return {Canvas}
    * @private
    */
   _renderBrushCanvas (renderer) {
-    let canvas = renderer.createCanvas()
-    let context = canvas.getContext('2d')
+    if (!this._brushCanvas) {
+      this._brushCanvas = renderer.createCanvas()
+    }
+    let context = this._brushCanvas.getContext('2d')
 
     let outputCanvas = renderer.getCanvas()
     let canvasSize = new Vector2(outputCanvas.width, outputCanvas.height)
-    canvas.width = canvasSize.x
-    canvas.height = canvasSize.y
+    this._brushCanvas.width = canvasSize.x
+    this._brushCanvas.height = canvasSize.y
     let longerSide = this._getLongerSideSize(outputCanvas)
 
     let metaIndex = 0
@@ -182,7 +183,7 @@ class BrushOperation extends Operation {
       context.stroke()
     }
 
-    return canvas
+    return this._brushCanvas
   }
 
   /**
@@ -194,11 +195,19 @@ class BrushOperation extends Operation {
     return canvas.width > canvas.height ? canvas.width : canvas.height
   }
 
+  /**
+   * returns the last color
+   * @return {Color}
+   */
   getLastColor () {
     var colors = this.getColors()
     return colors[colors.length - 1]
   }
 
+  /**
+   * returns the last thickness
+   * @return {Thickness}
+   */
   getLastThickness () {
     var thicknesses = this.getThicknesses()
     return thicknesses[thicknesses.length - 1]

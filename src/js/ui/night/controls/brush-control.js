@@ -83,6 +83,7 @@ class BrushControl extends Control {
    * Sets up the cursor
    */
   _setupCursor () {
+    this._myCursor = this._canvasControls.querySelector('#imglykit-brush-cursor')
     this._setCursorSize(this._currentThickness * this._getLongerSideSize())
     this._setCursorColor(this._currentColor)
   }
@@ -113,11 +114,11 @@ class BrushControl extends Control {
   _setupContainer () {
     this._container = this._canvasControls.querySelector('.imglykit-canvas-brush-container')
     this._container.addEventListener('mousedown', this._onMouseDown)
-    this._container.addEventListener('touchstart', this._onTouchStart)
+    this._container.addEventListener('touchstart', this._onMouseDown)
     this._container.addEventListener('mouseup', this._onMouseUp)
-    this._container.addEventListener('touchend', this._onTouchEnd)
+    this._container.addEventListener('touchend', this._onMouseUp)
     this._container.addEventListener('mousemove', this._onMouseMove)
-    this._container.addEventListener('touchmove', this._onTouchMove)
+    this._container.addEventListener('touchmove', this._onMouseMove)
     this._container.addEventListener('mouseleave', this._onMouseLeave)
   }
 
@@ -129,9 +130,6 @@ class BrushControl extends Control {
     this._onMouseUp = this._onMouseUp.bind(this)
     this._onMouseMove = this._onMouseMove.bind(this)
     this._onMouseLeave = this._onMouseLeave.bind(this)
-    this._onTouchStart = this._onTouchStart.bind(this)
-    this._onTouchEnd = this._onTouchEnd.bind(this)
-    this._onTouchMove = this._onTouchMove.bind(this)
   }
 
   /**
@@ -176,7 +174,6 @@ class BrushControl extends Control {
    * Resets the operation options to the initial options
    */
   _resetOperationSettings () {
-    console.log (this._initialOptions)
     this._operation.setControlPoints(this._initialOptions.controlPoints)
     this._operation.setButtonStatus(this._initialOptions.buttonStatus)
     this._operation.setColors(this._initialOptions.colors)
@@ -198,28 +195,14 @@ class BrushControl extends Control {
   }
 
   /**
-   * The data that is available to the template
-   * @type {Object}
-   * @override
-   */
-  get context () {
-    let context = super.context
-    // Extend context like this...
-    context.myVariable = 'myValue'
-    return context
-  }
-
-  _onTouchStart (e) {
-    this._showCursor()
-    this._startPaint(e)
-  }
-
-  /**
    * Gets called when the user presses the mouse button.
    * Here the painting phase is started
    * @param  {Event} e
    */
   _onMouseDown (e) {
+    if (Utils.isTouchEvent(e)) {
+      this._showCursor()
+    }
     this._startPaint(e)
   }
 
@@ -239,20 +222,14 @@ class BrushControl extends Control {
   }
 
   /**
-   * Gets called when the user ends the touch
-   * @param  {Event} e
-   */
-  _onTouchEnd (e) {
-    this._hideCursor()
-    this._stopPaint()
-  }
-
-  /**
    * Gets called the the users releases the mouse button.
    * Here the painting phase is stopped
    * @param  {Event} e
    */
   _onMouseUp (e) {
+    if (Utils.isTouchEvent(e)) {
+      this._hideCursor()
+    }
     this._stopPaint()
   }
 
@@ -271,24 +248,11 @@ class BrushControl extends Control {
    */
   _onMouseMove (e) {
     var mousePosition = this._getRelativeMousePositionFromEvent(e)
-    this._moveCursorTo(mousePosition)
-    this._showCursor()
-    if (this._painting) {
-      this._addControlPoint(mousePosition, true)
-      this._redrawPath()
-    }
-  }
-
-  /**
-   * Gets called when the user drags the finger.
-   * If this happends while the finger is pressed,
-   * the visited points get added to the path
-   * @param  {Event} e
-   */
-  _onTouchMove (e) {
-    if (this._painting) {
-      var mousePosition = this._getRelativeMousePositionFromEvent(e)
+    if (!Utils.isTouchEvent(e)) {
       this._moveCursorTo(mousePosition)
+      this._showCursor()
+    }
+    if (this._painting) {
       this._addControlPoint(mousePosition, true)
       this._redrawPath()
     }
@@ -394,10 +358,9 @@ class BrushControl extends Control {
    * @param  {Vector2} position
    */
   _moveCursorTo (position) {
-    let myCursor = this._canvasControls.querySelector('#mycursor')
     let halfThickness = this._currentThickness * this._getLongerSideSize() / 2.0
-    myCursor.style.left = position.x * this._ui.canvas.size.x - halfThickness + 'px'
-    myCursor.style.top = position.y * this._ui.canvas.size.y - halfThickness + 'px'
+    this._myCursor.style.left = position.x * this._ui.canvas.size.x - halfThickness + 'px'
+    this._myCursor.style.top = position.y * this._ui.canvas.size.y - halfThickness + 'px'
   }
 
   /**
@@ -405,9 +368,8 @@ class BrushControl extends Control {
    * @param {Float} size
    */
   _setCursorSize (size) {
-    let myCursor = this._canvasControls.querySelector('#mycursor')
-    myCursor.style.width = size + 'px'
-    myCursor.style.height = size + 'px'
+    this._myCursor.style.width = size + 'px'
+    this._myCursor.style.height = size + 'px'
   }
 
   /**
@@ -415,24 +377,21 @@ class BrushControl extends Control {
    * @param {Color} color
    */
   _setCursorColor (color) {
-    let myCursor = this._canvasControls.querySelector('#mycursor')
-    myCursor.style.background = color.toHex()
+    this._myCursor.style.background = color.toHex()
   }
 
   /**
    * Shows the cursor
    */
   _showCursor () {
-    let myCursor = this._canvasControls.querySelector('#mycursor')
-    myCursor.style.display = 'block'
+    this._myCursor.style.display = 'block'
   }
 
   /**
    * Hides the cursor
    */
   _hideCursor () {
-    let myCursor = this._canvasControls.querySelector('#mycursor')
-    myCursor.style.display = 'none'
+    this._myCursor.style.display = 'none'
   }
 }
 
