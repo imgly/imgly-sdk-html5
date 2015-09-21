@@ -46,6 +46,7 @@ export default class OrientationControlsComponent extends BaseChildComponent {
     super.componentDidMount()
 
     this._emitEvent(Constants.EVENTS.CANVAS_ZOOM, 'auto')
+    this._emitEvent(Constants.EVENTS.EDITOR_DISABLE_FEATURES, ['zoom', 'drag'])
   }
 
   /**
@@ -57,6 +58,7 @@ export default class OrientationControlsComponent extends BaseChildComponent {
     this.props.onSwitchControls('back')
 
     this._emitEvent(Constants.EVENTS.CANVAS_UNDO_ZOOM)
+    this._emitEvent(Constants.EVENTS.EDITOR_ENABLE_FEATURES, ['zoom', 'drag'])
   }
 
   /**
