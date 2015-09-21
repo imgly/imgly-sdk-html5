@@ -8,7 +8,7 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-import { ReactBEM, Constants, SDKUtils } from '../../../globals'
+import { ReactBEM, Constants, SDKUtils, SharedState } from '../../../globals'
 import ScreenComponent from '../screen-component'
 import SubHeaderComponent from '../../sub-header-component'
 import CanvasComponent from './canvas-component'
@@ -182,7 +182,10 @@ export default class EditorScreenComponent extends ScreenComponent {
       this._previousControlsStack.push(this.state.controls)
     }
 
-    this.setState({ controls: newControls })
+    this.setState({
+      controls: newControls,
+      sharedState: new SharedState()
+    })
   }
 
   // -------------------------------------------------------------------------- RENDERING
@@ -197,7 +200,9 @@ export default class EditorScreenComponent extends ScreenComponent {
 
     let canvasControls = null
     if (CanvasControls) {
-      canvasControls = <CanvasControls editor={this} />
+      canvasControls = <CanvasControls
+        editor={this}
+        sharedState={this.state.sharedState} />
     }
 
     return (<div bem='b:screen $b:editorScreen'>
@@ -223,7 +228,10 @@ export default class EditorScreenComponent extends ScreenComponent {
 
       <div bem='$b:controls $e:container e:row'>
         <div bem='e:cell'>
-          <Controls onSwitchControls={this.switchToControls} editor={this} />
+          <Controls
+            onSwitchControls={this.switchToControls}
+            editor={this}
+            sharedState={this.state.sharedState} />
         </div>
       </div>
     </div>)

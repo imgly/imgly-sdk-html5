@@ -252,7 +252,7 @@ class WebGLRenderer extends BaseRenderer {
     }
 
     this._size = new Vector2(gl.drawingBufferWidth, gl.drawingBufferHeight)
-    this._resizeAllTexture(this._size)
+    this._resizeAllTextures(this._size)
 
     return new Promise((resolve, reject) => {
       gl.useProgram(this._defaultProgram)

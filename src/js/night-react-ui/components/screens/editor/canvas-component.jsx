@@ -127,12 +127,13 @@ export default class CanvasComponent extends BaseChildComponent {
    * @return {Number}
    */
   getDefaultZoom () {
+    console.log('calculating default zoom')
     const { kit } = this.context
 
     const canvasCell = React.findDOMNode(this.refs.canvasCell)
     const containerDimensions = new Vector2(canvasCell.offsetWidth, canvasCell.offsetHeight)
 
-    const outputDimensions = kit.getOutputDimensions()
+    const outputDimensions = kit.getInputDimensions()
     const defaultDimensions = SDKUtils.resizeVectorToFit(outputDimensions, containerDimensions)
 
     // Since default and native dimensions have the same ratio, we can take either x or y here
@@ -147,13 +148,12 @@ export default class CanvasComponent extends BaseChildComponent {
    * @private
    */
   _onCanvasUpdate (zoom = this.props.zoom) {
-    const { kit, operationsStack } = this.context
-    const renderer = kit.getRenderer()
+    const { kit, } = this.context
     const canvasCell = React.findDOMNode(this.refs.canvasCell)
 
     let containerDimensions = new Vector2(canvasCell.offsetWidth, canvasCell.offsetHeight)
     if (zoom !== null) {
-      containerDimensions = renderer.getInitialDimensionsForStack(operationsStack)
+      containerDimensions = kit.getInputDimensions()
         .multiply(zoom)
         .floor()
     }

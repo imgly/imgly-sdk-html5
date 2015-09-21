@@ -220,9 +220,16 @@ export default class BaseRenderer extends EventEmitter {
   }
 
   /**
+   * Gets called before the rendering starts
+   */
+  preRender () {
+
+  }
+
+  /**
    * Gets called after the rendering has been done.
    */
-  postRender (dimensions) {
+  postRender () {
 
   }
 

@@ -12,6 +12,7 @@ import ImageDimensions from './image-dimensions'
 // import ImageExporter from './image-exporter'
 import VersionChecker from './version-checker'
 import Utils from './utils'
+import Vector2 from './math/vector2'
 import Operations from '../operations/'
 import Exif from './exif'
 import RotationOperation from '../operations/rotation-operation'
@@ -38,6 +39,8 @@ export default class Renderer {
       dimensions: null,
       canvas: null
     })
+
+    this._dimensions = this._options.dimensions
 
     this._image = this._options.image
     this._operationsOptions = operationsOptions
@@ -91,7 +94,7 @@ export default class Renderer {
     this._renderer.preRender()
     return stack.validateSettings()
       .then(() => {
-        const dimensions = this.getInitialDimensions()
+        const dimensions = this.getOutputDimensions()
         this._renderer.resizeTo(dimensions)
       })
       .then(() => {
@@ -247,8 +250,13 @@ export default class Renderer {
    */
   getOutputDimensions () {
     const stack = this.operationsStack
-    return this._renderer
-      .getOutputDimensionsForStack(stack)
+
+    let dimensions = this._renderer.getOutputDimensionsForStack(stack)
+    if (this._dimensions && this._dimensions.bothSidesGiven()) {
+      dimensions = Utils.resizeVectorToFit(dimensions, this._dimensions.toVector())
+    }
+
+    return dimensions
   }
 
   /**
@@ -257,15 +265,11 @@ export default class Renderer {
    */
   getInitialDimensions () {
     const stack = this.operationsStack
-    let dimensions = this._renderer
-      .getInitialDimensionsForStack(stack)
+    return this._renderer.getInitialDimensionsForStack(stack)
+  }
 
-    if (this._dimensions && this._dimensions.bothSidesGiven()) {
-      dimensions = Utils.resizeVectorToFit(dimensions, this._dimensions.getVector())
-    }
-    dimensions.floor()
-
-    return dimensions
+  getInputDimensions () {
+    return new Vector2(this._image.width, this._image.height)
   }
 
   setCanvas (canvas) { this._options.canvas = canvas }
@@ -274,5 +278,7 @@ export default class Renderer {
   getOperations () { return this._operations }
   getOptions () { return this._options }
   getOperationsOptions () { return this._operationsOptions }
-  setDimensions (dimensions) { this._dimensions = new ImageDimensions(dimensions) }
+  setDimensions (dimensions) {
+    this._dimensions = new ImageDimensions(dimensions)
+  }
 }

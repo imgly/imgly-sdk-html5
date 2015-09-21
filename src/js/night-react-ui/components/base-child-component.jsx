@@ -15,6 +15,8 @@ export default class BaseChildComponent extends React.Component {
   constructor (...args) {
     super(...args)
     this._events = {}
+
+    this._bindAll('forceUpdate')
   }
 
   /**
@@ -64,6 +66,9 @@ export default class BaseChildComponent extends React.Component {
    */
   componentDidMount () {
     this._bindEvents()
+    if (this.props.sharedState) {
+      this.props.sharedState.on('update', this.forceUpdate)
+    }
   }
 
   /**
@@ -71,6 +76,10 @@ export default class BaseChildComponent extends React.Component {
    */
   componentWillUnmount () {
     this._unbindEvents()
+
+    if (this.props.sharedState) {
+      this.props.sharedState.off('update', this.forceUpdate)
+    }
   }
 
   /**

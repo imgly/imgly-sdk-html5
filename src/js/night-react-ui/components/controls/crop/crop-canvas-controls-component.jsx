@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent, Vector2, Constants } from '../../../globals'
+import { ReactBEM, BaseChildComponent, Vector2 } from '../../../globals'
 import DraggableComponent from '../../draggable-component.jsx'
 
 const MIN_DIMENSIONS = new Vector2(50, 50)
@@ -19,30 +19,20 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
     super(...args)
 
     this._bindAll(
-      '_onOperationUpdated',
       '_onCenterDragStart',
       '_onCenterDrag',
       '_onCenterDragStop'
     )
 
     this._operation = this.context.ui.getOrCreateOperation('crop')
-    this._events = {
-      [Constants.EVENTS.OPERATION_UPDATED]: this._onOperationUpdated
+    this._events = {}
+
+    if (this.props.sharedState) {
+      this.props.sharedState.set({
+        start: new Vector2(0, 0),
+        end: new Vector2(1, 1)
+      }, false)
     }
-
-    this.state = { canvasDimensions: new Vector2() }
-  }
-
-  // -------------------------------------------------------------------------- EVENTS
-
-  /**
-   * Gets called when the given operation has been updated
-   * @param {Operation} operation
-   * @private
-   */
-  _onOperationUpdated (operation) {
-    if (operation !== this._operation) return
-    this.forceUpdate()
   }
 
   // -------------------------------------------------------------------------- CENTER DRAGGING
@@ -52,8 +42,8 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
    * @private
    */
   _onCenterDragStart () {
-    this._initialStart = this._operation.getStart().clone()
-    this._initialEnd = this._operation.getEnd().clone()
+    this._initialStart = this.props.sharedState.get('start').clone()
+    this._initialEnd = this.props.sharedState.get('end').clone()
     this._initialCropSize = this._initialEnd.clone().subtract(this._initialStart)
   }
 
@@ -77,10 +67,7 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
     const newEnd = newStart.clone()
       .add(this._initialCropSize)
 
-    this._operation.set({
-      start: newStart,
-      end: newEnd
-    })
+    this.props.sharedState.set({ start: newStart, end: newEnd })
   }
 
   /**
@@ -98,7 +85,7 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
    */
   _onKnobDragStart (optionName) {
     this._currentDragOption = optionName
-    this._initialDragValue = this._operation.getOption(optionName).clone()
+    this._initialDragValue = this.props.sharedState.get(optionName).clone()
   }
 
   /**
@@ -108,8 +95,8 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
    * @private
    */
   _onKnobDrag (optionName, offset) {
-    const start = this._operation.getStart()
-    const end = this._operation.getEnd()
+    const start = this.props.sharedState.get('start')
+    const end = this.props.sharedState.get('end')
 
     const { kit } = this.context
     const canvasDimensions = kit.getOutputDimensions()
@@ -139,7 +126,7 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
         break
     }
 
-    this._operation.setOption(this._currentDragOption, newValue)
+    this.props.sharedState.set({ [this._currentDragOption]: newValue })
   }
 
   /**
@@ -148,8 +135,6 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
    * @private
    */
   _onKnobDragStop (optionName) { }
-
-  // -------------------------------------------------------------------------- LIFECYCLE
 
   // -------------------------------------------------------------------------- RESIZING / STYLING
 
@@ -161,10 +146,10 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
    */
   _getAreaStyles () {
     const { kit } = this.context
-    const canvasDimensions = kit.getInitialDimensions()
+    const canvasDimensions = kit.getOutputDimensions()
 
-    const start = this._operation.getStart().clone().multiply(canvasDimensions).floor()
-    const end = this._operation.getEnd().clone().multiply(canvasDimensions).ceil()
+    const start = this.props.sharedState.get('start').clone().multiply(canvasDimensions).floor()
+    const end = this.props.sharedState.get('end').clone().multiply(canvasDimensions).ceil()
     const size = end.clone().subtract(start)
 
     return {
