@@ -26,20 +26,60 @@ export default class EditorScreenComponent extends ScreenComponent {
       '_onZoomIn',
       '_onZoomOut',
       '_zoom',
-      '_undoZoom'
+      '_undoZoom',
+      '_onDisableFeatures',
+      '_onEnableFeatures'
     )
 
     this._previousControlsStack = []
     this.state = {
       zoom: null,
-      controls: OverviewControls
+      controls: OverviewControls,
+      zoomEnabled: true,
+      dragEnabled: true
     }
 
     this._events = {
       [Constants.EVENTS.CANVAS_ZOOM]: this._zoom,
-      [Constants.EVENTS.CANVAS_UNDO_ZOOM]: this._undoZoom
+      [Constants.EVENTS.CANVAS_UNDO_ZOOM]: this._undoZoom,
+      [Constants.EVENTS.EDITOR_DISABLE_FEATURES]: this._onDisableFeatures,
+      [Constants.EVENTS.EDITOR_ENABLE_FEATURES]: this._onEnableFeatures
     }
   }
+
+  // -------------------------------------------------------------------------- FEATURES
+
+  /**
+   * Gets called when a EDITOR_DISABLE_FEATURES event is emitted
+   * @param {Array.<String>} features
+   */
+  _onDisableFeatures (features) {
+    let { zoomEnabled, dragEnabled } = this.state
+    if (features.indexOf('zoom') !== -1) {
+      zoomEnabled = false
+    }
+    if (features.indexOf('drag') !== -1) {
+      dragEnabled = false
+    }
+    this.setState({ zoomEnabled, dragEnabled })
+  }
+
+  /**
+   * Gets called when a EDITOR_ENABLE_FEATURES event is emitted
+   * @param {Array.<String>} features
+   */
+  _onEnableFeatures (features) {
+    let { zoomEnabled, dragEnabled } = this.state
+    if (features.indexOf('zoom') !== -1) {
+      zoomEnabled = true
+    }
+    if (features.indexOf('drag') !== -1) {
+      dragEnabled = true
+    }
+    this.setState({ zoomEnabled, dragEnabled })
+  }
+
+  // -------------------------------------------------------------------------- ZOOM
 
   /**
    * Undos the last zoom
@@ -79,15 +119,6 @@ export default class EditorScreenComponent extends ScreenComponent {
   }
 
   /**
-   * We only know the canvas dimensions after the first rendering has been done.
-   * On the first render, we should set the initial zoom level
-   * @private
-   */
-  _onFirstCanvasRender () {
-    this._zoom('auto')
-  }
-
-  /**
    * Gets called when the user clicked the zoom in button
    * @private
    */
@@ -117,6 +148,17 @@ export default class EditorScreenComponent extends ScreenComponent {
     this.setState({ zoom: newZoom })
   }
 
+  // -------------------------------------------------------------------------- MISC
+
+  /**
+   * We only know the canvas dimensions after the first rendering has been done.
+   * On the first render, we should set the initial zoom level
+   * @private
+   */
+  _onFirstCanvasRender () {
+    this._zoom('auto')
+  }
+
   /**
    * Switches to the given controls
    * @param  {Component} controls
@@ -132,6 +174,8 @@ export default class EditorScreenComponent extends ScreenComponent {
 
     this.setState({ controls: newControls })
   }
+
+  // -------------------------------------------------------------------------- RENDERING
 
   /**
    * Renders this component
@@ -153,7 +197,8 @@ export default class EditorScreenComponent extends ScreenComponent {
           <ZoomComponent
             zoom={this.state.zoom}
             onZoomIn={this._onZoomIn}
-            onZoomOut={this._onZoomOut} />
+            onZoomOut={this._onZoomOut}
+            zoomEnabled={this.state.zoomEnabled} />
         </bem>
       </SubHeaderComponent>
 
@@ -161,6 +206,7 @@ export default class EditorScreenComponent extends ScreenComponent {
         ref='canvas'
         onFirstRender={this._onFirstCanvasRender}
         zoom={this.state.zoom}
+        dragEnabled={this.state.dragEnabled}
         largeControls={this.state.controls.largeCanvasControls}>
         {canvasControls}
       </CanvasComponent>

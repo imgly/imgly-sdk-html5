@@ -39,6 +39,8 @@ export default class CanvasComponent extends BaseChildComponent {
    * @private
    */
   _onDragStart (e) {
+    if (!this.props.dragEnabled) return
+
     this._dragStartPosition = Utils.getEventPosition(e.nativeEvent)
     this._dragInitialOffset = this.state.canvasOffset.clone()
     document.addEventListener('mousemove', this._onDragMove)
@@ -216,7 +218,8 @@ export default class CanvasComponent extends BaseChildComponent {
       <div bem='$b:canvas e:container e:row'>
         <div bem='e:container e:cell' ref='canvasCell'>
           <div
-            bem='$e:canvas m:draggable'
+            bem='$e:canvas'
+            className={this.props.dragEnabled ? 'is-draggable' : null}
             onTouchStart={this._onDragStart}
             onMouseDown={this._onDragStart}
             style={this._getDraggableStyle()}>
