@@ -9,13 +9,65 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent, Constants } from '../../../globals'
+import { React, ReactBEM, BaseChildComponent, Vector2 } from '../../../globals'
 
 export default class CropCanvasControlsComponent extends BaseChildComponent {
   constructor (...args) {
     super(...args)
 
+    this._mounted = false
     this._operation = this.context.ui.getOrCreateOperation('crop')
+  }
+
+  /**
+   * Gets called when this component has been mounted
+   */
+  componentDidMount () {
+    super.componentDidMount()
+    // We need to mount the component and render again to have access
+    // to the rendered container dimensions
+    this._mounted = true
+    this.forceUpdate()
+  }
+
+  // -------------------------------------------------------------------------- RESIZING / STYLING
+
+  /**
+   * Returns the styles (width / height) for the crop areas that define the
+   * crop size
+   * @return {Object}
+   * @private
+   */
+  _getAreaStyles () {
+    if (!this._mounted) return {}
+
+    const container = React.findDOMNode(this.refs.container)
+    const containerDimensions = new Vector2(
+      container.offsetWidth,
+      container.offsetHeight
+    )
+
+    const start = this._operation.getStart().clone().multiply(containerDimensions)
+    const end = this._operation.getEnd().clone().multiply(containerDimensions)
+    const size = end.clone().subtract(start)
+
+    return {
+      topLeft: this._getDimensionsStyles(start.x, start.y),
+      topCenter: this._getDimensionsStyles(size.x, start.y),
+      centerLeft: this._getDimensionsStyles(start.x, size.y),
+      center: this._getDimensionsStyles(size.x, size.y)
+    }
+  }
+
+  /**
+   * Returns the dimensions style (width / height) for the given dimensions
+   * @param {Number} x
+   * @param {Number} y
+   * @return {Object}
+   * @private
+   */
+  _getDimensionsStyles (x, y) {
+    return { width: x, height: y }
   }
 
   /**
@@ -23,16 +75,20 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
-    return (<div bem='b:canvasControls e:container m:full'>
+    const areaStyles = this._getAreaStyles()
+    return (<div bem='b:canvasControls e:container m:full' ref='container'>
       <div bem='$b:cropCanvasControls'>
         <div bem='e:row'>
-          <div bem='e:cell m:dark' />
-          <div bem='e:cell m:dark' />
+          <div bem='e:cell m:dark' style={areaStyles.topLeft} />
+          <div bem='e:cell m:dark' style={areaStyles.topCenter} />
           <div bem='e:cell m:dark' />
         </div>
         <div bem='e:row'>
-          <div bem='e:cell m:dark' />
-          <div bem='e:cell m:bordered' />
+          <div bem='e:cell m:dark' style={areaStyles.centerLeft} />
+          <div bem='e:cell m:bordered' style={areaStyles.center}>
+            <div bem='e:knob m:topLeft $b:knob' />
+            <div bem='e:knob m:bottomRight $b:knob' />
+          </div>
           <div bem='e:cell m:dark' />
         </div>
         <div bem='e:row'>

@@ -18,14 +18,31 @@
     height: 100%
     table-layout: fixed
 
+    +element(knob)
+      position: absolute
+      z-index: 2
+
+      +modifier(topLeft)
+        top: 0
+        left: 0
+        margin: ($knobSize * -0.5) 0 0 ($knobSize * -0.5)
+
+      +modifier(bottomRight)
+        bottom: 0
+        right: 0
+        margin: 0 ($knobSize * -0.5) ($knobSize * -0.5) 0
+
     +element(row)
       display: table-row
 
     +element(cell)
+      position: relative
       display: table-cell
+      cursor: move
 
       +modifier(dark)
         background: rgba(black, 0.7)
+        cursor: default
 
       +modifier(bordered)
         border: 1px solid white
