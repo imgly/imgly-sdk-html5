@@ -23,7 +23,15 @@ export default class DraggableComponent extends BaseChildComponent {
 
   // -------------------------------------------------------------------------- DRAGGING
 
+  /**
+   * Gets called when the user stars dragging the child
+   * @param {Event} e
+   * @private
+   */
   _onDragStart (e) {
+    e.preventDefault()
+    e.stopPropagation()
+
     this._initialMousePosition = Utils.getEventPosition(e)
 
     document.addEventListener('mousemove', this._onDragMove)
@@ -34,14 +42,30 @@ export default class DraggableComponent extends BaseChildComponent {
     this.props.onStart && this.props.onStart()
   }
 
+  /**
+   * Gets called while the user drags the child
+   * @param {Event} e
+   * @private
+   */
   _onDragMove (e) {
+    e.preventDefault()
+    e.stopPropagation()
+
     const mousePosition = Utils.getEventPosition(e)
     const mouseDiff = mousePosition.clone().subtract(this._initialMousePosition)
 
     this.props.onDrag && this.props.onDrag(mouseDiff)
   }
 
+  /**
+   * Gets called when the user stops dragging the child
+   * @param {Event} e
+   * @private
+   */
   _onDragEnd (e) {
+    e.preventDefault()
+    e.stopPropagation()
+
     document.removeEventListener('mousemove', this._onDragMove)
     document.removeEventListener('touchmove', this._onDragMove)
     document.removeEventListener('mouseup', this._onDragEnd)

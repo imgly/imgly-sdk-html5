@@ -41,8 +41,8 @@
       cursor: move
 
       +modifier(dark)
-        background: rgba(black, 0.7)
+        background: rgba($backgroundColor, 0.8)
         cursor: default
 
       +modifier(bordered)
-        border: 1px solid white
+        @include box-shadow(0px 1px 2px 0px black)

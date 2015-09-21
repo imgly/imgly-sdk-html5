@@ -19,7 +19,10 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
     super(...args)
 
     this._bindAll(
-      '_onOperationUpdated'
+      '_onOperationUpdated',
+      '_onCenterDragStart',
+      '_onCenterDrag',
+      '_onCenterDragStop'
     )
 
     this._mounted = false
@@ -41,12 +44,57 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
     this.forceUpdate()
   }
 
+  // -------------------------------------------------------------------------- CENTER DRAGGING
+
+  /**
+   * Gets called when the user stars dragging the center
+   * @private
+   */
+  _onCenterDragStart () {
+    this._initialStart = this._operation.getStart().clone()
+    this._initialEnd = this._operation.getEnd().clone()
+    this._initialCropSize = this._initialEnd.clone().subtract(this._initialStart)
+  }
+
+  /**
+   * Gets called while the user drags the center
+   * @param {Vector2} offset
+   * @private
+   */
+  _onCenterDrag (offset) {
+    const canvasDimensions = this.props.editor.getCanvasDimensions()
+    const cropDifference = offset.clone().divide(canvasDimensions)
+
+    const minStart = new Vector2(0, 0)
+    const maxStart = new Vector2(1, 1)
+      .subtract(this._initialCropSize)
+
+    const newStart = this._initialStart.clone()
+      .add(cropDifference)
+      .clamp(minStart, maxStart)
+    const newEnd = newStart.clone()
+      .add(this._initialCropSize)
+
+    this._operation.set({
+      start: newStart,
+      end: newEnd
+    })
+  }
+
+  /**
+   * Gets called when the user stops dragging the center
+   * @private
+   */
+  _onCenterDragStop () { }
+
+  // -------------------------------------------------------------------------- KNOB DRAGGING
+
   /**
    * Gets called when the user starts dragging a knob
    * @param {String} optionName
    * @private
    */
-  _onDragStart (optionName) {
+  _onKnobDragStart (optionName) {
     this._currentDragOption = optionName
     this._initialDragValue = this._operation.getOption(optionName).clone()
   }
@@ -54,9 +102,10 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
   /**
    * Gets called while the user drags a knob
    * @param {String} optionName
+   * @param {Vector2} offset
    * @private
    */
-  _onDrag (optionName, offset) {
+  _onKnobDrag (optionName, offset) {
     const start = this._operation.getStart()
     const end = this._operation.getEnd()
 
@@ -95,9 +144,7 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
    * @param {String} optionName
    * @private
    */
-  _onDragStop (optionName) {
-
-  }
+  _onKnobDragStop (optionName) { }
 
   // -------------------------------------------------------------------------- LIFECYCLE
 
@@ -171,20 +218,25 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
         </div>
         <div bem='e:row'>
           <div bem='e:cell m:dark' style={areaStyles.centerLeft} />
-          <div bem='e:cell m:bordered' style={areaStyles.center}>
-            <DraggableComponent
-              onStart={this._onDragStart.bind(this, 'start')}
-              onDrag={this._onDrag.bind(this, 'start')}
-              onStop={this._onDragStop.bind(this, 'start')}>
-                <div bem='e:knob m:topLeft $b:knob' />
-            </DraggableComponent>
-            <DraggableComponent
-              onStart={this._onDragStart.bind(this, 'end')}
-              onDrag={this._onDrag.bind(this, 'end')}
-              onStop={this._onDragStop.bind(this, 'end')}>
-                <div bem='e:knob m:bottomRight $b:knob' />
-            </DraggableComponent>
-          </div>
+          <DraggableComponent
+            onStart={this._onCenterDragStart}
+            onDrag={this._onCenterDrag}
+            onStop={this._onCenterDragStop}>
+              <div bem='e:cell m:bordered' style={areaStyles.center}>
+                <DraggableComponent
+                  onStart={this._onKnobDragStart.bind(this, 'start')}
+                  onDrag={this._onKnobDrag.bind(this, 'start')}
+                  onStop={this._onKnobDragStop.bind(this, 'start')}>
+                    <div bem='e:knob m:topLeft $b:knob' />
+                </DraggableComponent>
+                <DraggableComponent
+                  onStart={this._onKnobDragStart.bind(this, 'end')}
+                  onDrag={this._onKnobDrag.bind(this, 'end')}
+                  onStop={this._onKnobDragStop.bind(this, 'end')}>
+                    <div bem='e:knob m:bottomRight $b:knob' />
+                </DraggableComponent>
+              </div>
+          </DraggableComponent>
           <div bem='e:cell m:dark' />
         </div>
         <div bem='e:row'>
