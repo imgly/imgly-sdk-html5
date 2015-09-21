@@ -9,7 +9,7 @@
  */
 
 const VERSION_CHECK_FN = 'imglySDKVersionCallback'
-const VERSION_CHECK_URL = `http://sdk.img.ly/version.json?sdk=html5&jsoncallback=${VERSION_CHECK_FN}`
+const VERSION_CHECK_URL = `https://www.photoeditorsdk.com/version.json?sdk=html5&jsoncallback=${VERSION_CHECK_FN}`
 
 export default class VersionChecker {
   constructor (version) {
