@@ -34,6 +34,15 @@ export default class CanvasComponent extends BaseChildComponent {
   }
 
   /**
+   * Returns the canvas dimensions
+   * @return {Vector2}
+   */
+  getDimensions () {
+    const canvas = React.findDOMNode(this.refs.canvas)
+    return new Vector2(canvas.offsetWidth, canvas.offsetHeight)
+  }
+
+  /**
    * Gets called when the user starts dragging the canvas
    * @param {React.SyntheticEvent} e
    * @private
