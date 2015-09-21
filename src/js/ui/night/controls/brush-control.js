@@ -200,9 +200,8 @@ class BrushControl extends Control {
    * @param  {Event} e
    */
   _onMouseDown (e) {
-    if (!Utils.isTouchEvent(e)) {
+    if (Utils.isTouchEvent(e)) {
       this._showCursor()
-      console.log('1')
     }
     this._startPaint(e)
   }
@@ -252,7 +251,6 @@ class BrushControl extends Control {
     if (!Utils.isTouchEvent(e)) {
       this._moveCursorTo(mousePosition)
       this._showCursor()
-      console.log('2')
     }
     if (this._painting) {
       this._addControlPoint(mousePosition, true)
