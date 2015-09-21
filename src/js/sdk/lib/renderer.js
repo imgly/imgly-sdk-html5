@@ -91,14 +91,7 @@ export default class Renderer {
     this._renderer.preRender()
     return stack.validateSettings()
       .then(() => {
-        let dimensions = this._renderer
-          .getInitialDimensionsForStack(stack)
-
-        if (this._dimensions.bothSidesGiven()) {
-          dimensions = Utils.resizeVectorToFit(dimensions, this._dimensions.getVector())
-        }
-        dimensions.floor()
-
+        const dimensions = this.getInitialDimensions()
         this._renderer.resizeTo(dimensions)
       })
       .then(() => {
@@ -264,8 +257,15 @@ export default class Renderer {
    */
   getInitialDimensions () {
     const stack = this.operationsStack
-    return this._renderer
+    let dimensions = this._renderer
       .getInitialDimensionsForStack(stack)
+
+    if (this._dimensions && this._dimensions.bothSidesGiven()) {
+      dimensions = Utils.resizeVectorToFit(dimensions, this._dimensions.getVector())
+    }
+    dimensions.floor()
+
+    return dimensions
   }
 
   setCanvas (canvas) { this._options.canvas = canvas }

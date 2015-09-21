@@ -51,10 +51,10 @@ export default class OrientationControlsComponent extends BaseChildComponent {
   componentDidMount () {
     super.componentDidMount()
 
-    this._emitEvent(Constants.EVENTS.CANVAS_ZOOM, 'auto')
-    this._emitEvent(Constants.EVENTS.EDITOR_DISABLE_FEATURES, ['zoom', 'drag'])
-
-    this._selectRatio(RATIOS[0])
+    this._emitEvent(Constants.EVENTS.CANVAS_ZOOM, 'auto', () => {
+      this._emitEvent(Constants.EVENTS.EDITOR_DISABLE_FEATURES, ['zoom', 'drag'])
+      this._selectRatio(RATIOS[0])
+    })
   }
 
   // -------------------------------------------------------------------------- EVENTS

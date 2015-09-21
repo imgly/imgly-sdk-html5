@@ -79,7 +79,7 @@ class EditorComponent extends React.Component {
       <HeaderComponent />
       <div bem='e:row m:screen'>
         <div bem='e:cell m:screen'>
-          <Screen editor={this} {...this._props} />
+          <Screen editor={this} {...this._props} ref='screen' />
         </div>
       </div>
     </div>)

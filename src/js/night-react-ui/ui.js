@@ -211,7 +211,7 @@ export default class NightReactUI extends EventEmitter {
     // Container has to be position: relative
     this._options.container.style.position = 'relative'
 
-    React.render(<EditorComponent
+    return React.render(<EditorComponent
       ui={this}
       kit={this._kit}
       mediator={this._mediator}
