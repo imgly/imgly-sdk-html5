@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { React, ReactBEM, BaseChildComponent, Vector2, Constants } from '../../../globals'
+import { ReactBEM, BaseChildComponent, Vector2, Constants } from '../../../globals'
 import DraggableComponent from '../../draggable-component.jsx'
 
 const MIN_DIMENSIONS = new Vector2(50, 50)
@@ -25,11 +25,12 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
       '_onCenterDragStop'
     )
 
-    this._mounted = false
     this._operation = this.context.ui.getOrCreateOperation('crop')
     this._events = {
       [Constants.EVENTS.OPERATION_UPDATED]: this._onOperationUpdated
     }
+
+    this.state = { canvasDimensions: new Vector2() }
   }
 
   // -------------------------------------------------------------------------- EVENTS
@@ -62,7 +63,8 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
    * @private
    */
   _onCenterDrag (offset) {
-    const canvasDimensions = this.props.editor.getCanvasDimensions()
+    const { kit } = this.context
+    const canvasDimensions = kit.getOutputDimensions()
     const cropDifference = offset.clone().divide(canvasDimensions)
 
     const minStart = new Vector2(0, 0)
@@ -109,7 +111,8 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
     const start = this._operation.getStart()
     const end = this._operation.getEnd()
 
-    const canvasDimensions = this.props.editor.getCanvasDimensions()
+    const { kit } = this.context
+    const canvasDimensions = kit.getOutputDimensions()
     const cropDifference = offset.clone().divide(canvasDimensions)
     const newValue = this._initialDragValue.clone().add(cropDifference)
 
@@ -148,17 +151,6 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
 
   // -------------------------------------------------------------------------- LIFECYCLE
 
-  /**
-   * Gets called when this component has been mounted
-   */
-  componentDidMount () {
-    super.componentDidMount()
-    // We need to mount the component and render again to have access
-    // to the rendered container dimensions
-    this._mounted = true
-    this.forceUpdate()
-  }
-
   // -------------------------------------------------------------------------- RESIZING / STYLING
 
   /**
@@ -168,16 +160,11 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
    * @private
    */
   _getAreaStyles () {
-    if (!this._mounted) return {}
+    const { kit } = this.context
+    const canvasDimensions = kit.getInitialDimensions()
 
-    const container = React.findDOMNode(this.refs.container)
-    const containerDimensions = new Vector2(
-      container.offsetWidth,
-      container.offsetHeight
-    )
-
-    const start = this._operation.getStart().clone().multiply(containerDimensions).floor()
-    const end = this._operation.getEnd().clone().multiply(containerDimensions).ceil()
+    const start = this._operation.getStart().clone().multiply(canvasDimensions).floor()
+    const end = this._operation.getEnd().clone().multiply(canvasDimensions).ceil()
     const size = end.clone().subtract(start)
 
     return {

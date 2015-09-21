@@ -83,9 +83,10 @@ export default class EditorScreenComponent extends ScreenComponent {
 
   /**
    * Undos the last zoom
+   * @param {Function} [callback]
    * @private
    */
-  _undoZoom () {
+  _undoZoom (callback) {
     if (!this._previousZoomState) return
 
     const canvasComponent = this.refs.canvas
@@ -93,16 +94,17 @@ export default class EditorScreenComponent extends ScreenComponent {
 
     // Couldn't come up with something clean here :(
     canvasComponent.setState(canvasState)
-    this.setState({ zoom })
     this._previousZoomState = null
+    this.setState({ zoom }, callback)
   }
 
   /**
    * Zooms to the given level
    * @param {Number|String} zoom
+   * @param {Function} [callback]
    * @private
    */
-  _zoom (zoom) {
+  _zoom (zoom, callback) {
     const canvasComponent = this.refs.canvas
 
     let newZoom = zoom
@@ -115,7 +117,7 @@ export default class EditorScreenComponent extends ScreenComponent {
       canvasState: SDKUtils.clone(canvasComponent.state)
     }, canvasComponent.state)
 
-    this.setState({ zoom: newZoom })
+    this.setState({ zoom: newZoom }, callback)
   }
 
   /**
