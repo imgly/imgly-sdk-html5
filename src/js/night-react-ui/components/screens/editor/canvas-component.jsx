@@ -127,7 +127,6 @@ export default class CanvasComponent extends BaseChildComponent {
    * @return {Number}
    */
   getDefaultZoom () {
-    console.log('calculating default zoom')
     const { kit } = this.context
 
     const canvasCell = React.findDOMNode(this.refs.canvasCell)
