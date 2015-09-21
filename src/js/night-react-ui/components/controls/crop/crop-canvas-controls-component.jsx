@@ -9,15 +9,36 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { React, ReactBEM, BaseChildComponent, Vector2 } from '../../../globals'
+import { React, ReactBEM, BaseChildComponent, Vector2, Constants } from '../../../globals'
 
 export default class CropCanvasControlsComponent extends BaseChildComponent {
   constructor (...args) {
     super(...args)
 
+    this._bindAll(
+      '_onOperationUpdated'
+    )
+
     this._mounted = false
     this._operation = this.context.ui.getOrCreateOperation('crop')
+    this._events = {
+      [Constants.EVENTS.OPERATION_UPDATED]: this._onOperationUpdated
+    }
   }
+
+  // -------------------------------------------------------------------------- EVENTS
+
+  /**
+   * Gets called when the given operation has been updated
+   * @param {Operation} operation
+   * @private
+   */
+  _onOperationUpdated (operation) {
+    if (operation !== this._operation) return
+    this.forceUpdate()
+  }
+
+  // -------------------------------------------------------------------------- LIFECYCLE
 
   /**
    * Gets called when this component has been mounted
