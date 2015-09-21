@@ -10,6 +10,7 @@
  */
 
 import { React, ReactBEM, BaseChildComponent, Vector2, Constants } from '../../../globals'
+import DraggableComponent from '../../draggable-component.jsx'
 
 export default class CropCanvasControlsComponent extends BaseChildComponent {
   constructor (...args) {
@@ -36,6 +37,40 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
   _onOperationUpdated (operation) {
     if (operation !== this._operation) return
     this.forceUpdate()
+  }
+
+  /**
+   * Gets called when the user starts dragging a knob
+   * @param {String} optionName
+   * @private
+   */
+  _onDragStart (optionName) {
+    this._currentDragOption = optionName
+    this._initialDragValue = this._operation.getOption(optionName).clone()
+  }
+
+  /**
+   * Gets called while the user drags a knob
+   * @param {String} optionName
+   * @private
+   */
+  _onDrag (optionName, offset) {
+    const canvasDimensions = this.props.editor.getCanvasDimensions()
+    const cropDifference = offset.clone()
+      .divide(canvasDimensions)
+
+    const newValue = this._initialDragValue.clone()
+      .add(cropDifference)
+    this._operation.setOption(this._currentDragOption, newValue)
+  }
+
+  /**
+   * Gets called when the user stops dragging a knob
+   * @param {String} optionName
+   * @private
+   */
+  _onDragStop (optionName) {
+
   }
 
   // -------------------------------------------------------------------------- LIFECYCLE
@@ -107,8 +142,18 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
         <div bem='e:row'>
           <div bem='e:cell m:dark' style={areaStyles.centerLeft} />
           <div bem='e:cell m:bordered' style={areaStyles.center}>
-            <div bem='e:knob m:topLeft $b:knob' />
-            <div bem='e:knob m:bottomRight $b:knob' />
+            <DraggableComponent
+              onStart={this._onDragStart.bind(this, 'start')}
+              onDrag={this._onDrag.bind(this, 'start')}
+              onStop={this._onDragStop.bind(this, 'start')}>
+                <div bem='e:knob m:topLeft $b:knob' />
+            </DraggableComponent>
+            <DraggableComponent
+              onStart={this._onDragStart.bind(this, 'end')}
+              onDrag={this._onDrag.bind(this, 'end')}
+              onStop={this._onDragStop.bind(this, 'end')}>
+                <div bem='e:knob m:bottomRight $b:knob' />
+            </DraggableComponent>
           </div>
           <div bem='e:cell m:dark' />
         </div>
