@@ -161,6 +161,22 @@ export default class EditorScreenComponent extends ScreenComponent {
   }
 
   /**
+   * Returns the output dimensions
+   * @return {Vector2}
+   */
+  getOutputDimensions () {
+    return this.refs.canvas.getOutputDimensions()
+  }
+
+  /**
+   * Returns the initial dimensions for the current settings
+   * @return {Vector2}
+   */
+  getInitialDimensions () {
+    return this.refs.canvas.getInitialDimensions()
+  }
+
+  /**
    * We only know the canvas dimensions after the first rendering has been done.
    * On the first render, we should set the initial zoom level
    * @private

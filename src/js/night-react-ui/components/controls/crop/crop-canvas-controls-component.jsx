@@ -135,6 +135,22 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
    */
   _onKnobDragStop (optionName) { }
 
+  // -------------------------------------------------------------------------- MISC
+
+  /**
+   * Returns the dimensions according to the currentcrop dimensions
+   * @private
+   */
+  _calculateDimensions () {
+    const start = this.getSharedState('start')
+    const end = this.getSharedState('end')
+
+    return end.clone()
+      .subtract(start)
+      .multiply(this.props.editor.getInitialDimensions())
+      .round()
+  }
+
   // -------------------------------------------------------------------------- RESIZING / STYLING
 
   /**
@@ -178,7 +194,10 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
+    const { ui } = this.context
     const areaStyles = this._getAreaStyles()
+    const dimensions = this._calculateDimensions()
+
     return (<div bem='b:canvasControls e:container m:full' ref='container'>
       <div bem='$b:cropCanvasControls'>
         <div bem='e:row'>
@@ -197,13 +216,18 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
                   onStart={this._onKnobDragStart.bind(this, 'start')}
                   onDrag={this._onKnobDrag.bind(this, 'start')}
                   onStop={this._onKnobDragStop.bind(this, 'start')}>
-                    <div bem='e:knob m:topLeft $b:knob' />
+                    <div bem='e:knob m:topLeft $b:knob'>
+                      <img bem='e:icon' src={ui.getHelpers().assetPath('controls/knobs/resize-diagonal-down@2x.png', true)} />
+                    </div>
                 </DraggableComponent>
+                <div bem='e:dimensions'>{dimensions.x} x {dimensions.y}</div>
                 <DraggableComponent
                   onStart={this._onKnobDragStart.bind(this, 'end')}
                   onDrag={this._onKnobDrag.bind(this, 'end')}
                   onStop={this._onKnobDragStop.bind(this, 'end')}>
-                    <div bem='e:knob m:bottomRight $b:knob' />
+                    <div bem='e:knob m:bottomRight $b:knob'>
+                      <img bem='e:icon' src={ui.getHelpers().assetPath('controls/knobs/resize-diagonal-down@2x.png', true)} />
+                    </div>
                 </DraggableComponent>
               </div>
           </DraggableComponent>
