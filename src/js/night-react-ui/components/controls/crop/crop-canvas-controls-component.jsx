@@ -24,7 +24,7 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
       '_onCenterDragStop'
     )
 
-    this._operation = this.context.ui.getOrCreateOperation('crop')
+    this._operation = this.getSharedState('operation')
     this._events = {}
 
     if (this.props.sharedState) {

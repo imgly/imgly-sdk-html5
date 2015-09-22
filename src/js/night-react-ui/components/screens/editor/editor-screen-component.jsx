@@ -182,9 +182,13 @@ export default class EditorScreenComponent extends ScreenComponent {
       this._previousControlsStack.push(this.state.controls)
     }
 
+    const initialState = newControls.getInitialSharedState &&
+      newControls.getInitialSharedState(this.context)
+    const sharedState = new SharedState(initialState)
+
     this.setState({
       controls: newControls,
-      sharedState: new SharedState()
+      sharedState
     })
   }
 
@@ -198,11 +202,19 @@ export default class EditorScreenComponent extends ScreenComponent {
     const CanvasControls = this.state.controls.canvasControls
     const Controls = this.state.controls.controls
 
-    let canvasControls = null
-    if (CanvasControls) {
-      canvasControls = <CanvasControls
+    let controls, canvasControls
+
+    if (Controls) {
+      controls = (<Controls
+        onSwitchControls={this.switchToControls}
         editor={this}
-        sharedState={this.state.sharedState} />
+        sharedState={this.state.sharedState} />)
+    }
+
+    if (CanvasControls) {
+      canvasControls = (<CanvasControls
+        editor={this}
+        sharedState={this.state.sharedState} />)
     }
 
     return (<div bem='b:screen $b:editorScreen'>
@@ -228,10 +240,7 @@ export default class EditorScreenComponent extends ScreenComponent {
 
       <div bem='$b:controls $e:container e:row'>
         <div bem='e:cell'>
-          <Controls
-            onSwitchControls={this.switchToControls}
-            editor={this}
-            sharedState={this.state.sharedState} />
+          {controls}
         </div>
       </div>
     </div>)

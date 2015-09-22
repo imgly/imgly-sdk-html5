@@ -83,6 +83,24 @@ export default class BaseChildComponent extends React.Component {
   }
 
   /**
+   * Sets the given state on the shared state
+   * @param {Object} state
+   * @param {Boolean} update
+   */
+  setSharedState (state, update) {
+    this.props.sharedState.set(state, update)
+  }
+
+  /**
+   * Returns the shared state value for the given property
+   * @param {String} prop
+   * @return {*}
+   */
+  getSharedState (prop) {
+    return this.props.sharedState.get(prop)
+  }
+
+  /**
    * Binds the events in _events
    * @protected
    */

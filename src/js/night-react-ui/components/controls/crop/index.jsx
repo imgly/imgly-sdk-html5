@@ -15,6 +15,12 @@ export default {
   canvasControls: CropCanvasControlsComponent,
   controls: CropControlsComponent,
   identifier: 'crop',
+  getInitialSharedState: (context) => {
+    return {
+      operationExistedBefore: context.ui.operationExists('crop'),
+      operation: context.ui.getOrCreateOperation('crop')
+    }
+  },
   isSelectable: (ui) => {
     return ui.isOperationSelected('crop')
   }
