@@ -46,3 +46,17 @@
 
       +modifier(bordered)
         @include box-shadow(0px 1px 2px 0px black)
+
+    +element(dimensions)
+      @include font-light
+      @include border-radius(4px)
+      @include transform(translateX(-50%) translateY(-50%))
+      position: absolute
+      top: 50%
+      left: 50%
+      padding: 0 10px
+      background: rgba($backgroundColor, 0.7)
+      font-size: 10px
+      line-height: 24px
+      white-space: nowrap
+      color: white

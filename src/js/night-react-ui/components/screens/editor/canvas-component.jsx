@@ -199,7 +199,7 @@ export default class CanvasComponent extends BaseChildComponent {
 
     let rendererDimensions = this._containerDimensions
     if (zoom !== null) {
-      rendererDimensions = kit.getInputDimensions()
+      rendererDimensions.clone()
         .multiply(zoom)
         .floor()
     }
@@ -216,8 +216,39 @@ export default class CanvasComponent extends BaseChildComponent {
 
   // -------------------------------------------------------------------------- GETTERS
 
-  getDimensions () { return this._canvasDimensions }
-  getContainerDimensions () { return this._containerDimensions }
+  /**
+   * Returns the current output dimensions
+   * @return {Vector2}
+   */
+  getOutputDimensions () {
+    const { kit } = this.context
+    return kit.getOutputDimensions()
+  }
+
+  /**
+   * Returns the initial dimensions for the current settings
+   * @return {Vector2}
+   */
+  getInitialDimensions () {
+    const { kit } = this.context
+    return kit.getInitialDimensions()
+  }
+
+  /**
+   * Returns the current canvas dimensions
+   * @return {Vector2}
+   */
+  getDimensions () {
+    return this._canvasDimensions
+  }
+
+  /**
+   * Returns the current canvas container dimensions
+   * @return {Vector2}
+   */
+  getContainerDimensions () {
+    return this._containerDimensions
+  }
 
   // -------------------------------------------------------------------------- RENDERING
 
