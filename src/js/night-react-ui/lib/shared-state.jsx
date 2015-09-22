@@ -13,9 +13,9 @@ const EventEmitter = PhotoEditorSDK.EventEmitter
 const SDKUtils = PhotoEditorSDK.Utils
 
 export default class SharedState extends EventEmitter {
-  constructor () {
+  constructor (state = {}) {
     super()
-    this._state = {}
+    this._state = state
   }
 
   set (newState, update = true) {

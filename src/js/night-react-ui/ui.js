@@ -251,6 +251,15 @@ export default class NightReactUI extends EventEmitter {
     }
   }
 
+  /**
+   * Checks whether an operation with the given identifier exists
+   * @param {String} identifier
+   * @return {Boolean}
+   */
+  operationExists (identifier) {
+    return !!this._operationsMap[identifier]
+  }
+
   getSelectedOperations () { return this._selectedOperations }
   getSelectedControls () { return this._selectedControls }
   getHelpers () { return this._helpers }

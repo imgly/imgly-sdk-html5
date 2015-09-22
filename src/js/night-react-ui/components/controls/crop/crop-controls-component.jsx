@@ -38,8 +38,14 @@ export default class OrientationControlsComponent extends BaseChildComponent {
   constructor (...args) {
     super(...args)
 
-    this._bindAll('_onBackClick', '_selectRatio')
-    this._operation = this.context.ui.getOrCreateOperation('crop')
+    this._bindAll(
+      '_onBackClick',
+      '_onDoneClick',
+      '_selectRatio'
+    )
+
+    this._operation = this.getSharedState('operation')
+
     this.state = { ratio: null }
   }
 
@@ -51,9 +57,23 @@ export default class OrientationControlsComponent extends BaseChildComponent {
   componentDidMount () {
     super.componentDidMount()
 
+    this.setSharedState({
+      start: this._operation.getStart().clone(),
+      end: this._operation.getEnd().clone()
+    })
+
+    // Make sure we see the whole image
+    this._operation.set({
+      start: new Vector2(0, 0),
+      end: new Vector2(1, 1)
+    })
+
     this._emitEvent(Constants.EVENTS.CANVAS_ZOOM, 'auto', () => {
       this._emitEvent(Constants.EVENTS.EDITOR_DISABLE_FEATURES, ['zoom', 'drag'])
-      this._selectRatio(RATIOS[0])
+      this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
+      if (!this.getSharedState('operationExistedBefore')) {
+        this._selectRatio(RATIOS[0])
+      }
     })
   }
 
@@ -69,6 +89,20 @@ export default class OrientationControlsComponent extends BaseChildComponent {
 
     this._emitEvent(Constants.EVENTS.CANVAS_UNDO_ZOOM)
     this._emitEvent(Constants.EVENTS.EDITOR_ENABLE_FEATURES, ['zoom', 'drag'])
+  }
+
+  /**
+   * Gets called when the user clicks the done button
+   * @param {Event} e
+   * @private
+   */
+  _onDoneClick (e) {
+    this.props.onSwitchControls('back')
+    this._operation.set({
+      start: this.getSharedState('start'),
+      end: this.getSharedState('end')
+    })
+    this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
   }
 
   // -------------------------------------------------------------------------- RATIO HANDLING
@@ -109,7 +143,7 @@ export default class OrientationControlsComponent extends BaseChildComponent {
       }
     }
 
-    this.props.sharedState.set({ start, end })
+    this.setSharedState({ start, end })
   }
 
   // -------------------------------------------------------------------------- RENDERING
@@ -148,6 +182,11 @@ export default class OrientationControlsComponent extends BaseChildComponent {
             {listItems}
           </ul>
         </ScrollbarComponent>
+      </div>
+      <div bem='e:cell m:button m:withBorderLeft'>
+        <div bem='$e:button' onClick={this._onDoneClick}>
+          <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/tick@2x.png`, true)} />
+        </div>
       </div>
     </div>)
   }
