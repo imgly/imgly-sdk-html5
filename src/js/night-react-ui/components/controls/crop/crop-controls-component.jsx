@@ -60,7 +60,7 @@ export default class OrientationControlsComponent extends BaseChildComponent {
     this.setSharedState({
       start: this._operation.getStart().clone(),
       end: this._operation.getEnd().clone()
-    })
+    }, false)
 
     // Make sure we see the whole image
     this._operation.set({
@@ -68,12 +68,22 @@ export default class OrientationControlsComponent extends BaseChildComponent {
       end: new Vector2(1, 1)
     })
 
+    // Reset zoom to fit the container
     this._emitEvent(Constants.EVENTS.CANVAS_ZOOM, 'auto', () => {
+      // Disable zoom and drag while we're cropping
       this._emitEvent(Constants.EVENTS.EDITOR_DISABLE_FEATURES, ['zoom', 'drag'])
-      this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
-      if (!this.getSharedState('operationExistedBefore')) {
-        this._selectRatio(RATIOS[0])
-      }
+
+      // Re-render canvas to get the new dimensions
+      this._emitEvent(Constants.EVENTS.CANVAS_RENDER, null, () => {
+        if (!this.getSharedState('operationExistedBefore')) {
+          // Select first ratio as default (for now)
+          this._selectRatio(RATIOS[0])
+        } else {
+          // Canvas has been rendered, dimensions might have changed. Make sure
+          // that the canvas controls are rendered again (to match the new dimensions)
+          this.props.sharedState.broadcastUpdate()
+        }
+      })
     })
   }
 
@@ -97,12 +107,20 @@ export default class OrientationControlsComponent extends BaseChildComponent {
    * @private
    */
   _onDoneClick (e) {
-    this.props.onSwitchControls('back')
+    // Update operation options
     this._operation.set({
       start: this.getSharedState('start'),
       end: this.getSharedState('end')
     })
+
+    // Enable zoom and drag again
+    this._emitEvent(Constants.EVENTS.EDITOR_ENABLE_FEATURES, ['zoom', 'drag'])
+
+    // Re-render the canvas to represent the new crop area
     this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
+
+    // Switch back to overview controls
+    this.props.onSwitchControls('back')
   }
 
   // -------------------------------------------------------------------------- RATIO HANDLING
