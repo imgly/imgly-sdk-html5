@@ -74,7 +74,7 @@ export default class OrientationControlsComponent extends BaseChildComponent {
       this._emitEvent(Constants.EVENTS.EDITOR_DISABLE_FEATURES, ['zoom', 'drag'])
 
       // Re-render canvas to get the new dimensions
-      this._emitEvent(Constants.EVENTS.CANVAS_RENDER, null, () => {
+      this._emitEvent(Constants.EVENTS.CANVAS_RENDER, undefined, () => {
         if (!this.getSharedState('operationExistedBefore')) {
           // Select first ratio as default (for now)
           this._selectRatio(RATIOS[0])
@@ -116,8 +116,8 @@ export default class OrientationControlsComponent extends BaseChildComponent {
     // Enable zoom and drag again
     this._emitEvent(Constants.EVENTS.EDITOR_ENABLE_FEATURES, ['zoom', 'drag'])
 
-    // Re-render the canvas to represent the new crop area
-    this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
+    // Zoom to auto again
+    this._emitEvent(Constants.EVENTS.CANVAS_ZOOM, 'auto')
 
     // Switch back to overview controls
     this.props.onSwitchControls('back')

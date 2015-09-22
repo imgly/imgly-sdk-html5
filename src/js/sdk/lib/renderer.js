@@ -264,6 +264,8 @@ export default class Renderer {
    * @return {Vector2}
    */
   getInitialDimensions () {
+    if (!this._renderer) this._initRenderer()
+
     const stack = this.operationsStack
     return this._renderer.getInitialDimensionsForStack(stack)
   }

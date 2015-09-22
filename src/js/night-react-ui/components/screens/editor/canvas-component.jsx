@@ -165,12 +165,12 @@ export default class CanvasComponent extends BaseChildComponent {
   getDefaultZoom () {
     const { kit } = this.context
 
-    const outputDimensions = kit.getInputDimensions()
-    const defaultDimensions = SDKUtils.resizeVectorToFit(outputDimensions, this._containerDimensions)
+    const initialDimensions = kit.getInitialDimensions()
+    const defaultDimensions = SDKUtils.resizeVectorToFit(initialDimensions, this._containerDimensions)
 
     // Since default and native dimensions have the same ratio, we can take either x or y here
     return defaultDimensions
-      .divide(outputDimensions)
+      .divide(initialDimensions)
       .x
   }
 
@@ -197,9 +197,9 @@ export default class CanvasComponent extends BaseChildComponent {
   _onCanvasUpdate (zoom = this.props.zoom, callback) {
     const { kit } = this.context
 
-    let rendererDimensions = this._containerDimensions
+    let rendererDimensions = kit.getInitialDimensions()
     if (zoom !== null) {
-      rendererDimensions.clone()
+      rendererDimensions
         .multiply(zoom)
         .floor()
     }
