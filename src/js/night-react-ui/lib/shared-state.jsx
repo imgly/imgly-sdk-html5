@@ -18,6 +18,11 @@ export default class SharedState extends EventEmitter {
     this._state = state
   }
 
+  /**
+   * Sets the given state
+   * @param {Object} newState
+   * @param {Boolean} update = true
+   */
   set (newState, update = true) {
     this._state = SDKUtils.extend(this._state, newState)
     if (update) {
@@ -25,10 +30,17 @@ export default class SharedState extends EventEmitter {
     }
   }
 
-  get (key) {
-    return this._state[key]
+  /**
+   * Returns the state for the given property
+   * @param {String} prop
+   */
+  get (prop) {
+    return this._state[prop]
   }
 
+  /**
+   * Broadcasts an update
+   */
   broadcastUpdate () {
     this.emit('update')
   }
