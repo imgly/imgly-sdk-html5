@@ -22,25 +22,58 @@ export default class CanvasComponent extends BaseChildComponent {
       '_onCanvasUpdate'
     )
 
+    this._canvasDimensions = new Vector2()
+    this._containerDimensions = new Vector2()
+
     this.state = {
       canvasPosition: new Vector2(),
       canvasOffset: new Vector2()
     }
-    this._mounted = false
 
     this._events = {
       [Constants.EVENTS.CANVAS_RENDER]: this._onCanvasUpdate
     }
   }
 
+  // -------------------------------------------------------------------------- LIFECYCLE
+
   /**
-   * Returns the canvas dimensions
-   * @return {Vector2}
+   * Gets called when this component receives some new props
+   * @param {Object} props
    */
-  getDimensions () {
-    const canvas = React.findDOMNode(this.refs.canvas)
-    return new Vector2(canvas.offsetWidth, canvas.offsetHeight)
+  componentWillReceiveProps (props) {
+    if (props.zoom !== this.props.zoom) {
+      this.context.kit.setAllOperationsToDirty()
+      this._onCanvasUpdate(props.zoom)
+    }
   }
+
+  /**
+   * Gets called after this component has been mounted
+   */
+  componentDidMount () {
+    super.componentDidMount()
+
+    const { kit } = this.context
+    this._canvas = React.findDOMNode(this.refs.canvas)
+    kit.setCanvas(this._canvas)
+
+    this._updateDimensions()
+
+    this._onCanvasUpdate()
+      .then(() => {
+        this.props.onFirstRender && this.props.onFirstRender()
+      })
+  }
+
+  /**
+   * Gets called after this component has been updated
+   */
+  componentDidUpdate (prevProps, newProps) {
+    this._updateDimensions()
+  }
+
+  // -------------------------------------------------------------------------- DRAGGING
 
   /**
    * Gets called when the user starts dragging the canvas
@@ -76,30 +109,6 @@ export default class CanvasComponent extends BaseChildComponent {
   }
 
   /**
-   * Clamps and updates the canvas positioning offset
-   * @param {Vector2} [offset]
-   * @private
-   */
-  _updateOffset (offset = this.state.canvasOffset) {
-    const canvasCell = React.findDOMNode(this.refs.canvasCell)
-    const containerDimensions = new Vector2(canvasCell.offsetWidth, canvasCell.offsetHeight)
-    const canvasDimensions = new Vector2(this._canvas.width, this._canvas.height)
-    const minOffset = containerDimensions
-      .clone()
-      .subtract(canvasDimensions)
-      .divide(2)
-    const maxOffset = canvasDimensions
-      .clone()
-      .subtract(containerDimensions)
-      .divide(2)
-      .clamp(new Vector2(0, 0), null)
-
-    offset.clamp(minOffset, maxOffset)
-
-    this.setState({ canvasOffset: offset })
-  }
-
-  /**
    * Gets called when the user stops dragging the canvas
    * @param {DOMEvent} e
    * @private
@@ -111,16 +120,43 @@ export default class CanvasComponent extends BaseChildComponent {
     document.removeEventListener('touchend', this._onDragEnd)
   }
 
+  // -------------------------------------------------------------------------- POSITIONING
+
   /**
-   * Gets called when this component receives some new props
-   * @param {Object} props
+   * Clamps and updates the canvas positioning offset
+   * @param {Vector2} [offset]
+   * @private
    */
-  componentWillReceiveProps (props) {
-    if (props.zoom !== this.props.zoom) {
-      this.context.kit.setAllOperationsToDirty()
-      this._onCanvasUpdate(props.zoom)
-    }
+  _updateOffset (offset = this.state.canvasOffset) {
+    const minOffset = this._containerDimensions
+      .clone()
+      .subtract(this._canvasDimensions)
+      .divide(2)
+    const maxOffset = this._canvasDimensions
+      .clone()
+      .subtract(this._containerDimensions)
+      .divide(2)
+      .clamp(new Vector2(0, 0), null)
+
+    offset.clamp(minOffset, maxOffset)
+
+    this.setState({ canvasOffset: offset })
   }
+
+  /**
+   * Repositions the canvas
+   * @private
+   */
+  _repositionCanvas () {
+    const canvasPosition = this._containerDimensions
+      .clone()
+      .divide(2)
+      .subtract(this._canvasDimensions.divide(2))
+
+    this.setState({ canvasPosition })
+  }
+
+  // -------------------------------------------------------------------------- MISC
 
   /**
    * Returns the default zoom level
@@ -129,11 +165,8 @@ export default class CanvasComponent extends BaseChildComponent {
   getDefaultZoom () {
     const { kit } = this.context
 
-    const canvasCell = React.findDOMNode(this.refs.canvasCell)
-    const containerDimensions = new Vector2(canvasCell.offsetWidth, canvasCell.offsetHeight)
-
     const outputDimensions = kit.getInputDimensions()
-    const defaultDimensions = SDKUtils.resizeVectorToFit(outputDimensions, containerDimensions)
+    const defaultDimensions = SDKUtils.resizeVectorToFit(outputDimensions, this._containerDimensions)
 
     // Since default and native dimensions have the same ratio, we can take either x or y here
     return defaultDimensions
@@ -142,61 +175,51 @@ export default class CanvasComponent extends BaseChildComponent {
   }
 
   /**
-   * Gets called when the dimensions or zoom has been changed
-   * @param {Number} zoom = this.props.zoom
+   * Updates the stored canvas and container dimensions
    * @private
    */
-  _onCanvasUpdate (zoom = this.props.zoom) {
-    const { kit, } = this.context
-    const canvasCell = React.findDOMNode(this.refs.canvasCell)
+  _updateDimensions () {
+    const canvas = this.refs.canvas.getDOMNode()
+    this._canvasDimensions = new Vector2(canvas.offsetWidth, canvas.offsetHeight)
 
-    let containerDimensions = new Vector2(canvasCell.offsetWidth, canvasCell.offsetHeight)
+    const canvasCell = this.refs.canvasCell.getDOMNode()
+    this._containerDimensions = new Vector2(canvasCell.offsetWidth, canvasCell.offsetHeight)
+  }
+
+  // -------------------------------------------------------------------------- EVENTS
+
+  /**
+   * Gets called when the dimensions or zoom has been changed
+   * @param {Number} zoom = this.props.zoom
+   * @param {Function} [callback]
+   * @private
+   */
+  _onCanvasUpdate (zoom = this.props.zoom, callback) {
+    const { kit } = this.context
+
+    let rendererDimensions = this._containerDimensions
     if (zoom !== null) {
-      containerDimensions = kit.getInputDimensions()
+      rendererDimensions = kit.getInputDimensions()
         .multiply(zoom)
         .floor()
     }
-    kit.setDimensions(`${containerDimensions.x}x${containerDimensions.y}`)
+    kit.setDimensions(`${rendererDimensions.x}x${rendererDimensions.y}`)
 
     return kit.render()
       .then(() => {
+        this._updateDimensions()
         this._repositionCanvas()
         this._updateOffset()
+        callback && callback()
       })
   }
 
-  /**
-   * Gets called after this component has been mounted
-   */
-  componentDidMount () {
-    super.componentDidMount()
+  // -------------------------------------------------------------------------- GETTERS
 
-    const { kit } = this.context
-    this._canvas = React.findDOMNode(this.refs.canvas)
-    kit.setCanvas(this._canvas)
-    this._mounted = true
+  getDimensions () { return this._canvasDimensions }
+  getContainerDimensions () { return this._containerDimensions }
 
-    this._onCanvasUpdate()
-      .then(() => {
-        this.props.onFirstRender && this.props.onFirstRender()
-      })
-  }
-
-  /**
-   * Repositions the canvas
-   * @private
-   */
-  _repositionCanvas () {
-    const canvas = React.findDOMNode(this.refs.canvas)
-    const canvasCell = React.findDOMNode(this.refs.canvasCell)
-    const containerDimensions = new Vector2(canvasCell.offsetWidth, canvasCell.offsetHeight)
-    const canvasDimensions = new Vector2(canvas.width, canvas.height)
-    const canvasPosition = containerDimensions
-      .clone()
-      .divide(2)
-      .subtract(canvasDimensions.divide(2))
-    this.setState({ canvasPosition })
-  }
+  // -------------------------------------------------------------------------- RENDERING
 
   /**
    * Returns the style properties for the draggable canvas area

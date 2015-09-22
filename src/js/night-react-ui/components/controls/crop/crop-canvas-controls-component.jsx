@@ -25,7 +25,6 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
     )
 
     this._operation = this.getSharedState('operation')
-    this._events = {}
 
     if (this.props.sharedState) {
       this.props.sharedState.set({
@@ -145,8 +144,7 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
    * @private
    */
   _getAreaStyles () {
-    const { kit } = this.context
-    const canvasDimensions = kit.getOutputDimensions()
+    const canvasDimensions = this.props.editor.getCanvasDimensions()
 
     const start = this.props.sharedState.get('start').clone().multiply(canvasDimensions).floor()
     const end = this.props.sharedState.get('end').clone().multiply(canvasDimensions).ceil()
