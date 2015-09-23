@@ -194,6 +194,7 @@ class Control extends EventEmitter {
    * @private
    */
   _highlightDoneButton () {
+    if (!this._doneButton) return
     this._doneButton.classList.add('highlighted')
   }
 

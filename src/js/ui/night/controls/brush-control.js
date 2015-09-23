@@ -30,6 +30,7 @@ class BrushControl extends Control {
     this._partialTemplates.slider = SimpleSlider.template
     this._partialTemplates.colorPicker = ColorPicker.template
 
+    this._displayThickness = false
     this._painting = false
   }
 
@@ -47,6 +48,7 @@ class BrushControl extends Control {
    */
   _onEnter () {
     super._onEnter()
+    this._handleThicknessButton()
     this._setupOperation()
     this._setupOptions()
     this._bindEventHandler()
@@ -58,6 +60,28 @@ class BrushControl extends Control {
     this._ui.canvas.zoomToFit()
     this._setupCursor()
     this._redrawPath()
+  }
+
+  /**
+   * Handles the thickness button
+   * @private
+   */
+  _handleThicknessButton () {
+    if (this._displayThickness) return
+
+    this._thicknessButton = this._controlsContainer.querySelector('#imglykit-thickness-button')
+    this._thicknessButton.addEventListener('click', this._onThicknessButtonClick.bind(this))
+  }
+
+  /**
+   * Gets called when the thickness button has been clicked
+   * @param  {Event} e
+   * @private
+   */
+  _onThicknessButtonClick (e) {
+    e.preventDefault()
+    this._displayThickness = true
+    this.enter()
   }
 
   /**
@@ -136,6 +160,8 @@ class BrushControl extends Control {
    * Sets up the slider used to change the brush size
    */
   _setupSlider () {
+    if (!this._displayThickness) return
+
     let sliderElement = this._controls.querySelector('.imglykit-slider')
     this._slider = new SimpleSlider(sliderElement, {
       minValue: 1,
@@ -150,10 +176,25 @@ class BrushControl extends Control {
    * Sets up the color picker used to change the brush color
    */
   _setupColorPicker () {
+    if (this._displayThickness) return
+
     let colorPickerElement = this._controls.querySelector('.imglykit-color-picker')
     this._colorPicker = new ColorPicker(this._ui, colorPickerElement)
     this._colorPicker.on('update', this._onColorUpdate.bind(this))
     this._colorPicker.setValue(this._currentColor)
+  }
+
+  /**
+   * Gets called when the back button has been clicked
+   * @private
+   */
+  _onBackButtonClick () {
+    if (this._displayThickness) {
+      this._displayThickness = false
+      return this.enter()
+    }
+
+    super._onBackButtonClick()
   }
 
   /**
@@ -332,7 +373,7 @@ class BrushControl extends Control {
    */
   _onThicknessUpdate (value) {
     this._currentThickness = value / this._getLongerSideSize()
-    this._highlightDoneButton()
+    // this._highlightDoneButton()
     this._setCursorSize(this._currentThickness * this._getLongerSideSize())
   }
 
@@ -393,6 +434,16 @@ class BrushControl extends Control {
    */
   _hideCursor () {
     this._cursor.style.display = 'none'
+  }
+
+  /**
+   * The data that is available to the template
+   * @abstract
+   */
+  get context () {
+    return {
+      displayThickness: this._displayThickness
+    }
   }
 }
 

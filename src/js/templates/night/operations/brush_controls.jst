@@ -1,9 +1,17 @@
-<div>
-  {{= it.partials.slider}}
-</div>
-
-<div class="imglykit-controls-button">
-  {{= it.partials.colorPicker}}
-</div>
-
-{{= it.partials.doneButton}}
+{{? it.displayThickness}}
+  <div>
+    {{= it.partials.slider}}
+  </div>
+{{??}}
+  <div>
+    <ul class="imglykit-controls-list imglykit-controls-list-overflow">
+      <li class="imglykit-controls-item-with-label" id="imglykit-thickness-button">
+        <div class="imglykit-controls-item-label">Thickness</div>
+      </li>
+      <li>
+        {{= it.partials.colorPicker}}
+      </li>
+    </ul>
+  </div>
+  {{= it.partials.doneButton}}
+{{?}}
