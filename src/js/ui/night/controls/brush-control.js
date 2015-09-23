@@ -248,7 +248,6 @@ class BrushControl extends Control {
    */
   _onMouseMove (e) {
     var mousePosition = this._getRelativeMousePositionFromEvent(e)
-    console.log(Utils.getEventPosition(e), this._getRelativeMousePositionFromEvent(e))
     if (!Utils.isTouchEvent(e)) {
       this._moveCursorTo(mousePosition)
       this._showCursor()
