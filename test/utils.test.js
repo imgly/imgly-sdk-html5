@@ -125,17 +125,17 @@ describe("Utils", function () {
     var fakeEvent, fakeTouchEvent;
     beforeEach(function () {
       fakeEvent = {
-        pageX: 50,
-        pageY: 50,
+        clientX: 50,
+        clientY: 50,
         type: "mousemove"
       };
 
       fakeTouchEvent = {
-        pageX: 50,
-        pageY: 50,
+        clientX: 50,
+        clientY: 50,
         touches: [{
-          pageX: 100,
-          pageY: 100
+          clientX: 100,
+          clientY: 100
         }],
         type: "touchmove"
       };
