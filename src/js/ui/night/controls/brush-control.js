@@ -83,7 +83,7 @@ class BrushControl extends Control {
    * Sets up the cursor
    */
   _setupCursor () {
-    this._myCursor = this._canvasControls.querySelector('#imglykit-brush-cursor')
+    this._cursor = this._canvasControls.querySelector('#imglykit-brush-cursor')
     this._setCursorSize(this._currentThickness * this._getLongerSideSize())
     this._setCursorColor(this._currentColor)
   }
@@ -248,6 +248,7 @@ class BrushControl extends Control {
    */
   _onMouseMove (e) {
     var mousePosition = this._getRelativeMousePositionFromEvent(e)
+    console.log(Utils.getEventPosition(e), this._getRelativeMousePositionFromEvent(e))
     if (!Utils.isTouchEvent(e)) {
       this._moveCursorTo(mousePosition)
       this._showCursor()
@@ -320,8 +321,9 @@ class BrushControl extends Control {
    */
   _getRelativeMousePositionFromEvent (e) {
     var clientRect = this._container.getBoundingClientRect()
-    var offset = new Vector2(clientRect.left, clientRect.top + document.body.scrollTop)
-    var absolutePosition = Utils.getEventPosition(e).subtract(offset)
+    var offset = new Vector2(clientRect.left, clientRect.top)
+    var absolutePosition = Utils.getEventPosition(e)
+      .subtract(offset)
     return absolutePosition.divide(this._ui.canvas.size)
   }
 
@@ -359,8 +361,8 @@ class BrushControl extends Control {
    */
   _moveCursorTo (position) {
     let halfThickness = this._currentThickness * this._getLongerSideSize() / 2.0
-    this._myCursor.style.left = position.x * this._ui.canvas.size.x - halfThickness + 'px'
-    this._myCursor.style.top = position.y * this._ui.canvas.size.y - halfThickness + 'px'
+    this._cursor.style.left = position.x * this._ui.canvas.size.x - halfThickness + 'px'
+    this._cursor.style.top = position.y * this._ui.canvas.size.y - halfThickness + 'px'
   }
 
   /**
@@ -368,8 +370,8 @@ class BrushControl extends Control {
    * @param {Float} size
    */
   _setCursorSize (size) {
-    this._myCursor.style.width = size + 'px'
-    this._myCursor.style.height = size + 'px'
+    this._cursor.style.width = size + 'px'
+    this._cursor.style.height = size + 'px'
   }
 
   /**
@@ -377,21 +379,21 @@ class BrushControl extends Control {
    * @param {Color} color
    */
   _setCursorColor (color) {
-    this._myCursor.style.background = color.toHex()
+    this._cursor.style.background = color.toHex()
   }
 
   /**
    * Shows the cursor
    */
   _showCursor () {
-    this._myCursor.style.display = 'block'
+    this._cursor.style.display = 'block'
   }
 
   /**
    * Hides the cursor
    */
   _hideCursor () {
-    this._myCursor.style.display = 'none'
+    this._cursor.style.display = 'none'
   }
 }
 

@@ -393,14 +393,6 @@ class Canvas extends EventEmitter {
     if (e.type === 'mousedown' && e.button !== 0) return
     e.preventDefault()
 
-    let x = e.pageX
-    let y = e.pageY
-
-    if (e.type === 'touchstart') {
-      x = e.touches[0].pageX
-      y = e.touches[0].pageY
-    }
-
     let canvasX = parseInt(this._canvasInnerContainer.style.left, 10)
     let canvasY = parseInt(this._canvasInnerContainer.style.top, 10)
 
@@ -411,7 +403,7 @@ class Canvas extends EventEmitter {
     document.addEventListener('touchend', this._dragOnMouseup)
 
     // Remember initial position
-    this._initialMousePosition = new Vector2(x, y)
+    this._initialMousePosition = Utils.getEventPosition(e)
     this._initialCanvasPosition = new Vector2(canvasX, canvasY)
   }
 
@@ -423,17 +415,11 @@ class Canvas extends EventEmitter {
   _dragOnMousemove (e) {
     e.preventDefault()
 
-    let x = e.pageX, y = e.pageY
-    if (e.type === 'touchmove') {
-      x = e.touches[0].pageX
-      y = e.touches[0].pageY
-    }
-
-    let newMousePosition = new Vector2(x, y)
-    let mouseDiff = newMousePosition
+    const newMousePosition = Utils.getEventPosition(e)
+    const mouseDiff = newMousePosition
       .clone()
       .subtract(this._initialMousePosition)
-    let newPosition = this._initialCanvasPosition
+    const newPosition = this._initialCanvasPosition
       .clone()
       .add(mouseDiff)
 
