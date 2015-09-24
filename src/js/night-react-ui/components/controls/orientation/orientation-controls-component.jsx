@@ -12,7 +12,8 @@
 import {
   ReactBEM,
   BaseChildComponent,
-  Constants
+  Constants,
+  Vector2
 } from '../../../globals'
 import ScrollbarComponent from '../../scrollbar-component'
 
@@ -29,6 +30,7 @@ export default class OrientationControlsComponent extends BaseChildComponent {
 
     this._rotationOperation = this.context.ui.getOrCreateOperation('rotation')
     this._flipOperation = this.context.ui.getOrCreateOperation('flip')
+    this._cropOperation = this.context.ui.getOperation('crop')
 
     this._events = {
       [Constants.EVENTS.OPERATION_UPDATED]: this._onOperationUpdated
@@ -66,6 +68,7 @@ export default class OrientationControlsComponent extends BaseChildComponent {
     const additionalDegrees = 90 * (direction === 'left' ? -1 : 1)
     const newDegrees = (degrees + additionalDegrees) % 360
     this._rotationOperation.setDegrees(newDegrees)
+    this._rotateCrop(additionalDegrees)
     this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
   }
 
@@ -85,7 +88,34 @@ export default class OrientationControlsComponent extends BaseChildComponent {
         this._flipOperation.setVertical(!vertical)
         break
     }
+
     this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
+  }
+
+  /**
+   * Rotates the current crop options by the given degrees
+   * @param  {Number} degrees
+   * @private
+   */
+  _rotateCrop (degrees) {
+    if (!this._cropOperation) return
+
+    let start = this._cropOperation.getStart().clone()
+    let end = this._cropOperation.getEnd().clone()
+
+    const _start = start.clone()
+    switch (degrees) {
+      case 90:
+        start = new Vector2(1.0 - end.y, _start.x)
+        end = new Vector2(1.0 - _start.y, end.x)
+        break
+      case -90:
+        start = new Vector2(_start.y, 1.0 - end.x)
+        end = new Vector2(end.y, 1.0 - _start.x)
+        break
+    }
+
+    this._cropOperation.set({ start, end })
   }
 
   /**
