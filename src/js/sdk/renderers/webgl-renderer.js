@@ -150,7 +150,7 @@ class WebGLRenderer extends BaseRenderer {
     // Use the cached texture as input
     gl.bindTexture(gl.TEXTURE_2D, texture)
 
-    gl.viewport(0, 0, this._textureSize.x, this._textureSize.y)
+    gl.viewport(0, 0, size.x, size.y)
 
     // Clear
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
