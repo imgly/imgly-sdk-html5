@@ -233,7 +233,7 @@ export default class NightReactUI extends EventEmitter {
    * If the operation with the given identifier already exists, it returns
    * the existing operation. Otherwise, it creates and returns a new one.
    * @param  {String} identifier
-   * @return {PhotoEditorSDK.operation}
+   * @return {PhotoEditorSDK.Operation}
    */
   getOrCreateOperation (identifier) {
     if (this._operationsMap[identifier]) {
@@ -249,6 +249,15 @@ export default class NightReactUI extends EventEmitter {
       this._operationsMap[identifier] = operation
       return operation
     }
+  }
+
+  /**
+   * Returns the operation with the given identifier
+   * @param  {String} identifier
+   * @return {PhotoEditorSDK.Operation}
+   */
+  getOperation (identifier) {
+    return this._operationsMap[identifier]
   }
 
   /**
