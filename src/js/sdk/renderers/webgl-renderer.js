@@ -255,7 +255,6 @@ class WebGLRenderer extends BaseRenderer {
 
     this._size = new Vector2(gl.drawingBufferWidth, gl.drawingBufferHeight)
     this._resizeAllTextures(this._size)
-
     return new Promise((resolve, reject) => {
       gl.useProgram(this._defaultProgram)
       this._setCoordinates(this._defaultProgram)
@@ -269,7 +268,7 @@ class WebGLRenderer extends BaseRenderer {
 
       // Resize fbo texture
       gl.bindTexture(gl.TEXTURE_2D, texture)
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._size.x, this._size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, image.width, image.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
 
       // Set some settings...
       gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)
