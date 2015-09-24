@@ -142,7 +142,7 @@ export default class Renderer {
       this._exif = null
       try {
         this._exif = Exif.fromBase64String(image.src)
-      } catch(e) {}
+      } catch (e) {}
       if (!this._exif) return
 
       let exifTags = this._exif.getTags()
