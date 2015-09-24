@@ -418,6 +418,10 @@ class WebGLRenderer extends BaseRenderer {
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo)
     gl.viewport(0, 0, this._size.x, this._size.y)
 
+    // Resize fbo texture
+    gl.bindTexture(gl.TEXTURE_2D, currentTexture)
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._size.x, this._size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
+
     // Set premultiplied alpha
     gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)
 
