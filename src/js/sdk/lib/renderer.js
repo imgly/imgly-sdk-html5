@@ -40,7 +40,7 @@ export default class Renderer {
       canvas: null
     })
 
-    this._dimensions = this._options.dimensions
+    this._dimensions = this._options.dimensions && new ImageDimensions(this._options.dimensions)
 
     this._image = this._options.image
     this._operationsOptions = operationsOptions

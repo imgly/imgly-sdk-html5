@@ -104,8 +104,6 @@ class WebGLRenderer extends BaseRenderer {
     // Resize cached texture
     gl.bindTexture(gl.TEXTURE_2D, texture)
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._textureSize.x, this._textureSize.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
-    texture._width = this._textureSize.x
-    texture._height = this._textureSize.y
 
     // Render to FBO
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo)
@@ -138,8 +136,6 @@ class WebGLRenderer extends BaseRenderer {
       let otherTexture = this._textures[i]
       gl.bindTexture(gl.TEXTURE_2D, otherTexture)
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size.x, size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
-      otherTexture._width = size.x
-      otherTexture._height = size.y
     }
 
     // Select the current framebuffer to draw to
@@ -148,13 +144,11 @@ class WebGLRenderer extends BaseRenderer {
     // Resize the texture we're drawing to
     gl.bindTexture(gl.TEXTURE_2D, currentTexture)
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size.x, size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
-    currentTexture._width = size.x
-    currentTexture._height = size.y
 
     // Use the cached texture as input
     gl.bindTexture(gl.TEXTURE_2D, texture)
 
-    gl.viewport(0, 0, size.x, size.y)
+    gl.viewport(0, 0, this._textureSize.x, this._textureSize.y)
 
     // Clear
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
@@ -164,8 +158,6 @@ class WebGLRenderer extends BaseRenderer {
 
     this.setLastTexture(currentTexture)
     this.selectNextBuffer()
-
-    this._outputSize = size.clone()
   }
 
   getTextureDimensions () {
@@ -294,8 +286,6 @@ class WebGLRenderer extends BaseRenderer {
       const imageTexture = this.createTexture()
       gl.bindTexture(gl.TEXTURE_2D, imageTexture)
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image)
-      imageTexture._width = image.width
-      imageTexture._height = image.height
 
       // Draw the rectangle
       gl.drawArrays(gl.TRIANGLES, 0, 6)
@@ -324,8 +314,6 @@ class WebGLRenderer extends BaseRenderer {
     const gl = this._context
     gl.bindTexture(gl.TEXTURE_2D, texture)
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size.x, size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
-    texture._width = size.x
-    texture._height = size.y
   }
 
   /**
@@ -651,8 +639,6 @@ class WebGLRenderer extends BaseRenderer {
     gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)
 
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
-    texture._width = 1
-    texture._height = 1
 
     // Create framebuffer
     let fbo = gl.createFramebuffer()
