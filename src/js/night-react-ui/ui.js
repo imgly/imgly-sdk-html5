@@ -233,14 +233,15 @@ export default class NightReactUI extends EventEmitter {
    * If the operation with the given identifier already exists, it returns
    * the existing operation. Otherwise, it creates and returns a new one.
    * @param  {String} identifier
+   * @param  {Object} options
    * @return {PhotoEditorSDK.Operation}
    */
-  getOrCreateOperation (identifier) {
+  getOrCreateOperation (identifier, options = {}) {
     if (this._operationsMap[identifier]) {
       return this._operationsMap[identifier]
     } else {
       const Operation = this._availableOperations[identifier]
-      const operation = new Operation(this._kit)
+      const operation = new Operation(this._kit, options)
       operation.on('update', () => {
         this._mediator.emit(Constants.EVENTS.OPERATION_UPDATED, operation)
       })

@@ -27,6 +27,9 @@ class WebGLRenderer extends BaseRenderer {
     this._contextLostCount = 0
     this._handleContextLoss()
 
+    this._outputSize = new Vector2()
+    this._textureSize = new Vector2()
+
     this._defaultProgram = this.setupGLSLProgram()
     this.reset()
 
@@ -102,18 +105,20 @@ class WebGLRenderer extends BaseRenderer {
 
     // Resize cached texture
     gl.bindTexture(gl.TEXTURE_2D, texture)
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._size.x, this._size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._textureSize.x, this._textureSize.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
+    texture._width = this._textureSize.x
+    texture._height = this._textureSize.y
 
     // Render to FBO
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo)
-    gl.viewport(0, 0, this._size.x, this._size.y)
+    gl.viewport(0, 0, this._textureSize.x, this._textureSize.y)
 
     // Use last fbo texture as input
     gl.bindTexture(gl.TEXTURE_2D, this._lastTexture)
 
     gl.drawArrays(gl.TRIANGLES, 0, 6)
 
-    this._cache[identifier] = { fbo, texture, size: this._size.clone() }
+    this._cache[identifier] = { fbo, texture, size: this._textureSize.clone() }
   }
 
   /**
@@ -135,6 +140,8 @@ class WebGLRenderer extends BaseRenderer {
       let otherTexture = this._textures[i]
       gl.bindTexture(gl.TEXTURE_2D, otherTexture)
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size.x, size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
+      otherTexture._width = size.x
+      otherTexture._height = size.y
     }
 
     // Select the current framebuffer to draw to
@@ -143,6 +150,8 @@ class WebGLRenderer extends BaseRenderer {
     // Resize the texture we're drawing to
     gl.bindTexture(gl.TEXTURE_2D, currentTexture)
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size.x, size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
+    currentTexture._width = size.x
+    currentTexture._height = size.y
 
     // Use the cached texture as input
     gl.bindTexture(gl.TEXTURE_2D, texture)
@@ -158,7 +167,15 @@ class WebGLRenderer extends BaseRenderer {
     this.setLastTexture(currentTexture)
     this.selectNextBuffer()
 
-    this._size = size.clone()
+    this._outputSize = size.clone()
+  }
+
+  getTextureDimensions () {
+    return this._textureSize.clone()
+  }
+
+  setTextureDimensions (dimensions) {
+    this._textureSize.copy(dimensions)
   }
 
   /**
@@ -253,8 +270,10 @@ class WebGLRenderer extends BaseRenderer {
       return this.setLastTexture(this._imageTexture)
     }
 
-    this._size = new Vector2(gl.drawingBufferWidth, gl.drawingBufferHeight)
-    this._resizeAllTextures(this._size)
+    this._outputSize = new Vector2(gl.drawingBufferWidth, gl.drawingBufferHeight)
+    this._textureSize = new Vector2(image.width, image.height)
+    this._resizeAllTextures(this._textureSize)
+
     return new Promise((resolve, reject) => {
       gl.useProgram(this._defaultProgram)
       this._setCoordinates(this._defaultProgram)
@@ -264,11 +283,10 @@ class WebGLRenderer extends BaseRenderer {
 
       // Select the current framebuffer
       gl.bindFramebuffer(gl.FRAMEBUFFER, fbo)
-      gl.viewport(0, 0, this._size.x, this._size.y)
+      gl.viewport(0, 0, this._outputSize.x, this._outputSize.y)
 
       // Resize fbo texture
       gl.bindTexture(gl.TEXTURE_2D, texture)
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, image.width, image.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
 
       // Set some settings...
       gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)
@@ -278,6 +296,8 @@ class WebGLRenderer extends BaseRenderer {
       const imageTexture = this.createTexture()
       gl.bindTexture(gl.TEXTURE_2D, imageTexture)
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image)
+      imageTexture._width = image.width
+      imageTexture._height = image.height
 
       // Draw the rectangle
       gl.drawArrays(gl.TRIANGLES, 0, 6)
@@ -302,10 +322,12 @@ class WebGLRenderer extends BaseRenderer {
     })
   }
 
-  resizeTexture (texture, size = this._size) {
+  resizeTexture (texture, size = this._outputSize) {
     const gl = this._context
     gl.bindTexture(gl.TEXTURE_2D, texture)
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size.x, size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
+    texture._width = size.x
+    texture._height = size.y
   }
 
   /**
@@ -417,11 +439,11 @@ class WebGLRenderer extends BaseRenderer {
 
     // Select the current framebuffer
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo)
-    gl.viewport(0, 0, this._size.x, this._size.y)
+    gl.viewport(0, 0, this._textureSize.x, this._textureSize.y)
 
     // Resize fbo texture
     gl.bindTexture(gl.TEXTURE_2D, currentTexture)
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._size.x, this._size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._textureSize.x, this._textureSize.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
 
     // Set premultiplied alpha
     gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)
@@ -502,7 +524,7 @@ class WebGLRenderer extends BaseRenderer {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null)
 
     // Make sure the viewport size is correct
-    gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight)
+    gl.viewport(0, 0, this._outputSize.x, this._outputSize.y)
 
     // Select the last texture that has been rendered to
     gl.bindTexture(gl.TEXTURE_2D, this._lastTexture)
@@ -630,7 +652,9 @@ class WebGLRenderer extends BaseRenderer {
     // Set premultiplied alpha
     gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)
 
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._size.x, this._size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
+    texture._width = 1
+    texture._height = 1
 
     // Create framebuffer
     let fbo = gl.createFramebuffer()
@@ -651,9 +675,8 @@ class WebGLRenderer extends BaseRenderer {
   resizeTo (dimensions) {
     if (this._canvas.width !== dimensions.x ||
         this._canvas.height !== dimensions.y) {
-      this._size = dimensions.clone()
+      this._outputSize = dimensions.clone()
       this._imageTexture = null
-      this._resizeAllTextures(this._size)
       this.reset()
     }
     this._canvas.width = dimensions.x

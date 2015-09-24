@@ -41,16 +41,17 @@ class CropOperation extends Operation {
     }
 
     const textureCoordinates = new Float32Array([
-        // First triangle
-        start.x, 1.0 - end.y,
-        end.x, 1.0 - end.y,
-        start.x, 1.0 - start.y,
+      // First triangle
+      start.x, 1.0 - end.y,
+      end.x, 1.0 - end.y,
+      start.x, 1.0 - start.y,
 
-        // Second triangle
-        start.x, 1.0 - start.y,
-        end.x, 1.0 - end.y,
-        end.x, 1.0 - start.y
-      ])
+      // Second triangle
+      start.x, 1.0 - start.y,
+      end.x, 1.0 - end.y,
+      end.x, 1.0 - start.y
+    ])
+    renderer.setTextureDimensions(this.getNewDimensions(renderer, renderer.getTextureDimensions()))
     renderer.runProgram(this._glslPrograms[renderer.id], { textureCoordinates })
   }
 
