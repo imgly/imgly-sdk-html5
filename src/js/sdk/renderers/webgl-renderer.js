@@ -726,7 +726,7 @@ class WebGLRenderer extends BaseRenderer {
    * @param {Boolean} newContext = false
    * @override
    */
-  reset (resetCache=false, newContext=false) {
+  reset (resetCache = false, newContext = false) {
     this._imageTexture = null
     this._lastTexture = null
     this._textures = []
