@@ -241,6 +241,14 @@ class BrushControl extends Control {
    * @param  {Event} e
    */
   _onMouseDown (e) {
+    this._operationExistedBeforeDraw = !!this._operation.getColors().length
+    this._optionsBeforeDraw = {
+      colors: this._operation.getColors().slice(0),
+      thicknesses: this._operation.getThicknesses().slice(0),
+      controlPoints: this._operation.getControlPoints().slice(0),
+      buttonStatus: this._operation.getButtonStatus().slice(0)
+    }
+
     if (Utils.isTouchEvent(e)) {
       this._showCursor()
     }
@@ -272,6 +280,12 @@ class BrushControl extends Control {
       this._hideCursor()
     }
     this._stopPaint()
+    this._ui.addHistory(this, {
+      colors: this._optionsBeforeDraw.colors,
+      thicknesses: this._optionsBeforeDraw.thicknesses,
+      controlPoints: this._optionsBeforeDraw.controlPoints,
+      buttonStatus: this._optionsBeforeDraw.buttonStatus
+    }, this._operationExistedBeforeDraw)
   }
 
   /**
