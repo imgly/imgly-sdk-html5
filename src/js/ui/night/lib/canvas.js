@@ -207,6 +207,12 @@ class Canvas extends EventEmitter {
    */
   _setCanvasSize (size) {
     size = size || new Vector2(this._canvas.width, this._canvas.height)
+    size = size.clone().floor()
+
+    if (this._canvas.width === size.x &&
+      this._canvas.height === size.y) {
+        return
+      }
 
     this._canvas.width = size.x
     this._canvas.height = size.y

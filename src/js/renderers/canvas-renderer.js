@@ -74,10 +74,8 @@ class CanvasRenderer extends Renderer {
    * @returns {Promis}
    */
   drawImage (image) {
-    return new Promise((resolve, reject) => {
-      this._context.drawImage(image, 0, 0, image.width, image.height, 0, 0, this._canvas.width, this._canvas.height)
-      resolve()
-    })
+    this._context.drawImage(image, 0, 0, image.width, image.height, 0, 0, this._canvas.width, this._canvas.height)
+    return Promise.resolve()
   }
 
   /**
@@ -86,6 +84,14 @@ class CanvasRenderer extends Renderer {
    * @return {Promise}
    */
   resizeTo (dimensions) {
+    dimensions = dimensions.clone().floor()
+    if (newCanvas.width === dimensions.x &&
+      newCanvas.height === dimensions.y) {
+        return
+      }
+
+    console.log('resizeTo')
+
     // Create a temporary canvas to draw to
     var newCanvas = this.createCanvas()
     newCanvas.width = dimensions.x
@@ -150,6 +156,14 @@ class CanvasRenderer extends Renderer {
    * @param {Vector2} dimensions
    */
   setSize (dimensions) {
+    dimensions = dimensions.clone().floor()
+    if (this._canvas.width === dimensions.x &&
+      this._canvas.height === dimensions.y) {
+        return
+      }
+
+    console.log('setSize')
+
     this._canvas.width = dimensions.x
     this._canvas.height = dimensions.y
     this._size.copy(dimensions)
