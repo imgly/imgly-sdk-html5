@@ -454,7 +454,7 @@ class TextControl extends Control {
    */
   _addFonts () {
     this.addFont('Helvetica', 'normal')
-    this.addFont('Lucida Grande', 'normal')
+    this.addFont('Verdana', 'normal')
     this.addFont('Times New Roman', 'normal')
   }
 
