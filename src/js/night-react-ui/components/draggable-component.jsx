@@ -39,7 +39,7 @@ export default class DraggableComponent extends BaseChildComponent {
     document.addEventListener('mouseup', this._onDragEnd)
     document.addEventListener('touchend', this._onDragEnd)
 
-    this.props.onStart && this.props.onStart()
+    this.props.onStart && this.props.onStart(e)
   }
 
   /**
@@ -54,7 +54,7 @@ export default class DraggableComponent extends BaseChildComponent {
     const mousePosition = Utils.getEventPosition(e)
     const mouseDiff = mousePosition.clone().subtract(this._initialMousePosition)
 
-    this.props.onDrag && this.props.onDrag(mouseDiff)
+    this.props.onDrag && this.props.onDrag(mouseDiff, e)
   }
 
   /**
@@ -71,7 +71,7 @@ export default class DraggableComponent extends BaseChildComponent {
     document.removeEventListener('mouseup', this._onDragEnd)
     document.removeEventListener('touchend', this._onDragEnd)
 
-    this.props.onStop && this.props.onStop()
+    this.props.onStop && this.props.onStop(e)
   }
 
   // -------------------------------------------------------------------------- RENDERING
