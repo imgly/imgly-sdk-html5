@@ -36,7 +36,8 @@
     },
     "blur": {
       "radial-blur": "Radial Blur",
-      "tilt-shift": "Tilt-Shift"
+      "tilt-shift": "Tilt-Shift",
+      "blurRadius": "Blur radius"
     },
     "filters": {
       "intensity": "Intensity"
