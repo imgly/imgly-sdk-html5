@@ -142,8 +142,8 @@ class BrushControl extends Control {
     this._container.addEventListener('touchstart', this._onMouseDown)
     this._container.addEventListener('mouseup', this._onMouseUp)
     this._container.addEventListener('touchend', this._onMouseUp)
-    this._container.addEventListener('mousemove', this._onMouseMove)
-    this._container.addEventListener('touchmove', this._onMouseMove)
+    document.addEventListener('mousemove', this._onMouseMove)
+    document.addEventListener('touchmove', this._onMouseMove)
     this._container.addEventListener('mouseleave', this._onMouseLeave)
   }
 
@@ -215,7 +215,7 @@ class BrushControl extends Control {
    * Resets the operation options to the initial options
    */
   _resetOperationSettings () {
-    this._operation.setPahts(this._initialOptions.paths)
+    this._operation.setPaths(this._initialOptions.paths)
   }
 
   /**
@@ -223,6 +223,7 @@ class BrushControl extends Control {
    * @protected
    */
   _onDone () {
+    this._operation.dirty = true
     this._ui.canvas.setZoomLevel(this._initialZoomLevel, false)
     this._ui.addHistory(this, {
       paths: this._initialOptions.paths
@@ -235,7 +236,7 @@ class BrushControl extends Control {
    * @param  {Event} e
    */
   _onMouseDown (e) {
-    const paths = this._operation.getPaths()
+    const paths = this._operation.getPaths().slice(0)
     this._operationExistedBeforeDraw = !!paths.length
     this._optionsBeforeDraw = { paths }
 
@@ -254,7 +255,10 @@ class BrushControl extends Control {
     var mousePosition = this._getRelativeMousePositionFromEvent(event)
     this._painting = true
 
-    this._currentPath = this._operation.createPath()
+    this._currentPath = this._operation.createPath(
+      this._currentThickness, 
+      this._currentColor
+    )
     this._currentPath.addControlPoint(mousePosition)
 
     this._redrawPath()
@@ -272,10 +276,7 @@ class BrushControl extends Control {
     }
     this._stopPaint()
     this._ui.addHistory(this, {
-      colors: this._optionsBeforeDraw.colors,
-      thicknesses: this._optionsBeforeDraw.thicknesses,
-      controlPoints: this._optionsBeforeDraw.controlPoints,
-      buttonStatus: this._optionsBeforeDraw.buttonStatus
+      paths: this._optionsBeforeDraw.paths
     }, this._operationExistedBeforeDraw)
   }
 
@@ -319,7 +320,6 @@ class BrushControl extends Control {
    * @return {[type]}   [description]
    */
   _onMouseLeave (e) {
-    this._painting = false
     this._hideCursor()
   }
 

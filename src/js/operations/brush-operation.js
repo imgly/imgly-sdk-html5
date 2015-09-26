@@ -152,6 +152,11 @@ class BrushOperation extends Operation {
    * @private
    */
   renderBrushCanvas (outputCanvas, canvas = this._brushCanvas) {
+    if (this._dirty) {
+      const context = canvas.getContext('2d')
+      context.clearRect(0, 0, canvas.width, canvas.height)
+    }
+
     if (canvas.width !== outputCanvas.width ||
         canvas.height !== outputCanvas.height) {
       canvas.width = outputCanvas.width
@@ -167,10 +172,12 @@ class BrushOperation extends Operation {
 
   /**
    * Creates and adds a new path
+   * @param {Number} thickness 
+   * @param {Color} color 
    * @return {BrushOperation.Path} 
    */
-  createPath () {
-    const path = new BrushOperation.Path(this)
+  createPath (thickness, color) {
+    const path = new BrushOperation.Path(this, thickness, color)
     this._options.paths.push(path)
     return path
   }
@@ -230,9 +237,9 @@ BrushOperation.prototype.availableOptions = {
  * Represents a path that can be drawn on a canvas
  */
 BrushOperation.Path = class Path {
-  constructor (operation) {
-    this._thickness = operation.getThickness()
-    this._color = operation.getColor()
+  constructor (operation, thickness, color) {
+    this._thickness = thickness
+    this._color = color
     this._controlPoints = []
   }
 
