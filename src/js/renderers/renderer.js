@@ -231,7 +231,6 @@ class Renderer extends EventEmitter {
   }
 
   setSize (size) { this._size.copy(size) }
-  getSize () { return this._size.clone() }
 }
 
 export default Renderer

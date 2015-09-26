@@ -90,8 +90,6 @@ class CanvasRenderer extends Renderer {
         return
       }
 
-    console.log('resizeTo')
-
     // Create a temporary canvas to draw to
     var newCanvas = this.createCanvas()
     newCanvas.width = dimensions.x
@@ -161,8 +159,6 @@ class CanvasRenderer extends Renderer {
       this._canvas.height === dimensions.y) {
         return
       }
-
-    console.log('setSize')
 
     this._canvas.width = dimensions.x
     this._canvas.height = dimensions.y
