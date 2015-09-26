@@ -8,12 +8,19 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import RadialBlurControls from './radial-blur-controls-component'
+import RadialBlurControlsComponent from './radial-blur-controls-component'
+import RadialBlurCanvasControlsComponent from './radial-blur-canvas-controls-component'
 
 export default {
-  canvasControls: null,
-  controls: RadialBlurControls,
+  canvasControls: RadialBlurCanvasControlsComponent,
+  controls: RadialBlurControlsComponent,
   identifier: 'radial-blur',
+  getInitialSharedState: (context) => {
+    return {
+      operationExistedBefore: context.ui.operationExists('radial-blur'),
+      operation: context.ui.getOrCreateOperation('radial-blur')
+    }
+  },
   isSelectable: (ui) => {
     return ui.isOperationSelected('radial-blur')
   }

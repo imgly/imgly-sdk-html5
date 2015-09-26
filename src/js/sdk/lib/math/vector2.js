@@ -264,6 +264,14 @@ class Vector2 {
   }
 
   /**
+   * Returns the euclidean length of this vector
+   * @return {Number}
+   */
+  len () {
+    return Math.sqrt(this.x * this.x + this.y * this.y)
+  }
+
+  /**
    * Returns a string representation of this vector
    * @return {String}
    */
