@@ -205,8 +205,10 @@ class BrushControl extends Control {
   _onBack () {
     if (!this._operationExistedBefore && !this._operation.getPaths().length) {
       this._ui.removeOperation('brush')
+    } else {
+      this._operation.dirty = true
     }
-    this._ui.canvas.setZoomLevel(this._initialZoomLevel, false)
+    this._ui.canvas.setZoomLevel(this._initialZoomLevel)
   }
 
   /**
@@ -214,15 +216,6 @@ class BrushControl extends Control {
    */
   _resetOperationSettings () {
     this._operation.setPaths(this._initialOptions.paths)
-  }
-
-  /**
-   * Gets called when the done button has been clicked
-   * @protected
-   */
-  _onDone () {
-    this._operation.dirty = true
-    this._ui.canvas.setZoomLevel(this._initialZoomLevel)
   }
 
   /**
@@ -257,7 +250,6 @@ class BrushControl extends Control {
     this._currentPath.addControlPoint(mousePosition)
 
     this._redrawPath()
-    this._highlightDoneButton()
   }
 
   /**
@@ -347,7 +339,6 @@ class BrushControl extends Control {
    */
   _onColorUpdate (value) {
     this._currentColor = value
-    this._highlightDoneButton()
     this._setCursorColor(value)
   }
 
