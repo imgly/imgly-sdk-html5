@@ -115,7 +115,7 @@ FramesOperation.identifier = 'frames'
  */
 FramesOperation.prototype.availableOptions = {
   color: { type: 'color', default: new Color(0, 0, 0, 1) },
-  thickness: { type: 'number', default: 0.02 }
+  thickness: { type: 'number', default: 0.05 }
 }
 
 export default FramesOperation

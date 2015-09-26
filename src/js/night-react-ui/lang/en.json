@@ -11,7 +11,8 @@
       "text": "Text"
     },
     "frames": {
-      "color": "Color"
+      "color": "Color",
+      "thickness": "Thickness"
     },
     "text": {
       "foreground": "Foreground",
