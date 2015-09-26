@@ -129,7 +129,6 @@ class BrushControl extends Control {
    * Sets up the operation
    */
   _setupOperation () {
-    this._operationExistedBefore = !!this._ui.operations.brush
     this._operation = this._ui.getOrCreateOperation('brush')
   }
 
@@ -204,11 +203,6 @@ class BrushControl extends Control {
    */
   _onBack () {
     this._ui.canvas.setZoomLevel(this._initialZoomLevel, false)
-    if (this._operationExistedBefore) {
-      this._resetOperationSettings()
-    } else {
-      this._ui.removeOperation('brush')
-    }
   }
 
   /**
@@ -224,10 +218,7 @@ class BrushControl extends Control {
    */
   _onDone () {
     this._operation.dirty = true
-    this._ui.canvas.setZoomLevel(this._initialZoomLevel, false)
-    this._ui.addHistory(this, {
-      paths: this._initialOptions.paths
-    }, this._operationExistedBefore)
+    this._ui.canvas.setZoomLevel(this._initialZoomLevel)
   }
 
   /**
