@@ -277,6 +277,14 @@ class Operation extends EventEmitter {
   }
 
   /**
+   * Gets called when this operation has been marked as dirty
+   * @protected
+   */
+  _onDirty () {
+
+  }
+
+  /**
    * Resets this operation
    */
   reset () {
@@ -290,6 +298,7 @@ class Operation extends EventEmitter {
    */
   set dirty (dirty) {
     this._dirty = dirty
+    this._onDirty && this._onDirty()
   }
 
   /**

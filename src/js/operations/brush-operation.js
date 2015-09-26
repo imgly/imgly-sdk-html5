@@ -10,6 +10,7 @@
 
 import Operation from './operation'
 import Vector2 from '../lib/math/vector2'
+import Color from '../lib/color'
 
 /**
  * An operation that can draw brushes on the canvas
@@ -67,6 +68,8 @@ class BrushOperation extends Operation {
         }
       }
     `
+
+    this._brushCanvas = document.createElement('canvas')
   }
 
   /**
@@ -76,10 +79,10 @@ class BrushOperation extends Operation {
    */
   /* istanbul ignore next */
   _renderWebGL (renderer) {
-    var pathCanvas = this._renderBrushCanvas(renderer)
+    this.renderBrushCanvas(renderer.getCanvas())
     var gl = renderer.getContext()
     this._setupProgram(renderer)
-    this._uploadCanvasToTexture(gl, pathCanvas)
+    this._uploadCanvasToTexture(gl, this._brushCanvas)
 
     // use the complete area available
     var position = new Vector2(0, 0)
@@ -137,53 +140,39 @@ class BrushOperation extends Operation {
    * @private
    */
   _renderCanvas (renderer) {
-    var pathCanvas = this._renderBrushCanvas(renderer)
+    this.renderBrushCanvas(renderer.getCanvas())
     var context = renderer.getContext()
-    context.drawImage(pathCanvas, 0, 0)
+    context.drawImage(this._brushCanvas, 0, 0)
   }
 
   /**
    * Renders the brush canvas that will be used as a texture in WebGL
    * and as an image in canvas
-   * @return {Canvas}
+   * @param {Canvas} canvas
    * @private
    */
-  _renderBrushCanvas (renderer) {
-    if (!this._brushCanvas) {
-      this._brushCanvas = renderer.createCanvas()
-    }
-    let context = this._brushCanvas.getContext('2d')
-
-    let outputCanvas = renderer.getCanvas()
-    let canvasSize = new Vector2(outputCanvas.width, outputCanvas.height)
-    this._brushCanvas.width = canvasSize.x
-    this._brushCanvas.height = canvasSize.y
-    let longerSide = this._getLongerSideSize(outputCanvas)
-
-    let metaIndex = 0
-    context.clearRect(0, 0, context.canvas.width, context.canvas.height)
-    context.lineJoin = 'round'
-
-    var controlPoints = this._options.controlPoints.map((point) => {
-      return point.clone().multiply(canvasSize)
-    })
-
-    for (var i = 0; i < controlPoints.length; i++) {
-      context.beginPath()
-      if (this._options.buttonStatus[i] && i) {
-        context.moveTo(controlPoints[i - 1].x, controlPoints[i - 1].y)
-      } else {
-        context.strokeStyle = this._options.colors[metaIndex].toHex()
-        context.lineWidth = this._options.thicknesses[metaIndex] * longerSide
-        metaIndex++
-        context.moveTo(controlPoints[i].x - 1, controlPoints[i].y)
-      }
-      context.lineTo(controlPoints[i].x, controlPoints[i].y)
-      context.closePath()
-      context.stroke()
+  renderBrushCanvas (outputCanvas, canvas = this._brushCanvas) {
+    if (canvas.width !== outputCanvas.width ||
+        canvas.height !== outputCanvas.height) {
+      canvas.width = outputCanvas.width
+      canvas.height = outputCanvas.height
     }
 
-    return this._brushCanvas
+    const paths = this._options.paths
+    for (let i = 0; i < paths.length; i++) {
+      const path = paths[i]
+      path.renderToCanvas(canvas)
+    }
+  }
+
+  /**
+   * Creates and adds a new path
+   * @return {BrushOperation.Path} 
+   */
+  createPath () {
+    const path = new BrushOperation.Path(this)
+    this._options.paths.push(path)
+    return path
   }
 
   /**
@@ -192,7 +181,7 @@ class BrushOperation extends Operation {
    * @return {Number}
    */
   _getLongerSideSize (canvas) {
-    return canvas.width > canvas.height ? canvas.width : canvas.height
+    return Math.max(canvas.width, canvas.height)
   }
 
   /**
@@ -212,6 +201,12 @@ class BrushOperation extends Operation {
     var thicknesses = this.getThicknesses()
     return thicknesses[thicknesses.length - 1]
   }
+
+  _onDirty () {
+    this._options.paths.forEach((path) => {
+      path.setDirty()
+    })
+  }
 }
 
 /**
@@ -226,10 +221,96 @@ BrushOperation.prototype.identifier = 'brush'
  * @type {Object}
  */
 BrushOperation.prototype.availableOptions = {
-  colors: { type: 'array', default: [] },
-  thicknesses: { type: 'array', default: [] },
-  controlPoints: { type: 'array', default: [] },
-  buttonStatus: { type: 'array', default: [] }
+  paths: { type: 'array', default: [] },
+  thickness: { type: 'number', default: 0.02 },
+  color: { type: 'color', default: new Color(1.0, 0.0, 0.0, 1.0) }
+}
+
+/**
+ * Represents a path that can be drawn on a canvas
+ */
+BrushOperation.Path = class Path {
+  constructor (operation) {
+    this._thickness = operation.getThickness()
+    this._color = operation.getColor()
+    this._controlPoints = []
+  }
+
+  renderToCanvas (canvas) {
+    if (this._controlPoints.length < 2) return
+
+    let lastControlPoint = this._controlPoints[0]
+    let controlPoint = lastControlPoint
+    for (let i = 1; i < this._controlPoints.length; i++) {
+      controlPoint = this._controlPoints[i]
+      controlPoint.renderToCanvas(canvas, lastControlPoint)
+      lastControlPoint = controlPoint
+    }
+  }
+
+  addControlPoint (position) {
+    const controlPoint = new BrushOperation.ControlPoint(this, position)
+    this._controlPoints.push(controlPoint)
+  }
+
+  getColor () {
+    return this._color
+  }
+
+  getThickness () {
+    return this._thickness
+  }
+
+  setDirty () {
+    this._controlPoints.forEach((point) => {
+      point.setDirty()
+    })
+  }
+}
+
+/**
+ * Represents a control point of a path
+ */
+BrushOperation.ControlPoint = class ControlPoint {
+  constructor (path, position) {
+    this._path = path
+    this._drawnCanvases = []
+    this._position = position
+  }
+
+  renderToCanvas (canvas, lastControlPoint) {
+    if (this._drawnCanvases.indexOf(canvas) !== -1) {
+      // This control point has already been drawn on this canvas. Ignore.
+      return
+    }
+
+    const context = canvas.getContext('2d')
+    const canvasSize = new Vector2(canvas.width, canvas.height)
+    const longerSide = Math.max(canvasSize.x, canvasSize.y)
+
+    const position = this._position.clone().multiply(canvasSize)
+    const lastPosition = lastControlPoint.getPosition()
+      .clone()
+      .multiply(canvasSize)
+
+    context.beginPath()
+    context.lineJoin = 'round'
+    context.strokeStyle = this._path.getColor().toHex()
+    context.lineWidth = this._path.getThickness() * longerSide
+    context.moveTo(lastPosition.x, lastPosition.y)
+    context.lineTo(position.x, position.y)
+    context.closePath()
+    context.stroke()
+    this._drawnCanvases.push(canvas)
+  }
+
+  getPosition () {
+    return this._position.clone()
+  }
+
+  setDirty () {
+    this._drawnCanvases = []
+  }
 }
 
 export default BrushOperation

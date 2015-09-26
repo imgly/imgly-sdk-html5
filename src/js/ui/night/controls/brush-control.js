@@ -49,17 +49,19 @@ class BrushControl extends Control {
   _onEnter () {
     super._onEnter()
     this._handleThicknessButton()
+    this._setupCanvas()
     this._setupOperation()
     this._setupOptions()
-    this._bindEventHandler()
+    this._bindEventHandlers()
     this._setupContainer()
-    this._initCurrentValues()
     this._setupSlider()
+    this._initCurrentValues()
     this._setupColorPicker()
+
     this._initialZoomLevel = this._ui.canvas.zoomLevel
     this._ui.canvas.zoomToFit()
+
     this._setupCursor()
-    this._redrawPath()
   }
 
   /**
@@ -90,17 +92,8 @@ class BrushControl extends Control {
    * In that case it will default some vales
    */
   _initCurrentValues () {
-    if (this._operation.getThicknesses().length > 0) {
-      this._currentThickness = this._operation.getLastThickness()
-    } else {
-      this._currentThickness = 0.02
-    }
-
-    if (this._operation.getColors().length > 0) {
-      this._currentColor = this._operation.getLastColor()
-    } else {
-      this._currentColor = new Color(1, 0, 0, 1)
-    }
+    this._currentThickness = this._operation.getThickness()
+    this._currentColor = this._operation.getColor()
   }
 
   /**
@@ -117,11 +110,19 @@ class BrushControl extends Control {
    */
   _setupOptions () {
     this._initialOptions = {
-      colors: this._operation.getColors().slice(0),
-      thicknesses: this._operation.getThicknesses().slice(0),
-      controlPoints: this._operation.getControlPoints().slice(0),
-      buttonStatus: this._operation.getButtonStatus().slice(0)
+      paths: this._operation.getPaths().slice(0)
     }
+  }
+
+  /**
+   * Sets up the canvas
+   * @private
+   */
+  _setupCanvas () {
+    const { canvas } = this._ui
+    this._canvas = this._canvasControls.querySelector('canvas')
+    this._canvas.width = canvas.size.x
+    this._canvas.height = canvas.size.y
   }
 
   /**
@@ -149,7 +150,7 @@ class BrushControl extends Control {
   /**
    * Bind event handlers
    */
-  _bindEventHandler () {
+  _bindEventHandlers () {
     this._onMouseDown = this._onMouseDown.bind(this)
     this._onMouseUp = this._onMouseUp.bind(this)
     this._onMouseMove = this._onMouseMove.bind(this)
@@ -208,17 +209,13 @@ class BrushControl extends Control {
     } else {
       this._ui.removeOperation('brush')
     }
-    this._ui.canvas.render()
   }
 
   /**
    * Resets the operation options to the initial options
    */
   _resetOperationSettings () {
-    this._operation.setControlPoints(this._initialOptions.controlPoints)
-    this._operation.setButtonStatus(this._initialOptions.buttonStatus)
-    this._operation.setColors(this._initialOptions.colors)
-    this._operation.setThicknesses(this._initialOptions.thicknesses)
+    this._operation.setPahts(this._initialOptions.paths)
   }
 
   /**
@@ -228,10 +225,7 @@ class BrushControl extends Control {
   _onDone () {
     this._ui.canvas.setZoomLevel(this._initialZoomLevel, false)
     this._ui.addHistory(this, {
-      colors: this._initialOptions.colors,
-      thicknesses: this._initialOptions.thicknesses,
-      controlPoints: this._initialOptions.controlPoints,
-      buttonStatus: this._initialOptions.buttonStatus
+      paths: this._initialOptions.paths
     }, this._operationExistedBefore)
   }
 
@@ -241,13 +235,9 @@ class BrushControl extends Control {
    * @param  {Event} e
    */
   _onMouseDown (e) {
-    this._operationExistedBeforeDraw = !!this._operation.getColors().length
-    this._optionsBeforeDraw = {
-      colors: this._operation.getColors().slice(0),
-      thicknesses: this._operation.getThicknesses().slice(0),
-      controlPoints: this._operation.getControlPoints().slice(0),
-      buttonStatus: this._operation.getButtonStatus().slice(0)
-    }
+    const paths = this._operation.getPaths()
+    this._operationExistedBeforeDraw = !!paths.length
+    this._optionsBeforeDraw = { paths }
 
     if (Utils.isTouchEvent(e)) {
       this._showCursor()
@@ -263,9 +253,10 @@ class BrushControl extends Control {
     event.preventDefault()
     var mousePosition = this._getRelativeMousePositionFromEvent(event)
     this._painting = true
-    this._addCurrentColor()
-    this._addCurrentThickness()
-    this._addControlPoint(mousePosition, false)
+
+    this._currentPath = this._operation.createPath()
+    this._currentPath.addControlPoint(mousePosition)
+
     this._redrawPath()
     this._highlightDoneButton()
   }
@@ -296,6 +287,14 @@ class BrushControl extends Control {
   }
 
   /**
+   * Redraws the current path
+   * @private
+   */
+  _redrawPath () {
+    this._operation.renderBrushCanvas(this._canvas, this._canvas)
+  }
+
+  /**
    * Gets called when the user drags the mouse.
    * If this happends while the mouse button is pressed,
    * the visited points get added to the path
@@ -308,7 +307,7 @@ class BrushControl extends Control {
       this._showCursor()
     }
     if (this._painting) {
-      this._addControlPoint(mousePosition, true)
+      this._currentPath.addControlPoint(mousePosition)
       this._redrawPath()
     }
   }
@@ -322,49 +321,6 @@ class BrushControl extends Control {
   _onMouseLeave (e) {
     this._painting = false
     this._hideCursor()
-  }
-
-  /**
-   * Adds a control point to the path.
-   * Also the status of the mouse button, i.e. pressed or not, will be logged
-   * @param {Vector2} position
-   * @param {Boolean} mouseButtonPressed = false
-   */
-  _addControlPoint (position, mouseButtonPressed = false) {
-    var controlPoints = this._operation.getControlPoints()
-    controlPoints.push(position)
-    this._operation.setControlPoints(controlPoints)
-
-    var buttonStatus = this._operation.getButtonStatus()
-    buttonStatus.push(mouseButtonPressed)
-    this._operation.setButtonStatus(buttonStatus)
-  }
-
-  /**
-   * Adds the current selected color to the array of colors of the operation.
-   * That color will be used to paint the next stroke
-   */
-  _addCurrentColor () {
-    var colors = this._operation.getColors()
-    colors.push(this._currentColor.clone())
-    this._operation.setColors(colors)
-  }
-
-  /**
-   * Adds the current selected thickness to the array of thicknesses of the operation.
-   * That thickness will be used to paint the next stroke
-   */
-  _addCurrentThickness () {
-    var thicknesses = this._operation.getThicknesses()
-    thicknesses.push(this._currentThickness)
-    this._operation.setThicknesses(thicknesses)
-  }
-
-  /**
-   * Triggers a path-redraw
-   */
-  _redrawPath () {
-    this._ui.canvas.render()
   }
 
   /**
@@ -406,7 +362,8 @@ class BrushControl extends Control {
    * @return {Number}
    */
   _getLongerSideSize () {
-    return this._ui.canvas.size.x > this._ui.canvas.size.y ? this._ui.canvas.size.x : this._ui.canvas.size.y
+    const { size } = this._ui.canvas
+    return Math.max(size.x, size.y)
   }
 
   /**
