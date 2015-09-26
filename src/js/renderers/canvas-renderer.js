@@ -85,10 +85,10 @@ class CanvasRenderer extends Renderer {
    */
   resizeTo (dimensions) {
     dimensions = dimensions.clone().floor()
-    if (newCanvas.width === dimensions.x &&
-      newCanvas.height === dimensions.y) {
-        return
-      }
+    if (this._canvas.width === dimensions.x &&
+        this._canvas.height === dimensions.y) {
+      return
+    }
 
     // Create a temporary canvas to draw to
     var newCanvas = this.createCanvas()
