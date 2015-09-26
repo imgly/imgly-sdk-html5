@@ -11,6 +11,7 @@
 
 import { ReactBEM, BaseChildComponent, Constants } from '../../../globals'
 import SliderComponent from '../../slider-component'
+import ColorPickerComponent from '../../color-picker/color-picker-component'
 
 export default class FramesControlsComponent extends BaseChildComponent {
   constructor (...args) {
@@ -78,7 +79,9 @@ export default class FramesControlsComponent extends BaseChildComponent {
           value={currentWidth} />
       </div>
       <div bem='e:cell m:colorPicker'>
-
+        <ColorPickerComponent
+          initialValue={this._operation.getColor()}
+          onChange={this._onColorUpdate} />
       </div>
     </div>)
   }
