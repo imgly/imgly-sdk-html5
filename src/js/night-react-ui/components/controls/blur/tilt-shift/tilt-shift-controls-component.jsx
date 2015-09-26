@@ -12,7 +12,7 @@
 import { ReactBEM, BaseChildComponent, Constants } from '../../../../globals'
 import SliderComponent from '../../../slider-component'
 
-export default class SaturationControlsComponent extends BaseChildComponent {
+export default class TiltShiftControlsComponent extends BaseChildComponent {
   constructor (...args) {
     super(...args)
 
