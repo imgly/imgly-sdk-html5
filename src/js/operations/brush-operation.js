@@ -12,6 +12,9 @@ import Operation from './operation'
 import Vector2 from '../lib/math/vector2'
 import Color from '../lib/color'
 
+const DEFAULT_THICKNESS = 0.02
+const DEFAULT_COLOR = new Color(1.0, 0.0, 0.0, 1.0)
+
 /**
  * An operation that can draw brushes on the canvas
  *
@@ -196,8 +199,9 @@ class BrushOperation extends Operation {
    * @return {Color}
    */
   getLastColor () {
-    var colors = this.getColors()
-    return colors[colors.length - 1]
+    const lastPath = this._options.paths[this._options.paths.length - 1]
+    if (!lastPath) return DEFAULT_COLOR
+    return lastPath.getColor()
   }
 
   /**
@@ -205,10 +209,15 @@ class BrushOperation extends Operation {
    * @return {Thickness}
    */
   getLastThickness () {
-    var thicknesses = this.getThicknesses()
-    return thicknesses[thicknesses.length - 1]
+    const lastPath = this._options.paths[this._options.paths.length - 1]
+    if (!lastPath) return DEFAULT_THICKNESS
+    return lastPath.getThickness()
   }
 
+  /**
+   * Gets called when this operation has been set to dirty
+   * @private
+   */
   _onDirty () {
     this._options.paths.forEach((path) => {
       path.setDirty()
@@ -228,9 +237,7 @@ BrushOperation.prototype.identifier = 'brush'
  * @type {Object}
  */
 BrushOperation.prototype.availableOptions = {
-  paths: { type: 'array', default: [] },
-  thickness: { type: 'number', default: 0.02 },
-  color: { type: 'color', default: new Color(1.0, 0.0, 0.0, 1.0) }
+  paths: { type: 'array', default: [] }
 }
 
 /**

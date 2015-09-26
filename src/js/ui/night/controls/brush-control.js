@@ -92,8 +92,8 @@ class BrushControl extends Control {
    * In that case it will default some vales
    */
   _initCurrentValues () {
-    this._currentThickness = this._operation.getThickness()
-    this._currentColor = this._operation.getColor()
+    this._currentThickness = this._currentThickness || this._operation.getLastThickness()
+    this._currentColor = this._currentColor || this._operation.getLastColor()
   }
 
   /**
@@ -129,6 +129,7 @@ class BrushControl extends Control {
    * Sets up the operation
    */
   _setupOperation () {
+    this._operationExistedBefore = !!this._ui.operations.brush
     this._operation = this._ui.getOrCreateOperation('brush')
   }
 
@@ -164,12 +165,12 @@ class BrushControl extends Control {
 
     let sliderElement = this._controls.querySelector('.imglykit-slider')
     this._slider = new SimpleSlider(sliderElement, {
-      minValue: 1,
-      maxValue: 30
+      minValue: 0.01,
+      maxValue: 0.2
     })
     this._onThicknessUpdate = this._onThicknessUpdate.bind(this)
     this._slider.on('update', this._onThicknessUpdate)
-    this._slider.setValue(this._currentThickness * this._getLongerSideSize())
+    this._slider.setValue(this._currentThickness)
   }
 
   /**
@@ -202,6 +203,9 @@ class BrushControl extends Control {
    * @override
    */
   _onBack () {
+    if (!this._operationExistedBefore && !this._operation.getPaths().length) {
+      this._ui.removeOperation('brush')
+    }
     this._ui.canvas.setZoomLevel(this._initialZoomLevel, false)
   }
 
@@ -333,8 +337,7 @@ class BrushControl extends Control {
    * @override
    */
   _onThicknessUpdate (value) {
-    this._currentThickness = value / this._getLongerSideSize()
-    // this._highlightDoneButton()
+    this._currentThickness = value
     this._setCursorSize(this._currentThickness * this._getLongerSideSize())
   }
 
