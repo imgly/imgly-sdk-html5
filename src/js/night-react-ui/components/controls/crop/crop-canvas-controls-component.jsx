@@ -27,7 +27,7 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
     this._operation = this.getSharedState('operation')
 
     if (this.props.sharedState) {
-      this.props.sharedState.set({
+      this.setSharedState({
         start: new Vector2(0, 0),
         end: new Vector2(1, 1)
       }, false)
@@ -41,8 +41,8 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
    * @private
    */
   _onCenterDragStart () {
-    this._initialStart = this.props.sharedState.get('start').clone()
-    this._initialEnd = this.props.sharedState.get('end').clone()
+    this._initialStart = this.getSharedState('start').clone()
+    this._initialEnd = this.getSharedState('end').clone()
     this._initialCropSize = this._initialEnd.clone().subtract(this._initialStart)
   }
 
@@ -66,7 +66,7 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
     const newEnd = newStart.clone()
       .add(this._initialCropSize)
 
-    this.props.sharedState.set({ start: newStart, end: newEnd })
+    this.setSharedState({ start: newStart, end: newEnd })
   }
 
   /**
@@ -84,7 +84,7 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
    */
   _onKnobDragStart (optionName) {
     this._currentDragOption = optionName
-    this._initialDragValue = this.props.sharedState.get(optionName).clone()
+    this._initialDragValue = this.getSharedState(optionName).clone()
   }
 
   /**
@@ -94,8 +94,8 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
    * @private
    */
   _onKnobDrag (optionName, offset) {
-    const start = this.props.sharedState.get('start')
-    const end = this.props.sharedState.get('end')
+    const start = this.getSharedState('start')
+    const end = this.getSharedState('end')
 
     const { kit } = this.context
     const canvasDimensions = kit.getOutputDimensions()
@@ -125,7 +125,7 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
         break
     }
 
-    this.props.sharedState.set({ [this._currentDragOption]: newValue })
+    this.setSharedState({ [this._currentDragOption]: newValue })
   }
 
   /**
@@ -162,8 +162,8 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
   _getAreaStyles () {
     const canvasDimensions = this.props.editor.getCanvasDimensions()
 
-    const start = this.props.sharedState.get('start').clone().multiply(canvasDimensions).floor()
-    const end = this.props.sharedState.get('end').clone().multiply(canvasDimensions).ceil()
+    const start = this.getSharedState('start').clone().multiply(canvasDimensions).floor()
+    const end = this.getSharedState('end').clone().multiply(canvasDimensions).ceil()
     const size = end.clone().subtract(start)
 
     return {
