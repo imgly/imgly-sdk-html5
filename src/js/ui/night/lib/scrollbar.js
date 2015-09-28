@@ -25,6 +25,10 @@ class Scrollbar {
     this._isDragging = false
     this._isHovering = false
 
+    if (!this._browserSupported()) {
+      return
+    }
+
     this._appendDOM()
     this._resizeButton()
     this._updateValues()
@@ -47,6 +51,19 @@ class Scrollbar {
     this._list.addEventListener('scroll', this._onListScroll.bind(this))
 
     this._onListScroll()
+  }
+
+  /**
+   * Checks whether this feature is supported in the current browser
+   * @return {Boolean}
+   * @private
+   */
+  _browserSupported () {
+    const IEMatch = navigator.appVersion.match(/MSIE ([\d.]+)/)
+    if (IEMatch && parseFloat(IEMatch[1]) <= 9) {
+      return false
+    }
+    return true
   }
 
   /**
@@ -92,6 +109,7 @@ class Scrollbar {
    * Shows the scrollbar
    */
   show () {
+    if (!this._browserSupported()) return
     if (!this._isScrollingNecessary) return
     Utils.classList(this._dom.background).add('visible')
   }
@@ -100,6 +118,7 @@ class Scrollbar {
    * Hides the scrollbar
    */
   hide () {
+    if (!this._browserSupported()) return
     if (this._isDragging) return
     Utils.classList(this._dom.background).remove('visible')
   }
@@ -253,6 +272,8 @@ class Scrollbar {
    * Removes the DOM elements and event listeners
    */
   remove () {
+    if (!this._browserSupported()) return
+
     this._dom.button.removeEventListener('mousedown', this._onButtonDown)
     this._dom.button.removeEventListener('touchstart', this._onButtonDown)
 
