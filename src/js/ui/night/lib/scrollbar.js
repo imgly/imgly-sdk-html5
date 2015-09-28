@@ -93,7 +93,7 @@ class Scrollbar {
    */
   show () {
     if (!this._isScrollingNecessary) return
-    this._dom.background.classList.add('visible')
+    Utils.classList(this._dom.background).add('visible')
   }
 
   /**
@@ -101,7 +101,7 @@ class Scrollbar {
    */
   hide () {
     if (this._isDragging) return
-    this._dom.background.classList.remove('visible')
+    Utils.classList(this._dom.background).remove('visible')
   }
 
   /**
@@ -225,11 +225,11 @@ class Scrollbar {
    */
   _appendDOM () {
     let background = document.createElement('div')
-    background.classList.add('imglykit-scrollbar-background')
+    Utils.classList(background).add('imglykit-scrollbar-background')
     background.style.bottom = `${maxScrollbarWidth}px`
 
     let button = document.createElement('div')
-    button.classList.add('imglykit-scrollbar-button')
+    Utils.classList(button).add('imglykit-scrollbar-button')
 
     background.appendChild(button)
     this._container.appendChild(background)

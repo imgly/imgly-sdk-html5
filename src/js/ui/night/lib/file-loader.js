@@ -9,6 +9,7 @@
  */
 
 import EventEmitter from '../../../lib/event-emitter'
+import Utils from '../../../lib/utils'
 
 class FileLoader extends EventEmitter {
   constructor (kit, ui) {
@@ -79,7 +80,7 @@ class FileLoader extends EventEmitter {
     e.preventDefault()
 
     this._dragCounter++
-    this._dropArea.classList.add('imglykit-splash-active')
+    Utils.classList(this._dropArea).add('imglykit-splash-active')
   }
 
   /**
@@ -102,7 +103,7 @@ class FileLoader extends EventEmitter {
     this._dragCounter--
 
     if (this._dragCounter === 0) {
-      this._dropArea.classList.remove('imglykit-splash-active')
+      Utils.classList(this._dropArea).remove('imglykit-splash-active')
     }
   }
 
@@ -116,7 +117,7 @@ class FileLoader extends EventEmitter {
     e.preventDefault()
     e.returnValue = false
 
-    this._dropArea.classList.remove('imglykit-splash-active')
+    Utils.classList(this._dropArea).remove('imglykit-splash-active')
 
     if (!e.dataTransfer) return
 

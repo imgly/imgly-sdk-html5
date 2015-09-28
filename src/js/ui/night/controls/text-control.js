@@ -430,7 +430,7 @@ class TextControl extends Control {
 
     this._applySettings()
 
-    item.classList.add('imglykit-controls-item-active')
+    Utils.classList(item).add('imglykit-controls-item-active')
 
     if (manually) {
       this._highlightDoneButton()
@@ -444,7 +444,7 @@ class TextControl extends Control {
   _deactivateAllItems () {
     for (let i = 0; i < this._listItems.length; i++) {
       let listItem = this._listItems[i]
-      listItem.classList.remove('imglykit-controls-item-active')
+      Utils.classList(listItem).remove('imglykit-controls-item-active')
     }
   }
 

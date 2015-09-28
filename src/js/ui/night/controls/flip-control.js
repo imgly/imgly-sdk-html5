@@ -10,6 +10,7 @@
  */
 
 import Control from './control'
+import Utils from '../../../lib/utils'
 
 class FlipControl extends Control {
   /**
@@ -94,9 +95,9 @@ class FlipControl extends Control {
   _toggleItem (item, active) {
     let activeClass = 'imglykit-controls-item-active'
     if (active) {
-      item.classList.add(activeClass)
+      Utils.classList(item).add(activeClass)
     } else {
-      item.classList.remove(activeClass)
+      Utils.classList(item).remove(activeClass)
     }
   }
 

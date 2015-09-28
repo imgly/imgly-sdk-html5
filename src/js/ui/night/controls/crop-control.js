@@ -189,7 +189,7 @@ class CropControl extends Control {
   _unselectAllRatios () {
     for (let i = 0; i < this._ratioItems.length; i++) {
       let item = this._ratioItems[i]
-      item.classList.remove('imglykit-controls-item-active')
+      Utils.classList(item).remove('imglykit-controls-item-active')
     }
   }
 
@@ -199,7 +199,7 @@ class CropControl extends Control {
    * @private
    */
   _selectRatio (item) {
-    item.classList.add('imglykit-controls-item-active')
+    Utils.classList(item).add('imglykit-controls-item-active')
     const ratio = item.getAttribute('data-ratio')
     const identifier = item.getAttribute('data-identifier')
     this._setRatio(identifier, ratio)

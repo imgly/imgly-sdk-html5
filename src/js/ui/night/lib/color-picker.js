@@ -100,7 +100,7 @@ class ColorPicker extends EventEmitter {
    * Hides the color picker
    */
   hide () {
-    this._overlay.classList.remove('imglykit-visible')
+    Utils.classList(this._overlay).remove('imglykit-visible')
     this._visible = false
   }
 
@@ -108,7 +108,7 @@ class ColorPicker extends EventEmitter {
    * Shows the color picker
    */
   show () {
-    this._overlay.classList.add('imglykit-visible')
+    Utils.classList(this._overlay).add('imglykit-visible')
     this._visible = true
   }
 
