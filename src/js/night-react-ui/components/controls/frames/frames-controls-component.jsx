@@ -80,7 +80,7 @@ export default class FramesControlsComponent extends BaseChildComponent {
       </div>
       <div bem='e:cell m:colorPicker'>
         <ColorPickerComponent
-          initialValue={this._operation.getColor()}
+          value={this._operation.getColor()}
           onChange={this._onColorUpdate} />
       </div>
     </div>)
