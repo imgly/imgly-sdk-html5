@@ -244,7 +244,7 @@ class BrushControl extends Control {
     this._painting = true
 
     this._currentPath = this._operation.createPath(
-      this._currentThickness, 
+      this._currentThickness,
       this._currentColor
     )
     this._currentPath.addControlPoint(mousePosition)
