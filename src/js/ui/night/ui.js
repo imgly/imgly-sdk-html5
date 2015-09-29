@@ -354,8 +354,8 @@ class NightUI extends UI {
    * @param {String} type = 'notice'
    */
   displayFlashMessage (headline, message, type = 'notice') {
-    this._flashText.innerText = message
-    this._flashHeadline.innerText = headline
+    this._flashText.textContent = message
+    this._flashHeadline.textContent = headline
     this._flashOverlay.style.display = 'block'
 
     this._flashOverlay.className = `imglykit-flashOverlay imglykit-flashOverlay--${type}`
@@ -725,7 +725,7 @@ class NightUI extends UI {
    * @param {String} message
    */
   displayLoadingMessage (message) {
-    this._loadingSpan.innerText = message
+    this._loadingSpan.textContent = message
     this._loadingOverlay.style.display = 'block'
   }
 
