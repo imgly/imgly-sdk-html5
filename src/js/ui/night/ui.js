@@ -9,6 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+import Promise from '../../vendor/native-promise-only'
 import Utils from '../../lib/utils'
 import Vector2 from '../../lib/math/vector2'
 import UI from '../base/ui'
@@ -660,6 +661,7 @@ class NightUI extends UI {
    */
   undo () {
     let lastItem = this._history.pop()
+    let promise = Promise.resolve()
     if (lastItem) {
       let { operation, existent, options } = lastItem
       if (!existent) {
@@ -668,14 +670,16 @@ class NightUI extends UI {
         operation = this.getOrCreateOperation(operation.identifier)
         operation.set(options)
       }
-      this.canvas.zoomToFit(true)
+      promise = this.canvas.zoomToFit(true)
     }
     this._topControls.updateUndoButton()
 
     // Make sure the current control represents the new value
-    if (this._currentControl) {
-      this._currentControl.update()
-    }
+    promise.then(() => {
+      if (this._currentControl) {
+        this._currentControl.update()
+      }
+    })
   }
 
   /**
