@@ -175,9 +175,9 @@ class BrushOperation extends Operation {
 
   /**
    * Creates and adds a new path
-   * @param {Number} thickness 
-   * @param {Color} color 
-   * @return {BrushOperation.Path} 
+   * @param {Number} thickness
+   * @param {Color} color
+   * @return {BrushOperation.Path}
    */
   createPath (thickness, color) {
     const path = new BrushOperation.Path(this, thickness, color)
