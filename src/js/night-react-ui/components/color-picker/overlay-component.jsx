@@ -17,6 +17,24 @@ import HueComponent from './hue-component'
 export default class ColorPickerOverlayComponent extends BaseChildComponent {
   constructor (...args) {
     super(...args)
+
+    this._value = this.props.initialValue.clone()
+
+    this._bindAll(
+      '_onColorChange'
+    )
+  }
+
+  // -------------------------------------------------------------------------- EVENTS
+
+  /**
+   * Gets called when the color changes
+   * @param  {Color} color
+   * @private
+   */
+  _onColorChange (color) {
+    this._value = color
+    this.props.onChange && this.props.onChange(color.clone())
   }
 
   // -------------------------------------------------------------------------- RENDERING
@@ -24,14 +42,16 @@ export default class ColorPickerOverlayComponent extends BaseChildComponent {
   renderWithBEM () {
     return (<div bem='$b:colorPicker $e:overlay'>
       <AlphaComponent
-        initialValue={this.props.initialValue}
+        initialValue={this._value}
+        onChange={this._onColorChange}
         />
       <div bem='e:bottom'>
         <SaturationComponent
-          initialValue={this.props.initialValue}
+          initialValue={this._value}
           />
         <HueComponent
-          initialValue={this.props.initialValue}
+          initialValue={this._value}
+          onChange={this._onColorChange}
           />
       </div>
     </div>)

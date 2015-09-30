@@ -23,11 +23,12 @@ import SharedState from './lib/shared-state'
 
 const Promise = PhotoEditorSDK.Promise
 const Log = PhotoEditorSDK.Log
+const Color = PhotoEditorSDK.Color
 const Vector2 = PhotoEditorSDK.Vector2
 const SDKUtils = PhotoEditorSDK.Utils
 const EventEmitter = PhotoEditorSDK.EventEmitter
 
 export {
   Log, Promise, Utils, React, BEM, Classnames, BaseChildComponent, ReactBEM, Vector2,
-  SDKUtils, EventEmitter, Constants, SharedState
+  SDKUtils, EventEmitter, Constants, SharedState, Color
 }

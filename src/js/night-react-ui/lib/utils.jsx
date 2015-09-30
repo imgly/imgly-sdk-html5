@@ -41,5 +41,28 @@ export default {
       y = e.touches[0].pageY
     }
     return new Vector2(x, y)
+  },
+
+  /**
+   * Creates a canvas with a transparency pattern
+   * @return {Canvas}
+   */
+  createTransparentPatternCanvas () {
+    const canvas = document.createElement('canvas')
+    const context = canvas.getContext('2d')
+
+    canvas.width = 10
+    canvas.height = 10
+
+    context.fillStyle = 'white'
+    context.fillRect(0, 0, canvas.width, canvas.height)
+    context.fillStyle = '#cccccc'
+    context.fillRect(0, 0, canvas.width / 2, canvas.height / 2)
+    context.fillRect(
+      canvas.width / 2, canvas.height / 2,
+      canvas.width, canvas.height
+    )
+
+    return canvas
   }
 }
