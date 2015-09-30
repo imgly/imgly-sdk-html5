@@ -21,9 +21,12 @@ export default class FramesControlsComponent extends BaseChildComponent {
     this._operation = ui.getOrCreateOperation('frames')
     this._bindAll(
       '_onBackClick',
-      '_onThicknessUpdate'
+      '_onThicknessUpdate',
+      '_onColorUpdate'
     )
   }
+
+  // -------------------------------------------------------------------------- EVENTS
 
   /**
    * Gets called when the thickness has been updated
@@ -48,6 +51,19 @@ export default class FramesControlsComponent extends BaseChildComponent {
   _onBackClick (e) {
     this.props.onSwitchControls('back')
   }
+
+  /**
+   * Gets called when the color has changed
+   * @param  {Color} color
+   * @private
+   */
+  _onColorUpdate (color) {
+    this._operation.setColor(color)
+    this._emitEvent(Constants.EVENTS.OPERATION_UPDATED, this._operation)
+    this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
+  }
+
+  // -------------------------------------------------------------------------- RENDERING
 
   /**
    * Renders this component

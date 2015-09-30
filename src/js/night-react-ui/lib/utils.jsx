@@ -34,11 +34,11 @@ export default {
    * @return {Vector2}
    */
   getEventPosition (e) {
-    let x = e.pageX
-    let y = e.pageY
+    let x = e.clientX
+    let y = e.clientY
     if (e.type.indexOf('touch') !== -1) {
-      x = e.touches[0].pageX
-      y = e.touches[0].pageY
+      x = e.touches[0].clientX
+      y = e.touches[0].clientY
     }
     return new Vector2(x, y)
   },
