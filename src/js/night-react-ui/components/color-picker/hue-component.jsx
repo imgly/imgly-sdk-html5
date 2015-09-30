@@ -30,10 +30,26 @@ export default class HueComponent extends BaseChildComponent {
   // -------------------------------------------------------------------------- LIFECYCLE
 
   /**
-   * Gets called when this component has been mounted
+   * Gets called after this component has been mounted
    */
   componentDidMount () {
-    this._renderColor()
+    super.componentDidMount()
+    this._renderCanvas()
+  }
+
+  /**
+   * Gets called when this component receives new props or state
+   * @param  {Object} newProps
+   * @return {Boolean}
+   */
+  shouldComponentUpdate (newProps) {
+    const { initialValue } = newProps
+    if (initialValue !== this._value) {
+      this._value = initialValue
+      this._renderCanvas()
+      return true
+    }
+    return false
   }
 
   // -------------------------------------------------------------------------- DRAG EVENTS
@@ -66,15 +82,6 @@ export default class HueComponent extends BaseChildComponent {
     this._value.fromHSV(h, s, v)
 
     this.props.onChange && this.props.onChange(this._value.clone())
-  }
-
-  // -------------------------------------------------------------------------- STYLING
-
-  _getKnobStyle () {
-    return {
-      left: 0,
-      top: 0
-    }
   }
 
   // -------------------------------------------------------------------------- STYLING
