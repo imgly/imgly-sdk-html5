@@ -25,6 +25,13 @@ $modifierSeparator: '--'
   &#{$elementSeparator}#{$name}
     @content
 
+@mixin elementsWithBaseSelector($baseSelector, $names...)
+  $selector: ()
+  @each $name in $names
+    $selector: append($selector, unquote('#{$baseSelector}#{$elementSeparator}#{$name}'), comma)
+  #{$selector}
+    @content
+
 @mixin elements($names...)
   $selector: ()
   @each $name in $names
@@ -46,3 +53,10 @@ $modifierSeparator: '--'
 @mixin flag($name)
   &.is-#{$name}
     @content
+
+@mixin parent_selector_with_elements($parentSelector, $names...)
+  $namesSelectors: ()
+  @each $name in $names
+    $namesSelectors: append($namesSelectors, unquote('&#{$elementSeparator}#{$name}'), comma)
+  &#{$parentSelector}
+    #{$namesSelectors}
