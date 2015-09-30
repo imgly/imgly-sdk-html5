@@ -17,6 +17,44 @@
 
     +element(overlay)
       position: absolute
+      bottom: 100%
+      right: 0
+      display: table
+      margin-bottom: 12px
       width: 220px
       height: 220px
+      padding: 10px
       background: $backgroundColor
+      cursor: default
+
+      +element(bottom)
+        @include clearfix
+        overflow: visible
+        margin-top: 10px
+
+    +elements(saturation, hue, alpha)
+      position: relative
+
+      +element(knob)
+        position: absolute
+
+    +element(saturation)
+      float: left
+      width: 160px
+      +element(canvas)
+        width: 100%
+        height: 160px
+
+    +element(hue)
+      float: right
+      width: 30px
+      +element(canvas)
+        width: 100%
+        height: 160px
+
+    +element(alpha)
+      width: 100%
+      height: 30px
+      +element(canvas)
+        width: 100%
+        height: 100%

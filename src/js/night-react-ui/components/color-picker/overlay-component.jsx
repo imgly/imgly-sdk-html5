@@ -10,6 +10,9 @@
  */
 
 import { ReactBEM, BaseChildComponent } from '../../globals'
+import AlphaComponent from './alpha-component'
+import SaturationComponent from './saturation-component'
+import HueComponent from './hue-component'
 
 export default class ColorPickerOverlayComponent extends BaseChildComponent {
   constructor (...args) {
@@ -19,8 +22,18 @@ export default class ColorPickerOverlayComponent extends BaseChildComponent {
   // -------------------------------------------------------------------------- RENDERING
 
   renderWithBEM () {
-    return (<div bem='$b:colorPicker e:overlay'>
-
+    return (<div bem='$b:colorPicker $e:overlay'>
+      <AlphaComponent
+        initialValue={this.props.initialValue}
+        />
+      <div bem='e:bottom'>
+        <SaturationComponent
+          initialValue={this.props.initialValue}
+          />
+        <HueComponent
+          initialValue={this.props.initialValue}
+          />
+      </div>
     </div>)
   }
 }
