@@ -16,6 +16,7 @@ export default class ColorPickerComponent extends BaseChildComponent {
   constructor (...args) {
     super(...args)
 
+    this._value = this.props.initialValue.clone()
     this._bindAll('_onButtonClick')
 
     this.state = {
@@ -64,7 +65,7 @@ export default class ColorPickerComponent extends BaseChildComponent {
     const context = canvas.getContext('2d')
 
     context.clearRect(0, 0, canvas.width, canvas.height)
-    context.fillStyle = this.props.value.toRGBA()
+    context.fillStyle = this._value.toRGBA()
     context.fillRect(0, 0, canvas.width, canvas.height)
   }
 
@@ -76,7 +77,7 @@ export default class ColorPickerComponent extends BaseChildComponent {
     let Overlay = null
     if (this.state.overlayVisible) {
       Overlay = (<ColorPickerOverlayComponent
-        initialValue={this.state.value} />)
+        initialValue={this._value} />)
     }
 
     return (<bem specifier='$b:controls'>
