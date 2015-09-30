@@ -58,12 +58,17 @@ export default class SaturationComponent extends BaseChildComponent {
 
   /**
    * Gets called when the user starts dragging the knob
+   * @param  {Vector} position
    * @param  {Event} e
    * @private
    */
-  _onKnobDragStart (e) {
-    this._initialValue = this._hsvColor.v
-    this._initialSaturation = this._hsvColor.s
+  _onKnobDragStart (position, e) {
+    if (e.target === this.refs.knob.getDOMNode()) {
+      this._initialValue = this._hsvColor.v
+      this._initialSaturation = this._hsvColor.s
+    } else {
+      this._setValuesFromPosition(position)
+    }
   }
 
   /**
@@ -80,17 +85,12 @@ export default class SaturationComponent extends BaseChildComponent {
     const saturationChange = offset.x / canvasWidth
     const valueChange = offset.y / canvasHeight * -1
 
-    let { h, s, v } = this._hsvColor
-    s = this._initialSaturation + saturationChange
-    v = this._initialValue + valueChange
-    s = Math.max(0.01, Math.min(s, 0.99))
-    v = Math.max(0.01, Math.min(v, 0.99))
-
-    this.forceUpdate()
-    this._value.fromHSV(h, s, v)
-    this._hsvColor = { h, s, v }
-
-    this.props.onChange && this.props.onChange(this._value)
+    let { h } = this._hsvColor
+    this._setHSV(
+      h,
+      this._initialSaturation + saturationChange,
+      this._initialValue + valueChange
+    )
   }
 
   // -------------------------------------------------------------------------- STYLING
@@ -107,6 +107,43 @@ export default class SaturationComponent extends BaseChildComponent {
       left: (s * 100).toFixed(2) + '%',
       top: ((1 - v) * 100).toFixed(2) + '%'
     }
+  }
+
+  // -------------------------------------------------------------------------- MISC
+
+  /**
+   * Sets the HSV values of the color to the given values
+   * @param {Number} h
+   * @param {Number} s
+   * @param {Number} v
+   * @private
+   */
+  _setHSV (h, s, v) {
+    s = Math.max(0.01, Math.min(s, 0.99))
+    v = Math.max(0.01, Math.min(v, 0.99))
+    this._value.fromHSV(h, s, v)
+    this._hsvColor = { h, s, v }
+
+    this.forceUpdate()
+    this.props.onChange && this.props.onChange(this._value)
+  }
+
+  /**
+   * Sets the values from the given cursor position
+   * @param {Vector2} position
+   * @private
+   */
+  _setValuesFromPosition (position) {
+    const canvas = this.refs.canvas.getDOMNode()
+    this._initialSaturation = position.x / canvas.offsetWidth
+    this._initialValue = 1 - (position.y / canvas.offsetHeight)
+
+    let { h } = this._hsvColor
+    this._setHSV(
+      h,
+      this._initialSaturation,
+      this._initialValue
+    )
   }
 
   // -------------------------------------------------------------------------- RENDERING
@@ -150,11 +187,16 @@ export default class SaturationComponent extends BaseChildComponent {
    */
   renderWithBEM () {
     return (<div bem='$b:colorPicker $e:saturation'>
-      <canvas bem='e:canvas' ref='canvas' />
       <DraggableComponent
         onStart={this._onKnobDragStart}
         onDrag={this._onKnobDrag}>
-        <div bem='e:knob $b:knob m:transparent' style={this._getKnobStyle()}></div>
+        <div>
+          <canvas bem='e:canvas' ref='canvas' />
+          <div
+            bem='e:knob $b:knob m:transparent'
+            ref='knob'
+            style={this._getKnobStyle()} />
+        </div>
       </DraggableComponent>
     </div>)
   }

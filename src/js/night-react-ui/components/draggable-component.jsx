@@ -8,7 +8,7 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-import { React, BaseChildComponent, Utils } from '../globals'
+import { React, BaseChildComponent, Utils, Vector2 } from '../globals'
 
 export default class DraggableComponent extends BaseChildComponent {
   constructor (...args) {
@@ -39,7 +39,17 @@ export default class DraggableComponent extends BaseChildComponent {
     document.addEventListener('mouseup', this._onDragEnd)
     document.addEventListener('touchend', this._onDragEnd)
 
-    this.props.onStart && this.props.onStart(e)
+    const element = this.refs.element.getDOMNode()
+    const boundingRect = element.getBoundingClientRect()
+    const elementOffset = new Vector2(
+      boundingRect.left,
+      boundingRect.top
+    )
+
+    const relativePosition = this._initialMousePosition
+      .clone()
+      .subtract(elementOffset)
+    this.props.onStart && this.props.onStart(relativePosition, e)
   }
 
   /**
@@ -87,7 +97,8 @@ export default class DraggableComponent extends BaseChildComponent {
 
     return React.cloneElement(this.props.children, {
       onMouseDown: this._onDragStart,
-      onTouchStart: this._onDragStart
+      onTouchStart: this._onDragStart,
+      ref: 'element'
     })
   }
 }

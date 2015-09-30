@@ -68,6 +68,8 @@ export default class ColorPickerComponent extends BaseChildComponent {
     this._value = value
     this._renderColor()
     this.forceUpdate()
+
+    this.props.onChange && this.props.onChange(value)
   }
 
   // -------------------------------------------------------------------------- RENDERING
