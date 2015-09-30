@@ -58,11 +58,16 @@ export default class HueComponent extends BaseChildComponent {
 
   /**
    * Gets called when the user starts dragging the knob
+   * @param  {Vector2} position
    * @param  {Event} e
    * @private
    */
-  _onKnobDragStart (e) {
-    this._initialHue = this._hsvColor.h
+  _onKnobDragStart (position, e) {
+    if (e.target === this.refs.knob.getDOMNode()) {
+      this._initialHue = this._hsvColor.h
+    } else {
+      this._setValueFromPosition(position)
+    }
   }
 
   /**
@@ -76,18 +81,7 @@ export default class HueComponent extends BaseChildComponent {
     const canvasHeight = canvas.offsetHeight
 
     const hueChange = offset.y / canvasHeight
-
-    let { h, s, v } = this._hsvColor
-    h = this._initialHue + hueChange
-    h = Math.min(1, Math.max(0, h))
-    s = Math.max(0.01, Math.min(s, 0.99))
-    v = Math.max(0.01, Math.min(v, 0.99))
-
-    this.forceUpdate()
-    this._value.fromHSV(h, s, v)
-    this._hsvColor = { h, s, v }
-
-    this.props.onChange && this.props.onChange(this._value)
+    this._setHue(this._initialHue + hueChange)
   }
 
   // -------------------------------------------------------------------------- STYLING
@@ -102,6 +96,36 @@ export default class HueComponent extends BaseChildComponent {
       left: '50%',
       top: (this._hsvColor.h * 100).toFixed(2) + '%'
     }
+  }
+
+  // -------------------------------------------------------------------------- MISC
+
+  /**
+   * Sets the hue value of the color to the given one
+   * @param {Number} h
+   * @private
+   */
+  _setHue (h) {
+    let { s, v } = this._hsvColor
+    h = Math.min(1, Math.max(0, h))
+    s = Math.max(0.01, Math.min(s, 0.99))
+    v = Math.max(0.01, Math.min(v, 0.99))
+
+    this._value.fromHSV(h, s, v)
+    this._hsvColor = { h, s, v }
+    this.forceUpdate()
+    this.props.onChange && this.props.onChange(this._value)
+  }
+
+  /**
+   * Sets the value from the given cursor position
+   * @param {Vector2} position
+   * @private
+   */
+  _setValueFromPosition (position) {
+    const canvas = this.refs.canvas.getDOMNode()
+    this._initialHue = position.y / canvas.offsetHeight
+    this._setHue(this._initialHue)
   }
 
   // -------------------------------------------------------------------------- RENDERING
@@ -136,11 +160,16 @@ export default class HueComponent extends BaseChildComponent {
    */
   renderWithBEM () {
     return (<div bem='$b:colorPicker $e:hue'>
-      <canvas bem='e:canvas' ref='canvas' />
       <DraggableComponent
         onStart={this._onKnobDragStart}
         onDrag={this._onKnobDrag}>
-        <div bem='e:knob $b:knob m:transparent' style={this._getKnobStyle()}></div>
+        <div>
+          <canvas bem='e:canvas' ref='canvas' />
+          <div
+            bem='e:knob $b:knob m:transparent'
+            ref='knob'
+            style={this._getKnobStyle()} />
+        </div>
       </DraggableComponent>
     </div>)
   }
