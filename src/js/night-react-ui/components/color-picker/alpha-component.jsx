@@ -124,6 +124,10 @@ export default class AlphaComponent extends BaseChildComponent {
     context.fillRect(0, 0, canvas.width, canvas.height)
   }
 
+  /**
+   * Renders this component
+   * @return {ReactBEM.Element}
+   */
   renderWithBEM () {
     return (<div bem='$b:colorPicker $e:alpha'>
       <canvas bem='e:canvas' ref='canvas' />

@@ -130,6 +130,10 @@ export default class HueComponent extends BaseChildComponent {
     }
   }
 
+  /**
+   * Renders this component
+   * @return {ReactBEM.Element}
+   */
   renderWithBEM () {
     return (<div bem='$b:colorPicker $e:hue'>
       <canvas bem='e:canvas' ref='canvas' />

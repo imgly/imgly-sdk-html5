@@ -144,6 +144,10 @@ export default class SaturationComponent extends BaseChildComponent {
     context.putImageData(imageData, 0, 0)
   }
 
+  /**
+   * Renders this component
+   * @return {ReactBEM.Element}
+   */
   renderWithBEM () {
     return (<div bem='$b:colorPicker $e:saturation'>
       <canvas bem='e:canvas' ref='canvas' />

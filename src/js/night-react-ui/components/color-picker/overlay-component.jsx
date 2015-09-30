@@ -41,6 +41,10 @@ export default class ColorPickerOverlayComponent extends BaseChildComponent {
 
   // -------------------------------------------------------------------------- RENDERING
 
+  /**
+   * Renders this component
+   * @return {ReactBEM.Element}
+   */
   renderWithBEM () {
     return (<div bem='$b:colorPicker $e:overlay'>
       <AlphaComponent
