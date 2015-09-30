@@ -44,7 +44,7 @@ export default class AlphaComponent extends BaseChildComponent {
   shouldComponentUpdate (newProps) {
     const { initialValue } = newProps
     if (initialValue !== this._value) {
-      this._value = initialValue
+      this._value = initialValue.clone()
       this._renderCanvas()
       return true
     }

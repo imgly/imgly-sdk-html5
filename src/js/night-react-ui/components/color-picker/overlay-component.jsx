@@ -19,6 +19,8 @@ export default class ColorPickerOverlayComponent extends BaseChildComponent {
     super(...args)
 
     this._value = this.props.initialValue.clone()
+    const [ h, s, v ] = this._value.toHSV()
+    this._hsv = { h, s, v }
 
     this._bindAll(
       '_onColorChange'
@@ -34,7 +36,7 @@ export default class ColorPickerOverlayComponent extends BaseChildComponent {
    */
   _onColorChange (color) {
     this._value = color
-    this.props.onChange && this.props.onChange(color.clone())
+    this.props.onChange && this.props.onChange(color)
   }
 
   // -------------------------------------------------------------------------- RENDERING
@@ -48,6 +50,7 @@ export default class ColorPickerOverlayComponent extends BaseChildComponent {
       <div bem='e:bottom'>
         <SaturationComponent
           initialValue={this._value}
+          onChange={this._onColorChange}
           />
         <HueComponent
           initialValue={this._value}
