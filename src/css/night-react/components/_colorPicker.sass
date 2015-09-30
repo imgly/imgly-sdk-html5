@@ -16,6 +16,7 @@
       height: 30px
 
     +element(overlay)
+      @include border-top-radius(4px)
       position: absolute
       bottom: 100%
       right: 0
@@ -41,6 +42,7 @@
     +element(saturation)
       float: left
       width: 160px
+      height: 160px
       +element(canvas)
         width: 100%
         height: 160px
@@ -48,6 +50,7 @@
     +element(hue)
       float: right
       width: 30px
+      height: 160px
       +element(canvas)
         width: 100%
         height: 160px

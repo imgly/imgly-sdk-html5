@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent } from '../../globals'
+import { ReactBEM, BaseChildComponent, Utils } from '../../globals'
 import ColorPickerOverlayComponent from './overlay-component'
 
 export default class ColorPickerComponent extends BaseChildComponent {
@@ -17,11 +17,16 @@ export default class ColorPickerComponent extends BaseChildComponent {
     super(...args)
 
     this._value = this.props.initialValue.clone()
-    this._bindAll('_onButtonClick')
+    this._bindAll(
+      '_onButtonClick',
+      '_onValueChange'
+    )
 
     this.state = {
       overlayVisible: false
     }
+
+    this._transparentPatternCanvas = Utils.createTransparentPatternCanvas()
   }
 
   // -------------------------------------------------------------------------- LIFECYCLE
@@ -54,6 +59,17 @@ export default class ColorPickerComponent extends BaseChildComponent {
     this.setState({ overlayVisible: !this.state.overlayVisible })
   }
 
+  /**
+   * Gets called when the value changes
+   * @param  {Color} value
+   * @private
+   */
+  _onValueChange (value) {
+    this._value = value
+    this._renderColor()
+    this.forceUpdate()
+  }
+
   // -------------------------------------------------------------------------- RENDERING
 
   /**
@@ -64,7 +80,13 @@ export default class ColorPickerComponent extends BaseChildComponent {
     const canvas = this.refs.canvas.getDOMNode()
     const context = canvas.getContext('2d')
 
-    context.clearRect(0, 0, canvas.width, canvas.height)
+    canvas.width = canvas.offsetWidth
+    canvas.height = canvas.offsetHeight
+
+    const pattern = context.createPattern(this._transparentPatternCanvas, 'repeat')
+    context.fillStyle = pattern
+    context.fillRect(0, 0, canvas.width, canvas.height)
+
     context.fillStyle = this._value.toRGBA()
     context.fillRect(0, 0, canvas.width, canvas.height)
   }
@@ -77,7 +99,8 @@ export default class ColorPickerComponent extends BaseChildComponent {
     let Overlay = null
     if (this.state.overlayVisible) {
       Overlay = (<ColorPickerOverlayComponent
-        initialValue={this._value} />)
+        initialValue={this._value}
+        onChange={this._onValueChange} />)
     }
 
     return (<bem specifier='$b:controls'>

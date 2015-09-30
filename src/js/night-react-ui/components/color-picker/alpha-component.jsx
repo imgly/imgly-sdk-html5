@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent } from '../../globals'
+import { ReactBEM, BaseChildComponent, Utils } from '../../globals'
 import DraggableComponent from '../draggable-component'
 
 export default class AlphaComponent extends BaseChildComponent {
@@ -23,14 +23,32 @@ export default class AlphaComponent extends BaseChildComponent {
     )
 
     this._value = this.props.initialValue.clone()
-    this._renderTransparentPatternCanvas()
+    this._transparentPatternCanvas = Utils.createTransparentPatternCanvas()
   }
 
   // -------------------------------------------------------------------------- LIFECYCLE
 
+  /**
+   * Gets called after this component has been mounted
+   */
   componentDidMount () {
     super.componentDidMount()
     this._renderCanvas()
+  }
+
+  /**
+   * Gets called when this component receives new props or state
+   * @param  {Object} newProps
+   * @return {Boolean}
+   */
+  shouldComponentUpdate (newProps) {
+    const { initialValue } = newProps
+    if (initialValue !== this._value) {
+      this._value = initialValue
+      this._renderCanvas()
+      return true
+    }
+    return false
   }
 
   // -------------------------------------------------------------------------- DRAG EVENTS
@@ -58,6 +76,8 @@ export default class AlphaComponent extends BaseChildComponent {
     this._value.a = this._initialAlpha + alphaChange
     this._value.a = Math.min(1, Math.max(0, this._value.a))
     this.forceUpdate()
+
+    this.props.onChange && this.props.onChange(this._value.clone())
   }
 
   // -------------------------------------------------------------------------- STYLING
@@ -75,29 +95,6 @@ export default class AlphaComponent extends BaseChildComponent {
   }
 
   // -------------------------------------------------------------------------- RENDERING
-
-  /**
-   * Renders the canvas that is used as the transparency pattern
-   * @private
-   */
-  _renderTransparentPatternCanvas () {
-    const canvas = document.createElement('canvas')
-    const context = canvas.getContext('2d')
-
-    canvas.width = 10
-    canvas.height = 10
-
-    context.fillStyle = 'white'
-    context.fillRect(0, 0, canvas.width, canvas.height)
-    context.fillStyle = '#cccccc'
-    context.fillRect(0, 0, canvas.width / 2, canvas.height / 2)
-    context.fillRect(
-      canvas.width / 2, canvas.height / 2,
-      canvas.width, canvas.height
-    )
-
-    this._transparentPatternCanvas = canvas
-  }
 
   /**
    * Renders the canvas with the current color
