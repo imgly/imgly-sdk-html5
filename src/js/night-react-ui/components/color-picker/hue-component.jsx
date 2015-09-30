@@ -45,7 +45,9 @@ export default class HueComponent extends BaseChildComponent {
   shouldComponentUpdate (newProps) {
     const { initialValue } = newProps
     if (initialValue !== this._value) {
-      this._value = initialValue
+      this._value = initialValue.clone()
+      const [ h, s, v ] = this._value.toHSV()
+      this._hsvColor = { h, s, v }
       this._renderCanvas()
       return true
     }
@@ -73,15 +75,19 @@ export default class HueComponent extends BaseChildComponent {
     const canvas = this.refs.canvas.getDOMNode()
     const canvasHeight = canvas.offsetHeight
 
-    const hueChange = offset.y / canvasHeight * -1
-    this._hsvColor.h = this._initialHue + hueChange
-    this._hsvColor.h = Math.min(1, Math.max(0, this._hsvColor.h))
+    const hueChange = offset.y / canvasHeight
+
+    let { h, s, v } = this._hsvColor
+    h = this._initialHue + hueChange
+    h = Math.min(1, Math.max(0, h))
+    s = Math.max(0.01, Math.min(s, 0.99))
+    v = Math.max(0.01, Math.min(v, 0.99))
 
     this.forceUpdate()
-    const { h, s, v } = this._hsvColor
     this._value.fromHSV(h, s, v)
+    this._hsvColor = { h, s, v }
 
-    this.props.onChange && this.props.onChange(this._value.clone())
+    this.props.onChange && this.props.onChange(this._value)
   }
 
   // -------------------------------------------------------------------------- STYLING
@@ -94,17 +100,17 @@ export default class HueComponent extends BaseChildComponent {
   _getKnobStyle () {
     return {
       left: '50%',
-      top: ((1 - this._hsvColor.h) * 100).toFixed(2) + '%'
+      top: (this._hsvColor.h * 100).toFixed(2) + '%'
     }
   }
 
   // -------------------------------------------------------------------------- RENDERING
 
   /**
-   * Renders the current color on the preview canvas
+   * Renders the hue colors to the canvas
    * @private
    */
-  _renderColor () {
+  _renderCanvas () {
     const canvas = this.refs.canvas.getDOMNode()
     const context = canvas.getContext('2d')
 
