@@ -23,11 +23,22 @@ export default class ColorPickerOverlayComponent extends BaseChildComponent {
     this._hsv = { h, s, v }
 
     this._bindAll(
+      '_onElementClick',
       '_onColorChange'
     )
   }
 
   // -------------------------------------------------------------------------- EVENTS
+
+  /**
+   * Catches clicks on the element and makes sure that no click event is triggered
+   * on the parent element
+   * @param  {Event} e
+   * @private
+   */
+  _onElementClick (e) {
+    e.stopPropagation()
+  }
 
   /**
    * Gets called when the color changes
@@ -46,7 +57,7 @@ export default class ColorPickerOverlayComponent extends BaseChildComponent {
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
-    return (<div bem='$b:colorPicker $e:overlay'>
+    return (<div bem='$b:colorPicker $e:overlay' onClick={this._onElementClick}>
       <AlphaComponent
         initialValue={this._value}
         onChange={this._onColorChange}
