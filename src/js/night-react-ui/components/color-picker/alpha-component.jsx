@@ -55,11 +55,16 @@ export default class AlphaComponent extends BaseChildComponent {
 
   /**
    * Gets called when the user starts dragging the knob
+   * @param  {Vector2} position
    * @param  {Event} e
    * @private
    */
-  _onKnobDragStart (e) {
-    this._initialAlpha = this._value.a
+  _onKnobDragStart (position, e) {
+    if (e.target === this.refs.knob.getDOMNode()) {
+      this._initialAlpha = this._value.a
+    } else {
+      this._setAlphaFromPosition(position)
+    }
   }
 
   /**
@@ -73,11 +78,7 @@ export default class AlphaComponent extends BaseChildComponent {
     const canvasWidth = canvas.offsetWidth
 
     const alphaChange = offset.x / canvasWidth
-    this._value.a = this._initialAlpha + alphaChange
-    this._value.a = Math.min(1, Math.max(0, this._value.a))
-    this.forceUpdate()
-
-    this.props.onChange && this.props.onChange(this._value.clone())
+    this._setAlpha(this._initialAlpha + alphaChange)
   }
 
   // -------------------------------------------------------------------------- STYLING
@@ -92,6 +93,31 @@ export default class AlphaComponent extends BaseChildComponent {
       left: (this._value.a * 100).toFixed(2) + '%',
       top: '50%'
     }
+  }
+
+  // -------------------------------------------------------------------------- MISC
+
+  /**
+   * Sets the alpha value of the color to the given one
+   * @param {Number} a
+   * @private
+   */
+  _setAlpha (a) {
+    this._value.a = a
+    this._value.a = Math.min(1, Math.max(0, this._value.a))
+    this.forceUpdate()
+    this.props.onChange && this.props.onChange(this._value)
+  }
+
+  /**
+   * Sets the alpha from the given cursor position
+   * @param {Vector2} position
+   * @private
+   */
+  _setAlphaFromPosition (position) {
+    const canvas = this.refs.canvas.getDOMNode()
+    this._initialAlpha = position.x / canvas.offsetWidth
+    this._setAlpha(this._initialAlpha)
   }
 
   // -------------------------------------------------------------------------- RENDERING
@@ -130,11 +156,16 @@ export default class AlphaComponent extends BaseChildComponent {
    */
   renderWithBEM () {
     return (<div bem='$b:colorPicker $e:alpha'>
-      <canvas bem='e:canvas' ref='canvas' />
       <DraggableComponent
         onStart={this._onKnobDragStart}
         onDrag={this._onKnobDrag}>
-        <div bem='e:knob $b:knob m:transparent' style={this._getKnobStyle()}></div>
+        <div>
+          <canvas bem='e:canvas' ref='canvas' />
+          <div
+            bem='e:knob $b:knob m:transparent'
+            ref='knob'
+            style={this._getKnobStyle()} />
+        </div>
       </DraggableComponent>
     </div>)
   }
