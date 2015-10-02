@@ -9,6 +9,9 @@ window.onload = function () {
       image: myImage,
       additionalOperations: {
         // noise: NoiseOperation
+      },
+      assets: {
+        baseUrl: '/build/assets'
       }
     }, {
       filters: {
