@@ -11,6 +11,7 @@
 
 import Operation from './operation'
 import Vector2 from '../lib/math/vector2'
+import Matrix from '../lib/math/matrix'
 import Promise from '../vendor/promise'
 
 /**
@@ -24,46 +25,26 @@ class StickersOperation extends Operation {
   constructor (...args) {
     super(...args)
 
-    /**
-     * The texture index used for the sticker
-     * @type {Number}
-     * @private
-     */
-    this._textureIndex = 1
+    this._programs = {}
+    this._textures = {}
+    this._loadedStickers = {}
 
     /**
-     * The fragment shader used for this operation
+     * The vertex shader used for this operation
      */
-    this._fragmentShader = `
-      precision mediump float;
+    this.vertexShader = `
+      attribute vec2 a_position;
+      attribute vec2 a_texCoord;
       varying vec2 v_texCoord;
-      uniform sampler2D u_image;
-      uniform sampler2D u_stickerImage;
-      uniform vec2 u_position;
-      uniform vec2 u_size;
+      uniform mat3 u_projMatrix;
 
       void main() {
-        vec4 color0 = texture2D(u_image, v_texCoord);
-        vec2 relative = (v_texCoord - u_position) / u_size;
-
-        if (relative.x >= 0.0 && relative.x <= 1.0 &&
-          relative.y >= 0.0 && relative.y <= 1.0) {
-
-            vec4 color1 = texture2D(u_stickerImage, relative);
-
-            // GL_SOURCE_ALPHA, GL_ONE_MINUS_SOURCE_ALPHA
-            gl_FragColor = color1 + color0 * (1.0 - color1.a);
-
-        } else {
-
-          gl_FragColor = color0;
-
-        }
+        gl_Position = vec4((u_projMatrix * vec3(a_position, 1)).xy, 0, 1);
+        v_texCoord = a_texCoord;
       }
     `
 
     this._registerStickers()
-    this._loadedStickers = {}
   }
 
   /**
@@ -71,7 +52,9 @@ class StickersOperation extends Operation {
    * @private
    */
   _registerStickers () {
-    this._stickers = [
+    this._stickers = {}
+
+    const stickerNames = [
       'glasses-nerd',
       'glasses-normal',
       'glasses-shutter-green',
@@ -90,25 +73,9 @@ class StickersOperation extends Operation {
       'snowflake',
       'star'
     ]
-  }
-
-  /**
-   * Applies this operation
-   * @param  {Renderer} renderer
-   * @return {Promise}
-   * @abstract
-   */
-  render (renderer) {
-    var self = this
-    return this._loadSticker()
-      .then(function (image) {
-        if (renderer.identifier === 'webgl') {
-          /* istanbul ignore next */
-          return self._renderWebGL(renderer, image)
-        } else {
-          return self._renderCanvas(renderer, image)
-        }
-      })
+    stickerNames.forEach((name) => {
+      this._stickers[name] = `stickers/sticker-${name}.png`
+    })
   }
 
   /**
@@ -119,57 +86,155 @@ class StickersOperation extends Operation {
    */
   /* istanbul ignore next */
   _renderWebGL (renderer, image) {
-    var canvas = renderer.getCanvas()
-    var gl = renderer.getContext()
+    const stickers = this._options.stickers
+    const promises = stickers.map((sticker) => {
+      return this._renderStickerWebGL(renderer, sticker)
+    })
+    return Promise.all(promises)
 
-    var position = this._options.position.clone()
-    var canvasSize = new Vector2(canvas.width, canvas.height)
+    // // Execute the shader
+    // renderer.runShader(null, this._fragmentShader, {
+    //   uniforms: {
+    //     u_stickerImage: { type: 'i', value: this._textureIndex },
+    //     u_position: { type: '2f', value: [position.x, position.y] },
+    //     u_size: { type: '2f', value: [size.x, size.y] }
+    //   }
+    // })
+  }
 
-    if (this._options.numberFormat === 'absolute') {
-      position.divide(canvasSize)
+  /**
+   * Renders the given sticker using WebGL
+   * @param  {WebGLRenderer} renderer
+   * @param  {Object} sticker
+   * @private
+   */
+  _renderStickerWebGL (renderer, sticker) {
+    if (!(sticker.name in this._stickers)) {
+      return Promise.reject(new Error(`Unknown sticker "${sticker.name}"`))
     }
 
-    var size = new Vector2(image.width, image.height)
-    if (typeof this._options.size !== 'undefined') {
-      size.copy(this._options.size)
-
-      if (this._options.numberFormat === 'relative') {
-        size.multiply(canvasSize)
-      }
-
-      // Calculate image ratio, scale by width
-      let ratio = image.height / image.width
-      size.y = size.x * ratio
+    let program = this._programs[renderer.id]
+    if (!program) {
+      program = renderer.setupGLSLProgram(this.vertexShader)
+      this._programs[renderer.id] = program
     }
-    size.divide(canvasSize)
 
-    position.y = 1 - position.y // Invert y
-    position.y -= size.y // Fix y
+    let image = null
+    return this._loadSticker(sticker.name)
+      .then((stickerImage) => {
+        image = stickerImage
+        return this._uploadTexture(renderer, stickerImage)
+      })
+      .then((texture) => {
+        const projectionMatrix = this._createProjectionMatrixForSticker(renderer, image, sticker)
+        const vectorCoordinates = this._createVectorCoordinatesForSticker(renderer, image, sticker)
 
-    // Upload the texture
-    gl.activeTexture(gl.TEXTURE0 + this._textureIndex)
-    this._texture = gl.createTexture()
+        renderer.runProgram(renderer.getDefaultProgram(), {
+          clear: false,
+          switchBuffer: false
+        })
+        // return
+        renderer.runProgram(program, {
+          clear: false,
+          inputTexture: texture,
+          resizeTextures: false,
+          blend: 'normal',
+          // vectorCoordinates,
+          uniforms: {
+            u_projMatrix: { type: 'mat3fv', value: projectionMatrix }
+          }
+        })
+      })
+  }
 
-    gl.bindTexture(gl.TEXTURE_2D, this._texture)
+  /**
+   * Creates the vector coordinates for the given sticker
+   * @param  {WebGLRenderer} renderer
+   * @param  {Image} image
+   * @param  {Object} sticker
+   * @return {Float32Array}
+   * @private
+   */
+  _createVectorCoordinatesForSticker (renderer, image, sticker) {
+    return new Float32Array([
+      // First triangle
+      -0.5, -0.5,
+      0.5, -0.5,
+      -0.5, 0.5,
 
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+      // Second triangle
+      -0.5, 0.5,
+      0.5, -0.5,
+      0.5, 0.5
+    ])
+  }
 
-    // Set premultiplied alpha
-    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)
+  /**
+   * Creates a projection matrix for the given sticker
+   * @param  {WebGLRenderer} renderer
+   * @param  {Image} image
+   * @param  {Objet} sticker
+   * @return {Array}
+   * @private
+   */
+  _createProjectionMatrixForSticker (renderer, image, sticker) {
+    const canvas = renderer.getCanvas()
 
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image)
-    gl.activeTexture(gl.TEXTURE0)
+    // Projection matrix
+    let projectionMatrix = new Matrix()
+    projectionMatrix.a = 2 / canvas.width
+    projectionMatrix.d = -2 / canvas.height
+    projectionMatrix.tx = -1
+    projectionMatrix.ty = 1
 
-    // Execute the shader
-    renderer.runShader(null, this._fragmentShader, {
-      uniforms: {
-        u_stickerImage: { type: 'i', value: this._textureIndex },
-        u_position: { type: '2f', value: [position.x, position.y] },
-        u_size: { type: '2f', value: [size.x, size.y] }
+    // Scale matrix
+    let scaleMatrix = new Matrix()
+    scaleMatrix.a = sticker.scale.x * image.width * 0.5
+    scaleMatrix.d = -sticker.scale.y * image.height * 0.5
+
+    // Translation matrix
+    let translationMatrix = new Matrix()
+    translationMatrix.tx = sticker.position.x * canvas.width
+    translationMatrix.ty = sticker.position.y * canvas.height
+
+    // Rotation matrix
+    const c = Math.cos(sticker.rotation * -1)
+    const s = Math.sin(sticker.rotation * -1)
+    let rotationMatrix = new Matrix()
+    rotationMatrix.a = c
+    rotationMatrix.b = -s
+    rotationMatrix.c = s
+    rotationMatrix.d = c
+
+    let matrix = scaleMatrix.multiply(rotationMatrix)
+    matrix.multiply(translationMatrix)
+    matrix.multiply(projectionMatrix)
+    return matrix.toArray()
+  }
+
+  /**
+   * Uploads the given image to the texture with the given id
+   * @param  {WebGLRenderer} renderer
+   * @param  {Image} image
+   * @return {Promise}
+   * @private
+   */
+  _uploadTexture (renderer, image) {
+    return new Promise((resolve, reject) => {
+      // Make sure we have a texture hash for the renderer
+      if (!this._textures[renderer.id]) {
+        this._textures[renderer.id] = {}
       }
+
+      // If the texture has been loaded already, reuse it
+      const cachedTexture = this._textures[renderer.id][image.src]
+      if (cachedTexture) {
+        return resolve(cachedTexture)
+      }
+
+      const texture = renderer.createTexture(image)
+      this._textures[renderer.id][image.src] = texture
+      resolve(texture)
     })
   }
 
@@ -208,40 +273,42 @@ class StickersOperation extends Operation {
 
   /**
    * Loads the sticker
+   * @param  {String} sticker
    * @return {Promise}
    * @private
    */
-  _loadSticker () {
-    var isBrowser = typeof window !== 'undefined'
+  _loadSticker (sticker) {
+    const isBrowser = typeof window !== 'undefined'
+    const stickerPath = this._kit.getAssetPath(this._stickers[sticker])
     if (isBrowser) {
-      return this._loadImageBrowser(this._options.sticker)
+      return this._loadImageBrowser(stickerPath)
     } else {
-      return this._loadImageNode(this._options.sticker)
+      return this._loadImageNode(stickerPath)
     }
   }
 
   /**
    * Loads the given image using the browser's `Image` class
-   * @param  {String} fileName
+   * @param  {String} filePath
    * @return {Promise}
    * @private
    */
-  _loadImageBrowser (fileName) {
+  _loadImageBrowser (filePath) {
     var self = this
     return new Promise((resolve, reject) => {
       // Return preloaded sticker if available
-      if (self._loadedStickers[fileName]) {
-        return resolve(self._loadedStickers[fileName])
+      if (self._loadedStickers[filePath]) {
+        return resolve(self._loadedStickers[filePath])
       }
 
       var image = new Image()
 
       image.addEventListener('load', () => {
-        self._loadedStickers[fileName] = image
+        self._loadedStickers[filePath] = image
         resolve(image)
       })
       image.addEventListener('error', () => {
-        reject(new Error('Could not load sticker: ' + fileName))
+        reject(new Error('Could not load sticker: ' + filePath))
       })
 
       image.crossOrigin = 'Anonymous'
@@ -251,20 +318,17 @@ class StickersOperation extends Operation {
 
   /**
    * Loads the given image using node.js' `fs` and node-canvas `Image`
-   * @param  {String} fileName
+   * @param  {String} filePath
    * @return {Promise}
    * @private
    */
-  _loadImageNode (fileName) {
+  _loadImageNode (filePath) {
     var Canvas = require('canvas')
     var fs = require('fs')
-
-    var self = this
     var image = new Canvas.Image()
-    var path = self._kit.getAssetPath(fileName)
 
     return new Promise((resolve, reject) => {
-      fs.readFile(path, (err, buffer) => {
+      fs.readFile(filePath, (err, buffer) => {
         if (err) return reject(err)
 
         image.src = buffer
@@ -288,9 +352,7 @@ StickersOperation.identifier = 'stickers'
  * @type {Object}
  */
 StickersOperation.prototype.availableOptions = {
-  sticker: { type: 'string', required: true },
-  position: { type: 'vector2', default: new Vector2(0, 0) },
-  size: { type: 'vector2', default: new Vector2(0, 0) }
+  stickers: { type: 'array' }
 }
 
 export default StickersOperation

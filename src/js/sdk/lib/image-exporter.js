@@ -21,34 +21,36 @@ import Exif from './exif'
 class ImageExporter {
 
   static validateSettings (renderType, imageFormat) {
-    var settings = {
-      renderType: renderType,
-      imageFormat: imageFormat
-    }
+    return new Promise((resolve, reject) => {
+      var settings = {
+        renderType: renderType,
+        imageFormat: imageFormat
+      }
 
-    // Validate RenderType
-    if ((typeof settings.renderType !== 'undefined' && settings.renderType !== null) &&
-        Utils.values(RenderType).indexOf(settings.renderType) === -1) {
-      throw new Error('Invalid render type: ' + settings.renderType)
-    } else if (typeof renderType === 'undefined') {
-      settings.renderType = RenderType.DATAURL
-    }
+      // Validate RenderType
+      if ((typeof settings.renderType !== 'undefined' && settings.renderType !== null) &&
+          Utils.values(RenderType).indexOf(settings.renderType) === -1) {
+        throw new Error('Invalid render type: ' + settings.renderType)
+      } else if (typeof renderType === 'undefined') {
+        settings.renderType = RenderType.DATAURL
+      }
 
-    // Validate ImageFormat
-    if ((typeof settings.imageFormat !== 'undefined' && settings.imageFormat !== null) &&
-        Utils.values(ImageFormat).indexOf(settings.imageFormat) === -1) {
-      throw new Error('Invalid image format: ' + settings.imageFormat)
-    } else if (typeof imageFormat === 'undefined') {
-      settings.imageFormat = ImageFormat.PNG
-    }
+      // Validate ImageFormat
+      if ((typeof settings.imageFormat !== 'undefined' && settings.imageFormat !== null) &&
+          Utils.values(ImageFormat).indexOf(settings.imageFormat) === -1) {
+        throw new Error('Invalid image format: ' + settings.imageFormat)
+      } else if (typeof imageFormat === 'undefined') {
+        settings.imageFormat = ImageFormat.PNG
+      }
 
-    // Render type 'buffer' only available in node
-    if (settings.renderType === RenderType.BUFFER &&
-        typeof process === 'undefined') {
-      throw new Error('Render type \'buffer\' is only available when using node.js')
-    }
+      // Render type 'buffer' only available in node
+      if (settings.renderType === RenderType.BUFFER &&
+          typeof process === 'undefined') {
+        throw new Error('Render type \'buffer\' is only available when using node.js')
+      }
 
-    return settings
+      resolve(settings)
+    })
   }
 
   /**

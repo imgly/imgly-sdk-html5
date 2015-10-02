@@ -35,6 +35,19 @@ class WebGLRenderer extends BaseRenderer {
 
     this.id = WebGLRenderer.contextId
     WebGLRenderer.contextId++
+
+    this._mapBlendModes()
+  }
+
+  /**
+   * Creates the blend mode map
+   * @private
+   */
+  _mapBlendModes () {
+    const gl = this._getContext()
+    this._blendModes = {
+      normal: [gl.ONE, gl.ONE_MINUS_SRC_ALPHA]
+    }
   }
 
   /**
@@ -243,6 +256,7 @@ class WebGLRenderer extends BaseRenderer {
 
     gl.disable(gl.DEPTH_TEST)
     gl.disable(gl.CULL_FACE)
+    gl.enable(gl.BLEND)
 
     this._maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE)
 
@@ -280,14 +294,9 @@ class WebGLRenderer extends BaseRenderer {
       // Resize fbo texture
       gl.bindTexture(gl.TEXTURE_2D, texture)
 
-      // Set some settings...
-      gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)
-      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true)
-
       // Upload the image into the texture
-      const imageTexture = this.createTexture()
+      const imageTexture = this.createTexture(image)
       gl.bindTexture(gl.TEXTURE_2D, imageTexture)
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image)
 
       // Draw the rectangle
       gl.drawArrays(gl.TRIANGLES, 0, 6)
@@ -370,7 +379,7 @@ class WebGLRenderer extends BaseRenderer {
     gl.clear(gl.COLOR_BUFFER_BIT)
   }
 
-  _setCoordinates (program, textureCoordinates, triangleCoordinates) {
+  _setCoordinates (program, textureCoordinates, vectorCoordinates) {
     const gl = this._context
 
     // Lookup texture coordinates location
@@ -396,7 +405,7 @@ class WebGLRenderer extends BaseRenderer {
     gl.enableVertexAttribArray(texCoordLocation)
     gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 0, 0)
 
-    triangleCoordinates = triangleCoordinates || new Float32Array([
+    vectorCoordinates = vectorCoordinates || new Float32Array([
       // First triangle
       -1.0, -1.0,
       1.0, -1.0,
@@ -413,13 +422,13 @@ class WebGLRenderer extends BaseRenderer {
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
     gl.enableVertexAttribArray(positionLocation)
     gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0)
-    gl.bufferData(gl.ARRAY_BUFFER, triangleCoordinates, gl.STATIC_DRAW)
+    gl.bufferData(gl.ARRAY_BUFFER, vectorCoordinates, gl.STATIC_DRAW)
   }
 
   runProgram (program, options) {
     const gl = this._context
     gl.useProgram(program)
-    this._setCoordinates(program, options.textureCoordinates, options.triangleCoordinates)
+    this._setCoordinates(program, options.textureCoordinates, options.vectorCoordinates)
 
     const fbo = options.outputFBO || this.getCurrentFramebuffer()
     const currentTexture = options.outputTexture || this.getCurrentTexture()
@@ -427,11 +436,15 @@ class WebGLRenderer extends BaseRenderer {
 
     // Select the current framebuffer
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo)
-    gl.viewport(0, 0, this._textureSize.x, this._textureSize.y)
+    if (options.resizeTextures !== false) {
+      gl.viewport(0, 0, this._textureSize.x, this._textureSize.y)
+    }
 
     // Resize fbo texture
     gl.bindTexture(gl.TEXTURE_2D, currentTexture)
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._textureSize.x, this._textureSize.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
+    if (options.resizeTextures !== false) {
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._textureSize.x, this._textureSize.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
+    }
 
     // Set premultiplied alpha
     gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)
@@ -474,7 +487,14 @@ class WebGLRenderer extends BaseRenderer {
     }
 
     // Clear
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+    if (options.clear !== false) {
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+    }
+
+    if (options.blend) {
+      const [source, destination] = this._blendModes[options.blend]
+      gl.blendFunc(source, destination)
+    }
 
     // Draw the rectangle
     gl.drawArrays(gl.TRIANGLES, 0, 6)
@@ -595,10 +615,11 @@ class WebGLRenderer extends BaseRenderer {
 
   /**
    * Creates an empty texture
+   * @param  {Image} image
    * @return {WebGLTexture}
    */
   /* istanbul ignore next */
-  createTexture () {
+  createTexture (image) {
     var gl = this._context
     var texture = gl.createTexture()
 
@@ -608,6 +629,12 @@ class WebGLRenderer extends BaseRenderer {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
+
+    if (image) {
+      gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true)
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image)
+    }
 
     return texture
   }

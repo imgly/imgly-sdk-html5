@@ -77,11 +77,13 @@ class Operation extends EventEmitter {
 
     // Handle caching
     if (this._dirty) {
-      renderFn(renderer)
-      renderer.cache(this._uuid)
-      this._dirty = false
+      return renderFn(renderer)
+        .then(() => {
+          renderer.cache(this._uuid)
+          this._dirty = false
+        })
     } else {
-      renderer.drawCached(this._uuid)
+      return renderer.drawCached(this._uuid)
     }
   }
 

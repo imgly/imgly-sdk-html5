@@ -9,7 +9,7 @@
  */
 
 import ImageDimensions from './image-dimensions'
-// import ImageExporter from './image-exporter'
+import ImageExporter from './image-exporter'
 import VersionChecker from './version-checker'
 import Utils from './utils'
 import Vector2 from './math/vector2'
@@ -20,6 +20,7 @@ import FlipOperation from '../operations/flip-operation'
 import OperationsStack from './operations-stack'
 import WebGLRenderer from '../renderers/webgl-renderer'
 import CanvasRenderer from '../renderers/canvas-renderer'
+import Helpers from '../ui/base/helpers'
 
 /**
  * @class
@@ -37,9 +38,14 @@ export default class Renderer {
       versionCheck: true,
       image: null,
       dimensions: null,
-      canvas: null
+      canvas: null,
+      assets: {
+        baseUrl: '/',
+        resolver: null
+      }
     })
 
+    this._helpers = new Helpers(this, this._options)
     this._dimensions = this._options.dimensions && new ImageDimensions(this._options.dimensions)
 
     this._image = this._options.image
@@ -115,12 +121,23 @@ export default class Renderer {
    * Exports the image
    * @param  {ImglyKit.RenderType} [renderType=ImglyKit.RenderType.DATAURL] - The output type
    * @param  {ImglyKit.ImageFormat} [imageFormat=ImglyKit.ImageFormat.PNG] - The output image format
-   * @param  {string} [dimensions] - The final dimensions of the image
    * @param  {Number} [quality] - The image quality, between 0 and 1
    * @return {Promise}
    */
-  export (renderType, imageFormat, dimensions, quality) {
-    // TODO Rewrite
+  export (renderType, imageFormat, quality = 0.8) {
+    return ImageExporter.validateSettings(renderType, imageFormat)
+      .then(() => {
+        return this.render()
+      })
+      .then(() => {
+        return ImageExporter.export(
+          this,
+          this._image,
+          this._renderer.getCanvas(),
+          renderType,
+          imageFormat,
+          quality)
+      })
   }
 
   /**
@@ -272,6 +289,15 @@ export default class Renderer {
 
   getInputDimensions () {
     return new Vector2(this._image.width, this._image.height)
+  }
+
+  getAssetPath (asset) {
+    const { baseUrl, resolver } = this._options.assets
+    let path = `${baseUrl}/${asset}`
+    if (typeof resolver !== 'undefined' && resolver !== null) {
+      path = resolver(path)
+    }
+    return path
   }
 
   setCanvas (canvas) { this._options.canvas = canvas }

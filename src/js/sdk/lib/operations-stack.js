@@ -31,11 +31,10 @@ export default class OperationsStack {
    * @return {Promise}
    */
   render (renderer) {
-    return Promise.all(
-      this._stack
-        .filter((op) => !!op)
-        .map((op) => op.render(renderer))
-    )
+    const promises = this._stack
+      .filter((op) => !!op)
+      .map((op) => op.render(renderer))
+    return Promise.all(promises)
   }
 
   /**
