@@ -75,7 +75,9 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
    * @private
    */
   _onKnobDragStart (position, e) {
+    const selectedSticker = this.getSharedState('selectedSticker')
     this._initialPosition = this._getDragKnobPosition()
+    this._initialScale = selectedSticker.scale.clone()
   }
 
   /**
@@ -99,11 +101,22 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
       .clone()
       .subtract(stickerPosition)
 
+    const initialDistanceFromCenter = this._initialPosition
+      .clone()
+      .subtract(stickerPosition)
+
     const radians = Math.atan2(
       knobDistanceFromCenter.y,
       knobDistanceFromCenter.x
     ) - Math.atan2(halfDimensions.y, halfDimensions.x)
 
+    const newScale = this._initialScale
+      .clone()
+      .multiply(
+        knobDistanceFromCenter.len() / initialDistanceFromCenter.len()
+      )
+
+    selectedSticker.scale.set(newScale.x, newScale.x)
     selectedSticker.rotation = radians
     this.forceUpdate()
   }
