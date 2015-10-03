@@ -40,12 +40,11 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
    * @private
    */
   _onStickerDragStart (sticker, position, e) {
-    if (this._selectedSticker !== sticker) {
-      this.setSharedState('selectedSticker')
-      this._selectedSticker = sticker
+    const selectedSticker = this.getSharedState('selectedSticker')
+    if (selectedSticker !== sticker) {
+      this.setSharedState({ selectedSticker: sticker })
     }
-
-    this.setSharedState('selectedSticker', this._selectedSticker)
+    this._selectedSticker = sticker
     this._initialPosition = sticker.position.clone()
   }
 
