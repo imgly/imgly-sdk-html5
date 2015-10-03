@@ -31,9 +31,11 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
 
   // -------------------------------------------------------------------------- LIFECYCLE
 
+  /**
+   * Gets called when this component has been rendered
+   */
   componentDidMount () {
     super.componentDidMount()
-
     this._loadExistingStickers()
   }
 
@@ -221,7 +223,7 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
     }
   }
 
-  // -------------------------------------------------------------------------- MISC
+  // -------------------------------------------------------------------------- LOADING
 
   /**
    * Loads all sticker images needed for existing sticker items
@@ -377,6 +379,5 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
     return stickerDimensions[sticker.name]
       .clone()
       .multiply(sticker.scale)
-      .multiply(factor)
   }
 }
