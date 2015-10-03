@@ -60,7 +60,7 @@ export default class StickersControlsComponent extends BaseChildComponent {
     this._loadStickerAndStoreDimensions(identifier)
       .then(() => {
         // If no selected sticker exists, clicking a sticker
-        // creates a new one. If one exi2sts, it changes the
+        // creates a new one. If one exists, it changes the
         // sticker name.
         if (!selectedSticker) {
           selectedSticker = {
