@@ -24,20 +24,6 @@ export default class StickersControlsComponent extends BaseChildComponent {
     this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
   }
 
-  // -------------------------------------------------------------------------- LIFECYCLE
-
-  /**
-   * Gets called when this component has been mounted
-   */
-  componentDidMount () {
-    super.componentDidMount()
-
-    const selectedSticker = this.getSharedState('selectedSticker')
-    if (!selectedSticker) {
-      this._onStickerClick(Object.keys(this._stickersMap)[0])
-    }
-  }
-
   // -------------------------------------------------------------------------- EVENTS
 
   /**
@@ -55,28 +41,19 @@ export default class StickersControlsComponent extends BaseChildComponent {
    * @private
    */
   _onStickerClick (identifier) {
-    let selectedSticker = this.getSharedState('selectedSticker')
-
     this._loadStickerAndStoreDimensions(identifier)
       .then(() => {
-        // If no selected sticker exists, clicking a sticker
-        // creates a new one. If one exists, it changes the
-        // sticker name.
-        if (!selectedSticker) {
-          selectedSticker = {
-            name: identifier,
-            position: new Vector2(0.5, 0.5),
-            scale: new Vector2(1.0, 1.0),
-            rotation: 0
-          }
-          this._stickers.push(selectedSticker)
-        } else {
-          selectedSticker.name = identifier
+        const sticker = {
+          name: identifier,
+          position: new Vector2(0.5, 0.5),
+          scale: new Vector2(1.0, 1.0),
+          rotation: 0
         }
+        this._stickers.push(sticker)
 
         // Broadcast new state
         this.setSharedState({
-          selectedSticker,
+          selectedSticker: sticker,
           stickers: this._stickers
         })
       })
