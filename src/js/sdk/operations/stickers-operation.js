@@ -133,13 +133,12 @@ class StickersOperation extends Operation {
           clear: false,
           switchBuffer: false
         })
-        // return
+
         renderer.runProgram(program, {
           clear: false,
           inputTexture: texture,
           resizeTextures: false,
           blend: 'normal',
-          // vectorCoordinates,
           uniforms: {
             u_projMatrix: { type: 'mat3fv', value: projectionMatrix }
           }
@@ -148,32 +147,10 @@ class StickersOperation extends Operation {
   }
 
   /**
-   * Creates the vector coordinates for the given sticker
-   * @param  {WebGLRenderer} renderer
-   * @param  {Image} image
-   * @param  {Object} sticker
-   * @return {Float32Array}
-   * @private
-   */
-  _createVectorCoordinatesForSticker (renderer, image, sticker) {
-    return new Float32Array([
-      // First triangle
-      -0.5, -0.5,
-      0.5, -0.5,
-      -0.5, 0.5,
-
-      // Second triangle
-      -0.5, 0.5,
-      0.5, -0.5,
-      0.5, 0.5
-    ])
-  }
-
-  /**
    * Creates a projection matrix for the given sticker
    * @param  {WebGLRenderer} renderer
    * @param  {Image} image
-   * @param  {Objet} sticker
+   * @param  {Object} sticker
    * @return {Array}
    * @private
    */
@@ -337,7 +314,7 @@ class StickersOperation extends Operation {
     })
   }
 
-  getStickers () { return this._stickers }
+  getAvailableStickers () { return this._stickers }
 }
 
 /**
@@ -352,7 +329,7 @@ StickersOperation.identifier = 'stickers'
  * @type {Object}
  */
 StickersOperation.prototype.availableOptions = {
-  stickers: { type: 'array' }
+  stickers: { type: 'array', default: [] }
 }
 
 export default StickersOperation
