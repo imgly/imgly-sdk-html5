@@ -127,7 +127,6 @@ class StickersOperation extends Operation {
       })
       .then((texture) => {
         const projectionMatrix = this._createProjectionMatrixForSticker(renderer, image, sticker)
-        const vectorCoordinates = this._createVectorCoordinatesForSticker(renderer, image, sticker)
 
         renderer.runProgram(renderer.getDefaultProgram(), {
           clear: false,
