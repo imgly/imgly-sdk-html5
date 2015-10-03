@@ -16,9 +16,13 @@ export default {
   controls: CropControlsComponent,
   identifier: 'crop',
   getInitialSharedState: (context) => {
+    const operationExistedBefore = context.ui.operationExists('crop')
+    const operation = context.ui.getOrCreateOperation('crop')
+    const stickers = operation.getStickers()
     return {
-      operationExistedBefore: context.ui.operationExists('crop'),
-      operation: context.ui.getOrCreateOperation('crop')
+      operationExistedBefore,
+      operation,
+      stickers
     }
   },
   isSelectable: (ui) => {
