@@ -17,6 +17,7 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
     super(...args)
 
     this._bindAll(
+      '_onRemoveClick',
       '_onStickerDrag',
       '_onKnobDragStart',
       '_onKnobDrag',
@@ -55,12 +56,36 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
   // -------------------------------------------------------------------------- EVENTS
 
   /**
+   * Gets called when the user clicks the remove button
+   * @param  {Event} e
+   * @private
+   */
+  _onRemoveClick (e) {
+    const selectedSticker = this.getSharedState('selectedSticker')
+    if (!selectedSticker) return
+
+    const stickers = this.getSharedState('stickers').slice(0)
+    const index = stickers.indexOf(selectedSticker)
+    if (index !== -1) {
+      stickers.splice(index, 1)
+      this._stickers = stickers
+      this._selectedSticker = null
+      this.setSharedState({
+        stickers,
+        selectedSticker: null
+      })
+    }
+  }
+
+  /**
    * Gets called when the user clicks somewhere on the canvas
    * @param  {Event} e
    * @private
    */
   _onCanvasClick (e) {
     if (e.target !== this.refs.container.getDOMNode()) return
+    if (!this.getSharedState('selectedSticker')) return
+
     this._operation.set({
       stickers: this.getSharedState('stickers')
     })
@@ -210,12 +235,42 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
   }
 
   /**
-   * Returns the style object for the knob
+   * Returns the style object for the drag knob
    * @return {Object}
    * @private
    */
   _getDragKnobStyle () {
     const knobPosition = this._getDragKnobPosition()
+
+    return {
+      left: knobPosition.x,
+      top: knobPosition.y
+    }
+  }
+
+  /**
+   * Returns the style object for the remove knob
+   * @return {Object}
+   * @private
+   */
+  _getRemoveKnobStyle () {
+    const selectedSticker = this.getSharedState('selectedSticker')
+    const stickerPosition = this._getAbsoluteStickerPosition(selectedSticker)
+
+    // Calculate sin and cos for rotation
+    const sin = Math.sin(selectedSticker.rotation || 0)
+    const cos = Math.cos(selectedSticker.rotation || 0)
+
+    // Calculate sticker dimensions
+    const halfDimensions = this._getStickerDimensions(selectedSticker)
+      .divide(2)
+
+    // Calculate knob position
+    const knobPosition = stickerPosition.clone()
+      .subtract(
+        halfDimensions.x * cos - halfDimensions.y * sin,
+        halfDimensions.x * sin + halfDimensions.y * cos
+      )
 
     return {
       left: knobPosition.x,
@@ -323,15 +378,21 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
     const selectedSticker = this.getSharedState('selectedSticker')
     const stickerItems = this._renderStickerItems()
 
-    let knob
+    let knobs
     if (selectedSticker && this._stickerLoaded(selectedSticker)) {
-      knob = (<DraggableComponent
-        onStart={this._onKnobDragStart}
-        onDrag={this._onKnobDrag}>
-        <div bem='e:knob $b:knob' style={this._getDragKnobStyle()}>
-          <img bem='e:icon' src={ui.getHelpers().assetPath('controls/knobs/resize-diagonal-down@2x.png', true)} />
-        </div>
-      </DraggableComponent>)
+      knobs = [
+        (<DraggableComponent
+          onStart={this._onKnobDragStart}
+          onDrag={this._onKnobDrag}>
+          <div bem='e:knob $b:knob' style={this._getDragKnobStyle()}>
+            <img bem='e:icon' src={ui.getHelpers().assetPath('controls/knobs/resize-diagonal-down@2x.png', true)} />
+          </div>
+        </DraggableComponent>),
+        (
+          <div bem='e:knob $b:knob' style={this._getRemoveKnobStyle()} onClick={this._onRemoveClick}>
+            <img bem='e:icon' src={ui.getHelpers().assetPath('controls/knobs/remove@2x.png', true)} />
+          </div>
+        )]
     }
 
     return (<div
@@ -342,7 +403,7 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
           bem='$b:stickersCanvasControls'
           ref='container'>
           {stickerItems}
-          {knob}
+          {knobs}
         </div>
       </div>)
   }
@@ -370,12 +431,7 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
    * @private
    */
   _getStickerDimensions (sticker) {
-    const { kit } = this.context
-    const canvasDimensions = kit.getOutputDimensions()
-
     const stickerDimensions = this.getSharedState('stickerDimensions')
-    const initialDimensions = this.props.editor.getInitialDimensions()
-    const factor = canvasDimensions.clone().divide(initialDimensions).x
     return stickerDimensions[sticker.name]
       .clone()
       .multiply(sticker.scale)
