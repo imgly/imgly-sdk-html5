@@ -24,6 +24,10 @@ export default class SharedState extends EventEmitter {
    * @param {Boolean} update = true
    */
   set (newState, update = true) {
+    if (typeof newState !== 'object') {
+      console && console.warn('SharedState#set expects an object as first parameter')
+    }
+
     this._state = SDKUtils.extend(this._state, newState)
     if (update) {
       this.broadcastUpdate()
