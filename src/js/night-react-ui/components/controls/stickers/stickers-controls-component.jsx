@@ -41,49 +41,18 @@ export default class StickersControlsComponent extends BaseChildComponent {
    * @private
    */
   _onStickerClick (identifier) {
-    this._loadStickerAndStoreDimensions(identifier)
-      .then(() => {
-        const sticker = {
-          name: identifier,
-          position: new Vector2(0.5, 0.5),
-          scale: new Vector2(1.0, 1.0),
-          rotation: 0
-        }
-        this._stickers.push(sticker)
+    const sticker = {
+      name: identifier,
+      position: new Vector2(0.5, 0.5),
+      scale: new Vector2(1.0, 1.0),
+      rotation: 0
+    }
+    this._stickers.push(sticker)
 
-        // Broadcast new state
-        this.setSharedState({
-          selectedSticker: sticker,
-          stickers: this._stickers
-        })
-      })
-  }
-
-  // -------------------------------------------------------------------------- MISC
-
-  /**
-   * Loads the sticker with the given identifier and stores
-   * its dimensions in the shared state
-   * @param  {String} identifier
-   * @return {Promise}
-   * @private
-   */
-  _loadStickerAndStoreDimensions (identifier) {
-    const { kit } = this.context
-    return new Promise((resolve, reject) => {
-      let image = new Image()
-
-      image.addEventListener('load', () => {
-        const stickerDimensions = this.getSharedState('stickerDimensions')
-        stickerDimensions[identifier] = new Vector2(
-          image.width,
-          image.height
-        )
-        this.setState({ stickerDimensions }, false)
-        resolve()
-      })
-
-      image.src = kit.getAssetPath(this._stickersMap[identifier])
+    // Broadcast new state
+    this.setSharedState({
+      selectedSticker: sticker,
+      stickers: this._stickers
     })
   }
 

@@ -9,10 +9,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent, Vector2 } from '../../../globals'
+import { ReactBEM, BaseChildComponent, Vector2, Constants } from '../../../globals'
 import DraggableComponent from '../../draggable-component.jsx'
-
-const MIN_DIMENSIONS = new Vector2(50, 50)
 
 export default class StickerCanvasControlsComponent extends BaseChildComponent {
   constructor (...args) {
@@ -21,7 +19,8 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
     this._bindAll(
       '_onStickerDrag',
       '_onKnobDragStart',
-      '_onKnobDrag'
+      '_onKnobDrag',
+      '_onCanvasClick'
     )
 
     this._operation = this.getSharedState('operation')
@@ -30,7 +29,42 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
     this._stickersMap = this._operation.getAvailableStickers()
   }
 
+  // -------------------------------------------------------------------------- LIFECYCLE
+
+  componentDidMount () {
+    super.componentDidMount()
+
+    this._loadExistingStickers()
+  }
+
+  /**
+   * Gets called when the shared state did change
+   * @param {Object} newState
+   */
+  sharedStateDidChange (newState) {
+    if (newState.stickers) {
+      newState.stickers.forEach((sticker) => {
+        this._loadStickerAndStoreDimensions(sticker.name)
+          .then(() => this.forceUpdate())
+      })
+    }
+  }
+
   // -------------------------------------------------------------------------- EVENTS
+
+  /**
+   * Gets called when the user clicks somewhere on the canvas
+   * @param  {Event} e
+   * @private
+   */
+  _onCanvasClick (e) {
+    if (e.target !== this.refs.container.getDOMNode()) return
+    this._operation.set({
+      stickers: this.getSharedState('stickers')
+    })
+    this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
+    this.props.onSwitchControls('back')
+  }
 
   /**
    * Gets called when the user starts dragging a sticker
@@ -187,6 +221,62 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
     }
   }
 
+  // -------------------------------------------------------------------------- MISC
+
+  /**
+   * Loads all sticker images needed for existing sticker items
+   * @return {Promise}
+   * @private
+   */
+  _loadExistingStickers () {
+    return this._stickers
+      .map((sticker) => {
+        return this._loadStickerAndStoreDimensions(sticker.name)
+          .then(() => this.forceUpdate())
+      })
+  }
+
+  /**
+   * Loads the sticker with the given identifier and stores
+   * its dimensions in the shared state
+   * @param  {String} identifier
+   * @return {Promise}
+   * @private
+   */
+  _loadStickerAndStoreDimensions (identifier) {
+    if (identifier in this.getSharedState('stickerDimensions')) {
+      return Promise.resolve()
+    }
+
+    const { kit } = this.context
+    return new Promise((resolve, reject) => {
+      let image = new window.Image()
+
+      image.addEventListener('load', () => {
+        const stickerDimensions = this.getSharedState('stickerDimensions')
+        stickerDimensions[identifier] = new Vector2(
+          image.width,
+          image.height
+        )
+        this.setState({ stickerDimensions })
+        resolve()
+      })
+
+      image.src = kit.getAssetPath(this._stickersMap[identifier])
+    })
+  }
+
+  /**
+   * Checks if the given sticker has been loaded
+   * @param  {Object} sticker
+   * @return {Boolean}
+   * @private
+   */
+  _stickerLoaded (sticker) {
+    const stickerDimensions = this.getSharedState('stickerDimensions')
+    return sticker.name in stickerDimensions
+  }
+
   // -------------------------------------------------------------------------- RENDERING
 
   /**
@@ -198,26 +288,28 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
     const selectedSticker = this.getSharedState('selectedSticker')
     const { kit } = this.context
 
-    return this._stickers.map((sticker, i) => {
-      const stickerStyle = this._getStickerStyle(sticker)
-      const stickerPath = this._stickersMap[sticker.name]
-      const isSelected = selectedSticker === sticker
-      const className = isSelected ? 'is-selected' : null
+    return this._stickers
+      .filter((sticker) => this._stickerLoaded(sticker))
+      .map((sticker, i) => {
+        const stickerStyle = this._getStickerStyle(sticker)
+        const stickerPath = this._stickersMap[sticker.name]
+        const isSelected = selectedSticker === sticker
+        const className = isSelected ? 'is-selected' : null
 
-      return (<DraggableComponent
-        onStart={this._onStickerDragStart.bind(this, sticker)}
-        onDrag={this._onStickerDrag}>
-        <div
-          bem='$e:sticker'
-          style={stickerStyle}
-          className={className}
-          key={`sticker-${i}`}>
-            <img
-              bem='e:image'
-              src={kit.getAssetPath(stickerPath)} />
-        </div>
-      </DraggableComponent>)
-    })
+        return (<DraggableComponent
+          onStart={this._onStickerDragStart.bind(this, sticker)}
+          onDrag={this._onStickerDrag}>
+          <div
+            bem='$e:sticker'
+            style={stickerStyle}
+            className={className}
+            key={`sticker-${i}`}>
+              <img
+                bem='e:image'
+                src={kit.getAssetPath(stickerPath)} />
+          </div>
+        </DraggableComponent>)
+      })
   }
 
   /**
@@ -230,7 +322,7 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
     const stickerItems = this._renderStickerItems()
 
     let knob
-    if (selectedSticker) {
+    if (selectedSticker && this._stickerLoaded(selectedSticker)) {
       knob = (<DraggableComponent
         onStart={this._onKnobDragStart}
         onDrag={this._onKnobDrag}>
@@ -240,12 +332,17 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
       </DraggableComponent>)
     }
 
-    return (<div bem='b:canvasControls e:container m:full' ref='container'>
-      <div bem='$b:stickersCanvasControls'>
-        {stickerItems}
-        {knob}
-      </div>
-    </div>)
+    return (<div
+      bem='b:canvasControls e:container m:full'
+      ref='root'
+      onClick={this._onCanvasClick}>
+        <div
+          bem='$b:stickersCanvasControls'
+          ref='container'>
+          {stickerItems}
+          {knob}
+        </div>
+      </div>)
   }
 
   // -------------------------------------------------------------------------- MATH HELPERS

@@ -229,6 +229,7 @@ export default class EditorScreenComponent extends ScreenComponent {
 
     if (CanvasControls) {
       canvasControls = (<CanvasControls
+        onSwitchControls={this.switchToControls}
         editor={this}
         sharedState={this.state.sharedState} />)
     }
