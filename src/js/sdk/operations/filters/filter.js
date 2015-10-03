@@ -41,7 +41,7 @@ class Filter {
    * @return {Promise}
    */
   render (renderer) {
-    this._stack.render(renderer)
+    return this._stack.render(renderer)
   }
 
   /**

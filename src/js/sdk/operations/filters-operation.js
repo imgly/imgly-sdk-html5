@@ -49,7 +49,7 @@ class FiltersOperation extends Operation {
    */
   /* istanbul ignore next */
   _renderWebGL (renderer) {
-    this._render(renderer)
+    return this._render(renderer)
   }
 
   /**
@@ -58,7 +58,7 @@ class FiltersOperation extends Operation {
    * @override
    */
   _renderCanvas (renderer) {
-    this._render(renderer)
+    return this._render(renderer)
   }
 
   /**
@@ -67,7 +67,7 @@ class FiltersOperation extends Operation {
    * @private
    */
   _render (renderer) {
-    this._selectedFilter.render(renderer)
+    return this._selectedFilter.render(renderer)
   }
 
   getFilters () { return this._filters }

@@ -8,6 +8,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+import Promise from '../../vendor/native-promise-only'
+
 /**
  * A helper class that can collect {@link Primitive} instances and render
  * the stack
@@ -110,6 +112,8 @@ class PrimitivesStack {
         u_filteredImage: { type: 'i', value: 1 }
       }
     })
+
+    return Promise.resolve()
   }
 
   _getCurrentTexture () {
@@ -133,9 +137,9 @@ class PrimitivesStack {
    */
   render (renderer) {
     if (renderer.identifier === 'webgl') {
-      this.renderWebGL(renderer)
+      return this.renderWebGL(renderer)
     } else {
-      this.renderCanvas(renderer)
+      return this.renderCanvas(renderer)
     }
   }
 
