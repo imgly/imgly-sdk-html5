@@ -25,24 +25,17 @@ class StickersOperation extends Operation {
   constructor (...args) {
     super(...args)
 
+    this._framebuffers = []
+    this._framebufferTextures = []
+    this._framebufferIndex = 0
+
     this._programs = {}
     this._textures = {}
     this._loadedStickers = {}
 
-    /**
-     * The vertex shader used for this operation
-     */
-    this.vertexShader = `
-      attribute vec2 a_position;
-      attribute vec2 a_texCoord;
-      varying vec2 v_texCoord;
-      uniform mat3 u_projMatrix;
-
-      void main() {
-        gl_Position = vec4((u_projMatrix * vec3(a_position, 1)).xy, 0, 1);
-        v_texCoord = a_texCoord;
-      }
-    `
+    this.vertexShader = require('raw!./stickers/stickers.vert')
+    this.adjustmentsShader = require('raw!./stickers/adjustments.frag')
+    this.blurShader = require('raw!./blur/blur.frag')
 
     this._registerStickers()
   }
@@ -74,12 +67,12 @@ class StickersOperation extends Operation {
       'star'
     ]
     stickerNames.forEach((name) => {
-      this._stickers[name] = `stickers/sticker-${name}.png`
+      this._stickers[name] = `stickers/${name}.png`
     })
   }
 
   /**
-   * Crops this image using WebGL
+   * Renders this operation using WebGL
    * @param  {WebGLRenderer} renderer
    * @param  {Image} image
    * @private
@@ -91,15 +84,151 @@ class StickersOperation extends Operation {
       return this._renderStickerWebGL(renderer, sticker)
     })
     return Promise.all(promises)
+  }
 
-    // // Execute the shader
-    // renderer.runShader(null, this._fragmentShader, {
-    //   uniforms: {
-    //     u_stickerImage: { type: 'i', value: this._textureIndex },
-    //     u_position: { type: '2f', value: [position.x, position.y] },
-    //     u_size: { type: '2f', value: [size.x, size.y] }
-    //   }
-    // })
+  /**
+   * Creates the framebuffers and textures for rendering
+   * @param  {WebGLRenderer} renderer
+   * @private
+   */
+  _setupFrameBuffers (renderer) {
+    for (let i = 0; i < 2; i++) {
+      const { fbo, texture } = renderer.createFramebuffer()
+      this._framebuffers.push(fbo)
+      this._framebufferTextures.push(texture)
+    }
+  }
+
+  _renderTexture (renderer, image, texture, sticker) {
+    if (!this._programs[renderer.id].adjustments) {
+      this._programs[renderer.id].adjustments =
+        renderer.setupGLSLProgram(null, this.adjustmentsShader)
+    }
+
+    const canvas = renderer.getCanvas()
+
+    const inputTexture = texture
+    const outputTexture = this._framebufferTextures[this._framebufferIndex % 2]
+    const outputFBO = this._framebuffers[this._framebufferIndex % 2]
+
+    const blurRadius = (sticker.adjustments && sticker.adjustments.blur) || 0
+
+    const stickerDimensions = new Vector2(image.width, image.height)
+      .multiply(sticker.scale)
+
+    const start = new Vector2(0.0, 0.0)
+      .subtract(blurRadius * canvas.width / image.width)
+    const end = new Vector2(1.0, 1.0)
+      .add(blurRadius * canvas.width / image.width)
+
+    const textureCoordinates = new Float32Array([
+      // First triangle
+      start.x, start.y,
+      end.x, start.y,
+      start.x, end.y,
+
+      // Second triangle
+      start.x, end.y,
+      end.x, start.y,
+      end.x, end.y
+    ])
+
+    console.log('stickerDimensions', stickerDimensions.toString())
+
+    const textureSize = stickerDimensions.clone()
+      .add(blurRadius * canvas.width * 2)
+
+    console.log('textureSize', textureSize.toString())
+
+    const program = this._programs[renderer.id].adjustments
+    renderer.runProgram(program, {
+      inputTexture,
+      outputTexture,
+      outputFBO,
+      textureSize,
+      textureCoordinates,
+      switchBuffer: false,
+      clear: false
+    })
+
+    this._lastTexture = outputTexture
+    this._framebufferIndex++
+  }
+
+  _renderFinal (renderer, image, sticker) {
+    if (!this._programs[renderer.id].default) {
+      this._programs[renderer.id].default =
+        renderer.setupGLSLProgram(this.vertexShader)
+    }
+
+    const program = this._programs[renderer.id].default
+    const projectionMatrix = this._createProjectionMatrixForSticker(renderer, image, sticker)
+
+    renderer.runProgram(renderer.getDefaultProgram(), {
+      clear: false,
+      switchBuffer: false
+    })
+
+    renderer.runProgram(program, {
+      clear: false,
+      inputTexture: this._lastTexture,
+      resizeTextures: false,
+      blend: 'normal',
+      uniforms: {
+        u_projMatrix: { type: 'mat3fv', value: projectionMatrix }
+      }
+    })
+  }
+
+  _applyBlur (renderer, image, sticker) {
+    if (!(sticker.adjustments && sticker.adjustments.blur)) {
+      return
+    }
+
+    const canvas = renderer.getCanvas()
+
+    if (!this._programs[renderer.id].blur) {
+      this._programs[renderer.id].blur =
+        renderer.setupGLSLProgram(null, this.blurShader)
+    }
+
+    const textureSize = new Vector2(image.width, image.height)
+      .multiply(sticker.scale)
+
+    textureSize.add(textureSize.clone().multiply(sticker.adjustments.blur))
+
+    const uniforms = {
+      delta: { type: '2f', value: [sticker.adjustments.blur * canvas.width, 0] },
+      resolution: { type: 'f', value: textureSize.x }
+    }
+
+    console.log((sticker.adjustments.blur * canvas.width) / textureSize.x)
+
+    const programOptions = {
+      inputTexture: this._lastTexture,
+      outputTexture: this._framebufferTextures[this._framebufferIndex % 2],
+      outputFBO: this._framebuffers[this._framebufferIndex % 2],
+      uniforms,
+      textureSize,
+      switchBuffer: false,
+      clear: false
+    }
+
+    renderer.runProgram(this._programs[renderer.id].blur, programOptions)
+
+    this._lastTexture = programOptions.outputTexture
+    this._framebufferIndex++
+
+    programOptions.outputTexture = this._framebufferTextures[this._framebufferIndex % 2]
+    programOptions.outputFBO = this._framebuffers[this._framebufferIndex % 2]
+
+    uniforms.delta.value = [0, sticker.adjustments.blur * canvas.width]
+
+    programOptions.inputTexture = this._lastTexture
+    renderer.runProgram(this._programs[renderer.id].blur, programOptions)
+
+    this._lastTexture = programOptions.outputTexture
+    this._framebufferIndex++
   }
 
   /**
@@ -113,35 +242,26 @@ class StickersOperation extends Operation {
       return Promise.reject(new Error(`Unknown sticker "${sticker.name}"`))
     }
 
-    let program = this._programs[renderer.id]
-    if (!program) {
-      program = renderer.setupGLSLProgram(this.vertexShader)
-      this._programs[renderer.id] = program
+    this._setupFrameBuffers(renderer)
+
+    if (!this._programs[renderer.id]) {
+      this._programs[renderer.id] = {}
     }
 
-    let image = null
+    let image
     return this._loadSticker(sticker.name)
-      .then((stickerImage) => {
-        image = stickerImage
-        return this._uploadTexture(renderer, stickerImage)
+      .then((_image) => {
+        image = _image
+        return this._uploadTexture(renderer, image, sticker)
       })
       .then((texture) => {
-        const projectionMatrix = this._createProjectionMatrixForSticker(renderer, image, sticker)
-
-        renderer.runProgram(renderer.getDefaultProgram(), {
-          clear: false,
-          switchBuffer: false
-        })
-
-        renderer.runProgram(program, {
-          clear: false,
-          inputTexture: texture,
-          resizeTextures: false,
-          blend: 'normal',
-          uniforms: {
-            u_projMatrix: { type: 'mat3fv', value: projectionMatrix }
-          }
-        })
+        this._renderTexture(renderer, image, texture, sticker)
+      })
+      .then(() => {
+        return this._applyBlur(renderer, image, sticker)
+      })
+      .then(() => {
+        this._renderFinal(renderer, image, sticker)
       })
   }
 
@@ -311,6 +431,56 @@ class StickersOperation extends Operation {
         resolve(image)
       })
     })
+  }
+
+  /**
+   * Returns the sticker at the given position on the canvas
+   * @param  {BaseRenderer} renderer
+   * @param  {Vector2} position
+   * @return {Object}
+   */
+  getStickerAtPosition (renderer, position) {
+    const canvas = renderer.getCanvas()
+    const canvasDimensions = new Vector2(canvas.width, canvas.height)
+
+    let intersectingSticker = null
+    this._options.stickers.slice(0).reverse()
+      .forEach((sticker) => {
+        if (intersectingSticker) return
+
+        const absoluteStickerPosition = sticker.position
+          .clone()
+          .multiply(canvasDimensions)
+        const relativeClickPosition = position
+          .clone()
+          .subtract(absoluteStickerPosition)
+        const clickDistance = relativeClickPosition.len()
+        const radians = Math.atan2(
+          relativeClickPosition.y,
+          relativeClickPosition.x
+        )
+        const newRadians = radians - sticker.rotation
+
+        const x = Math.cos(newRadians) * clickDistance
+        const y = Math.sin(newRadians) * clickDistance
+
+        const stickerPath = this._kit.getAssetPath(this._stickers[sticker.name])
+        const stickerTexture = this._loadedStickers[stickerPath]
+        const stickerDimensions = new Vector2(
+            stickerTexture.width,
+            stickerTexture.height
+          )
+          .multiply(sticker.scale)
+
+        if (x > -0.5 * stickerDimensions.x &&
+            x < 0.5 * stickerDimensions.x &&
+            y > -0.5 * stickerDimensions.y &&
+            y < 0.5 * stickerDimensions.y) {
+          intersectingSticker = sticker
+        }
+
+      })
+    return intersectingSticker
   }
 
   getAvailableStickers () { return this._stickers }

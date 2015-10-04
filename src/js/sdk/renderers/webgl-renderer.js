@@ -433,17 +433,18 @@ class WebGLRenderer extends BaseRenderer {
     const fbo = options.outputFBO || this.getCurrentFramebuffer()
     const currentTexture = options.outputTexture || this.getCurrentTexture()
     const lastTexture = options.inputTexture || this._lastTexture
+    const textureSize = options.textureSize || this._textureSize
 
     // Select the current framebuffer
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo)
     if (options.resizeTextures !== false) {
-      gl.viewport(0, 0, this._textureSize.x, this._textureSize.y)
+      gl.viewport(0, 0, textureSize.x, textureSize.y)
     }
 
     // Resize fbo texture
     gl.bindTexture(gl.TEXTURE_2D, currentTexture)
     if (options.resizeTextures !== false) {
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._textureSize.x, this._textureSize.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, textureSize.x, textureSize.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
     }
 
     // Set premultiplied alpha
