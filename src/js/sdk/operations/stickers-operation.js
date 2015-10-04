@@ -100,135 +100,140 @@ class StickersOperation extends Operation {
   }
 
   _renderTexture (renderer, image, texture, sticker) {
-    if (!this._programs[renderer.id].adjustments) {
-      this._programs[renderer.id].adjustments =
-        renderer.setupGLSLProgram(null, this.adjustmentsShader)
-    }
+    return new Promise((resolve, reject) => {
+      if (!this._programs[renderer.id].adjustments) {
+        this._programs[renderer.id].adjustments =
+          renderer.setupGLSLProgram(null, this.adjustmentsShader)
+      }
 
-    const canvas = renderer.getCanvas()
+      const canvas = renderer.getCanvas()
 
-    const inputTexture = texture
-    const outputTexture = this._framebufferTextures[this._framebufferIndex % 2]
-    const outputFBO = this._framebuffers[this._framebufferIndex % 2]
+      const inputTexture = texture
+      const outputTexture = this._framebufferTextures[this._framebufferIndex % 2]
+      const outputFBO = this._framebuffers[this._framebufferIndex % 2]
 
-    const blurRadius = (sticker.adjustments && sticker.adjustments.blur) || 0
+      const blurRadius = (sticker.adjustments && sticker.adjustments.blur) || 0
 
-    const stickerDimensions = new Vector2(image.width, image.height)
-      .multiply(sticker.scale)
+      const stickerDimensions = new Vector2(image.width, image.height)
+        .multiply(sticker.scale)
 
-    const start = new Vector2(0.0, 0.0)
-      .subtract(blurRadius * canvas.width / image.width)
-    const end = new Vector2(1.0, 1.0)
-      .add(blurRadius * canvas.width / image.width)
+      const start = new Vector2(0.0, 0.0)
+        .subtract(blurRadius * canvas.width / image.width)
+      const end = new Vector2(1.0, 1.0)
+        .add(blurRadius * canvas.width / image.width)
 
-    const textureCoordinates = new Float32Array([
-      // First triangle
-      start.x, start.y,
-      end.x, start.y,
-      start.x, end.y,
+      const textureCoordinates = new Float32Array([
+        // First triangle
+        start.x, start.y,
+        end.x, start.y,
+        start.x, end.y,
 
-      // Second triangle
-      start.x, end.y,
-      end.x, start.y,
-      end.x, end.y
-    ])
+        // Second triangle
+        start.x, end.y,
+        end.x, start.y,
+        end.x, end.y
+      ])
 
-    console.log('stickerDimensions', stickerDimensions.toString())
+      const textureSize = stickerDimensions.clone()
+        .add(blurRadius * canvas.width * 2)
 
-    const textureSize = stickerDimensions.clone()
-      .add(blurRadius * canvas.width * 2)
+      const program = this._programs[renderer.id].adjustments
+      renderer.runProgram(program, {
+        inputTexture,
+        outputTexture,
+        outputFBO,
+        textureSize,
+        textureCoordinates,
+        switchBuffer: false,
+        clear: false
+      })
 
-    console.log('textureSize', textureSize.toString())
+      this._lastTexture = outputTexture
+      this._framebufferIndex++
 
-    const program = this._programs[renderer.id].adjustments
-    renderer.runProgram(program, {
-      inputTexture,
-      outputTexture,
-      outputFBO,
-      textureSize,
-      textureCoordinates,
-      switchBuffer: false,
-      clear: false
+      resolve()
     })
-
-    this._lastTexture = outputTexture
-    this._framebufferIndex++
   }
 
   _renderFinal (renderer, image, sticker) {
-    if (!this._programs[renderer.id].default) {
-      this._programs[renderer.id].default =
-        renderer.setupGLSLProgram(this.vertexShader)
-    }
-
-    const program = this._programs[renderer.id].default
-    const projectionMatrix = this._createProjectionMatrixForSticker(renderer, image, sticker)
-
-    renderer.runProgram(renderer.getDefaultProgram(), {
-      clear: false,
-      switchBuffer: false
-    })
-
-    renderer.runProgram(program, {
-      clear: false,
-      inputTexture: this._lastTexture,
-      resizeTextures: false,
-      blend: 'normal',
-      uniforms: {
-        u_projMatrix: { type: 'mat3fv', value: projectionMatrix }
+    return new Promise((resolve, reject) => {
+      if (!this._programs[renderer.id].default) {
+        this._programs[renderer.id].default =
+          renderer.setupGLSLProgram(this.vertexShader)
       }
+
+      const program = this._programs[renderer.id].default
+      const projectionMatrix = this._createProjectionMatrixForSticker(renderer, image, sticker)
+
+      renderer.runProgram(renderer.getDefaultProgram(), {
+        clear: false,
+        switchBuffer: false
+      })
+
+      renderer.runProgram(program, {
+        clear: false,
+        inputTexture: this._lastTexture,
+        resizeTextures: false,
+        blend: 'normal',
+        uniforms: {
+          u_projMatrix: { type: 'mat3fv', value: projectionMatrix }
+        }
+      })
+      resolve()
     })
   }
 
   _applyBlur (renderer, image, sticker) {
-    if (!(sticker.adjustments && sticker.adjustments.blur)) {
-      return
-    }
+    return new Promise((resolve, reject) => {
+      if (!(sticker.adjustments && sticker.adjustments.blur)) {
+        return resolve()
+      }
 
-    const canvas = renderer.getCanvas()
+      const canvas = renderer.getCanvas()
 
-    if (!this._programs[renderer.id].blur) {
-      this._programs[renderer.id].blur =
-        renderer.setupGLSLProgram(null, this.blurShader)
-    }
+      if (!this._programs[renderer.id].blur) {
+        this._programs[renderer.id].blur =
+          renderer.setupGLSLProgram(null, this.blurShader)
+      }
 
-    const textureSize = new Vector2(image.width, image.height)
-      .multiply(sticker.scale)
+      const textureSize = new Vector2(image.width, image.height)
+        .multiply(sticker.scale)
 
-    textureSize.add(textureSize.clone().multiply(sticker.adjustments.blur))
+      textureSize.add(textureSize.clone().multiply(sticker.adjustments.blur))
 
-    const uniforms = {
-      delta: { type: '2f', value: [sticker.adjustments.blur * canvas.width, 0] },
-      resolution: { type: 'f', value: textureSize.x }
-    }
+      const uniforms = {
+        delta: { type: '2f', value: [sticker.adjustments.blur * canvas.width, 0] },
+        resolution: { type: 'f', value: textureSize.x }
+      }
 
-    console.log((sticker.adjustments.blur * canvas.width) / textureSize.x)
+      const programOptions = {
+        inputTexture: this._lastTexture,
+        outputTexture: this._framebufferTextures[this._framebufferIndex % 2],
+        outputFBO: this._framebuffers[this._framebufferIndex % 2],
+        uniforms,
+        textureSize,
+        switchBuffer: false,
+        clear: false
+      }
 
-    const programOptions = {
-      inputTexture: this._lastTexture,
-      outputTexture: this._framebufferTextures[this._framebufferIndex % 2],
-      outputFBO: this._framebuffers[this._framebufferIndex % 2],
-      uniforms,
-      textureSize,
-      switchBuffer: false,
-      clear: false
-    }
+      renderer.runProgram(this._programs[renderer.id].blur, programOptions)
 
-    renderer.runProgram(this._programs[renderer.id].blur, programOptions)
+      this._lastTexture = programOptions.outputTexture
+      this._framebufferIndex++
 
-    this._lastTexture = programOptions.outputTexture
-    this._framebufferIndex++
+      programOptions.outputTexture = this._framebufferTextures[this._framebufferIndex % 2]
+      programOptions.outputFBO = this._framebuffers[this._framebufferIndex % 2]
 
-    programOptions.outputTexture = this._framebufferTextures[this._framebufferIndex % 2]
-    programOptions.outputFBO = this._framebuffers[this._framebufferIndex % 2]
+      uniforms.delta.value = [0, sticker.adjustments.blur * canvas.width]
 
-    uniforms.delta.value = [0, sticker.adjustments.blur * canvas.width]
+      programOptions.inputTexture = this._lastTexture
+      renderer.runProgram(this._programs[renderer.id].blur, programOptions)
 
-    programOptions.inputTexture = this._lastTexture
-    renderer.runProgram(this._programs[renderer.id].blur, programOptions)
+      this._lastTexture = programOptions.outputTexture
+      this._framebufferIndex++
 
-    this._lastTexture = programOptions.outputTexture
-    this._framebufferIndex++
+      resolve()
+    })
   }
 
   /**
@@ -251,17 +256,19 @@ class StickersOperation extends Operation {
     let image
     return this._loadSticker(sticker.name)
       .then((_image) => {
+        this._lastTexture = null
+        this._framebufferIndex = 0
         image = _image
         return this._uploadTexture(renderer, image, sticker)
       })
       .then((texture) => {
-        this._renderTexture(renderer, image, texture, sticker)
+        return this._renderTexture(renderer, image, texture, sticker)
       })
       .then(() => {
         return this._applyBlur(renderer, image, sticker)
       })
       .then(() => {
-        this._renderFinal(renderer, image, sticker)
+        return this._renderFinal(renderer, image, sticker)
       })
   }
 
@@ -394,7 +401,13 @@ class StickersOperation extends Operation {
     return new Promise((resolve, reject) => {
       // Return preloaded sticker if available
       if (self._loadedStickers[filePath]) {
-        return resolve(self._loadedStickers[filePath])
+
+        // Bug in native-promise only. Immediately resolving
+        // the promise (synchronously) breaks rendering
+        setTimeout(() => {
+          resolve(self._loadedStickers[filePath])
+        }, 1)
+        return
       }
 
       var image = new Image()
