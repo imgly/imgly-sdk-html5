@@ -95,6 +95,10 @@ module.exports = {
           loader: 'json'
         },
         {
+          test: '\.[vert|frag]',
+          loader: 'raw'
+        },
+        {
           test: /\.jsx?$/,
           include: /src\/js/,
           loaders: [
