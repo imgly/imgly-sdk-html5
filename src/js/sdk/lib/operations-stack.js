@@ -18,6 +18,7 @@ export default class OperationsStack {
   /**
    * Passes Array#forEach
    * @param  {Function} iterator
+   * @return {Array}
    */
   forEach (iterator) {
     return this._stack
@@ -109,3 +110,4 @@ export default class OperationsStack {
     this._stack[index] = operation
   }
 }
+
