@@ -45,6 +45,7 @@
     "mocha-lcov-reporter": "0.0.1",
     "node-libs-browser": "^0.5.2",
     "node-polyglot": "^0.4.3",
+    "raw-loader": "^0.5.1",
     "react": "^0.13.3",
     "require-dir": "^0.3.0",
     "run-sequence": "~0.3.6",
