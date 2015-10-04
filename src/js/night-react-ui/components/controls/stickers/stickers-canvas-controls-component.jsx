@@ -89,8 +89,9 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
     this._operation.set({
       stickers: this.getSharedState('stickers')
     })
-    this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
-    this.props.onSwitchControls('back')
+    this._emitEvent(Constants.EVENTS.CANVAS_RENDER, undefined, () => {
+      this.props.onSwitchControls('back')
+    })
   }
 
   /**
