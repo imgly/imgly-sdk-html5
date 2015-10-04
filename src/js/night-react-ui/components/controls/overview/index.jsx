@@ -9,8 +9,9 @@
  */
 
 import OverviewControlsComponent from './overview-controls-component'
+import OverviewCanvasControlsComponent from './overview-canvas-controls-component'
 
 export default {
-  canvasControls: null,
+  canvasControls: OverviewCanvasControlsComponent,
   controls: OverviewControlsComponent
 }

@@ -188,8 +188,9 @@ export default class EditorScreenComponent extends ScreenComponent {
   /**
    * Switches to the given controls
    * @param  {Component} controls
+   * @param  {Object} [state] = {}
    */
-  switchToControls (controls) {
+  switchToControls (controls, state = {}) {
     let newControls = null
     if (controls === 'back') {
       newControls = this._previousControlsStack.pop()
@@ -201,6 +202,7 @@ export default class EditorScreenComponent extends ScreenComponent {
     const initialState = newControls.getInitialSharedState &&
       newControls.getInitialSharedState(this.context)
     const sharedState = new SharedState(initialState)
+    sharedState.set(state)
 
     this.setState({
       controls: newControls,
