@@ -48,6 +48,9 @@ export default class StickersControlsComponent extends BaseChildComponent {
       rotation: 0
     }
     this._stickers.push(sticker)
+    this._operation.setDirty(true)
+
+    this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
 
     // Broadcast new state
     this.setSharedState({

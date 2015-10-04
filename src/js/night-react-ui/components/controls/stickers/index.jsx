@@ -44,7 +44,7 @@ export default {
     const operationExistedBefore = context.ui.operationExists('stickers')
     const operation = context.ui.getOrCreateOperation('stickers')
     const stickers = operation.getStickers()
-    operation.setStickers([])
+    // operation.setStickers([])
 
     return {
       operationExistedBefore, operation, stickers,
