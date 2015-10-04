@@ -145,6 +145,24 @@ class StickersOperation extends Operation {
         end.x, end.y
       ])
 
+      let [ brightness, saturation, contrast ] = [0.0, 1.0, 1.0]
+      if (sticker.adjustments) {
+        if (typeof sticker.adjustments.brightness !== 'undefined') {
+          brightness = sticker.adjustments.brightness
+        }
+        if (typeof sticker.adjustments.saturation !== 'undefined') {
+          saturation = sticker.adjustments.saturation
+        }
+        if (typeof sticker.adjustments.contrast !== 'undefined') {
+          contrast = sticker.adjustments.contrast
+        }
+      }
+      const uniforms = {
+        u_brightness: { type: 'f', value: brightness },
+        u_saturation: { type: 'f', value: saturation },
+        u_contrast: { type: 'f', value: contrast }
+      }
+
       const textureSize = stickerDimensions.clone()
         .add(blurRadius * canvas.width * 2)
 
@@ -156,7 +174,8 @@ class StickersOperation extends Operation {
         textureSize,
         textureCoordinates,
         switchBuffer: false,
-        clear: false
+        clear: false,
+        uniforms
       })
 
       this._lastTexture = outputTexture

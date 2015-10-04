@@ -1,12 +1,10 @@
 precision mediump float;
 varying vec2 v_texCoord;
 uniform sampler2D u_image;
-float u_brightness = 0.0;
-
-float u_saturation = 1.0;
+uniform float u_brightness;
+uniform float u_saturation;
+uniform float u_contrast;
 const vec3 luminanceWeighting = vec3(0.2125, 0.7154, 0.0721);
-
-float u_contrast = 1.0;
 
 void main() {
   vec4 texColor = texture2D(u_image, v_texCoord);
