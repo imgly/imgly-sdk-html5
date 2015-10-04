@@ -244,13 +244,13 @@ class WebGLRenderer extends BaseRenderer {
       this._canvas.getContext('experimental-webgl', this._contextOptions)
 
     // Debug if possible
-    if (window.WebGLDebugUtils) {
-      const logGL = (functionName, args) => {
-        // console.error('gl.' + functionName + '(' +
-        //   window.WebGLDebugUtils.glFunctionArgsToString(functionName, args) + ')')
-      }
-      gl = window.WebGLDebugUtils.makeDebugContext(gl, undefined, logGL)
-    }
+    // if (window.WebGLDebugUtils) {
+    //   const logGL = (functionName, args) => {
+    //     // console.error('gl.' + functionName + '(' +
+    //     //   window.WebGLDebugUtils.glFunctionArgsToString(functionName, args) + ')')
+    //   }
+    //   gl = window.WebGLDebugUtils.makeDebugContext(gl, undefined, logGL)
+    // }
 
     gl.disable(gl.DEPTH_TEST)
     gl.disable(gl.CULL_FACE)
@@ -435,9 +435,7 @@ class WebGLRenderer extends BaseRenderer {
 
     // Select the current framebuffer
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo)
-    if (options.resizeTextures !== false) {
-      gl.viewport(0, 0, textureSize.x, textureSize.y)
-    }
+    gl.viewport(0, 0, textureSize.x, textureSize.y)
 
     // Resize fbo texture
     gl.bindTexture(gl.TEXTURE_2D, currentTexture)

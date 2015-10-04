@@ -64,7 +64,7 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
     const selectedSticker = this.getSharedState('selectedSticker')
     if (!selectedSticker) return
 
-    const stickers = this.getSharedState('stickers').slice(0)
+    const stickers = this.getSharedState('stickers')
     const index = stickers.indexOf(selectedSticker)
     if (index !== -1) {
       stickers.splice(index, 1)
@@ -86,9 +86,6 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
     if (e.target !== this.refs.container.getDOMNode()) return
     if (!this.getSharedState('selectedSticker')) return
 
-    this._operation.set({
-      stickers: this.getSharedState('stickers')
-    })
     this._emitEvent(Constants.EVENTS.CANVAS_RENDER, undefined, () => {
       this.props.onSwitchControls('back')
     })
@@ -125,7 +122,9 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
       .clone()
       .add(relativeOffset)
 
+    this._operation.setDirty(true)
     this._selectedSticker.position = newPosition
+    this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
     this.forceUpdate()
   }
 
@@ -179,6 +178,8 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
 
     selectedSticker.scale.set(newScale.x, newScale.x)
     selectedSticker.rotation = radians
+    this._operation.setDirty(true)
+    this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
     this.forceUpdate()
   }
 
@@ -362,9 +363,7 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
             style={stickerStyle}
             className={className}
             key={`sticker-${i}`}>
-              <img
-                bem='e:image'
-                src={kit.getAssetPath(stickerPath)} />
+
           </div>
         </DraggableComponent>)
       })

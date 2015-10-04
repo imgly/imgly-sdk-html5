@@ -79,11 +79,22 @@ class StickersOperation extends Operation {
    */
   /* istanbul ignore next */
   _renderWebGL (renderer, image) {
+    const canvas = renderer.getCanvas()
+    const canvasDimensions = new Vector2(canvas.width, canvas.height)
+    if (!this._outputTexture) {
+      const { texture, fbo } = renderer.createFramebuffer()
+      this._outputTexture = texture
+      this._outputFramebuffer = fbo
+    }
     const stickers = this._options.stickers
     const promises = stickers.map((sticker) => {
       return this._renderStickerWebGL(renderer, sticker)
     })
+    renderer.resizeTexture(this._outputTexture, canvasDimensions)
     return Promise.all(promises)
+      .then(() => {
+        this._renderFinal(renderer)
+      })
   }
 
   /**
@@ -155,25 +166,40 @@ class StickersOperation extends Operation {
     })
   }
 
-  _renderFinal (renderer, image, sticker) {
+  _renderFinal (renderer) {
+    return new Promise((resolve, reject) => {
+      renderer.runProgram(renderer.getDefaultProgram(), {
+        switchBuffer: false
+      })
+
+      renderer.runProgram(renderer.getDefaultProgram(), {
+        inputTexture: this._outputTexture,
+        resizeTextures: false,
+        clear: false,
+        blend: 'normal'
+      })
+    })
+  }
+
+  _renderToOutput (renderer, image, sticker) {
     return new Promise((resolve, reject) => {
       if (!this._programs[renderer.id].default) {
         this._programs[renderer.id].default =
           renderer.setupGLSLProgram(this.vertexShader)
       }
-
+      const canvas = renderer.getCanvas()
+      const canvasDimensions = new Vector2(canvas.width, canvas.height)
       const program = this._programs[renderer.id].default
       const projectionMatrix = this._createProjectionMatrixForSticker(renderer, image, sticker)
-
-      renderer.runProgram(renderer.getDefaultProgram(), {
-        clear: false,
-        switchBuffer: false
-      })
 
       renderer.runProgram(program, {
         clear: false,
         inputTexture: this._lastTexture,
+        outputTexture: this._outputTexture,
+        outputFBO: this._outputFramebuffer,
+        switchBuffer: false,
         resizeTextures: false,
+        textureSize: canvasDimensions,
         blend: 'normal',
         uniforms: {
           u_projMatrix: { type: 'mat3fv', value: projectionMatrix }
@@ -268,7 +294,7 @@ class StickersOperation extends Operation {
         return this._applyBlur(renderer, image, sticker)
       })
       .then(() => {
-        return this._renderFinal(renderer, image, sticker)
+        return this._renderToOutput(renderer, image, sticker)
       })
   }
 
