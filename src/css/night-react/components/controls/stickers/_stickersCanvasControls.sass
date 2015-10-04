@@ -20,12 +20,14 @@
 
     +element(knob)
       position: absolute
+      z-index: 3
 
     +element(sticker)
       position: absolute
 
       +flag(selected)
         @include box-shadow(0px 1px 2px 0px black)
+        z-index: 2
         outline: 1px solid white
         cursor: move
 
