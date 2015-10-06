@@ -70,6 +70,8 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
       stickers.splice(index, 1)
       this._stickers = stickers
       this._selectedSticker = null
+      this._operation.setDirty(true)
+      this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
       this.setSharedState({
         stickers,
         selectedSticker: null
@@ -345,13 +347,11 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
    */
   _renderStickerItems () {
     const selectedSticker = this.getSharedState('selectedSticker')
-    const { kit } = this.context
 
     return this._stickers
       .filter((sticker) => this._stickerLoaded(sticker))
       .map((sticker, i) => {
         const stickerStyle = this._getStickerStyle(sticker)
-        const stickerPath = this._stickersMap[sticker.name]
         const isSelected = selectedSticker === sticker
         const className = isSelected ? 'is-selected' : null
 
