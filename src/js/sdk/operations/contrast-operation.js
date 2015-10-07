@@ -37,7 +37,7 @@ class ContrastOperation extends Operation {
    */
   /* istanbul ignore next */
   _renderWebGL (renderer) {
-    this._render(renderer)
+    return this._render(renderer)
   }
 
   /**
@@ -46,7 +46,7 @@ class ContrastOperation extends Operation {
    * @override
    */
   _renderCanvas (renderer) {
-    this._render(renderer)
+    return this._render(renderer)
   }
 
   /**
@@ -57,7 +57,7 @@ class ContrastOperation extends Operation {
   _render (renderer) {
     this._primitive.options.contrast = this._options.contrast
     this._stack.setDirty(true)
-    this._stack.render(renderer)
+    return this._stack.render(renderer)
   }
 }
 
