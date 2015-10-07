@@ -11,6 +11,7 @@
 import Operation from './operation'
 import Vector2 from '../lib/math/vector2'
 import StackBlur from '../vendor/stack-blur'
+import Promise from '../vendor/promise'
 
 /**
  * An operation that can crop out a part of the image
@@ -75,38 +76,41 @@ class RadialBlurOperation extends Operation {
    */
   /* istanbul ignore next */
   _renderWebGL (renderer) {
-    var canvas = renderer.getCanvas()
-    var canvasSize = new Vector2(canvas.width, canvas.height)
+    return new Promise((resolve, reject) => {
+      var canvas = renderer.getCanvas()
+      var canvasSize = new Vector2(canvas.width, canvas.height)
 
-    var position = this._options.position.clone()
-    position.y = 1 - position.y
+      var position = this._options.position.clone()
+      position.y = 1 - position.y
 
-    if (this._options.numberFormat === 'relative') {
-      position.multiply(canvasSize)
-    }
+      if (this._options.numberFormat === 'relative') {
+        position.multiply(canvasSize)
+      }
 
-    var uniforms = {
-      blurRadius: { type: 'f', value: this._options.blurRadius },
-      gradientRadius: { type: 'f', value: this._options.gradientRadius },
-      position: { type: '2f', value: [position.x, position.y] },
-      texSize: { type: '2f', value: [canvas.width, canvas.height] },
-      delta: { type: '2f', value: [1, 1] }
-    }
+      var uniforms = {
+        blurRadius: { type: 'f', value: this._options.blurRadius },
+        gradientRadius: { type: 'f', value: this._options.gradientRadius },
+        position: { type: '2f', value: [position.x, position.y] },
+        texSize: { type: '2f', value: [canvas.width, canvas.height] },
+        delta: { type: '2f', value: [1, 1] }
+      }
 
-    // Setup program
-    if (!this._glslPrograms[renderer.id]) {
-      this._glslPrograms[renderer.id] = renderer.setupGLSLProgram(
-        null,
-        this._fragmentShader
-      )
-    }
+      // Setup program
+      if (!this._glslPrograms[renderer.id]) {
+        this._glslPrograms[renderer.id] = renderer.setupGLSLProgram(
+          null,
+          this._fragmentShader
+        )
+      }
 
-    renderer.runProgram(this._glslPrograms[renderer.id], { uniforms })
+      renderer.runProgram(this._glslPrograms[renderer.id], { uniforms })
 
-    // Update delta for second pass
-    uniforms.delta.value = [-1, 1]
+      // Update delta for second pass
+      uniforms.delta.value = [-1, 1]
 
-    renderer.runProgram(this._glslPrograms[renderer.id], { uniforms })
+      renderer.runProgram(this._glslPrograms[renderer.id], { uniforms })
+      resolve()
+    })
   }
 
   /**
