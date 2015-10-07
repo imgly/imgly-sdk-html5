@@ -10,6 +10,7 @@
 
 import Operation from './operation'
 import Vector2 from '../lib/math/vector2'
+import Promise from '../vendor/promise'
 
 /**
  * An operation that can crop out a part of the image
@@ -31,28 +32,31 @@ class CropOperation extends Operation {
    */
   /* istanbul ignore next */
   _renderWebGL (renderer) {
-    const start = this._options.start.clone()
-    const end = this._options.end.clone()
-    const size = end.clone().subtract(start)
-    const fragmentShader = null
+    return new Promise((resolve, reject) => {
+      const start = this._options.start.clone()
+      const end = this._options.end.clone()
+      const fragmentShader = null
 
-    if (!this._glslPrograms[renderer.id]) {
-      this._glslPrograms[renderer.id] = renderer.setupGLSLProgram(null, fragmentShader, textureCoordinates)
-    }
+      if (!this._glslPrograms[renderer.id]) {
+        this._glslPrograms[renderer.id] = renderer.setupGLSLProgram(null, fragmentShader, textureCoordinates)
+      }
 
-    const textureCoordinates = new Float32Array([
-      // First triangle
-      start.x, 1.0 - end.y,
-      end.x, 1.0 - end.y,
-      start.x, 1.0 - start.y,
+      const textureCoordinates = new Float32Array([
+        // First triangle
+        start.x, 1.0 - end.y,
+        end.x, 1.0 - end.y,
+        start.x, 1.0 - start.y,
 
-      // Second triangle
-      start.x, 1.0 - start.y,
-      end.x, 1.0 - end.y,
-      end.x, 1.0 - start.y
-    ])
-    renderer.setTextureDimensions(this.getNewDimensions(renderer, renderer.getTextureDimensions()))
-    renderer.runProgram(this._glslPrograms[renderer.id], { textureCoordinates })
+        // Second triangle
+        start.x, 1.0 - start.y,
+        end.x, 1.0 - end.y,
+        end.x, 1.0 - start.y
+      ])
+      renderer.setTextureDimensions(this.getNewDimensions(renderer, renderer.getTextureDimensions()))
+      renderer.runProgram(this._glslPrograms[renderer.id], { textureCoordinates })
+
+      resolve()
+    })
   }
 
   /**
