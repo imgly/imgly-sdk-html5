@@ -31,6 +31,19 @@ export default class TiltShiftCanvasControlsComponent extends BaseChildComponent
     this._operation = this.getSharedState('operation')
   }
 
+  // -------------------------------------------------------------------------- LIFECYCLE
+
+  /**
+   * Gets called when the shared state did change
+   * @param {Object} newState
+   */
+  sharedStateDidChange (newState) {
+    this._setStylesFromOptions()
+  }
+
+  /**
+   * Gets called when this component has been mounted
+   */
   componentDidMount () {
     super.componentDidMount()
     this._setStylesFromOptions()

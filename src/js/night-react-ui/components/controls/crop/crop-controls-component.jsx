@@ -73,17 +73,14 @@ export default class OrientationControlsComponent extends BaseChildComponent {
       // Disable zoom and drag while we're cropping
       this._emitEvent(Constants.EVENTS.EDITOR_DISABLE_FEATURES, ['zoom', 'drag'])
 
-      // Re-render canvas to get the new dimensions
-      this._emitEvent(Constants.EVENTS.CANVAS_RENDER, undefined, () => {
-        if (!this.getSharedState('operationExistedBefore')) {
-          // Select first ratio as default (for now)
-          this._selectRatio(RATIOS[0])
-        } else {
-          // Canvas has been rendered, dimensions might have changed. Make sure
-          // that the canvas controls are rendered again (to match the new dimensions)
-          this.props.sharedState.broadcastUpdate()
-        }
-      })
+      if (!this.getSharedState('operationExistedBefore')) {
+        // Select first ratio as default (for now)
+        this._selectRatio(RATIOS[0])
+      } else {
+        // Canvas has been rendered, dimensions might have changed. Make sure
+        // that the canvas controls are rendered again (to match the new dimensions)
+        this.props.sharedState.broadcastUpdate()
+      }
     })
   }
 

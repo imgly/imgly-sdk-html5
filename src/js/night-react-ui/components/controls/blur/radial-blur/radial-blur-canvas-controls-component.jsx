@@ -28,7 +28,18 @@ export default class RadialBlurCanvasControlsComponent extends BaseChildComponen
       areaDimensions: new Vector2(),
       knobPosition: new Vector2()
     }
+    this._knobChangedManually = false
     this._operation = this.getSharedState('operation')
+  }
+
+  // -------------------------------------------------------------------------- LIFECYCLE
+
+  /**
+   * Gets called when the shared state did change
+   * @param {Object} newState
+   */
+  sharedStateDidChange (newState) {
+    this._setStylesFromOptions()
   }
 
   /**
@@ -36,14 +47,6 @@ export default class RadialBlurCanvasControlsComponent extends BaseChildComponen
    */
   componentDidMount () {
     super.componentDidMount()
-
-    const { kit } = this.context
-    const canvasDimensions = kit.getOutputDimensions()
-    const position = this._operation.getPosition()
-    const gradientRadius = this._operation.getGradientRadius()
-    this.state.knobPosition = position.clone()
-      .multiply(canvasDimensions)
-      .add(gradientRadius, 0)
 
     this._setStylesFromOptions()
   }
@@ -92,6 +95,7 @@ export default class RadialBlurCanvasControlsComponent extends BaseChildComponen
    * @private
    */
   _onKnobDragStart (e) {
+    this._knobChangedManually = true
     this._initialKnobPosition = this.state.knobPosition.clone()
   }
 
@@ -174,10 +178,18 @@ export default class RadialBlurCanvasControlsComponent extends BaseChildComponen
       gradientRadius * 2,
       gradientRadius * 2
     )
-    this.setState({
+
+    let newState = {
       areaDimensions: areaSize,
       areaPosition: position
-    })
+    }
+
+    if (!this._knobChangedManually) {
+      newState.knobPosition = position.clone()
+        .add(gradientRadius, 0)
+    }
+
+    this.setState(newState)
   }
 
   /**

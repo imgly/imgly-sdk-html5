@@ -117,7 +117,9 @@ export default class EditorScreenComponent extends ScreenComponent {
       canvasState: SDKUtils.clone(canvasComponent.state)
     }, canvasComponent.state)
 
-    this.setState({ zoom: newZoom }, callback)
+    this.setState({ zoom: newZoom }, () => {
+      this._emitEvent(Constants.EVENTS.CANVAS_RENDER, undefined, callback)
+    })
   }
 
   /**

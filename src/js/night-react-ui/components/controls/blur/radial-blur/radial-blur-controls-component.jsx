@@ -34,9 +34,7 @@ export default class RadialBlurControlsComponent extends BaseChildComponent {
     this._emitEvent(Constants.EVENTS.CANVAS_ZOOM, 'auto', () => {
       // Disable zoom and drag while we're cropping
       this._emitEvent(Constants.EVENTS.EDITOR_DISABLE_FEATURES, ['zoom', 'drag'])
-
-      // Re-render canvas to get the new dimensions
-      this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
+      this.props.sharedState.broadcastUpdate()
     })
   }
 
