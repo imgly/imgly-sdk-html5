@@ -46,7 +46,9 @@
     "stickers": {
       "adjustments": "Adjustments",
       "blur": "Blur",
-      "flip": "Flip"
+      "flip": "Flip",
+      "flip-v": "Flip (V)",
+      "flip-h": "Flip (H)"
     }
   },
   "webcam": {
