@@ -59,25 +59,29 @@ class FramesOperation extends Operation {
    */
   /* istanbul ignore next */
   _renderWebGL (renderer) {
-    var canvas = renderer.getCanvas()
+    return new Promise((resolve, reject) => {
+      var canvas = renderer.getCanvas()
 
-    var color = this._options.color
-    var thickness = this._options.thickness * canvas.height
-    var thicknessVec2 = [thickness / canvas.width, thickness / canvas.height]
+      var color = this._options.color
+      var thickness = this._options.thickness * canvas.height
+      var thicknessVec2 = [thickness / canvas.width, thickness / canvas.height]
 
-    let uniforms = {
-      u_color: { type: '4f', value: color.toGLColor() },
-      u_thickness: { type: '2f', value: thicknessVec2 }
-    }
+      let uniforms = {
+        u_color: { type: '4f', value: color.toGLColor() },
+        u_thickness: { type: '2f', value: thicknessVec2 }
+      }
 
-    if (!this._glslPrograms[renderer.id]) {
-      this._glslPrograms[renderer.id] = renderer.setupGLSLProgram(
-        null,
-        this._fragmentShader
-      )
-    }
+      if (!this._glslPrograms[renderer.id]) {
+        this._glslPrograms[renderer.id] = renderer.setupGLSLProgram(
+          null,
+          this._fragmentShader
+        )
+      }
 
-    renderer.runProgram(this._glslPrograms[renderer.id], { uniforms })
+      renderer.runProgram(this._glslPrograms[renderer.id], { uniforms })
+
+      resolve()
+    })
   }
 
   /**
