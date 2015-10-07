@@ -42,6 +42,11 @@
     },
     "filters": {
       "intensity": "Intensity"
+    },
+    "stickers": {
+      "adjustments": "Adjustments",
+      "blur": "Blur",
+      "flip": "Flip"
     }
   },
   "webcam": {

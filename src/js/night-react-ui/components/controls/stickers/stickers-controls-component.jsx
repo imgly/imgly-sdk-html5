@@ -9,17 +9,19 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent, Constants, Vector2, Promise } from '../../../globals'
-import ScrollbarComponent from '../../scrollbar-component'
+import { ReactBEM, BaseChildComponent, Constants } from '../../../globals'
+import StickersOverviewControlsComponent from './stickers-overview-controls-component'
+import StickersEditControlsComponent from './stickers-edit-controls-component'
 
 export default class StickersControlsComponent extends BaseChildComponent {
   constructor (...args) {
     super(...args)
 
-    this._bindAll('_onBackClick')
+    this._bindAll(
+      '_onBackClick',
+      '_onSubComponentBack'
+    )
     this._operation = this.getSharedState('operation')
-    this._stickers = this.getSharedState('stickers')
-    this._stickersMap = this._operation.getAvailableStickers()
 
     this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
   }
@@ -36,27 +38,26 @@ export default class StickersControlsComponent extends BaseChildComponent {
   }
 
   /**
-   * Gets called when a sticker has been clicked
-   * @param  {String} identifier
+   * Gets called when the back button in the subcomponent is clicked
    * @private
    */
-  _onStickerClick (identifier) {
-    const sticker = {
-      name: identifier,
-      position: new Vector2(0.5, 0.5),
-      scale: new Vector2(1.0, 1.0),
-      rotation: 0
+  _onSubComponentBack () {
+    const selectedSticker = this.getSharedState('selectedSticker')
+    if (selectedSticker) {
+      this.setSharedState({ selectedSticker: null })
+    } else {
+      this.props.onSwitchControls('back')
     }
-    this._stickers.push(sticker)
-    this._operation.setDirty(true)
+  }
 
-    this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
-
-    // Broadcast new state
-    this.setSharedState({
-      selectedSticker: sticker,
-      stickers: this._stickers
-    })
+  /**
+   * Gets called when the shared state has changed
+   * @param  {Object} newState
+   */
+  sharedStateDidChange (newState) {
+    if ('selectedSticker' in newState) {
+      this.forceUpdate()
+    }
   }
 
   // -------------------------------------------------------------------------- RENDERING
@@ -66,40 +67,17 @@ export default class StickersControlsComponent extends BaseChildComponent {
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
-    const ui = this.context.ui
     const selectedSticker = this.getSharedState('selectedSticker')
 
-    const listItems = Object.keys(this._stickersMap).map((identifier) => {
-      let itemClassName
-      if (selectedSticker && selectedSticker.name === identifier) {
-        itemClassName = 'is-active'
-      }
+    let ControlsComponent = StickersOverviewControlsComponent
+    if (selectedSticker) {
+      ControlsComponent = StickersEditControlsComponent
+    }
 
-      return (<li
-        bem='e:item'
-        key={identifier}
-        onClick={this._onStickerClick.bind(this, identifier)}>
-        <bem specifier='$b:controls'>
-          <div bem='$e:button m:withLabel' className={itemClassName}>
-            <img bem='e:icon' src={ui.getHelpers().assetPath(this._stickersMap[identifier])} />
-          </div>
-        </bem>
-      </li>)
-    })
-
-    return (<div bem='$b:controls e:table'>
-      <div bem='e:cell m:button m:withBorderRight'>
-        <div bem='$e:button' onClick={this._onBackClick}>
-          <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/back@2x.png`, true)} />
-        </div>
-      </div>
-      <div bem='e:cell m:list'>
-        <ScrollbarComponent>
-          <ul bem='$e:list'>
-            {listItems}
-          </ul>
-        </ScrollbarComponent>
-      </div>
-    </div>)
+    return (<ControlsComponent
+      selectedSticker={selectedSticker}
+      onBack={this._onSubComponentBack}
+      sharedState={this.props.sharedState}
+      onBack={this._onSubComponentBack} />)
   }
 }
