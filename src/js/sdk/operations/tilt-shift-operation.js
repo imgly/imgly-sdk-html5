@@ -11,6 +11,7 @@
 import Operation from './operation'
 import Vector2 from '../lib/math/vector2'
 import StackBlur from '../vendor/stack-blur'
+import Promise from '../vendor/promise'
 
 /**
  * An operation that can crop out a part of the image
@@ -78,45 +79,48 @@ class TiltShiftOperation extends Operation {
    */
   /* istanbul ignore next */
   _renderWebGL (renderer) {
-    var canvas = renderer.getCanvas()
-    var canvasSize = new Vector2(canvas.width, canvas.height)
+    return new Promise((resolve, reject) => {
+      var canvas = renderer.getCanvas()
+      var canvasSize = new Vector2(canvas.width, canvas.height)
 
-    var start = this._options.start.clone()
-    var end = this._options.end.clone()
+      var start = this._options.start.clone()
+      var end = this._options.end.clone()
 
-    if (this._options.numberFormat === 'relative') {
-      start.multiply(canvasSize)
-      end.multiply(canvasSize)
-    }
+      if (this._options.numberFormat === 'relative') {
+        start.multiply(canvasSize)
+        end.multiply(canvasSize)
+      }
 
-    start.y = canvasSize.y - start.y
-    end.y = canvasSize.y - end.y
+      start.y = canvasSize.y - start.y
+      end.y = canvasSize.y - end.y
 
-    var delta = end.clone().subtract(start)
-    var d = Math.sqrt(delta.x * delta.x + delta.y * delta.y)
+      var delta = end.clone().subtract(start)
+      var d = Math.sqrt(delta.x * delta.x + delta.y * delta.y)
 
-    var uniforms = {
-      blurRadius: { type: 'f', value: this._options.blurRadius },
-      gradientRadius: { type: 'f', value: this._options.gradientRadius },
-      start: { type: '2f', value: [start.x, start.y] },
-      end: { type: '2f', value: [end.x, end.y] },
-      delta: { type: '2f', value: [delta.x / d, delta.y / d] },
-      texSize: { type: '2f', value: [canvas.width, canvas.height] }
-    }
+      var uniforms = {
+        blurRadius: { type: 'f', value: this._options.blurRadius },
+        gradientRadius: { type: 'f', value: this._options.gradientRadius },
+        start: { type: '2f', value: [start.x, start.y] },
+        end: { type: '2f', value: [end.x, end.y] },
+        delta: { type: '2f', value: [delta.x / d, delta.y / d] },
+        texSize: { type: '2f', value: [canvas.width, canvas.height] }
+      }
 
-    if (!this._glslPrograms[renderer.id]) {
-      this._glslPrograms[renderer.id] = renderer.setupGLSLProgram(
-        null,
-        this._fragmentShader
-      )
-    }
+      if (!this._glslPrograms[renderer.id]) {
+        this._glslPrograms[renderer.id] = renderer.setupGLSLProgram(
+          null,
+          this._fragmentShader
+        )
+      }
 
-    renderer.runProgram(this._glslPrograms[renderer.id], { uniforms })
+      renderer.runProgram(this._glslPrograms[renderer.id], { uniforms })
 
-    // Update delta for second pass
-    uniforms.delta.value = [-delta.y / d, delta.x / d]
+      // Update delta for second pass
+      uniforms.delta.value = [-delta.y / d, delta.x / d]
 
-    renderer.runProgram(this._glslPrograms[renderer.id], { uniforms })
+      renderer.runProgram(this._glslPrograms[renderer.id], { uniforms })
+      resolve()
+    })
   }
 
   /**
