@@ -9,6 +9,7 @@
  */
 
 import Operation from './operation'
+import Promise from '../vendor/promise'
 
 /**
  * An operation that can flip the canvas
@@ -50,11 +51,14 @@ class FlipOperation extends Operation {
    */
   /* istanbul ignore next */
   _renderWebGL (renderer) {
-    renderer.runShader(null, this.fragmentShader, {
-      uniforms: {
-        u_flipVertical: { type: 'f', value: this._options.vertical },
-        u_flipHorizontal: { type: 'f', value: this._options.horizontal }
-      }
+    return new Promise((resolve, reject) => {
+      renderer.runShader(null, this.fragmentShader, {
+        uniforms: {
+          u_flipVertical: { type: 'f', value: this._options.vertical },
+          u_flipHorizontal: { type: 'f', value: this._options.horizontal }
+        }
+      })
+      resolve()
     })
   }
 
