@@ -8,8 +8,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+import Promise from '../vendor/promise'
 import Operation from './operation'
-import Vector2 from '../lib/math/vector2'
 
 /**
  * An operation that can crop out a part of the image and rotates it
@@ -44,24 +44,27 @@ class RotationOperation extends Operation {
    */
   /* istanbul ignore next */
   _renderWebGL (renderer) {
-    var actualDegrees = this._options.degrees % 360
+    return new Promise((resolve, reject) => {
+      var actualDegrees = this._options.degrees % 360
 
-    // Build the rotation matrix
-    var radians = actualDegrees * (Math.PI / 180)
-    var c = Math.cos(radians)
-    var s = Math.sin(radians)
-    var rotationMatrix = [
-      c, -s, 0,
-      s, c, 0,
-      0, 0, 1
-    ]
+      // Build the rotation matrix
+      var radians = actualDegrees * (Math.PI / 180)
+      var c = Math.cos(radians)
+      var s = Math.sin(radians)
+      var rotationMatrix = [
+        c, -s, 0,
+        s, c, 0,
+        0, 0, 1
+      ]
 
-    // Run the shader
-    renderer.setTextureDimensions(this.getNewDimensions(renderer, renderer.getTextureDimensions()))
-    renderer.runShader(this.vertexShader, null, {
-      uniforms: {
-        u_matrix: { type: 'mat3fv', value: rotationMatrix }
-      }
+      // Run the shader
+      renderer.setTextureDimensions(this.getNewDimensions(renderer, renderer.getTextureDimensions()))
+      renderer.runShader(this.vertexShader, null, {
+        uniforms: {
+          u_matrix: { type: 'mat3fv', value: rotationMatrix }
+        }
+      })
+      resolve()
     })
   }
 
