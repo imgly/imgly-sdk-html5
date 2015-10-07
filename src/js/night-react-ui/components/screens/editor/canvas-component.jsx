@@ -270,7 +270,7 @@ export default class CanvasComponent extends BaseChildComponent {
   renderWithBEM () {
     let canvasContent = null
     let containerContent = null
-    if (this.props.largeCanvasControls) {
+    if (this.props.largeControls) {
       containerContent = this.props.children
     } else {
       canvasContent = this.props.children
