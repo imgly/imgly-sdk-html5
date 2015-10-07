@@ -47,6 +47,9 @@ export default class RadialBlurControlsComponent extends BaseChildComponent {
    */
   _onBackClick (e) {
     this.props.onSwitchControls('back')
+
+    this._emitEvent(Constants.EVENTS.CANVAS_UNDO_ZOOM)
+    this._emitEvent(Constants.EVENTS.EDITOR_ENABLE_FEATURES, ['zoom', 'drag'])
   }
 
   /**
