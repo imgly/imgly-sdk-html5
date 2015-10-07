@@ -16,7 +16,9 @@ export default class BaseChildComponent extends React.Component {
     super(...args)
     this._events = {}
 
-    this._bindAll('forceUpdate')
+    this._bindAll(
+      '_onSharedStateUpdate'
+    )
   }
 
   /**
@@ -67,11 +69,18 @@ export default class BaseChildComponent extends React.Component {
   componentDidMount () {
     this._bindEvents()
     if (this.props.sharedState) {
-      this.props.sharedState.on('update', (newState) => {
-        this.sharedStateDidChange(newState)
-        this.forceUpdate()
-      })
+      this.props.sharedState.on('update', this._onSharedStateUpdate)
     }
+  }
+
+  /**
+   * Gets called when the shared state did change
+   * @param  {Object} newState
+   * @private
+   */
+  _onSharedStateUpdate (newState) {
+    this.sharedStateDidChange(newState)
+    this.forceUpdate()
   }
 
   /**
@@ -89,7 +98,7 @@ export default class BaseChildComponent extends React.Component {
     this._unbindEvents()
 
     if (this.props.sharedState) {
-      this.props.sharedState.off('update', this.forceUpdate)
+      this.props.sharedState.off('update', this._onSharedStateUpdate)
     }
   }
 
