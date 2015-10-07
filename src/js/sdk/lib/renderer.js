@@ -21,7 +21,7 @@ import OperationsStack from './operations-stack'
 import WebGLRenderer from '../renderers/webgl-renderer'
 import CanvasRenderer from '../renderers/canvas-renderer'
 import Helpers from '../ui/base/helpers'
-import Promise from '../vendor/native-promise-only'
+import Promise from '../vendor/promise'
 
 /**
  * @class
@@ -93,45 +93,30 @@ export default class Renderer {
    * @return {Promise}
    */
   render () {
-    // Already rendering, return never-ending promise
-    if (this._rendering) {
-      return new Promise(() => {})
-    }
+    if (!this._renderer) this._initRenderer()
 
-    this._rendering = true
-    return new Promise((resolve, reject) => {
-      this._animationFrame = Utils.requestAnimationFrame(() => {
-        if (!this._renderer) this._initRenderer()
+    const stack = this.operationsStack
+    stack.updateDirtiness()
 
-        const stack = this.operationsStack
-        stack.updateDirtiness()
-
-        this._renderer.preRender()
-        return stack.validateSettings()
-          .then(() => {
-            const dimensions = this.getOutputDimensions()
-            this._renderer.resizeTo(dimensions)
-          })
-          .then(() => {
-            return this._renderer.drawImage(this._image)
-          })
-          .then(() => {
-            return stack.render(this._renderer)
-          })
-          .then(() => {
-            return this._renderer.renderFinal()
-          })
-          .then(() => {
-            // TODO: Resize if necessary
-            this._rendering = false
-            resolve()
-          })
-          .catch((e) => {
-            reject(e)
-          })
+    this._renderer.preRender()
+    return stack.validateSettings()
+      .then(() => {
+        const dimensions = this.getOutputDimensions()
+        this._renderer.resizeTo(dimensions)
       })
-    })
-
+      .then(() => {
+        return this._renderer.drawImage(this._image)
+      })
+      .then(() => {
+        return stack.render(this._renderer)
+      })
+      .then(() => {
+        return this._renderer.renderFinal()
+      })
+      .then(() => {
+        // TODO: Resize if necessary
+        this._rendering = false
+      })
   }
 
   /**

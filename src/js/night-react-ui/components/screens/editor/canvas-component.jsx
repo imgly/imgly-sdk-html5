@@ -9,7 +9,9 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { Utils, SDKUtils, React, ReactBEM, Vector2, BaseChildComponent, Constants } from '../../../globals'
+import {
+  Utils, SDKUtils, React, ReactBEM, Vector2, BaseChildComponent, Constants, EventEmitter
+} from '../../../globals'
 
 export default class CanvasComponent extends BaseChildComponent {
   constructor (...args) {
@@ -22,6 +24,8 @@ export default class CanvasComponent extends BaseChildComponent {
       '_onCanvasUpdate'
     )
 
+    this._rendering = false
+    this._scheduledRenderings = []
     this._canvasDimensions = new Vector2()
     this._containerDimensions = new Vector2()
 
@@ -205,7 +209,7 @@ export default class CanvasComponent extends BaseChildComponent {
     }
     kit.setDimensions(`${rendererDimensions.x}x${rendererDimensions.y}`)
 
-    return kit.render()
+    return this._renderCanvas()
       .then(() => {
         this._updateDimensions()
         this._repositionCanvas()
@@ -251,6 +255,50 @@ export default class CanvasComponent extends BaseChildComponent {
   }
 
   // -------------------------------------------------------------------------- RENDERING
+
+  /**
+   * Renders the canvas. Avoids multiple render processes at the same time.
+   * @return {Promise}
+   * @private
+   */
+  _renderCanvas () {
+    const scheduledRendering = new EventEmitter()
+    const promise = new Promise((resolve, reject) => {
+      scheduledRendering.on('done', () => resolve())
+      scheduledRendering.on('error', (e) => reject(e))
+    })
+    this._scheduledRenderings.push(scheduledRendering)
+    this._runScheduledRenderings()
+    return promise
+  }
+
+  /**
+   * Runs the queued renderings
+   * @private
+   */
+  _runScheduledRenderings () {
+    if (this._rendering) return
+    const scheduledRendering = this._scheduledRenderings[0]
+    if (!scheduledRendering) return
+
+    // Remove scheduled rendering from queue
+    this._scheduledRenderings.splice(0, 1)
+
+    this._rendering = true
+
+    const { kit } = this.context
+    kit.render()
+      .then(() => {
+        scheduledRendering.emit('done')
+        this._rendering = false
+        this._runScheduledRenderings()
+      })
+      .catch((e) => {
+        scheduledRendering.emit('error', e)
+        this._rendering = false
+        this._runScheduledRenderings()
+      })
+  }
 
   /**
    * Returns the style properties for the draggable canvas area
