@@ -34,7 +34,7 @@ class BrightnessOperation extends Operation {
    */
   /* istanbul ignore next */
   _renderWebGL (renderer) {
-    this._render(renderer)
+    return this._render(renderer)
   }
 
   /**
@@ -43,7 +43,7 @@ class BrightnessOperation extends Operation {
    * @override
    */
   _renderCanvas (renderer) {
-    this._render(renderer)
+    return this._render(renderer)
   }
 
   /**
@@ -54,7 +54,7 @@ class BrightnessOperation extends Operation {
   _render (renderer) {
     this._primitive.options.brightness = this._options.brightness
     this._stack.setDirty(true)
-    this._stack.render(renderer)
+    return this._stack.render(renderer)
   }
 }
 
