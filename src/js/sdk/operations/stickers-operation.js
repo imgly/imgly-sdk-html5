@@ -354,7 +354,13 @@ class StickersOperation extends Operation {
     rotationMatrix.c = s
     rotationMatrix.d = c
 
-    let matrix = scaleMatrix.multiply(rotationMatrix)
+    // Flip matrix
+    let flipMatrix = new Matrix()
+    flipMatrix.a = sticker.flipHorizontally ? -1 : 1
+    flipMatrix.d = sticker.flipVertically ? -1 : 1
+
+    let matrix = scaleMatrix.multiply(flipMatrix)
+    matrix.multiply(rotationMatrix)
     matrix.multiply(translationMatrix)
     matrix.multiply(projectionMatrix)
     return matrix.toArray()
