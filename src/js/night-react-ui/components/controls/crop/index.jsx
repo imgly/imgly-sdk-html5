@@ -18,11 +18,9 @@ export default {
   getInitialSharedState: (context) => {
     const operationExistedBefore = context.ui.operationExists('crop')
     const operation = context.ui.getOrCreateOperation('crop')
-    const stickers = operation.getStickers()
     return {
       operationExistedBefore,
-      operation,
-      stickers
+      operation
     }
   },
   isSelectable: (ui) => {
