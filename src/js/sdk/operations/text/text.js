@@ -36,6 +36,41 @@ export default class Text extends Configurable {
   }
 
   /**
+   * Returns a style object for this text
+   * @param {Vector2} canvasDimensions
+   * @return {Object}
+   */
+  getStyle (canvasDimensions) {
+    const options = this._options
+
+    let fontSize = options.fontSize
+    if (this._operation.getNumberFormat() === 'relative') {
+      fontSize *= canvasDimensions.y
+    }
+
+    return {
+      fontWeight: options.fontWeight,
+      fontSize: fontSize,
+      fontFamily: options.fontFamily,
+      lineHeight: options.lineHeight,
+      color: options.color.toRGBA(),
+      backgroundColor: options.backgroundColor.toRGBA(),
+      textAlign: options.alignment
+    }
+  }
+
+  /**
+   * Returns the bounding box for this text
+   * @param  {Renderer} renderer
+   * @return {Vector2}
+   */
+  getBoundingBox (renderer) {
+    const textOptions = this._calculateFontSizeAndLineHeight(renderer)
+    const { boundingBox } = this._calculateText(renderer, textOptions)
+    return boundingBox
+  }
+
+  /**
    * Renders this text and returns a canvas
    * @param {Renderer} renderer
    * @return {Promise}
@@ -114,7 +149,6 @@ export default class Text extends Configurable {
       boundingBox.x = maxWidth
       const output = this._buildOutputLines(maxWidth)
       lines = output.lines
-      boundingBox.x = output.width
     } else {
       for (let lineNum = 0; lineNum < lines.length; lineNum++) {
         const line = lines[lineNum]
@@ -247,8 +281,9 @@ Text.prototype.availableOptions = {
   verticalAlignment: { type: 'string', default: 'top', available: ['top', 'center', 'bottom'] },
   color: { type: 'color', default: new Color(1, 0, 0, 1) },
   backgroundColor: { type: 'color', default: new Color(0, 0, 0, 0) },
-  position: { type: 'vector2', default: new Vector2(0, 0) },
-  anchor: { type: 'vector2', default: new Vector2(0, 0) },
+  position: { type: 'vector2', default: new Vector2(0.5, 0.5) },
+  anchor: { type: 'vector2', default: new Vector2(0.5, 0.5) },
+  pivot: { type: 'vector2', default: new Vector2(0, 0) },
   rotation: { type: 'number', default: 0 },
   text: { type: 'string', required: true },
   maxWidth: { type: 'number', default: 1.0 }
