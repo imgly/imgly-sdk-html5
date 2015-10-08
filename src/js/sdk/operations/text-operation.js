@@ -117,60 +117,6 @@ class TextOperation extends Operation {
       .then(() => {
         return this._renderFinal(renderer)
       })
-    // var textCanvas = this._renderTextCanvas(renderer)
-
-    // var canvas = renderer.getCanvas()
-    // var gl = renderer.getContext()
-
-    // var position = this._options.position.clone()
-    // var canvasSize = new Vector2(canvas.width, canvas.height)
-    // var size = new Vector2(textCanvas.width, textCanvas.height).divide(canvasSize)
-
-    // if (this._options.numberFormat === 'absolute') {
-    //   position.divide(canvasSize)
-    // }
-
-    // position.y = 1 - position.y // Invert y
-    // position.y -= size.y // Fix y
-
-    // // Adjust vertical alignment
-    // if (this._options.verticalAlignment === 'center') {
-    //   position.y += size.y / 2
-    // } else if (this._options.verticalAlignment === 'bottom') {
-    //   position.y += size.y
-    // }
-
-    // // Adjust horizontal alignment
-    // if (this._options.alignment === 'center') {
-    //   position.x -= size.x / 2
-    // } else if (this._options.alignment === 'right') {
-    //   position.x -= size.x
-    // }
-
-    // // Upload the texture
-    // gl.activeTexture(gl.TEXTURE0 + this._textureIndex)
-    // this._texture = gl.createTexture()
-    // gl.bindTexture(gl.TEXTURE_2D, this._texture)
-
-    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
-    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
-    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
-    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
-
-    // // Set premultiplied alpha
-    // gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)
-
-    // gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textCanvas)
-    // gl.activeTexture(gl.TEXTURE0)
-
-    // // Execute the shader
-    // renderer.runShader(null, this._fragmentShader, {
-    //   uniforms: {
-    //     u_textImage: { type: 'i', value: this._textureIndex },
-    //     u_position: { type: '2f', value: [position.x, position.y] },
-    //     u_size: { type: '2f', value: [size.x, size.y] }
-    //   }
-    // })
   }
 
   /**
@@ -241,13 +187,13 @@ class TextOperation extends Operation {
 
       renderer.runProgram(program, {
         inputTexture: texture,
-        // outputTexture: this._outputTexture,
-        // outputFBO: this._outputFramebuffer,
-        // textureSize: canvasDimensions,
-        // resizeTextures: false,
-        // switchBuffer: false,
-        // clear: false,
-        // blend: 'normal',
+        outputTexture: this._outputTexture,
+        outputFBO: this._outputFramebuffer,
+        textureSize: canvasDimensions,
+        resizeTextures: false,
+        switchBuffer: false,
+        clear: false,
+        blend: 'normal',
         uniforms: {
           u_projMatrix: { type: 'mat3fv', value: projectionMatrix }
         }
