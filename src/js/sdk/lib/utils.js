@@ -271,6 +271,11 @@ class Utils {
     return new ClassList(el)
   }
 
+  /**
+   * Vendor proxy for requestAnimationFrame
+   * @param  {Function} cb
+   * @return {Number}
+   */
   static requestAnimationFrame (cb) {
     const fallback = function (callback) {
       setTimeout(callback, 1000 / 60)
@@ -284,6 +289,18 @@ class Utils {
             window.webkitRequestAnimationFrame ||
             window.mozRequestAnimationFrame ||
             fallback)(cb)
+  }
+
+  /**
+   * Generates a UUID
+   * @return {String}
+   */
+  static getUUID () {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      let r = Math.random() * 16 | 0
+      let v = c === 'x' ? r : (r & 0x3 | 0x8)
+      return v.toString(16)
+    })
   }
 }
 
