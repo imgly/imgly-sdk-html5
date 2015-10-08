@@ -28,7 +28,7 @@ class TextOperation extends Operation {
     this._programs = {}
     this._textures = []
 
-    this.vertexShader = require('raw!./text/text.vert')
+    this.vertexShader = require('raw!./generic/sprite.vert')
   }
 
   // -------------------------------------------------------------------------- TEXT CREATION
