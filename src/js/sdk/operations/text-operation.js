@@ -10,7 +10,9 @@
 
 import Operation from './operation'
 import Vector2 from '../lib/math/vector2'
-import Color from '../lib/color'
+import Matrix from '../lib/math/matrix'
+import Text from './text/text'
+import Promise from '../vendor/promise'
 
 /**
  * An operation that can draw text on the canvas
@@ -23,44 +25,67 @@ class TextOperation extends Operation {
   constructor (...args) {
     super(...args)
 
-    /**
-     * The texture index used for the text
-     * @type {Number}
-     * @private
-     */
-    this._textureIndex = 1
+    this._programs = {}
+    this._textures = []
 
-    /**
-     * The fragment shader used for this operation
-     */
-    this._fragmentShader = `
-      precision mediump float;
-      varying vec2 v_texCoord;
-      uniform sampler2D u_image;
-      uniform sampler2D u_textImage;
-      uniform vec2 u_position;
-      uniform vec2 u_size;
-
-      void main() {
-        vec4 color0 = texture2D(u_image, v_texCoord);
-        vec2 relative = (v_texCoord - u_position) / u_size;
-
-        if (relative.x >= 0.0 && relative.x <= 1.0 &&
-          relative.y >= 0.0 && relative.y <= 1.0) {
-
-            vec4 color1 = texture2D(u_textImage, relative);
-
-            // GL_SOURCE_ALPHA, GL_ONE_MINUS_SOURCE_ALPHA
-            gl_FragColor = color1 + color0 * (1.0 - color1.a);
-
-        } else {
-
-          gl_FragColor = color0;
-
-        }
-      }
-    `
+    this.vertexShader = require('raw!./text/text.vert')
   }
+
+  // -------------------------------------------------------------------------- CALCULATIONS
+
+  /**
+   * Creates a projection matrix for the given text
+   * @param  {WebGLRenderer} renderer
+   * @param  {Text} text
+   * @param  {CanvasElement} canvas
+   * @param  {WebGLTexture} texture
+   * @return {[type]}          [description]
+   */
+  _createProjectionMatrixForText (renderer, text, canvas) {
+    const outputCanvas = renderer.getCanvas()
+    const textPosition = text.getPosition()
+    const textRotation = text.getRotation()
+    const textAnchor = text.getAnchor()
+
+    // Projection matrix
+    let projectionMatrix = new Matrix()
+    projectionMatrix.a = 2 / outputCanvas.width
+    projectionMatrix.d = -2 / outputCanvas.height
+    projectionMatrix.tx = -1
+    projectionMatrix.ty = 1
+
+    // Scale matrix
+    let scaleMatrix = new Matrix()
+    scaleMatrix.a = canvas.width * 0.5
+    scaleMatrix.d = -canvas.height * 0.5
+
+    // Translation matrix
+    let translationMatrix = new Matrix()
+    translationMatrix.tx = textPosition.x * outputCanvas.width
+    translationMatrix.ty = textPosition.y * outputCanvas.height
+
+    // Anchor translation matrix
+    let anchorTranslationMatrix = new Matrix()
+    anchorTranslationMatrix.tx = canvas.width / 2 - canvas.width * textAnchor.x
+    anchorTranslationMatrix.ty = canvas.height / 2 - canvas.height * textAnchor.y
+
+    // Rotation matrix
+    const c = Math.cos(textRotation * -1)
+    const s = Math.sin(textRotation * -1)
+    let rotationMatrix = new Matrix()
+    rotationMatrix.a = c
+    rotationMatrix.b = -s
+    rotationMatrix.c = s
+    rotationMatrix.d = c
+
+    let matrix = scaleMatrix.multiply(anchorTranslationMatrix)
+    matrix.multiply(rotationMatrix)
+    matrix.multiply(translationMatrix)
+    matrix.multiply(projectionMatrix)
+    return matrix.toArray()
+  }
+
+  // -------------------------------------------------------------------------- RENDERING
 
   /**
    * Crops this image using WebGL
@@ -68,59 +93,185 @@ class TextOperation extends Operation {
    */
   /* istanbul ignore next */
   _renderWebGL (renderer) {
-    var textCanvas = this._renderTextCanvas(renderer)
-
-    var canvas = renderer.getCanvas()
-    var gl = renderer.getContext()
-
-    var position = this._options.position.clone()
-    var canvasSize = new Vector2(canvas.width, canvas.height)
-    var size = new Vector2(textCanvas.width, textCanvas.height).divide(canvasSize)
-
-    if (this._options.numberFormat === 'absolute') {
-      position.divide(canvasSize)
+    // Setup output buffer
+    if (!this._outputTexture) {
+      const { texture, fbo } = renderer.createFramebuffer()
+      this._outputTexture = texture
+      this._outputFramebuffer = fbo
     }
 
-    position.y = 1 - position.y // Invert y
-    position.y -= size.y // Fix y
+    // Resize output to match canvas dimensions
+    const canvas = renderer.getCanvas()
+    const canvasDimensions = new Vector2(canvas.width, canvas.height)
+    renderer.resizeTexture(this._outputTexture, canvasDimensions)
 
-    // Adjust vertical alignment
-    if (this._options.verticalAlignment === 'center') {
-      position.y += size.y / 2
-    } else if (this._options.verticalAlignment === 'bottom') {
-      position.y += size.y
-    }
+    // Render
+    const texts = this._options.texts
+    const promises = texts.map((text) => {
+      return text.validateSettings()
+        .then(() => {
+          return this._renderTextWebGL(renderer, text)
+        })
+    })
+    return Promise.all(promises)
+      .then(() => {
+        return this._renderFinal(renderer)
+      })
+    // var textCanvas = this._renderTextCanvas(renderer)
 
-    // Adjust horizontal alignment
-    if (this._options.alignment === 'center') {
-      position.x -= size.x / 2
-    } else if (this._options.alignment === 'right') {
-      position.x -= size.x
-    }
+    // var canvas = renderer.getCanvas()
+    // var gl = renderer.getContext()
 
-    // Upload the texture
-    gl.activeTexture(gl.TEXTURE0 + this._textureIndex)
-    this._texture = gl.createTexture()
-    gl.bindTexture(gl.TEXTURE_2D, this._texture)
+    // var position = this._options.position.clone()
+    // var canvasSize = new Vector2(canvas.width, canvas.height)
+    // var size = new Vector2(textCanvas.width, textCanvas.height).divide(canvasSize)
 
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+    // if (this._options.numberFormat === 'absolute') {
+    //   position.divide(canvasSize)
+    // }
 
-    // Set premultiplied alpha
-    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)
+    // position.y = 1 - position.y // Invert y
+    // position.y -= size.y // Fix y
 
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textCanvas)
-    gl.activeTexture(gl.TEXTURE0)
+    // // Adjust vertical alignment
+    // if (this._options.verticalAlignment === 'center') {
+    //   position.y += size.y / 2
+    // } else if (this._options.verticalAlignment === 'bottom') {
+    //   position.y += size.y
+    // }
 
-    // Execute the shader
-    renderer.runShader(null, this._fragmentShader, {
-      uniforms: {
-        u_textImage: { type: 'i', value: this._textureIndex },
-        u_position: { type: '2f', value: [position.x, position.y] },
-        u_size: { type: '2f', value: [size.x, size.y] }
+    // // Adjust horizontal alignment
+    // if (this._options.alignment === 'center') {
+    //   position.x -= size.x / 2
+    // } else if (this._options.alignment === 'right') {
+    //   position.x -= size.x
+    // }
+
+    // // Upload the texture
+    // gl.activeTexture(gl.TEXTURE0 + this._textureIndex)
+    // this._texture = gl.createTexture()
+    // gl.bindTexture(gl.TEXTURE_2D, this._texture)
+
+    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+
+    // // Set premultiplied alpha
+    // gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)
+
+    // gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textCanvas)
+    // gl.activeTexture(gl.TEXTURE0)
+
+    // // Execute the shader
+    // renderer.runShader(null, this._fragmentShader, {
+    //   uniforms: {
+    //     u_textImage: { type: 'i', value: this._textureIndex },
+    //     u_position: { type: '2f', value: [position.x, position.y] },
+    //     u_size: { type: '2f', value: [size.x, size.y] }
+    //   }
+    // })
+  }
+
+  /**
+   * Renders the given text using WebGL
+   * @param  {WebGLRenderer} renderer
+   * @param  {Text} text
+   * @return {Promise}
+   */
+  _renderTextWebGL (renderer, text) {
+    let canvas = null
+    return text.render(renderer)
+      .then((_canvas) => {
+        canvas = _canvas
+        return this._uploadTexture(renderer, text, canvas)
+      })
+      .then((texture) => {
+        return this._renderToOutput(renderer, text, canvas, texture)
+      })
+  }
+
+  /**
+   * Uploads the given image to the texture with the given id
+   * @param  {WebGLRenderer} renderer
+   * @param  {Text} text
+   * @param  {Image} image
+   * @return {Promise}
+   * @private
+   */
+  _uploadTexture (renderer, text, image) {
+    return new Promise((resolve, reject) => {
+      // Make sure we have a texture hash for the renderer
+      if (!this._textures[renderer.id]) {
+        this._textures[renderer.id] = {}
       }
+
+      // If the texture has been loaded already, reuse it
+      const cachedTexture = this._textures[renderer.id][text.id]
+      if (cachedTexture) {
+        return resolve(cachedTexture)
+      }
+
+      const texture = renderer.createTexture(image)
+      this._textures[renderer.id][text.id] = texture
+      resolve(texture)
+    })
+  }
+
+  /**
+   * Renders the given texture to the output texture
+   * @param  {WebGLRenderer} renderer
+   * @param  {Text} text
+   * @param  {CanvasElement} canvas
+   * @param  {WebGLTexture} texture
+   * @return {Promise}
+   * @private
+   */
+  _renderToOutput (renderer, text, canvas, texture) {
+    return new Promise((resolve, reject) => {
+      if (!this._programs[renderer.id]) {
+        this._programs[renderer.id] =
+          renderer.setupGLSLProgram(this.vertexShader)
+      }
+
+      const outputCanvas = renderer.getCanvas()
+      const canvasDimensions = new Vector2(outputCanvas.width, outputCanvas.height)
+      const program = this._programs[renderer.id]
+      const projectionMatrix = this._createProjectionMatrixForText(renderer, text, canvas)
+
+      renderer.runProgram(program, {
+        inputTexture: texture,
+        // outputTexture: this._outputTexture,
+        // outputFBO: this._outputFramebuffer,
+        // textureSize: canvasDimensions,
+        // resizeTextures: false,
+        // switchBuffer: false,
+        // clear: false,
+        // blend: 'normal',
+        uniforms: {
+          u_projMatrix: { type: 'mat3fv', value: projectionMatrix }
+        }
+      })
+
+      resolve()
+    })
+  }
+
+  _renderFinal (renderer) {
+    return new Promise((resolve, reject) => {
+      // Render last texture to current FBO
+      renderer.runProgram(renderer.getDefaultProgram(), {
+        switchBuffer: false
+      })
+
+      // Render this operation's texture to current FBO
+      renderer.runProgram(renderer.getDefaultProgram(), {
+        inputTexture: this._outputTexture,
+        resizeTextures: false,
+        clear: false,
+        blend: 'normal'
+      })
+      resolve()
     })
   }
 
@@ -157,165 +308,6 @@ class TextOperation extends Operation {
 
     context.drawImage(textCanvas, scaledPosition.x, scaledPosition.y)
   }
-
-  /**
-   * Renders the text canvas that will be used as a texture in WebGL
-   * and as an image in canvas
-   * @return {Canvas}
-   * @private
-   */
-  _renderTextCanvas (renderer) {
-    let line, lineNum
-    let canvas = renderer.createCanvas()
-    let context = canvas.getContext('2d')
-
-    let outputCanvas = renderer.getCanvas()
-    let canvasSize = new Vector2(outputCanvas.width, outputCanvas.height)
-
-    let maxWidth = this._options.maxWidth
-    let actualFontSize = this._options.fontSize * canvasSize.y
-    let actualLineHeight = this._options.lineHeight * actualFontSize
-
-    if (this._options.numberFormat === 'relative') {
-      maxWidth *= renderer.getCanvas().width
-    }
-
-    // Apply text options
-    this._applyTextOptions(renderer, context)
-
-    let boundingBox = new Vector2()
-
-    let lines = this._options.text.split('\n')
-    if (typeof maxWidth !== 'undefined') {
-      // Calculate the bounding box
-      boundingBox.x = maxWidth
-      lines = this._buildOutputLines(context, maxWidth)
-    } else {
-      for (lineNum = 0; lineNum < lines.length; lineNum++) {
-        line = lines[lineNum]
-        boundingBox.x = Math.max(boundingBox.x, context.measureText(line).width)
-      }
-    }
-
-    // Calculate boundingbox height
-    boundingBox.y = actualLineHeight * lines.length
-
-    // Resize the canvas
-    canvas.width = boundingBox.x
-    canvas.height = boundingBox.y
-
-    // Get the context again
-    context = canvas.getContext('2d')
-
-    // Render background color
-    context.fillStyle = this._options.backgroundColor.toRGBA()
-    context.fillRect(0, 0, canvas.width, canvas.height)
-
-    // Apply text options
-    this._applyTextOptions(renderer, context)
-
-    // Draw lines
-    for (lineNum = 0; lineNum < lines.length; lineNum++) {
-      line = lines[lineNum]
-      this._drawText(context, line, actualLineHeight * lineNum)
-    }
-
-    return canvas
-  }
-
-  /**
-   * Applies the text options on the given context
-   * @param  {Renderer} renderer
-   * @param  {RenderingContext2D} context
-   * @private
-   */
-  _applyTextOptions (renderer, context) {
-    let canvas = renderer.getCanvas()
-    let canvasSize = new Vector2(canvas.width, canvas.height)
-    let actualFontSize = this._options.fontSize * canvasSize.y
-
-    context.font = this._options.fontWeight + ' ' +
-      actualFontSize + 'px ' +
-      this._options.fontFamily
-    context.textBaseline = 'top'
-    context.textAlign = this._options.alignment
-    context.fillStyle = this._options.color.toRGBA()
-  }
-
-  /**
-   * Iterate over all lines and split them into multiple lines, depending
-   * on the width they need
-   * @param {RenderingContext2d} context
-   * @param {Number} maxWidth
-   * @return {Array.<string>}
-   * @private
-   */
-  _buildOutputLines (context, maxWidth) {
-    var inputLines = this._options.text.split('\n')
-    var outputLines = []
-    var currentChars = []
-
-    for (var lineNum = 0; lineNum < inputLines.length; lineNum++) {
-      var inputLine = inputLines[lineNum]
-      var lineChars = inputLine.split('')
-
-      if (lineChars.length === 0) {
-        outputLines.push('')
-      }
-
-      for (var charNum = 0; charNum < lineChars.length; charNum++) {
-        var currentChar = lineChars[charNum]
-        currentChars.push(currentChar)
-        var currentLine = currentChars.join('')
-        var lineWidth = context.measureText(currentLine).width
-
-        if (lineWidth > maxWidth && currentChars.length === 1) {
-          outputLines.push(currentChars[0])
-          currentChars = []
-        } else if (lineWidth > maxWidth) {
-          // Remove the last word
-          var lastWord = currentChars.pop()
-
-          // Add the line, clear the words
-          outputLines.push(currentChars.join(''))
-          currentChars = []
-
-          // Make sure to use the last word for the next line
-          currentChars = [lastWord]
-        } else if (charNum === lineChars.length - 1) {
-          // Add the line, clear the words
-          outputLines.push(currentChars.join(''))
-          currentChars = []
-        }
-      }
-
-      // Line ended, but there's words left
-      if (currentChars.length) {
-        outputLines.push(currentChars.join(''))
-        currentChars = []
-      }
-    }
-
-    return outputLines
-  }
-
-  /**
-   * Draws the given line onto the given context at the given Y position
-   * @param  {RenderingContext2D} context
-   * @param  {String} text
-   * @param  {Number} y
-   * @private
-   */
-  _drawText (context, text, y) {
-    var canvas = context.canvas
-    if (this._options.alignment === 'center') {
-      context.fillText(text, canvas.width / 2, y)
-    } else if (this._options.alignment === 'left') {
-      context.fillText(text, 0, y)
-    } else if (this._options.alignment === 'right') {
-      context.fillText(text, canvas.width, y)
-    }
-  }
 }
 
 /**
@@ -330,17 +322,15 @@ TextOperation.identifier = 'text'
  * @type {Object}
  */
 TextOperation.prototype.availableOptions = {
-  fontSize: { type: 'number', default: 0.1 },
-  lineHeight: { type: 'number', default: 1.1 },
-  fontFamily: { type: 'string', default: 'Times New Roman' },
-  fontWeight: { type: 'string', default: 'normal' },
-  alignment: { type: 'string', default: 'left', available: ['left', 'center', 'right'] },
-  verticalAlignment: { type: 'string', default: 'top', available: ['top', 'center', 'bottom'] },
-  color: { type: 'color', default: new Color(1, 1, 1, 1) },
-  backgroundColor: { type: 'color', default: new Color(0, 0, 0, 0) },
-  position: { type: 'vector2', default: new Vector2(0, 0) },
-  text: { type: 'string', required: true },
-  maxWidth: { type: 'number', default: 1.0 }
+  texts: {
+    type: 'array', default: [],
+    setter: function (texts) {
+      texts = texts.map((text) => {
+        return new Text(this, text)
+      })
+      return texts
+    }
+  }
 }
 
 export default TextOperation
