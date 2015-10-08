@@ -33,7 +33,7 @@ class StickersOperation extends Operation {
     this._textures = {}
     this._loadedStickers = {}
 
-    this.vertexShader = require('raw!./stickers/stickers.vert')
+    this.vertexShader = require('raw!./generic/sprite.vert')
     this.adjustmentsShader = require('raw!./stickers/adjustments.frag')
     this.blurShader = require('raw!./blur/blur.frag')
 
