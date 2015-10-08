@@ -8,10 +8,28 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+import TextCanvasControlsComponent from './text-canvas-controls-component'
+import TextControlsComponent from './text-controls-component'
+
 export default {
-  canvasControls: null,
-  controls: null,
+  canvasControls: TextCanvasControlsComponent,
+  controls: TextControlsComponent,
   identifier: 'text',
+  /**
+   * Returns the initial state for this control
+   * @param  {Object} context
+   * @return {Object}
+   */
+  getInitialSharedState: (context) => {
+    const operationExistedBefore = context.ui.operationExists('text')
+    const operation = context.ui.getOrCreateOperation('text')
+    const texts = operation.getTexts()
+    operation.setTexts([])
+
+    return {
+      operationExistedBefore, operation, texts
+    }
+  },
   isSelectable: (ui) => {
     return ui.isOperationSelected('text')
   }

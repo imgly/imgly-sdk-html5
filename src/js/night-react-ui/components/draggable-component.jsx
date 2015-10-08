@@ -29,8 +29,11 @@ export default class DraggableComponent extends BaseChildComponent {
    * @private
    */
   _onDragStart (e) {
-    e.preventDefault()
-    e.stopPropagation()
+    if (this.props.disabled) return
+
+    e.nativeEvent.preventDefault()
+    e.nativeEvent.stopPropagation()
+    e.nativeEvent.stopImmediatePropagation()
 
     this._initialMousePosition = Utils.getEventPosition(e)
 
@@ -75,6 +78,7 @@ export default class DraggableComponent extends BaseChildComponent {
   _onDragEnd (e) {
     e.preventDefault()
     e.stopPropagation()
+    e.stopImmediatePropagation()
 
     document.removeEventListener('mousemove', this._onDragMove)
     document.removeEventListener('touchmove', this._onDragMove)

@@ -289,6 +289,7 @@ TextOperation.prototype.availableOptions = {
     type: 'array', default: [],
     setter: function (texts) {
       texts = texts.map((text) => {
+        if (text instanceof Text) return text
         return new Text(this, text)
       })
       return texts

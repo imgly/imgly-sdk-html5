@@ -199,7 +199,7 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
       .subtract(stickerDimensions.clone().divide(2))
 
     const degrees = sticker.rotation * 180 / Math.PI
-    const transform = `rotateZ(${degrees.toFixed(2)}deg)`
+    const transform = `rotate(${degrees.toFixed(2)}deg)`
 
     return {
       top: stickerPosition.y,
