@@ -261,7 +261,7 @@ class TextControl extends Control {
     document.addEventListener('touchmove', this._onMoveKnobDrag)
 
     document.addEventListener('mouseup', this._onMoveKnobUp)
-    document.addEventListener('tochend', this._onMoveKnobUp)
+    document.addEventListener('touchend', this._onMoveKnobUp)
   }
 
   /**
