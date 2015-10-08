@@ -31,6 +31,17 @@ class TextOperation extends Operation {
     this.vertexShader = require('raw!./text/text.vert')
   }
 
+  // -------------------------------------------------------------------------- TEXT CREATION
+
+  /**
+   * Creates a new text object and returns it
+   * @param  {Object} options
+   * @return {Text}
+   */
+  createText (options) {
+    return new Text(this, options)
+  }
+
   // -------------------------------------------------------------------------- CALCULATIONS
 
   /**
@@ -203,6 +214,12 @@ class TextOperation extends Operation {
     })
   }
 
+  /**
+   * Renders the output texture to the output canvas
+   * @param  {WebGLRenderer} renderer
+   * @return {Promise}
+   * @private
+   */
   _renderFinal (renderer) {
     return new Promise((resolve, reject) => {
       // Render last texture to current FBO
