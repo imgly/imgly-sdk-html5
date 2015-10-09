@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent, Vector2, Constants } from '../../../globals'
+import { ReactBEM, BaseChildComponent, Constants } from '../../../globals'
 import DraggableComponent from '../../draggable-component.jsx'
 
 export default class TextCanvasControlsComponent extends BaseChildComponent {
@@ -162,9 +162,8 @@ export default class TextCanvasControlsComponent extends BaseChildComponent {
    * @private
    */
   _onResizeKnobDragStart (position, e) {
-    const selectedText = this.getSharedState('selectedText')
     this._dragging = true
-    this._initialMaxWidth = selectedText.getMaxWidth()
+    this._initialPosition = this._getResizeKnobPosition()
   }
 
   /**
@@ -175,11 +174,21 @@ export default class TextCanvasControlsComponent extends BaseChildComponent {
    */
   _onResizeKnobDrag (offset, e) {
     const selectedText = this.getSharedState('selectedText')
+    const textRotation = selectedText.getRotation()
+
     const { kit } = this.context
-
     const canvasDimensions = kit.getOutputDimensions()
-    const newMaxWidth = this._initialMaxWidth + (offset.x / canvasDimensions.x * 2)
 
+    const cos = Math.cos(textRotation)
+    const sin = Math.sin(textRotation)
+
+    const newKnobPosition = this._initialPosition.clone()
+      .add(offset)
+    const position = this._getAbsoluteTextPosition(selectedText)
+    const distanceToPosition = newKnobPosition.clone()
+      .subtract(position)
+
+    const newMaxWidth = (distanceToPosition.x * cos + distanceToPosition.y * sin) / canvasDimensions.x * 2
     selectedText.setMaxWidth(newMaxWidth)
     this.forceUpdate()
   }
@@ -272,23 +281,7 @@ export default class TextCanvasControlsComponent extends BaseChildComponent {
    * @private
    */
   _getResizeKnobStyle () {
-    const selectedText = this.getSharedState('selectedText')
-    const { kit } = this.context
-    const canvasDimensions = kit.getOutputDimensions()
-
-    const sin = Math.sin(selectedText.getRotation())
-    const cos = Math.cos(selectedText.getRotation())
-
-    const boundingBox = selectedText.getBoundingBox(kit.getRenderer())
-    const halfDimensions = boundingBox.clone().divide(2)
-    const position = selectedText.getPosition()
-      .clone()
-      .multiply(canvasDimensions)
-      .add(
-        halfDimensions.x * cos,
-        halfDimensions.x * sin
-      )
-
+    const position = this._getResizeKnobPosition()
     return {
       left: position.x,
       top: position.y
@@ -335,8 +328,9 @@ export default class TextCanvasControlsComponent extends BaseChildComponent {
     const canvasDimensions = kit.getOutputDimensions()
     let style = text.getStyle(canvasDimensions)
 
+    const textPosition = this._getAbsoluteTextPosition(text)
     const boundingBox = text.getBoundingBox(kit.getRenderer())
-    style.height = boundingBox.y
+    style.height = Math.min(boundingBox.y, canvasDimensions.y - textPosition.y)
 
     return style
   }
@@ -484,6 +478,31 @@ export default class TextCanvasControlsComponent extends BaseChildComponent {
       .add(
         halfDimensions.x * cos - boundingBox.y * sin,
         halfDimensions.x * sin + boundingBox.y * cos
+      )
+    return position
+  }
+
+  /**
+   * Returns the position of the resize knob
+   * @return {Vector2}
+   * @private
+   */
+  _getResizeKnobPosition () {
+    const selectedText = this.getSharedState('selectedText')
+    const { kit } = this.context
+    const canvasDimensions = kit.getOutputDimensions()
+
+    const sin = Math.sin(selectedText.getRotation())
+    const cos = Math.cos(selectedText.getRotation())
+
+    const boundingBox = selectedText.getBoundingBox(kit.getRenderer())
+    const halfDimensions = boundingBox.clone().divide(2)
+    const position = selectedText.getPosition()
+      .clone()
+      .multiply(canvasDimensions)
+      .add(
+        halfDimensions.x * cos,
+        halfDimensions.x * sin
       )
     return position
   }
