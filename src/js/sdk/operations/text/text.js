@@ -13,6 +13,7 @@ import Utils from '../../lib/utils'
 import Color from '../../lib/color'
 import Vector2 from '../../lib/math/vector2'
 import Promise from '../../vendor/promise'
+import CanvasTextSplitter from './canvas-text-splitter'
 
 export default class Text extends Configurable {
   constructor (operation, options) {
@@ -147,8 +148,7 @@ export default class Text extends Configurable {
     if (typeof maxWidth !== 'undefined') {
       // Calculate the bounding box
       boundingBox.x = maxWidth
-      const output = this._buildOutputLines(maxWidth)
-      lines = output.lines
+      lines = this._buildOutputLines(maxWidth)
     } else {
       for (let lineNum = 0; lineNum < lines.length; lineNum++) {
         const line = lines[lineNum]
@@ -205,54 +205,8 @@ export default class Text extends Configurable {
    * @private
    */
   _buildOutputLines (maxWidth) {
-    var inputLines = this._options.text.split('\n')
-    var outputLines = []
-    var currentChars = []
-    let width = 0
-
-    for (var lineNum = 0; lineNum < inputLines.length; lineNum++) {
-      var inputLine = inputLines[lineNum]
-      var lineChars = inputLine.split('')
-
-      if (lineChars.length === 0) {
-        outputLines.push('')
-      }
-
-      for (var charNum = 0; charNum < lineChars.length; charNum++) {
-        var currentChar = lineChars[charNum]
-        currentChars.push(currentChar)
-        var currentLine = currentChars.join('')
-        var lineWidth = this._context.measureText(currentLine).width
-        width = Math.max(width, lineWidth)
-
-        if (lineWidth > maxWidth && currentChars.length === 1) {
-          outputLines.push(currentChars[0])
-          currentChars = []
-        } else if (lineWidth > maxWidth) {
-          // Remove the last word
-          var lastWord = currentChars.pop()
-
-          // Add the line, clear the words
-          outputLines.push(currentChars.join(''))
-          currentChars = []
-
-          // Make sure to use the last word for the next line
-          currentChars = [lastWord]
-        } else if (charNum === lineChars.length - 1) {
-          // Add the line, clear the words
-          outputLines.push(currentChars.join(''))
-          currentChars = []
-        }
-      }
-
-      // Line ended, but there's words left
-      if (currentChars.length) {
-        outputLines.push(currentChars.join(''))
-        currentChars = []
-      }
-    }
-
-    return { lines: outputLines, width }
+    const canvasTextSplitter = new CanvasTextSplitter(this._context, this._options.text, maxWidth)
+    return canvasTextSplitter.getLines()
   }
 
   /**
