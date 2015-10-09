@@ -68,8 +68,6 @@ export default class CanvasTextSplitter {
       newLine = []
     }
 
-    console.log(lines)
-
     return lines
   }
 
