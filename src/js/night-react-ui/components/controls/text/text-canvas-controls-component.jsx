@@ -58,12 +58,18 @@ export default class TextCanvasControlsComponent extends BaseChildComponent {
    */
   _onTextClick (text, e) {
     const selectedText = this.getSharedState('selectedText')
-    if (text !== selectedText) return
+    if (text !== selectedText) {
+      this.refs[`textArea-${selectedText.id}`].getDOMNode().blur()
+      this.setSharedState({ selectedText: text }, false)
+      return this.setState({
+        editMode: false
+      })
+    }
     if (this._selectedTextMoved) return
     if (this.state.editMode) return
 
     this.setState({ editMode: true }, () => {
-      this.refs.textArea.getDOMNode().focus()
+      this.refs[`textArea-${selectedText.id}`].getDOMNode().focus()
     })
   }
 
@@ -393,14 +399,14 @@ export default class TextCanvasControlsComponent extends BaseChildComponent {
           className={contentClassName}
           style={textStyle}
           defaultValue={text.getText()}
-          ref='textArea'
+          ref={`textArea-${text.id}`}
           onChange={this._onTextChange}
           onClick={this._onTextClick.bind(this, text)} />)
 
         return (<DraggableComponent
           onStart={this._onTextDragStart.bind(this, text)}
           onDrag={this._onTextDrag}
-          disabled={this.state.editMode}>
+          disabled={isSelected && this.state.editMode}>
             <div bem='$e:text' style={containerStyle} className={className}>
               {content}
             </div>
