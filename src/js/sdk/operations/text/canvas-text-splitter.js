@@ -41,30 +41,22 @@ export default class CanvasTextSplitter {
         // Check if line is too wide for the maxwidth
         const width = this._getWidth(newLine.concat(word).join(' '))
         if (width > this._maxWidth) {
-          if (newLine.length > 1) {
+          // If there have been words before this one, start
+          // a new line
+          if (newLine.length > 0) {
             // Line too long -> line ended
             lines.push(newLine.join(' '))
 
             // Start a new line with the word
             newLine = [word]
+          }
 
-            // If the next word is too long, split it up
-            if (this._getWidth(word) > this._maxWidth) {
-              const splitWord = this._splitWord(word)
-              lines = lines.concat(splitWord.lines)
-              if (splitWord.rest) {
-                newLine = [splitWord.rest]
-              }
-            }
-          } else {
-            // Line too long, but only one word - split it up into
-            // multiple lines
+          // If the next word is too long, split it up
+          if (this._getWidth(word) > this._maxWidth) {
             const splitWord = this._splitWord(word)
             lines = lines.concat(splitWord.lines)
             if (splitWord.rest) {
               newLine = [splitWord.rest]
-            } else {
-              newLine = []
             }
           }
         } else {
@@ -75,6 +67,8 @@ export default class CanvasTextSplitter {
       lines.push(newLine.join(' '))
       newLine = []
     }
+
+    console.log(lines)
 
     return lines
   }
