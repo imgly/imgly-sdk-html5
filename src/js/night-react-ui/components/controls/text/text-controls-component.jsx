@@ -32,19 +32,21 @@ export default class TextControlsComponent extends BaseChildComponent {
   componentDidMount () {
     super.componentDidMount()
 
-    const text = this._operation.createText({
-      text: 'Text',
-      maxWidth: 0.5,
-      anchor: new Vector2(0.5, 0),
-      pivot: new Vector2(0.5, 0)
-    })
-    this._texts.push(text)
+    if (!this.getSharedState('selectedText')) {
+      const text = this._operation.createText({
+        text: 'Text',
+        maxWidth: 0.5,
+        anchor: new Vector2(0.5, 0),
+        pivot: new Vector2(0.5, 0)
+      })
+      this._texts.push(text)
 
-    // Broadcast new state
-    this.setSharedState({
-      selectedText: text,
-      texts: this._texts
-    })
+      // Broadcast new state
+      this.setSharedState({
+        selectedText: text,
+        texts: this._texts
+      })
+    }
   }
 
   // -------------------------------------------------------------------------- EVENTS
