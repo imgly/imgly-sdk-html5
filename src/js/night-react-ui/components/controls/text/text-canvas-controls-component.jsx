@@ -60,6 +60,7 @@ export default class TextCanvasControlsComponent extends BaseChildComponent {
     const selectedText = this.getSharedState('selectedText')
     if (text !== selectedText) return
     if (this._selectedTextMoved) return
+    if (this.state.editMode) return
 
     this.setState({ editMode: true }, () => {
       this.refs.textArea.getDOMNode().focus()
@@ -100,7 +101,6 @@ export default class TextCanvasControlsComponent extends BaseChildComponent {
    * @private
    */
   _onCanvasClick (e) {
-    console.log(this._dragging)
     if (this._dragging) return
     if (e.target !== this.refs.container.getDOMNode()) return
 
@@ -336,7 +336,6 @@ export default class TextCanvasControlsComponent extends BaseChildComponent {
     let style = text.getStyle(canvasDimensions)
 
     const boundingBox = text.getBoundingBox(kit.getRenderer())
-    style.width = boundingBox.x
     style.height = boundingBox.y
 
     return style
@@ -394,18 +393,15 @@ export default class TextCanvasControlsComponent extends BaseChildComponent {
         const isSelected = selectedText === text
         const className = isSelected ? 'is-selected' : null
 
-        let content = (<div bem='e:content' style={textStyle} onClick={this._onTextClick.bind(this, text)}>
-          {text.getText()}
-        </div>)
-
-        if (this.state.editMode) {
-          content = (<textarea
-            bem='e:content'
-            style={textStyle}
-            defaultValue={text.getText()}
-            ref='textArea'
-            onChange={this._onTextChange} />)
-        }
+        const contentClassName = (isSelected && this.state.editMode ? null : 'is-draggable')
+        const content = (<textarea
+          bem='e:content'
+          className={contentClassName}
+          style={textStyle}
+          defaultValue={text.getText()}
+          ref='textArea'
+          onChange={this._onTextChange}
+          onClick={this._onTextClick.bind(this, text)} />)
 
         return (<DraggableComponent
           onStart={this._onTextDragStart.bind(this, text)}
