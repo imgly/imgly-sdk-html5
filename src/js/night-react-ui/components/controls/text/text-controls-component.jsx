@@ -10,6 +10,7 @@
  */
 
 import { ReactBEM, BaseChildComponent, Constants, Vector2 } from '../../../globals'
+import ScrollbarComponent from '../../scrollbar-component'
 
 export default class TextControlsComponent extends BaseChildComponent {
   constructor (...args) {
@@ -57,7 +58,9 @@ export default class TextControlsComponent extends BaseChildComponent {
    * @private
    */
   _onBackClick (e) {
+    this._operation.setTexts(this._texts)
     this.props.onSwitchControls('back')
+    this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
   }
 
   /**
@@ -77,7 +80,23 @@ export default class TextControlsComponent extends BaseChildComponent {
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
-    const selectedText = this.getSharedState('selectedText')
-    return (<div />)
+    const { ui } = this.context
+    // const selectedText = this.getSharedState('selectedText')
+    return (<div bem='$b:controls e:table'>
+      <div bem='e:cell m:button m:withBorderRight'>
+        <div bem='$e:button' onClick={this._onBackClick}>
+          <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/back@2x.png`, true)} />
+        </div>
+      </div>
+      <div bem='e:cell m:list'>
+        <ScrollbarComponent>
+          <ul bem='$e:list'>
+
+
+
+          </ul>
+        </ScrollbarComponent>
+      </div>
+    </div>)
   }
 }
