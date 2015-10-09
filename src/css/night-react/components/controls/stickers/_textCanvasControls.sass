@@ -23,9 +23,14 @@
       position: absolute
 
       +element(content)
+        display: block
         overflow: hidden
+        border: none
         width: 100%
-        white-space: pre
+        padding: 0
+
+        +flag(draggable)
+          cursor: move
 
       +flag(selected)
         @include box-shadow(0px 1px 2px 0px black)
