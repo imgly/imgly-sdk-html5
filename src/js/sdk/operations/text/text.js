@@ -112,8 +112,11 @@ export default class Text extends Configurable {
     const outputCanvas = renderer.getCanvas()
     const outputCanvasDimensions = new Vector2(outputCanvas.width, outputCanvas.height)
 
-    this._canvas = document.createElement('canvas')
-    this._context = this._canvas.getContext('2d')
+    if (!this._canvas) {
+      this._canvas = document.createElement('canvas')
+      this._context = this._canvas.getContext('2d')
+      this._canvasTextSplitter = new CanvasTextSplitter(this._context)
+    }
 
     const fontSize = this._options.fontSize * outputCanvasDimensions.y
     const lineHeight = this._options.lineHeight * fontSize
@@ -205,8 +208,9 @@ export default class Text extends Configurable {
    * @private
    */
   _buildOutputLines (maxWidth) {
-    const canvasTextSplitter = new CanvasTextSplitter(this._context, this._options.text, maxWidth)
-    return canvasTextSplitter.getLines()
+    this._canvasTextSplitter.setText(this._options.text)
+    this._canvasTextSplitter.setMaxWidth(maxWidth)
+    return this._canvasTextSplitter.getLines()
   }
 
   /**

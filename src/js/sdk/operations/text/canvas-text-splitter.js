@@ -9,11 +9,10 @@
  */
 
 export default class CanvasTextSplitter {
-  constructor (context, text, maxWidth) {
+  constructor (context) {
     this._context = context
-    this._text = text
-    this._maxWidth = maxWidth
-    this._lines = text.split('\n')
+    this._lastFontStyle = {}
+    this._characterWidthCache = {}
   }
 
   /**
@@ -21,6 +20,10 @@ export default class CanvasTextSplitter {
    * @return {Array.<String>}
    */
   getLines () {
+    if (this._fontStyleChanged()) {
+      this._characterWidthCache = {}
+    }
+
     let lines = []
     let newLine = []
 
@@ -108,12 +111,50 @@ export default class CanvasTextSplitter {
   }
 
   /**
+   * Checks if the font style changed from the last call
+   * @return {Boolean}
+   * @private
+   */
+  _fontStyleChanged () {
+    if (this._context.font !== this._lastFontStyle) {
+      this._lastFontStyle = this._context.font
+      return true
+    }
+    return false
+  }
+
+  /**
    * Returns the measured width for the given string
    * @param  {String} string
    * @return {Number}
    * @private
    */
   _getWidth (string) {
-    return this._context.measureText(string).width
+    let width = 0
+    const stringLength = string.length
+    for (let c = 0; c < stringLength; c++) {
+      const char = string[c]
+      if (!this._characterWidthCache[char]) {
+        const charWidth = this._context.measureText(char).width
+        this._characterWidthCache[char] = charWidth
+      }
+      width += this._characterWidthCache[char]
+    }
+    return width
   }
+
+  /**
+   * Sets the text
+   * @param {String} text
+   */
+  setText (text) {
+    this._text = text
+    this._lines = text.split('\n')
+  }
+
+  /**
+   * Sets the max width
+   * @param {Number} maxWidth
+   */
+  setMaxWidth (maxWidth) { this._maxWidth = maxWidth }
 }
