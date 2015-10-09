@@ -202,8 +202,8 @@ export default class Configurable extends EventEmitter {
         break
     }
 
+    this._onOptionsChange()
     if (update) {
-      this._onOptionsChange()
       this.emit('update')
     }
   }

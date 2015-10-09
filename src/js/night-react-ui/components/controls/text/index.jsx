@@ -15,6 +15,26 @@ export default {
   canvasControls: TextCanvasControlsComponent,
   controls: TextControlsComponent,
   identifier: 'text',
+
+  /**
+   * Checks if there is something at the given position that
+   * would cause the UI to switch to this control on click
+   * @param  {Vector2} position
+   * @param  {Object} context
+   * @return {*}
+   */
+  clickAtPosition: (position, context) => {
+    if (!context.ui.operationExists('text')) return false
+    const renderer = context.kit.getRenderer()
+    const operation = context.ui.getOrCreateOperation('text')
+    const text = operation.getTextAtPosition(renderer, position)
+    if (!text) {
+      return false
+    } else {
+      return { selectedText: text }
+    }
+  },
+
   /**
    * Returns the initial state for this control
    * @param  {Object} context
@@ -25,6 +45,8 @@ export default {
     const operation = context.ui.getOrCreateOperation('text')
     const texts = operation.getTexts()
     operation.setTexts([])
+
+    context.kit.render()
 
     return {
       operationExistedBefore, operation, texts

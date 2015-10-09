@@ -32,7 +32,7 @@ export default class Text extends Configurable {
    * Gets called when options have been changed
    * @private
    */
-  _onOptionsChanged () {
+  _onOptionsChange () {
     this._dirty = true
   }
 

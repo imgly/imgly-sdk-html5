@@ -31,6 +31,16 @@ class TextOperation extends Operation {
     this.vertexShader = require('raw!./generic/sprite.vert')
   }
 
+  // -------------------------------------------------------------------------- EVENTS
+
+  /**
+   * Gets called when this operation has been marked as dirty
+   * @protected
+   */
+  _onDirty () {
+    this._textures = []
+  }
+
   // -------------------------------------------------------------------------- TEXT CREATION
 
   /**
@@ -270,6 +280,50 @@ class TextOperation extends Operation {
     }
 
     context.drawImage(textCanvas, scaledPosition.x, scaledPosition.y)
+  }
+
+  /**
+   * Returns the text object at the given position on the canvas
+   * @param  {BaseRenderer} renderer
+   * @param  {Vector2} position
+   * @return {Text}
+   */
+  getTextAtPosition (renderer, position) {
+    const canvas = renderer.getCanvas()
+    const canvasDimensions = new Vector2(canvas.width, canvas.height)
+
+    let intersectingText = null
+    this._options.texts.slice(0).reverse()
+      .forEach((text) => {
+        if (intersectingText) return
+
+        const absoluteTextPosition = text.getPosition()
+          .clone()
+          .multiply(canvasDimensions)
+        const relativeClickPosition = position
+          .clone()
+          .subtract(absoluteTextPosition)
+        const clickDistance = relativeClickPosition.len()
+        const radians = Math.atan2(
+          relativeClickPosition.y,
+          relativeClickPosition.x
+        )
+        const newRadians = radians - text.getRotation()
+
+        const x = Math.cos(newRadians) * clickDistance
+        const y = Math.sin(newRadians) * clickDistance
+
+        const textDimensions = text.getBoundingBox(renderer)
+
+        if (x > -0.5 * textDimensions.x &&
+            x < 0.5 * textDimensions.x &&
+            y > 0 &&
+            y < textDimensions.y) {
+          intersectingText = text
+        }
+
+      })
+    return intersectingText
   }
 }
 
