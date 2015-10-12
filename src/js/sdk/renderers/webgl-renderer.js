@@ -135,44 +135,49 @@ class WebGLRenderer extends BaseRenderer {
   /**
    * Draws the stored texture / image data for the given identifier
    * @param {String} identifier
+   * @return {Promise}
    */
   drawCached (identifier) {
-    let { texture, size } = this._cache[identifier]
+    return new Promise((resolve, reject) => {
+      let { texture, size } = this._cache[identifier]
 
-    let fbo = this.getCurrentFramebuffer()
-    let currentTexture = this.getCurrentTexture()
+      let fbo = this.getCurrentFramebuffer()
+      let currentTexture = this.getCurrentTexture()
 
-    let gl = this._context
-    gl.useProgram(this._defaultProgram)
-    this._setCoordinates(this._defaultProgram)
+      let gl = this._context
+      gl.useProgram(this._defaultProgram)
+      this._setCoordinates(this._defaultProgram)
 
-    // Resize all textures
-    for (let i = 0; i < this._textures.length; i++) {
-      let otherTexture = this._textures[i]
-      gl.bindTexture(gl.TEXTURE_2D, otherTexture)
+      // Resize all textures
+      for (let i = 0; i < this._textures.length; i++) {
+        let otherTexture = this._textures[i]
+        gl.bindTexture(gl.TEXTURE_2D, otherTexture)
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size.x, size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
+      }
+
+      // Select the current framebuffer to draw to
+      gl.bindFramebuffer(gl.FRAMEBUFFER, fbo)
+
+      // Resize the texture we're drawing to
+      gl.bindTexture(gl.TEXTURE_2D, currentTexture)
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size.x, size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
-    }
 
-    // Select the current framebuffer to draw to
-    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo)
+      // Use the cached texture as input
+      gl.bindTexture(gl.TEXTURE_2D, texture)
 
-    // Resize the texture we're drawing to
-    gl.bindTexture(gl.TEXTURE_2D, currentTexture)
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size.x, size.y, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
+      gl.viewport(0, 0, size.x, size.y)
 
-    // Use the cached texture as input
-    gl.bindTexture(gl.TEXTURE_2D, texture)
+      // Clear
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-    gl.viewport(0, 0, size.x, size.y)
+      // Draw the rectangle
+      gl.drawArrays(gl.TRIANGLES, 0, 6)
 
-    // Clear
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+      this.setLastTexture(currentTexture)
+      this.selectNextBuffer()
 
-    // Draw the rectangle
-    gl.drawArrays(gl.TRIANGLES, 0, 6)
-
-    this.setLastTexture(currentTexture)
-    this.selectNextBuffer()
+      resolve()
+    })
   }
 
   getTextureDimensions () {
