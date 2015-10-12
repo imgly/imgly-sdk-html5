@@ -39,8 +39,8 @@ export default class StickersBlurControlsComponent extends BaseChildComponent {
    * @private
    */
   _onSliderValueChange (value) {
-    this._selectedSticker.adjustments = this._selectedSticker.adjustments || {}
-    this._selectedSticker.adjustments.blur = value / 100
+    const stickerAdjustments = this._selectedSticker.getAdjustments()
+    stickerAdjustments.setBlur(value / 100)
     this._operation.setDirty(true)
     this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
   }
@@ -52,8 +52,8 @@ export default class StickersBlurControlsComponent extends BaseChildComponent {
   renderWithBEM () {
     const ui = this.context.ui
 
-    const adjustments = this._selectedSticker.adjustments || {}
-    const blur = adjustments.blur || 0
+    const adjustments = this._selectedSticker.getAdjustments()
+    const blur = adjustments.getBlur()
 
     return (<div bem='$b:controls e:table'>
       <div bem='e:cell m:button m:withBorderRight'>

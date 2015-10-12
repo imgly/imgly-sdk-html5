@@ -40,7 +40,7 @@ export default class StickersContrastControlsComponent extends BaseChildComponen
    */
   _onSliderValueChange (value) {
     const stickerAdjustments = this._selectedSticker.getAdjustments()
-    stickerAdjustments.contrast = (value + 100) / 100
+    stickerAdjustments.setContrast((value + 100) / 100)
     this._operation.setDirty(true)
     this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
   }
@@ -53,7 +53,7 @@ export default class StickersContrastControlsComponent extends BaseChildComponen
     const ui = this.context.ui
 
     const adjustments = this._selectedSticker.getAdjustments()
-    const contrast = adjustments.contrast || 1
+    const contrast = adjustments.getContrast()
 
     return (<div bem='$b:controls e:table'>
       <div bem='e:cell m:button m:withBorderRight'>

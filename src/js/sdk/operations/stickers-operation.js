@@ -136,7 +136,7 @@ class StickersOperation extends Operation {
       const outputTexture = this._framebufferTextures[this._framebufferIndex % 2]
       const outputFBO = this._framebuffers[this._framebufferIndex % 2]
 
-      const blurRadius = (stickerAdjustments && stickerAdjustments.blur) || 0
+      const blurRadius = stickerAdjustments.getBlur()
 
       const stickerDimensions = new Vector2(image.width, image.height)
         .multiply(stickerScale)
@@ -158,22 +158,10 @@ class StickersOperation extends Operation {
         end.x, end.y
       ])
 
-      let [ brightness, saturation, contrast ] = [0.0, 1.0, 1.0]
-      if (stickerAdjustments) {
-        if (typeof stickerAdjustments.brightness !== 'undefined') {
-          brightness = stickerAdjustments.brightness
-        }
-        if (typeof stickerAdjustments.saturation !== 'undefined') {
-          saturation = stickerAdjustments.saturation
-        }
-        if (typeof stickerAdjustments.contrast !== 'undefined') {
-          contrast = stickerAdjustments.contrast
-        }
-      }
       const uniforms = {
-        u_brightness: { type: 'f', value: brightness },
-        u_saturation: { type: 'f', value: saturation },
-        u_contrast: { type: 'f', value: contrast }
+        u_brightness: { type: 'f', value: stickerAdjustments.getBrightness() },
+        u_saturation: { type: 'f', value: stickerAdjustments.getSaturation() },
+        u_contrast: { type: 'f', value: stickerAdjustments.getContrast() }
       }
 
       const textureSize = stickerDimensions.clone()
@@ -245,7 +233,8 @@ class StickersOperation extends Operation {
     const stickerAdjustments = sticker.getAdjustments()
 
     return new Promise((resolve, reject) => {
-      if (!(stickerAdjustments && stickerAdjustments.blur)) {
+      const stickerBlur = stickerAdjustments.getBlur()
+      if (!stickerBlur) {
         return resolve()
       }
 
@@ -259,10 +248,10 @@ class StickersOperation extends Operation {
       const textureSize = new Vector2(image.width, image.height)
         .multiply(sticker.getScale())
 
-      textureSize.add(textureSize.clone().multiply(stickerAdjustments.blur))
+      textureSize.add(textureSize.clone().multiply(stickerBlur))
 
       const uniforms = {
-        delta: { type: '2f', value: [stickerAdjustments.blur * canvas.width, 0] },
+        delta: { type: '2f', value: [stickerBlur * canvas.width, 0] },
         resolution: { type: 'f', value: textureSize.x }
       }
 
@@ -284,7 +273,7 @@ class StickersOperation extends Operation {
       programOptions.outputTexture = this._framebufferTextures[this._framebufferIndex % 2]
       programOptions.outputFBO = this._framebuffers[this._framebufferIndex % 2]
 
-      uniforms.delta.value = [0, stickerAdjustments.blur * canvas.width]
+      uniforms.delta.value = [0, stickerBlur * canvas.width]
 
       programOptions.inputTexture = this._lastTexture
       renderer.runProgram(this._programs[renderer.id].blur, programOptions)

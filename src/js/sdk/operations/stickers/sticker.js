@@ -27,10 +27,10 @@ Sticker.prototype.availableOptions = {
   rotation: { type: 'number', default: 0 },
   flipHorizontally: { type: 'boolean', default: false },
   flipVertically: { type: 'boolean', default: false },
-  adjustments: { type: 'object', default: {
-    brightness: 0,
-    saturation: 1,
-    contrast: 1,
-    blur: 0
+  adjustments: { type: 'configurable', default: {
+    brightness: { type: 'number', default: 0 },
+    saturation: { type: 'number', default: 1 },
+    contrast: { type: 'number', default: 1 },
+    blur: { type: 'number', default: 0 }
   }}
 }
