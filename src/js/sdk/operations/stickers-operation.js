@@ -42,6 +42,15 @@ class StickersOperation extends Operation {
   }
 
   /**
+   * Creates a new sticker object and returns it
+   * @param  {Object} options
+   * @return {Sticker}
+   */
+  createSticker (options) {
+    return new Sticker(this, options)
+  }
+
+  /**
    * Registers the existing stickers
    * @private
    */

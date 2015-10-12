@@ -39,12 +39,12 @@ export default class StickersOverviewControlsComponent extends BaseChildComponen
    * @private
    */
   _onStickerClick (identifier) {
-    const sticker = {
+    const sticker = this._operation.createSticker({
       name: identifier,
       position: new Vector2(0.5, 0.5),
       scale: new Vector2(1.0, 1.0),
       rotation: 0
-    }
+    })
     this._stickers.push(sticker)
     this._operation.setDirty(true)
 

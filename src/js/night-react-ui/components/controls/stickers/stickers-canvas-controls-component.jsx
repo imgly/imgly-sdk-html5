@@ -47,7 +47,7 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
   sharedStateDidChange (newState) {
     if (newState.stickers) {
       newState.stickers.forEach((sticker) => {
-        this._loadStickerAndStoreDimensions(sticker.name)
+        this._loadStickerAndStoreDimensions(sticker.getName())
           .then(() => this.forceUpdate())
       })
     }
@@ -106,7 +106,7 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
       this.setSharedState({ selectedSticker: sticker })
     }
     this._selectedSticker = sticker
-    this._initialPosition = sticker.position.clone()
+    this._initialPosition = sticker.getPosition().clone()
   }
 
   /**
@@ -125,7 +125,7 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
       .add(relativeOffset)
 
     this._operation.setDirty(true)
-    this._selectedSticker.position = newPosition
+    this._selectedSticker.setPosition(newPosition)
     this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
     this.forceUpdate()
   }
@@ -139,7 +139,7 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
   _onKnobDragStart (position, e) {
     const selectedSticker = this.getSharedState('selectedSticker')
     this._initialPosition = this._getDragKnobPosition()
-    this._initialScale = selectedSticker.scale.clone()
+    this._initialScale = selectedSticker.getScale().clone()
   }
 
   /**
@@ -178,8 +178,8 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
         knobDistanceFromCenter.len() / initialDistanceFromCenter.len()
       )
 
-    selectedSticker.scale.set(newScale.x, newScale.x)
-    selectedSticker.rotation = radians
+    selectedSticker.getScale().set(newScale.x, newScale.x)
+    selectedSticker.setRotation(radians)
     this._operation.setDirty(true)
     this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
     this.forceUpdate()
@@ -198,7 +198,7 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
     const stickerPosition = this._getAbsoluteStickerPosition(sticker)
       .subtract(stickerDimensions.clone().divide(2))
 
-    const degrees = sticker.rotation * 180 / Math.PI
+    const degrees = sticker.getRotation() * 180 / Math.PI
     const transform = `rotate(${degrees.toFixed(2)}deg)`
 
     return {
@@ -221,10 +221,11 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
   _getDragKnobPosition () {
     const selectedSticker = this.getSharedState('selectedSticker')
     const stickerPosition = this._getAbsoluteStickerPosition(selectedSticker)
+    const stickerRotation = selectedSticker.getRotation()
 
     // Calculate sin and cos for rotation
-    const sin = Math.sin(selectedSticker.rotation || 0)
-    const cos = Math.cos(selectedSticker.rotation || 0)
+    const sin = Math.sin(stickerRotation || 0)
+    const cos = Math.cos(stickerRotation || 0)
 
     // Calculate sticker dimensions
     const halfDimensions = this._getStickerDimensions(selectedSticker)
@@ -260,10 +261,11 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
   _getRemoveKnobStyle () {
     const selectedSticker = this.getSharedState('selectedSticker')
     const stickerPosition = this._getAbsoluteStickerPosition(selectedSticker)
+    const stickerRotation = selectedSticker.getRotation()
 
     // Calculate sin and cos for rotation
-    const sin = Math.sin(selectedSticker.rotation || 0)
-    const cos = Math.cos(selectedSticker.rotation || 0)
+    const sin = Math.sin(stickerRotation || 0)
+    const cos = Math.cos(stickerRotation || 0)
 
     // Calculate sticker dimensions
     const halfDimensions = this._getStickerDimensions(selectedSticker)
@@ -292,7 +294,7 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
   _loadExistingStickers () {
     return this._stickers
       .map((sticker) => {
-        return this._loadStickerAndStoreDimensions(sticker.name)
+        return this._loadStickerAndStoreDimensions(sticker.getName())
           .then(() => this.forceUpdate())
       })
   }
@@ -335,7 +337,7 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
    */
   _stickerLoaded (sticker) {
     const stickerDimensions = this.getSharedState('stickerDimensions')
-    return sticker.name in stickerDimensions
+    return sticker.getName() in stickerDimensions
   }
 
   // -------------------------------------------------------------------------- RENDERING
@@ -419,7 +421,7 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
   _getAbsoluteStickerPosition (sticker) {
     const { kit } = this.context
     const canvasDimensions = kit.getOutputDimensions()
-    return sticker.position
+    return sticker.getPosition()
       .clone()
       .multiply(canvasDimensions)
   }
@@ -432,8 +434,8 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
    */
   _getStickerDimensions (sticker) {
     const stickerDimensions = this.getSharedState('stickerDimensions')
-    return stickerDimensions[sticker.name]
+    return stickerDimensions[sticker.getName()]
       .clone()
-      .multiply(sticker.scale)
+      .multiply(sticker.getScale())
   }
 }

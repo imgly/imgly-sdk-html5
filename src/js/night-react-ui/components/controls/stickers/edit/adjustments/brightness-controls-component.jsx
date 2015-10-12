@@ -39,8 +39,8 @@ export default class StickersBrightnessControlsComponent extends BaseChildCompon
    * @private
    */
   _onSliderValueChange (value) {
-    this._selectedSticker.adjustments = this._selectedSticker.adjustments || {}
-    this._selectedSticker.adjustments.brightness = value / 100
+    let stickerAdjustments = this._selectedSticker.getAdjustments()
+    stickerAdjustments.brightness = value / 100
     this._operation.setDirty(true)
     this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
   }
@@ -52,7 +52,7 @@ export default class StickersBrightnessControlsComponent extends BaseChildCompon
   renderWithBEM () {
     const ui = this.context.ui
 
-    const adjustments = this._selectedSticker.adjustments || {}
+    const adjustments = this._selectedSticker.getAdjustments()
     const brightness = adjustments.brightness || 0
 
     return (<div bem='$b:controls e:table'>
