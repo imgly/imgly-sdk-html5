@@ -12,6 +12,7 @@
 import Operation from './operation'
 import Vector2 from '../lib/math/vector2'
 import Matrix from '../lib/math/matrix'
+import Sticker from './stickers/sticker'
 import Promise from '../vendor/promise'
 
 /**
@@ -86,7 +87,7 @@ class StickersOperation extends Operation {
       this._outputTexture = texture
       this._outputFramebuffer = fbo
     }
-    const stickers = this._options.stickers
+    const stickers = this.getStickers()
     const promises = stickers.map((sticker) => {
       return this._renderStickerWebGL(renderer, sticker)
     })
@@ -117,16 +118,19 @@ class StickersOperation extends Operation {
           renderer.setupGLSLProgram(null, this.adjustmentsShader)
       }
 
+      const stickerAdjustments = sticker.getAdjustments()
+      const stickerScale = sticker.getScale()
+
       const canvas = renderer.getCanvas()
 
       const inputTexture = texture
       const outputTexture = this._framebufferTextures[this._framebufferIndex % 2]
       const outputFBO = this._framebuffers[this._framebufferIndex % 2]
 
-      const blurRadius = (sticker.adjustments && sticker.adjustments.blur) || 0
+      const blurRadius = (stickerAdjustments && stickerAdjustments.blur) || 0
 
       const stickerDimensions = new Vector2(image.width, image.height)
-        .multiply(sticker.scale)
+        .multiply(stickerScale)
 
       const start = new Vector2(0.0, 0.0)
         .subtract(blurRadius * canvas.width / image.width)
@@ -146,15 +150,15 @@ class StickersOperation extends Operation {
       ])
 
       let [ brightness, saturation, contrast ] = [0.0, 1.0, 1.0]
-      if (sticker.adjustments) {
-        if (typeof sticker.adjustments.brightness !== 'undefined') {
-          brightness = sticker.adjustments.brightness
+      if (stickerAdjustments) {
+        if (typeof stickerAdjustments.brightness !== 'undefined') {
+          brightness = stickerAdjustments.brightness
         }
-        if (typeof sticker.adjustments.saturation !== 'undefined') {
-          saturation = sticker.adjustments.saturation
+        if (typeof stickerAdjustments.saturation !== 'undefined') {
+          saturation = stickerAdjustments.saturation
         }
-        if (typeof sticker.adjustments.contrast !== 'undefined') {
-          contrast = sticker.adjustments.contrast
+        if (typeof stickerAdjustments.contrast !== 'undefined') {
+          contrast = stickerAdjustments.contrast
         }
       }
       const uniforms = {
@@ -229,8 +233,10 @@ class StickersOperation extends Operation {
   }
 
   _applyBlur (renderer, image, sticker) {
+    const stickerAdjustments = sticker.getAdjustments()
+
     return new Promise((resolve, reject) => {
-      if (!(sticker.adjustments && sticker.adjustments.blur)) {
+      if (!(stickerAdjustments && stickerAdjustments.blur)) {
         return resolve()
       }
 
@@ -242,12 +248,12 @@ class StickersOperation extends Operation {
       }
 
       const textureSize = new Vector2(image.width, image.height)
-        .multiply(sticker.scale)
+        .multiply(sticker.getScale())
 
-      textureSize.add(textureSize.clone().multiply(sticker.adjustments.blur))
+      textureSize.add(textureSize.clone().multiply(stickerAdjustments.blur))
 
       const uniforms = {
-        delta: { type: '2f', value: [sticker.adjustments.blur * canvas.width, 0] },
+        delta: { type: '2f', value: [stickerAdjustments.blur * canvas.width, 0] },
         resolution: { type: 'f', value: textureSize.x }
       }
 
@@ -269,7 +275,7 @@ class StickersOperation extends Operation {
       programOptions.outputTexture = this._framebufferTextures[this._framebufferIndex % 2]
       programOptions.outputFBO = this._framebuffers[this._framebufferIndex % 2]
 
-      uniforms.delta.value = [0, sticker.adjustments.blur * canvas.width]
+      uniforms.delta.value = [0, stickerAdjustments.blur * canvas.width]
 
       programOptions.inputTexture = this._lastTexture
       renderer.runProgram(this._programs[renderer.id].blur, programOptions)
@@ -288,8 +294,10 @@ class StickersOperation extends Operation {
    * @private
    */
   _renderStickerWebGL (renderer, sticker) {
-    if (!(sticker.name in this._stickers)) {
-      return Promise.reject(new Error(`Unknown sticker "${sticker.name}"`))
+    const stickerName = sticker.getName()
+
+    if (!(stickerName in this._stickers)) {
+      return Promise.reject(new Error(`Unknown sticker "${stickerName}"`))
     }
 
     this._setupFrameBuffers(renderer)
@@ -299,7 +307,7 @@ class StickersOperation extends Operation {
     }
 
     let image
-    return this._loadSticker(sticker.name)
+    return this._loadSticker(stickerName)
       .then((_image) => {
         this._lastTexture = null
         this._framebufferIndex = 0
@@ -337,17 +345,20 @@ class StickersOperation extends Operation {
 
     // Scale matrix
     let scaleMatrix = new Matrix()
-    scaleMatrix.a = sticker.scale.x * image.width * 0.5
-    scaleMatrix.d = -sticker.scale.y * image.height * 0.5
+    const stickerScale = sticker.getScale()
+    scaleMatrix.a = stickerScale.x * image.width * 0.5
+    scaleMatrix.d = -stickerScale.y * image.height * 0.5
 
     // Translation matrix
+    const stickerPosition = sticker.getPosition()
     let translationMatrix = new Matrix()
-    translationMatrix.tx = sticker.position.x * canvas.width
-    translationMatrix.ty = sticker.position.y * canvas.height
+    translationMatrix.tx = stickerPosition.x * canvas.width
+    translationMatrix.ty = stickerPosition.y * canvas.height
 
     // Rotation matrix
-    const c = Math.cos(sticker.rotation * -1)
-    const s = Math.sin(sticker.rotation * -1)
+    const stickerRotation = sticker.getRotation()
+    const c = Math.cos(stickerRotation * -1)
+    const s = Math.sin(stickerRotation * -1)
     let rotationMatrix = new Matrix()
     rotationMatrix.a = c
     rotationMatrix.b = -s
@@ -356,8 +367,8 @@ class StickersOperation extends Operation {
 
     // Flip matrix
     let flipMatrix = new Matrix()
-    flipMatrix.a = sticker.flipHorizontally ? -1 : 1
-    flipMatrix.d = sticker.flipVertically ? -1 : 1
+    flipMatrix.a = sticker.getFlipHorizontally() ? -1 : 1
+    flipMatrix.d = sticker.getFlipVertically() ? -1 : 1
 
     let matrix = scaleMatrix.multiply(flipMatrix)
     matrix.multiply(rotationMatrix)
@@ -512,7 +523,12 @@ class StickersOperation extends Operation {
       .forEach((sticker) => {
         if (intersectingSticker) return
 
-        const absoluteStickerPosition = sticker.position
+        const stickerPosition = sticker.getPosition()
+        const stickerRotation = sticker.getRotation()
+        const stickerName = sticker.getName()
+        const stickerScale = sticker.getScale()
+
+        const absoluteStickerPosition = stickerPosition
           .clone()
           .multiply(canvasDimensions)
         const relativeClickPosition = position
@@ -523,18 +539,18 @@ class StickersOperation extends Operation {
           relativeClickPosition.y,
           relativeClickPosition.x
         )
-        const newRadians = radians - sticker.rotation
+        const newRadians = radians - stickerRotation
 
         const x = Math.cos(newRadians) * clickDistance
         const y = Math.sin(newRadians) * clickDistance
 
-        const stickerPath = this._kit.getAssetPath(this._stickers[sticker.name])
+        const stickerPath = this._kit.getAssetPath(this._stickers[stickerName])
         const stickerTexture = this._loadedStickers[stickerPath]
         const stickerDimensions = new Vector2(
             stickerTexture.width,
             stickerTexture.height
           )
-          .multiply(sticker.scale)
+          .multiply(stickerScale)
 
         if (x > -0.5 * stickerDimensions.x &&
             x < 0.5 * stickerDimensions.x &&
@@ -562,7 +578,16 @@ StickersOperation.identifier = 'stickers'
  * @type {Object}
  */
 StickersOperation.prototype.availableOptions = {
-  stickers: { type: 'array', default: [] }
+  stickers: {
+    type: 'array', default: [],
+    setter: function (stickers) {
+      stickers = stickers.map((sticker) => {
+        if (sticker instanceof Sticker) return sticker
+        return new Sticker(this, sticker)
+      })
+      return stickers
+    }
+  }
 }
 
 export default StickersOperation
