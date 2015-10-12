@@ -32,10 +32,17 @@ export default class OperationsStack {
    * @return {Promise}
    */
   render (renderer) {
-    const promises = this._stack
+    const operations = this._stack
       .filter((op) => !!op)
-      .map((op) => op.render(renderer))
-    return Promise.all(promises)
+
+    let promise = Promise.resolve()
+    operations.forEach((operation) => {
+      promise = promise.then(() => {
+        return operation.render(renderer)
+      })
+    })
+
+    return promise
   }
 
   /**
