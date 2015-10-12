@@ -40,7 +40,7 @@ export default class StickersSaturationControlsComponent extends BaseChildCompon
    */
   _onSliderValueChange (value) {
     let stickerAdjustments = this._selectedSticker.getAdjustments()
-    stickerAdjustments.saturation = (value + 100) / 100
+    stickerAdjustments.setSaturation((value + 100) / 100)
     this._operation.setDirty(true)
     this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
   }
@@ -53,7 +53,7 @@ export default class StickersSaturationControlsComponent extends BaseChildCompon
     const ui = this.context.ui
 
     const adjustments = this._selectedSticker.getAdjustments()
-    const saturation = adjustments.saturation || 1
+    const saturation = adjustments.getSaturation()
 
     return (<div bem='$b:controls e:table'>
       <div bem='e:cell m:button m:withBorderRight'>

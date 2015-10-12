@@ -42,10 +42,10 @@ export default class StickersFlipControlsComponent extends BaseChildComponent {
   _onItemClick (direction) {
     switch (direction) {
       case 'h':
-        this._selectedSticker.flipHorizontally = !this._selectedSticker.flipHorizontally
+        this._selectedSticker.setFlipHorizontally(!this._selectedSticker.getFlipHorizontally())
         break
       case 'v':
-        this._selectedSticker.flipVertically = !this._selectedSticker.flipVertically
+        this._selectedSticker.setFlipVertically(!this._selectedSticker.getFlipVertically())
         break
     }
     this._operation.setDirty(true)

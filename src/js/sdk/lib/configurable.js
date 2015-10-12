@@ -193,6 +193,11 @@ export default class Configurable extends EventEmitter {
         this._options[optionName] = value
         break
 
+      // Configurable options
+      case 'configurable':
+        this._options[optionName] = new Configurable(null, value)
+        break
+
       // Array options
       case 'array':
         if (!(value instanceof Array)) {
