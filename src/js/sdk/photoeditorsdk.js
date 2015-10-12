@@ -35,7 +35,7 @@ PhotoEditorSDK.OperationsStack = require('./lib/operations-stack')
 PhotoEditorSDK.Operations = require('./operations/')
 PhotoEditorSDK.Filters = require('./operations/filters/')
 
-PhotoEditorSDK.Promise = require('./vendor/native-promise-only')
+PhotoEditorSDK.Promise = require('./vendor/promise')
 
 // Exposed constants
 PhotoEditorSDK.RenderType = RenderType

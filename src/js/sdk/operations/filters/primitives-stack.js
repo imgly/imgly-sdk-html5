@@ -8,7 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Promise from '../../vendor/native-promise-only'
+import Promise from '../../vendor/promise'
 
 /**
  * A helper class that can collect {@link Primitive} instances and render
