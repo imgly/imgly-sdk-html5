@@ -12,9 +12,9 @@
 import { ReactBEM, BaseChildComponent } from '../../../../globals'
 import ScrollbarComponent from '../../../scrollbar-component'
 
-import AdjustmentsControls from './adjustments-controls'
-import BlurControls from './blur-controls'
-import FlipControls from './flip-controls'
+import AdjustmentsControls from './adjustments-controls-component'
+import BlurControls from './blur-controls-component'
+import FlipControls from './flip-controls-component'
 
 const CONTROLS = [
   AdjustmentsControls,
