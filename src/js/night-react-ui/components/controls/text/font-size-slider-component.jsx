@@ -67,7 +67,7 @@ export default class TextControlsComponent extends BaseChildComponent {
         middleDot={false}
         minValue={1}
         maxValue={maxFontSize}
-        label={this._t('controls.text.fontSize')}
+        label={this._t('controls.text.size')}
         onChange={this._onSliderValueChange}
         value={fontSize} />
     </div>)

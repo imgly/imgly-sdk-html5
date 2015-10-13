@@ -1,0 +1,49 @@
+/*
+ * Photo Editor SDK - photoeditorsdk.com
+ * Copyright (c) 2013-2015 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+
++block(editor)
+  +block(fontFamily)
+    +element(canvas)
+      width: 60px
+      height: 42px
+
+    +element(list)
+      overflow-x: auto
+      overflow-y: hidden
+      width: 100%
+      padding: 5px 0 10px 0
+      white-space: nowrap
+
+    +element(item)
+      position: relative
+      display: inline-block
+      width: 60px
+      height: 60px
+      vertical-align: middle
+      margin: 0 2px
+      border: 1px solid transparent
+      padding-bottom: 5px
+      cursor: pointer
+
+      &.is-active
+        @include border-radius(3px)
+        border: 1px solid white
+
+    +element(label)
+      @include font-regular
+      position: absolute
+      bottom: 5px
+      text-overflow: ellipsis
+      overflow: hidden
+      width: 100%
+      padding: 0 5px
+      font-size: 10px
+      color: white
+
