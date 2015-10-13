@@ -16,7 +16,8 @@
     },
     "text": {
       "foreground": "Foreground",
-      "background": "Background"
+      "background": "Background",
+      "fontSize": "Fontsize"
     },
     "orientation": {
       "rotate-l": "Rotate -90°",

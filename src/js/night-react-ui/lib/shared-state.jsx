@@ -46,7 +46,7 @@ export default class SharedState extends EventEmitter {
    * Broadcasts an update
    * @param {Object} newState
    */
-  broadcastUpdate (newState) {
+  broadcastUpdate (newState = {}) {
     this.emit('update', newState)
   }
 }

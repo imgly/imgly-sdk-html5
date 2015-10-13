@@ -60,7 +60,7 @@ export default class TextCanvasControlsComponent extends BaseChildComponent {
     const selectedText = this.getSharedState('selectedText')
     if (text !== selectedText) {
       this.refs[`textArea-${selectedText.id}`].getDOMNode().blur()
-      this.setSharedState({ selectedText: text }, false)
+      this.setSharedState({ selectedText: text })
       return this.setState({
         editMode: false
       })
