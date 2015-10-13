@@ -64,5 +64,14 @@ export default {
     )
 
     return canvas
+  },
+
+  /**
+   * Checks if the browser supports canvas.msToBlob
+   * @return {Boolean}
+   */
+  supportsMSBlob () {
+    let canvas = document.createElement('canvas')
+    return typeof canvas.msToBlob !== 'undefined'
   }
 }

@@ -9,13 +9,14 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { SDKUtils, EventEmitter, Constants } from './globals'
+import { SDKUtils, EventEmitter, Constants, Utils, RenderType } from './globals'
 
 import Polyglot from 'node-polyglot'
 import Helpers from './helpers'
 import React from 'react'
 import EditorComponent from './components/editor-component'
 import OverviewControlsComponent from './components/controls/overview/overview-controls-component'
+import FileExporter from './lib/file-exporter'
 
 export default class NightReactUI extends EventEmitter {
   constructor (kit, options) {
@@ -70,6 +71,30 @@ export default class NightReactUI extends EventEmitter {
       mediator={this._mediator}
       operationsStack={this._operationsStack}
       options={this._options} />, this._options.container)
+  }
+
+  /**
+   * Exports an image
+   * @return {Promise}
+   */
+  export () {
+    let renderType = RenderType.DATAURL
+    if (Utils.supportsMSBlob()) {
+      renderType = RenderType.MSBLOB
+    }
+
+    this._kit.setDimensions(null)
+    return this._kit.export(renderType,
+        'image/png'
+      )
+      .then((data) => {
+        switch (renderType) {
+          case RenderType.DATAURL:
+            return FileExporter.exportDataURL(data)
+          case RenderType.MSBLOB:
+            return FileExporter.exportMSBlob(data)
+        }
+      })
   }
 
   // -------------------------------------------------------------------------- INITIALIZATION

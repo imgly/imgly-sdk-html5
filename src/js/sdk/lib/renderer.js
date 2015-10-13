@@ -251,10 +251,10 @@ export default class Renderer {
   _initRenderer () {
     /* istanbul ignore if */
     if (WebGLRenderer.isSupported() && this._options.preferredRenderer !== 'canvas') {
-      this._renderer = new WebGLRenderer(this._initialDimensions, this._options.canvas, this._image)
+      this._renderer = new WebGLRenderer(this._options.canvas, this._image)
       this._webglEnabled = true
     } else if (CanvasRenderer.isSupported()) {
-      this._renderer = new CanvasRenderer(this._initialDimensions, this._options.canvas, this._image)
+      this._renderer = new CanvasRenderer(this._options.canvas, this._image)
       this._webglEnabled = false
     }
 
@@ -310,6 +310,10 @@ export default class Renderer {
   getOptions () { return this._options }
   getOperationsOptions () { return this._operationsOptions }
   setDimensions (dimensions) {
+    if (!dimensions) {
+      const initialDimensions = this.getInitialDimensions()
+      dimensions = `${initialDimensions.x}x${initialDimensions.y}`
+    }
     this._dimensions = new ImageDimensions(dimensions)
   }
 }
