@@ -90,6 +90,7 @@ export default class FramesControlsComponent extends BaseChildComponent {
           minValue={minThickness}
           maxValue={maxThickness}
           valueUnit='px'
+          middleDot={false}
           label={this._t('controls.frames.thickness')}
           onChange={this._onThicknessUpdate}
           value={currentWidth} />
