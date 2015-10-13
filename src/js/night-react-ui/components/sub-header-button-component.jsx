@@ -39,7 +39,7 @@ export default class SubHeaderButtonComponent extends BaseChildComponent {
     }
 
     return (<bem specifier='$b:subHeader'>
-      <div bem={bem}>
+      <div bem={bem} onClick={this.props.onClick}>
         {icon}
         <div bem='e:label'>{this.props.label || 'Button'}</div>
       </div>

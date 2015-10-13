@@ -52,6 +52,7 @@ class EditorComponent extends React.Component {
    */
   setImage (image) {
     this.props.kit.setImage(image)
+    this.props.kit.reset()
     this.setState({ screen: this._screens.editor })
   }
 
