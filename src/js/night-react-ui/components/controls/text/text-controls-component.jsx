@@ -17,6 +17,7 @@ const ALIGNMENTS = [
 
 import { ReactBEM, BaseChildComponent, Constants } from '../../../globals'
 import ScrollbarComponent from '../../scrollbar-component'
+import ColorPickerComponent from '../../color-picker/color-picker-component'
 import FontSizeSliderComponent from './font-size-slider-component'
 import FontPreviewComponent from './font-preview-component'
 import FontComponent from './font-component'
@@ -29,7 +30,9 @@ export default class TextControlsComponent extends BaseChildComponent {
       '_onBackClick',
       '_onFontSizeChange',
       '_onFontChange',
-      '_onAlignmentClick'
+      '_onAlignmentClick',
+      '_onForegroundColorChange',
+      '_onBackgroundColorChange'
     )
     this._texts = this.getSharedState('texts')
     this._operation = this.getSharedState('operation')
@@ -102,6 +105,28 @@ export default class TextControlsComponent extends BaseChildComponent {
     const newAlignment = ALIGNMENTS[nextIndex]
 
     selectedText.setAlignment(newAlignment)
+    this.forceSharedUpdate()
+  }
+
+  /**
+   * Gets called when the user changes the foreground color
+   * @param  {Color} color
+   * @private
+   */
+  _onForegroundColorChange (color) {
+    const selectedText = this.getSharedState('selectedText')
+    selectedText.setColor(color)
+    this.forceSharedUpdate()
+  }
+
+  /**
+   * Gets called when the user changes the background color
+   * @param  {Color} color
+   * @private
+   */
+  _onBackgroundColorChange (color) {
+    const selectedText = this.getSharedState('selectedText')
+    selectedText.setBackgroundColor(color)
     this.forceSharedUpdate()
   }
 
@@ -281,6 +306,11 @@ export default class TextControlsComponent extends BaseChildComponent {
     ]
 
     const overlayControl = this._renderOverlayControl()
+    const selectedText = this.getSharedState('selectedText')
+    if (!selectedText) return null
+
+    const foregroundColor = selectedText.getColor().clone()
+    const backgroundColor = selectedText.getBackgroundColor().clone()
 
     return (<div bem='$b:controls'>
       {overlayControl}
@@ -296,6 +326,18 @@ export default class TextControlsComponent extends BaseChildComponent {
               {listItems}
             </ul>
           </ScrollbarComponent>
+        </div>
+        <div bem='e:cell m:colorPicker'>
+          <ColorPickerComponent
+            initialValue={foregroundColor}
+            label={this._t('controls.text.foreground')}
+            onChange={this._onForegroundColorChange} />
+        </div>
+        <div bem='e:cell m:colorPicker'>
+          <ColorPickerComponent
+            initialValue={backgroundColor}
+            label={this._t('controls.text.background')}
+            onChange={this._onBackgroundColorChange} />
         </div>
       </div>
     </div>)

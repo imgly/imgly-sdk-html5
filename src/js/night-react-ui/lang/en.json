@@ -73,6 +73,7 @@
   },
   "generic": {
     "back": "Back",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "color": "Color"
   }
 }
