@@ -41,6 +41,9 @@ PhotoEditorSDK.Promise = require('./vendor/promise')
 PhotoEditorSDK.RenderType = RenderType
 PhotoEditorSDK.ImageFormat = ImageFormat
 
+// Exposed libs
+PhotoEditorSDK.Base64 = require('./lib/base64')
+
 // Exposed helpers
 PhotoEditorSDK.extend = require('./lib/extend')
 

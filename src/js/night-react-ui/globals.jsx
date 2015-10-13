@@ -27,8 +27,10 @@ const Color = PhotoEditorSDK.Color
 const Vector2 = PhotoEditorSDK.Vector2
 const SDKUtils = PhotoEditorSDK.Utils
 const EventEmitter = PhotoEditorSDK.EventEmitter
+const Base64 = PhotoEditorSDK.Base64
+const RenderType = PhotoEditorSDK.RenderType
 
 export {
   Log, Promise, Utils, React, BEM, Classnames, BaseChildComponent, ReactBEM, Vector2,
-  SDKUtils, EventEmitter, Constants, SharedState, Color
+  SDKUtils, EventEmitter, Constants, SharedState, Color, Base64, RenderType
 }

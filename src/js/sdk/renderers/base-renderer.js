@@ -19,7 +19,7 @@ import EventEmitter from '../lib/event-emitter'
  * @private
  */
 export default class BaseRenderer extends EventEmitter {
-  constructor (dimensions, canvas, image) {
+  constructor (canvas, image) {
     super()
 
     this._size = new Vector2(image.width, image.height)

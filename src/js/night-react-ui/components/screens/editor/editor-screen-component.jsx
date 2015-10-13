@@ -30,7 +30,8 @@ export default class EditorScreenComponent extends ScreenComponent {
       '_undoZoom',
       '_onDisableFeatures',
       '_onEnableFeatures',
-      '_onNewClick'
+      '_onNewClick',
+      '_onExportClick'
     )
 
     this._previousControlsStack = []
@@ -57,6 +58,15 @@ export default class EditorScreenComponent extends ScreenComponent {
    */
   _onNewClick () {
     this.props.editor.switchToSplashScreen()
+  }
+
+  /**
+   * Gets called when the user clicks the export button
+   * @private
+   */
+  _onExportClick () {
+    const { ui } = this.context
+    ui.export()
   }
 
   // -------------------------------------------------------------------------- FEATURES
