@@ -108,7 +108,7 @@ export default class ColorPickerComponent extends BaseChildComponent {
     return (<bem specifier='$b:controls'>
       <div bem='$e:button m:withLabel' onClick={this._onButtonClick}>
         <canvas bem='b:colorPicker e:preview' ref='canvas' />
-        <div bem='e:label'>Color</div>
+        <div bem='e:label'>{this.props.label || this._t('generic.color')}</div>
         {Overlay}
       </div>
     </bem>)
