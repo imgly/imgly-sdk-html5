@@ -9,6 +9,12 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+const ALIGNMENTS = [
+  'left',
+  'center',
+  'right'
+]
+
 import { ReactBEM, BaseChildComponent, Constants } from '../../../globals'
 import ScrollbarComponent from '../../scrollbar-component'
 import FontSizeSliderComponent from './font-size-slider-component'
@@ -22,7 +28,8 @@ export default class TextControlsComponent extends BaseChildComponent {
     this._bindAll(
       '_onBackClick',
       '_onFontSizeChange',
-      '_onFontChange'
+      '_onFontChange',
+      '_onAlignmentClick'
     )
     this._texts = this.getSharedState('texts')
     this._operation = this.getSharedState('operation')
@@ -78,6 +85,23 @@ export default class TextControlsComponent extends BaseChildComponent {
     const selectedText = this.getSharedState('selectedText')
     selectedText.setFontFamily(font.fontFamily)
     selectedText.setFontWeight(font.fontWeight)
+    this.forceSharedUpdate()
+  }
+
+  /**
+   * Gets called when the user clicks the alignment button
+   * @param  {Event} e
+   * @private
+   */
+  _onAlignmentClick (e) {
+    const selectedText = this.getSharedState('selectedText')
+    const alignment = selectedText.getAlignment()
+
+    const currentIndex = ALIGNMENTS.indexOf(alignment)
+    const nextIndex = (currentIndex + 1) % ALIGNMENTS.length
+    const newAlignment = ALIGNMENTS[nextIndex]
+
+    selectedText.setAlignment(newAlignment)
     this.forceSharedUpdate()
   }
 
@@ -190,6 +214,7 @@ export default class TextControlsComponent extends BaseChildComponent {
   /**
    * Renders the font list item
    * @return {Component}
+   * @private
    */
   _renderFontItem () {
     const selectedText = this.getSharedState('selectedText')
@@ -213,6 +238,35 @@ export default class TextControlsComponent extends BaseChildComponent {
     </li>)
   }
 
+  // -------------------------------------------------------------------------- ALIGNMENT
+
+  /**
+   * Renders the text alignment list item
+   * @return {Component}
+   * @private
+   */
+  _renderAlignmentItem () {
+    const { ui } = this.context
+
+    const selectedText = this.getSharedState('selectedText')
+    if (!selectedText) return
+
+    const alignment = selectedText.getAlignment()
+
+    return (<li
+      bem='e:item'
+      key='alignment'>
+      <bem specifier='$b:controls'>
+        <div
+          bem='$e:button m:withLabel'
+          onClick={this._onAlignmentClick}>
+            <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/text/align_${alignment}@2x.png`, true)} />
+            <div bem='e:label'>{this._t(`controls.text.alignment`)}</div>
+        </div>
+      </bem>
+    </li>)
+  }
+
   /**
    * Renders this component
    * @return {ReactBEM.Element}
@@ -222,7 +276,8 @@ export default class TextControlsComponent extends BaseChildComponent {
 
     const listItems = [
       this._renderSizeItem(),
-      this._renderFontItem()
+      this._renderFontItem(),
+      this._renderAlignmentItem()
     ]
 
     const overlayControl = this._renderOverlayControl()
