@@ -18,7 +18,8 @@
       "foreground": "Foreground",
       "background": "Background",
       "size": "Size",
-      "font": "Font"
+      "font": "Font",
+      "alignment": "Alignment"
     },
     "orientation": {
       "rotate-l": "Rotate -90°",
