@@ -11,7 +11,7 @@
 
 import { ReactBEM, BaseChildComponent } from '../../../globals'
 
-export default class TextFontSizeControlsComponent extends BaseChildComponent {
+export default class FontSizeControlsComponent extends BaseChildComponent {
   constructor (...args) {
     super(...args)
 

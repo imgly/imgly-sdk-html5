@@ -12,6 +12,8 @@
 import { ReactBEM, BaseChildComponent, Constants } from '../../../globals'
 import ScrollbarComponent from '../../scrollbar-component'
 import FontSizeSliderComponent from './font-size-slider-component'
+import FontPreviewComponent from './font-preview-component'
+import FontComponent from './font-component'
 
 export default class TextControlsComponent extends BaseChildComponent {
   constructor (...args) {
@@ -19,7 +21,8 @@ export default class TextControlsComponent extends BaseChildComponent {
 
     this._bindAll(
       '_onBackClick',
-      '_onFontSizeChange'
+      '_onFontSizeChange',
+      '_onFontChange'
     )
     this._texts = this.getSharedState('texts')
     this._operation = this.getSharedState('operation')
@@ -66,6 +69,18 @@ export default class TextControlsComponent extends BaseChildComponent {
     this.forceSharedUpdate()
   }
 
+  /**
+   * Gets called when the font family or weight has been changed
+   * @param  {Object} font
+   * @private
+   */
+  _onFontChange (font) {
+    const selectedText = this.getSharedState('selectedText')
+    selectedText.setFontFamily(font.fontFamily)
+    selectedText.setFontWeight(font.fontWeight)
+    this.forceSharedUpdate()
+  }
+
   // -------------------------------------------------------------------------- MODES
 
   /**
@@ -88,8 +103,10 @@ export default class TextControlsComponent extends BaseChildComponent {
    */
   _renderOverlayControl () {
     switch (this.state.mode) {
-      case 'fontSize':
+      case 'size':
         return this._renderFontSizeOverlayControl()
+      case 'font':
+        return this._renderFontFamilyOverlayControl()
       default:
         return null
     }
@@ -120,7 +137,7 @@ export default class TextControlsComponent extends BaseChildComponent {
    * @return {Component}
    * @private
    */
-  _renderFontSizeItem () {
+  _renderSizeItem () {
     const selectedText = this.getSharedState('selectedText')
     if (!selectedText) return
 
@@ -128,21 +145,72 @@ export default class TextControlsComponent extends BaseChildComponent {
     const canvasDimensions = kit.getOutputDimensions()
 
     const fontSize = Math.round(selectedText.getFontSize() * canvasDimensions.y)
-    const className = this.state.mode === 'fontSize' ? 'is-active' : null
+    const className = this.state.mode === 'size' ? 'is-active' : null
 
     return (<li
-        bem='e:item'
-        key='fontSize'>
-        <bem specifier='$b:controls'>
-          <div
-            bem='$e:button m:withLabel'
-            className={className}
-            onClick={this._switchToMode.bind(this, 'fontSize')}>
-              <div bem='b:fontSize e:text'>{fontSize}</div>
-              <div bem='e:label'>{this._t(`controls.text.fontSize`)}</div>
-          </div>
-        </bem>
-      </li>)
+      bem='e:item'
+      key='size'>
+      <bem specifier='$b:controls'>
+        <div
+          bem='$e:button m:withLabel'
+          className={className}
+          onClick={this._switchToMode.bind(this, 'size')}>
+            <div bem='b:fontSize e:text'>{fontSize}</div>
+            <div bem='e:label'>{this._t(`controls.text.size`)}</div>
+        </div>
+      </bem>
+    </li>)
+  }
+
+  // -------------------------------------------------------------------------- FONT FAMILY
+
+  /**
+   * Renders the font family overlay control
+   * @return {ReactBEM.Element}
+   * @private
+   */
+  _renderFontFamilyOverlayControl () {
+    const selectedText = this.getSharedState('selectedText')
+    if (!selectedText) return
+
+    const fonts = [
+      { fontFamily: 'Helvetica', fontWeight: 'normal' },
+      { fontFamily: 'Verdana', fontWeight: 'normal' },
+      { fontFamily: 'Times New Roman', fontWeight: 'normal'},
+      { fontFamily: 'Impact', fontWeight: 'normal' }
+    ]
+
+    return (<FontComponent
+      fontFamily={selectedText.getFontFamily()}
+      fontWeight={selectedText.getFontWeight()}
+      fonts={fonts}
+      onChange={this._onFontChange} />)
+  }
+
+  /**
+   * Renders the font list item
+   * @return {Component}
+   */
+  _renderFontItem () {
+    const selectedText = this.getSharedState('selectedText')
+    if (!selectedText) return
+
+    const className = this.state.mode === 'font' ? 'is-active' : null
+    return (<li
+      bem='e:item'
+      key='font'>
+      <bem specifier='$b:controls'>
+        <div
+          bem='$e:button m:withLabel'
+          className={className}
+          onClick={this._switchToMode.bind(this, 'font')}>
+            <FontPreviewComponent
+              fontFamily={selectedText.getFontFamily()}
+              fontWeight={selectedText.getFontWeight()} />
+            <div bem='e:label'>{this._t(`controls.text.font`)}</div>
+        </div>
+      </bem>
+    </li>)
   }
 
   /**
@@ -153,7 +221,8 @@ export default class TextControlsComponent extends BaseChildComponent {
     const { ui } = this.context
 
     const listItems = [
-      this._renderFontSizeItem()
+      this._renderSizeItem(),
+      this._renderFontItem()
     ]
 
     const overlayControl = this._renderOverlayControl()
