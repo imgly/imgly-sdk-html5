@@ -58,7 +58,10 @@
     "headline": "Take a photo!"
   },
   "editor": {
-    "headline": "Edit Photo"
+    "headline": "Edit Photo",
+    "new": "New",
+    "undo": "Undo",
+    "export": "Export"
   },
   "splash": {
     "upload": {
