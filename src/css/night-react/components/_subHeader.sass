@@ -30,6 +30,16 @@ $subHeaderHorizontalPadding: 20px
       line-height: $subHeaderHeight
       color: white
 
+    +elements(left, right)
+      position: absolute
+      top: 10px
+
+    +element(left)
+      left: 15px
+
+    +element(right)
+      right: 15px
+
     +element(cancelButton)
       @include font-regular
       @include opacity(0.5)
@@ -43,3 +53,32 @@ $subHeaderHorizontalPadding: 20px
 
       &:hover
         @include opacity(1.0)
+
+    +element(button)
+      @include border-radius(4px)
+      position: relative
+      display: inline-block
+      margin: 0 5px
+      padding: 0 12px 0 9px
+      background: $backgroundColor
+      cursor: pointer
+
+      +modifier(blue)
+        background: $primaryColor
+
+      +modifier(withIcon)
+        padding-left: 18px + 14px
+
+      +element(label)
+        @include font-regular
+        display: inline-block
+        font-size: 12px
+        line-height: 30px
+        color: white
+
+      +element(icon)
+        position: absolute
+        top: 9px
+        left: 11px
+        width: 14px
+

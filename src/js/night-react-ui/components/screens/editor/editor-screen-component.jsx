@@ -11,6 +11,7 @@
 import { ReactBEM, Constants, SDKUtils, SharedState } from '../../../globals'
 import ScreenComponent from '../screen-component'
 import SubHeaderComponent from '../../sub-header-component'
+import SubHeaderButtonComponent from '../../sub-header-button-component'
 import CanvasComponent from './canvas-component'
 import ZoomComponent from './zoom-component'
 
@@ -241,6 +242,25 @@ export default class EditorScreenComponent extends ScreenComponent {
       <SubHeaderComponent
         label={this._t('webcam.headline')}>
         <bem specifier='$b:subHeader'>
+          <div bem='e:left'>
+            <SubHeaderButtonComponent
+              label={this._t('editor.new')}
+              icon='editor/new@2x.png'
+              onClick={this._onNewClick} />
+          </div>
+
+          <div bem='e:right'>
+            <SubHeaderButtonComponent
+              label={this._t('editor.undo')}
+              icon='editor/undo@2x.png'
+              onClick={this._onUndoClick} />
+            <SubHeaderButtonComponent
+              style='blue'
+              label={this._t('editor.export')}
+              icon='editor/export@2x.png'
+              onClick={this._onExportClick} />
+          </div>
+
           <ZoomComponent
             zoom={this.state.zoom}
             onZoomIn={this._onZoomIn}
