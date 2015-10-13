@@ -29,7 +29,8 @@ export default class EditorScreenComponent extends ScreenComponent {
       '_zoom',
       '_undoZoom',
       '_onDisableFeatures',
-      '_onEnableFeatures'
+      '_onEnableFeatures',
+      '_onNewClick'
     )
 
     this._previousControlsStack = []
@@ -46,6 +47,16 @@ export default class EditorScreenComponent extends ScreenComponent {
       [Constants.EVENTS.EDITOR_DISABLE_FEATURES]: this._onDisableFeatures,
       [Constants.EVENTS.EDITOR_ENABLE_FEATURES]: this._onEnableFeatures
     }
+  }
+
+  // -------------------------------------------------------------------------- EVENTS
+
+  /**
+   * Gets called when the user clicks on the new button
+   * @private
+   */
+  _onNewClick () {
+    this.props.editor.switchToSplashScreen()
   }
 
   // -------------------------------------------------------------------------- FEATURES
