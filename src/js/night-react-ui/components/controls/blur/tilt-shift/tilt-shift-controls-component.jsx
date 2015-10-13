@@ -79,6 +79,7 @@ export default class TiltShiftControlsComponent extends BaseChildComponent {
           minValue={0}
           maxValue={40}
           valueUnit='px'
+          middleDot={false}
           label={this._t('controls.blur.blurRadius')}
           onChange={this._onSliderValueChange}
           value={this._operation.getBlurRadius()} />

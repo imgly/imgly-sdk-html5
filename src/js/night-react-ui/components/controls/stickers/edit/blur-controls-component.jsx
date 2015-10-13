@@ -66,6 +66,7 @@ export default class StickersBlurControlsComponent extends BaseChildComponent {
           style='large'
           minValue={0}
           maxValue={50}
+          middleDot={false}
           label={this._t('controls.stickers.blur')}
           onChange={this._onSliderValueChange}
           value={blur * 100} />

@@ -60,6 +60,8 @@ export default class FiltersCanvasControlsComponent extends BaseChildComponent {
       <SliderComponent
         minValue={0}
         maxValue={100}
+        middleDot={false}
+        valueUnit='%'
         label={this._t('controls.filters.intensity')}
         onChange={this._onSliderValueChange}
         value={this._operation.getIntensity() * 100} />
