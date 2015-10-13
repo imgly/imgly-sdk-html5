@@ -148,6 +148,7 @@ export default class Renderer {
    */
   setImage (image) {
     this._options.image = image
+    this._image = image
     this._parseExif(image)
   }
 
