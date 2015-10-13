@@ -121,6 +121,13 @@ export default class BaseChildComponent extends React.Component {
   }
 
   /**
+   * Forces an update of the shared state
+   */
+  forceSharedUpdate () {
+    this.props.sharedState.broadcastUpdate()
+  }
+
+  /**
    * Binds the events in _events
    * @protected
    */

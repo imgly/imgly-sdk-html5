@@ -28,6 +28,28 @@ export default class SliderComponent extends BaseChildComponent {
     }
   }
 
+  // -------------------------------------------------------------------------- LIFECYCLE
+
+  /**
+   * Gets called after the component has been mounted
+   */
+  componentDidMount () {
+    // Trigger a re-render to position the knob
+    this._setValue(this.state.value, false)
+  }
+
+  /**
+   * Gets called when this component receives new props
+   * @param  {Object} props
+   */
+  componentWillReceiveProps (props) {
+    if (props.value !== this.state.value) {
+      this._setValue(props.value, false)
+    }
+  }
+
+  // -------------------------------------------------------------------------- EVENTS
+
   /**
    * Gets called when the user starts dragging the knob
    * @param  {Event} e
@@ -72,50 +94,7 @@ export default class SliderComponent extends BaseChildComponent {
     document.removeEventListener('touchmove', this._onKnobDrag)
   }
 
-  /**
-   * Decides whether or not this slider should have a middle dot on the bar
-   * @private
-   */
-  _displayMiddleDot () {
-    return this.props.minValue !== 0
-  }
-
-  /**
-   * Gets called after the component has been mounted
-   */
-  componentDidMount () {
-    // Trigger a re-render to position the knob
-    this._setValue(this.state.value)
-  }
-
-  /**
-   * Sets the value to the given value, updates the slider position
-   * @param {Number} value
-   * @private
-   */
-  _setValue (value) {
-    value = Math.round(value)
-    const { minValue, maxValue } = this.props
-    const progress = (value - minValue) / (maxValue - minValue)
-
-    // Calculate slider position
-    const barWidth = React.findDOMNode(this.refs.bar).offsetWidth
-    const sliderPosition = barWidth * progress
-
-    // Calculate foreground position and width
-    let foregroundWidth = progress * barWidth
-    let foregroundLeft = 0
-    if (this._displayMiddleDot()) {
-      foregroundWidth = Math.abs(progress - 0.5) * barWidth
-      foregroundLeft = progress < 0.5 ?
-        (barWidth * 0.5 - foregroundWidth) :
-        '50%'
-    }
-
-    this.setState({ value, sliderPosition, foregroundWidth, foregroundLeft })
-
-    this.props.onChange && this.props.onChange(value)
-  }
+  // -------------------------------------------------------------------------- STYLING
 
   /**
    * Returns the style for the knob (position)
@@ -138,6 +117,48 @@ export default class SliderComponent extends BaseChildComponent {
     }
   }
 
+  // -------------------------------------------------------------------------- MISC
+
+  /**
+   * Decides whether or not this slider should have a middle dot on the bar
+   * @private
+   */
+  _displayMiddleDot () {
+    return this.props.middleDot !== false
+  }
+
+  /**
+   * Sets the value to the given value, updates the slider position
+   * @param {Number} value
+   * @param {Boolean} emitChange = true
+   * @private
+   */
+  _setValue (value, emitChange = true) {
+    value = Math.round(value)
+    const { minValue, maxValue } = this.props
+    const progress = (value - minValue) / (maxValue - minValue)
+
+    // Calculate slider position
+    const barWidth = React.findDOMNode(this.refs.bar).offsetWidth
+    const sliderPosition = barWidth * progress
+
+    // Calculate foreground position and width
+    let foregroundWidth = progress * barWidth
+    let foregroundLeft = 0
+    if (this._displayMiddleDot()) {
+      foregroundWidth = Math.abs(progress - 0.5) * barWidth
+      foregroundLeft = progress < 0.5 ?
+        (barWidth * 0.5 - foregroundWidth) :
+        '50%'
+    }
+
+    this.setState({ value, sliderPosition, foregroundWidth, foregroundLeft })
+
+    if (emitChange) {
+      this.props.onChange && this.props.onChange(value)
+    }
+  }
+
   /**
    * Builds a display value from the given props
    * @param {Number} value
@@ -155,6 +176,8 @@ export default class SliderComponent extends BaseChildComponent {
 
     return value
   }
+
+  // -------------------------------------------------------------------------- RENDERING
 
   /**
    * Renders this component

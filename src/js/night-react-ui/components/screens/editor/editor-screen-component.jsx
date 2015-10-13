@@ -202,9 +202,8 @@ export default class EditorScreenComponent extends ScreenComponent {
     }
 
     const initialState = newControls.getInitialSharedState &&
-      newControls.getInitialSharedState(this.context)
+      newControls.getInitialSharedState(this.context, state)
     const sharedState = new SharedState(initialState)
-    sharedState.set(state)
 
     this.setState({
       controls: newControls,

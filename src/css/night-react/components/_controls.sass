@@ -8,12 +8,10 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-$controlsHeight: 84px
-$controlsButtonWidth: 64px
-$controlsButtonHeight: 60px
-
 +block(editor)
   +block(controls)
+    position: relative
+
     +element(container)
       +element(row)
         display: table-row
@@ -31,6 +29,18 @@ $controlsButtonHeight: 60px
       width: 100%
       height: $controlsHeight
       table-layout: fixed
+
+    +element(overlay)
+      position: absolute
+      bottom: 100%
+      left: 0
+      width: 100%
+
+      +modifier(large)
+        padding: 15px 0 10px 0
+
+      +modifier(dark)
+        background: rgba($secondaryBackgroundColor, 0.7)
 
     +element(cell)
       position: relative
@@ -73,7 +83,6 @@ $controlsButtonHeight: 60px
       +element(label)
         @include opacity(0.8)
         @include font-regular
-        @include border-radius(4px)
         @include transform(translateX(-50%))
         position: absolute
         bottom: 7px

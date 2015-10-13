@@ -8,6 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+import { Vector2, SDKUtils } from '../../../globals'
 import TextCanvasControlsComponent from './text-canvas-controls-component'
 import TextControlsComponent from './text-controls-component'
 
@@ -38,19 +39,30 @@ export default {
   /**
    * Returns the initial state for this control
    * @param  {Object} context
+   * @param  {Object} additionalState = {}
    * @return {Object}
    */
-  getInitialSharedState: (context) => {
-    const operationExistedBefore = context.ui.operationExists('text')
-    const operation = context.ui.getOrCreateOperation('text')
-    const texts = operation.getTexts()
-    operation.setTexts([])
+  getInitialSharedState: (context, additionalState = {}) => {
+    let state = {}
+    state.operationExistedBefore = context.ui.operationExists('text')
+    state.operation = context.ui.getOrCreateOperation('text')
+    state.texts = state.operation.getTexts()
+    state.operation.setTexts([])
+
+    if (!additionalState.selectedText) {
+      const text = state.operation.createText({
+        text: 'Text',
+        maxWidth: 0.5,
+        anchor: new Vector2(0.5, 0),
+        pivot: new Vector2(0.5, 0)
+      })
+      state.texts.push(text)
+      state.selectedText = text
+    }
 
     context.kit.render()
 
-    return {
-      operationExistedBefore, operation, texts
-    }
+    return SDKUtils.extend({}, state, additionalState)
   },
   isSelectable: (ui) => {
     return ui.isOperationSelected('text')
