@@ -55,13 +55,24 @@ export default class NightReactUI extends EventEmitter {
   }
 
   /**
-   * Checks whether the operation with the given identifier is selected
-   * @param  {String}  name
-   * @return {Boolean}
+   * Main entry point for the UI
+   * @private
    */
-  isOperationSelected (name) {
-    return this._selectedOperations.indexOf(name) !== -1
+  run () {
+    this._registerWebFonts()
+
+    // Container has to be position: relative
+    this._options.container.style.position = 'relative'
+
+    return React.render(<EditorComponent
+      ui={this}
+      kit={this._kit}
+      mediator={this._mediator}
+      operationsStack={this._operationsStack}
+      options={this._options} />, this._options.container)
   }
+
+  // -------------------------------------------------------------------------- INITIALIZATION
 
   /**
    * Initializes the available and selected controls
@@ -113,21 +124,6 @@ export default class NightReactUI extends EventEmitter {
   }
 
   /**
-   * Initializes the internationalization
-   * @private
-   */
-  _initLanguage () {
-    this._languages = {
-      de: require('./lang/de.json'),
-      en: require('./lang/en.json')
-    }
-    this._language = new Polyglot({
-      locale: this._options.language,
-      phrases: this._languages[this._options.language]
-    })
-  }
-
-  /**
    * Initializes the default options
    * @return {[type]} [description]
    */
@@ -149,22 +145,6 @@ export default class NightReactUI extends EventEmitter {
       baseUrl: '/',
       resolver: null
     })
-  }
-
-  /**
-   * Checks whether the kit has an image
-   * @return {Boolean}
-   */
-  hasImage () {
-    return this._kit.hasImage()
-  }
-
-  /**
-   * A unique string that represents this UI
-   * @type {String}
-   */
-  get identifier () {
-    return 'night-react'
   }
 
   /**
@@ -201,22 +181,21 @@ export default class NightReactUI extends EventEmitter {
     head.appendChild(style)
   }
 
+  // -------------------------------------------------------------------------- I18N
+
   /**
-   * Main entry point for the UI
+   * Initializes the internationalization
    * @private
    */
-  run () {
-    this._registerWebFonts()
-
-    // Container has to be position: relative
-    this._options.container.style.position = 'relative'
-
-    return React.render(<EditorComponent
-      ui={this}
-      kit={this._kit}
-      mediator={this._mediator}
-      operationsStack={this._operationsStack}
-      options={this._options} />, this._options.container)
+  _initLanguage () {
+    this._languages = {
+      de: require('./lang/de.json'),
+      en: require('./lang/en.json')
+    }
+    this._language = new Polyglot({
+      locale: this._options.language,
+      phrases: this._languages[this._options.language]
+    })
   }
 
   /**
@@ -228,6 +207,8 @@ export default class NightReactUI extends EventEmitter {
   translate (key, interpolationOptions) {
     return this._language.t(key, interpolationOptions)
   }
+
+  // -------------------------------------------------------------------------- PUBLIC OPERATIONS API
 
   /**
    * If the operation with the given identifier already exists, it returns
@@ -270,10 +251,31 @@ export default class NightReactUI extends EventEmitter {
     return !!this._operationsMap[identifier]
   }
 
+  /**
+   * Checks whether the operation with the given identifier is selected
+   * @param  {String}  name
+   * @return {Boolean}
+   */
+  isOperationSelected (name) {
+    return this._selectedOperations.indexOf(name) !== -1
+  }
+
   getSelectedOperations () { return this._selectedOperations }
   getSelectedControls () { return this._selectedControls }
   getHelpers () { return this._helpers }
+
+  /**
+   * Checks whether the kit has an image
+   * @return {Boolean}
+   */
+  hasImage () { return this._kit.hasImage() }
 }
+
+/**
+ * A unique string that represents this UI
+ * @type {String}
+ */
+NightReactUI.prototype.identifier = 'night-react'
 
 PhotoEditorSDK.UI = PhotoEditorSDK.UI || {}
 PhotoEditorSDK.UI.NightReact = NightReactUI
