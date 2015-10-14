@@ -14,6 +14,18 @@ export default {
   canvasControls: null,
   controls: BrightnessControlsComponent,
   identifier: 'brightness',
+  getInitialSharedState: (context) => {
+    const operationExistedBefore = context.ui.operationExists('brightness')
+    const operation = context.ui.getOrCreateOperation('brightness')
+    const initialOptions = {
+      brightness: operation.getBrightness()
+    }
+    return {
+      operationExistedBefore,
+      operation,
+      initialOptions
+    }
+  },
   isSelectable: (ui) => {
     return ui.isOperationSelected('brightness')
   }
