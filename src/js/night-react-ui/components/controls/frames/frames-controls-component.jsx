@@ -17,13 +17,24 @@ export default class FramesControlsComponent extends BaseChildComponent {
   constructor (...args) {
     super(...args)
 
-    const { ui } = this.context
-    this._operation = ui.getOrCreateOperation('frames')
+    this._operation = this.getSharedState('operation')
     this._bindAll(
       '_onBackClick',
+      '_onDoneClick',
       '_onThicknessUpdate',
       '_onColorUpdate'
     )
+  }
+
+  // -------------------------------------------------------------------------- LIFECYCLE
+
+  /**
+   * Gets called when this component has been mounted
+   */
+  componentDidMount () {
+    super.componentDidMount()
+
+    this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
   }
 
   // -------------------------------------------------------------------------- EVENTS
@@ -49,6 +60,30 @@ export default class FramesControlsComponent extends BaseChildComponent {
    * @private
    */
   _onBackClick (e) {
+    this.props.onSwitchControls('back')
+
+    const { ui } = this.context
+    if (!this.getSharedState('operationExistedBefore')) {
+      ui.removeOperation(this._operation)
+    } else {
+      this._operation.set(this.getSharedState('initialOptions'))
+    }
+
+    this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
+  }
+
+  /**
+   * Gets called when the user clicks the done button
+   * @param  {Event} e
+   * @private
+   */
+  _onDoneClick (e) {
+    const { editor } = this.props
+
+    editor.addHistory(this._operation,
+      this.getSharedState('initialOptions'),
+      this.getSharedState('operationExistedBefore'))
+
     this.props.onSwitchControls('back')
   }
 
@@ -99,6 +134,11 @@ export default class FramesControlsComponent extends BaseChildComponent {
         <ColorPickerComponent
           initialValue={this._operation.getColor().clone()}
           onChange={this._onColorUpdate} />
+      </div>
+      <div bem='e:cell m:button m:withBorderLeft'>
+        <div bem='$e:button' onClick={this._onDoneClick}>
+          <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/tick@2x.png`, true)} />
+        </div>
       </div>
     </div>)
   }
