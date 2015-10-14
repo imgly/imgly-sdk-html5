@@ -303,16 +303,34 @@ export default class Renderer {
     return path
   }
 
+  clone () {
+    const renderer = new Renderer(
+      this._preferredRenderer,
+      this._options,
+      this._operationsOptions)
+    renderer.operationsStack = renderer.operationsStack
+    renderer.setCanvas(null) // Let it create its own canvas
+    return renderer
+  }
+
   setCanvas (canvas) { this._options.canvas = canvas }
   getRenderer () { return this._renderer }
   hasImage () { return !!this._options.image }
   getOperations () { return this._operations }
   getOptions () { return this._options }
   getOperationsOptions () { return this._operationsOptions }
+
+  getDimensions () {
+    return this._dimensions
+  }
+
   setDimensions (dimensions) {
     if (!dimensions) {
       const initialDimensions = this.getInitialDimensions()
       dimensions = `${initialDimensions.x}x${initialDimensions.y}`
+    } else if (dimensions instanceof ImageDimensions) {
+      this._dimensions = dimensions
+      return
     }
     this._dimensions = new ImageDimensions(dimensions)
   }
