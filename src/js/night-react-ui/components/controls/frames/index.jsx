@@ -14,6 +14,18 @@ export default {
   canvasControls: null,
   controls: FramesControlsComponent,
   identifier: 'frames',
+  getInitialSharedState: (context) => {
+    const { ui } = context
+    const operationExistedBefore = ui.operationExists('frames')
+    const operation = ui.getOrCreateOperation('frames')
+    const initialOptions = {
+      color: operation.getColor().clone(),
+      thickness: operation.getThickness()
+    }
+    return {
+      operation, operationExistedBefore, initialOptions
+    }
+  },
   isSelectable: (ui) => {
     return ui.isOperationSelected('frames')
   }
