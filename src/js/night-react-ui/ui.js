@@ -265,6 +265,18 @@ export default class NightReactUI extends EventEmitter {
   }
 
   /**
+   * Removes the given operation from the stack
+   * @param  {Operation} operation
+   */
+  removeOperation (operation) {
+    const identifier = operation.constructor.identifier
+    if (this._operationsMap[identifier]) {
+      this._operationsStack.remove(operation)
+      delete this._operationsMap[identifier]
+    }
+  }
+
+  /**
    * Returns the operation with the given identifier
    * @param  {String} identifier
    * @return {PhotoEditorSDK.Operation}
