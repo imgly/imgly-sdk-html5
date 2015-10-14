@@ -83,6 +83,7 @@ export default class NightReactUI extends EventEmitter {
       renderType = RenderType.MSBLOB
     }
 
+    const previousDimensions = this._kit.getDimensions()
     this._kit.setDimensions(null)
     return this._kit.export(renderType,
         'image/png'
@@ -94,6 +95,11 @@ export default class NightReactUI extends EventEmitter {
           case RenderType.MSBLOB:
             return FileExporter.exportMSBlob(data)
         }
+      })
+      .then(() => {
+        this._kit.reset()
+        this._kit.setDimensions(previousDimensions)
+        return this._kit.render()
       })
   }
 
