@@ -80,6 +80,11 @@ export default class Configurable extends EventEmitter {
       if (typeof option.default !== 'undefined') {
         this['set' + capitalized](option.default)
       }
+
+      // Handle configurable initialization
+      if (option.type === 'configurable') {
+        this._options[optionName] = new Configurable(null, option.structure)
+      }
     }
 
     // Overwrite options with the ones given by user
@@ -128,6 +133,43 @@ export default class Configurable extends EventEmitter {
       return undefined
     }
     return option.default
+  }
+
+  /**
+   * Returns a serialized version of this configurable
+   * @return {Object}
+   */
+  serializeOptions () {
+    let options = {}
+    for (let optionName in this._options) {
+      options[optionName] = this._serializeOption(optionName)
+    }
+    return options
+  }
+
+  /**
+   * Returns a serialized version of the given option
+   * @param {String} optionName
+   * @return {*} optionName
+   * @protected
+   */
+  _serializeOption (optionName) {
+    const optionType = this.availableOptions[optionName].type
+    const value = this._options[optionName]
+    switch (optionType) {
+      case 'string':
+      case 'number':
+      case 'boolean':
+      case 'object':
+        return value
+      case 'vector2':
+      case 'color':
+        return value.clone()
+      case 'configurable':
+        return value.serializeOptions()
+      case 'array':
+        return value.slice(0)
+    }
   }
 
   /**
@@ -208,7 +250,7 @@ export default class Configurable extends EventEmitter {
 
       // Configurable options
       case 'configurable':
-        this._options[optionName] = new Configurable(null, value)
+        this._options[optionName].set(value)
         break
 
       // Array options
