@@ -118,6 +118,19 @@ export default class Configurable extends EventEmitter {
   }
 
   /**
+   * Returns the default value for the given option
+   * @param  {String} optionName
+   * @return {*}
+   */
+  getOptionDefault (optionName) {
+    const option = this.availableOptions[optionName]
+    if (!option) {
+      return undefined
+    }
+    return option.default
+  }
+
+  /**
    * Sets the value for the given option, validates it
    * @param {String} optionName
    * @param {*} value
