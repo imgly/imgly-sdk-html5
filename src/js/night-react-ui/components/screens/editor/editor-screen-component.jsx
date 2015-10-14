@@ -277,6 +277,14 @@ export default class EditorScreenComponent extends ScreenComponent {
       newControls.getInitialSharedState(this.context, state)
     const sharedState = new SharedState(initialState)
 
+    // If the controls have an `onExit` method, call it
+    // with the controls as `this`
+    if (this.state.controls.onExit) {
+      this.state.controls.onExit.call(
+        this.refs.controls
+      )
+    }
+
     this.setState({
       controls: newControls,
       sharedState
@@ -308,14 +316,16 @@ export default class EditorScreenComponent extends ScreenComponent {
       controls = (<Controls
         onSwitchControls={this.switchToControls}
         editor={this}
-        sharedState={this.state.sharedState} />)
+        sharedState={this.state.sharedState}
+        ref="controls" />)
     }
 
     if (CanvasControls) {
       canvasControls = (<CanvasControls
         onSwitchControls={this.switchToControls}
         editor={this}
-        sharedState={this.state.sharedState} />)
+        sharedState={this.state.sharedState}
+        ref="canvasControls" />)
     }
 
     let undoButton
