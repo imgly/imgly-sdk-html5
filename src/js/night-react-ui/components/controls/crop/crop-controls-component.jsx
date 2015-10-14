@@ -94,6 +94,13 @@ export default class OrientationControlsComponent extends BaseChildComponent {
   _onBackClick (e) {
     this.props.onSwitchControls('back')
 
+    if (this.getSharedState('operationExistedBefore')) {
+      this._operation.set(this._initialOptions)
+    } else {
+      const { ui } = this.context
+      ui.removeOperation(this._operation)
+    }
+
     this._emitEvent(Constants.EVENTS.CANVAS_UNDO_ZOOM)
     this._emitEvent(Constants.EVENTS.EDITOR_ENABLE_FEATURES, ['zoom', 'drag'])
   }
@@ -109,6 +116,11 @@ export default class OrientationControlsComponent extends BaseChildComponent {
       start: this.getSharedState('start'),
       end: this.getSharedState('end')
     })
+
+    const { editor } = this.props
+    editor.addHistory(this._operation,
+      this.getSharedState('initialOptions'),
+      this.getSharedState('operationExistedBefore'))
 
     // Enable zoom and drag again
     this._emitEvent(Constants.EVENTS.EDITOR_ENABLE_FEATURES, ['zoom', 'drag'])
