@@ -16,9 +16,16 @@ export default {
   controls: RadialBlurControlsComponent,
   identifier: 'radial-blur',
   getInitialSharedState: (context) => {
+    const { ui } = context
+    const operationExistedBefore = ui.operationExists('radial-blur')
+    const operation = ui.getOrCreateOperation('radial-blur')
+    const initialOptions = {
+      position: operation.getPosition().clone(),
+      gradientRadius: operation.getGradientRadius(),
+      blurRadius: operation.getBlurRadius()
+    }
     return {
-      operationExistedBefore: context.ui.operationExists('radial-blur'),
-      operation: context.ui.getOrCreateOperation('radial-blur')
+      operation, operationExistedBefore, initialOptions
     }
   },
   isSelectable: (ui) => {

@@ -17,12 +17,20 @@ export default {
   controls: TiltShiftControlsComponent,
   identifier: 'tilt-shift',
   getInitialSharedState: (context) => {
+    const { ui } = context
+    const operationExistedBefore = ui.operationExists('tilt-shift')
+    const operation = context.ui.getOrCreateOperation('tilt-shift', {
+      start: new Vector2(0.49, 0.5),
+      end: new Vector2(0.51, 0.5)
+    })
+    const initialOptions = {
+      start: operation.getStart().clone(),
+      end: operation.getEnd().clone(),
+      gradientRadius: operation.getGradientRadius(),
+      blurRadius: operation.getBlurRadius()
+    }
     return {
-      operationExistedBefore: context.ui.operationExists('tilt-shift'),
-      operation: context.ui.getOrCreateOperation('tilt-shift', {
-        start: new Vector2(0.49, 0.5),
-        end: new Vector2(0.51, 0.5)
-      })
+      operation, operationExistedBefore, initialOptions
     }
   },
   isSelectable: (ui) => {
