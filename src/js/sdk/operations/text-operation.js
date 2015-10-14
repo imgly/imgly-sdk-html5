@@ -31,6 +31,23 @@ class TextOperation extends Operation {
     this.vertexShader = require('raw!./generic/sprite.vert')
   }
 
+  /**
+   * Returns a serialized version of the given option
+   * @param {String} optionName
+   * @return {*} optionName
+   * @private
+   */
+  _serializeOption (optionName) {
+    // Since `texts` is an array of configurables, we need
+    // to serialize them as well
+    if (optionName === 'texts') {
+      return this._options.texts.map((sticker) => {
+        return sticker.serializeOptions()
+      })
+    }
+    return super._serializeOption(optionName)
+  }
+
   // -------------------------------------------------------------------------- EVENTS
 
   /**
@@ -342,8 +359,15 @@ TextOperation.prototype.availableOptions = {
   texts: {
     type: 'array', default: [],
     setter: function (texts) {
-      texts = texts.map((text) => {
+      texts = texts.map((text, i) => {
         if (text instanceof Text) return text
+
+        // Update texts if they already exist
+        if (this._options.texts[i]) {
+          this._options.texts[i].set(text)
+          return this._options.texts[i]
+        }
+
         return new Text(this, text)
       })
       return texts
