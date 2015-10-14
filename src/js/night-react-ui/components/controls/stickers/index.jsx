@@ -17,6 +17,19 @@ export default {
   identifier: 'stickers',
 
   /**
+   * Gets called when the user leaves these controls
+   * @this {StickersControlsComponent}
+   */
+  onExit: function () {
+    const { editor } = this.props
+    editor.addHistory(
+      this.getSharedState('operation'),
+      this.getSharedState('initialOptions'),
+      this.getSharedState('operationExistedBefore')
+    )
+  },
+
+  /**
    * Checks if there is something at the given position that
    * would cause the UI to switch to this control on click
    * @param  {Vector2} position
@@ -44,12 +57,14 @@ export default {
     const operationExistedBefore = context.ui.operationExists('stickers')
     const operation = context.ui.getOrCreateOperation('stickers')
     const stickers = operation.getStickers()
+    const initialOptions = operation.serializeOptions()
 
     return {
-      operationExistedBefore, operation, stickers,
+      operationExistedBefore, operation, stickers, initialOptions,
       stickerDimensions: {}
     }
   },
+
   isSelectable: (ui) => {
     return ui.isOperationSelected('stickers')
   }

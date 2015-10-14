@@ -42,6 +42,23 @@ class StickersOperation extends Operation {
   }
 
   /**
+   * Returns a serialized version of the given option
+   * @param {String} optionName
+   * @return {*} optionName
+   * @private
+   */
+  _serializeOption (optionName) {
+    // Since `stickers` is an array of configurables, we need
+    // to serialize them as well
+    if (optionName === 'stickers') {
+      return this._options.stickers.map((sticker) => {
+        return sticker.serializeOptions()
+      })
+    }
+    return super._serializeOption(optionName)
+  }
+
+  /**
    * Creates a new sticker object and returns it
    * @param  {Object} options
    * @return {Sticker}
@@ -390,10 +407,10 @@ class StickersOperation extends Operation {
       }
 
       // If the texture has been loaded already, reuse it
-      const cachedTexture = this._textures[renderer.id][image.src]
-      if (cachedTexture) {
-        return resolve(cachedTexture)
-      }
+      // const cachedTexture = this._textures[renderer.id][image.src]
+      // if (cachedTexture) {
+      //   return resolve(cachedTexture)
+      // }
 
       const texture = renderer.createTexture(image)
       this._textures[renderer.id][image.src] = texture
@@ -579,8 +596,15 @@ StickersOperation.prototype.availableOptions = {
   stickers: {
     type: 'array', default: [],
     setter: function (stickers) {
-      stickers = stickers.map((sticker) => {
+      stickers = stickers.map((sticker, i) => {
         if (sticker instanceof Sticker) return sticker
+
+        // Update stickers if they already exist
+        if (this._options.stickers[i]) {
+          this._options.stickers[i].set(sticker)
+          return this._options.stickers[i]
+        }
+
         return new Sticker(this, sticker)
       })
       return stickers
