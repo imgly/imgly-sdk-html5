@@ -14,6 +14,18 @@ export default {
   canvasControls: null,
   controls: ContrastControlsComponent,
   identifier: 'contrast',
+  getInitialSharedState: (context) => {
+    const operationExistedBefore = context.ui.operationExists('contrast')
+    const operation = context.ui.getOrCreateOperation('contrast')
+    const initialOptions = {
+      contrast: operation.getContrast()
+    }
+    return {
+      operationExistedBefore,
+      operation,
+      initialOptions
+    }
+  },
   isSelectable: (ui) => {
     return ui.isOperationSelected('contrast')
   }

@@ -14,6 +14,18 @@ export default {
   canvasControls: null,
   controls: SaturationControlsComponent,
   identifier: 'saturation',
+  getInitialSharedState: (context) => {
+    const operationExistedBefore = context.ui.operationExists('saturation')
+    const operation = context.ui.getOrCreateOperation('saturation')
+    const initialOptions = {
+      saturation: operation.getSaturation()
+    }
+    return {
+      operationExistedBefore,
+      operation,
+      initialOptions
+    }
+  },
   isSelectable: (ui) => {
     return ui.isOperationSelected('saturation')
   }

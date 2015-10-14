@@ -18,9 +18,58 @@ export default class SaturationControlsComponent extends BaseChildComponent {
 
     this._bindAll(
       '_onBackClick',
-      '_onSliderValueChange'
+      '_onSliderValueChange',
+      '_onOperationUpdated',
+      '_onOperationRemoved'
     )
     this._operation = this.context.ui.getOrCreateOperation('saturation')
+
+    this._events = {
+      [Constants.EVENTS.OPERATION_UPDATED]: this._onOperationUpdated,
+      [Constants.EVENTS.OPERATION_REMOVED]: this._onOperationRemoved
+    }
+    this.state = {
+      value: this._operation.getSaturation()
+    }
+  }
+
+  // -------------------------------------------------------------------------- EVENTS
+
+  /**
+   * Gets called when an operation is updated
+   * @param  {Operation} operation
+   * @private
+   */
+  _onOperationUpdated (operation) {
+    // Operation options can be changed by undo button etc.,
+    // we need to notice the change and update the slider value
+    if (operation === this._operation &&
+        operation.getSaturation() !== this.state.value) {
+      this.setState({ value: operation.getSaturation() })
+    }
+  }
+
+  /**
+   * Gets called when an operation is removed
+   * @param  {Operation} operation
+   * @private
+   */
+  _onOperationRemoved (operation) {
+    if (operation !== this._operation) return
+
+    // Operation can be removed by the undo button. We need
+    // to make sure we re-create the operation for the lifetime
+    // of this control
+    const { ui } = this.context
+    const newOperation = ui.getOrCreateOperation('saturation')
+    this._operation = newOperation
+    this._historyItem = null
+    this.state.value = this._operation.getSaturation()
+    this.setSharedState({
+      operation: newOperation,
+      operationExistedBefore: false,
+      initialOptions: {}
+    })
   }
 
   /**
@@ -30,6 +79,11 @@ export default class SaturationControlsComponent extends BaseChildComponent {
    */
   _onBackClick (e) {
     this.props.onSwitchControls('back')
+
+    if (this._operation.getSaturation() === this._operation.getOptionDefault('saturation')) {
+      const { ui } = this.context
+      ui.removeOperation(this._operation)
+    }
   }
 
   /**
@@ -38,8 +92,20 @@ export default class SaturationControlsComponent extends BaseChildComponent {
    * @private
    */
   _onSliderValueChange (value) {
-    this._operation.setSaturation((value + 100) / 100)
+    const actualValue = (value + 100) / 100
+    this._operation.setSaturation(actualValue)
     this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
+
+    if (!this._historyItem) {
+      const { editor } = this.props
+      this._historyItem = editor.addHistory(
+        this._operation,
+        this.getSharedState('initialOptions'),
+        this.getSharedState('operationExistedBefore')
+      )
+    }
+
+    this.setState({ value: actualValue })
   }
 
   /**
@@ -64,7 +130,7 @@ export default class SaturationControlsComponent extends BaseChildComponent {
           positiveValuePrefix='+'
           label={this._t('controls.adjustments.saturation')}
           onChange={this._onSliderValueChange}
-          value={this._operation.getSaturation() * 100 - 100} />
+          value={this.state.value * 100 - 100} />
       </div>
     </div>)
   }

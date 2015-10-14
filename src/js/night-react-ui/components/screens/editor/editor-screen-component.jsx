@@ -91,9 +91,11 @@ export default class EditorScreenComponent extends ScreenComponent {
       let { operation, existent, options } = lastItem
       if (!existent) {
         ui.removeOperation(operation)
+        this._emitEvent(Constants.EVENTS.OPERATION_REMOVED, operation)
       } else {
         operation = ui.getOrCreateOperation(operation.constructor.identifier)
         operation.set(options)
+        this._emitEvent(Constants.EVENTS.OPERATION_UPDATED, operation)
       }
 
       this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
