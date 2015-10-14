@@ -116,5 +116,15 @@ export default class OperationsStack {
   set (index, operation) {
     this._stack[index] = operation
   }
+
+  /**
+   * Removes the given operation
+   * @param  {Operation} operation
+   */
+  remove (operation) {
+    const index = this._stack.indexOf(operation)
+    if (index === -1) return
+    this._stack.splice(index, 1)
+  }
 }
 

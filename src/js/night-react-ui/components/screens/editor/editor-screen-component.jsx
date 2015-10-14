@@ -31,9 +31,11 @@ export default class EditorScreenComponent extends ScreenComponent {
       '_onDisableFeatures',
       '_onEnableFeatures',
       '_onNewClick',
-      '_onExportClick'
+      '_onExportClick',
+      '_onUndoClick'
     )
 
+    this._history = []
     this._previousControlsStack = []
     this.state = {
       zoom: null,
@@ -67,6 +69,48 @@ export default class EditorScreenComponent extends ScreenComponent {
   _onExportClick () {
     const { ui } = this.context
     ui.export()
+  }
+
+  /**
+   * Gets called when the user clicks the undo button
+   * @private
+   */
+  _onUndoClick () {
+    this.undo()
+  }
+
+  // -------------------------------------------------------------------------- HISTORY
+
+  /**
+   * Reverts the last change
+   */
+  undo () {
+    const lastItem = this._history.pop()
+    if (lastItem) {
+      let { operation, existent, options } = lastItem
+      if (!existent) {
+        const { ui } = this.context
+        ui.removeOperation(operation)
+      } else {
+        operation = this._ui.getOrCreateOperation(operation.identifier)
+        operation.set(options)
+      }
+
+      this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
+      this.forceUpdate()
+    }
+  }
+
+  /**
+   * Adds the given data to the history
+   * @param {Operation} operation
+   * @param {Object} options
+   * @param {Boolean} existent
+   */
+  addHistory (operation, options, existent) {
+    this._history.push({
+      operation, options, existent
+    })
   }
 
   // -------------------------------------------------------------------------- FEATURES
@@ -236,6 +280,15 @@ export default class EditorScreenComponent extends ScreenComponent {
   // -------------------------------------------------------------------------- RENDERING
 
   /**
+   * Decides whether the undo button should be displayed
+   * @return {Boolean}
+   * @private
+   */
+  _showUndoButton () {
+    return !!this._history.length
+  }
+
+  /**
    * Renders this component
    * @return {ReactBEM.Element}
    */
@@ -259,6 +312,14 @@ export default class EditorScreenComponent extends ScreenComponent {
         sharedState={this.state.sharedState} />)
     }
 
+    let undoButton
+    if (this._showUndoButton()) {
+      undoButton = (<SubHeaderButtonComponent
+        label={this._t('editor.undo')}
+        icon='editor/undo@2x.png'
+        onClick={this._onUndoClick} />)
+    }
+
     return (<div bem='b:screen $b:editorScreen'>
       <SubHeaderComponent
         label={this._t('webcam.headline')}>
@@ -271,10 +332,7 @@ export default class EditorScreenComponent extends ScreenComponent {
           </div>
 
           <div bem='e:right'>
-            <SubHeaderButtonComponent
-              label={this._t('editor.undo')}
-              icon='editor/undo@2x.png'
-              onClick={this._onUndoClick} />
+            {undoButton}
             <SubHeaderButtonComponent
               style='blue'
               label={this._t('editor.export')}
