@@ -14,6 +14,14 @@ export default {
   canvasControls: null,
   controls: OrientationControlsComponent,
   identifier: 'orientation',
+  getInitialSharedState: (context) => {
+    const flipExistedBefore = context.ui.operationExists('flip')
+    const rotationExistedBefore = context.ui.operationExists('rotation')
+    return {
+      flipExistedBefore,
+      rotationExistedBefore
+    }
+  },
   isSelectable: (ui) => {
     return ui.isOperationSelected('rotation') ||
       ui.isOperationSelected('flip')

@@ -87,12 +87,12 @@ export default class EditorScreenComponent extends ScreenComponent {
   undo () {
     const lastItem = this._history.pop()
     if (lastItem) {
+      const { ui } = this.context
       let { operation, existent, options } = lastItem
       if (!existent) {
-        const { ui } = this.context
         ui.removeOperation(operation)
       } else {
-        operation = this._ui.getOrCreateOperation(operation.identifier)
+        operation = ui.getOrCreateOperation(operation.constructor.identifier)
         operation.set(options)
       }
 
@@ -108,9 +108,11 @@ export default class EditorScreenComponent extends ScreenComponent {
    * @param {Boolean} existent
    */
   addHistory (operation, options, existent) {
+    console.log(operation, options, existent)
     this._history.push({
       operation, options, existent
     })
+    this.forceUpdate()
   }
 
   // -------------------------------------------------------------------------- FEATURES

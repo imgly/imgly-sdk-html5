@@ -28,14 +28,14 @@ export default class OrientationControlsComponent extends BaseChildComponent {
       '_onOperationUpdated'
     )
 
-    this._rotationOperation = this.context.ui.getOrCreateOperation('rotation')
-    this._flipOperation = this.context.ui.getOrCreateOperation('flip')
     this._cropOperation = this.context.ui.getOperation('crop')
 
     this._events = {
       [Constants.EVENTS.OPERATION_UPDATED]: this._onOperationUpdated
     }
   }
+
+  // -------------------------------------------------------------------------- EVENTS
 
   /**
    * Gets called when an operation has been updated
@@ -64,11 +64,24 @@ export default class OrientationControlsComponent extends BaseChildComponent {
    * @private
    */
   _onRotateClick (direction) {
-    const degrees = this._rotationOperation.getDegrees()
+    const { ui } = this.context
+    const operationExistedBefore = ui.operationExists('rotation')
+    const rotationOperation = this._getRotationOperation()
+    const previousOptions = {
+      degrees: rotationOperation.getDegrees()
+    }
+
+    const degrees = rotationOperation.getDegrees()
     const additionalDegrees = 90 * (direction === 'left' ? -1 : 1)
     const newDegrees = (degrees + additionalDegrees) % 360
-    this._rotationOperation.setDegrees(newDegrees)
+    rotationOperation.setDegrees(newDegrees)
     this._rotateCrop(additionalDegrees)
+
+    const { editor } = this.props
+    editor.addHistory(rotationOperation,
+      previousOptions,
+      operationExistedBefore)
+
     this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
   }
 
@@ -78,19 +91,58 @@ export default class OrientationControlsComponent extends BaseChildComponent {
    * @private
    */
   _onFlipClick (direction) {
+    const { ui } = this.context
+    const operationExistedBefore = ui.operationExists('flip')
+    const flipOperation = this._getFlipOperation()
+    const previousOptions = {
+      horizontal: flipOperation.getHorizontal(),
+      vertical: flipOperation.getVertical()
+    }
+
     switch (direction) {
       case 'horizontal':
-        const horizontal = this._flipOperation.getHorizontal()
-        this._flipOperation.setHorizontal(!horizontal)
+        const horizontal = flipOperation.getHorizontal()
+        flipOperation.setHorizontal(!horizontal)
         break
       case 'vertical':
-        const vertical = this._flipOperation.getVertical()
-        this._flipOperation.setVertical(!vertical)
+        const vertical = flipOperation.getVertical()
+        flipOperation.setVertical(!vertical)
         break
     }
 
+    const { editor } = this.props
+    editor.addHistory(flipOperation,
+      previousOptions,
+      operationExistedBefore)
+
     this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
   }
+
+  // -------------------------------------------------------------------------- GETTERS
+
+  /**
+   * Returns or create the flip operation
+   * @return {FlipOperation}
+   * @private
+   */
+  _getFlipOperation () {
+    const { ui } = this.context
+    this._flipOperation = ui.getOrCreateOperation('flip')
+    return this._flipOperation
+  }
+
+  /**
+   * Returns or create the rotation operation
+   * @return {RotationOperation}
+   * @private
+   */
+  _getRotationOperation () {
+    const { ui } = this.context
+    this._rotationOperation = ui.getOrCreateOperation('rotation')
+    return this._rotationOperation
+  }
+
+  // -------------------------------------------------------------------------- MISC
 
   /**
    * Rotates the current crop options by the given degrees
@@ -117,6 +169,8 @@ export default class OrientationControlsComponent extends BaseChildComponent {
 
     this._cropOperation.set({ start, end })
   }
+
+  // -------------------------------------------------------------------------- RENDERING
 
   /**
    * Renders this component
