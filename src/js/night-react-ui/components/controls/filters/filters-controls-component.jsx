@@ -25,7 +25,7 @@ export default class FiltersControlsComponent extends BaseChildComponent {
       '_onItemClick',
       '_onOperationUpdated'
     )
-    this._operation = this.context.ui.getOrCreateOperation('filters')
+    this._operation = this.getSharedState('operation')
     this._filters = this._operation.getFilters()
 
     this._events = {
@@ -52,8 +52,7 @@ export default class FiltersControlsComponent extends BaseChildComponent {
    */
   _onItemClick (filter, e) {
     this._operation.setFilter(filter)
-    this.context.mediator.emit('canvas:render')
-    // this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
+    this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
   }
 
   /**
@@ -63,6 +62,14 @@ export default class FiltersControlsComponent extends BaseChildComponent {
    */
   _onBackClick (e) {
     this.props.onSwitchControls('back')
+
+    const filter = this._operation.getFilter()
+    if (!filter.isIdentity) {
+      const { editor } = this.props
+      editor.addHistory(this._operation,
+        this.getSharedState('initialOptions'),
+        this.getSharedState('operationExistedBefore'))
+    }
   }
 
   /**
