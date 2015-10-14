@@ -106,13 +106,15 @@ export default class EditorScreenComponent extends ScreenComponent {
    * @param {Operation} operation
    * @param {Object} options
    * @param {Boolean} existent
+   * @return {Object}
    */
   addHistory (operation, options, existent) {
-    console.log(operation, options, existent)
-    this._history.push({
+    const historyItem = {
       operation, options, existent
-    })
+    }
+    this._history.push(historyItem)
     this.forceUpdate()
+    return historyItem
   }
 
   // -------------------------------------------------------------------------- FEATURES
