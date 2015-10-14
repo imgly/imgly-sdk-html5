@@ -16,6 +16,14 @@ export default {
   controls: FiltersControlsComponent,
   largeCanvasControls: true,
   identifier: 'filters',
+  getInitialSharedState: (context) => {
+    const operationExistedBefore = context.ui.operationExists('filters')
+    const operation = context.ui.getOrCreateOperation('filters')
+    return {
+      operationExistedBefore,
+      operation
+    }
+  },
   isSelectable: (ui) => {
     return ui.isOperationSelected('filters')
   }

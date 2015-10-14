@@ -20,7 +20,7 @@ export default class FiltersCanvasControlsComponent extends BaseChildComponent {
       '_onSliderValueChange',
       '_onOperationUpdated'
     )
-    this._operation = this.context.ui.getOrCreateOperation('filters')
+    this._operation = this.getSharedState('operation')
 
     this._events = {
       [Constants.EVENTS.OPERATION_UPDATED]: this._onOperationUpdated
