@@ -326,7 +326,7 @@ export default class Renderer {
 
   setDimensions (dimensions) {
     if (!dimensions) {
-      const initialDimensions = this.getInitialDimensions()
+      const initialDimensions = this.getInitialDimensions().clone().round()
       dimensions = `${initialDimensions.x}x${initialDimensions.y}`
     } else if (dimensions instanceof ImageDimensions) {
       this._dimensions = dimensions
