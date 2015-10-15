@@ -39,6 +39,9 @@ export default class RadialBlurCanvasControlsComponent extends BaseChildComponen
    * @param {Object} newState
    */
   sharedStateDidChange (newState) {
+    if (newState.operation) {
+      this._operation = newState.operation
+    }
     this._setStylesFromOptions()
   }
 

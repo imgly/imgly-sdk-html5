@@ -20,8 +20,13 @@ export default class RadialBlurControlsComponent extends BaseChildComponent {
     this._bindAll(
       '_onBackClick',
       '_onDoneClick',
-      '_onSliderValueChange'
+      '_onSliderValueChange',
+      '_onOperationRemoved'
     )
+
+    this._events = {
+      [Constants.EVENTS.OPERATION_REMOVED]: this._onOperationRemoved
+    }
   }
 
   // -------------------------------------------------------------------------- LIFECYCLE
@@ -39,6 +44,27 @@ export default class RadialBlurControlsComponent extends BaseChildComponent {
   }
 
   // -------------------------------------------------------------------------- EVENTS
+
+  /**
+   * Gets called when an operation is removed
+   * @return {Operation} operation
+   * @private
+   */
+  _onOperationRemoved (operation) {
+    if (operation !== this._operation) return
+
+    // Operation can be removed by the undo button. We need
+    // to make sure we re-create the operation for the lifetime
+    // of this control
+    const { ui } = this.context
+    const newOperation = ui.getOrCreateOperation('radial-blur')
+    this._operation = newOperation
+    this.setSharedState({
+      operation: newOperation,
+      operationExistedBefore: false,
+      initialOptions: {}
+    })
+  }
 
   /**
    * Gets called when the user clicks the back button
