@@ -38,6 +38,9 @@ export default class TiltShiftCanvasControlsComponent extends BaseChildComponent
    * @param {Object} newState
    */
   sharedStateDidChange (newState) {
+    if (newState.operation) {
+      this._operation = newState.operation
+    }
     this._setStylesFromOptions()
   }
 
