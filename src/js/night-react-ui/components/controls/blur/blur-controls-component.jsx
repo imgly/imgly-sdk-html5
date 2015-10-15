@@ -61,8 +61,8 @@ export default class BlurControlsComponent extends BaseChildComponent {
           key={item.identifier}>
           <bem specifier='$b:controls'>
             <div bem='$e:button m:withLabel' onClick={this._onButtonClick.bind(this, item)}>
-              <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/blur/${item.identifier}@2x.png`, true)} />
-              <div bem='e:label'>{this._t(`controls.blur.${item.identifier}`)}</div>
+              <img bem='e:icon' src={ui.getHelpers().assetPath(item.icon, true)} />
+              <div bem='e:label'>{this._t(item.label)}</div>
             </div>
           </bem>
         </li>)

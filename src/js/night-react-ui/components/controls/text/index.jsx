@@ -16,6 +16,8 @@ export default {
   canvasControls: TextCanvasControlsComponent,
   controls: TextControlsComponent,
   identifier: 'text',
+  icon: 'controls/overview/text@2x.png',
+  label: 'controls.overview.text',
 
   /**
    * Gets called when the user leaves these controls

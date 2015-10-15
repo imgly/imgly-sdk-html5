@@ -40,8 +40,8 @@ export default class OverviewControlsComponent extends BaseChildComponent {
           onClick={this._onItemClick.bind(this, control)}>
             <bem specifier='$b:controls'>
               <div bem='$e:button m:withLabel'>
-                <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/overview/${control.identifier}@2x.png`, true)} />
-                <div bem='e:label'>{this._t(`controls.overview.${control.identifier}`)}</div>
+                <img bem='e:icon' src={ui.getHelpers().assetPath(control.icon, true)} />
+                <div bem='e:label'>{this._t(control.label)}</div>
               </div>
             </bem>
         </li>)

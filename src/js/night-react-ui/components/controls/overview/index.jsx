@@ -13,5 +13,5 @@ import OverviewCanvasControlsComponent from './overview-canvas-controls-componen
 
 export default {
   canvasControls: OverviewCanvasControlsComponent,
-  controls: OverviewControlsComponent
+  controls: OverviewControlsComponent,
 }

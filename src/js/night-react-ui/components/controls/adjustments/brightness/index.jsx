@@ -14,6 +14,8 @@ export default {
   canvasControls: null,
   controls: BrightnessControlsComponent,
   identifier: 'brightness',
+  icon: 'controls/adjustments/brightness@2x.png',
+  label: 'controls.adjustments.brightness',
   getInitialSharedState: (context) => {
     const operationExistedBefore = context.ui.operationExists('brightness')
     const operation = context.ui.getOrCreateOperation('brightness')

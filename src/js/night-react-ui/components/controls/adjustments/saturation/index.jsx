@@ -14,6 +14,8 @@ export default {
   canvasControls: null,
   controls: SaturationControlsComponent,
   identifier: 'saturation',
+  icon: 'controls/adjustments/saturation@2x.png',
+  label: 'controls.adjustments.saturation',
   getInitialSharedState: (context) => {
     const operationExistedBefore = context.ui.operationExists('saturation')
     const operation = context.ui.getOrCreateOperation('saturation')

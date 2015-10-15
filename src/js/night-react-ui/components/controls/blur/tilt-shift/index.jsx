@@ -16,6 +16,8 @@ export default {
   canvasControls: TiltShiftCanvasControlsComponent,
   controls: TiltShiftControlsComponent,
   identifier: 'tilt-shift',
+  icon: 'controls/blur/tilt-shift@2x.png',
+  label: 'controls.blur.tilt-shift',
   getInitialSharedState: (context) => {
     const { ui } = context
     const operationExistedBefore = ui.operationExists('tilt-shift')
