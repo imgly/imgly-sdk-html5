@@ -1,10 +1,18 @@
 var path = require('path')
 var WebpackNotifierPlugin = require('webpack-notifier')
 var ProvidePlugin = require('webpack/lib/ProvidePlugin')
+var DefinePlugin = require('webpack/lib/DefinePlugin')
 
 var destination = 'build'
 var source = 'src'
 var env = process.env.ENV || 'development'
+
+var aliases
+if (env === 'production') {
+  aliases = {
+    'react': path.resolve(__dirname, 'node_modules/react/dist/react.min')
+  }
+}
 
 module.exports = {
   // Global environment. Tasks watch for changes in development only
@@ -73,7 +81,8 @@ module.exports = {
     resolve: {
       extensions: ['', '.js', '.jsx'],
       root: path.resolve(source + '/js'),
-      modulesDirectories: ['node_modules']
+      modulesDirectories: ['node_modules'],
+      alias: aliases
     },
     node: {
       fs: 'empty',
@@ -109,6 +118,9 @@ module.exports = {
       ]
     },
     plugins: [
+      new DefinePlugin({
+        NODE_ENV: env
+      }),
       new ProvidePlugin({
         babelHelpers: path.resolve(source, 'js/sdk/vendor/babel-helpers')
       }),
