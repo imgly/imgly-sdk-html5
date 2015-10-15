@@ -8,6 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+import { SDKUtils } from '../../../globals'
 import StickersControlsComponent from './stickers-controls-component'
 import StickersCanvasControlsComponent from './stickers-canvas-controls-component'
 
@@ -51,18 +52,21 @@ export default {
   /**
    * Returns the initial state for this control
    * @param  {Object} context
+   * @param  {Object} additionalState = {}
    * @return {Object}
    */
-  getInitialSharedState: (context) => {
+  getInitialSharedState: (context, additionalState = {}) => {
     const operationExistedBefore = context.ui.operationExists('stickers')
     const operation = context.ui.getOrCreateOperation('stickers')
     const stickers = operation.getStickers()
     const initialOptions = operation.serializeOptions()
 
-    return {
+    const state = {
       operationExistedBefore, operation, stickers, initialOptions,
       stickerDimensions: {}
     }
+
+    return SDKUtils.extend({}, state, additionalState)
   },
 
   isSelectable: (ui) => {
