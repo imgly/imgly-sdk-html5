@@ -113,12 +113,17 @@ class StickersOperation extends Operation {
       this._outputTexture = texture
       this._outputFramebuffer = fbo
     }
-    const stickers = this.getStickers()
-    const promises = stickers.map((sticker) => {
-      return this._renderStickerWebGL(renderer, sticker)
-    })
+
     renderer.resizeTexture(this._outputTexture, canvasDimensions)
-    return Promise.all(promises)
+
+    const stickers = this.getStickers()
+    let promise = Promise.resolve()
+    stickers.forEach((sticker) => {
+      promise = promise.then(() => {
+        return this._renderStickerWebGL(renderer, sticker)
+      })
+    })
+    return promise
       .then(() => {
         this._renderFinal(renderer)
       })
