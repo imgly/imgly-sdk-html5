@@ -18,6 +18,7 @@ import Polyglot from 'node-polyglot'
 import Helpers from './helpers'
 import EditorComponent from './components/editor-component'
 import OverviewControlsComponent from './components/controls/overview/overview-controls-component'
+import ScrollbarComponent from './components/scrollbar-component'
 import FileExporter from './lib/file-exporter'
 
 export default class NightReactUI extends EventEmitter {
@@ -358,6 +359,7 @@ NightReactUI.ReactBEM = ReactBEM
 NightReactUI.SharedState = SharedState
 NightReactUI.Constants = Constants
 NightReactUI.Utils = Utils
+NightReactUI.ScrollbarComponent = ScrollbarComponent
 
 PhotoEditorSDK.UI = PhotoEditorSDK.UI || {}
 PhotoEditorSDK.UI.NightReact = NightReactUI
