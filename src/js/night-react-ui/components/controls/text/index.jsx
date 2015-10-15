@@ -64,9 +64,11 @@ export default {
     state.operation.setTexts([])
 
     if (!additionalState.selectedText) {
+      const renderer = context.kit.getRenderer()
       const text = state.operation.createText({
         text: 'Text',
         maxWidth: 0.5,
+        maxHeight: renderer.maxTextureSize,
         anchor: new Vector2(0.5, 0),
         pivot: new Vector2(0.5, 0)
       })

@@ -179,6 +179,12 @@ export default class Text extends Configurable {
       // Resize the canvas
       this._canvas.width = boundingBox.x
       this._canvas.height = boundingBox.y
+      if (this._options.maxHeight) {
+        this._canvas.height = Math.min(
+          this._options.maxHeight,
+          this._canvas.height
+        )
+      }
 
       // Update the context
       this._context = this._canvas.getContext('2d')
@@ -244,5 +250,6 @@ Text.prototype.availableOptions = {
   pivot: { type: 'vector2', default: new Vector2(0, 0) },
   rotation: { type: 'number', default: 0 },
   text: { type: 'string', required: true },
-  maxWidth: { type: 'number', default: 1.0 }
+  maxWidth: { type: 'number', default: 1.0 },
+  maxHeight: { type: 'number', default: 0 }
 }
