@@ -14,6 +14,7 @@ export default {
     CANVAS_ZOOM: 'canvas:zoom',
     CANVAS_UNDO_ZOOM: 'canvas:zoom_undo',
     OPERATION_UPDATED: 'operation:update',
+    OPERATION_REMOVED: 'operation:removed',
     EDITOR_DISABLE_FEATURES: 'editor:disable',
     EDITOR_ENABLE_FEATURES: 'editor:enable'
   }
