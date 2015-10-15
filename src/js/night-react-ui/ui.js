@@ -148,10 +148,17 @@ export default class NightReactUI extends EventEmitter {
     this._selectedControls = []
     for (let identifier in this._availableControls) {
       const controls = this._availableControls[identifier]
-      if (controls.isSelectable(this)) {
+      if (!controls.isSelectable || controls.isSelectable(this)) {
         this._selectedControls.push(controls)
       }
     }
+    this._selectedControls.sort((a, b) => {
+      let sortA = this._options.controlsOrder.indexOf(a.identifier)
+      let sortB = this._options.controlsOrder.indexOf(b.identifier)
+      if (sortA === -1) sortA = this._selectedControls.length
+      if (sortB === -1) sortB = this._selectedControls.length
+      return sortB < sortA ? 1 : -1
+    })
   }
 
   /**
@@ -163,7 +170,8 @@ export default class NightReactUI extends EventEmitter {
       language: 'en',
       operations: 'all',
       assets: {},
-      extensions: {}
+      extensions: {},
+      controlsOrder: []
     })
 
     this._options.extensions = SDKUtils.defaults(this._options.extensions || {}, {
