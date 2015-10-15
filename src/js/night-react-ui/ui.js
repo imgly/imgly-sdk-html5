@@ -9,11 +9,13 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { SDKUtils, EventEmitter, Constants, Utils, RenderType } from './globals'
+import {
+  SDKUtils, EventEmitter, Constants, Utils, RenderType, BaseChildComponent,
+  React, ReactBEM, SharedState
+} from './globals'
 
 import Polyglot from 'node-polyglot'
 import Helpers from './helpers'
-import React from 'react'
 import EditorComponent from './components/editor-component'
 import OverviewControlsComponent from './components/controls/overview/overview-controls-component'
 import FileExporter from './lib/file-exporter'
@@ -348,6 +350,14 @@ export default class NightReactUI extends EventEmitter {
  * @type {String}
  */
 NightReactUI.prototype.identifier = 'night-react'
+
+// Export extendable stuff
+NightReactUI.BaseChildComponent = BaseChildComponent
+NightReactUI.React = React
+NightReactUI.ReactBEM = ReactBEM
+NightReactUI.SharedState = SharedState
+NightReactUI.Constants = Constants
+NightReactUI.Utils = Utils
 
 PhotoEditorSDK.UI = PhotoEditorSDK.UI || {}
 PhotoEditorSDK.UI.NightReact = NightReactUI
