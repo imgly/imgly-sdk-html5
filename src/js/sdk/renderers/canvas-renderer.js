@@ -175,6 +175,10 @@ class CanvasRenderer extends BaseRenderer {
     const newDimensions = dimensions.calculateFinalDimensions(canvasDimensions)
     this.resizeTo(newDimensions)
   }
+
+  get maxTextureSize () {
+    return 0
+  }
 }
 
 export default CanvasRenderer
