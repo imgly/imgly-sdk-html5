@@ -126,5 +126,21 @@ export default class OperationsStack {
     if (index === -1) return
     this._stack.splice(index, 1)
   }
+
+  /**
+   * Removes the operation at the given index
+   * @param  {Number} index
+   */
+  removeAt (index) {
+    this._stack.splice(index, 1)
+  }
+
+  /**
+   * Returns the stack
+   * @return {Array.<Operation>}
+   */
+  getStack () {
+    return this._stack
+  }
 }
 

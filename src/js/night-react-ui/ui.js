@@ -271,8 +271,17 @@ export default class NightReactUI extends EventEmitter {
   removeOperation (operation) {
     const identifier = operation.constructor.identifier
     if (this._operationsMap[identifier]) {
-      this._operationsStack.remove(operation)
-      delete this._operationsMap[identifier]
+      const stack = this._operationsStack.getStack()
+      for (let i = 0; i < stack.length; i++) {
+        const operation = stack[i]
+        if (operation &&
+            operation.constructor.identifier === identifier) {
+          this._operationsStack.removeAt(i)
+          delete this._operationsMap[identifier]
+          return
+        }
+      }
+
     }
   }
 
