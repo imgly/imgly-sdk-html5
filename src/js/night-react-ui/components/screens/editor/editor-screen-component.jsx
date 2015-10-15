@@ -317,7 +317,7 @@ export default class EditorScreenComponent extends ScreenComponent {
         onSwitchControls={this.switchToControls}
         editor={this}
         sharedState={this.state.sharedState}
-        ref="controls" />)
+        ref='controls' />)
     }
 
     if (CanvasControls) {
@@ -325,7 +325,7 @@ export default class EditorScreenComponent extends ScreenComponent {
         onSwitchControls={this.switchToControls}
         editor={this}
         sharedState={this.state.sharedState}
-        ref="canvasControls" />)
+        ref='canvasControls' />)
     }
 
     let undoButton
