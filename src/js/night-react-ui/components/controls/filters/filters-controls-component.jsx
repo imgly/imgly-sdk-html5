@@ -63,12 +63,20 @@ export default class FiltersControlsComponent extends BaseChildComponent {
   _onBackClick (e) {
     this.props.onSwitchControls('back')
 
+    const initialOptions = this.getSharedState('initialOptions')
     const filter = this._operation.getFilter()
-    if (!filter.isIdentity) {
+    const intensity = this._operation.getIntensity()
+    if (filter !== initialOptions.filter ||
+      intensity !== initialOptions.intensity) {
       const { editor } = this.props
       editor.addHistory(this._operation,
-        this.getSharedState('initialOptions'),
+        initialOptions,
         this.getSharedState('operationExistedBefore'))
+    }
+
+    if (filter.isIdentity) {
+      const { ui } = this.context
+      ui.removeOperation(this._operation)
     }
   }
 

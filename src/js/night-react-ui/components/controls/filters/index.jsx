@@ -19,9 +19,14 @@ export default {
   getInitialSharedState: (context) => {
     const operationExistedBefore = context.ui.operationExists('filters')
     const operation = context.ui.getOrCreateOperation('filters')
+    const initialOptions = {
+      filter: operation.getFilter(),
+      intensity: operation.getIntensity()
+    }
     return {
       operationExistedBefore,
-      operation
+      operation,
+      initialOptions
     }
   },
   isSelectable: (ui) => {
