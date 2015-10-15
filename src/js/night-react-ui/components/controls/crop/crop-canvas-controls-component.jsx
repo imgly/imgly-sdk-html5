@@ -20,8 +20,7 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
 
     this._bindAll(
       '_onCenterDragStart',
-      '_onCenterDrag',
-      '_onCenterDragStop'
+      '_onCenterDrag'
     )
 
     this._operation = this.getSharedState('operation')
@@ -68,12 +67,6 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
 
     this.setSharedState({ start: newStart, end: newEnd })
   }
-
-  /**
-   * Gets called when the user stops dragging the center
-   * @private
-   */
-  _onCenterDragStop () { }
 
   // -------------------------------------------------------------------------- KNOB DRAGGING
 
@@ -127,13 +120,6 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
 
     this.setSharedState({ [this._currentDragOption]: newValue })
   }
-
-  /**
-   * Gets called when the user stops dragging a knob
-   * @param {String} optionName
-   * @private
-   */
-  _onKnobDragStop (optionName) { }
 
   // -------------------------------------------------------------------------- MISC
 
@@ -209,13 +195,11 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
           <div bem='e:cell m:dark' style={areaStyles.centerLeft} />
           <DraggableComponent
             onStart={this._onCenterDragStart}
-            onDrag={this._onCenterDrag}
-            onStop={this._onCenterDragStop}>
+            onDrag={this._onCenterDrag}>
               <div bem='e:cell m:bordered' style={areaStyles.center}>
                 <DraggableComponent
                   onStart={this._onKnobDragStart.bind(this, 'start')}
-                  onDrag={this._onKnobDrag.bind(this, 'start')}
-                  onStop={this._onKnobDragStop.bind(this, 'start')}>
+                  onDrag={this._onKnobDrag.bind(this, 'start')}>
                     <div bem='e:knob m:topLeft $b:knob'>
                       <img bem='e:icon' src={ui.getHelpers().assetPath('controls/knobs/resize-diagonal-down@2x.png', true)} />
                     </div>
@@ -223,8 +207,7 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
                 <div bem='e:dimensions'>{dimensions.x} x {dimensions.y}</div>
                 <DraggableComponent
                   onStart={this._onKnobDragStart.bind(this, 'end')}
-                  onDrag={this._onKnobDrag.bind(this, 'end')}
-                  onStop={this._onKnobDragStop.bind(this, 'end')}>
+                  onDrag={this._onKnobDrag.bind(this, 'end')}>
                     <div bem='e:knob m:bottomRight $b:knob'>
                       <img bem='e:icon' src={ui.getHelpers().assetPath('controls/knobs/resize-diagonal-down@2x.png', true)} />
                     </div>
