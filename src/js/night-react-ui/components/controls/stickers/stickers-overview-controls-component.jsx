@@ -19,7 +19,37 @@ export default class StickersOverviewControlsComponent extends BaseChildComponen
     this._bindAll('_onBackClick')
     this._operation = this.getSharedState('operation')
     this._stickers = this.getSharedState('stickers')
-    this._stickersMap = this._operation.getAvailableStickers()
+
+    this._availableStickers = []
+    this._registerStickers()
+  }
+
+  // -------------------------------------------------------------------------- STICKERS
+
+  /**
+   * Registers the available stickers
+   * @private
+   */
+  _registerStickers () {
+    this._availableStickers = [
+      'stickers/glasses-nerd.png',
+      'stickers/glasses-normal.png',
+      'stickers/glasses-shutter-green.png',
+      'stickers/glasses-shutter-yellow.png',
+      'stickers/glasses-sun.png',
+      'stickers/hat-cap.png',
+      'stickers/hat-cylinder.png',
+      'stickers/hat-party.png',
+      'stickers/hat-sheriff.png',
+      'stickers/heart.png',
+      'stickers/mustache-long.png',
+      'stickers/mustache1.png',
+      'stickers/mustache2.png',
+      'stickers/mustache3.png',
+      'stickers/pipe.png',
+      'stickers/snowflake.png',
+      'stickers/star.png'
+    ]
   }
 
   // -------------------------------------------------------------------------- EVENTS
@@ -35,12 +65,12 @@ export default class StickersOverviewControlsComponent extends BaseChildComponen
 
   /**
    * Gets called when a sticker has been clicked
-   * @param  {String} identifier
+   * @param  {String} stickerPath
    * @private
    */
-  _onStickerClick (identifier) {
+  _onStickerClick (stickerPath) {
     const sticker = this._operation.createSticker({
-      name: identifier,
+      path: stickerPath,
       position: new Vector2(0.5, 0.5),
       scale: new Vector2(1.0, 1.0),
       rotation: 0
@@ -65,21 +95,15 @@ export default class StickersOverviewControlsComponent extends BaseChildComponen
    */
   renderWithBEM () {
     const ui = this.context.ui
-    const selectedSticker = this.getSharedState('selectedSticker')
 
-    const listItems = Object.keys(this._stickersMap).map((identifier) => {
-      let itemClassName
-      if (selectedSticker && selectedSticker.name === identifier) {
-        itemClassName = 'is-active'
-      }
-
+    const listItems = this._availableStickers.map((stickerPath) => {
       return (<li
         bem='e:item'
-        key={identifier}
-        onClick={this._onStickerClick.bind(this, identifier)}>
+        key={stickerPath}
+        onClick={this._onStickerClick.bind(this, stickerPath)}>
         <bem specifier='$b:controls'>
-          <div bem='$e:button m:withLabel' className={itemClassName}>
-            <img bem='e:icon' src={ui.getHelpers().assetPath(this._stickersMap[identifier])} />
+          <div bem='$e:button m:withLabel'>
+            <img bem='e:icon' src={ui.getHelpers().assetPath(stickerPath)} />
           </div>
         </bem>
       </li>)

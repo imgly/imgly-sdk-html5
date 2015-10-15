@@ -37,8 +37,6 @@ class StickersOperation extends Operation {
     this.vertexShader = require('raw!./generic/sprite.vert')
     this.adjustmentsShader = require('raw!./stickers/adjustments.frag')
     this.blurShader = require('raw!./blur/blur.frag')
-
-    this._registerStickers()
   }
 
   /**
@@ -65,37 +63,6 @@ class StickersOperation extends Operation {
    */
   createSticker (options) {
     return new Sticker(this, options)
-  }
-
-  /**
-   * Registers the existing stickers
-   * @private
-   */
-  _registerStickers () {
-    this._stickers = {}
-
-    const stickerNames = [
-      'glasses-nerd',
-      'glasses-normal',
-      'glasses-shutter-green',
-      'glasses-shutter-yellow',
-      'glasses-sun',
-      'hat-cap',
-      'hat-cylinder',
-      'hat-party',
-      'hat-sheriff',
-      'heart',
-      'mustache-long',
-      'mustache1',
-      'mustache2',
-      'mustache3',
-      'pipe',
-      'snowflake',
-      'star'
-    ]
-    stickerNames.forEach((name) => {
-      this._stickers[name] = `stickers/${name}.png`
-    })
   }
 
   /**
@@ -314,11 +281,7 @@ class StickersOperation extends Operation {
    * @private
    */
   _renderStickerWebGL (renderer, sticker) {
-    const stickerName = sticker.getName()
-
-    if (!(stickerName in this._stickers)) {
-      return Promise.reject(new Error(`Unknown sticker "${stickerName}"`))
-    }
+    const stickerPath = sticker.getPath()
 
     this._setupFrameBuffers(renderer)
 
@@ -327,7 +290,7 @@ class StickersOperation extends Operation {
     }
 
     let image
-    return this._loadSticker(stickerName)
+    return this._loadSticker(stickerPath)
       .then((_image) => {
         this._lastTexture = null
         this._framebufferIndex = 0
@@ -458,13 +421,12 @@ class StickersOperation extends Operation {
 
   /**
    * Loads the sticker
-   * @param  {String} sticker
+   * @param  {String} stickerPath
    * @return {Promise}
    * @private
    */
-  _loadSticker (sticker) {
+  _loadSticker (stickerPath) {
     const isBrowser = typeof window !== 'undefined'
-    const stickerPath = this._kit.getAssetPath(this._stickers[sticker])
     if (isBrowser) {
       return this._loadImageBrowser(stickerPath)
     } else {
@@ -474,20 +436,20 @@ class StickersOperation extends Operation {
 
   /**
    * Loads the given image using the browser's `Image` class
-   * @param  {String} filePath
+   * @param  {String} stickerPath
    * @return {Promise}
    * @private
    */
-  _loadImageBrowser (filePath) {
-    var self = this
+  _loadImageBrowser (stickerPath) {
+    const resolvedStickerPath = this._kit.getAssetPath(stickerPath)
     return new Promise((resolve, reject) => {
       // Return preloaded sticker if available
-      if (self._loadedStickers[filePath]) {
+      if (this._loadedStickers[stickerPath]) {
 
         // Bug in native-promise only. Immediately resolving
         // the promise (synchronously) breaks rendering
         setTimeout(() => {
-          resolve(self._loadedStickers[filePath])
+          resolve(this._loadedStickers[stickerPath])
         }, 1)
         return
       }
@@ -495,15 +457,15 @@ class StickersOperation extends Operation {
       var image = new Image()
 
       image.addEventListener('load', () => {
-        self._loadedStickers[filePath] = image
+        this._loadedStickers[stickerPath] = image
         resolve(image)
       })
       image.addEventListener('error', () => {
-        reject(new Error('Could not load sticker: ' + filePath))
+        reject(new Error('Could not load sticker: ' + resolvedStickerPath))
       })
 
       image.crossOrigin = 'Anonymous'
-      image.src = self._kit.getAssetPath(fileName)
+      image.src = resolvedStickerPath
     })
   }
 
@@ -545,7 +507,7 @@ class StickersOperation extends Operation {
 
         const stickerPosition = sticker.getPosition()
         const stickerRotation = sticker.getRotation()
-        const stickerName = sticker.getName()
+        const stickerPath = sticker.getPath()
         const stickerScale = sticker.getScale()
 
         const absoluteStickerPosition = stickerPosition
@@ -564,7 +526,6 @@ class StickersOperation extends Operation {
         const x = Math.cos(newRadians) * clickDistance
         const y = Math.sin(newRadians) * clickDistance
 
-        const stickerPath = this._kit.getAssetPath(this._stickers[stickerName])
         const stickerTexture = this._loadedStickers[stickerPath]
         const stickerDimensions = new Vector2(
             stickerTexture.width,
@@ -582,8 +543,6 @@ class StickersOperation extends Operation {
       })
     return intersectingSticker
   }
-
-  getAvailableStickers () { return this._stickers }
 }
 
 /**
