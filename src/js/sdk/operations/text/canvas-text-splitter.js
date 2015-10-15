@@ -88,7 +88,9 @@ export default class CanvasTextSplitter {
     for (let c = 0; c < wordLength; c++) {
       const char = word[c]
       if (this._getWidth(chars.concat(char).join('')) > this._maxWidth) {
-        response.lines.push(chars.join(''))
+        if (chars.length > 0) {
+          response.lines.push(chars.join(''))
+        }
         chars = [char]
       } else {
         chars.push(char)
