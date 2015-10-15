@@ -45,7 +45,7 @@ class IdentityFilter extends Filter {
    * @return {Promise}
    */
   render () {
-    // This is the identity filter, it doesn't have any effect.
+    return Promise.resolve()
   }
 }
 
