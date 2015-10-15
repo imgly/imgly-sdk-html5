@@ -307,8 +307,11 @@ export default class EditorScreenComponent extends ScreenComponent {
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
-    const CanvasControls = this.state.controls.canvasControls
     const Controls = this.state.controls.controls
+    let CanvasControls = this.state.controls.canvasControls
+    if (!CanvasControls) {
+      CanvasControls = OverviewControls.canvasControls
+    }
 
     let controls, canvasControls
 
