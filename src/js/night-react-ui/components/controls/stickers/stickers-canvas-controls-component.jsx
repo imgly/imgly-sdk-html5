@@ -27,7 +27,6 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
     this._operation = this.getSharedState('operation')
     this._stickers = this.getSharedState('stickers')
     this._selectedSticker = this.getSharedState('selectedSticker')
-    this._stickersMap = this._operation.getAvailableStickers()
   }
 
   // -------------------------------------------------------------------------- LIFECYCLE
@@ -47,7 +46,7 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
   sharedStateDidChange (newState) {
     if (newState.stickers) {
       newState.stickers.forEach((sticker) => {
-        this._loadStickerAndStoreDimensions(sticker.getName())
+        this._loadStickerAndStoreDimensions(sticker.getPath())
           .then(() => this.forceUpdate())
       })
     }
@@ -294,7 +293,7 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
   _loadExistingStickers () {
     return this._stickers
       .map((sticker) => {
-        return this._loadStickerAndStoreDimensions(sticker.getName())
+        return this._loadStickerAndStoreDimensions(sticker.getPath())
           .then(() => this.forceUpdate())
       })
   }
@@ -302,12 +301,12 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
   /**
    * Loads the sticker with the given identifier and stores
    * its dimensions in the shared state
-   * @param  {String} identifier
+   * @param  {String} stickerPath
    * @return {Promise}
    * @private
    */
-  _loadStickerAndStoreDimensions (identifier) {
-    if (identifier in this.getSharedState('stickerDimensions')) {
+  _loadStickerAndStoreDimensions (stickerPath) {
+    if (stickerPath in this.getSharedState('stickerDimensions')) {
       return Promise.resolve()
     }
 
@@ -317,7 +316,7 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
 
       image.addEventListener('load', () => {
         const stickerDimensions = this.getSharedState('stickerDimensions')
-        stickerDimensions[identifier] = new Vector2(
+        stickerDimensions[stickerPath] = new Vector2(
           image.width,
           image.height
         )
@@ -325,7 +324,11 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
         resolve()
       })
 
-      image.src = kit.getAssetPath(this._stickersMap[identifier])
+      image.addEventListener('error', (e) => {
+        reject(e)
+      })
+
+      image.src = kit.getAssetPath(stickerPath)
     })
   }
 
@@ -337,7 +340,7 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
    */
   _stickerLoaded (sticker) {
     const stickerDimensions = this.getSharedState('stickerDimensions')
-    return sticker.getName() in stickerDimensions
+    return sticker.getPath() in stickerDimensions
   }
 
   // -------------------------------------------------------------------------- RENDERING
@@ -434,7 +437,7 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
    */
   _getStickerDimensions (sticker) {
     const stickerDimensions = this.getSharedState('stickerDimensions')
-    return stickerDimensions[sticker.getName()]
+    return stickerDimensions[sticker.getPath()]
       .clone()
       .multiply(sticker.getScale())
   }
