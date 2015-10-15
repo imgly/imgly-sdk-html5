@@ -156,9 +156,9 @@ class CanvasRenderer extends BaseRenderer {
   setSize (dimensions) {
     dimensions = dimensions.clone().floor()
     if (this._canvas.width === dimensions.x &&
-      this._canvas.height === dimensions.y) {
-        return
-      }
+        this._canvas.height === dimensions.y) {
+      return
+    }
 
     this._canvas.width = dimensions.x
     this._canvas.height = dimensions.y
