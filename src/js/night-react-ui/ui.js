@@ -337,6 +337,7 @@ export default class NightReactUI extends EventEmitter {
 
   getSelectedOperations () { return this._selectedOperations }
   getSelectedControls () { return this._selectedControls }
+  getAvailableControls () { return this._availableControls }
   getHelpers () { return this._helpers }
 
   /**

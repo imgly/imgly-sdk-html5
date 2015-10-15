@@ -268,6 +268,9 @@ export default class EditorScreenComponent extends ScreenComponent {
     let newControls = null
     if (controls === 'back') {
       newControls = this._previousControlsStack.pop()
+    } else if (typeof controls === 'string') {
+      const allControls = this.context.ui.getAvailableControls()
+      newControls = allControls[controls]
     } else {
       newControls = controls
       this._previousControlsStack.push(this.state.controls)
