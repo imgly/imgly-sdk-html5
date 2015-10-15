@@ -14,6 +14,8 @@ export default {
   canvasControls: null,
   controls: FramesControlsComponent,
   identifier: 'frames',
+  icon: 'controls/overview/frames@2x.png',
+  label: 'controls.overview.frames',
   getInitialSharedState: (context) => {
     const { ui } = context
     const operationExistedBefore = ui.operationExists('frames')

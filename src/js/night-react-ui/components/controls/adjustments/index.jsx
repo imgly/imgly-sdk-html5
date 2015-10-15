@@ -14,6 +14,8 @@ export default {
   canvasControls: null,
   controls: AdjustmentsControlsComponent,
   identifier: 'adjustments',
+  icon: 'controls/overview/adjustments@2x.png',
+  label: 'controls.overview.adjustments',
   isSelectable: (ui) => {
     return ui.isOperationSelected('brightness') ||
       ui.isOperationSelected('contrast') ||

@@ -14,6 +14,8 @@ export default {
   canvasControls: null,
   controls: ContrastControlsComponent,
   identifier: 'contrast',
+  icon: 'controls/adjustments/contrast@2x.png',
+  label: 'controls.adjustments.contrast',
   getInitialSharedState: (context) => {
     const operationExistedBefore = context.ui.operationExists('contrast')
     const operation = context.ui.getOrCreateOperation('contrast')

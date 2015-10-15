@@ -16,6 +16,8 @@ export default {
   controls: FiltersControlsComponent,
   largeCanvasControls: true,
   identifier: 'filters',
+  icon: 'controls/overview/filters@2x.png',
+  label: 'controls.overview.filters',
   getInitialSharedState: (context) => {
     const operationExistedBefore = context.ui.operationExists('filters')
     const operation = context.ui.getOrCreateOperation('filters')

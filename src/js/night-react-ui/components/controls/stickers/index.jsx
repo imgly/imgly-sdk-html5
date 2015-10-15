@@ -16,6 +16,8 @@ export default {
   canvasControls: StickersCanvasControlsComponent,
   controls: StickersControlsComponent,
   identifier: 'stickers',
+  icon: 'controls/overview/stickers@2x.png',
+  label: 'controls.overview.stickers',
 
   /**
    * Gets called when the user leaves these controls

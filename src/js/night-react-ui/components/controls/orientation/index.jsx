@@ -14,6 +14,8 @@ export default {
   canvasControls: null,
   controls: OrientationControlsComponent,
   identifier: 'orientation',
+  icon: 'controls/overview/orientation@2x.png',
+  label: 'controls.overview.orientation',
   getInitialSharedState: (context) => {
     const flipExistedBefore = context.ui.operationExists('flip')
     const rotationExistedBefore = context.ui.operationExists('rotation')

@@ -15,6 +15,8 @@ export default {
   canvasControls: RadialBlurCanvasControlsComponent,
   controls: RadialBlurControlsComponent,
   identifier: 'radial-blur',
+  icon: 'controls/blur/radial-blur@2x.png',
+  label: 'controls.blur.radial-blur',
   getInitialSharedState: (context) => {
     const { ui } = context
     const operationExistedBefore = ui.operationExists('radial-blur')

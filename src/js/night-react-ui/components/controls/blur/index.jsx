@@ -14,6 +14,8 @@ export default {
   canvasControls: null,
   controls: BlurControlsComponent,
   identifier: 'blur',
+  icon: 'controls/overview/blur@2x.png',
+  label: 'controls.overview.blur',
   isSelectable: (ui) => {
     return ui.isOperationSelected('radial-blur') ||
       ui.isOperationSelected('tilt-shift')
