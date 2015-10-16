@@ -21,7 +21,6 @@ import OperationsStack from './operations-stack'
 import WebGLRenderer from '../renderers/webgl-renderer'
 import CanvasRenderer from '../renderers/canvas-renderer'
 import Helpers from '../ui/base/helpers'
-import Promise from '../vendor/promise'
 
 /**
  * @class
