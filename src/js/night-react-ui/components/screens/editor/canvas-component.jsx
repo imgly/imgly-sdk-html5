@@ -164,9 +164,13 @@ export default class CanvasComponent extends BaseChildComponent {
 
   /**
    * Returns the default zoom level
+   * @param {Boolean} updateDimensions = false
    * @return {Number}
    */
-  getDefaultZoom () {
+  getDefaultZoom (updateDimensions = false) {
+    if (updateDimensions) {
+      this._updateDimensions()
+    }
     const { kit } = this.context
 
     const initialDimensions = kit.getInitialDimensions()
