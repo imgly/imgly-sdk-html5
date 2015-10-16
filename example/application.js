@@ -38,7 +38,17 @@ window.onload = function () {
           return path
         }
       },
+      language: 'de',
       operations: 'all',
+      controlsOptions: {
+        stickers: {
+          stickers: [
+            'foo',
+            'bar',
+            'baz'
+          ]
+        }
+      },
       additionalControls: [
         // {
         //   canvasControls: NoiseCanvasControls,
@@ -47,24 +57,6 @@ window.onload = function () {
       ]
     })
     window.editorComponent = editor.run()
-
-    /*
-     * We have a 'Render' button which (on click) will request the rendered
-     * image from PhotoEditorSDK and add it to the DOM
-     */
-    var button = document.getElementById('render-button')
-    button.addEventListener('click', function (e) {
-      e.preventDefault()
-
-      // This will render the image with 100 pixels in width while
-      // respecting the aspect ratio
-      // Possible render types: image, data-url
-      renderer.render('image', 'image/png')
-        .then(function (image) {
-          document.body.appendChild(image)
-        })
-    })
-
     window.editor = editor
   })
 
