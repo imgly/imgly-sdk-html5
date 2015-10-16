@@ -34,7 +34,11 @@ export default class FramesControlsComponent extends BaseChildComponent {
   componentDidMount () {
     super.componentDidMount()
 
-    this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
+    // Reset zoom to fit the container
+    this._emitEvent(Constants.EVENTS.CANVAS_ZOOM, 'auto', () => {
+      // Disable zoom and drag while we're cropping
+      this._emitEvent(Constants.EVENTS.EDITOR_DISABLE_FEATURES, ['zoom', 'drag'])
+    })
   }
 
   // -------------------------------------------------------------------------- EVENTS
@@ -69,7 +73,8 @@ export default class FramesControlsComponent extends BaseChildComponent {
       this._operation.set(this.getSharedState('initialOptions'))
     }
 
-    this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
+    this._emitEvent(Constants.EVENTS.CANVAS_UNDO_ZOOM)
+    this._emitEvent(Constants.EVENTS.EDITOR_ENABLE_FEATURES, ['zoom', 'drag'])
   }
 
   /**
