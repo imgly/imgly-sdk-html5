@@ -27,6 +27,21 @@ export default class StickersControlsComponent extends BaseChildComponent {
     this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
   }
 
+  // -------------------------------------------------------------------------- LIFECYCLE
+
+  /**
+   * Gets called when this component has been mounted
+   */
+  componentDidMount () {
+    super.componentDidMount()
+
+    // Reset zoom to fit the container
+    this._emitEvent(Constants.EVENTS.CANVAS_ZOOM, 'auto', () => {
+      // Disable zoom and drag while we're cropping
+      this._emitEvent(Constants.EVENTS.EDITOR_DISABLE_FEATURES, ['zoom', 'drag'])
+    })
+  }
+
   // -------------------------------------------------------------------------- EVENTS
 
   /**
@@ -35,7 +50,7 @@ export default class StickersControlsComponent extends BaseChildComponent {
    * @private
    */
   _onBackClick (e) {
-    this.props.onSwitchControls('back')
+    this._switchBack()
   }
 
   /**
@@ -47,7 +62,7 @@ export default class StickersControlsComponent extends BaseChildComponent {
     if (selectedSticker && !this._initiallyHadSticker) {
       this.setSharedState({ selectedSticker: null })
     } else {
-      this.props.onSwitchControls('back')
+      this._switchBack()
     }
   }
 
@@ -59,6 +74,16 @@ export default class StickersControlsComponent extends BaseChildComponent {
     if ('selectedSticker' in newState) {
       this.forceUpdate()
     }
+  }
+
+  // -------------------------------------------------------------------------- MISC
+
+  /**
+   * Gets called when the user switches back
+   * @private
+   */
+  _switchBack () {
+    this.props.onSwitchControls('back')
   }
 
   // -------------------------------------------------------------------------- RENDERING
