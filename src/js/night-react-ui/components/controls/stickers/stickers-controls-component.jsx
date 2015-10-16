@@ -22,6 +22,7 @@ export default class StickersControlsComponent extends BaseChildComponent {
       '_onSubComponentBack'
     )
     this._operation = this.getSharedState('operation')
+    this._initiallyHadSticker = this.getSharedState('selectedSticker')
 
     this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
   }
@@ -43,7 +44,7 @@ export default class StickersControlsComponent extends BaseChildComponent {
    */
   _onSubComponentBack () {
     const selectedSticker = this.getSharedState('selectedSticker')
-    if (selectedSticker) {
+    if (selectedSticker && !this._initiallyHadSticker) {
       this.setSharedState({ selectedSticker: null })
     } else {
       this.props.onSwitchControls('back')
