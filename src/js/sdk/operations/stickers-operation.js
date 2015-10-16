@@ -318,6 +318,7 @@ class StickersOperation extends Operation {
    */
   _createProjectionMatrixForSticker (renderer, image, sticker) {
     const canvas = renderer.getCanvas()
+    const blurRadius = sticker.getAdjustments().getBlur()
 
     // Projection matrix
     let projectionMatrix = new Matrix()
@@ -329,8 +330,8 @@ class StickersOperation extends Operation {
     // Scale matrix
     let scaleMatrix = new Matrix()
     const stickerScale = sticker.getScale()
-    scaleMatrix.a = stickerScale.x * image.width * 0.5
-    scaleMatrix.d = -stickerScale.y * image.height * 0.5
+    scaleMatrix.a = stickerScale.x * image.width * 0.5 * (1 + (blurRadius * canvas.width / image.width) * 2)
+    scaleMatrix.d = -stickerScale.y * image.height * 0.5 * (1 + (blurRadius * canvas.width / image.width) * 2)
 
     // Translation matrix
     const stickerPosition = sticker.getPosition()
