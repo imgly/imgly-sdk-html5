@@ -8,7 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { Vector2, SDKUtils } from '../../../globals'
+import { Vector2, SDKUtils, Constants } from '../../../globals'
 import TextCanvasControlsComponent from './text-canvas-controls-component'
 import TextControlsComponent from './text-controls-component'
 
@@ -30,6 +30,9 @@ export default {
       this.getSharedState('initialOptions'),
       this.getSharedState('operationExistedBefore')
     )
+
+    this._emitEvent(Constants.EVENTS.CANVAS_UNDO_ZOOM)
+    this._emitEvent(Constants.EVENTS.EDITOR_ENABLE_FEATURES, ['zoom', 'drag'])
   },
 
   /**

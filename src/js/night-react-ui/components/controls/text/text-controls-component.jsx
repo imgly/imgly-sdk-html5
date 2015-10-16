@@ -42,6 +42,21 @@ export default class TextControlsComponent extends BaseChildComponent {
     this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
   }
 
+  // -------------------------------------------------------------------------- LIFECYCLE
+
+  /**
+   * Gets called when this component has been mounted
+   */
+  componentDidMount () {
+    super.componentDidMount()
+
+    // Reset zoom to fit the container
+    this._emitEvent(Constants.EVENTS.CANVAS_ZOOM, 'auto', () => {
+      // Disable zoom and drag while we're cropping
+      this._emitEvent(Constants.EVENTS.EDITOR_DISABLE_FEATURES, ['zoom', 'drag'])
+    })
+  }
+
   // -------------------------------------------------------------------------- EVENTS
 
   /**
