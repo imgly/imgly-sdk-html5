@@ -1,0 +1,29 @@
+/*
+ * Photo Editor SDK - photoeditorsdk.com
+ * Copyright (c) 2013-2015 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+
+@mixin screen-min-small()
+  @media only screen and (min-width: $screen-small-min)
+    @content
+
+@mixin screen-min-medium()
+  @media only screen and (min-width: $screen-medium-min)
+    @content
+
+@mixin screen-min-large()
+  @media only screen and (min-width: $screen-large-min)
+    @content
+
+@mixin screen-small()
+  @media only screen and (min-width: $screen-small-min) and (max-width: $screen-small-max)
+    @content
+
+@mixin screen-medium()
+  @media only screen and (min-width: $screen-medium-min) and (max-width: $screen-medium-max)
+    @content

@@ -18,8 +18,8 @@ import ZoomComponent from './zoom-component'
 import OverviewControls from '../../controls/overview/'
 
 export default class EditorScreenComponent extends ScreenComponent {
-  constructor () {
-    super()
+  constructor (...args) {
+    super(...args)
 
     this._bindAll(
       'switchToControls',
@@ -32,7 +32,9 @@ export default class EditorScreenComponent extends ScreenComponent {
       '_onEnableFeatures',
       '_onNewClick',
       '_onExportClick',
-      '_onUndoClick'
+      '_onUndoClick',
+      '_onWindowResize',
+      '_updateZoomToFitNewSize'
     )
 
     this._history = []
@@ -52,7 +54,43 @@ export default class EditorScreenComponent extends ScreenComponent {
     }
   }
 
+  // -------------------------------------------------------------------------- LIFECYCLE
+
+  /**
+   * Gets called after this component has been mounted
+   */
+  componentDidMount () {
+    super.componentDidMount()
+
+    const { options } = this.context
+    if (options.responsive) {
+      window.addEventListener('resize', this._onWindowResize)
+    }
+  }
+
+  /**
+   * Gets called before this component is unmounted
+   */
+  componentWillUnmount () {
+    const { options } = this.context
+    if (options.responsive) {
+      window.removeEventListener('resize', this._onWindowResize)
+    }
+  }
+
   // -------------------------------------------------------------------------- EVENTS
+
+  /**
+   * Gets called on window resize
+   * @private
+   */
+  _onWindowResize () {
+    if (this._resizeTimeout) {
+      window.clearTimeout(this._resizeTimeout)
+      this._resizeTimeout = null
+    }
+    this._resizeTimeout = window.setTimeout(this._updateZoomToFitNewSize, 500)
+  }
 
   /**
    * Gets called when the user clicks on the new button
@@ -154,6 +192,18 @@ export default class EditorScreenComponent extends ScreenComponent {
   // -------------------------------------------------------------------------- ZOOM
 
   /**
+   * Updates the zoom level to fit the new editor dimensions
+   * @private
+   */
+  _updateZoomToFitNewSize () {
+    const canvasComponent = this.refs.canvas
+    const defaultZoom = canvasComponent.getDefaultZoom(true)
+    if (defaultZoom > this._lastDefaultZoom) {
+      this._zoom('auto')
+    }
+  }
+
+  /**
    * Undos the last zoom
    * @param {Function} [callback]
    * @private
@@ -182,6 +232,7 @@ export default class EditorScreenComponent extends ScreenComponent {
     let newZoom = zoom
     if (zoom === 'auto') {
       newZoom = canvasComponent.getDefaultZoom()
+      this._lastDefaultZoom = newZoom
     }
 
     this._previousZoomState = SDKUtils.extend({

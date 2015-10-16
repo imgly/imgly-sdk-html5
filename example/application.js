@@ -32,13 +32,14 @@ window.onload = function () {
      */
     var editor = new PhotoEditorSDK.UI.NightReact(renderer, {
       container: document.querySelector('#container'),
+      responsive: true,
       assets: {
         baseUrl: '/build/assets',
         resolver: function (path) {
           return path
         }
       },
-      language: 'de',
+      language: 'en',
       operations: 'all',
       controlsOptions: {
         stickers: {
