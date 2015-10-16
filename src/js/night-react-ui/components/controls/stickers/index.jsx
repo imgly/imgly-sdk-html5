@@ -8,7 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { SDKUtils } from '../../../globals'
+import { SDKUtils, Constants } from '../../../globals'
 import StickersControlsComponent from './stickers-controls-component'
 import StickersCanvasControlsComponent from './stickers-canvas-controls-component'
 
@@ -30,6 +30,9 @@ export default {
       this.getSharedState('initialOptions'),
       this.getSharedState('operationExistedBefore')
     )
+
+    this._emitEvent(Constants.EVENTS.CANVAS_UNDO_ZOOM)
+    this._emitEvent(Constants.EVENTS.EDITOR_ENABLE_FEATURES, ['zoom', 'drag'])
   },
 
   /**
