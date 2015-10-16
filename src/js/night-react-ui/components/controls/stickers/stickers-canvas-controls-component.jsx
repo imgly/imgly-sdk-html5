@@ -326,6 +326,7 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
           sticker._loaded = true
         }
         this.setState({ stickerDimensions })
+        this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
         resolve()
       })
 
@@ -363,16 +364,22 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
     let scale = sticker.getScale().clone()
 
     const maxDimensions = Math.min(canvasDimensions.x, canvasDimensions.y) * 0.9
-    if (stickerDimensions.x > canvasDimensions.x) {
-      scale.set(
-        maxDimensions / stickerDimensions.x,
-        maxDimensions / stickerDimensions.x
-      )
-    } else if (stickerDimensions.y > canvasDimensions.y) {
-      scale.set(
-        maxDimensions / stickerDimensions.y,
-        maxDimensions / stickerDimensions.y
-      )
+
+    if (stickerDimensions.x > canvasDimensions.x ||
+        stickerDimensions.y > canvasDimensions.y) {
+      const canvasRatio = canvasDimensions.x / canvasDimensions.y
+      const stickerRatio = stickerDimensions.x / stickerDimensions.y
+      if (stickerRatio > canvasRatio) {
+        scale.set(
+          maxDimensions / stickerDimensions.x,
+          maxDimensions / stickerDimensions.x
+        )
+      } else {
+        scale.set(
+          maxDimensions / stickerDimensions.y,
+          maxDimensions / stickerDimensions.y
+        )
+      }
     }
     sticker.setScale(scale)
   }
