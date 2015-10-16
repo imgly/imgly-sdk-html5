@@ -10,6 +10,7 @@
  */
 
 const Vector2 = PhotoEditorSDK.Vector2
+const Utils = PhotoEditorSDK.Utils
 
 export default {
   /**
@@ -73,5 +74,20 @@ export default {
   supportsMSBlob () {
     let canvas = document.createElement('canvas')
     return typeof canvas.msToBlob !== 'undefined'
+  },
+
+  /**
+   * Translates the given key using the given options
+   * @param  {Object} phrases
+   * @param  {String} key
+   * @param  {Object} interpolationOptions = {}
+   * @return {String}
+   */
+  translate (phrases, key, interpolationOptions = {}) {
+    let response = Utils.fetch(phrases, key, key)
+    for (let key in interpolationOptions) {
+      response = response.replace(`\${${key}}`, interpolationOptions[key])
+    }
+    return response
   }
 }

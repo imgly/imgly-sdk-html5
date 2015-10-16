@@ -14,7 +14,6 @@ import {
   React, ReactBEM, SharedState
 } from './globals'
 
-import Polyglot from 'node-polyglot'
 import Helpers from './helpers'
 import EditorComponent from './components/editor-component'
 import OverviewControlsComponent from './components/controls/overview/overview-controls-component'
@@ -234,10 +233,7 @@ export default class NightReactUI extends EventEmitter {
       de: require('./lang/de.json'),
       en: require('./lang/en.json')
     }
-    this._language = new Polyglot({
-      locale: this._options.language,
-      phrases: this._languages[this._options.language]
-    })
+    this._language = this._languages[this._options.language]
   }
 
   /**
@@ -247,7 +243,7 @@ export default class NightReactUI extends EventEmitter {
    * @return {String}
    */
   translate (key, interpolationOptions) {
-    return this._language.t(key, interpolationOptions)
+    return Utils.translate(this._language, key, interpolationOptions)
   }
 
   // -------------------------------------------------------------------------- PUBLIC OPERATIONS API
