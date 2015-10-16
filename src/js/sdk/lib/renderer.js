@@ -204,6 +204,7 @@ export default class Renderer {
    */
   reset () {
     this._renderer = null
+    this.setAllOperationsToDirty()
   }
 
   /**
