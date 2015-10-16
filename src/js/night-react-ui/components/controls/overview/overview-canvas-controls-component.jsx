@@ -35,22 +35,20 @@ export default class OverviewCanvasControlsComponent extends BaseChildComponent 
       .subtract(containerPosition)
 
     const { ui } = this.context
-    const controls = ui.getSelectedControls()
+    const controls = ui.getAvailableControls()
 
     // Check if any of the controls responds to a click
     // at the given position
     let found = false
-    controls.forEach((control) => {
-      if (found) return
-
+    for (let identifier in controls) {
+      const control = controls[identifier]
       const clickResponse = control.clickAtPosition &&
         control.clickAtPosition(position, this.context)
       if (clickResponse) {
         // Responds to click, switch to the controls
-        this.props.onSwitchControls(control, clickResponse)
-        found = true
+        return this.props.onSwitchControls(control, clickResponse)
       }
-    })
+    }
   }
 
   // -------------------------------------------------------------------------- RENDERING
