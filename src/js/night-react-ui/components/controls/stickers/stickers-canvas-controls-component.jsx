@@ -382,6 +382,7 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
       }
     }
     sticker.setScale(scale)
+    this._operation.setDirty(true)
   }
 
   // -------------------------------------------------------------------------- RENDERING
