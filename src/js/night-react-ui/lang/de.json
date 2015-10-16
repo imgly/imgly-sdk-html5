@@ -1,52 +1,82 @@
 {
-  "operations": {
-    "brightness": "Helligkeit",
-    "contrast": "Kontrast",
-    "filters": "Filter",
-    "flip": "Spiegeln",
-    "frames": "Rahmen",
-    "radial-blur": "Radial Blur",
-    "rotation": "Drehung",
-    "saturation": "Sättigung",
-    "stickers": "Sticker",
-    "text": "Text",
-    "tilt-shift": "Tilt-Shift",
-    "crop": "Zuschneiden"
-  },
-  "top-controls": {
-    "new": "Neu",
-    "undo": "Rückgängig",
-    "export": "Exportieren",
-    "zoom": "Zoom"
+  "controls": {
+    "overview": {
+      "filters": "Filter",
+      "orientation": "Ausrichtung",
+      "adjustments": "Korrekturen",
+      "crop": "Zuschneiden",
+      "blur": "Weichzeichnen",
+      "frames": "Rahmen",
+      "stickers": "Sticker",
+      "text": "Text"
+    },
+    "frames": {
+      "color": "Farbe",
+      "thickness": "Dicke"
+    },
+    "text": {
+      "foreground": "Vordergrund",
+      "background": "Hintergrund",
+      "size": "Größe",
+      "font": "Schriftart",
+      "alignment": "Ausrichtung"
+    },
+    "orientation": {
+      "rotate-l": "Drehen -90°",
+      "rotate-r": "Drehen +90°",
+      "flip-h": "Spiegeln (H)",
+      "flip-v": "Spiegeln (V)"
+    },
+    "adjustments": {
+      "brightness": "Helligkeit",
+      "contrast": "Kontrast",
+      "saturation": "Sättigung"
+    },
+    "crop": {
+      "custom": "Manuell",
+      "square": "Quadratisch",
+      "4-3": "4:3",
+      "16-9": "16:9"
+    },
+    "blur": {
+      "radial-blur": "Kreisförmig",
+      "tilt-shift": "Tilt-Shift",
+      "blurRadius": "Radius"
+    },
+    "filters": {
+      "intensity": "Intensität"
+    },
+    "stickers": {
+      "adjustments": "Korrekturen",
+      "blur": "Weichzeichnen",
+      "flip": "Spiegeln",
+      "flip-v": "Spiegeln (V)",
+      "flip-h": "Spiegeln (H)"
+    }
   },
   "webcam": {
-    "headline": "Mach ein Foto!"
+    "headline": "Mache ein Foto!"
   },
   "editor": {
-    "headline": "Foto bearbeiten"
+    "headline": "Foto editieren",
+    "new": "Neu",
+    "undo": "Rückgängig",
+    "export": "Speichern"
   },
   "splash": {
     "upload": {
-      "headline": "Bild hochladen",
-      "description": "Klicke hier, um ein Bild hochzuladen oder ziehe eine Bilddatei hier her"
+      "button": "Lade ein Foto hoch",
+      "description": "Klicke hier, um ein Foto von deinem Rechner hochzuladen oder lade es per Drag-and-Drop hoch"
     },
-    "or": "oder",
+    "or": "or",
     "webcam": {
-      "headline": "Foto machen",
-      "description": "Klicke hier, um ein Foto mit deiner Webcam oder deinem Smartphone zu machen"
+      "button": "Mache ein Foto",
+      "description": "Klicke hier, um ein Foto mit deiner Webcam zu machen"
     }
   },
   "generic": {
-    "loading": "Laden",
-    "exporting": "Exportiere"
-  },
-  "controls": {
-    "frames": {
-      "color": "Farbe"
-    },
-    "text": {
-      "foreground": "Text",
-      "background": "Hintergrund"
-    }
+    "back": "Zurück",
+    "cancel": "Abbrechen",
+    "color": "Farbe"
   }
 }
