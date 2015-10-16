@@ -116,9 +116,7 @@ export default class TiltShiftCanvasControlsComponent extends BaseChildComponent
 
     const distance = newKnobPosition.clone()
       .subtract(this.state.areaPosition)
-    const newGradientRadius = Math.sqrt(
-      Math.pow(distance.x, 2) + Math.pow(distance.y, 2)
-    ) * 2
+    const newGradientRadius = distance.len() * 2
 
     let start = this.state.areaPosition.clone()
       .add(-distance.y, distance.x)
@@ -196,11 +194,11 @@ export default class TiltShiftCanvasControlsComponent extends BaseChildComponent
       .add(dist.clone().divide(2))
 
     const areaSize = new Vector2(
-      Math.sqrt(Math.pow(canvasDimensions.x, 2) + Math.pow(canvasDimensions.y, 2)) * 2,
+      canvasDimensions.len() * 2,
       gradientRadius
     )
 
-    const totalDist = Math.sqrt(Math.pow(dist.x, 2) + Math.pow(dist.y, 2))
+    const totalDist = dist.len()
     const factor = dist.clone().divide(totalDist).divide(2)
 
     this.setState({
