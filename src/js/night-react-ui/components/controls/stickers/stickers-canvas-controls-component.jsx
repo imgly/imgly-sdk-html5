@@ -46,7 +46,7 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
   sharedStateDidChange (newState) {
     if (newState.stickers) {
       newState.stickers.forEach((sticker) => {
-        this._loadStickerAndStoreDimensions(sticker.getPath())
+        this._loadStickerAndStoreDimensions(sticker)
           .then(() => this.forceUpdate())
       })
     }
@@ -293,7 +293,7 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
   _loadExistingStickers () {
     return this._stickers
       .map((sticker) => {
-        return this._loadStickerAndStoreDimensions(sticker.getPath())
+        return this._loadStickerAndStoreDimensions(sticker)
           .then(() => this.forceUpdate())
       })
   }
@@ -301,11 +301,12 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
   /**
    * Loads the sticker with the given identifier and stores
    * its dimensions in the shared state
-   * @param  {String} stickerPath
+   * @param  {Sticker} sticker
    * @return {Promise}
    * @private
    */
-  _loadStickerAndStoreDimensions (stickerPath) {
+  _loadStickerAndStoreDimensions (sticker) {
+    const stickerPath = sticker.getPath()
     if (stickerPath in this.getSharedState('stickerDimensions')) {
       return Promise.resolve()
     }
@@ -320,6 +321,10 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
           image.width,
           image.height
         )
+        if (!sticker._loaded) {
+          this._setIntialStickerScale(sticker)
+          sticker._loaded = true
+        }
         this.setState({ stickerDimensions })
         resolve()
       })
@@ -341,6 +346,35 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
   _stickerLoaded (sticker) {
     const stickerDimensions = this.getSharedState('stickerDimensions')
     return sticker.getPath() in stickerDimensions
+  }
+
+  // -------------------------------------------------------------------------- MISC
+
+  /**
+   * Sets the initial scale for the given sticker to make sure it fits
+   * the canvas dimensions
+   * @param {Sticker} sticker
+   * @private
+   */
+  _setIntialStickerScale (sticker) {
+    const stickerDimensions = this.getSharedState('stickerDimensions')[sticker.getPath()]
+    const { kit } = this.context
+    const canvasDimensions = kit.getOutputDimensions()
+    let scale = sticker.getScale().clone()
+
+    const maxDimensions = Math.min(canvasDimensions.x, canvasDimensions.y) * 0.9
+    if (stickerDimensions.x > canvasDimensions.x) {
+      scale.set(
+        maxDimensions / stickerDimensions.x,
+        maxDimensions / stickerDimensions.x
+      )
+    } else if (stickerDimensions.y > canvasDimensions.y) {
+      scale.set(
+        maxDimensions / stickerDimensions.y,
+        maxDimensions / stickerDimensions.y
+      )
+    }
+    sticker.setScale(scale)
   }
 
   // -------------------------------------------------------------------------- RENDERING
