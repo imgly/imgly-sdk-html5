@@ -109,7 +109,7 @@ export default class CanvasComponent extends BaseChildComponent {
     const newOffset = this._dragInitialOffset
       .clone()
       .add(diffFromStart)
-    this._updateOffset(newOffset)
+    this.updateOffset(newOffset)
   }
 
   /**
@@ -131,7 +131,9 @@ export default class CanvasComponent extends BaseChildComponent {
    * @param {Vector2} [offset]
    * @private
    */
-  _updateOffset (offset = this.state.canvasOffset) {
+  updateOffset (offset = this.state.canvasOffset) {
+    this._updateDimensions()
+    this._repositionCanvas()
     const minOffset = this._containerDimensions
       .clone()
       .subtract(this._canvasDimensions)
@@ -217,7 +219,7 @@ export default class CanvasComponent extends BaseChildComponent {
       .then(() => {
         this._updateDimensions()
         this._repositionCanvas()
-        this._updateOffset()
+        this.updateOffset()
         callback && callback()
       })
   }
