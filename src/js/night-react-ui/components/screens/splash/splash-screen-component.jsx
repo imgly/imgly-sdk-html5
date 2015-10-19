@@ -42,8 +42,13 @@ export default class SplashScreenComponent extends ScreenComponent {
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
+    let webcamComponent
+    if (this.context.options.webcam !== false) {
+      webcamComponent = <SplashScreenWebcamComponent onClick={this._onWebcamClick} />
+    }
+
     return (<div bem='b:screen b:splashScreen'>
-      <SplashScreenWebcamComponent onClick={this._onWebcamClick} />
+      {webcamComponent}
       <SplashScreenUploadComponent onImage={this._onImage} />
     </div>)
   }
