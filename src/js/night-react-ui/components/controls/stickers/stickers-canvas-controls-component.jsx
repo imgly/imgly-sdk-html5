@@ -75,6 +75,7 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
         stickers,
         selectedSticker: null
       })
+      this.props.onSwitchControls('back')
     }
   }
 
