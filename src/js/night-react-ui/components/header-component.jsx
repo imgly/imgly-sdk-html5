@@ -18,7 +18,7 @@ export default class SplashScreenComponent extends BaseChildComponent {
   renderWithBEM () {
     return (<div bem='$b:header e:row'>
       <div bem='e:cell'>
-        <div bem='e:label'>Photo Editor SDK</div>
+        <div bem='e:label'>{this.context.options.title}</div>
       </div>
     </div>)
   }

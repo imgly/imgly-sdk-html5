@@ -171,6 +171,7 @@ export default class NightReactUI extends EventEmitter {
     this._options = SDKUtils.defaults(this._options, {
       language: 'en',
       operations: 'all',
+      title: 'PhotoEditor SDK',
       responsive: false,
       webcam: true,
       assets: {},
