@@ -176,7 +176,8 @@ export default class NightReactUI extends EventEmitter {
       webcam: true,
       assets: {},
       extensions: {},
-      controlsOrder: []
+      controlsOrder: [],
+      controlsOptions: {}
     })
 
     this._options.extensions = SDKUtils.defaults(this._options.extensions || {}, {

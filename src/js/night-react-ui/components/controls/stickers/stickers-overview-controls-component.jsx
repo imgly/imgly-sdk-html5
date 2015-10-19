@@ -50,6 +50,9 @@ export default class StickersOverviewControlsComponent extends BaseChildComponen
       'stickers/snowflake.png',
       'stickers/star.png'
     ]
+
+    const additionalStickers = this.props.options.stickers || []
+    this._availableStickers = this._availableStickers.concat(additionalStickers)
   }
 
   // -------------------------------------------------------------------------- EVENTS
