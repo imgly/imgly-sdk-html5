@@ -8,7 +8,8 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-import { ReactBEM, Constants, SDKUtils, SharedState } from '../../../globals'
+import { React, ReactBEM, Constants, SDKUtils, SharedState } from '../../../globals'
+import FileLoader from '../../../lib/file-loader'
 import ScreenComponent from '../screen-component'
 import SubHeaderComponent from '../../sub-header-component'
 import SubHeaderButtonComponent from '../../sub-header-button-component'
@@ -34,7 +35,8 @@ export default class EditorScreenComponent extends ScreenComponent {
       '_onExportClick',
       '_onUndoClick',
       '_onWindowResize',
-      '_updateZoomToFitNewSize'
+      '_updateZoomToFitNewSize',
+      '_onNewFile'
     )
 
     this._history = []
@@ -62,6 +64,9 @@ export default class EditorScreenComponent extends ScreenComponent {
   componentDidMount () {
     super.componentDidMount()
 
+    this._fileLoader = new FileLoader(React.findDOMNode(this.refs.fileInput))
+    this._fileLoader.on('file', this._onNewFile)
+
     const { options } = this.context
     if (options.responsive) {
       window.addEventListener('resize', this._onWindowResize)
@@ -72,10 +77,25 @@ export default class EditorScreenComponent extends ScreenComponent {
    * Gets called before this component is unmounted
    */
   componentWillUnmount () {
+    super.componentWillUnmount()
+
     const { options } = this.context
     if (options.responsive) {
       window.removeEventListener('resize', this._onWindowResize)
     }
+    this._fileLoader.off('file', this._onNewFile)
+    this._fileLoader.dispose()
+  }
+
+  // -------------------------------------------------------------------------- FILE LOADING
+
+  /**
+   * Gets loaded when the user has selected a new file
+   * @param  {Image} image
+   * @private
+   */
+  _onNewFile (image) {
+    this.props.editor.setImage(image)
   }
 
   // -------------------------------------------------------------------------- EVENTS
@@ -97,7 +117,11 @@ export default class EditorScreenComponent extends ScreenComponent {
    * @private
    */
   _onNewClick () {
-    this.props.editor.switchToSplashScreen()
+    if (this.context.options.webcam !== false) {
+      this.props.editor.switchToSplashScreen()
+    } else {
+      this._fileLoader.open()
+    }
   }
 
   /**
@@ -405,6 +429,7 @@ export default class EditorScreenComponent extends ScreenComponent {
       <SubHeaderComponent
         label={this._t('webcam.headline')}>
         <bem specifier='$b:subHeader'>
+          <input type='file' bem='b:hiddenFileInput' ref='fileInput' />
           <div bem='e:left'>
             <SubHeaderButtonComponent
               label={this._t('editor.new')}

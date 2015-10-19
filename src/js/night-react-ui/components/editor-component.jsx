@@ -53,6 +53,9 @@ class EditorComponent extends React.Component {
   setImage (image) {
     this.props.kit.setImage(image)
     this.props.kit.reset()
+
+    // Forces reinitialization
+    this.setState({ screen: null })
     this.setState({ screen: this._screens.editor })
   }
 
@@ -76,6 +79,7 @@ class EditorComponent extends React.Component {
    */
   render () {
     const Screen = this.state.screen
+    if (!Screen) { return ReactBEM.transform(<div />) }
 
     return ReactBEM.transform(<div bem='$b:editor'>
       <HeaderComponent />

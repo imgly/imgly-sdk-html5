@@ -148,7 +148,7 @@ export default class UploadComponent extends BaseChildComponent {
       <div bem='e:row m:withContent m:upload'>
         <div bem={cellBEM} {...cellProps}>
           <bem specifier='m:upload'>
-            <input type='file' bem='e:hiddenFileInput' ref='fileInput' onChange={this._onFileChange} />
+            <input type='file' bem='b:hiddenFileInput' ref='fileInput' onChange={this._onFileChange} />
             {orNode}
           </bem>
           <img bem='e:image'
