@@ -225,6 +225,7 @@ export default class EditorScreenComponent extends ScreenComponent {
     if (defaultZoom > this._lastDefaultZoom) {
       this._zoom('auto')
     }
+    canvasComponent.updateOffset()
   }
 
   /**
