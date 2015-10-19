@@ -172,6 +172,7 @@ export default class NightReactUI extends EventEmitter {
       language: 'en',
       operations: 'all',
       responsive: false,
+      webcam: true,
       assets: {},
       extensions: {},
       controlsOrder: []

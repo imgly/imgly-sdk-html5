@@ -137,12 +137,19 @@ export default class UploadComponent extends BaseChildComponent {
       cellProps.className = 'is-hovered'
     }
 
+    let cellBEM = '$e:cell m:upload'
+    let orNode = null
+    if (this.context.options.webcam !== false) {
+      cellBEM += ' m:withBorder'
+      orNode = <div bem='e:or'>{this._t('splash.or')}</div>
+    }
+
     return (<bem specifier='b:splashScreen'>
       <div bem='e:row m:withContent m:upload'>
-        <div bem='$e:cell m:upload' {...cellProps}>
+        <div bem={cellBEM} {...cellProps}>
           <bem specifier='m:upload'>
             <input type='file' bem='e:hiddenFileInput' ref='fileInput' onChange={this._onFileChange} />
-            <div bem='e:or'>{this._t('splash.or')}</div>
+            {orNode}
           </bem>
           <img bem='e:image'
             src={this._getAssetPath('splash/add-photo@2x.png', true)} />

@@ -39,9 +39,11 @@
         font-size: 13px
         color: $lightGreyColor
 
+      +modifier(withBorder)
+        border: 1px dashed $lightGreyColor
+
       +modifier(upload)
         position: relative
-        border: 1px dashed $lightGreyColor
 
         +flag(hovered)
           border-color: $lighterGreyColor
