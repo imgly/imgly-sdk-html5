@@ -394,6 +394,8 @@ export default class EditorScreenComponent extends ScreenComponent {
    */
   renderWithBEM () {
     const Controls = this.state.controls.controls
+    const controlsIdentifier = this.state.controls.identifier
+    const controlsOptions = this.context.options.controlsOptions[controlsIdentifier] || {}
     let CanvasControls = this.state.controls.canvasControls
     if (!CanvasControls) {
       CanvasControls = OverviewControls.canvasControls
@@ -406,6 +408,7 @@ export default class EditorScreenComponent extends ScreenComponent {
         onSwitchControls={this.switchToControls}
         editor={this}
         sharedState={this.state.sharedState}
+        options={controlsOptions}
         ref='controls' />)
     }
 

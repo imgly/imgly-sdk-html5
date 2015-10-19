@@ -103,6 +103,7 @@ export default class StickersControlsComponent extends BaseChildComponent {
     return (<ControlsComponent
       selectedSticker={selectedSticker}
       onBack={this._onSubComponentBack}
+      options={this.props.options}
       sharedState={this.props.sharedState}
       onBack={this._onSubComponentBack} />)
   }
