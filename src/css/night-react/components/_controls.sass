@@ -120,10 +120,16 @@
   +element(button)
     &#{$modifierSeparator}withInlineLabel &#{$elementSeparator}icon
       @include border-radius(4px)
+      position: absolute
+      top: 0
+      bottom: 0
+      left: 0
+      right: 0
       width: $controlsButtonWidth
       height: $controlsButtonHeight
 
     &#{$modifierSeparator}withInlineLabel &#{$elementSeparator}label
+      @include border-bottom-radius(4px)
       position: absolute
       bottom: 0
       left: 0
