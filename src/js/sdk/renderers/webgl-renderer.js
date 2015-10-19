@@ -277,6 +277,7 @@ class WebGLRenderer extends BaseRenderer {
   drawImage (image) {
     var gl = this._context
 
+    this._image = image
     if (this._imageTexture) {
       return this.setLastTexture(this._imageTexture)
     }
@@ -791,6 +792,29 @@ class WebGLRenderer extends BaseRenderer {
 
   get maxTextureSize () {
     return this._maxTextureSize
+  }
+
+  /**
+   * Returns the scale
+   * @return {Number}
+   */
+  getScale () {
+    /**
+     * @fixme
+     * This only compares the input dimensions (image) with the
+     * current canvas dimensions. This is wrong. Instead, we should
+     * return the actual scale factor. This can be achieved by implementing
+     * an actual rendering tree (main container -> container -> sprite)
+     * and accessing the parent's scale to calculate the scale of this
+     * object
+     */
+    const inputDimensions = new Vector2(
+      this._image.width,
+      this._image.height
+    )
+    const outputDimensions = this._outputSize.clone()
+
+    return outputDimensions.divide(inputDimensions).x
   }
 }
 
