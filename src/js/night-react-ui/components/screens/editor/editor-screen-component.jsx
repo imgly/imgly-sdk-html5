@@ -345,6 +345,14 @@ export default class EditorScreenComponent extends ScreenComponent {
     })
   }
 
+  /**
+   * Returns the zoom level
+   * @return {Number}
+   */
+  getZoom () {
+    return this.state.zoom
+  }
+
   // -------------------------------------------------------------------------- RENDERING
 
   /**

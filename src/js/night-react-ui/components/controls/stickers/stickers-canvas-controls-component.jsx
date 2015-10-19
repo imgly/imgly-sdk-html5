@@ -479,9 +479,11 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
    * @private
    */
   _getStickerDimensions (sticker) {
+    const { editor } = this.props
     const stickerDimensions = this.getSharedState('stickerDimensions')
     return stickerDimensions[sticker.getPath()]
       .clone()
       .multiply(sticker.getScale())
+      .multiply(editor.getZoom())
   }
 }
