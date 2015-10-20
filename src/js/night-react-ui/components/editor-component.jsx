@@ -32,8 +32,27 @@ class EditorComponent extends React.Component {
 
     this._onModalManagerUpdate = this._onModalManagerUpdate.bind(this)
 
-    this.state = {}
-    this._init()
+    let initialScreen
+    if (this.props.kit.hasImage()) {
+      initialScreen = this._screens.empty
+    } else {
+      initialScreen = this._screens.splash
+    }
+    this.state = { screen: initialScreen }
+  }
+
+  // -------------------------------------------------------------------------- LIFECYCLE
+
+  /**
+   * Gets called when this component has been mounted
+   */
+  componentDidMount () {
+    const { kit } = this.props
+    if (this.props.kit.hasImage()) {
+      const image = kit.getImage()
+      kit.setImage(null)
+      this.setImage(image)
+    }
   }
 
   // -------------------------------------------------------------------------- EVENTS
@@ -44,25 +63,6 @@ class EditorComponent extends React.Component {
    */
   _onModalManagerUpdate () {
     this.forceUpdate()
-  }
-
-  /**
-   * Sets the initial screen and handles the initially set image
-   * @private
-   */
-  _init () {
-    // If the SDK has an image, remove it and pass it through
-    // our image resizing if necessary
-    let initialScreen = this._screens.splash
-    if (this.props.ui.hasImage()) {
-      const image = this.props.kit.getImage()
-      this.props.kit.setImage(null)
-      this.setImage(image)
-
-      // Show empty screen while performing initial resize
-      initialScreen = this._screens.empty
-    }
-    this.state.screen = initialScreen
   }
 
   /**
