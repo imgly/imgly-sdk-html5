@@ -291,10 +291,11 @@ export default class EditorScreenComponent extends ScreenComponent {
    */
   _onZoomOut () {
     const canvasComponent = this.refs.canvas
+    const defaultZoom = canvasComponent.getDefaultZoom()
 
     let newZoom = this.state.zoom
     newZoom -= 0.1
-    newZoom = Math.max(1, newZoom)
+    newZoom = Math.max(Math.min(defaultZoom, 1), newZoom)
 
     this.setState({ zoom: newZoom })
   }
