@@ -16,8 +16,10 @@ export default class LoadingModalComponent extends BaseChildComponent {
     const modal = this.props.modal
     return (
       <bem specifier='$b:modals'>
-        <div bem='e:modal m:loading'>
-          <div bem='e:text'>{modal.text}</div>
+        <div bem='e:overlay'>
+          <div bem='e:modal m:loading'>
+            <div bem='e:text'>{modal.text}</div>
+          </div>
         </div>
       </bem>
     )
