@@ -16,6 +16,50 @@ import WarningModalComponent from './modals/warning-modal-component'
 export default class ModalContainerComponent extends BaseChildComponent {
   constructor (...args) {
     super(...args)
+
+    this._modalManager = this.props.modalManager
+    this._bindAll(
+      '_onModalManagerUpdate'
+    )
+  }
+
+  // -------------------------------------------------------------------------- LIFECYCLE
+
+  /**
+   * Gets called when this component has been mounted
+   */
+  componentDidMount () {
+    super.componentDidMount()
+
+    this._modalManager.on('update', this._onModalManagerUpdate)
+  }
+
+  /**
+   * Gets called when this component is about to be unmounted
+   */
+  componentWillUnmount () {
+    super.componentWillUnmount()
+
+    this._modalManager.off('update', this._onModalManagerUpdate)
+  }
+
+  // -------------------------------------------------------------------------- EVENTS
+
+  /**
+   * Gets called when the modal manager updates
+   * @private
+   */
+  _onModalManagerUpdate () {
+    this.forceUpdate()
+  }
+
+  /**
+   * Gets called when a modal is closed. Removes it from the manager.
+   * @param  {Modal} modal
+   * @private
+   */
+  _onModalClosed (modal) {
+    this._modalManager.removeModal(modal)
   }
 
   // -------------------------------------------------------------------------- RENDERING
@@ -25,8 +69,7 @@ export default class ModalContainerComponent extends BaseChildComponent {
    * @return {Array.<React.Component>}
    */
   _renderModals () {
-    const modalManager = this.props.modalManager
-    const modals = modalManager.getModals()
+    const modals = this._modalManager.getModals()
     return modals.map((modal) => {
       let ModalComponent
 
@@ -39,7 +82,9 @@ export default class ModalContainerComponent extends BaseChildComponent {
           break
       }
 
-      return <ModalComponent modal={modal} />
+      return (<ModalComponent
+        modal={modal}
+        onClose={this._onModalClosed.bind(this, modal)} />)
     })
   }
 

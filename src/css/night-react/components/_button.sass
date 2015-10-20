@@ -8,12 +8,16 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-+block(button)
-  @include border-radius(5px)
-  @include font-regular
-  border: none
-  padding: 10px 15px
-  background: $primaryColor
-  cursor: pointer
-  font-size: 14px
-  color: white
++block(editor)
+  +block(button)
+    @include border-radius(5px)
+    @include font-regular
+    border: none
+    padding: 10px 15px
+    background: $primaryColor
+    cursor: pointer
+    font-size: 14px
+    color: white
+
+    +modifier(inline)
+      display: inline-block

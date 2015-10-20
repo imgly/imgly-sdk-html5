@@ -19,6 +19,7 @@ export default class WarningModalComponent extends BaseChildComponent {
         <div bem='e:modal m:warning'>
           <div bem='e:title'>{modal.title}</div>
           <div bem='e:text'>{modal.text}</div>
+          <div bem='e:button b:button m:inline' onClick={this.props.onClose}>OK</div>
         </div>
       </bem>
     )
