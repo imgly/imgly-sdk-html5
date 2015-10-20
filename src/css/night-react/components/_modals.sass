@@ -23,6 +23,12 @@
       background: rgba($secondaryBackgroundColor, 0.9)
       text-align: center
 
+      +modifier(error)
+        @include box-shadow(0 2px $redColor inset)
+
+      +modifier(warning)
+        @include box-shadow(0 2px $yellowColor inset)
+
     +element(overlay)
       position: absolute
       z-index: 5
@@ -47,9 +53,3 @@
     +element(text)
       font-size: 13px
       color: rgba(white, 0.5)
-
-    +modifier(error)
-      @include box-shadow(0 2px $redColor inset)
-
-    +modifier(warning)
-      @include box-shadow(0 2px $yellowColor inset)
