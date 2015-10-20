@@ -152,11 +152,20 @@ export default class Renderer {
   }
 
   /**
+   * Returns the current image
+   * @return {Image}
+   */
+  getImage () {
+    return this._image
+  }
+
+  /**
    * Parses the exif data and fixes the orientation if necessary
    * @param {Image} image
    * @private
    */
   _parseExif (image) {
+    if (!image) return
     if (Exif.isJPEG(image.src)) {
       this._exif = null
       try {

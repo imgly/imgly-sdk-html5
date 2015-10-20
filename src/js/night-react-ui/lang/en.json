@@ -78,5 +78,14 @@
     "back": "Back",
     "cancel": "Cancel",
     "color": "Color"
+  },
+  "loading": {
+    "resizing": "Resizing..."
+  },
+  "warnings": {
+    "imageResized": {
+      "title": "Image resized",
+      "text": "Your image exceeds the maximum size of ${maxMegaPixels} megapixels and has therefore been resized to ${width}x${height} pixels."
+    }
   }
 }

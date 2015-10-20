@@ -172,6 +172,7 @@ export default class NightReactUI extends EventEmitter {
       language: 'en',
       operations: 'all',
       title: 'PhotoEditor SDK',
+      maxMegaPixels: 10,
       responsive: false,
       webcam: true,
       assets: {},
