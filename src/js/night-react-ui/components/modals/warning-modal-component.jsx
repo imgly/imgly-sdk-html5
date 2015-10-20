@@ -11,13 +11,20 @@
 
 import { React, ReactBEM, BaseChildComponent } from '../../globals'
 
-export default class ScreenComponent extends BaseChildComponent {
+export default class WarningModalComponent extends BaseChildComponent {
   renderWithBEM () {
-    return <div />
+    const modal = this.props.modal
+    return (
+      <bem specifier='$b:modals'>
+        <div bem='e:modal m:warning'>
+          <div bem='e:title'>{modal.title}</div>
+          <div bem='e:text'>{modal.text}</div>
+        </div>
+      </bem>
+    )
   }
 }
 
-ScreenComponent.propTypes = {
-  // TODO: Why does .element not work?
-  editor: React.PropTypes.any
+WarningModalComponent.propTypes = {
+  modal: React.PropTypes.object
 }

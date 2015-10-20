@@ -14,6 +14,8 @@ import HeaderComponent from './header-component'
 import SplashScreenComponent from './screens/splash/splash-screen-component'
 import WebcamScreenComponent from './screens/webcam/webcam-screen-component'
 import EditorScreenComponent from './screens/editor/editor-screen-component'
+import ModalContainerComponent from './modal-container-component'
+import ModalManager from '../lib/modal-manager'
 
 class EditorComponent extends React.Component {
   constructor (...args) {
@@ -82,10 +84,16 @@ class EditorComponent extends React.Component {
     if (!Screen) { return ReactBEM.transform(<div />) }
 
     return ReactBEM.transform(<div bem='$b:editor'>
-      <HeaderComponent />
-      <div bem='e:row m:screen'>
-        <div bem='e:cell m:screen'>
-          <Screen editor={this} {...this._props} ref='screen' />
+      <ModalContainerComponent
+        modalManager={ModalManager.instance}
+        onUpdate={this._onModalManagerUpdate} />
+
+      <div bem='e:table'>
+        <HeaderComponent />
+        <div bem='e:row m:screen'>
+          <div bem='e:cell m:screen'>
+            <Screen editor={this} {...this._props} ref='screen' />
+          </div>
         </div>
       </div>
     </div>)
