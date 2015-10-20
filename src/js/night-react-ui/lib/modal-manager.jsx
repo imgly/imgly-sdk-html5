@@ -40,7 +40,7 @@ export default class ModalManager extends EventEmitter {
    */
   displayLoading (text) {
     const modal = new Modal('loading', null, text)
-    this._addModal(modal)
+    this.addModal(modal)
     return modal
   }
 
@@ -52,30 +52,30 @@ export default class ModalManager extends EventEmitter {
    */
   displayWarning (title, text) {
     const modal = new Modal('warning', title, text)
-    this._addModal(modal)
+    this.addModal(modal)
     return modal
   }
 
   /**
    * Adds the given modal to the list of modals
    * @param {Modal} modal
-   * @private
    */
-  _addModal (modal) {
+  addModal (modal) {
     this._modals.push(modal)
     modal.on('close', () => {
-      this._removeModal(modal)
+      this.removeModal(modal)
     })
+    this.emit('update')
   }
 
   /**
    * Removes the given modal from the list of modals
    * @param  {Modal} modal
-   * @private
    */
-  _removeModal (modal) {
+  removeModal (modal) {
     const index = this._modals.indexOf(modal)
     this._modals.splice(index, 1)
+    this.emit('update')
   }
 
   /**
