@@ -77,7 +77,11 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
    */
   _onKnobDragStart (optionName) {
     this._currentDragOption = optionName
-    this._initialDragValue = this.getSharedState(optionName).clone()
+
+    this._initialValues = {
+      start: this.getSharedState('start').clone(),
+      end: this.getSharedState('end').clone()
+    }
   }
 
   /**
@@ -87,38 +91,57 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
    * @private
    */
   _onKnobDrag (optionName, offset) {
-    const start = this.getSharedState('start')
-    const end = this.getSharedState('end')
-
     const { kit } = this.context
     const canvasDimensions = kit.getOutputDimensions()
-    const cropDifference = offset.clone().divide(canvasDimensions)
-    const newValue = this._initialDragValue.clone().add(cropDifference)
+    const { ratio } = this.getSharedState('ratio')
 
-    // Clamp values
-    let minValue, maxValue
-    switch (optionName) {
-      case 'start':
-        minValue = new Vector2(0, 0)
-        maxValue = end.clone()
-          .subtract(
-            MIN_DIMENSIONS.clone()
-              .divide(canvasDimensions)
-          )
-        newValue.clamp(minValue, maxValue)
-        break
-      case 'end':
-        minValue = start.clone()
-          .add(
-            MIN_DIMENSIONS.clone()
-              .divide(canvasDimensions)
-          )
-        maxValue = new Vector2(1, 1)
-        newValue.clamp(minValue, maxValue)
-        break
+    const newSize = this._initialValues.end.clone()
+      .subtract(this._initialValues.start)
+      .multiply(canvasDimensions)
+
+    // Calculate max size and new size
+    let maxSize
+    if (optionName === 'start') {
+      newSize.subtract(offset)
+      maxSize = this._initialValues.end.clone()
+        .multiply(canvasDimensions)
+    } else if (optionName === 'end') {
+      newSize.add(offset)
+      maxSize = new Vector2(1, 1)
+        .subtract(this._initialValues.start)
+        .multiply(canvasDimensions)
     }
 
-    this.setSharedState({ [this._currentDragOption]: newValue })
+    if (newSize.x > maxSize.x) {
+      newSize.x = maxSize.x
+    }
+    if (ratio !== '*') {
+      newSize.y = newSize.x / ratio
+    }
+    if (newSize.y > maxSize.y) {
+      newSize.y = maxSize.y
+    }
+    if (ratio !== '*') {
+      newSize.x = newSize.y * ratio
+    }
+
+    if (optionName === 'start') {
+      const newStart = this._initialValues.end.clone()
+        .subtract(
+          newSize
+            .clone()
+            .divide(canvasDimensions)
+        )
+      this.setSharedState({ start: newStart })
+    } else if (optionName === 'end') {
+      const newEnd = this._initialValues.start.clone()
+        .add(
+          newSize
+            .clone()
+            .divide(canvasDimensions)
+        )
+      this.setSharedState({ end: newEnd })
+    }
   }
 
   // -------------------------------------------------------------------------- MISC
