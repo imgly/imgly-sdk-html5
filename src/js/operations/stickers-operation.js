@@ -217,6 +217,7 @@ class StickersOperation extends Operation {
         reject(new Error('Could not load sticker: ' + fileName))
       })
 
+      image.crossOrigin = 'Anonymous'
       image.src = self._kit.getAssetPath(fileName)
     })
   }
