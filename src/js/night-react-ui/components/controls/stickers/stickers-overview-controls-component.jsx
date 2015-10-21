@@ -11,6 +11,7 @@
 
 import { ReactBEM, BaseChildComponent, Constants, Vector2 } from '../../../globals'
 import ScrollbarComponent from '../../scrollbar-component'
+import ModalManager from '../../../lib/modal-manager'
 
 export default class StickersOverviewControlsComponent extends BaseChildComponent {
   constructor (...args) {
@@ -77,22 +78,56 @@ export default class StickersOverviewControlsComponent extends BaseChildComponen
    * @private
    */
   _onStickerClick ([smallPath, largePath]) {
-    const sticker = this._operation.createSticker({
-      path: largePath,
-      position: new Vector2(0.5, 0.5),
-      scale: new Vector2(1.0, 1.0),
-      rotation: 0
-    })
-    this._stickers.push(sticker)
-    this._operation.setDirty(true)
+    const { ui } = this.context
+    const translate = ui.translate.bind(ui)
+    const resolvedStickerPath = ui.getAssetPath(largePath)
+    const image = new window.Image()
 
-    this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
+    let loadingModal
+    let loadTimeout = setTimeout(() => {
+      loadingModal = ModalManager.instance.displayLoading(translate('loading.loading'))
+    }, 100)
 
-    // Broadcast new state
-    this.setSharedState({
-      selectedSticker: sticker,
-      stickers: this._stickers
+    image.addEventListener('load', () => {
+      if (loadingModal) loadingModal.close()
+      if (loadTimeout) {
+        clearTimeout(loadTimeout)
+        loadTimeout = null
+      }
+
+      const sticker = this._operation.createSticker({
+        image,
+        position: new Vector2(0.5, 0.5),
+        scale: new Vector2(1.0, 1.0),
+        rotation: 0
+      })
+      this._stickers.push(sticker)
+      this._operation.setDirty(true)
+
+      this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
+
+      // Broadcast new state
+      this.setSharedState({
+        selectedSticker: sticker,
+        stickers: this._stickers
+      })
     })
+
+    image.addEventListener('error', () => {
+      if (loadingModal) loadingModal.close()
+      if (loadTimeout) {
+        clearTimeout(loadTimeout)
+        loadTimeout = null
+      }
+
+      ModalManager.instance.displayError(
+        translate('errors.imageLoadFail.title'),
+        translate('errors.imageLoadFail.text', { path: image.src })
+      )
+    })
+
+    image.crossOrigin = 'Anonymous'
+    image.src = resolvedStickerPath
   }
 
   // -------------------------------------------------------------------------- RENDERING

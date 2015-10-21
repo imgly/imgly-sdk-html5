@@ -57,6 +57,18 @@ export default class ModalManager extends EventEmitter {
   }
 
   /**
+   * Creates an error modal
+   * @param  {String} title
+   * @param  {String} text
+   * @return {Modal}
+   */
+  displayError (title, text) {
+    const modal = new Modal('error', title, text)
+    this.addModal(modal)
+    return modal
+  }
+
+  /**
    * Adds the given modal to the list of modals
    * @param {Modal} modal
    */

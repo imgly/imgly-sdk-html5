@@ -280,22 +280,16 @@ class StickersOperation extends Operation {
    * @private
    */
   _renderStickerWebGL (renderer, sticker) {
-    const stickerPath = sticker.getPath()
-
     this._setupFrameBuffers(renderer)
 
     if (!this._programs[renderer.id]) {
       this._programs[renderer.id] = {}
     }
 
-    let image
-    return this._loadSticker(stickerPath)
-      .then((_image) => {
-        this._lastTexture = null
-        this._framebufferIndex = 0
-        image = _image
-        return this._uploadTexture(renderer, image, sticker)
-      })
+    const image = sticker.getImage()
+    this._lastTexture = null
+    this._framebufferIndex = 0
+    return this._uploadTexture(renderer, image, sticker)
       .then((texture) => {
         return this._renderTexture(renderer, image, texture, sticker)
       })
@@ -423,77 +417,6 @@ class StickersOperation extends Operation {
       image.width, image.height,
       scaledPosition.x, scaledPosition.y,
       size.x, size.y)
-  }
-
-  /**
-   * Loads the sticker
-   * @param  {String} stickerPath
-   * @return {Promise}
-   * @private
-   */
-  _loadSticker (stickerPath) {
-    const isBrowser = typeof window !== 'undefined'
-    if (isBrowser) {
-      return this._loadImageBrowser(stickerPath)
-    } else {
-      return this._loadImageNode(stickerPath)
-    }
-  }
-
-  /**
-   * Loads the given image using the browser's `Image` class
-   * @param  {String} stickerPath
-   * @return {Promise}
-   * @private
-   */
-  _loadImageBrowser (stickerPath) {
-    const resolvedStickerPath = this._kit.getAssetPath(stickerPath)
-    return new Promise((resolve, reject) => {
-      // Return preloaded sticker if available
-      if (this._loadedStickers[stickerPath]) {
-
-        // Bug in native-promise only. Immediately resolving
-        // the promise (synchronously) breaks rendering
-        setTimeout(() => {
-          resolve(this._loadedStickers[stickerPath])
-        }, 1)
-        return
-      }
-
-      var image = new Image()
-
-      image.addEventListener('load', () => {
-        this._loadedStickers[stickerPath] = image
-        resolve(image)
-      })
-      image.addEventListener('error', () => {
-        reject(new Error('Could not load sticker: ' + resolvedStickerPath))
-      })
-
-      image.crossOrigin = 'Anonymous'
-      image.src = resolvedStickerPath
-    })
-  }
-
-  /**
-   * Loads the given image using node.js' `fs` and node-canvas `Image`
-   * @param  {String} filePath
-   * @return {Promise}
-   * @private
-   */
-  _loadImageNode (filePath) {
-    var Canvas = require('canvas')
-    var fs = require('fs')
-    var image = new Canvas.Image()
-
-    return new Promise((resolve, reject) => {
-      fs.readFile(filePath, (err, buffer) => {
-        if (err) return reject(err)
-
-        image.src = buffer
-        resolve(image)
-      })
-    })
   }
 
   /**

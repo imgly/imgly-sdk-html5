@@ -339,6 +339,20 @@ export default class NightReactUI extends EventEmitter {
    * @return {Boolean}
    */
   hasImage () { return this._kit.hasImage() }
+
+  /**
+   * Returns the resolved asset path for the given asset name
+   * @param  {String} asset
+   * @return {String}
+   */
+  getAssetPath (asset) {
+    const { baseUrl, resolver } = this._options.assets
+    let path = `${baseUrl}/${asset}`
+    if (typeof resolver !== 'undefined' && resolver !== null) {
+      path = resolver(path)
+    }
+    return path
+  }
 }
 
 /**

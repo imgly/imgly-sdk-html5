@@ -88,5 +88,11 @@
       "title": "Image resized",
       "text": "Your image exceeds the maximum size of ${maxMegaPixels} megapixels and has therefore been resized to ${width}x${height} pixels."
     }
+  },
+  "errors": {
+    "imageLoadFail": {
+      "title": "Failed to load image",
+      "text": "Failed to load the image at ${path}"
+    }
   }
 }

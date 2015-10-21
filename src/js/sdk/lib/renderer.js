@@ -38,11 +38,7 @@ export default class Renderer {
       versionCheck: true,
       image: null,
       dimensions: null,
-      canvas: null,
-      assets: {
-        baseUrl: '/',
-        resolver: null
-      }
+      canvas: null
     })
 
     this._helpers = new Helpers(this, this._options)
@@ -302,15 +298,6 @@ export default class Renderer {
 
   getInputDimensions () {
     return new Vector2(this._image.width, this._image.height)
-  }
-
-  getAssetPath (asset) {
-    const { baseUrl, resolver } = this._options.assets
-    let path = `${baseUrl}/${asset}`
-    if (typeof resolver !== 'undefined' && resolver !== null) {
-      path = resolver(path)
-    }
-    return path
   }
 
   clone () {

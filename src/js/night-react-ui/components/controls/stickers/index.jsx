@@ -67,8 +67,7 @@ export default {
     const initialOptions = operation.serializeOptions()
 
     const state = {
-      operationExistedBefore, operation, stickers, initialOptions,
-      stickerDimensions: {}
+      operationExistedBefore, operation, stickers, initialOptions
     }
 
     return SDKUtils.extend({}, state, additionalState)
