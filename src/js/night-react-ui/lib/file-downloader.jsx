@@ -10,13 +10,13 @@
 
 import { Base64 } from '../globals'
 
-export default class FileExporter {
+export default class FileDownloader {
   /**
    * Exports the given data url
    * @param  {String} data
    * @param  {String} baseName = 'photoeditorsdk-export'
    */
-  static exportDataURL (data, baseName = 'photoeditorsdk-export') {
+  static downloadDataURL (data, baseName = 'photoeditorsdk-export') {
     const url = this.createBlobURLFromDataURL(data)
     const extension = this.getExtensionFromDataURL(data)
 
@@ -33,7 +33,7 @@ export default class FileExporter {
    * @param  {String} data
    * @param  {String} baseName = 'photoeditorsdk-export'
    */
-  static exportMSBlob (data, baseName = 'photoeditorsdk-export') {
+  static downloadMSBlob (data, baseName = 'photoeditorsdk-export') {
     navigator.msSaveBlob(data, `${baseName}.png`)
   }
 

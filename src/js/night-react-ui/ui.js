@@ -18,7 +18,7 @@ import Helpers from './helpers'
 import EditorComponent from './components/editor-component'
 import OverviewControlsComponent from './components/controls/overview/overview-controls-component'
 import ScrollbarComponent from './components/scrollbar-component'
-import FileExporter from './lib/file-exporter'
+import Exporter from './lib/exporter'
 
 export default class NightReactUI extends EventEmitter {
   constructor (kit, options) {
@@ -77,31 +77,16 @@ export default class NightReactUI extends EventEmitter {
 
   /**
    * Exports an image
+   * @param {Boolean} download = false
    * @return {Promise}
    */
-  export () {
-    let renderType = RenderType.DATAURL
-    if (Utils.supportsMSBlob()) {
-      renderType = RenderType.MSBLOB
-    }
-
-    const previousDimensions = this._kit.getDimensions()
-    this._kit.setDimensions(null)
-    return this._kit.export(renderType,
-        'image/png'
-      )
-      .then((data) => {
-        switch (renderType) {
-          case RenderType.DATAURL:
-            return FileExporter.exportDataURL(data)
-          case RenderType.MSBLOB:
-            return FileExporter.exportMSBlob(data)
-        }
-      })
-      .then(() => {
-        this._kit.reset()
-        this._kit.setDimensions(previousDimensions)
-        return this._kit.render()
+  export (download = false) {
+    const options = this._options.export
+    const exporter = new Exporter(this._kit, options, download)
+    return exporter.export()
+      .then((output) => {
+        this.emit('export', output)
+        return output
       })
   }
 
@@ -190,6 +175,12 @@ export default class NightReactUI extends EventEmitter {
     this._options.assets = SDKUtils.defaults(this._options.assets || {}, {
       baseUrl: '/',
       resolver: null
+    })
+
+    this._options.export = SDKUtils.defaults(this._options.export || {}, {
+      format: 'image/png',
+      type: RenderType.IMAGE,
+      download: true
     })
   }
 
