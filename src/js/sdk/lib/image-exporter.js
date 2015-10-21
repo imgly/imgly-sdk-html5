@@ -78,7 +78,7 @@ class ImageExporter {
         // When image's `src` attribute is a jpeg data url, we can restore
         // the exif information
         if (Exif.isJPEG(image.src) && Exif.isJPEG(result)) {
-          const { exif } = kit
+          const exif = kit.getExif()
           if (exif) {
             result = exif.restoreExifTags(result)
           }
