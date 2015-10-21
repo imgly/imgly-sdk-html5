@@ -436,7 +436,7 @@ class StickersOperation extends Operation {
 
         const stickerPosition = sticker.getPosition()
         const stickerRotation = sticker.getRotation()
-        const stickerPath = sticker.getPath()
+        const stickerImage = sticker.getImage()
         const stickerScale = sticker.getScale()
 
         const absoluteStickerPosition = stickerPosition
@@ -455,10 +455,9 @@ class StickersOperation extends Operation {
         const x = Math.cos(newRadians) * clickDistance
         const y = Math.sin(newRadians) * clickDistance
 
-        const stickerTexture = this._loadedStickers[stickerPath]
         const stickerDimensions = new Vector2(
-            stickerTexture.width,
-            stickerTexture.height
+            stickerImage.width,
+            stickerImage.height
           )
           .multiply(stickerScale)
 
