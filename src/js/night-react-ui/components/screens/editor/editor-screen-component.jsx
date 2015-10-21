@@ -292,7 +292,7 @@ export default class EditorScreenComponent extends ScreenComponent {
     newZoom += 0.1
     newZoom = Math.min(defaultZoom * 2, newZoom)
 
-    this.setState({ zoom: newZoom })
+    this._zoom(newZoom)
   }
 
   /**
@@ -307,7 +307,7 @@ export default class EditorScreenComponent extends ScreenComponent {
     newZoom -= 0.1
     newZoom = Math.max(Math.min(defaultZoom, 1), newZoom)
 
-    this.setState({ zoom: newZoom })
+    this._zoom(newZoom)
   }
 
   // -------------------------------------------------------------------------- MISC
@@ -386,6 +386,14 @@ export default class EditorScreenComponent extends ScreenComponent {
    */
   getZoom () {
     return this.state.zoom
+  }
+
+  /**
+   * Checks if the editor is at the default zoom level
+   * @return {Boolean}
+   */
+  isDefaultZoom () {
+    return this.state.zoom === this._lastDefaultZoom
   }
 
   // -------------------------------------------------------------------------- RENDERING
