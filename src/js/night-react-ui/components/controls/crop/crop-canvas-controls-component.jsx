@@ -114,12 +114,16 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
 
     if (newSize.x > maxSize.x) {
       newSize.x = maxSize.x
+    } else if (newSize.x < MIN_DIMENSIONS.x) {
+      newSize.x = MIN_DIMENSIONS.x
     }
     if (ratio !== '*') {
       newSize.y = newSize.x / ratio
     }
     if (newSize.y > maxSize.y) {
       newSize.y = maxSize.y
+    } else if (newSize.y < MIN_DIMENSIONS.y) {
+      newSize.y = MIN_DIMENSIONS.y
     }
     if (ratio !== '*') {
       newSize.x = newSize.y * ratio
