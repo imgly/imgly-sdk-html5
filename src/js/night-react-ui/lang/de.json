@@ -81,7 +81,8 @@
   },
   "loading": {
     "resizing": "Bild wird bearbeitet...",
-    "exporting": "Exportiere..."
+    "exporting": "Exportiere...",
+    "loading": "Lade..."
   },
   "warnings": {
     "imageResized": {

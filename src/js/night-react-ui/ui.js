@@ -19,6 +19,7 @@ import EditorComponent from './components/editor-component'
 import OverviewControlsComponent from './components/controls/overview/overview-controls-component'
 import ScrollbarComponent from './components/scrollbar-component'
 import Exporter from './lib/exporter'
+import ModalManager from './lib/modal-manager'
 
 export default class NightReactUI extends EventEmitter {
   constructor (kit, options) {
@@ -369,6 +370,7 @@ NightReactUI.SharedState = SharedState
 NightReactUI.Constants = Constants
 NightReactUI.Utils = Utils
 NightReactUI.ScrollbarComponent = ScrollbarComponent
+NightReactUI.ModalManager = ModalManager
 
 PhotoEditorSDK.UI = PhotoEditorSDK.UI || {}
 PhotoEditorSDK.UI.NightReact = NightReactUI
