@@ -63,7 +63,7 @@ class FramesOperation extends Operation {
       var canvas = renderer.getCanvas()
 
       var color = this._options.color
-      var thickness = this._options.thickness * canvas.height
+      var thickness = this._options.thickness * Math.min(canvas.height, canvas.width)
       var thicknessVec2 = [thickness / canvas.width, thickness / canvas.height]
 
       let uniforms = {

@@ -49,8 +49,8 @@ export default class FramesControlsComponent extends BaseChildComponent {
    * @private
    */
   _onThicknessUpdate (thickness) {
-    const { kit } = this.context
-    const canvasDimensions = kit.getOutputDimensions()
+    const { editor } = this.props
+    const canvasDimensions = editor.getInitialDimensions()
 
     const shorterSide = Math.min(canvasDimensions.x, canvasDimensions.y)
     const relativeThickness = thickness / shorterSide
@@ -112,11 +112,13 @@ export default class FramesControlsComponent extends BaseChildComponent {
   renderWithBEM () {
     const ui = this.context.ui
 
-    const { kit } = this.context
-    const canvasDimensions = kit.getOutputDimensions()
+    const { editor } = this.props
+    const canvasDimensions = editor.getInitialDimensions()
+
+    const shorterSide = Math.min(canvasDimensions.x, canvasDimensions.y)
     const minThickness = 0
-    const maxThickness = Math.round(Math.min(canvasDimensions.x, canvasDimensions.y) / 2)
-    const currentWidth = this._operation.getThickness() * maxThickness
+    const maxThickness = Math.round(shorterSide / 2)
+    const currentWidth = this._operation.getThickness() * shorterSide
 
     return (<div bem='$b:controls e:table'>
       <div bem='e:cell m:button m:withBorderRight'>
