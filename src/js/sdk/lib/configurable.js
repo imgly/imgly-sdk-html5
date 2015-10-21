@@ -165,14 +165,40 @@ export default class Configurable extends EventEmitter {
       case 'number':
       case 'boolean':
       case 'object':
-      case 'array':
         return currentValue === value
       case 'vector2':
       case 'color':
         return value.equals(currentValue)
       case 'configurable':
         return value.optionsEqual(value)
+      case 'array':
+        return this._arrayOptionEquals(optionName, value)
     }
+  }
+
+  /**
+   * Checks if the given option of type `array` matches the given value
+   * @param  {String} optionName
+   * @param  {Array} arr
+   * @return {Boolean}
+   */
+  _arrayOptionEquals (optionName, arr) {
+    let thisArr = this._options[optionName]
+    let equal = true
+    for (let i = 0; i < thisArr.length; i++) {
+      const thisValue = thisArr[i]
+      const value = arr[i]
+      if (thisValue instanceof Configurable) {
+        if (typeof value === 'undefined' || !thisValue.optionsEqual(value)) {
+          equal = false
+          break
+        }
+      } else if (value !== thisValue) {
+        equal = false
+        break
+      }
+    }
+    return equal
   }
 
   /**
