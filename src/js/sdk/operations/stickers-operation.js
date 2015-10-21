@@ -227,8 +227,6 @@ class StickersOperation extends Operation {
         return resolve()
       }
 
-      const canvas = renderer.getCanvas()
-
       if (!this._programs[renderer.id].blur) {
         this._programs[renderer.id].blur =
           renderer.setupGLSLProgram(null, this.blurShader)
@@ -239,9 +237,10 @@ class StickersOperation extends Operation {
 
       textureSize.add(textureSize.clone().multiply(stickerBlur))
 
+      const canvas = renderer.getCanvas()
+      const blurWidth = (stickerBlur * canvas.width / textureSize.x) / 4
       const uniforms = {
-        delta: { type: '2f', value: [stickerBlur * canvas.width, 0] },
-        resolution: { type: 'f', value: textureSize.x }
+        delta: { type: '2f', value: [blurWidth, 0] }
       }
 
       const programOptions = {
@@ -262,7 +261,7 @@ class StickersOperation extends Operation {
       programOptions.outputTexture = this._framebufferTextures[this._framebufferIndex % 2]
       programOptions.outputFBO = this._framebuffers[this._framebufferIndex % 2]
 
-      uniforms.delta.value = [0, stickerBlur * canvas.width]
+      uniforms.delta.value = [0, blurWidth]
 
       programOptions.inputTexture = this._lastTexture
       renderer.runProgram(this._programs[renderer.id].blur, programOptions)

@@ -10,8 +10,6 @@
  */
 
 import { ReactBEM, BaseChildComponent } from '../../../globals'
-import ScrollbarComponent from '../../scrollbar-component'
-
 import StickersOverviewControlsComponent from './edit/overview-component-component'
 
 export default class StickersEditControlsComponent extends BaseChildComponent {
@@ -62,6 +60,7 @@ export default class StickersEditControlsComponent extends BaseChildComponent {
 
     return (<Controls
       onSwitchControls={this.switchToControls}
+      editor={this.props.editor}
       sharedState={this.props.sharedState} />
     )
   }

@@ -50,10 +50,14 @@ export default class StickersBlurControlsComponent extends BaseChildComponent {
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
+    const { editor } = this.props
+    const canvasDimensions = editor.getInitialDimensions()
+
     const ui = this.context.ui
 
     const adjustments = this._selectedSticker.getAdjustments()
     const blur = adjustments.getBlur()
+    const maxBlur = canvasDimensions.x * 0.1
 
     return (<div bem='$b:controls e:table'>
       <div bem='e:cell m:button m:withBorderRight'>
@@ -65,7 +69,7 @@ export default class StickersBlurControlsComponent extends BaseChildComponent {
         <SliderComponent
           style='large'
           minValue={0}
-          maxValue={50}
+          maxValue={maxBlur}
           middleDot={false}
           label={this._t('controls.stickers.blur')}
           onChange={this._onSliderValueChange}
