@@ -1,7 +1,6 @@
 precision mediump float;
 uniform sampler2D u_image;
 uniform vec2 delta;
-uniform float resolution;
 varying vec2 v_texCoord;
 
 float random(vec3 scale, float seed) {
@@ -17,7 +16,7 @@ void main() {
   for (float t = -30.0; t <= 30.0; t++) {
     float percent = (t + offset - 0.5) / 30.0;
     float weight = 1.0 - abs(percent);
-    vec4 sample = texture2D(u_image, v_texCoord + (delta / resolution) * percent);
+    vec4 sample = texture2D(u_image, v_texCoord + delta * percent);
     sample.rgb *= sample.a;
     color += sample * weight;
     total += weight;
