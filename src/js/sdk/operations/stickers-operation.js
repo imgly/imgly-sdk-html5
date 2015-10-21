@@ -381,10 +381,10 @@ class StickersOperation extends Operation {
       }
 
       // If the texture has been loaded already, reuse it
-      // const cachedTexture = this._textures[renderer.id][image.src]
-      // if (cachedTexture) {
-      //   return resolve(cachedTexture)
-      // }
+      const cachedTexture = this._textures[renderer.id][image.src]
+      if (cachedTexture) {
+        return resolve(cachedTexture)
+      }
 
       const texture = renderer.createTexture(image)
       this._textures[renderer.id][image.src] = texture
