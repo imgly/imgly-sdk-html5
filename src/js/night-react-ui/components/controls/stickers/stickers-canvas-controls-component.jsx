@@ -43,6 +43,7 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
    * @param {Object} newState
    */
   sharedStateDidChange (newState) {
+    this._stickers = this.getSharedState('stickers')
     this._resizeNewStickers()
   }
 
