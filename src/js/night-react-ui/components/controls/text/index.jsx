@@ -24,12 +24,16 @@ export default {
    * @this {StickersControlsComponent}
    */
   onExit: function () {
-    const { editor } = this.props
-    editor.addHistory(
-      this.getSharedState('operation'),
-      this.getSharedState('initialOptions'),
-      this.getSharedState('operationExistedBefore')
-    )
+    const initialOptions = this.getSharedState('initialOptions')
+    const operation = this.getSharedState('operation')
+    if (!operation.optionsEqual(initialOptions)) {
+      const { editor } = this.props
+      editor.addHistory(
+        operation,
+        initialOptions,
+        this.getSharedState('operationExistedBefore')
+      )
+    }
 
     this._emitEvent(Constants.EVENTS.CANVAS_UNDO_ZOOM)
     this._emitEvent(Constants.EVENTS.EDITOR_ENABLE_FEATURES, ['zoom', 'drag'])
