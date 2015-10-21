@@ -32,24 +32,29 @@ export default class StickersOverviewControlsComponent extends BaseChildComponen
    */
   _registerStickers () {
     this._availableStickers = [
-      'stickers/glasses-nerd.png',
-      'stickers/glasses-normal.png',
-      'stickers/glasses-shutter-green.png',
-      'stickers/glasses-shutter-yellow.png',
-      'stickers/glasses-sun.png',
-      'stickers/hat-cap.png',
-      'stickers/hat-cylinder.png',
-      'stickers/hat-party.png',
-      'stickers/hat-sheriff.png',
-      'stickers/heart.png',
-      'stickers/mustache-long.png',
-      'stickers/mustache1.png',
-      'stickers/mustache2.png',
-      'stickers/mustache3.png',
-      'stickers/pipe.png',
-      'stickers/snowflake.png',
-      'stickers/star.png'
-    ]
+      'glasses-nerd.png',
+      'glasses-normal.png',
+      'glasses-shutter-green.png',
+      'glasses-shutter-yellow.png',
+      'glasses-sun.png',
+      'hat-cap.png',
+      'hat-cylinder.png',
+      'hat-party.png',
+      'hat-sheriff.png',
+      'heart.png',
+      'mustache-long.png',
+      'mustache1.png',
+      'mustache2.png',
+      'mustache3.png',
+      'pipe.png',
+      'snowflake.png',
+      'star.png'
+    ].map((stickerName) =>
+      [
+        `stickers/small/${stickerName}`,
+        `stickers/large/${stickerName}`
+      ]
+    )
 
     const additionalStickers = this.props.options.stickers || []
     this._availableStickers = this._availableStickers.concat(additionalStickers)
@@ -68,12 +73,12 @@ export default class StickersOverviewControlsComponent extends BaseChildComponen
 
   /**
    * Gets called when a sticker has been clicked
-   * @param  {String} stickerPath
+   * @param  {Array.<String>} stickerPaths
    * @private
    */
-  _onStickerClick (stickerPath) {
+  _onStickerClick ([smallPath, largePath]) {
     const sticker = this._operation.createSticker({
-      path: stickerPath,
+      path: largePath,
       position: new Vector2(0.5, 0.5),
       scale: new Vector2(1.0, 1.0),
       rotation: 0
@@ -99,14 +104,14 @@ export default class StickersOverviewControlsComponent extends BaseChildComponen
   renderWithBEM () {
     const ui = this.context.ui
 
-    const listItems = this._availableStickers.map((stickerPath) => {
+    const listItems = this._availableStickers.map(([smallPath, largePath]) => {
       return (<li
         bem='e:item'
-        key={stickerPath}
-        onClick={this._onStickerClick.bind(this, stickerPath)}>
+        key={largePath}
+        onClick={this._onStickerClick.bind(this, [smallPath, largePath])}>
         <bem specifier='$b:controls'>
           <div bem='$e:button m:withLabel'>
-            <img bem='e:icon' src={ui.getHelpers().assetPath(stickerPath)} />
+            <img bem='e:icon' src={ui.getHelpers().assetPath(smallPath)} />
           </div>
         </bem>
       </li>)
