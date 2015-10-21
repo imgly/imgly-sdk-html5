@@ -29,7 +29,22 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
     this._selectedSticker = this.getSharedState('selectedSticker')
   }
 
+  // -------------------------------------------------------------------------- LIFECYCLE
+
+  componentDidMount () {
+    super.componentDidMount()
+    this._resizeNewStickers()
+  }
+
   // -------------------------------------------------------------------------- EVENTS
+
+  /**
+   * Gets called when the shared state did change
+   * @param {Object} newState
+   */
+  sharedStateDidChange (newState) {
+    this._resizeNewStickers()
+  }
 
   /**
    * Gets called when the user clicks the remove button
@@ -259,6 +274,56 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
       left: knobPosition.x,
       top: knobPosition.y
     }
+  }
+
+  // -------------------------------------------------------------------------- MISC
+
+  /**
+   * Sets the initial size for stickers that have not been initially resized yet
+   * @private
+   */
+  _resizeNewStickers () {
+    this._stickers
+      .filter((sticker) => !sticker._loaded)
+      .forEach((sticker) => this._setInitialStickerScale(sticker))
+  }
+
+  /**
+   * Sets the initial scale for the given sticker to make sure it fits
+   * the canvas dimensions
+   * @param {Sticker} sticker
+   * @private
+   */
+  _setInitialStickerScale (sticker) {
+    const stickerImage = sticker.getImage()
+    const stickerDimensions = new Vector2(stickerImage.width, stickerImage.height)
+
+    const { kit } = this.context
+    const canvasDimensions = kit.getOutputDimensions()
+    let scale = sticker.getScale().clone()
+
+    const maxDimensions = Math.min(canvasDimensions.x, canvasDimensions.y) * 0.9
+
+    if (stickerDimensions.x > canvasDimensions.x ||
+        stickerDimensions.y > canvasDimensions.y) {
+      const canvasRatio = canvasDimensions.x / canvasDimensions.y
+      const stickerRatio = stickerDimensions.x / stickerDimensions.y
+      if (stickerRatio > canvasRatio) {
+        scale.set(
+          maxDimensions / stickerDimensions.x,
+          maxDimensions / stickerDimensions.x
+        )
+      } else {
+        scale.set(
+          maxDimensions / stickerDimensions.y,
+          maxDimensions / stickerDimensions.y
+        )
+      }
+    }
+    sticker.setScale(scale)
+    this._operation.setDirty(true)
+
+    sticker._loaded = true
   }
 
   // -------------------------------------------------------------------------- RENDERING
