@@ -94,10 +94,15 @@ export default class TiltShiftControlsComponent extends BaseChildComponent {
    */
   _onDoneClick (e) {
     const { editor } = this.props
+    const operationExistedBefore = this.getSharedState('operationExistedBefore')
+    const initialOptions = this.getSharedState('initialOptions')
+    const optionsChanged = !this._operation.optionsEqual(initialOptions)
 
-    editor.addHistory(this._operation,
-      this.getSharedState('initialOptions'),
-      this.getSharedState('operationExistedBefore'))
+    if (optionsChanged || !operationExistedBefore) {
+      editor.addHistory(this._operation,
+        this.getSharedState('initialOptions'),
+        this.getSharedState('operationExistedBefore'))
+    }
 
     this._emitEvent(Constants.EVENTS.CANVAS_UNDO_ZOOM)
     this._emitEvent(Constants.EVENTS.EDITOR_ENABLE_FEATURES, ['zoom', 'drag'])
