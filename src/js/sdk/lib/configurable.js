@@ -136,6 +136,46 @@ export default class Configurable extends EventEmitter {
   }
 
   /**
+   * Check if the current options equal the given ones
+   * @param  {Object} options
+   * @return {Boolean}
+   */
+  optionsEqual (options) {
+    for (let optionName in options) {
+      const value = options[optionName]
+      if (!this._optionEquals(optionName, value)) {
+        return false
+      }
+    }
+    return true
+  }
+
+  /**
+   * Checks if the given option has the given value
+   * @param  {String} optionName
+   * @param  {*} value
+   * @return {Boolean}
+   * @private
+   */
+  _optionEquals (optionName, value) {
+    const optionType = this.availableOptions[optionName].type
+    const currentValue = this._options[optionName]
+    switch (optionType) {
+      case 'string':
+      case 'number':
+      case 'boolean':
+      case 'object':
+      case 'array':
+        return currentValue === value
+      case 'vector2':
+      case 'color':
+        return value.equals(currentValue)
+      case 'configurable':
+        return value.optionsEqual(value)
+    }
+  }
+
+  /**
    * Returns a serialized version of this configurable
    * @return {Object}
    */
