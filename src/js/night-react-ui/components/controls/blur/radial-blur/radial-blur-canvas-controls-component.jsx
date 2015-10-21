@@ -88,7 +88,6 @@ export default class RadialBlurCanvasControlsComponent extends BaseChildComponen
 
     this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
     this._setStylesFromOptions()
-    this.forceUpdate()
   }
 
   // -------------------------------------------------------------------------- GRADIENT KNOB DRAG
