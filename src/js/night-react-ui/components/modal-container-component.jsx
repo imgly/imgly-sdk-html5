@@ -12,6 +12,7 @@
 import { ReactBEM, BaseChildComponent } from '../globals'
 import LoadingModalComponent from './modals/loading-modal-component'
 import WarningModalComponent from './modals/warning-modal-component'
+import ErrorModalComponent from './modals/error-modal-component'
 
 export default class ModalContainerComponent extends BaseChildComponent {
   constructor (...args) {
@@ -79,6 +80,9 @@ export default class ModalContainerComponent extends BaseChildComponent {
           break
         case 'warning':
           ModalComponent = WarningModalComponent
+          break
+        case 'error':
+          ModalComponent = ErrorModalComponent
           break
       }
 

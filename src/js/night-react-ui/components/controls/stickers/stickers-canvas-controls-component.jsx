@@ -29,29 +29,6 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
     this._selectedSticker = this.getSharedState('selectedSticker')
   }
 
-  // -------------------------------------------------------------------------- LIFECYCLE
-
-  /**
-   * Gets called when this component has been rendered
-   */
-  componentDidMount () {
-    super.componentDidMount()
-    this._loadExistingStickers()
-  }
-
-  /**
-   * Gets called when the shared state did change
-   * @param {Object} newState
-   */
-  sharedStateDidChange (newState) {
-    if (newState.stickers) {
-      newState.stickers.forEach((sticker) => {
-        this._loadStickerAndStoreDimensions(sticker)
-          .then(() => this.forceUpdate())
-      })
-    }
-  }
-
   // -------------------------------------------------------------------------- EVENTS
 
   /**
@@ -284,108 +261,6 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
     }
   }
 
-  // -------------------------------------------------------------------------- LOADING
-
-  /**
-   * Loads all sticker images needed for existing sticker items
-   * @return {Promise}
-   * @private
-   */
-  _loadExistingStickers () {
-    return this._stickers
-      .map((sticker) => {
-        return this._loadStickerAndStoreDimensions(sticker)
-          .then(() => this.forceUpdate())
-      })
-  }
-
-  /**
-   * Loads the sticker with the given identifier and stores
-   * its dimensions in the shared state
-   * @param  {Sticker} sticker
-   * @return {Promise}
-   * @private
-   */
-  _loadStickerAndStoreDimensions (sticker) {
-    const stickerPath = sticker.getPath()
-    if (stickerPath in this.getSharedState('stickerDimensions')) {
-      return Promise.resolve()
-    }
-
-    const { kit } = this.context
-    return new Promise((resolve, reject) => {
-      let image = new window.Image()
-
-      image.addEventListener('load', () => {
-        const stickerDimensions = this.getSharedState('stickerDimensions')
-        stickerDimensions[stickerPath] = new Vector2(
-          image.width,
-          image.height
-        )
-        if (!sticker._loaded) {
-          this._setIntialStickerScale(sticker)
-          sticker._loaded = true
-        }
-        this.setState({ stickerDimensions })
-        this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
-        resolve()
-      })
-
-      image.addEventListener('error', (e) => {
-        reject(e)
-      })
-
-      image.src = kit.getAssetPath(stickerPath)
-    })
-  }
-
-  /**
-   * Checks if the given sticker has been loaded
-   * @param  {Object} sticker
-   * @return {Boolean}
-   * @private
-   */
-  _stickerLoaded (sticker) {
-    const stickerDimensions = this.getSharedState('stickerDimensions')
-    return sticker.getPath() in stickerDimensions
-  }
-
-  // -------------------------------------------------------------------------- MISC
-
-  /**
-   * Sets the initial scale for the given sticker to make sure it fits
-   * the canvas dimensions
-   * @param {Sticker} sticker
-   * @private
-   */
-  _setIntialStickerScale (sticker) {
-    const stickerDimensions = this.getSharedState('stickerDimensions')[sticker.getPath()]
-    const { kit } = this.context
-    const canvasDimensions = kit.getOutputDimensions()
-    let scale = sticker.getScale().clone()
-
-    const maxDimensions = Math.min(canvasDimensions.x, canvasDimensions.y) * 0.9
-
-    if (stickerDimensions.x > canvasDimensions.x ||
-        stickerDimensions.y > canvasDimensions.y) {
-      const canvasRatio = canvasDimensions.x / canvasDimensions.y
-      const stickerRatio = stickerDimensions.x / stickerDimensions.y
-      if (stickerRatio > canvasRatio) {
-        scale.set(
-          maxDimensions / stickerDimensions.x,
-          maxDimensions / stickerDimensions.x
-        )
-      } else {
-        scale.set(
-          maxDimensions / stickerDimensions.y,
-          maxDimensions / stickerDimensions.y
-        )
-      }
-    }
-    sticker.setScale(scale)
-    this._operation.setDirty(true)
-  }
-
   // -------------------------------------------------------------------------- RENDERING
 
   /**
@@ -397,7 +272,6 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
     const selectedSticker = this.getSharedState('selectedSticker')
 
     return this._stickers
-      .filter((sticker) => this._stickerLoaded(sticker))
       .map((sticker, i) => {
         const stickerStyle = this._getStickerStyle(sticker)
         const isSelected = selectedSticker === sticker
@@ -427,7 +301,7 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
     const stickerItems = this._renderStickerItems()
 
     let knobs
-    if (selectedSticker && this._stickerLoaded(selectedSticker)) {
+    if (selectedSticker) {
       knobs = [
         (<DraggableComponent
           onStart={this._onKnobDragStart}
@@ -480,8 +354,8 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
    */
   _getStickerDimensions (sticker) {
     const { editor } = this.props
-    const stickerDimensions = this.getSharedState('stickerDimensions')
-    return stickerDimensions[sticker.getPath()]
+    const image = sticker.getImage()
+    return new Vector2(image.width, image.height)
       .clone()
       .multiply(sticker.getScale())
       .multiply(editor.getZoom())

@@ -19,7 +19,7 @@ export default class Sticker extends Configurable {
 }
 
 Sticker.prototype.availableOptions = {
-  path: { type: 'string', required: true },
+  image: { type: 'object', required: true },
   position: { type: 'vector2', default: new Vector2(0.5, 0.5) },
   scale: { type: 'vector2', default: new Vector2(1.0, 1.0) },
   anchor: { type: 'vector2', default: new Vector2(0.5, 0.5) },
