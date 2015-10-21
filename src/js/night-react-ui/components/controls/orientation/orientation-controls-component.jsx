@@ -82,7 +82,11 @@ export default class OrientationControlsComponent extends BaseChildComponent {
       previousOptions,
       operationExistedBefore)
 
-    this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
+    if (editor.isDefaultZoom()) {
+      this._emitEvent(Constants.EVENTS.CANVAS_ZOOM, 'auto')
+    } else {
+      this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
+    }
   }
 
   /**
