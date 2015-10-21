@@ -85,9 +85,15 @@ export default class FramesControlsComponent extends BaseChildComponent {
   _onDoneClick (e) {
     const { editor } = this.props
 
-    editor.addHistory(this._operation,
-      this.getSharedState('initialOptions'),
-      this.getSharedState('operationExistedBefore'))
+    const operationExistedBefore = this.getSharedState('operationExistedBefore')
+    const initialOptions = this.getSharedState('initialOptions')
+    const optionsChanged = !this._operation.optionsEqual(initialOptions)
+
+    if (optionsChanged || !operationExistedBefore) {
+      editor.addHistory(this._operation,
+        this.getSharedState('initialOptions'),
+        this.getSharedState('operationExistedBefore'))
+    }
 
     this.props.onSwitchControls('back')
   }
