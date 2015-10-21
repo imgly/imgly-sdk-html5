@@ -80,7 +80,8 @@
     "color": "Color"
   },
   "loading": {
-    "resizing": "Resizing..."
+    "resizing": "Resizing...",
+    "exporting": "Exporting..."
   },
   "warnings": {
     "imageResized": {

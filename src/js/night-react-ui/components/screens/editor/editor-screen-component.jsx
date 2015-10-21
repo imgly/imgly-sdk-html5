@@ -15,7 +15,7 @@ import SubHeaderComponent from '../../sub-header-component'
 import SubHeaderButtonComponent from '../../sub-header-button-component'
 import CanvasComponent from './canvas-component'
 import ZoomComponent from './zoom-component'
-
+import ModalManager from '../../../lib/modal-manager'
 import OverviewControls from '../../controls/overview/'
 
 export default class EditorScreenComponent extends ScreenComponent {
@@ -130,8 +130,17 @@ export default class EditorScreenComponent extends ScreenComponent {
    */
   _onExportClick () {
     const { ui, options } = this.context
+    const translate = ui.translate.bind(ui)
     const exportOptions = options.export
-    ui.export(exportOptions.download)
+    const loadingModal = ModalManager.instance.displayLoading(translate('loading.exporting'))
+
+    // Give it some time to display the loading modal
+    setTimeout(() => {
+      ui.export(exportOptions.download)
+        .then(() => {
+          loadingModal.close()
+        })
+    }, 1000)
   }
 
   /**
