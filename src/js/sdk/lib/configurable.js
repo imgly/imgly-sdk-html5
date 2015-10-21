@@ -165,6 +165,7 @@ export default class Configurable extends EventEmitter {
       case 'number':
       case 'boolean':
       case 'object':
+      case '*':
         return currentValue === value
       case 'vector2':
       case 'color':
@@ -227,6 +228,7 @@ export default class Configurable extends EventEmitter {
       case 'number':
       case 'boolean':
       case 'object':
+      case '*':
         return value
       case 'vector2':
       case 'color':
@@ -311,6 +313,7 @@ export default class Configurable extends EventEmitter {
 
       // Object options
       case 'object':
+      case '*':
         this._options[optionName] = value
         break
 

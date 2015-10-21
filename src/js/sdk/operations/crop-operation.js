@@ -131,7 +131,8 @@ CropOperation.identifier = 'crop'
  */
 CropOperation.prototype.availableOptions = {
   start: { type: 'vector2', required: true, default: new Vector2(0, 0) },
-  end: { type: 'vector2', required: true, default: new Vector2(1, 1) }
+  end: { type: 'vector2', required: true, default: new Vector2(1, 1) },
+  ratio: { type: '*', required: false, default: '*' }
 }
 
 export default CropOperation

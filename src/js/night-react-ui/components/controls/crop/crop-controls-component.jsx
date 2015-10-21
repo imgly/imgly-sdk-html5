@@ -149,6 +149,7 @@ export default class OrientationControlsComponent extends BaseChildComponent {
    */
   _selectRatio (ratio) {
     this._setDefaultOptionsForRatio(ratio)
+    this._operation.setRatio(ratio.ratio)
     this.setSharedState({ ratio })
   }
 
