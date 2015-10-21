@@ -322,6 +322,7 @@ export default class Renderer {
     return renderer
   }
 
+  getExif () { return this._exif }
   setCanvas (canvas) { this._options.canvas = canvas }
   getRenderer () { return this._renderer }
   hasImage () { return !!this._options.image }
