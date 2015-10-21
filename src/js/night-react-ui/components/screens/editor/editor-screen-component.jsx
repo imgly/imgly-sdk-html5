@@ -129,8 +129,9 @@ export default class EditorScreenComponent extends ScreenComponent {
    * @private
    */
   _onExportClick () {
-    const { ui } = this.context
-    ui.export()
+    const { ui, options } = this.context
+    const exportOptions = options.export
+    ui.export(exportOptions.download)
   }
 
   /**
