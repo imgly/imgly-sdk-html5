@@ -284,6 +284,7 @@ export default class Renderer {
     if (this._dimensions && this._dimensions.bothSidesGiven()) {
       dimensions = Utils.resizeVectorToFit(dimensions, this._dimensions.toVector())
     }
+    dimensions.floor()
 
     return dimensions
   }
