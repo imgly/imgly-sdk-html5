@@ -430,6 +430,15 @@ export default class EditorScreenComponent extends ScreenComponent {
         onClick={this._onUndoClick} />)
     }
 
+    let exportButton
+    if (this.context.options.export.showButton !== false) {
+      exportButton = (<SubHeaderButtonComponent
+        style='blue'
+        label={this._t('editor.export')}
+        icon='editor/export@2x.png'
+        onClick={this._onExportClick} />)
+    }
+
     return (<div bem='b:screen $b:editorScreen'>
       <SubHeaderComponent
         label={this._t('webcam.headline')}>
@@ -444,11 +453,7 @@ export default class EditorScreenComponent extends ScreenComponent {
 
           <div bem='e:right'>
             {undoButton}
-            <SubHeaderButtonComponent
-              style='blue'
-              label={this._t('editor.export')}
-              icon='editor/export@2x.png'
-              onClick={this._onExportClick} />
+            {exportButton}
           </div>
 
           <ZoomComponent

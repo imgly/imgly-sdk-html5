@@ -150,7 +150,7 @@ export default class NightReactUI extends EventEmitter {
 
   /**
    * Initializes the default options
-   * @return {[type]} [description]
+   * @private
    */
   _initOptions () {
     this._options = SDKUtils.defaults(this._options, {
@@ -178,6 +178,7 @@ export default class NightReactUI extends EventEmitter {
     })
 
     this._options.export = SDKUtils.defaults(this._options.export || {}, {
+      showButton: true,
       format: 'image/png',
       type: RenderType.IMAGE,
       download: true
