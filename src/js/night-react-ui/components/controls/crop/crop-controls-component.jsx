@@ -111,16 +111,24 @@ export default class OrientationControlsComponent extends BaseChildComponent {
    * @private
    */
   _onDoneClick (e) {
-    // Update operation options
-    this._operation.set({
+    const newOptions = {
       start: this.getSharedState('start'),
       end: this.getSharedState('end')
-    })
+    }
+    const initialOptions = this.getSharedState('initialOptions')
 
-    const { editor } = this.props
-    editor.addHistory(this._operation,
-      this.getSharedState('initialOptions'),
-      this.getSharedState('operationExistedBefore'))
+    const optionsChanged = (!newOptions.start.equals(initialOptions.start) ||
+      !newOptions.end.equals(initialOptions.end))
+
+    // Update operation options
+    this._operation.set(newOptions)
+
+    if (optionsChanged) {
+      const { editor } = this.props
+      editor.addHistory(this._operation,
+        this.getSharedState('initialOptions'),
+        this.getSharedState('operationExistedBefore'))
+    }
 
     // Enable zoom and drag again
     this._emitEvent(Constants.EVENTS.EDITOR_ENABLE_FEATURES, ['zoom', 'drag'])
