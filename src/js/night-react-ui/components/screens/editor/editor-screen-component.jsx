@@ -422,6 +422,14 @@ export default class EditorScreenComponent extends ScreenComponent {
         ref='canvasControls' />)
     }
 
+    let newButton
+    if (this.context.options.showNewButton !== false) {
+      newButton = (<SubHeaderButtonComponent
+        label={this._t('editor.new')}
+        icon='editor/new@2x.png'
+        onClick={this._onNewClick} />)
+    }
+
     let undoButton
     if (this._showUndoButton()) {
       undoButton = (<SubHeaderButtonComponent
@@ -445,10 +453,7 @@ export default class EditorScreenComponent extends ScreenComponent {
         <bem specifier='$b:subHeader'>
           <input type='file' bem='b:hiddenFileInput' ref='fileInput' />
           <div bem='e:left'>
-            <SubHeaderButtonComponent
-              label={this._t('editor.new')}
-              icon='editor/new@2x.png'
-              onClick={this._onNewClick} />
+            {newButton}
           </div>
 
           <div bem='e:right'>

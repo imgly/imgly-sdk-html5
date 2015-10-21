@@ -163,7 +163,8 @@ export default class NightReactUI extends EventEmitter {
       assets: {},
       extensions: {},
       controlsOrder: [],
-      controlsOptions: {}
+      controlsOptions: {},
+      showNewButton: true
     })
 
     this._options.extensions = SDKUtils.defaults(this._options.extensions || {}, {
