@@ -168,6 +168,18 @@ class Color {
   }
 
   /**
+   * Checks if this color equals the given one
+   * @param  {Color} color
+   * @return {Boolean}
+   */
+  equals (color) {
+    return this.r === color.r &&
+      this.g === color.g &&
+      this.b === color.b &&
+      this.a === color.a
+  }
+
+  /**
    * Returns the given number as hex
    * @param  {Number} component
    * @return {String}
