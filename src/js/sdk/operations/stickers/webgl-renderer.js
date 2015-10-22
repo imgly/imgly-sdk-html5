@@ -23,9 +23,9 @@ export default class StickersWebGLRenderer {
     this._programs = {}
     this._textures = {}
 
-    this.vertexShader = require('raw!../generic/sprite.vert')
-    this.adjustmentsShader = require('raw!./adjustments.frag')
-    this.blurShader = require('raw!../blur/blur.frag')
+    this._vertexShader = require('raw!../generic/sprite.vert')
+    this._adjustmentsShader = require('raw!./adjustments.frag')
+    this._blurShader = require('raw!../blur/blur.frag')
   }
 
   /**
@@ -123,7 +123,7 @@ export default class StickersWebGLRenderer {
     return new Promise((resolve, reject) => {
       if (!this._programs.adjustments) {
         this._programs.adjustments =
-          this._renderer.setupGLSLProgram(null, this.adjustmentsShader)
+          this._renderer.setupGLSLProgram(null, this._adjustmentsShader)
       }
 
       const stickerAdjustments = sticker.getAdjustments()
@@ -203,7 +203,7 @@ export default class StickersWebGLRenderer {
 
       if (!this._programs.blur) {
         this._programs.blur =
-          this._renderer.setupGLSLProgram(null, this.blurShader)
+          this._renderer.setupGLSLProgram(null, this._blurShader)
       }
 
       const textureSize = new Vector2(image.width, image.height)
@@ -258,7 +258,7 @@ export default class StickersWebGLRenderer {
     return new Promise((resolve, reject) => {
       if (!this._programs.default) {
         this._programs.default =
-          this._renderer.setupGLSLProgram(this.vertexShader)
+          this._renderer.setupGLSLProgram(this._vertexShader)
       }
       const canvas = this._renderer.getCanvas()
       const canvasDimensions = new Vector2(canvas.width, canvas.height)
