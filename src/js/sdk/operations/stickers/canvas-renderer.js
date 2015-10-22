@@ -209,7 +209,18 @@ export default class StickersCanvasRenderer {
 
       outputContext.save()
       outputContext.translate(stickerPosition.x, stickerPosition.y)
+
+      let scaleX = 1, scaleY = 1
+      if (sticker.getFlipHorizontally()) {
+        scaleX = -1
+      }
+
+      if (sticker.getFlipVertically()) {
+        scaleY = -1
+      }
+
       outputContext.rotate(stickerRotation)
+      outputContext.scale(scaleX, scaleY)
       outputContext.drawImage(canvas,
         -drawDimensions.x / 2,
         -drawDimensions.y / 2,
