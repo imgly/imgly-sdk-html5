@@ -234,6 +234,14 @@ export default class Text extends Configurable {
       this._context.fillText(text, this._canvas.width, y)
     }
   }
+
+  /**
+   * Sets this operation to dirty, so that it will re-render next time
+   * @param {Boolean} dirty = true
+   */
+  setDirty (dirty) {
+    this._dirty = dirty
+  }
 }
 
 Text.prototype.availableOptions = {
