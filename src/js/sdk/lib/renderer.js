@@ -255,7 +255,7 @@ export default class Renderer {
    */
   _initRenderer () {
     /* istanbul ignore if */
-    if (WebGLRenderer.isSupported() && this._options.preferredRenderer !== 'canvas') {
+    if (WebGLRenderer.isSupported() && this._preferredRenderer !== 'canvas') {
       this._renderer = new WebGLRenderer(this._options.canvas, this._image)
       this._webglEnabled = true
     } else if (CanvasRenderer.isSupported()) {

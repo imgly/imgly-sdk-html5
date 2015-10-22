@@ -60,10 +60,11 @@ class Grayscale extends Primitive {
   /**
    * Renders the primitive (Canvas)
    * @param  {CanvasRenderer} renderer
+   * @param  {Canvas} canvas
    */
-  renderCanvas (renderer) {
-    var canvas = renderer.getCanvas()
-    var imageData = renderer.getContext().getImageData(0, 0, canvas.width, canvas.height)
+  renderCanvas (renderer, canvas) {
+    const context = canvas.getContext('2d')
+    var imageData = context.getImageData(0, 0, canvas.width, canvas.height)
 
     for (var x = 0; x < canvas.width; x++) {
       for (var y = 0; y < canvas.height; y++) {
@@ -77,7 +78,8 @@ class Grayscale extends Primitive {
       }
     }
 
-    renderer.getContext().putImageData(imageData, 0, 0)
+    const outputContext = canvas.getContext('2d')
+    outputContext.putImageData(imageData, 0, 0)
   }
 }
 
