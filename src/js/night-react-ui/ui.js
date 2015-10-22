@@ -56,6 +56,8 @@ export default class NightReactUI extends EventEmitter {
     this._initLanguage()
     this._initOperations()
     this._initControls()
+
+    this.run()
   }
 
   /**
@@ -68,12 +70,26 @@ export default class NightReactUI extends EventEmitter {
     // Container has to be position: relative
     this._options.container.style.position = 'relative'
 
-    return React.render(<EditorComponent
+    this._render()
+  }
+
+  /**
+   * Renders the UI
+   * @private
+   */
+  _render () {
+    const component = (<EditorComponent
       ui={this}
       kit={this._kit}
       mediator={this._mediator}
       operationsStack={this._operationsStack}
-      options={this._options} />, this._options.container)
+      options={this._options} />)
+
+    if (this._options.renderReturnsComponent) {
+      return component
+    } else {
+      React.render(component, this._options.container)
+    }
   }
 
   /**
@@ -372,5 +388,26 @@ NightReactUI.Utils = Utils
 NightReactUI.ScrollbarComponent = ScrollbarComponent
 NightReactUI.ModalManager = ModalManager
 
+NightReactUI.Component = class extends React.Component {
+  constructor (...args) {
+    super(...args)
+
+    this._kit = new PhotoEditorSDK.Renderer('webgl', {
+      image: this.props.image
+    })
+
+    this._ui = new NightReactUI(this._kit, this.props)
+  }
+
+  /**
+   * Renders this component
+   * @return {React.Component}
+   */
+  render () {
+    return this._ui.render()
+  }
+}
+
+// Extend PhotoEditorSDK object
 PhotoEditorSDK.UI = PhotoEditorSDK.UI || {}
 PhotoEditorSDK.UI.NightReact = NightReactUI
