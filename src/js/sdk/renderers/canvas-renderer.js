@@ -171,6 +171,16 @@ class CanvasRenderer extends BaseRenderer {
     this.resizeTo(newDimensions)
   }
 
+  /**
+   * Returns the canvas size after all operations have been applied
+   * @param {Array.<Operation>} stack
+   * @param {ImageDimensions} dimensions
+   */
+  getOutputDimensionsForStack (stack, dimensions) {
+    let size = new Vector2(this._image.width, this._image.height)
+    return size
+  }
+
   get maxTextureSize () {
     return 0
   }
