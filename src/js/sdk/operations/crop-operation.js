@@ -62,38 +62,36 @@ class CropOperation extends Operation {
   /**
    * Crops the image using Canvas
    * @param {CanvasRenderer} renderer
-   * @override
+   * @return {Promise}
    * @private
    */
   _renderCanvas (renderer) {
-    var canvas = renderer.getCanvas()
-    var dimensions = new Vector2(canvas.width, canvas.height)
+    return new Promise((resolve, reject) => {
+      const canvas = renderer.getCanvas()
+      const context = renderer.getContext()
 
-    var newDimensions = this.getNewDimensions(renderer)
+      const newDimensions = this.getNewDimensions(renderer)
 
-    // Create a temporary canvas to draw to
-    var newCanvas = renderer.createCanvas()
-    newCanvas.width = newDimensions.x
-    newCanvas.height = newDimensions.y
-    var newContext = newCanvas.getContext('2d')
+      // Clone the canvas
+      const tempCanvas = renderer.cloneCanvas()
 
-    // The upper left corner of the cropped area on the original image
-    var startPosition = this._options.start.clone()
+      canvas.width = newDimensions.x
+      canvas.height = newDimensions.y
 
-    if (this._options.numberFormat === 'relative') {
-      startPosition.multiply(dimensions)
-    }
+      const start = this.getStart()
+      const end = this.getEnd()
+      const size = end.clone()
+        .subtract(start)
 
-    // Draw the source canvas onto the new one
-    newContext.drawImage(canvas,
-      startPosition.x, startPosition.y, // source x, y
-      newDimensions.x, newDimensions.y, // source dimensions
-      0, 0, // destination x, y
-      newDimensions.x, newDimensions.y // destination dimensions
-      )
+      context.drawImage(
+        tempCanvas,
+        start.x * tempCanvas.width, start.y * tempCanvas.height,
+        size.x * tempCanvas.width, size.y * tempCanvas.height,
+        0, 0,
+        size.x * tempCanvas.width, size.y * tempCanvas.height)
 
-    // Set the new canvas
-    renderer.setCanvas(newCanvas)
+      resolve()
+    })
   }
 
   /**
