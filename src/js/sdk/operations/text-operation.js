@@ -270,33 +270,79 @@ class TextOperation extends Operation {
    * @param  {CanvasRenderer} renderer
    */
   _renderCanvas (renderer) {
-    var textCanvas = this._renderTextCanvas(renderer)
+    return new Promise((resolve, reject) => {
+      const texts = this._options.texts
+      texts.forEach((text) => {
+        this._renderTextCanvas(renderer, text)
+      })
+      resolve()
+    })
+  }
 
-    var canvas = renderer.getCanvas()
-    var context = renderer.getContext()
+  /**
+   * Renders the given text using canvas2d
+   * @param  {CanvasRenderer} renderer
+   * @param  {String} text
+   * @return {Promise}
+   * @private
+   */
+  _renderTextCanvas (renderer, text) {
+    let canvas = null
+    return text.render(renderer)
+      .then((_canvas) => {
+        canvas = _canvas
+        return this._renderTextToCanvas(renderer, text, canvas)
+      })
+  }
 
-    var canvasSize = new Vector2(canvas.width, canvas.height)
-    var scaledPosition = this._options.position.clone()
+  /**
+   * Renders the given text to the output canvas
+   * @param  {CanvasRenderer} renderer
+   * @param  {String} text
+   * @param  {CanvasElement} canvas
+   * @return {Promise}
+   * @private
+   */
+  _renderTextToCanvas (renderer, text, canvas) {
+    const outputCanvas = renderer.getCanvas()
+    const context = renderer.getContext()
 
-    if (this._options.numberFormat === 'relative') {
-      scaledPosition.multiply(canvasSize)
-    }
+    const canvasDimensions = new Vector2(
+      outputCanvas.width,
+      outputCanvas.height
+    )
 
-    // Adjust vertical alignment
-    if (this._options.verticalAlignment === 'center') {
-      scaledPosition.y -= textCanvas.height / 2
-    } else if (this._options.verticalAlignment === 'bottom') {
-      scaledPosition.y -= textCanvas.height
-    }
+    return new Promise((resolve, reject) => {
+      const textPosition = text.getPosition()
+      const textRotation = text.getRotation()
+      const textAnchor = text.getAnchor()
 
-    // Adjust horizontal alignment
-    if (this._options.alignment === 'center') {
-      scaledPosition.x -= textCanvas.width / 2
-    } else if (this._options.alignment === 'right') {
-      scaledPosition.x -= textCanvas.width
-    }
+      const textDimensions = new Vector2(
+        canvas.width,
+        canvas.height
+      )
 
-    context.drawImage(textCanvas, scaledPosition.x, scaledPosition.y)
+      const absoluteTextPosition = textPosition.clone()
+        .multiply(canvasDimensions)
+      const absoluteTextAnchor = textAnchor.clone()
+        .multiply(textDimensions)
+
+      context.save()
+
+      context.translate(
+        absoluteTextPosition.x,
+        absoluteTextPosition.y
+      )
+      context.rotate(textRotation)
+
+      context.drawImage(canvas,
+        -absoluteTextAnchor.x,
+        -absoluteTextAnchor.y)
+
+      context.restore()
+
+      resolve()
+    })
   }
 
   /**
