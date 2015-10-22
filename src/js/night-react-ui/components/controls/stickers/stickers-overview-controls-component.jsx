@@ -22,17 +22,20 @@ export default class StickersOverviewControlsComponent extends BaseChildComponen
     this._stickers = this.getSharedState('stickers')
 
     this._availableStickers = []
-    this._registerStickers()
+    this._initStickers()
   }
 
   // -------------------------------------------------------------------------- STICKERS
 
   /**
-   * Registers the available stickers
+   * Initializes the available stickers
    * @private
    */
-  _registerStickers () {
-    this._availableStickers = [
+  _initStickers () {
+    const additionalStickers = this.props.options.stickers || []
+    const replaceStickers = !!this.props.options.replaceStickers
+
+    const stickers = [
       'glasses-nerd.png',
       'glasses-normal.png',
       'glasses-shutter-green.png',
@@ -57,8 +60,11 @@ export default class StickersOverviewControlsComponent extends BaseChildComponen
       ]
     )
 
-    const additionalStickers = this.props.options.stickers || []
-    this._availableStickers = this._availableStickers.concat(additionalStickers)
+    if (replaceStickers) {
+      this._availableStickers = additionalStickers
+    } else {
+      this._availableStickers = stickers.concat(additionalStickers)
+    }
   }
 
   // -------------------------------------------------------------------------- EVENTS
