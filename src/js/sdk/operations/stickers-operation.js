@@ -92,6 +92,7 @@ class StickersOperation extends Operation {
   getStickerAtPosition (renderer, position) {
     const canvas = renderer.getCanvas()
     const canvasDimensions = new Vector2(canvas.width, canvas.height)
+    const parentScale = renderer.getScale()
 
     let intersectingSticker = null
     this._options.stickers.slice(0).reverse()
@@ -124,6 +125,7 @@ class StickersOperation extends Operation {
             stickerImage.height
           )
           .multiply(stickerScale)
+          .multiply(parentScale, parentScale)
 
         if (x > -0.5 * stickerDimensions.x &&
             x < 0.5 * stickerDimensions.x &&
