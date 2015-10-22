@@ -9,6 +9,7 @@
  */
 
 import Promise from '../vendor/promise'
+import Vector2 from '../lib/math/vector2'
 import Operation from './operation'
 
 /**
@@ -71,36 +72,29 @@ class RotationOperation extends Operation {
   /**
    * Crops the image using Canvas2D
    * @param  {CanvasRenderer} renderer
+   * @return {Promise}
+   * @private
    */
   _renderCanvas (renderer) {
-    var canvas = renderer.getCanvas()
+    return new Promise((resolve, reject) => {
+      const canvas = renderer.getCanvas()
+      const context = renderer.getContext()
+      const actualDegrees = this._options.degrees % 360
+      const radians = actualDegrees * Math.PI / 180
+      const newDimensions = this.getNewDimensions(renderer)
 
-    var actualDegrees = this._options.degrees % 360
-    let newDimensions = this.getNewDimensions(renderer)
+      // Clone the canvas
+      const tempCanvas = renderer.cloneCanvas()
 
-    // Create a rotated canvas
-    var newCanvas = renderer.createCanvas()
-    newCanvas.width = newDimensions.x
-    newCanvas.height = newDimensions.y
-    var newContext = newCanvas.getContext('2d')
+      renderer.resizeTo(newDimensions)
+      context.save()
+      context.translate(canvas.width / 2, canvas.height / 2)
+      context.rotate(radians)
+      context.drawImage(tempCanvas, -tempCanvas.width / 2, -tempCanvas.height / 2)
+      context.restore()
 
-    newContext.save()
-
-    // Translate the canvas
-    newContext.translate(newCanvas.width / 2, newCanvas.height / 2)
-
-    // Rotate the canvas
-    newContext.rotate(actualDegrees * (Math.PI / 180))
-
-    // Create a temporary canvas so that we can draw the image
-    // with the applied transformation
-    var tempCanvas = renderer.cloneCanvas()
-    newContext.drawImage(tempCanvas, -canvas.width / 2, -canvas.height / 2)
-
-    // Restore old transformation
-    newContext.restore()
-
-    renderer.setCanvas(newCanvas)
+      resolve()
+    })
   }
 
   /**
