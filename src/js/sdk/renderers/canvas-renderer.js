@@ -97,6 +97,8 @@ class CanvasRenderer extends BaseRenderer {
 
     this._canvas.width = dimensions.x
     this._canvas.height = dimensions.y
+
+    this._outputSize = dimensions.clone()
   }
 
   /**
