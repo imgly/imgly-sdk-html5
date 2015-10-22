@@ -10,11 +10,10 @@
 
 import Operation from './operation'
 import Vector2 from '../lib/math/vector2'
-import Matrix from '../lib/math/matrix'
 import Sticker from './stickers/sticker'
-import Promise from '../vendor/promise'
 
 import StickersWebGLRenderer from './stickers/webgl-renderer'
+import StickersCanvasRenderer from './stickers/canvas-renderer'
 
 /**
  * An operation that can draw text on the canvas
@@ -77,30 +76,11 @@ class StickersOperation extends Operation {
    * @private
    */
   _renderCanvas (renderer, image) {
-    var canvas = renderer.getCanvas()
-    var context = renderer.getContext()
-
-    var canvasSize = new Vector2(canvas.width, canvas.height)
-    var scaledPosition = this._options.position.clone()
-
-    if (this._options.numberFormat === 'relative') {
-      scaledPosition.multiply(canvasSize)
+    if (!this._renderers[renderer.id]) {
+      this._renderers[renderer.id] = new StickersCanvasRenderer(this, renderer)
     }
 
-    var size = new Vector2(image.width, image.height)
-    if (typeof this._options.size !== 'undefined') {
-      size.copy(this._options.size)
-
-      if (this._options.numberFormat === 'relative') {
-        size.multiply(canvasSize)
-      }
-    }
-
-    context.drawImage(image,
-      0, 0,
-      image.width, image.height,
-      scaledPosition.x, scaledPosition.y,
-      size.x, size.y)
+    return this._renderers[renderer.id].render()
   }
 
   /**

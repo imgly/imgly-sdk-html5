@@ -112,7 +112,7 @@ export default class StickersWebGLRenderer {
   }
 
   /**
-   * Renders the given texture to the next
+   * Renders the given texture to the next FBO
    * @param  {Image} image
    * @param  {WebGLTexture} texture
    * @param  {Sticker} sticker

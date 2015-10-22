@@ -8,6 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+import Utils from '../../lib/utils'
 import Configurable from '../../lib/configurable'
 import Vector2 from '../../lib/math/vector2'
 
@@ -15,6 +16,7 @@ export default class Sticker extends Configurable {
   constructor (operation, options) {
     super(options)
     this._operation = operation
+    this.id = Utils.getUUID()
   }
 }
 
