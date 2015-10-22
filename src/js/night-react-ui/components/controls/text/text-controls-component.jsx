@@ -40,6 +40,30 @@ export default class TextControlsComponent extends BaseChildComponent {
     this.state = { mode: null }
 
     this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
+    this._initFonts()
+  }
+
+  // -------------------------------------------------------------------------- INITIALIZATIOn
+
+  /**
+   * Initializes the available fonts
+   * @private
+   */
+  _initFonts () {
+    const additionalFonts = this.props.options.fonts || []
+    const replaceFonts = !!this.props.options.replaceFonts
+    const fonts = [
+      { fontFamily: 'Helvetica', fontWeight: 'normal' },
+      { fontFamily: 'Verdana', fontWeight: 'normal' },
+      { fontFamily: 'Times New Roman', fontWeight: 'normal'},
+      { fontFamily: 'Impact', fontWeight: 'normal' }
+    ]
+
+    if (replaceFonts) {
+      this._fonts = additionalFonts
+    } else {
+      this._fonts = fonts.concat(additionalFonts)
+    }
   }
 
   // -------------------------------------------------------------------------- LIFECYCLE
@@ -237,17 +261,10 @@ export default class TextControlsComponent extends BaseChildComponent {
     const selectedText = this.getSharedState('selectedText')
     if (!selectedText) return
 
-    const fonts = [
-      { fontFamily: 'Helvetica', fontWeight: 'normal' },
-      { fontFamily: 'Verdana', fontWeight: 'normal' },
-      { fontFamily: 'Times New Roman', fontWeight: 'normal'},
-      { fontFamily: 'Impact', fontWeight: 'normal' }
-    ]
-
     return (<FontComponent
       fontFamily={selectedText.getFontFamily()}
       fontWeight={selectedText.getFontWeight()}
-      fonts={fonts}
+      fonts={this._fonts}
       onChange={this._onFontChange} />)
   }
 
