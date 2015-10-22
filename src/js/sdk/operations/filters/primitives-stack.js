@@ -125,10 +125,27 @@ class PrimitivesStack {
   }
 
   renderCanvas (renderer) {
-    for (var i = 0; i < this._stack.length; i++) {
-      var primitive = this._stack[i]
-      primitive.render(renderer)
+    const outputCanvas = renderer.cloneCanvas()
+
+    let promise = Promise.resolve()
+    if (this._dirty) {
+      for (var i = 0; i < this._stack.length; i++) {
+        var primitive = this._stack[i]
+        primitive.renderCanvas(renderer, outputCanvas)
+      }
     }
+
+    promise = promise.then(() => {
+      this._dirty = false
+    }).then(() => {
+      // Render with intensity
+      const context = renderer.getContext()
+      context.globalAlpha = this._intensity
+      context.drawImage(outputCanvas, 0, 0)
+      context.globalAlpha = 1.0
+    })
+
+    return promise
   }
 
   /**

@@ -55,7 +55,6 @@ class Saturation extends Primitive {
    * @param  {WebGLTexture} inputTexture
    * @param  {WebGLFramebuffer} outputFBO
    * @param  {WebGLTexture} outputTexture
-   * @return {Promise}
    */
   /* istanbul ignore next */
   renderWebGL (renderer, inputTexture, outputFBO, outputTexture) {
@@ -80,11 +79,11 @@ class Saturation extends Primitive {
   /**
    * Renders the primitive (Canvas)
    * @param  {CanvasRenderer} renderer
-   * @return {Promise}
+   * @param  {Canvas} canvas
    */
-  renderCanvas (renderer) {
-    var canvas = renderer.getCanvas()
-    var imageData = renderer.getContext().getImageData(0, 0, canvas.width, canvas.height)
+  renderCanvas (renderer, canvas) {
+    const context = canvas.getContext('2d')
+    var imageData = context.getImageData(0, 0, canvas.width, canvas.height)
     var saturation = this._options.saturation
 
     for (var x = 0; x < canvas.width; x++) {
@@ -98,7 +97,8 @@ class Saturation extends Primitive {
       }
     }
 
-    renderer.getContext().putImageData(imageData, 0, 0)
+    const outputContext = canvas.getContext('2d')
+    outputContext.putImageData(imageData, 0, 0)
   }
 }
 

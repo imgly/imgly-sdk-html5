@@ -76,11 +76,11 @@ class Glow extends Primitive {
   /**
    * Renders the primitive (Canvas)
    * @param  {CanvasRenderer} renderer
-   * @return {Promise}
+   * @param  {Canvas} canvas
    */
-  renderCanvas (renderer) {
-    var canvas = renderer.getCanvas()
-    var imageData = renderer.getContext().getImageData(0, 0, canvas.width, canvas.height)
+  renderCanvas (renderer, canvas) {
+    const context = canvas.getContext('2d')
+    var imageData = context.getImageData(0, 0, canvas.width, canvas.height)
     var color = this._options.color
 
     var d
@@ -106,7 +106,8 @@ class Glow extends Primitive {
       }
     }
 
-    renderer.getContext().putImageData(imageData, 0, 0)
+    const outputContext = canvas.getContext('2d')
+    outputContext.putImageData(imageData, 0, 0)
   }
 }
 

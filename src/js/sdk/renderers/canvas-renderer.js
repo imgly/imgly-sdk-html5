@@ -74,7 +74,12 @@ class CanvasRenderer extends BaseRenderer {
    * @returns {Promis}
    */
   drawImage (image) {
-    this._context.drawImage(image, 0, 0, image.width, image.height, 0, 0, this._canvas.width, this._canvas.height)
+    this._context.drawImage(
+      image,
+      0, 0,
+      image.width, image.height,
+      0, 0,
+      this._canvas.width, this._canvas.height)
     return Promise.resolve()
   }
 
@@ -90,30 +95,16 @@ class CanvasRenderer extends BaseRenderer {
       return
     }
 
-    // Create a temporary canvas to draw to
-    var newCanvas = this.createCanvas()
-    newCanvas.width = dimensions.x
-    newCanvas.height = dimensions.y
-    var newContext = newCanvas.getContext('2d')
-
-    // Draw the source canvas onto the new one
-    newContext.drawImage(this._canvas,
-      0, 0,
-      this._canvas.width,
-      this._canvas.height,
-      0, 0,
-      newCanvas.width,
-      newCanvas.height)
-
-    // Set the new canvas and context
-    this.setCanvas(newCanvas)
+    this._canvas.width = dimensions.x
+    this._canvas.height = dimensions.y
   }
 
   /**
    * Returns a cloned version of the current canvas
+   * @param {Boolean} copyContent = true
    * @return {Canvas}
    */
-  cloneCanvas () {
+  cloneCanvas (copyContent = true) {
     var canvas = this.createCanvas()
     var context = canvas.getContext('2d')
 
@@ -121,8 +112,10 @@ class CanvasRenderer extends BaseRenderer {
     canvas.width = this._canvas.width
     canvas.height = this._canvas.height
 
-    // Draw the current canvas on the new one
-    context.drawImage(this._canvas, 0, 0)
+    if (copyContent) {
+      // Draw the current canvas on the new one
+      context.drawImage(this._canvas, 0, 0)
+    }
 
     return canvas
   }
