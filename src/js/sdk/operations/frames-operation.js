@@ -87,22 +87,27 @@ class FramesOperation extends Operation {
   /**
    * Crops the image using Canvas2D
    * @param  {CanvasRenderer} renderer
+   * @return {Promise}
    * @private
    */
   _renderCanvas (renderer) {
-    var canvas = renderer.getCanvas()
-    var context = renderer.getContext()
+    return new Promise((resolve, reject) => {
+      const canvas = renderer.getCanvas()
+      const context = renderer.getContext()
 
-    var color = this._options.color
-    var thickness = this._options.thickness * canvas.height
+      const color = this._options.color
+      const thickness = this._options.thickness * Math.min(canvas.width, canvas.height)
 
-    context.save()
-    context.beginPath()
-    context.lineWidth = thickness * 2
-    context.strokeStyle = color.toRGBA()
-    context.rect(0, 0, canvas.width, canvas.height)
-    context.stroke()
-    context.restore()
+      context.save()
+      context.beginPath()
+      context.lineWidth = thickness * 2
+      context.strokeStyle = color.toRGBA()
+      context.rect(0, 0, canvas.width, canvas.height)
+      context.stroke()
+      context.restore()
+
+      resolve()
+    })
   }
 }
 
