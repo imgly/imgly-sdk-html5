@@ -388,6 +388,18 @@ class TextOperation extends Operation {
       })
     return intersectingText
   }
+
+  /**
+   * Sets this operation to dirty, so that it will re-render next time
+   * @param {Boolean} dirty = true
+   */
+  setDirty (dirty) {
+    super.setDirty(dirty)
+    if (dirty) {
+      const texts = this.getTexts()
+      texts.forEach((text) => text.setDirty(true))
+    }
+  }
 }
 
 /**
