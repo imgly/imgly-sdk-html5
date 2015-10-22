@@ -67,36 +67,40 @@ class FlipOperation extends Operation {
    * @param  {CanvasRenderer} renderer
    */
   _renderCanvas (renderer) {
-    var canvas = renderer.getCanvas()
-    var context = renderer.getContext()
+    return new Promise((resolve, reject) => {
+      const canvas = renderer.getCanvas()
+      const context = renderer.getContext()
 
-    var scaleX = 1, scaleY = 1
-    var translateX = 0, translateY = 0
+      let scaleX = 1, scaleY = 1
+      let translateX = 0, translateY = 0
 
-    if (this._options.horizontal) {
-      scaleX = -1
-      translateX = canvas.width
-    }
+      if (this._options.horizontal) {
+        scaleX = -1
+        translateX = canvas.width
+      }
 
-    if (this._options.vertical) {
-      scaleY = -1
-      translateY = canvas.height
-    }
+      if (this._options.vertical) {
+        scaleY = -1
+        translateY = canvas.height
+      }
 
-    // Save the current state
-    context.save()
+      // Save the current state
+      context.save()
 
-    // Apply the transformation
-    context.translate(translateX, translateY)
-    context.scale(scaleX, scaleY)
+      // Apply the transformation
+      context.translate(translateX, translateY)
+      context.scale(scaleX, scaleY)
 
-    // Create a temporary canvas so that we can draw the image
-    // with the applied transformation
-    var tempCanvas = renderer.cloneCanvas()
-    context.drawImage(tempCanvas, 0, 0)
+      // Create a temporary canvas so that we can draw the image
+      // with the applied transformation
+      const tempCanvas = renderer.cloneCanvas()
+      context.drawImage(tempCanvas, 0, 0)
 
-    // Restore old transformation
-    context.restore()
+      // Restore old transformation
+      context.restore()
+
+      resolve()
+    })
   }
 }
 
