@@ -15,24 +15,6 @@ import ScrollbarComponent from '../../scrollbar-component'
 // Specifies the default distance to the border
 // when selecting a ratio
 const PADDING = 0.1
-const RATIOS = [
-  {
-    identifier: 'custom',
-    ratio: '*'
-  },
-  {
-    identifier: 'square',
-    ratio: 1
-  },
-  {
-    identifier: '4-3',
-    ratio: 1.33
-  },
-  {
-    identifier: '16-9',
-    ratio: 1.77
-  }
-]
 
 export default class OrientationControlsComponent extends BaseChildComponent {
   constructor (...args) {
@@ -47,6 +29,30 @@ export default class OrientationControlsComponent extends BaseChildComponent {
     this._operation = this.getSharedState('operation')
 
     this.state = { ratio: null }
+    this._initRatios()
+  }
+
+  // -------------------------------------------------------------------------- INITIALIZATION
+
+  /**
+   * Initializes the available ratios
+   * @private
+   */
+  _initRatios () {
+    const additionalRatios = this.props.options.ratios || []
+    const replaceRatios = !!this.props.options.replaceRatios
+    this._ratios = [
+      { identifier: 'custom', ratio: '*', selected: true },
+      { identifier: 'square', ratio: 1 },
+      { identifier: '4-3', ratio: 1.33 },
+      { identifier: '16-9', ratio: 1.77 }
+    ]
+
+    if (replaceRatios) {
+      this._ratios = additionalRatios
+    } else {
+      this._ratios = this._ratios.concat(additionalRatios)
+    }
   }
 
   // -------------------------------------------------------------------------- LIFECYCLE
@@ -75,7 +81,7 @@ export default class OrientationControlsComponent extends BaseChildComponent {
 
       if (!this.getSharedState('operationExistedBefore')) {
         // Select first ratio as default (for now)
-        this._selectRatio(RATIOS[0])
+        this._selectInitialRatio()
       } else {
         // Canvas has been rendered, dimensions might have changed. Make sure
         // that the canvas controls are rendered again (to match the new dimensions)
@@ -143,6 +149,19 @@ export default class OrientationControlsComponent extends BaseChildComponent {
   // -------------------------------------------------------------------------- RATIO HANDLING
 
   /**
+   * Selects the *last* ratio that has `selected` set to true
+   * @private
+   */
+  _selectInitialRatio () {
+    const selectedRatios = this._ratios.filter((ratio) => ratio.selected)
+    let lastSelectedRatio = selectedRatios.pop()
+    if (!lastSelectedRatio) {
+      lastSelectedRatio = this._ratios[0]
+    }
+    return this._selectRatio(lastSelectedRatio)
+  }
+
+  /**
    * Selects the given ratio
    * @param {String} ratio
    * @private
@@ -191,7 +210,7 @@ export default class OrientationControlsComponent extends BaseChildComponent {
   renderWithBEM () {
     const ui = this.context.ui
 
-    const listItems = RATIOS.map((ratio) => {
+    const listItems = this._ratios.map((ratio) => {
       return (<li
         bem='e:item'
         key={ratio.identifier}>
