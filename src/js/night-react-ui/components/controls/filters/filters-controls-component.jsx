@@ -26,12 +26,31 @@ export default class FiltersControlsComponent extends BaseChildComponent {
       '_onOperationUpdated'
     )
     this._operation = this.getSharedState('operation')
-    this._filters = this._operation.getFilters()
 
     this._events = {
       [Constants.EVENTS.OPERATION_UPDATED]: this._onOperationUpdated
     }
+
+    this._initFilters()
   }
+
+  // -------------------------------------------------------------------------- INITIALIZATION
+
+  /**
+   * Initializes the available filters
+   * @private
+   */
+  _initFilters () {
+    const filtersMap = this._operation.getFilters()
+    const filters = []
+    for (let key in filtersMap) {
+      filters.push(filtersMap[key])
+    }
+    const additionalFilters = this.props.options.filters || []
+    this._filters = filters.concat(additionalFilters)
+  }
+
+  // -------------------------------------------------------------------------- EVENTS
 
   /**
    * Gets called when an operation has been updated
@@ -80,6 +99,8 @@ export default class FiltersControlsComponent extends BaseChildComponent {
     }
   }
 
+  // -------------------------------------------------------------------------- RENDERING
+
   /**
    * Renders this component
    * @return {ReactBEM.Element}
@@ -88,11 +109,9 @@ export default class FiltersControlsComponent extends BaseChildComponent {
     const ui = this.context.ui
     const currentFilter = this._operation.getFilter()
 
-    let listItems = []
-    for (let identifier in this._filters) {
-      const filter = this._filters[identifier]
-
-      listItems.push(<li
+    const listItems = this._filters.map((filter) => {
+      const identifier = filter.identifier
+      return (<li
         bem='e:item'
         key={identifier}
         onClick={this._onItemClick.bind(this, filter)}>
@@ -105,7 +124,7 @@ export default class FiltersControlsComponent extends BaseChildComponent {
           </div>
         </bem>
       </li>)
-    }
+    })
 
     return (<div bem='$b:controls e:table'>
       <div bem='e:cell m:button m:withBorderRight'>
