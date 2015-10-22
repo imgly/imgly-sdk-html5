@@ -118,24 +118,27 @@ class RadialBlurOperation extends Operation {
    * @param  {CanvasRenderer} renderer
    */
   _renderCanvas (renderer) {
-    var canvas = renderer.getCanvas()
+    return new Promise((resolve, reject) => {
+      const canvas = renderer.getCanvas()
 
-    let blurRadiusChanged = this._options.blurRadius !== this._lastBlurRadius
-    let blurryCanvas
-    if (blurRadiusChanged || this._cachedBlurredCanvas === null) {
-      // Blur and cache canvas
-      blurryCanvas = this._blurCanvas(renderer)
-      this._cachedBlurredCanvas = blurryCanvas
-      this._lastBlurRadius = this._options.blurRadius
-      this._lastGradientRadius = this._options.gradientRadius
-    } else {
-      // Use cached canvas
-      blurryCanvas = this._cachedBlurredCanvas
-    }
+      const blurRadiusChanged = this._options.blurRadius !== this._lastBlurRadius
+      let blurryCanvas
+      if (blurRadiusChanged || this._cachedBlurredCanvas === null) {
+        // Blur and cache canvas
+        blurryCanvas = this._blurCanvas(renderer)
+        this._cachedBlurredCanvas = blurryCanvas
+        this._lastBlurRadius = this._options.blurRadius
+        this._lastGradientRadius = this._options.gradientRadius
+      } else {
+        // Use cached canvas
+        blurryCanvas = this._cachedBlurredCanvas
+      }
 
-    var maskCanvas = this._createMask(renderer)
+      const maskCanvas = this._createMask(renderer)
+      this._applyMask(canvas, blurryCanvas, maskCanvas)
 
-    this._applyMask(canvas, blurryCanvas, maskCanvas)
+      resolve()
+    })
   }
 
   /**

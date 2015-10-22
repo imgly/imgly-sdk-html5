@@ -126,27 +126,31 @@ class TiltShiftOperation extends Operation {
   /**
    * Crops the image using Canvas2D
    * @param  {CanvasRenderer} renderer
+   * @return {Promise}
    */
   _renderCanvas (renderer) {
-    var canvas = renderer.getCanvas()
+    return new Promise((resolve, reject) => {
+      const canvas = renderer.getCanvas()
 
-    let optionsChanged = this._options.blurRadius !== this._lastBlurRadius ||
-      this._options.gradientRadius !== this._lastGradientRadius
-    let blurryCanvas
-    if (optionsChanged || this._cachedBlurredCanvas === null) {
-      // Blur and cache canvas
-      blurryCanvas = this._blurCanvas(renderer)
-      this._cachedBlurredCanvas = blurryCanvas
-      this._lastBlurRadius = this._options.blurRadius
-      this._lastGradientRadius = this._options.gradientRadius
-    } else {
-      // Use cached canvas
-      blurryCanvas = this._cachedBlurredCanvas
-    }
+      const optionsChanged = this._options.blurRadius !== this._lastBlurRadius ||
+        this._options.gradientRadius !== this._lastGradientRadius
+      let blurryCanvas
+      if (optionsChanged || this._cachedBlurredCanvas === null) {
+        // Blur and cache canvas
+        blurryCanvas = this._blurCanvas(renderer)
+        this._cachedBlurredCanvas = blurryCanvas
+        this._lastBlurRadius = this._options.blurRadius
+        this._lastGradientRadius = this._options.gradientRadius
+      } else {
+        // Use cached canvas
+        blurryCanvas = this._cachedBlurredCanvas
+      }
 
-    var maskCanvas = this._createMask(renderer)
+      const maskCanvas = this._createMask(renderer)
+      this._applyMask(canvas, blurryCanvas, maskCanvas)
 
-    this._applyMask(canvas, blurryCanvas, maskCanvas)
+      resolve()
+    })
   }
 
   /**
