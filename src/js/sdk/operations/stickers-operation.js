@@ -1,4 +1,3 @@
-/* global Image */
 /*
  * Photo Editor SDK - photoeditorsdk.com
  * Copyright (c) 2013-2015 9elements GmbH
@@ -15,6 +14,8 @@ import Matrix from '../lib/math/matrix'
 import Sticker from './stickers/sticker'
 import Promise from '../vendor/promise'
 
+import StickersWebGLRenderer from './stickers/webgl-renderer'
+
 /**
  * An operation that can draw text on the canvas
  *
@@ -26,17 +27,7 @@ class StickersOperation extends Operation {
   constructor (...args) {
     super(...args)
 
-    this._framebuffers = []
-    this._framebufferTextures = []
-    this._framebufferIndex = 0
-
-    this._programs = {}
-    this._textures = {}
-    this._loadedStickers = {}
-
-    this.vertexShader = require('raw!./generic/sprite.vert')
-    this.adjustmentsShader = require('raw!./stickers/adjustments.frag')
-    this.blurShader = require('raw!./blur/blur.frag')
+    this._renderers = {}
   }
 
   /**
@@ -68,322 +59,15 @@ class StickersOperation extends Operation {
   /**
    * Renders this operation using WebGL
    * @param  {WebGLRenderer} renderer
-   * @param  {Image} image
    * @private
    */
   /* istanbul ignore next */
-  _renderWebGL (renderer, image) {
-    const canvas = renderer.getCanvas()
-    const canvasDimensions = new Vector2(canvas.width, canvas.height)
-    if (!this._outputTexture) {
-      const { texture, fbo } = renderer.createFramebuffer()
-      this._outputTexture = texture
-      this._outputFramebuffer = fbo
+  _renderWebGL (renderer) {
+    if (!this._renderers[renderer.id]) {
+      this._renderers[renderer.id] = new StickersWebGLRenderer(this, renderer)
     }
 
-    renderer.resizeTexture(this._outputTexture, canvasDimensions)
-
-    const stickers = this.getStickers()
-    let promise = Promise.resolve()
-    stickers.forEach((sticker) => {
-      promise = promise.then(() => {
-        return this._renderStickerWebGL(renderer, sticker)
-      })
-    })
-    return promise
-      .then(() => {
-        this._renderFinal(renderer)
-      })
-  }
-
-  /**
-   * Creates the framebuffers and textures for rendering
-   * @param  {WebGLRenderer} renderer
-   * @private
-   */
-  _setupFrameBuffers (renderer) {
-    for (let i = 0; i < 2; i++) {
-      const { fbo, texture } = renderer.createFramebuffer()
-      this._framebuffers.push(fbo)
-      this._framebufferTextures.push(texture)
-    }
-  }
-
-  _renderTexture (renderer, image, texture, sticker) {
-    return new Promise((resolve, reject) => {
-      if (!this._programs[renderer.id].adjustments) {
-        this._programs[renderer.id].adjustments =
-          renderer.setupGLSLProgram(null, this.adjustmentsShader)
-      }
-
-      const stickerAdjustments = sticker.getAdjustments()
-      const stickerScale = sticker.getScale()
-
-      const canvas = renderer.getCanvas()
-
-      const inputTexture = texture
-      const outputTexture = this._framebufferTextures[this._framebufferIndex % 2]
-      const outputFBO = this._framebuffers[this._framebufferIndex % 2]
-
-      const blurRadius = stickerAdjustments.getBlur()
-
-      const stickerDimensions = new Vector2(image.width, image.height)
-        .multiply(stickerScale)
-
-      const start = new Vector2(0.0, 0.0)
-        .subtract(blurRadius * canvas.width / image.width)
-      const end = new Vector2(1.0, 1.0)
-        .add(blurRadius * canvas.width / image.width)
-
-      const textureCoordinates = new Float32Array([
-        // First triangle
-        start.x, start.y,
-        end.x, start.y,
-        start.x, end.y,
-
-        // Second triangle
-        start.x, end.y,
-        end.x, start.y,
-        end.x, end.y
-      ])
-
-      const uniforms = {
-        u_brightness: { type: 'f', value: stickerAdjustments.getBrightness() },
-        u_saturation: { type: 'f', value: stickerAdjustments.getSaturation() },
-        u_contrast: { type: 'f', value: stickerAdjustments.getContrast() }
-      }
-
-      const textureSize = stickerDimensions.clone()
-        .add(blurRadius * canvas.width * 2)
-
-      const program = this._programs[renderer.id].adjustments
-      renderer.runProgram(program, {
-        inputTexture,
-        outputTexture,
-        outputFBO,
-        textureSize,
-        textureCoordinates,
-        switchBuffer: false,
-        clear: false,
-        uniforms
-      })
-
-      this._lastTexture = outputTexture
-      this._framebufferIndex++
-
-      resolve()
-    })
-  }
-
-  _renderFinal (renderer) {
-    return new Promise((resolve, reject) => {
-      renderer.runProgram(renderer.getDefaultProgram(), {
-        switchBuffer: false
-      })
-
-      renderer.runProgram(renderer.getDefaultProgram(), {
-        inputTexture: this._outputTexture,
-        resizeTextures: false,
-        clear: false,
-        blend: 'normal'
-      })
-    })
-  }
-
-  _renderToOutput (renderer, image, sticker) {
-    return new Promise((resolve, reject) => {
-      if (!this._programs[renderer.id].default) {
-        this._programs[renderer.id].default =
-          renderer.setupGLSLProgram(this.vertexShader)
-      }
-      const canvas = renderer.getCanvas()
-      const canvasDimensions = new Vector2(canvas.width, canvas.height)
-      const program = this._programs[renderer.id].default
-      const projectionMatrix = this._createProjectionMatrixForSticker(renderer, image, sticker)
-
-      renderer.runProgram(program, {
-        clear: false,
-        inputTexture: this._lastTexture,
-        outputTexture: this._outputTexture,
-        outputFBO: this._outputFramebuffer,
-        switchBuffer: false,
-        resizeTextures: false,
-        textureSize: canvasDimensions,
-        blend: 'normal',
-        uniforms: {
-          u_projMatrix: { type: 'mat3fv', value: projectionMatrix }
-        }
-      })
-      resolve()
-    })
-  }
-
-  _applyBlur (renderer, image, sticker) {
-    const stickerAdjustments = sticker.getAdjustments()
-
-    return new Promise((resolve, reject) => {
-      const stickerBlur = stickerAdjustments.getBlur()
-      if (!stickerBlur) {
-        return resolve()
-      }
-
-      if (!this._programs[renderer.id].blur) {
-        this._programs[renderer.id].blur =
-          renderer.setupGLSLProgram(null, this.blurShader)
-      }
-
-      const textureSize = new Vector2(image.width, image.height)
-        .multiply(sticker.getScale())
-
-      textureSize.add(textureSize.clone().multiply(stickerBlur))
-
-      const canvas = renderer.getCanvas()
-      const blurWidth = (stickerBlur * canvas.width / textureSize.x) / 4
-      const uniforms = {
-        delta: { type: '2f', value: [blurWidth, 0] }
-      }
-
-      const programOptions = {
-        inputTexture: this._lastTexture,
-        outputTexture: this._framebufferTextures[this._framebufferIndex % 2],
-        outputFBO: this._framebuffers[this._framebufferIndex % 2],
-        uniforms,
-        textureSize,
-        switchBuffer: false,
-        clear: false
-      }
-
-      renderer.runProgram(this._programs[renderer.id].blur, programOptions)
-
-      this._lastTexture = programOptions.outputTexture
-      this._framebufferIndex++
-
-      programOptions.outputTexture = this._framebufferTextures[this._framebufferIndex % 2]
-      programOptions.outputFBO = this._framebuffers[this._framebufferIndex % 2]
-
-      uniforms.delta.value = [0, blurWidth]
-
-      programOptions.inputTexture = this._lastTexture
-      renderer.runProgram(this._programs[renderer.id].blur, programOptions)
-
-      this._lastTexture = programOptions.outputTexture
-      this._framebufferIndex++
-
-      resolve()
-    })
-  }
-
-  /**
-   * Renders the given sticker using WebGL
-   * @param  {WebGLRenderer} renderer
-   * @param  {Object} sticker
-   * @private
-   */
-  _renderStickerWebGL (renderer, sticker) {
-    this._setupFrameBuffers(renderer)
-
-    if (!this._programs[renderer.id]) {
-      this._programs[renderer.id] = {}
-    }
-
-    const image = sticker.getImage()
-    this._lastTexture = null
-    this._framebufferIndex = 0
-    return this._uploadTexture(renderer, image, sticker)
-      .then((texture) => {
-        return this._renderTexture(renderer, image, texture, sticker)
-      })
-      .then(() => {
-        return this._applyBlur(renderer, image, sticker)
-      })
-      .then(() => {
-        return this._renderToOutput(renderer, image, sticker)
-      })
-  }
-
-  /**
-   * Creates a projection matrix for the given sticker
-   * @param  {WebGLRenderer} renderer
-   * @param  {Image} image
-   * @param  {Object} sticker
-   * @return {Array}
-   * @private
-   */
-  _createProjectionMatrixForSticker (renderer, image, sticker) {
-    const canvas = renderer.getCanvas()
-    const blurRadius = sticker.getAdjustments().getBlur()
-    const parentScale = renderer.getScale()
-
-    // Projection matrix
-    let projectionMatrix = new Matrix()
-    projectionMatrix.a = 2 / canvas.width
-    projectionMatrix.d = -2 / canvas.height
-    projectionMatrix.tx = -1
-    projectionMatrix.ty = 1
-
-    // Scale matrix
-    let scaleMatrix = new Matrix()
-    const stickerScale = sticker.getScale()
-    const additionalBlurScale = (1 + (blurRadius * canvas.width / image.width) * 2)
-    scaleMatrix.a = stickerScale.x * image.width * 0.5
-    scaleMatrix.d = -stickerScale.y * image.height * 0.5
-    scaleMatrix.a *= additionalBlurScale
-    scaleMatrix.d *= additionalBlurScale
-    scaleMatrix.a *= parentScale
-    scaleMatrix.d *= parentScale
-
-    // Translation matrix
-    const stickerPosition = sticker.getPosition()
-    let translationMatrix = new Matrix()
-    translationMatrix.tx = stickerPosition.x * canvas.width
-    translationMatrix.ty = stickerPosition.y * canvas.height
-
-    // Rotation matrix
-    const stickerRotation = sticker.getRotation()
-    const c = Math.cos(stickerRotation * -1)
-    const s = Math.sin(stickerRotation * -1)
-    let rotationMatrix = new Matrix()
-    rotationMatrix.a = c
-    rotationMatrix.b = -s
-    rotationMatrix.c = s
-    rotationMatrix.d = c
-
-    // Flip matrix
-    let flipMatrix = new Matrix()
-    flipMatrix.a = sticker.getFlipHorizontally() ? -1 : 1
-    flipMatrix.d = sticker.getFlipVertically() ? -1 : 1
-
-    let matrix = scaleMatrix.multiply(flipMatrix)
-    matrix.multiply(rotationMatrix)
-    matrix.multiply(translationMatrix)
-    matrix.multiply(projectionMatrix)
-    return matrix.toArray()
-  }
-
-  /**
-   * Uploads the given image to the texture with the given id
-   * @param  {WebGLRenderer} renderer
-   * @param  {Image} image
-   * @return {Promise}
-   * @private
-   */
-  _uploadTexture (renderer, image) {
-    return new Promise((resolve, reject) => {
-      // Make sure we have a texture hash for the renderer
-      if (!this._textures[renderer.id]) {
-        this._textures[renderer.id] = {}
-      }
-
-      // If the texture has been loaded already, reuse it
-      const cachedTexture = this._textures[renderer.id][image.src]
-      if (cachedTexture) {
-        return resolve(cachedTexture)
-      }
-
-      const texture = renderer.createTexture(image)
-      this._textures[renderer.id][image.src] = texture
-      resolve(texture)
-    })
+    return this._renderers[renderer.id].render()
   }
 
   /**
