@@ -9,13 +9,16 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-const Promise = PhotoEditorSDK.Promise
-const Log = PhotoEditorSDK.Log
-const Vector2 = PhotoEditorSDK.Vector2
-const Color = PhotoEditorSDK.Color
-const SDKUtils = PhotoEditorSDK.Utils
-const EventEmitter = PhotoEditorSDK.EventEmitter
+const {
+  Promise, Log, Vector2, Color, Utils, EventEmitter, ImageFormat
+} = PhotoEditorSDK
 
-export {
-  Promise, Log, Vector2, SDKUtils, EventEmitter, Color
+import Helpers from './helpers'
+import UIUtils from './utils'
+
+export default {
+  Promise, Log, Vector2, Color, EventEmitter, ImageFormat,
+  Helpers,
+  SDKUtils: Utils,
+  Utils: UIUtils
 }
