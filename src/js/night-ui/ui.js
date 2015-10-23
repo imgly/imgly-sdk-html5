@@ -9,10 +9,11 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Promise from '../../vendor/native-promise-only'
-import { SDKUtils, Vector2 } from './globals'
+import {
+  SDKUtils, Vector2, Promise, Helpers, ImageFormat, EventEmitter,
+  Utils
+} from './globals'
 
-import UI from '../base/ui'
 import Canvas from './lib/canvas'
 import FileLoader from './lib/file-loader'
 import ImageResizer from './lib/image-resizer'
@@ -20,10 +21,10 @@ import WebcamHandler from './lib/webcam-handler'
 import TopControls from './lib/top-controls'
 import Scrollbar from './lib/scrollbar'
 
-class NightUI extends UI {
-  constructor (renderer, options) {
+export default class NightUI extends EventEmitter {
+  constructor (kit, options) {
     super()
-    this._renderer = renderer
+    this._kit = kit
     this._options = SDKUtils.defaults(options, {
       assetPathResolver: null,
       language: 'en'
@@ -35,9 +36,8 @@ class NightUI extends UI {
     })
 
     this._operations = []
-    this._helpers = new PhotoEditorSDK.Helpers(this._renderer, this, options)
+    this._helpers = new Helpers(this._kit, this, options)
     this._languages = {}
-    this.selectOperations(null)
 
     this._registerLanguages()
     this.selectLanguage(this._options.language)
@@ -88,6 +88,23 @@ class NightUI extends UI {
       type: ImageFormat.JPEG,
       quality: 0.8
     })
+
+    this._initOperations()
+    this.run()
+  }
+
+  _initOperations () {
+    this._availableOperations = this._kit.getOperations()
+  }
+
+  /**
+   * Returns the translation for `key`
+   * @param  {String} key
+   * @param  {Object} [interpolationOptions]
+   * @return {String}
+   */
+  translate (key, interpolationOptions) {
+    return Utils.translate(this._language, key, interpolationOptions)
   }
 
   /**
@@ -99,6 +116,34 @@ class NightUI extends UI {
   }
 
   /**
+   * Renders and attaches the UI HTML
+   * @private
+   */
+  _attach () {
+    if (this._options.container === null) {
+      throw new Error('BaseUI#attach: No container set.')
+    }
+
+    let html = this._render()
+    this._options.container.innerHTML = html
+
+    // Container has to be position: relative
+    this._options.container.style.position = 'relative'
+  }
+
+  /**
+   * Renders the template
+   * @private
+   */
+  _render () {
+    if (typeof this._template === 'undefined') {
+      throw new Error('BaseUI#_render: No template set.')
+    }
+
+    return this._template(this.context)
+  }
+
+  /**
    * Prepares the UI for use
    */
   run () {
@@ -107,7 +152,7 @@ class NightUI extends UI {
 
     this._loadLanguage()
 
-    super.run()
+    this._attach()
 
     let { container } = this._options
 
@@ -408,14 +453,6 @@ class NightUI extends UI {
   }
 
   /**
-   * Selects the enabled operations
-   * @param {ImglyKit.Selector}
-   */
-  selectOperations (selector) {
-    super.selectOperations(selector)
-  }
-
-  /**
    * Returns or creates an instance of the operation with the given identifier
    * @param {String} identifier
    */
@@ -642,12 +679,15 @@ class NightUI extends UI {
    * @type {Object}
    */
   get context () {
-    let context = super.context
-    context.controls = this._registeredControls
-    context.renderSplashScreen = !this._options.image && !this._options.ui.startWithWebcam
-    context.renderControls = !!this._options.image
-    context.renderWebcam = this._options.ui.startWithWebcam
-    return context
+    return {
+      operations: this._operations,
+      helpers: this._helpers,
+      options: this._options,
+      controls: this._registeredControls,
+      renderSplashScreen: !this._options.image && !this._options.ui.startWithWebcam,
+      renderControls: !!this._options.image,
+      renderWebcam: this._options.ui.startWithWebcam
+    }
   }
 
   /**
@@ -750,7 +790,7 @@ class NightUI extends UI {
         .then((data) => {
           switch (renderType) {
             case RenderType.DATAURL:
-              const url = Utils.createBlobURIFromDataURI(data)
+              const url = SDKUtils.createBlobURIFromDataURI(data)
               let link = document.createElement('a')
               const extension = this._options.ui.export.type.split('/').pop()
               link.download = `imglykit-export.${extension}`
@@ -771,6 +811,14 @@ class NightUI extends UI {
   }
 
   /**
+   * Sets the current language to the one with the given key
+   * @param  {string} key
+   */
+  selectLanguage (key) {
+    this._language = this._languages[key]
+  }
+
+  /**
    * Displays the given message inside the loading overlay
    * @param {String} message
    */
@@ -787,11 +835,36 @@ class NightUI extends UI {
   }
 
   /**
+   * Registers a language
+   * @param  {String} identifier
+   * @param  {Object} object
+   */
+  registerLanguage (identifier, object) {
+    this._languages[identifier] = object
+  }
+
+  /**
+   * Checks whether the operation with the given identifier is selected
+   * @param {String} identifier
+   * @returns {Boolean}
+   */
+  isOperationSelected (identifier) {
+    let operationIdentifiers = this._operations.map((operation) => {
+      return operation.identifier
+    })
+    return operationIdentifiers.indexOf(identifier) !== -1
+  }
+
+  /**
    * The undo history
    * @type {Array.<Object>}
    */
   get history () {
     return this._history
+  }
+
+  get options () {
+    return this._options
   }
 
   /**
@@ -809,8 +882,18 @@ class NightUI extends UI {
   get imageResized () {
     return this._imageResized
   }
+
+  /**
+   * The DOM container
+   * @type {DOMElement}
+   */
+  get container () {
+    return this._options.container
+  }
 }
 
 NightUI.Control = require('./controls/control')
 
-export default NightUI
+// Extend PhotoEditorSDK object
+PhotoEditorSDK.UI = PhotoEditorSDK.UI || {}
+PhotoEditorSDK.UI.Night = NightUI

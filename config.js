@@ -26,7 +26,7 @@ module.exports = {
   // node-sass / libsass configuration
   sass: {
     src: [
-      // source + '/css/pesdk-night-ui.sass',
+      source + '/css/pesdk-night-ui.sass',
       source + '/css/pesdk-night-react-ui.sass'
     ],
     allSrc: [
@@ -34,7 +34,7 @@ module.exports = {
     ],
     dest: destination + '/css',
     destFiles: [
-      // destination + '/css/pesdk-night-ui.css',
+      destination + '/css/pesdk-night-ui.css',
       destination + '/css/pesdk-night-react-ui.css'
     ],
     settings: {
@@ -64,7 +64,7 @@ module.exports = {
     destFiles: [
       destination + '/js/PhotoEditor-SDK.js',
       destination + '/js/PhotoEditor-NightReactUI.js',
-      // destination + '/js/PhotoEditor-NightUI.js'
+      destination + '/js/PhotoEditor-NightUI.js'
     ]
   },
 
@@ -90,7 +90,7 @@ module.exports = {
     },
     entry: {
       SDK: './sdk/photoeditorsdk',
-      // NightUI: './night-ui/ui',
+      NightUI: './night-ui/ui',
       NightReactUI: './night-react-ui/ui'
     },
     devtool: 'inline-source-map',

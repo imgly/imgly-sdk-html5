@@ -37,26 +37,6 @@ class BaseUI extends EventEmitter {
   }
 
   /**
-   * Sets the current language to the one with the given key
-   * @param  {string} key
-   */
-  selectLanguage (key) {
-    this._language = new Polyglot({
-      locale: key,
-      phrases: this._languages[key]
-    })
-  }
-
-  /**
-   * Registers a language
-   * @param  {String} identifier
-   * @param  {Object} object
-   */
-  registerLanguage (identifier, object) {
-    this._languages[identifier] = object
-  }
-
-  /**
    * Returns the translation for `key`
    * @param  {String} key
    * @param  {Object} [interpolationOptions]

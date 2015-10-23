@@ -9,8 +9,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+import { Utils } from '../globals'
 import Control from './control'
-import Utils from '../../../lib/utils'
 
 class FlipControl extends Control {
   /**

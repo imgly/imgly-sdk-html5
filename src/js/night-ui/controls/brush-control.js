@@ -9,22 +9,20 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+import { Vector2, Color, Utils } from '../globals'
 import Control from './control'
-import Vector2 from '../../../lib/math/vector2'
-import Utils from '../../../lib/utils'
 import SimpleSlider from '../lib/simple-slider'
 import ColorPicker from '../lib/color-picker'
-import Color from '../../../lib/color'
 
 class BrushControl extends Control {
   /**
    * Entry point for this control
    */
   init () {
-    let controlsTemplate = __DOTJS_TEMPLATE('../../../templates/night/operations/brush_controls.jst')
+    let controlsTemplate = __DOTJS_TEMPLATE('../templates/operations/brush_controls.jst')
     this._controlsTemplate = controlsTemplate
 
-    let canvasControlsTemplate = __DOTJS_TEMPLATE('../../../templates/night/operations/brush_canvas.jst')
+    let canvasControlsTemplate = __DOTJS_TEMPLATE('../templates/operations/brush_canvas.jst')
     this._canvasControlsTemplate = canvasControlsTemplate
 
     this._partialTemplates.slider = SimpleSlider.template
