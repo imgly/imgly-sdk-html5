@@ -8,10 +8,9 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-const {
-  Promise, EventEmitter, Utils, Vector2,
-  WebGLRenderer, CanvasRenderer
-} = PhotoEditorSDK
+import {
+  EventEmitter, Utils, Vector2, SDKUtils, OperationsStack
+} from '../globals'
 
 class Canvas extends EventEmitter {
   constructor (kit, ui, options) {
@@ -40,7 +39,7 @@ class Canvas extends EventEmitter {
    * renders the operations stack
    */
   run () {
-    this._initRenderer()
+    this._kit.setCanvas(this._canvas)
 
     // Calculate the initial zoom level
     this._zoomLevel = this._getInitialZoomLevel()
@@ -66,90 +65,22 @@ class Canvas extends EventEmitter {
    * Renders the current operations stack
    */
   render () {
-    // Calculate the initial size
-    const initialSize = this._renderer
-      .getInitialDimensionsForStack(this.sanitizedStack)
-      .multiply(this._zoomLevel)
-    this._setCanvasSize(initialSize)
-
-    this._renderer.setSize(initialSize)
-
-    // Reset framebuffers
-    this._renderer.reset()
-
-    // Run the operations stack
-    let stack = this.sanitizedStack
-    this._updateStackDirtyStates(stack)
-
-    let validationPromises = []
-    for (let i = 0; i < stack.length; i++) {
-      let operation = stack[i]
-      validationPromises.push(operation.validateSettings())
+    const dimensions = this._kit.getInitialDimensions()
+    if (this._zoomLevel !== null) {
+      dimensions
+        .multiply(this._zoomLevel)
+        .floor()
     }
 
-    return Promise.all(validationPromises)
-      .then(() => {
-        // When using WebGL, resize the image to max texture size if necessary
-        if (this._isFirstRender && this._renderer.identifier === 'webgl') {
+    this._setCanvasSize(dimensions)
+    this._kit.setDimensions(`${dimensions.x}x${dimensions.y}`)
 
-          if (this._image.width > this._renderer.maxTextureSize ||
-              this._image.height > this._renderer.maxTextureSize) {
-            this._ui.displayLoadingMessage('Resizing...')
-            return new Promise((resolve, reject) => {
-              setTimeout(() => {
-                this._renderer.prepareImage(this._image)
-                  .then((image) => {
-
-                    this.emit('resized', {
-                      reason: 'MAX_TEXTURE_SIZE',
-                      dimensions: new Vector2(image.width, image.height)
-                    })
-
-                    this._ui.hideLoadingMessage()
-                    this._options.image = image
-                    this._image = this._options.image
-                    resolve()
-                  })
-                  .catch((e) => {
-                    reject(e)
-                  })
-              }, 100)
-            })
-          }
-
-        }
-      })
-      .then(() => {
-        // On first render, draw the image to the input texture
-        if (this._isFirstRender || this._renderer.constructor.identifier === 'canvas') {
-          this._isFirstRender = false
-          return this._renderer.drawImage(this._image)
-        }
-      })
-      // Render the operations stack
-      .then(() => {
-        let promise = Promise.resolve()
-        for (let i = 0; i < stack.length; i++) {
-          let operation = stack[i]
-          promise = promise.then(() => {
-            operation.render(this._renderer)
-          })
-        }
-        return promise
-      })
-      // Render the final image
-      .then(() => {
-        return this._renderer.renderFinal()
-      })
-      // Update the margins and boundaries
+    return this._kit.render()
       .then(() => {
         this._storeCanvasSize()
         this._updateContainerSize()
         this._updateCanvasMargins()
         this._applyBoundaries()
-      })
-      .catch((e) => {
-        this.emit('error', e)
       })
   }
 
@@ -333,42 +264,11 @@ class Canvas extends EventEmitter {
    * @private
    */
   _getInitialZoomLevel () {
-    const nativeDimensions = this._renderer.getOutputDimensionsForStack(this.sanitizedStack)
-    const fitDimensions = Utils.resizeVectorToFit(nativeDimensions, this._maxSize)
-
-    return fitDimensions
-      .divide(nativeDimensions)
+    const initialDimensions = this._kit.getInitialDimensions()
+    const defaultDimensions = SDKUtils.resizeVectorToFit(initialDimensions, this._maxSize)
+    return defaultDimensions
+      .divide(initialDimensions)
       .x
-  }
-
-  /**
-   * Initializes the renderer
-   * @private
-   */
-  _initRenderer () {
-    if (WebGLRenderer.isSupported() && this._options.renderer !== 'canvas') {
-      this._renderer = new WebGLRenderer(null, this._canvas, this._image)
-      this._webglEnabled = true
-    } else if (CanvasRenderer.isSupported()) {
-      this._renderer = new CanvasRenderer(null, this._canvas, this._image)
-      this._webglEnabled = false
-    }
-
-    if (this._renderer === null) {
-      throw new Error('Neither Canvas nor WebGL renderer are supported.')
-    }
-
-    this._renderer.on('new-canvas', (canvas) => {
-      this._setCanvas(canvas)
-    })
-    this._renderer.on('error', (e) => {
-      this.emit('error', e)
-    })
-    this._renderer.on('reset', () => {
-      this.resetAllOperations()
-      this._isFirstRender = true
-      this.render()
-    })
   }
 
   /**
@@ -515,27 +415,6 @@ class Canvas extends EventEmitter {
   }
 
   /**
-   * Find the first dirty operation of the stack and sets all following
-   * operations to dirty
-   * @param {Array.<Operation>} stack
-   * @private
-   */
-  _updateStackDirtyStates (stack) {
-    let dirtyFound = false
-    for (let i = 0; i < stack.length; i++) {
-      let operation = stack[i]
-      if (!operation) continue
-      if (operation.dirty) {
-        dirtyFound = true
-      }
-
-      if (dirtyFound) {
-        operation.dirty = true
-      }
-    }
-  }
-
-  /**
    * Zooms the canvas so that it fits the container
    * @param {Boolean} render
    */
@@ -548,8 +427,8 @@ class Canvas extends EventEmitter {
    * Resets the renderer
    */
   reset () {
-    this._renderer.reset(true)
-    this._kit.operationsStack = []
+    this._renderer.reset()
+    this._kit.operationsStack = new OperationsStack()
     this._isFirstRender = true
   }
 

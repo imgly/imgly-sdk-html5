@@ -107,21 +107,6 @@ class Utils {
   }
 
   /**
-   * Gets the x and y position for the given event.
-   * @param {Event} e
-   * @return {Vector2}
-   */
-  static getEventPosition (e) {
-    let x = e.clientX
-    let y = e.clientY
-    if (e.type.indexOf('touch') !== -1) {
-      x = e.touches[0].clientX
-      y = e.touches[0].clientY
-    }
-    return new Vector2(x, y)
-  }
-
-  /**
    * Checks if th given event is a touch event
    * @param  {Event}  e
    * @return {Boolean}
