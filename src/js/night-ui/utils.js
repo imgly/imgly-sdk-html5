@@ -9,6 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+const { Vector2 } = PhotoEditorSDK
 const SDKUtils = PhotoEditorSDK.Utils
 
 export default {
@@ -25,5 +26,20 @@ export default {
       response = response.replace(`\${${key}}`, interpolationOptions[key])
     }
     return response
+  },
+
+  /**
+   * Gets the x and y position for the given event.
+   * @param {Event} e
+   * @return {Vector2}
+   */
+  getEventPosition (e) {
+    let x = e.clientX
+    let y = e.clientY
+    if (e.type.indexOf('touch') !== -1) {
+      x = e.touches[0].clientX
+      y = e.touches[0].clientY
+    }
+    return new Vector2(x, y)
   }
 }

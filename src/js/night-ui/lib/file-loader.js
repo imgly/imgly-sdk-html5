@@ -8,7 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-const { EventEmitter } = PhotoEditorSDK
+import { EventEmitter, Utils } from '../globals'
 
 class FileLoader extends EventEmitter {
   constructor (kit, ui) {
@@ -131,6 +131,7 @@ class FileLoader extends EventEmitter {
    * @private
    */
   _onFileInputChange () {
+    console.log(this._hiddenInputField.files[0])
     this._handleFile(this._hiddenInputField.files[0])
   }
 

@@ -1,4 +1,4 @@
-/* global PhotoEditorSDK, FileReader, Image, __DOTJS_TEMPLATE */
+f/* global PhotoEditorSDK, FileReader, Image, __DOTJS_TEMPLATE */
 /*
  * Photo Editor SDK - photoeditorsdk.com
  * Copyright (c) 2013-2015 9elements GmbH
@@ -11,7 +11,7 @@
 
 import {
   SDKUtils, Vector2, Promise, Helpers, ImageFormat, EventEmitter,
-  Utils
+  Utils, OperationsStack
 } from './globals'
 
 import Canvas from './lib/canvas'
@@ -35,10 +35,15 @@ export default class NightUI extends EventEmitter {
       resolver: null
     })
 
+    if (kit.hasImage()) {
+      this._image = kit.getImage()
+    }
+
     this._operations = []
     this._helpers = new Helpers(this._kit, this, options)
     this._languages = {}
 
+    this.selectOperations(null)
     this._registerLanguages()
     this.selectLanguage(this._options.language)
 
@@ -72,8 +77,8 @@ export default class NightUI extends EventEmitter {
 
     this._paused = false
 
-    this._options.ui = SDKUtils.defaults(this._options.ui, {
-      showNewButton: !this._options.image,
+    this._options = SDKUtils.defaults(this._options, {
+      showNewButton: !this._kit.hasImage(),
       showUploadButton: true,
       showWebcamButton: true,
       showHeader: true,
@@ -84,7 +89,7 @@ export default class NightUI extends EventEmitter {
       export: {}
     })
 
-    this._options.ui.export = SDKUtils.defaults(this._options.ui.export, {
+    this._options.export = SDKUtils.defaults(this._options.export, {
       type: ImageFormat.JPEG,
       quality: 0.8
     })
@@ -171,17 +176,14 @@ export default class NightUI extends EventEmitter {
 
     this._handleOverview()
 
-    if (this._options.image) {
+    if (this._kit.hasImage) {
       this._resizeImageIfNecessary()
-    }
-
-    if (this._options.image) {
       this._initCanvas()
     }
 
     if (this.context.renderSplashScreen) {
       this._initFileLoader()
-      if (this._options.ui.showWebcamButton) {
+      if (this._options.showWebcamButton) {
         this._handleWebcamButton()
       }
     }
@@ -193,11 +195,11 @@ export default class NightUI extends EventEmitter {
     this._initTopControls()
     this._initControls()
 
-    if (this._options.image) {
+    if (this._kit.hasImage) {
       this.showZoom()
     }
 
-    if (this._options.ui.showCloseButton) {
+    if (this._options.showCloseButton) {
       this._handleCloseButton()
     }
 
@@ -211,10 +213,10 @@ export default class NightUI extends EventEmitter {
   }
 
   _loadLanguage () {
-    this._language = this._languages[this._options.ui.language]
+    this._language = this._languages[this._options.language]
     if (!this._language) {
       const availableLanguages = Object.keys(this._languages).join(', ')
-      throw new Error(`Unknown language '${this._options.ui.language}'. Available languages are: ${availableLanguages}`)
+      throw new Error(`Unknown language '${this._options.language}'. Available languages are: ${availableLanguages}`)
     }
   }
 
@@ -226,14 +228,14 @@ export default class NightUI extends EventEmitter {
    */
   _fixOperationsStack () {
     const { operationsStack } = this._kit
-    const newStack = []
-    for (let i = 0; i < operationsStack.length; i++) {
-      const operation = operationsStack[i]
+    const newStack = new OperationsStack()
+    const stack = operationsStack.getStack()
+    for (let i = 0; i < stack.length; i++) {
+      const operation = operationsStack.get(i)
       if (!operation) continue
-
       const { identifier } = operation
       const indexInStack = this._preferredOperationOrder.indexOf(identifier)
-      newStack[indexInStack] = operation
+      newStack.set(indexInStack, operation)
       this._operationsMap[identifier] = operation
     }
     this._kit.operationsStack = newStack
@@ -254,7 +256,7 @@ export default class NightUI extends EventEmitter {
    * @private
    */
   _onWebcamImageTaken (image) {
-    this._options.ui.startWithWebcam = false
+    this._options.startWithWebcam = false
     this._setImage(image)
   }
 
@@ -266,7 +268,7 @@ export default class NightUI extends EventEmitter {
     const { container } = this._options
     const webcamButton = container.querySelector('.imglykit-splash-row--camera')
     webcamButton.addEventListener('click', () => {
-      this._options.ui.startWithWebcam = true
+      this._options.startWithWebcam = true
       this.run()
     })
   }
@@ -286,11 +288,11 @@ export default class NightUI extends EventEmitter {
    * @private
    */
   _onFileLoaded (file) {
-    let reader = new FileReader()
+    const reader = new FileReader()
     reader.onload = (() => {
       return (e) => {
-        let data = e.target.result
-        let image = new Image()
+        const data = e.target.result
+        const image = new Image()
 
         image.addEventListener('load', () => {
           this._setImage(image)
@@ -308,6 +310,7 @@ export default class NightUI extends EventEmitter {
    * @private
    */
   _setImage (image) {
+    this._image = image
     this._kit.setImage(image)
     this.run()
   }
@@ -364,13 +367,12 @@ export default class NightUI extends EventEmitter {
    * @private
    */
   _resizeImageIfNecessary () {
-    const { image } = this._options
-    const imageDimensions = new Vector2(image.width, image.height)
+    const imageDimensions = new Vector2(this._image.width, this._image.height)
     const megaPixels = (imageDimensions.x * imageDimensions.y) / 1000000
 
-    if (megaPixels > this._options.ui.maxMegaPixels) {
+    if (megaPixels > this._options.maxMegaPixels) {
       // Dimensions exceed `maxMegaPixels`. Calculate new size
-      const pixelsCount = this._options.ui.maxMegaPixels * 1000000
+      const pixelsCount = this._options.maxMegaPixels * 1000000
       const ratioHV = imageDimensions.x / imageDimensions.y
       const ratioVH = imageDimensions.y / imageDimensions.x
       const newDimensions = new Vector2(
@@ -386,13 +388,13 @@ export default class NightUI extends EventEmitter {
       this.displayFlashMessage(
         this.translate('generic.warning_headline'),
         this.translate('warnings.image_resized',
-          this._options.ui.maxMegaPixels,
+          this._options.maxMegaPixels,
           newDimensions.x,
           newDimensions.y),
         'warning'
       )
       this._imageResized = true
-      this._options.image = ImageResizer.resize(this._options.image, newDimensions)
+      this._setImage(ImageResizer.resize(this._image, newDimensions))
 
       // Flag as jpeg image so that the resulting image will
       // also include exif data
@@ -684,9 +686,9 @@ export default class NightUI extends EventEmitter {
       helpers: this._helpers,
       options: this._options,
       controls: this._registeredControls,
-      renderSplashScreen: !this._options.image && !this._options.ui.startWithWebcam,
-      renderControls: !!this._options.image,
-      renderWebcam: this._options.ui.startWithWebcam
+      renderSplashScreen: !this._kit.hasImage() && !this._options.startWithWebcam,
+      renderControls: this._kit.hasImage(),
+      renderWebcam: this._options.startWithWebcam
     }
   }
 
@@ -784,15 +786,15 @@ export default class NightUI extends EventEmitter {
 
     setTimeout(() => {
       this._kit.render(renderType,
-        this._options.ui.export.type,
-        this._options.ui.export.dimensions,
-        this._options.ui.export.quality)
+        this._options.export.type,
+        this._options.export.dimensions,
+        this._options.export.quality)
         .then((data) => {
           switch (renderType) {
             case RenderType.DATAURL:
               const url = SDKUtils.createBlobURIFromDataURI(data)
               let link = document.createElement('a')
-              const extension = this._options.ui.export.type.split('/').pop()
+              const extension = this._options.export.type.split('/').pop()
               link.download = `imglykit-export.${extension}`
               link.href = url
               document.body.appendChild(link)
@@ -856,6 +858,20 @@ export default class NightUI extends EventEmitter {
   }
 
   /**
+   * Selects the enabled operations
+   * @param {ImglyKit.Selector}
+   */
+  selectOperations (selector) {
+    const registeredOperations = this._kit.getOperations()
+    let operationIdentifiers = Object.keys(registeredOperations)
+
+    let selectedOperations = SDKUtils.select(operationIdentifiers, selector)
+    this._operations = selectedOperations.map((identifier) => {
+      return registeredOperations[identifier]
+    })
+  }
+
+  /**
    * The undo history
    * @type {Array.<Object>}
    */
@@ -889,6 +905,10 @@ export default class NightUI extends EventEmitter {
    */
   get container () {
     return this._options.container
+  }
+
+  get canvas () {
+    return this._canvas
   }
 }
 

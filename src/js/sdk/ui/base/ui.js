@@ -10,7 +10,6 @@
 import Utils from '../../lib/utils'
 import EventEmitter from '../../lib/event-emitter'
 import Helpers from './helpers'
-import Polyglot from 'node-polyglot'
 
 class BaseUI extends EventEmitter {
   constructor (renderer, options) {
