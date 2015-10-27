@@ -338,6 +338,10 @@ export default class StickersWebGLRenderer {
     translationMatrix.tx = stickerPosition.x * canvas.width
     translationMatrix.ty = stickerPosition.y * canvas.height
 
+    const stickerAnchor = sticker.getAnchor()
+    translationMatrix.tx += scaleMatrix.a - scaleMatrix.a * 2 * stickerAnchor.x
+    translationMatrix.ty -= scaleMatrix.d - scaleMatrix.d * 2 * stickerAnchor.y
+
     // Rotation matrix
     const stickerRotation = sticker.getRotation()
     const c = Math.cos(stickerRotation * -1)
