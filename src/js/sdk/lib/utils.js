@@ -10,8 +10,6 @@
  */
 
 import Base64 from './base64'
-import Vector2 from './math/vector2'
-import ClassList from './class-list'
 
 /**
  * Provides utility functions for internal use
@@ -245,15 +243,6 @@ class Utils {
       type: mimeString
     })
     return window.URL.createObjectURL(blob)
-  }
-
-  /**
-   * Returns a `ClassList` instance for the given element
-   * @param  {DOMElement} el
-   * @return {ClassList}
-   */
-  static classList (el) {
-    return new ClassList(el)
   }
 
   /**

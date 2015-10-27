@@ -8,7 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-const { Utils, Vector2 } = PhotoEditorSDK
+import { Utils, Vector2 } from '../globals'
 const maxScrollbarWidth = 18
 
 /**

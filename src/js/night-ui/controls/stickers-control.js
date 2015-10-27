@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-const { Utils, Vector2 } = PhotoEditorSDK
+import { SDKUtils, Utils, Vector2 } from '../globals'
 import Control from './control'
 
 class StickersControl extends Control {
@@ -79,7 +79,7 @@ class StickersControl extends Control {
 
     let stickerIdentifiers = Object.keys(this._availableStickers)
 
-    let selectedStickers = Utils.select(stickerIdentifiers, selector)
+    let selectedStickers = SDKUtils.select(stickerIdentifiers, selector)
     for (let i = 0; i < selectedStickers.length; i++) {
       let identifier = selectedStickers[i]
       this._stickers[identifier] = this._availableStickers[identifier]
@@ -101,15 +101,19 @@ class StickersControl extends Control {
     // Don't render initially
     this._ui.removeOperation('stickers')
 
-    this._initialSettings = {
-      sticker: this._operation.getSticker(),
-      position: this._operation.getPosition().clone(),
-      size: this._operation.getSize().clone()
+    const sticker = this._operation.getStickers()[0]
+    this._initialSettings = {}
+
+    if (sticker) {
+      this._initialSettings = {
+        image: sticker.getPosition,
+        position: sticker.getPosition().clone(),
+        scale: sticker.getPosition().clone()
+      }
     }
 
     let canvasSize = this._ui.canvas.size
-
-    this._size = this._initialSettings.size.clone()
+    this._scale = this._initialSettings.scale.clone()
     this._position = this._initialSettings.position.clone()
       .multiply(canvasSize)
 
@@ -208,10 +212,10 @@ class StickersControl extends Control {
    */
   _applySettings () {
     let ratio = this._stickerSize.y / this._stickerSize.x
-    this._size.y = this._size.x * ratio
+    this._scale.y = this._scale.x * ratio
 
-    this._stickerImage.style.width = `${this._size.x}px`
-    this._stickerImage.style.height = `${this._size.y}px`
+    this._stickerImage.style.width = `${this._scale.x}px`
+    this._stickerImage.style.height = `${this._scale.y}px`
     this._container.style.left = `${this._position.x}px`
     this._container.style.top = `${this._position.y}px`
   }
@@ -238,7 +242,7 @@ class StickersControl extends Control {
     // Map the position and size options to 0...1 values
     let canvasSize = this._ui.canvas.size
     let position = this._position.clone().divide(canvasSize)
-    let size = this._size.clone().divide(canvasSize)
+    let size = this._scale.clone().divide(canvasSize)
 
     this._ui.canvas.setZoomLevel(this._initialZoomLevel, false)
 
@@ -276,7 +280,7 @@ class StickersControl extends Control {
     e.preventDefault()
 
     this._initialMousePosition = Utils.getEventPosition(e)
-    this._initialSize = this._size.clone()
+    this._initialSize = this._scale.clone()
 
     document.addEventListener('mousemove', this._onKnobDrag)
     document.addEventListener('touchmove', this._onKnobDrag)
@@ -302,7 +306,7 @@ class StickersControl extends Control {
     size.x += diff.x
     size.y = size.x * ratio
 
-    this._size.copy(size)
+    this._scale.copy(size)
 
     this._applySettings()
     this._highlightDoneButton()
@@ -387,7 +391,7 @@ class StickersControl extends Control {
    * @private
    */
   _onStickerLoad () {
-    this._size = new Vector2(this._stickerImage.width, this._stickerImage.height)
+    this._scale = new Vector2(this._stickerImage.width, this._stickerImage.height)
 
     if (typeof this._position === 'undefined') {
       this._position = new Vector2(0, 0)

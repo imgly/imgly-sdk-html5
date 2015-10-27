@@ -459,7 +459,8 @@ export default class NightUI extends EventEmitter {
    * @param {String} identifier
    */
   getOrCreateOperation (identifier) {
-    let { operationsStack, registeredOperations } = this._kit
+    const registeredOperations = this._kit.getOperations()
+    let { operationsStack } = this._kit
     let Operation = registeredOperations[identifier]
 
     if (typeof this._operationsMap[identifier] === 'undefined') {
@@ -472,7 +473,7 @@ export default class NightUI extends EventEmitter {
       if (index === -1) {
         index = this._preferredOperationOrder.length
       }
-      operationsStack[index] = operationInstance
+      operationsStack.set(index, operationInstance)
 
       return operationInstance
     } else {
@@ -491,8 +492,7 @@ export default class NightUI extends EventEmitter {
     let operation = this._operationsMap[identifier]
     delete this._operationsMap[identifier]
 
-    let index = this._kit.operationsStack.indexOf(operation)
-    this._kit.operationsStack[index] = null
+    this._kit.operationsStack.remove(operation)
   }
 
   /**
@@ -909,6 +909,14 @@ export default class NightUI extends EventEmitter {
 
   get canvas () {
     return this._canvas
+  }
+
+  /**
+   * The helpers
+   * @type {Helpers}
+   */
+  get helpers () {
+    return this._helpers
   }
 }
 
