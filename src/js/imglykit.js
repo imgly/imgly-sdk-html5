@@ -8,7 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-const VERSION = '2.0.3-8'
+const VERSION = '2.0.3-9'
 
 import RenderImage from './lib/render-image'
 import ImageExporter from './lib/image-exporter'
