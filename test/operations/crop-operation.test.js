@@ -27,51 +27,9 @@ beforeEach(function () {
   kit = new ImglyKit({ image: image, ui: { enabled: false } });
 });
 
-describe("CropOperation", function () {
+describe.only("CropOperation", function () {
 
   describe("#render", function () {
-
-    describe("without start set", function () {
-
-      it("should fail", function (done) {
-        cropOperation = new CropOperation(kit, {
-          end: new ImglyKit.Vector2(1, 1)
-        });
-        kit.operationsStack.push(cropOperation);
-
-        kit.render()
-          .then(function (result) {
-            should.not.exist(result);
-            done();
-          })
-          .catch(function (err) {
-            err.should.be.instanceOf(Error);
-            done();
-          });
-      });
-
-    });
-
-    describe("without end set", function () {
-
-      it("should fail", function (done) {
-        cropOperation = new CropOperation(kit, {
-          start: new ImglyKit.Vector2(1, 1)
-        });
-        kit.operationsStack.push(cropOperation);
-
-        kit.render()
-          .then(function (result) {
-            should.not.exist(result);
-            done();
-          })
-          .catch(function (err) {
-            err.should.be.instanceOf(Error);
-            done();
-          });
-      });
-
-    });
 
     describe("with both start and end set", function () {
 

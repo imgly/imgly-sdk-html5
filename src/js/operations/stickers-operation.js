@@ -267,7 +267,7 @@ StickersOperation.prototype.identifier = 'stickers'
  * @type {Object}
  */
 StickersOperation.prototype.availableOptions = {
-  sticker: { type: 'string' },
+  sticker: { type: 'string', required: true },
   position: { type: 'vector2', default: new Vector2(0, 0) },
   size: { type: 'vector2', default: new Vector2(0, 0) }
 }
