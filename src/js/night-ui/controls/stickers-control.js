@@ -101,22 +101,28 @@ class StickersControl extends Control {
     // Don't render initially
     this._ui.removeOperation('stickers')
 
-    const sticker = this._operation.getStickers()[0]
+    this._onStickerLoad = this._onStickerLoad.bind(this)
+
+    this._sticker = this._operation.getStickers()[0]
     this._initialSettings = {}
+
+    if (!this._sticker) {
+      this._sticker = this._operation.createSticker({
+        anchor: new Vector2(0, 0)
+      })
+    }
 
     let canvasSize = this._ui.canvas.size
 
-    if (sticker) {
-      this._initialSettings = {
-        image: sticker.getPosition,
-        position: sticker.getPosition().clone(),
-        scale: sticker.getPosition().clone()
-      }
-
-      this._scale = this._initialSettings.scale.clone()
-      this._position = this._initialSettings.position.clone()
-        .multiply(canvasSize)
+    this._initialSettings = {
+      image: this._sticker.getPosition,
+      position: this._sticker.getPosition().clone(),
+      scale: this._sticker.getPosition().clone()
     }
+
+    this._scale = this._initialSettings.scale.clone()
+    this._position = this._initialSettings.position.clone()
+      .multiply(canvasSize)
 
     // Remember zoom level and zoom to fit the canvas
     this._initialZoomLevel = this._ui.canvas.zoomLevel
@@ -125,10 +131,6 @@ class StickersControl extends Control {
     // Find DOM elements
     this._container = this._canvasControls.querySelector('.imglykit-canvas-stickers')
     this._stickerImage = this._canvasControls.querySelector('img')
-    this._stickerImage.addEventListener('load', () => {
-      this._stickerSize = new Vector2(this._stickerImage.width, this._stickerImage.height)
-      this._onStickerLoad()
-    })
     this._knob = this._canvasControls.querySelector('div.imglykit-knob')
 
     // Mouse event callbacks bound to the class context
@@ -243,23 +245,23 @@ class StickersControl extends Control {
     // Map the position and size options to 0...1 values
     let canvasSize = this._ui.canvas.size
     let position = this._position.clone().divide(canvasSize)
-    let size = this._scale.clone().divide(canvasSize)
+    let scale = this._scale.clone()
+      .divide(this._ui.canvas.zoomLevel)
+      .divide(this._stickerImage.width, this._stickerImage.height)
 
     this._ui.canvas.setZoomLevel(this._initialZoomLevel, false)
 
     // Create a new operation and render it
     this._operation = this._ui.getOrCreateOperation('stickers')
-    this._operation.set({
-      sticker: this._availableStickers[this._sticker],
-      position: position,
-      size: size
+    this._operation.setStickers([this._sticker])
+    this._sticker.set({
+      image: this._stickerImage,
+      position, scale
     })
     this._ui.canvas.render()
 
     this._ui.addHistory(this, {
-      sticker: this._initialSettings.sticker,
-      position: this._initialSettings.position.clone(),
-      size: this._initialSettings.size.clone()
+      stickers: this._operation.getStickers().slice(0)
     }, this._operationExistedBefore)
   }
 
@@ -392,6 +394,7 @@ class StickersControl extends Control {
    * @private
    */
   _onStickerLoad () {
+    this._stickerSize = new Vector2(this._stickerImage.width, this._stickerImage.height)
     this._scale = new Vector2(this._stickerImage.width, this._stickerImage.height)
 
     if (typeof this._position === 'undefined') {
@@ -399,6 +402,7 @@ class StickersControl extends Control {
     }
 
     this._applySettings()
+    this._stickerImage.removeEventListener('load', this._onStickerLoad)
   }
 
   /**
@@ -416,8 +420,9 @@ class StickersControl extends Control {
       this._stickerImage.attributes.removeNamedItem('style')
     } catch (e) {}
 
-    this._sticker = identifier
+    this._sticker.setImage(this._stickerImage)
     this._stickerImage.src = stickerPath
+    this._stickerImage.addEventListener('load', this._onStickerLoad)
 
     Utils.classList(item).add('imglykit-controls-item-active')
 
