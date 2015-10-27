@@ -124,12 +124,14 @@ class Canvas extends EventEmitter {
       })
       // Render the operations stack
       .then(() => {
-        let promises = []
+        let promise = Promise.resolve()
         for (let i = 0; i < stack.length; i++) {
           let operation = stack[i]
-          promises.push(operation.render(this._renderer))
+          promise = promise.then(() => {
+            operation.render(this._renderer)
+          })
         }
-        return Promise.all(promises)
+        return promise
       })
       // Render the final image
       .then(() => {
