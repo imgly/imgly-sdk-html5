@@ -168,6 +168,8 @@ class NightUI extends UI {
     const newStack = []
     for (let i = 0; i < operationsStack.length; i++) {
       const operation = operationsStack[i]
+      if (!operation) continue
+
       const { identifier } = operation
       const indexInStack = this._preferredOperationOrder.indexOf(identifier)
       newStack[indexInStack] = operation
@@ -260,6 +262,9 @@ class NightUI extends UI {
     this._topControls.run()
 
     this._topControls.on('new', () => {
+      this._operationsMap = {}
+      this._kit.operationsStack = []
+      this._history = []
       this._options.image = null
       this.run()
     })

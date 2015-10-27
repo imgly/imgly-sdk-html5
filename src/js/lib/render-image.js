@@ -13,6 +13,7 @@ import ImageDimensions from './image-dimensions'
 import Vector2 from './math/vector2'
 import CanvasRenderer from '../renderers/canvas-renderer'
 import WebGLRenderer from '../renderers/webgl-renderer'
+import Utils from './utils'
 
 /**
  * Handles the image rendering process
@@ -117,12 +118,19 @@ class RenderImage extends EventEmitter {
 
     return Promise.all(validationPromises)
       .then(() => {
-        let promises = []
+        let promise = Promise.resolve()
         for (let i = 0; i < stack.length; i++) {
           let operation = stack[i]
-          promises.push(operation.render(this._renderer))
+          promise = promise.then(() => {
+            return new Promise((resolve, reject) => {
+              Utils.requestAnimationFrame(() => {
+                operation.render(this._renderer)
+                resolve()
+              })
+            })
+          })
         }
-        return Promise.all(promises)
+        return promise
       })
       .then(() => {
         return this._renderer.renderFinal()

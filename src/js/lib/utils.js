@@ -261,6 +261,15 @@ class Utils {
   static classList (el) {
     return new ClassList(el)
   }
+
+  static requestAnimationFrame (cb) {
+    return (window.requestAnimationFrame ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame ||
+            function (callback) {
+              window.setTimeout(callback, 1000 / 60)
+            })(cb)
+  }
 }
 
 export default Utils
