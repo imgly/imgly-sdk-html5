@@ -104,18 +104,19 @@ class StickersControl extends Control {
     const sticker = this._operation.getStickers()[0]
     this._initialSettings = {}
 
+    let canvasSize = this._ui.canvas.size
+
     if (sticker) {
       this._initialSettings = {
         image: sticker.getPosition,
         position: sticker.getPosition().clone(),
         scale: sticker.getPosition().clone()
       }
-    }
 
-    let canvasSize = this._ui.canvas.size
-    this._scale = this._initialSettings.scale.clone()
-    this._position = this._initialSettings.position.clone()
-      .multiply(canvasSize)
+      this._scale = this._initialSettings.scale.clone()
+      this._position = this._initialSettings.position.clone()
+        .multiply(canvasSize)
+    }
 
     // Remember zoom level and zoom to fit the canvas
     this._initialZoomLevel = this._ui.canvas.zoomLevel
@@ -165,7 +166,7 @@ class StickersControl extends Control {
 
       imageEl.addEventListener('load', () => {
         const imageSize = new Vector2(imageEl.width, imageEl.height)
-        const newSize = Utils.resizeVectorToFit(imageSize, canvasSize)
+        const newSize = SDKUtils.resizeVectorToFit(imageSize, canvasSize)
 
         const offset = canvasSize.clone()
           .divide(2)
@@ -409,7 +410,7 @@ class StickersControl extends Control {
 
     const identifier = item.getAttribute('data-identifier')
     let stickerPath = this._availableStickers[identifier]
-    stickerPath = this._kit.getAssetPath(stickerPath)
+    stickerPath = this._ui.helpers.assetPath(stickerPath)
 
     try {
       this._stickerImage.attributes.removeNamedItem('style')
