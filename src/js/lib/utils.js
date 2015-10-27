@@ -263,12 +263,18 @@ class Utils {
   }
 
   static requestAnimationFrame (cb) {
+    const fallback = function (callback) {
+      setTimeout(callback, 1000 / 60)
+    }
+
+    if (typeof window === 'undefined') {
+      return fallback(cb)
+    }
+
     return (window.requestAnimationFrame ||
             window.webkitRequestAnimationFrame ||
             window.mozRequestAnimationFrame ||
-            function (callback) {
-              window.setTimeout(callback, 1000 / 60)
-            })(cb)
+            fallback)(cb)
   }
 }
 
