@@ -27,7 +27,7 @@ beforeEach(function () {
   kit = new ImglyKit({ image: image, ui: { enabled: false } });
 });
 
-describe.only("CropOperation", function () {
+describe("CropOperation", function () {
 
   describe("#render", function () {
 
