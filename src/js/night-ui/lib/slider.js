@@ -8,14 +8,14 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-const { EventEmitter, Utils, Vector2 } = PhotoEditorSDK
+import { EventEmitter, Utils, Vector2, SDKUtils } from '../globals'
 
 class Slider extends EventEmitter {
   constructor (element, options) {
     super()
 
     this._element = element
-    this._options = Utils.defaults(options, {
+    this._options = SDKUtils.defaults(options, {
       minValue: 0,
       maxValue: 1,
       defaultValue: 0

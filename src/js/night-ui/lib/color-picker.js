@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-const { EventEmitter, Vector, Utils, Color } = PhotoEditorSDK
+import { EventEmitter, Vector2, Utils, Color } from '../globals'
 
 class ColorPicker extends EventEmitter {
   constructor (ui, element) {

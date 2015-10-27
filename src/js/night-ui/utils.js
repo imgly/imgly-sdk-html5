@@ -11,6 +11,7 @@
 
 const { Vector2 } = PhotoEditorSDK
 const SDKUtils = PhotoEditorSDK.Utils
+import ClassList from './lib/class-list'
 
 export default {
   /**
@@ -41,5 +42,14 @@ export default {
       y = e.touches[0].clientY
     }
     return new Vector2(x, y)
+  },
+
+  /**
+   * Returns a `ClassList` instance for the given element
+   * @param  {DOMElement} el
+   * @return {ClassList}
+   */
+  classList (el) {
+    return new ClassList(el)
   }
 }

@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-const { EventEmitter, Utils } = PhotoEditorSDK
+import { EventEmitter, Utils, SDKUtils } from '../globals'
 
 import Helpers from '../helpers'
 import Scrollbar from '../lib/scrollbar'
@@ -277,7 +277,7 @@ class Control extends EventEmitter {
   get _context () {
     let context = this.context
 
-    context = Utils.extend(context, {
+    context = SDKUtils.extend(context, {
       helpers: this._helpers,
       identifier: this.identifier
     })
@@ -286,7 +286,7 @@ class Control extends EventEmitter {
     context.partials = {}
     for (let name in this._partialTemplates) {
       let template = this._partialTemplates[name]
-      let partialContext = Utils.extend({}, context, template.additionalContext || {})
+      let partialContext = SDKUtils.extend({}, context, template.additionalContext || {})
       context.partials[name] = template(partialContext)
     }
     context.partials.control = this._controlsTemplate(context)

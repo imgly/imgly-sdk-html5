@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-const { Utils, Vector2 } = PhotoEditorSDK
+import { Utils, Vector2 } from '../globals'
 
 import Control from './control'
 import SimpleSlider from '../lib/simple-slider'

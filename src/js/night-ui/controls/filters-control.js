@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-const { Utils } = PhotoEditorSDK
+import { SDKUtils, Utils } from '../globals'
 import Control from './control'
 
 class FiltersControl extends Control {
@@ -135,7 +135,7 @@ class FiltersControl extends Control {
 
     let filterIdentifiers = Object.keys(this._availableFilters)
 
-    let selectedFilters = Utils.select(filterIdentifiers, selector)
+    let selectedFilters = SDKUtils.select(filterIdentifiers, selector)
     for (let i = 0; i < selectedFilters.length; i++) {
       let identifier = selectedFilters[i]
       this._filters[identifier] = this._availableFilters[identifier]
