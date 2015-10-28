@@ -179,6 +179,7 @@ export default class Text extends Configurable {
       // Resize the canvas
       this._canvas.width = boundingBox.x
       this._canvas.height = boundingBox.y
+
       if (this._options.maxHeight) {
         this._canvas.height = Math.min(
           this._options.maxHeight,
