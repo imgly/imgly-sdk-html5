@@ -19,7 +19,10 @@ export default class ColorPickerOverlayComponent extends BaseChildComponent {
     super(...args)
 
     this._value = this.props.initialValue.clone()
-    const [ h, s, v ] = this._value.toHSV()
+    const hsvArr = this._value.toHSV()
+    const h = hsvArr[0]
+    const s = hsvArr[1]
+    const v = hsvArr[2]
     this._hsv = { h, s, v }
 
     this._bindAll(

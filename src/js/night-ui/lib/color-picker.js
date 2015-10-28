@@ -115,7 +115,10 @@ class ColorPicker extends EventEmitter {
    */
   setValue (value) {
     this._value = value.clone()
-    let [h, s, v] = this._value.toHSV()
+    const hsvArr = this._value.toHSV()
+    let h = hsvArr[0]
+    let s = hsvArr[1]
+    let v = hsvArr[2]
     this._hsvColor = {h, s, v}
     this._positionKnobs()
     this._render()

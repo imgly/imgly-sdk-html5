@@ -497,7 +497,9 @@ class WebGLRenderer extends BaseRenderer {
     }
 
     if (options.blend) {
-      const [source, destination] = this._blendModes[options.blend]
+      const blendMode = this._blendModes[options.blend]
+      const source = blendMode[0]
+      const destination = blendMode[1]
       gl.blendFunc(source, destination)
     }
 
