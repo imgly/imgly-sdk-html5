@@ -103,26 +103,32 @@ class StickersControl extends Control {
 
     this._onStickerLoad = this._onStickerLoad.bind(this)
 
-    this._sticker = this._operation.getStickers()[0]
-    this._initialSettings = {}
+    const canvasSize = this._ui.canvas.size
 
+    this._sticker = this._operation.getStickers()[0]
     if (!this._sticker) {
       this._sticker = this._operation.createSticker({
         anchor: new Vector2(0, 0)
       })
-    }
 
-    let canvasSize = this._ui.canvas.size
+      this._scale = this._sticker.getScale().clone()
+      this._position = this._sticker.getPosition().clone()
+        .multiply(canvasSize)
+    } else {
+      const stickerImage = this._sticker.getImage()
+
+      this._scale = this._initialSettings.scale.clone()
+        .multiply(stickerImage.width, stickerImage.height)
+        .multiply(canvasSize)
+      this._position = this._initialSettings.position.clone()
+        .multiply(canvasSize)
+    }
 
     this._initialSettings = {
-      image: this._sticker.getPosition,
+      image: this._sticker.getImage(),
       position: this._sticker.getPosition().clone(),
-      scale: this._sticker.getPosition().clone()
+      scale: this._sticker.getScale().clone()
     }
-
-    this._scale = this._initialSettings.scale.clone()
-    this._position = this._initialSettings.position.clone()
-      .multiply(canvasSize)
 
     // Remember zoom level and zoom to fit the canvas
     this._initialZoomLevel = this._ui.canvas.zoomLevel
@@ -200,10 +206,9 @@ class StickersControl extends Control {
       listItem.addEventListener('click', () => {
         this._onListItemClick(listItem)
       })
-
       if ((!this._operationExistedBefore && i === 0) ||
           (this._operationExistedBefore &&
-          this._stickers[identifier] === this._initialSettings.sticker)) {
+          identifier === this._sticker._identifier)) {
         this._onListItemClick(listItem, false)
       }
     }
@@ -247,7 +252,7 @@ class StickersControl extends Control {
     let position = this._position.clone().divide(canvasSize)
     let scale = this._scale.clone()
       .divide(this._ui.canvas.zoomLevel)
-      .divide(this._stickerImage.width, this._stickerImage.height)
+      .divide(this._stickerSize)
 
     this._ui.canvas.setZoomLevel(this._initialZoomLevel, false)
 
@@ -421,6 +426,7 @@ class StickersControl extends Control {
     } catch (e) {}
 
     this._sticker.setImage(this._stickerImage)
+    this._sticker._identifier = identifier
     this._stickerImage.src = stickerPath
     this._stickerImage.addEventListener('load', this._onStickerLoad)
 
