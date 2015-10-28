@@ -176,7 +176,7 @@ export default class NightUI extends EventEmitter {
 
     this._handleOverview()
 
-    if (this._kit.hasImage) {
+    if (this._kit.hasImage()) {
       this._resizeImageIfNecessary()
       this._initCanvas()
     }
@@ -327,10 +327,13 @@ export default class NightUI extends EventEmitter {
     this._topControls.run()
 
     this._topControls.on('new', () => {
+      this._kit.reset()
+      this._canvas = null
+      this._operations = []
       this._operationsMap = {}
-      this._kit.operationsStack = []
+      this._kit.operationsStack = new OperationsStack()
       this._history = []
-      this._options.image = null
+      this._kit.setImage(null)
       this.run()
     })
 
@@ -919,6 +922,10 @@ export default class NightUI extends EventEmitter {
    */
   get helpers () {
     return this._helpers
+  }
+
+  get image () {
+    return this._kit.getImage()
   }
 }
 
