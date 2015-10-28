@@ -311,7 +311,10 @@ export default class Renderer {
   }
 
   getExif () { return this._exif }
-  setCanvas (canvas) { this._options.canvas = canvas }
+  setCanvas (canvas) {
+    this._options.canvas = canvas
+    this.reset()
+  }
   getRenderer () { return this._renderer }
   hasImage () { return !!this._options.image }
   getOperations () { return this._operations }
