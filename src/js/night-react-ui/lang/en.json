@@ -47,7 +47,9 @@
       "intensity": "Intensity"
     },
     "stickers": {
-      "adjustments": "Adjustments",
+      "brightness": "Brightness",
+      "contrast": "Contrast",
+      "saturation": "Saturation",
       "blur": "Blur",
       "flip": "Flip",
       "flip-v": "Flip (V)",
