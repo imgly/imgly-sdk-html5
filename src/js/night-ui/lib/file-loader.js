@@ -131,7 +131,6 @@ class FileLoader extends EventEmitter {
    * @private
    */
   _onFileInputChange () {
-    console.log(this._hiddenInputField.files[0])
     this._handleFile(this._hiddenInputField.files[0])
   }
 
