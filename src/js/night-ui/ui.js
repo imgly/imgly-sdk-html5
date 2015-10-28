@@ -11,7 +11,7 @@ f/* global PhotoEditorSDK, FileReader, Image, __DOTJS_TEMPLATE */
 
 import {
   SDKUtils, Vector2, Promise, Helpers, ImageFormat, EventEmitter,
-  Utils, OperationsStack
+  Utils, OperationsStack, RenderType
 } from './globals'
 
 import Canvas from './lib/canvas'
@@ -788,9 +788,10 @@ export default class NightUI extends EventEmitter {
     }
 
     setTimeout(() => {
-      this._kit.render(renderType,
+      const previousDimensions = this._kit.getDimensions()
+      this._kit.setDimensions(null)
+      this._kit.export(renderType,
         this._options.export.type,
-        this._options.export.dimensions,
         this._options.export.quality)
         .then((data) => {
           switch (renderType) {
@@ -810,6 +811,8 @@ export default class NightUI extends EventEmitter {
               break
           }
 
+          this._kit.setDimensions(previousDimensions)
+          this._kit.render()
           this.hideLoadingMessage()
         })
     }, 1000)
