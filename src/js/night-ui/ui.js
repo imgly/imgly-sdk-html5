@@ -755,9 +755,9 @@ export default class NightUI extends EventEmitter {
 
       let { operation, existent, options } = lastItem
       if (!existent) {
-        this.removeOperation(operation.identifier)
+        this.removeOperation(operation.constructor.identifier)
       } else {
-        operation = this.getOrCreateOperation(operation.identifier)
+        operation = this.getOrCreateOperation(operation.constructor.identifier)
         operation.set(options)
       }
       promise = this.canvas.zoomToFit(true)
