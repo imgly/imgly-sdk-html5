@@ -19,8 +19,6 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
     this._bindAll(
       '_onRemoveClick',
       '_onStickerDrag',
-      '_onKnobDragStart',
-      '_onKnobDrag',
       '_onCanvasClick'
     )
 
@@ -125,23 +123,33 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
 
   /**
    * Gets called when the user starts dragging a knob
+   * @param  {String} side
    * @param  {Vector2} position
    * @param  {Event} e
    * @private
    */
-  _onKnobDragStart (position, e) {
+  _onKnobDragStart (side, position, e) {
     const selectedSticker = this.getSharedState('selectedSticker')
-    this._initialPosition = this._getDragKnobPosition()
+    switch (side) {
+      case 'bottom':
+        this._initialPosition = this._getBottomDragKnobPosition()
+        break
+      case 'top':
+        this._initialPosition = this._getTopDragKnobPosition()
+        break
+    }
+
     this._initialScale = selectedSticker.getScale().clone()
   }
 
   /**
    * Gets called while the user drags a sticker
+   * @param  {String} side
    * @param  {Vector2} offset
    * @param  {Event} e
    * @private
    */
-  _onKnobDrag (offset, e) {
+  _onKnobDrag (side, offset, e) {
     const selectedSticker = this.getSharedState('selectedSticker')
     const stickerPosition = this._getAbsoluteStickerPosition(selectedSticker)
     const newKnobPosition = this._initialPosition
@@ -160,10 +168,22 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
       .clone()
       .subtract(stickerPosition)
 
-    const radians = Math.atan2(
-      knobDistanceFromCenter.y,
-      knobDistanceFromCenter.x
-    ) - Math.atan2(halfDimensions.y, halfDimensions.x)
+    let radians
+
+    switch (side) {
+      case 'bottom':
+        radians = Math.atan2(
+          knobDistanceFromCenter.y,
+          knobDistanceFromCenter.x
+        ) - Math.atan2(halfDimensions.y, halfDimensions.x)
+        break
+      case 'top':
+        radians = Math.atan2(
+          knobDistanceFromCenter.y,
+          knobDistanceFromCenter.x
+        ) + Math.atan2(halfDimensions.y, halfDimensions.x)
+        break
+    }
 
     const newScale = this._initialScale
       .clone()
@@ -207,11 +227,11 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
   }
 
   /**
-   * Calculates the drag knob position
+   * Calculates the drag bottom right knob's position
    * @return {Vector2}
    * @private
    */
-  _getDragKnobPosition () {
+  _getBottomDragKnobPosition () {
     const selectedSticker = this.getSharedState('selectedSticker')
     const stickerPosition = this._getAbsoluteStickerPosition(selectedSticker)
     const stickerRotation = selectedSticker.getRotation()
@@ -233,12 +253,52 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
   }
 
   /**
-   * Returns the style object for the drag knob
+   * Calculates the drag top right knob's position
+   * @return {Vector2}
+   * @private
+   */
+  _getTopDragKnobPosition () {
+    const selectedSticker = this.getSharedState('selectedSticker')
+    const stickerPosition = this._getAbsoluteStickerPosition(selectedSticker)
+    const stickerRotation = selectedSticker.getRotation()
+
+    // Calculate sin and cos for rotation
+    const sin = Math.sin(stickerRotation || 0)
+    const cos = Math.cos(stickerRotation || 0)
+
+    // Calculate sticker dimensions
+    const halfDimensions = this._getStickerDimensions(selectedSticker)
+      .divide(2)
+
+    // Calculate knob position
+    return stickerPosition.clone()
+      .add(
+        halfDimensions.x * cos + halfDimensions.y * sin,
+        halfDimensions.x * sin - halfDimensions.y * cos
+      )
+  }
+
+  /**
+   * Returns the style object for the bottom right drag knob
    * @return {Object}
    * @private
    */
-  _getDragKnobStyle () {
-    const knobPosition = this._getDragKnobPosition()
+  _getBottomDragKnobStyle () {
+    const knobPosition = this._getBottomDragKnobPosition()
+
+    return {
+      left: knobPosition.x,
+      top: knobPosition.y
+    }
+  }
+
+  /**
+   * Returns the style object for the top right drag knob
+   * @return {Object}
+   * @private
+   */
+  _getTopDragKnobStyle () {
+    const knobPosition = this._getTopDragKnobPosition()
 
     return {
       left: knobPosition.x,
@@ -370,10 +430,17 @@ export default class StickerCanvasControlsComponent extends BaseChildComponent {
     if (selectedSticker) {
       knobs = [
         (<DraggableComponent
-          onStart={this._onKnobDragStart}
-          onDrag={this._onKnobDrag}>
-          <div bem='e:knob $b:knob' style={this._getDragKnobStyle()}>
+          onStart={this._onKnobDragStart.bind(this, 'bottom')}
+          onDrag={this._onKnobDrag.bind(this, 'bottom')}>
+          <div bem='e:knob $b:knob' style={this._getBottomDragKnobStyle()}>
             <img bem='e:icon' src={ui.getHelpers().assetPath('controls/knobs/resize-diagonal-down@2x.png', true)} />
+          </div>
+        </DraggableComponent>),
+        (<DraggableComponent
+          onStart={this._onKnobDragStart.bind(this, 'top')}
+          onDrag={this._onKnobDrag.bind(this, 'top')}>
+          <div bem='e:knob $b:knob' style={this._getTopDragKnobStyle()}>
+            <img bem='e:icon' src={ui.getHelpers().assetPath('controls/knobs/resize-diagonal-up@2x.png', true)} />
           </div>
         </DraggableComponent>),
         (
