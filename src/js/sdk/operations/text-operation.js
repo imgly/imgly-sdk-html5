@@ -102,10 +102,8 @@ class TextOperation extends Operation {
     translationMatrix.tx = textPosition.x * outputCanvas.width
     translationMatrix.ty = textPosition.y * outputCanvas.height
 
-    // Anchor translation matrix
-    let anchorTranslationMatrix = new Matrix()
-    anchorTranslationMatrix.tx = canvas.width / 2 - canvas.width * textAnchor.x
-    anchorTranslationMatrix.ty = canvas.height / 2 - canvas.height * textAnchor.y
+    translationMatrix.tx += scaleMatrix.a - scaleMatrix.a * 2 * textAnchor.x
+    translationMatrix.ty -= scaleMatrix.d - scaleMatrix.d * 2 * textAnchor.y
 
     // Rotation matrix
     const c = Math.cos(textRotation * -1)
@@ -116,8 +114,7 @@ class TextOperation extends Operation {
     rotationMatrix.c = s
     rotationMatrix.d = c
 
-    let matrix = scaleMatrix.multiply(anchorTranslationMatrix)
-    matrix.multiply(rotationMatrix)
+    let matrix = scaleMatrix.multiply(rotationMatrix)
     matrix.multiply(translationMatrix)
     matrix.multiply(projectionMatrix)
     return matrix.toArray()

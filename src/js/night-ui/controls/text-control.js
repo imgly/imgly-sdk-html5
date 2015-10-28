@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-const { Utils, Vector2 } = PhotoEditorSDK
+import { Utils, Color, Vector2 } from '../globals'
 import Control from './control'
 import ColorPicker from '../lib/color-picker'
 
@@ -52,21 +52,34 @@ class TextControl extends Control {
     this._operationExistedBefore = !!this._ui.operations.text
     this._operation = this._ui.getOrCreateOperation('text')
 
+    this._initialTexts = this._operation.getTexts().slice(0)
+    this._operation.setTexts([])
+
     // Don't render initially
     this._ui.removeOperation('text')
 
     let canvasSize = this._ui.canvas.size
 
+    this._text = this._initialTexts[0]
+    if (!this._text) {
+      this._text = this._operation.createText({
+        position: new Vector2(0, 0),
+        anchor: new Vector2(0, 0),
+        backgroundColor: Color.TRANSPARENT,
+        color: Color.WHITE
+      })
+    }
+
     this._initialSettings = {
-      lineHeight: this._operation.getLineHeight(),
-      fontSize: this._operation.getFontSize(),
-      fontFamily: this._operation.getFontFamily(),
-      fontWeight: this._operation.getFontWeight(),
-      color: this._operation.getColor(),
-      position: this._operation.getPosition(),
-      text: this._operation.getText() || '',
-      maxWidth: this._operation.getMaxWidth(),
-      backgroundColor: this._operation.getBackgroundColor()
+      lineHeight: this._text.getLineHeight(),
+      fontSize: this._text.getFontSize(),
+      fontFamily: this._text.getFontFamily(),
+      fontWeight: this._text.getFontWeight(),
+      color: this._text.getColor(),
+      position: this._text.getPosition(),
+      text: this._text.getText() || '',
+      maxWidth: this._text.getMaxWidth(),
+      backgroundColor: this._text.getBackgroundColor()
     }
 
     this._settings = {
@@ -77,7 +90,7 @@ class TextControl extends Control {
       color: this._initialSettings.color.clone(),
       position: this._initialSettings.position.clone().multiply(canvasSize),
       text: this._initialSettings.text,
-      maxWidth: this._initialSettings.maxWidth * canvasSize.x,
+      maxWidth: this._initialSettings.maxWidth,
       backgroundColor: this._initialSettings.backgroundColor.clone()
     }
 
@@ -90,12 +103,6 @@ class TextControl extends Control {
 
     this._moveKnob = this._canvasControls.querySelector('.imglykit-crosshair')
     this._resizeKnob = this._canvasControls.querySelector('.imglykit-knob')
-
-    // If the text has been edited before, subtract the knob width and padding
-    if (this._operationExistedBefore) {
-      this._settings.position.x -= 2
-      this._settings.position.y -= 2
-    }
 
     this._onTextareaKeyUp = this._onTextareaKeyUp.bind(this)
     this._onResizeKnobDown = this._onResizeKnobDown.bind(this)
@@ -132,7 +139,7 @@ class TextControl extends Control {
   _initColorPickers () {
     let foregroundColorPicker = this._controls.querySelector('#imglykit-text-foreground-color-picker')
     this._foregroundColorPicker = new ColorPicker(this._ui, foregroundColorPicker)
-    this._foregroundColorPicker.setValue(this._operation.getColor())
+    this._foregroundColorPicker.setValue(this._text.getColor())
     this._foregroundColorPicker.on('update', this._onForegroundColorUpdate)
     this._foregroundColorPicker.on('show', () => {
       this._backgroundColorPicker.hide()
@@ -140,7 +147,7 @@ class TextControl extends Control {
 
     let backgroundColorPicker = this._controls.querySelector('#imglykit-text-background-color-picker')
     this._backgroundColorPicker = new ColorPicker(this._ui, backgroundColorPicker)
-    this._backgroundColorPicker.setValue(this._operation.getBackgroundColor())
+    this._backgroundColorPicker.setValue(this._text.getBackgroundColor())
     this._backgroundColorPicker.on('update', this._onBackgroundColorUpdate)
     this._backgroundColorPicker.on('show', () => {
       this._foregroundColorPicker.hide()
@@ -286,7 +293,8 @@ class TextControl extends Control {
       .add(diff)
       .clamp(minPosition, maxPosition)
 
-    this._settings.position = position
+    this._settings.position = position.clone()
+      .divide(canvasSize)
 
     this._container.style.left = `${position.x}px`
     this._container.style.top = `${position.y}px`
@@ -321,8 +329,9 @@ class TextControl extends Control {
   _onResizeKnobDown (e) {
     e.preventDefault()
 
+    let canvasSize = this._ui.canvas.size
     this._initialMousePosition = Utils.getEventPosition(e)
-    this._initialMaxWidth = this._settings.maxWidth
+    this._initialMaxWidth = this._settings.maxWidth * canvasSize.x
 
     document.addEventListener('mousemove', this._onResizeKnobDrag)
     document.addEventListener('touchmove', this._onResizeKnobDrag)
@@ -348,7 +357,7 @@ class TextControl extends Control {
 
     let maxWidth = this._initialMaxWidth + diff.x
     maxWidth = Math.max(100, Math.min(maxWidthAllowed, maxWidth))
-    this._settings.maxWidth = maxWidth
+    this._settings.maxWidth = maxWidth / canvasSize.x
     this._textarea.style.width = `${maxWidth}px`
 
     this._resizeTextarea()
@@ -412,7 +421,7 @@ class TextControl extends Control {
     textarea.style.lineHeight = settings.lineHeight
     textarea.style.color = settings.color.toRGBA()
     textarea.style.backgroundColor = settings.backgroundColor.toRGBA()
-    textarea.style.width = `${settings.maxWidth}px`
+    textarea.style.width = `${settings.maxWidth * canvasSize.x}px`
   }
 
   /**
@@ -471,35 +480,17 @@ class TextControl extends Control {
    * @override
    */
   _onDone () {
-    let canvasSize = this._ui.canvas.size
-    let padding = new Vector2(2, 2)
-    let position = this._settings.position.clone()
-      .add(padding)
-      .divide(canvasSize)
-
     this._ui.canvas.setZoomLevel(this._initialZoomLevel, false)
 
     this._operation = this._ui.getOrCreateOperation('text')
-    this._operation.set({
-      fontSize: this._settings.fontSize,
-      fontFamily: this._settings.fontFamily,
-      fontWeight: this._settings.fontWeight,
-      color: this._settings.color,
-      backgroundColor: this._settings.backgroundColor,
-      position: position,
-      text: this._settings.text,
-      maxWidth: this._settings.maxWidth / canvasSize.x
-    })
+    this._operation.setTexts([this._text])
     this._ui.canvas.render()
 
+    this._text.set(this._settings)
+    this._text.setText(this._textarea.value)
+
     this._ui.addHistory(this, {
-      fontFamily: this._initialSettings.fontFamily,
-      fontWeight: this._initialSettings.fontWeight,
-      color: this._initialSettings.color.clone(),
-      backgroundColor: this._initialSettings.backgroundColor.clone(),
-      position: this._initialSettings.position.clone(),
-      text: this._initialSettings.text,
-      maxWidth: this._initialSettings.maxWidth
+      texts: this._initialTexts.slice(0)
     }, this._operationExistedBefore)
   }
 

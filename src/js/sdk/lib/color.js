@@ -197,6 +197,9 @@ class Color {
   toString () {
     return `Color(${this.r}, ${this.g}, ${this.b}, ${this.a})`
   }
+
+  static get TRANSPARENT () { return new Color(0, 0, 0, 0) }
+  static get WHITE () { return new Color(1, 1, 1, 1) }
 }
 
 export default Color
