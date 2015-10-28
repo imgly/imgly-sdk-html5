@@ -23,7 +23,10 @@ export default class HueComponent extends BaseChildComponent {
     )
 
     this._value = this.props.initialValue.clone()
-    const [ h, s, v ] = this._value.toHSV()
+    const hsvArr = this._value.toHSV()
+    const h = hsvArr[0]
+    const s = hsvArr[1]
+    const v = hsvArr[2]
     this._hsvColor = { h, s, v }
   }
 
@@ -46,7 +49,10 @@ export default class HueComponent extends BaseChildComponent {
     const { initialValue } = newProps
     if (initialValue !== this._value) {
       this._value = initialValue.clone()
-      const [ h, s, v ] = this._value.toHSV()
+      const hsvArr = this._value.toHSV()
+      const h = hsvArr[0]
+      const s = hsvArr[1]
+      const v = hsvArr[2]
       this._hsvColor = { h, s, v }
       this._renderCanvas()
       return true

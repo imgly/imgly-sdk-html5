@@ -81,7 +81,8 @@ export default class Exif {
     const data = Base64.decode(raw)
 
     const segments = this._sliceIntoSegments(data)
-    const [ segmentStart, segmentEnd ] = segments[1]
+    const segmentStart = segments[1][0]
+    const segmentEnd = segments[1][1]
     const dataBefore = data.slice(0, segmentStart)
     const dataAfter = data.slice(segmentStart)
 
@@ -283,7 +284,8 @@ export default class Exif {
   _getExifBuffer () {
     const segments = this._segments
     for (let i = 0; i < segments.length; i++) {
-      const [offset, end] = segments[i]
+      const offset = segments[i][0]
+      const end = segments[i][1]
       this._stream.setHead(offset)
       const marker = this._stream.peekInt16()
       if (marker === 0xffe1) {

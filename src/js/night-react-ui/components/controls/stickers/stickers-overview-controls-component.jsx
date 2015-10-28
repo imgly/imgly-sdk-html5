@@ -83,7 +83,9 @@ export default class StickersOverviewControlsComponent extends BaseChildComponen
    * @param  {Array.<String>} stickerPaths
    * @private
    */
-  _onStickerClick ([smallPath, largePath]) {
+  _onStickerClick (stickerPaths) {
+    const largePath = stickerPaths[1]
+
     const { ui } = this.context
     const translate = ui.translate.bind(ui)
     const resolvedStickerPath = ui.getAssetPath(largePath)
@@ -145,7 +147,9 @@ export default class StickersOverviewControlsComponent extends BaseChildComponen
   renderWithBEM () {
     const ui = this.context.ui
 
-    const listItems = this._availableStickers.map(([smallPath, largePath]) => {
+    const listItems = this._availableStickers.map((paths) => {
+      const smallPath = paths[0]
+      const largePath = paths[1]
       return (<li
         bem='e:item'
         key={largePath}

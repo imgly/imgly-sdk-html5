@@ -105,7 +105,6 @@ export default class StickersControlsComponent extends BaseChildComponent {
       onBack={this._onSubComponentBack}
       options={this.props.options}
       sharedState={this.props.sharedState}
-      editor={this.props.editor}
-      onBack={this._onSubComponentBack} />)
+      editor={this.props.editor} />)
   }
 }
