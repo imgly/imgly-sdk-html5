@@ -51,6 +51,7 @@ class TextControl extends Control {
   _onEnter () {
     this._operationExistedBefore = !!this._ui.operations.text
     this._operation = this._ui.getOrCreateOperation('text')
+    this._initialOptions = this._operation.serializeOptions()
 
     this._initialTexts = this._operation.getTexts().slice(0)
     this._operation.setTexts([])
@@ -489,9 +490,9 @@ class TextControl extends Control {
     this._text.set(this._settings)
     this._text.setText(this._textarea.value)
 
-    this._ui.addHistory(this, {
-      texts: this._initialTexts.slice(0)
-    }, this._operationExistedBefore)
+    this._ui.addHistory(this._operation,
+      this._initialOptions
+    , this._operationExistedBefore)
   }
 
   /**

@@ -97,6 +97,7 @@ class StickersControl extends Control {
   _onEnter () {
     this._operationExistedBefore = !!this._ui.operations.stickers
     this._operation = this._ui.getOrCreateOperation('stickers')
+    this._initialOptions = this._operation.serializeOptions()
 
     // Don't render initially
     this._ui.removeOperation('stickers')
@@ -265,9 +266,9 @@ class StickersControl extends Control {
     })
     this._ui.canvas.render()
 
-    this._ui.addHistory(this, {
-      stickers: this._operation.getStickers().slice(0)
-    }, this._operationExistedBefore)
+    this._ui.addHistory(this._operation,
+      this._initialOptions
+    , this._operationExistedBefore)
   }
 
   /**
