@@ -1,4 +1,4 @@
-f/* global PhotoEditorSDK, FileReader, Image, __DOTJS_TEMPLATE */
+/* global PhotoEditorSDK, FileReader, Image, __DOTJS_TEMPLATE */
 /*
  * Photo Editor SDK - photoeditorsdk.com
  * Copyright (c) 2013-2015 9elements GmbH
