@@ -10,6 +10,7 @@
  */
 
 import { Promise, Utils, React, ReactBEM, BaseChildComponent } from '../../../globals'
+import ModalManager from '../../../lib/modal-manager'
 
 export default class WebcamComponent extends BaseChildComponent {
   constructor () {
@@ -73,9 +74,11 @@ export default class WebcamComponent extends BaseChildComponent {
     super.componentWillUnmount()
 
     const video = React.findDOMNode(this.refs.video)
-    const track = this._stream.getTracks()[0]
-    track && track.stop()
-    this._stream.stop && this._stream.stop()
+    if (this._stream) {
+      const track = this._stream.getTracks()[0]
+      track && track.stop()
+      this._stream.stop && this._stream.stop()
+    }
     video.pause()
   }
 
@@ -117,7 +120,19 @@ export default class WebcamComponent extends BaseChildComponent {
       video.onloadedmetadata = this._onWebcamReady
       video.src = window.URL.createObjectURL(stream)
     }, (err) => {
-      throw err
+      console.error && console.error(err)
+
+      const { ui } = this.context
+      const translate = ui.translate.bind(ui)
+      const errorModal = ModalManager.instance.displayError(
+        translate('errors.webcamUnavailable.title'),
+        translate('errors.webcamUnavailable.text', { error: err.name }),
+        true
+      )
+
+      errorModal.on('close', () => {
+        this.props.onBack()
+      })
     })
   }
 
