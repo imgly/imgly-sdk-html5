@@ -12,13 +12,22 @@
 import { React, ReactBEM, BaseChildComponent } from '../../globals'
 
 export default class ErrorModalComponent extends BaseChildComponent {
+  constructor (...args) {
+    super(...args)
+    this._bindAll('_onClose')
+  }
+
+  _onClose () {
+    this.props.modal.close()
+  }
+
   renderWithBEM () {
     const modal = this.props.modal
 
     const modalElement = (<div bem='e:modal m:error'>
       <div bem='e:title'>{modal.title}</div>
       <div bem='e:text'>{modal.text}</div>
-      <div bem='e:button b:button m:inline' onClick={this.props.onClose}>OK</div>
+      <div bem='e:button b:button m:inline' onClick={this._onClose}>OK</div>
     </div>)
 
     const content = modal.overlay ?
