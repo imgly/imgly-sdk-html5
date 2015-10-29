@@ -21,7 +21,7 @@ export default class DraggableComponent extends BaseChildComponent {
     )
   }
 
-  // -------------------------------------------------------------------------- DRAGGING
+  // -------------------------------------------------------------------------- EVENTS
 
   /**
    * Gets called when the user stars dragging the child
