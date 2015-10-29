@@ -8,7 +8,7 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-import { React, ReactBEM, BaseChildComponent, Utils } from '../globals'
+import { React, ReactBEM, BaseChildComponent, Vector2 } from '../globals'
 import DraggableComponent from './draggable-component'
 
 export default class SliderComponent extends BaseChildComponent {
@@ -18,6 +18,8 @@ export default class SliderComponent extends BaseChildComponent {
     this._bindAll(
       '_onKnobDragStart',
       '_onKnobDrag',
+      '_onBarDragStart',
+      '_onBarDrag',
       '_onMiddleDotDragStart'
     )
 
@@ -83,6 +85,35 @@ export default class SliderComponent extends BaseChildComponent {
     const progress = newSliderPosition / barWidth
     let newValue = this.props.minValue + (this.props.maxValue - this.props.minValue) * progress
 
+    this._setValue(newValue)
+  }
+
+  /**
+   * Gets called when the user starts dragging the bar
+   * @param  {Vector2} position
+   * @private
+   */
+  _onBarDragStart (position) {
+    this._initialPosition = position.clone()
+
+    const barWidth = React.findDOMNode(this.refs.bar).offsetWidth
+    const progress = position.x / barWidth
+    const newValue = this.props.minValue + (this.props.maxValue - this.props.minValue) * progress
+    this._setValue(newValue)
+  }
+
+  /**
+   * Gets called while the user drags the bar
+   * @param  {Vector2} diff
+   * @private
+   */
+  _onBarDrag (diff) {
+    const position = this._initialPosition.clone()
+      .add(diff)
+
+    const barWidth = React.findDOMNode(this.refs.bar).offsetWidth
+    const progress = position.x / barWidth
+    const newValue = this.props.minValue + (this.props.maxValue - this.props.minValue) * progress
     this._setValue(newValue)
   }
 
@@ -193,12 +224,18 @@ export default class SliderComponent extends BaseChildComponent {
     const componentBem = '$b:slider' + (this.props.style ? ' m:' + this.props.style : '')
     return (<div bem={componentBem}>
       <div bem='$e:bar' ref='bar'>
-        <div bem='$e:background' />
-        <div bem='$e:foreground' {...foregroundProps}/>
         <DraggableComponent
-          onStart={this._onKnobDragStart}
-          onDrag={this._onKnobDrag}>
-            <div bem='e:knob b:knob m:slider' style={this._getKnobStyle()}></div>
+          onStart={this._onBarDragStart}
+          onDrag={this._onBarDrag}>
+            <div>
+              <div bem='$e:background' />
+              <div bem='$e:foreground' {...foregroundProps}/>
+              <DraggableComponent
+                onStart={this._onKnobDragStart}
+                onDrag={this._onKnobDrag}>
+                  <div bem='e:knob b:knob m:slider' style={this._getKnobStyle()}></div>
+              </DraggableComponent>
+            </div>
         </DraggableComponent>
         {middleDot}
       </div>
