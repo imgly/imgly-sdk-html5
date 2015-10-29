@@ -40,7 +40,6 @@ export default class ScrollbarComponent extends BaseChildComponent {
    * Gets called after the component has been mounted
    */
   componentDidMount () {
-    console.log(this.refs)
     const root = React.findDOMNode(this.refs.root)
     this._node = root
     this._list = React.findDOMNode(this.refs.list)
