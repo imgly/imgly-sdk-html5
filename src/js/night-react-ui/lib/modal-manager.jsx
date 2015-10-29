@@ -11,11 +11,12 @@
 import { EventEmitter } from '../globals'
 
 class Modal extends EventEmitter {
-  constructor (type, title, text) {
+  constructor (type, title, text, overlay = false) {
     super()
     this.type = type
     this.title = title
     this.text = text
+    this.overlay = overlay
   }
 
   /**
@@ -60,10 +61,11 @@ export default class ModalManager extends EventEmitter {
    * Creates an error modal
    * @param  {String} title
    * @param  {String} text
+   * @param  {Boolean} overlay = false
    * @return {Modal}
    */
-  displayError (title, text) {
-    const modal = new Modal('error', title, text)
+  displayError (title, text, overlay = false) {
+    const modal = new Modal('error', title, text, overlay)
     this.addModal(modal)
     return modal
   }
