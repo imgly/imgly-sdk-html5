@@ -9,15 +9,16 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 import { React, ReactBEM, BaseChildComponent, Utils } from '../globals'
+import DraggableComponent from './draggable-component'
 
 export default class SliderComponent extends BaseChildComponent {
   constructor (...args) {
     super(...args)
 
     this._bindAll(
-      '_onKnobDown',
+      '_onKnobDragStart',
       '_onKnobDrag',
-      '_onKnobUp'
+      '_onMiddleDotDragStart'
     )
 
     this.state = {
@@ -51,29 +52,30 @@ export default class SliderComponent extends BaseChildComponent {
   // -------------------------------------------------------------------------- EVENTS
 
   /**
-   * Gets called when the user starts dragging the knob
-   * @param  {Event} e
+   * Gets called when the user presses a mouse button on the middle dot
    * @private
    */
-  _onKnobDown (e) {
+  _onMiddleDotDragStart () {
+    const newValue = this.props.minValue + (this.props.maxValue - this.props.minValue) / 2
+    this._setValue(newValue)
+  }
+
+  /**
+   * Gets called when the user starts dragging the knob
+   * @param  {Vector2} position
+   * @private
+   */
+  _onKnobDragStart (position) {
     this._initialSliderPosition = this.state.sliderPosition
-    this._initialPosition = Utils.getEventPosition(e)
-    document.addEventListener('mousemove', this._onKnobDrag)
-    document.addEventListener('touchmove', this._onKnobDrag)
-    document.addEventListener('mouseup', this._onKnobUp)
-    document.addEventListener('touchend', this._onKnobUp)
+    this._initialPosition = position
   }
 
   /**
    * Gets called while the user drags the knob
-   * @param  {Event} e
+   * @param  {Vector2} diff
    * @private
    */
-  _onKnobDrag (e) {
-    const position = Utils.getEventPosition(e)
-    const diff = position.clone()
-      .subtract(this._initialPosition)
-
+  _onKnobDrag (diff) {
     const barWidth = React.findDOMNode(this.refs.bar).offsetWidth
 
     let newSliderPosition = this._initialSliderPosition + diff.x
@@ -82,16 +84,6 @@ export default class SliderComponent extends BaseChildComponent {
     let newValue = this.props.minValue + (this.props.maxValue - this.props.minValue) * progress
 
     this._setValue(newValue)
-  }
-
-  /**
-   * Gets called when the user releases the knob
-   * @param  {Event} e
-   * @private
-   */
-  _onKnobUp (e) {
-    document.removeEventListener('mousemove', this._onKnobDrag)
-    document.removeEventListener('touchmove', this._onKnobDrag)
   }
 
   // -------------------------------------------------------------------------- STYLING
@@ -184,13 +176,14 @@ export default class SliderComponent extends BaseChildComponent {
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
-    const middleDot =
-      this._displayMiddleDot() ? <div bem='e:middleDot'></div> : null
-
-    const knobProps = {
-      style: this._getKnobStyle(),
-      onMouseDown: this._onKnobDown,
-      onTouchStart: this._onKnobDown
+    let middleDot = null
+    if (this._displayMiddleDot()) {
+      middleDot = (
+        <DraggableComponent
+          onStart={this._onMiddleDotDragStart}>
+            <div bem='e:middleDot'></div>
+        </DraggableComponent>
+      )
     }
 
     const foregroundProps = {
@@ -202,7 +195,11 @@ export default class SliderComponent extends BaseChildComponent {
       <div bem='$e:bar' ref='bar'>
         <div bem='$e:background' />
         <div bem='$e:foreground' {...foregroundProps}/>
-        <div bem='e:knob b:knob m:slider' {...knobProps}></div>
+        <DraggableComponent
+          onStart={this._onKnobDragStart}
+          onDrag={this._onKnobDrag}>
+            <div bem='e:knob b:knob m:slider' style={this._getKnobStyle()}></div>
+        </DraggableComponent>
         {middleDot}
       </div>
       <div bem='$e:labels'>
