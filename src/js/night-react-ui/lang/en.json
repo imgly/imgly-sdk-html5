@@ -96,6 +96,10 @@
     "imageLoadFail": {
       "title": "Failed to load image",
       "text": "Failed to load the image at ${path}"
+    },
+    "webcamUnavailable": {
+      "title": "Webcam unavailable",
+      "text": "Unable to display webcam image (Error: ${error})"
     }
   }
 }

@@ -90,6 +90,10 @@
     "imageResized": {
       "title": "Bild verkleinert",
       "text": "Da dein Bild die maximale Größe von ${maxMegaPixels} Megapixeln überschreitet, wurde es auf ${width}x${height} Pixel verkleinert."
+    },
+    "webcamUnavailable": {
+      "title": "Webcam nicht verfügbar",
+      "text": "Webcam-Bild kann nicht dargestellt werden (Fehler: ${error})"
     }
   }
 }
