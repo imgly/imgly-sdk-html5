@@ -71,7 +71,10 @@ export default class WebcamScreenComponent extends ScreenComponent {
 
       <div bem='$b:canvasContainer e:row'>
         <div bem='e:cell'>
-          <WebcamComponent ref='webcam' onReady={this._onWebcamReady} />
+          <WebcamComponent
+            ref='webcam'
+            onReady={this._onWebcamReady}
+            onBack={this._onCancel} />
         </div>
       </div>
 
