@@ -94,6 +94,18 @@
     "webcamUnavailable": {
       "title": "Webcam nicht verfügbar",
       "text": "Webcam-Bild kann nicht dargestellt werden (Fehler: ${error})"
+    },
+    "renderingError": {
+      "title": "Rendering-Fehler",
+      "text": "Beim Rendern des Bildes ist ein Fehler aufgetreten."
+    },
+    "context_lost": {
+      "title": "Es ist ein Fehler aufgetreten",
+      "text": "Dein Browser hat zu lange gebraucht, um das Bild zu generieren. Bitte versuche es noch einmal."
+    },
+    "context_lost_limit": {
+      "title": "Es ist ein Fehler aufgetreten",
+      "text": "Bild-Generierung ist mehrmals fehlgeschlagen."
     }
   }
 }

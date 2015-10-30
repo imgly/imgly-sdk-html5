@@ -8,6 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+import EventEmitter from './event-emitter'
 import ImageDimensions from './image-dimensions'
 import ImageExporter from './image-exporter'
 import VersionChecker from './version-checker'
@@ -28,8 +29,11 @@ import Helpers from '../ui/base/helpers'
  * @param {Object} options = {}
  * @param {Object} operationsOptions = {}
  */
-export default class Renderer {
+export default class Renderer extends EventEmitter {
   constructor (preferredRenderer, options = {}, operationsOptions = {}) {
+    super()
+    this._onRendererError = this._onRendererError.bind(this)
+
     this._preferredRenderer = preferredRenderer
 
     // Set default options
@@ -208,6 +212,10 @@ export default class Renderer {
    * Resets all custom and selected operations
    */
   reset () {
+    if (this._renderer) {
+      this._renderer.off('error', this._onRendererError)
+    }
+
     this._renderer = null
     this.setAllOperationsToDirty()
   }
@@ -249,6 +257,15 @@ export default class Renderer {
   }
 
   /**
+   * Gets called when the renderer emits an error
+   * @param  {Error} e
+   * @private
+   */
+  _onRendererError (e) {
+    this.emit('error', e)
+  }
+
+  /**
    * Creates a renderer (canvas or webgl, depending on support)
    * @return {Promise}
    * @private
@@ -267,6 +284,8 @@ export default class Renderer {
     if (this._renderer === null) {
       throw new Error('Neither Canvas nor WebGL renderer are supported.')
     }
+
+    this._renderer.on('error', this._onRendererError)
   }
 
   /**

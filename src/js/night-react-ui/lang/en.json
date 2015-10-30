@@ -100,6 +100,18 @@
     "webcamUnavailable": {
       "title": "Webcam unavailable",
       "text": "Unable to display webcam image (Error: ${error})"
+    },
+    "renderingError": {
+      "title": "Error while rendering",
+      "text": "An error has occurred while rendering the image."
+    },
+    "context_lost": {
+      "title": "An error has occurred",
+      "text": "Your browser took too long to render the image. Please try applying less operations."
+    },
+    "context_lost_limit": {
+      "title": "An error has occurred",
+      "text": "Your browser failed multiple times while rendering the image."
     }
   }
 }

@@ -52,6 +52,7 @@ export default class NightReactUI extends EventEmitter {
       'text'
     ]
 
+    this._handleRendererErrors()
     this._initOptions()
     this._initLanguage()
     this._initOperations()
@@ -71,6 +72,19 @@ export default class NightReactUI extends EventEmitter {
     this._options.container.style.position = 'relative'
 
     this._render()
+  }
+
+  /**
+   * Handles error events emitted by the renderer
+   * @private
+   */
+  _handleRendererErrors () {
+    this._kit.on('error', (e) => {
+      ModalManager.instance.displayError(
+        this.translate(`errors.${e}.title`),
+        this.translate(`errors.${e}.text`)
+      )
+    })
   }
 
   /**

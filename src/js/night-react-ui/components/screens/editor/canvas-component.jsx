@@ -12,6 +12,7 @@
 import {
   Utils, SDKUtils, React, ReactBEM, Vector2, BaseChildComponent, Constants, EventEmitter
 } from '../../../globals'
+import ModalManager from '../../../lib/modal-manager'
 
 export default class CanvasComponent extends BaseChildComponent {
   constructor (...args) {
@@ -221,6 +222,15 @@ export default class CanvasComponent extends BaseChildComponent {
         this._repositionCanvas()
         this.updateOffset()
         callback && callback()
+      })
+      .catch((e) => {
+        const { ui } = this.context
+        const translate = ui.translate.bind(ui)
+        ModalManager.instance.displayError(
+          translate('errors.renderingError.title'),
+          translate('errors.renderingError.text', { error: e.message })
+        )
+        console && console.error && console.error(e)
       })
   }
 
