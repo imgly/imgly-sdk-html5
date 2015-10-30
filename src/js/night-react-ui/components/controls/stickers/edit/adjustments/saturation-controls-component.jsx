@@ -56,8 +56,8 @@ export default class StickersSaturationControlsComponent extends BaseChildCompon
     const saturation = adjustments.getSaturation()
 
     return (<div bem='$b:controls e:table'>
-      <div bem='e:cell m:button m:withBorderRight'>
-        <div bem='$e:button' onClick={this._onBackClick}>
+      <div bem='e:cell m:button m:withBorderRight m:narrow'>
+        <div bem='$e:button m:narrow' onClick={this._onBackClick}>
           <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/back@2x.png`, true)} />
         </div>
       </div>

@@ -127,8 +127,8 @@ export default class FramesControlsComponent extends BaseChildComponent {
     const currentWidth = this._operation.getThickness() * shorterSide
 
     return (<div bem='$b:controls e:table'>
-      <div bem='e:cell m:button m:withBorderRight'>
-        <div bem='$e:button' onClick={this._onBackClick}>
+      <div bem='e:cell m:button m:withBorderRight m:narrow'>
+        <div bem='$e:button m:narrow' onClick={this._onBackClick}>
           <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/back@2x.png`, true)} />
         </div>
       </div>
@@ -148,8 +148,8 @@ export default class FramesControlsComponent extends BaseChildComponent {
           initialValue={this._operation.getColor().clone()}
           onChange={this._onColorUpdate} />
       </div>
-      <div bem='e:cell m:button m:withBorderLeft'>
-        <div bem='$e:button' onClick={this._onDoneClick}>
+      <div bem='e:cell m:button m:withBorderLeft m:narrow'>
+        <div bem='$e:button m:narrow' onClick={this._onDoneClick}>
           <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/tick@2x.png`, true)} />
         </div>
       </div>
