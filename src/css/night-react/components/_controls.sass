@@ -52,10 +52,13 @@
       +modifiers(button, colorPicker)
         width: $controlsButtonWidth + 10px
 
+      +modifier(narrow)
+        width: $controlsNarrowButtonWidth
+
       +modifier(slider)
         padding-top: 30px
-        padding-left: 10px
         padding-right: 10px
+        padding-left: 10px
 
       +modifier(withBorderRight)
         border-right: 2px solid $backgroundColor
@@ -77,6 +80,9 @@
 
       *
         line-height: 1
+
+      +modifier(narrow)
+        width: $controlsNarrowButtonWidth
 
       +element(icon)
         @include opacity(0.8)
