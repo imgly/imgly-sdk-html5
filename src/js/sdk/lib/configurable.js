@@ -105,11 +105,11 @@ export default class Configurable extends EventEmitter {
    * @param {Object} options
    */
   set (options) {
+    this.emit('update', this, options)
+
     for (let optionName in options) {
       this.setOption(optionName, options[optionName], false)
     }
-
-    this.emit('update')
   }
 
   /**
@@ -248,6 +248,10 @@ export default class Configurable extends EventEmitter {
    * @private
    */
   setOption (optionName, value, update=true) {
+    if (update) {
+      this.emit('update', this, { [optionName]: value })
+    }
+
     var optionConfig = this.availableOptions[optionName]
 
     if (typeof optionConfig.setter !== 'undefined') {
@@ -333,7 +337,7 @@ export default class Configurable extends EventEmitter {
 
     this._onOptionsChange()
     if (update) {
-      this.emit('update')
+      this.emit('updated', this, { [optionName]: value })
     }
   }
 }

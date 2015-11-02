@@ -9,10 +9,28 @@
  */
 
 import Promise from '../vendor/promise'
+import EventEmitter from './event-emitter'
 
-export default class OperationsStack {
+export default class OperationsStack extends EventEmitter {
   constructor (operations = []) {
+    super()
+
+    this._onOperationUpdate = this._onOperationUpdate.bind(this)
+
     this._stack = operations
+    this._stack.forEach((operation) => {
+      operation.on('update', this._onOperationUpdate)
+    })
+  }
+
+  /**
+   * Gets called when an operation is about to be updated
+   * @param  {Operation} operation
+   * @param  {Object} options
+   * @private
+   */
+  _onOperationUpdate (operation, options) {
+    this.emit('operation-update', operation, options)
   }
 
   /**
@@ -114,7 +132,11 @@ export default class OperationsStack {
    * @param  {Operation} operation
    */
   set (index, operation) {
+    if (this._stack[index]) {
+      this._stack[index].off('update', this._onOperationUpdate)
+    }
     this._stack[index] = operation
+    operation.on('update', this._onOperationUpdate)
   }
 
   /**
@@ -124,6 +146,9 @@ export default class OperationsStack {
   remove (operation) {
     const index = this._stack.indexOf(operation)
     if (index === -1) return
+    if (this._stack[index]) {
+      this._stack[index].off('update', this._onOperationUpdate)
+    }
     this._stack.splice(index, 1)
   }
 
@@ -132,6 +157,9 @@ export default class OperationsStack {
    * @param  {Number} index
    */
   removeAt (index) {
+    if (this._stack[index]) {
+      this._stack[index].off('update', this._onOperationUpdate)
+    }
     this._stack.splice(index, 1)
   }
 
