@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent, Utils } from '../../globals'
+import { ReactBEM, BaseChildComponent, Utils, Constants } from '../../globals'
 import ColorPickerOverlayComponent from './overlay-component'
 
 export default class ColorPickerComponent extends BaseChildComponent {
@@ -19,8 +19,13 @@ export default class ColorPickerComponent extends BaseChildComponent {
     this._value = this.props.initialValue.clone()
     this._bindAll(
       '_onButtonClick',
-      '_onValueChange'
+      '_onValueChange',
+      '_onColorPickerOpen'
     )
+
+    this._events = {
+      [Constants.EVENTS.COLORPICKER_OPEN]: this._onColorPickerOpen
+    }
 
     this.state = {
       overlayVisible: false
@@ -35,6 +40,7 @@ export default class ColorPickerComponent extends BaseChildComponent {
    * Gets called when this component has been mounted
    */
   componentDidMount () {
+    super.componentDidMount()
     this._renderColor()
   }
 
@@ -48,6 +54,19 @@ export default class ColorPickerComponent extends BaseChildComponent {
   // -------------------------------------------------------------------------- EVENTS
 
   /**
+   * Gets called when a colorpicker has been opened. If it is not the same
+   * color picker as this, this one gets closed. This makes sure that there
+   * is only one color picker open at a time
+   * @param  {ColorPickerComponent} colorPicker
+   * @private
+   */
+  _onColorPickerOpen (colorPicker) {
+    console.log(colorPicker)
+    if (colorPicker === this) return
+    this.setState({ overlayVisible: false })
+  }
+
+  /**
    * Gets called when the color picker button has been clicked
    * @param  {Event} e
    * @private
@@ -55,6 +74,10 @@ export default class ColorPickerComponent extends BaseChildComponent {
   _onButtonClick (e) {
     e.preventDefault()
     e.stopPropagation()
+
+    if (!this.state.overlayVisible) {
+      this._emitEvent(Constants.EVENTS.COLORPICKER_OPEN, this)
+    }
 
     this.setState({ overlayVisible: !this.state.overlayVisible })
   }
