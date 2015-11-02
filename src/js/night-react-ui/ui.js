@@ -290,7 +290,7 @@ export default class NightReactUI extends EventEmitter {
     } else {
       const Operation = this._availableOperations[identifier]
       const operation = new Operation(this._kit, options)
-      operation.on('update', () => {
+      operation.on('updated', () => {
         this._mediator.emit(Constants.EVENTS.OPERATION_UPDATED, operation)
       })
       const index = this._preferredOperationOrder.indexOf(identifier)

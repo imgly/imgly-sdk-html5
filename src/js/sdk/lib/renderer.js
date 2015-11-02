@@ -33,6 +33,7 @@ export default class Renderer extends EventEmitter {
   constructor (preferredRenderer, options = {}, operationsOptions = {}) {
     super()
     this._onRendererError = this._onRendererError.bind(this)
+    this._onOperationUpdate = this._onOperationUpdate.bind(this)
 
     this._preferredRenderer = preferredRenderer
 
@@ -50,7 +51,7 @@ export default class Renderer extends EventEmitter {
 
     this._image = this._options.image
     this._operationsOptions = operationsOptions
-    this.operationsStack = new OperationsStack()
+    this.setOperationsStack(new OperationsStack())
 
     this._checkForUpdates()
     this._registerOperations()
@@ -317,6 +318,19 @@ export default class Renderer extends EventEmitter {
 
   getInputDimensions () {
     return new Vector2(this._image.width, this._image.height)
+  }
+
+  _onOperationUpdate (...args) {
+    this.emit('operation-update', ...args)
+  }
+
+  setOperationsStack (operationsStack) {
+    if (this.operationsStack) {
+      this.operationsStack.off('operation-update', this._onOperationUpdate)
+    }
+
+    this.operationsStack = operationsStack
+    this.operationsStack.on('operation-update', this._onOperationUpdate)
   }
 
   clone () {

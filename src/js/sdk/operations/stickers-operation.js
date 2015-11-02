@@ -10,6 +10,7 @@
 
 import Operation from './operation'
 import Vector2 from '../lib/math/vector2'
+import Matrix from '../lib/math/matrix'
 import Sticker from './stickers/sticker'
 
 import StickersWebGLRenderer from './stickers/webgl-renderer'
@@ -27,6 +28,98 @@ class StickersOperation extends Operation {
     super(...args)
 
     this._renderers = {}
+
+    this._onOperationUpdate = this._onOperationUpdate.bind(this)
+    this._kit.on('operation-update', this._onOperationUpdate)
+  }
+
+  /**
+   * Gets called when an operation is about to be updated. If the crop
+   * or rotation operation is updated, this will be recognized and the
+   * stickers will be updated accordingly
+   * @param  {Operation} operation
+   * @param  {Object} options
+   * @private
+   */
+  _onOperationUpdate (operation, options) {
+    const { identifier } = operation.constructor
+
+    if (identifier === 'crop' &&
+        'start' in options &&
+        'end' in options) {
+      this._applyCrop(operation, options)
+    }
+
+    if (identifier === 'rotation' &&
+        'degrees' in options) {
+      this._applyRotation(operation, options)
+    }
+  }
+
+  /**
+   * Applies the given rotation change
+   * @param  {RotationOperation} operation
+   * @param  {Object} options
+   * @private
+   */
+  _applyRotation (operation, options) {
+    const oldDegrees = operation.getDegrees()
+    const newDegrees = options.degrees
+    const degreesDifference = newDegrees - oldDegrees
+
+    this._options.stickers.forEach((sticker) => {
+      let stickerDegrees = sticker.getRotation() * 180 / Math.PI
+      stickerDegrees += degreesDifference
+      sticker.setRotation(stickerDegrees * Math.PI / 180)
+
+      // Flip X and Y unless we're rotating by 180 degrees
+      const stickerPosition = sticker.getPosition()
+      if (degreesDifference === 90 || (oldDegrees === 270 && newDegrees === 0)) {
+        stickerPosition.flip()
+        stickerPosition.x = 1 - stickerPosition.x
+      } else if (degreesDifference === -90 || (oldDegrees === -270 && newDegrees === 0)) {
+        stickerPosition.flip()
+        stickerPosition.y = 1 - stickerPosition.y
+      }
+      sticker.setPosition(stickerPosition)
+    })
+  }
+
+  /**
+   * Applies the given crop change
+   * @param  {CropOperation} operation
+   * @param  {Object} options
+   * @private
+   */
+  _applyCrop (operation, options) {
+    const inputDimensions = this._kit.getInputDimensions()
+
+    const oldEnd = operation.getEnd()
+    const oldStart = operation.getStart()
+    const newEnd = options.end
+    const newStart = options.start
+
+    const oldDimensions = oldEnd.clone().subtract(oldStart)
+      .multiply(inputDimensions)
+    const newDimensions = newEnd.clone().subtract(newStart)
+      .multiply(inputDimensions)
+
+    this._options.stickers.forEach((sticker) => {
+      const position = sticker.getPosition()
+      const scale = sticker.getScale()
+
+      sticker.set({
+        position: position.clone()
+          .add(
+            oldStart.clone().subtract(newStart)
+          )
+          .divide(
+            newDimensions.clone().divide(oldDimensions)
+          ),
+        scale: scale.clone()
+          .multiply(oldDimensions.x / newDimensions.x)
+      })
+    })
   }
 
   /**
