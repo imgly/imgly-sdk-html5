@@ -16,6 +16,7 @@ export default {
     OPERATION_UPDATED: 'operation:update',
     OPERATION_REMOVED: 'operation:removed',
     EDITOR_DISABLE_FEATURES: 'editor:disable',
-    EDITOR_ENABLE_FEATURES: 'editor:enable'
+    EDITOR_ENABLE_FEATURES: 'editor:enable',
+    COLORPICKER_OPEN: 'colorpicker:open'
   }
 }
