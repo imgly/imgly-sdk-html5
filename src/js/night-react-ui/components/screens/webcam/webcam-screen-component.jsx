@@ -56,6 +56,7 @@ export default class WebcamScreenComponent extends ScreenComponent {
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
+    const { ui } = this.context
     return (<div bem='b:screen $b:webcamScreen'>
       <SubHeaderComponent
         label={this._t('webcam.headline')}>
@@ -69,8 +70,8 @@ export default class WebcamScreenComponent extends ScreenComponent {
         </bem>
       </SubHeaderComponent>
 
-      <div bem='$b:canvasContainer e:row'>
-        <div bem='e:cell'>
+      <div bem='$b:canvas e:container e:row'>
+        <div bem='e:container e:cell'>
           <WebcamComponent
             ref='webcam'
             onReady={this._onWebcamReady}
@@ -78,13 +79,15 @@ export default class WebcamScreenComponent extends ScreenComponent {
         </div>
       </div>
 
-      <div bem='$b:controls e:row'>
+      <div bem='$b:controls $e:container e:row'>
         <div bem='e:cell'>
           <bem specifier='b:webcamScreen'>
             <div
-              bem='e:shutterButton'
+              bem='$e:shutterButton'
               onClick={this._onShutterClicked}
-              className={this.state.webcamReady ? 'is-active' : false}></div>
+              className={this.state.webcamReady ? 'is-active' : false}>
+              <img bem='e:icon' src={ui.getHelpers().assetPath('controls/webcam/shutter@2x.png', true)} />
+            </div>
           </bem>
         </div>
       </div>

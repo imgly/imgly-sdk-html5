@@ -31,7 +31,7 @@ export default class OverviewControlsComponent extends BaseChildComponent {
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
-    const ui = this.context.ui
+    const { ui } = this.context
     const listItems = ui.getSelectedControls()
       .map((control) => {
         return (<li
