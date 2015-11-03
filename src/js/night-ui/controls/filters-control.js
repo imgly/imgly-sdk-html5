@@ -17,16 +17,27 @@ class FiltersControl extends Control {
    * Entry point for this control
    */
   init () {
+    this._options = this._ui.options.controlsOptions.filters || {}
+
     let controlsTemplate = __DOTJS_TEMPLATE('../templates/operations/filters_controls.jst')
     this._controlsTemplate = controlsTemplate
 
-    this._availableFilters = {}
-    this._filters = {}
+    this._filters = []
+    this._initFilters()
+  }
 
-    this._addDefaultFilters()
-
-    // Select all filters per default
-    this.selectFilters(null)
+  /**
+   * Initializes the available filters
+   * @private
+   */
+  _initFilters () {
+    const filtersMap = window.PhotoEditorSDK.Filters
+    let filters = []
+    for (let key in filtersMap) {
+      filters.push(filtersMap[key])
+    }
+    const additionalFilters = this._options.filters || []
+    this._filters = filters.concat(additionalFilters)
   }
 
   /**
@@ -82,8 +93,8 @@ class FiltersControl extends Control {
   _onListItemClick (item) {
     this._deactivateAllItems()
 
-    const identifier = item.getAttribute('data-identifier')
-    this._operation.setFilter(this._filters[identifier])
+    const index = item.getAttribute('data-index')
+    this._operation.setFilter(this._filters[index])
     this._ui.canvas.render()
 
     Utils.classList(item).add('imglykit-controls-item-active')
@@ -104,45 +115,6 @@ class FiltersControl extends Control {
     for (let i = 0; i < this._listItems.length; i++) {
       let listItem = this._listItems[i]
       Utils.classList(listItem).remove('imglykit-controls-item-active')
-    }
-  }
-
-  /**
-   * Registers all the known filters
-   * @private
-   */
-  _addDefaultFilters () {
-    for (let identifier in PhotoEditorSDK.Filters) {
-      this.addFilter(PhotoEditorSDK.Filters[identifier])
-    }
-  }
-
-  /**
-   * Registers the given filter
-   * @param  {class} filter
-   * @private
-   */
-  addFilter (filter) {
-    this._availableFilters[filter.identifier] = filter
-  }
-
-  /**
-   * Selects the filters
-   * @param {Selector} selector
-   */
-  selectFilters (selector) {
-    this._filters = {}
-
-    let filterIdentifiers = Object.keys(this._availableFilters)
-
-    let selectedFilters = SDKUtils.select(filterIdentifiers, selector)
-    for (let i = 0; i < selectedFilters.length; i++) {
-      let identifier = selectedFilters[i]
-      this._filters[identifier] = this._availableFilters[identifier]
-    }
-
-    if (this._active) {
-      this._renderControls()
     }
   }
 
