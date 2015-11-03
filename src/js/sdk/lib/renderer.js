@@ -348,7 +348,9 @@ export default class Renderer extends EventEmitter {
     this._options.canvas = canvas
     this.reset()
   }
-  getRenderer () { return this._renderer }
+  getRenderer () {
+    return this._renderer
+  }
   hasImage () { return !!this._options.image }
   getOperations () { return this._operations }
   getOptions () { return this._options }
@@ -356,6 +358,16 @@ export default class Renderer extends EventEmitter {
 
   getDimensions () {
     return this._dimensions
+  }
+
+  getMaxDimensions () {
+    const canvas = document.createElement('canvas')
+    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
+    if (!gl) {
+      return null
+    } else {
+      return gl.getParameter(gl.MAX_TEXTURE_SIZE)
+    }
   }
 
   setDimensions (dimensions) {

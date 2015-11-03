@@ -87,13 +87,23 @@
     "loading": "Lade..."
   },
   "warnings": {
-    "imageResized": {
+    "imageResized_megaPixels": {
       "title": "Bild verkleinert",
       "text": "Da dein Bild die maximale Größe von ${maxMegaPixels} Megapixeln überschreitet, wurde es auf ${width}x${height} Pixel verkleinert."
     },
+    "imageResized_maxDimensions": {
+      "title": "Bild verkleinert",
+      "text": "Aufgrund von Hardware-Beschränkungen wurde das Bild auf ${width}x${height} Pixel verkleinert."
+    }
+  },
+  "errors": {
+    "imageLoadFail": {
+      "title": "Bild konnte nicht geladen werden",
+      "text": "Beim Laden des Bildes unter ${path} ist ein Fehler aufgetreten."
+    },
     "webcamUnavailable": {
       "title": "Webcam nicht verfügbar",
-      "text": "Webcam-Bild kann nicht dargestellt werden (Fehler: ${error})"
+      "text": "Webcam-Bild kann nicht dargestellt werden. (Fehler: ${error})"
     },
     "webcamNotSupported": {
       "title": "Webcam nicht unterstützt",
