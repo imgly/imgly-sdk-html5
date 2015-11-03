@@ -101,6 +101,10 @@
       "title": "Webcam unavailable",
       "text": "Unable to display webcam image (Error: ${error})"
     },
+    "webcamNotSupported": {
+      "title": "Webcam not supported",
+      "text": "The webcam feature is not supported by your browser."
+    },
     "renderingError": {
       "title": "Error while rendering",
       "text": "An error has occurred while rendering the image."
