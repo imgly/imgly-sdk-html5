@@ -1,12 +1,11 @@
 <div>
   <ul class="imglykit-controls-list imgly-controls-list-with-buttons">
-    {{ for(var identifier in it.ratios) { }}
-      {{ var ratio = it.ratios[identifier]; }}
+    {{~it.ratios :ratio:index}}
       {{ var enabled = ratio.selected; }}
-      <li data-identifier="{{= identifier}}" data-ratio="{{= ratio.ratio}}"{{? enabled}} data-selected{{?}}>
-        <img src="{{=it.helpers.assetPath('ui/night/crop/' + identifier + '.png')}}" />
+      <li data-identifier="{{= ratio.identifier}}" data-ratio="{{= ratio.ratio}}"{{? enabled}} data-selected{{?}}>
+        <img src="{{=it.helpers.assetPath('ui/night/crop/' + ratio.identifier + '.png')}}" />
       </li>
-    {{ } }}
+    {{~}}
   </ul>
 </div>
 
