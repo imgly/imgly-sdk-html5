@@ -230,7 +230,7 @@ class BrushOperation extends Operation {
  * operations.
  * @type {String}
  */
-BrushOperation.prototype.identifier = 'brush'
+BrushOperation.identifier = 'brush'
 
 /**
  * Specifies the available options for this operation
