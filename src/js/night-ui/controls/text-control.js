@@ -18,6 +18,8 @@ class TextControl extends Control {
    * Entry point for this control
    */
   init () {
+    this._options = this._ui.options.controlsOptions.text || {}
+
     let controlsTemplate = __DOTJS_TEMPLATE('../templates/operations/text_controls.jst')
     this._controlsTemplate = controlsTemplate
 
@@ -35,9 +37,35 @@ class TextControl extends Control {
     }
 
     this._fonts = []
-    this._addFonts()
+    this._initFonts()
   }
 
+  /**
+   * Adds the default fonts
+   * @private
+   */
+  _initFonts () {
+    const additionalFonts = this._options.fonts || []
+    const replaceFonts = !!this._options.replaceFonts
+
+    this._fonts = [
+      { fontFamily: 'Helvetica', fontWeight: 'normal' },
+      { fontFamily: 'Verdana', fontWeight: 'normal' },
+      { fontFamily: 'Times New Roman', fontWeight: 'normal' },
+      { fontFamily: 'Impact', fontWeight: 'normal' }
+    ]
+
+    if (replaceFonts) {
+      this._fonts = additionalFonts
+    } else {
+      this._fonts = this._fonts.concat(additionalFonts)
+    }
+  }
+
+  /**
+   * Renders the controls
+   * @private
+   */
   _renderControls () {
     this._partialTemplates.fgColorPicker.additionalContext.label = this._ui.translate('controls.text.foreground')
     this._partialTemplates.bgColorPicker.additionalContext.label = this._ui.translate('controls.text.background')
@@ -455,25 +483,6 @@ class TextControl extends Control {
       let listItem = this._listItems[i]
       Utils.classList(listItem).remove('imglykit-controls-item-active')
     }
-  }
-
-  /**
-   * Adds the default fonts
-   * @private
-   */
-  _addFonts () {
-    this.addFont('Helvetica', 'normal')
-    this.addFont('Verdana', 'normal')
-    this.addFont('Times New Roman', 'normal')
-  }
-
-  /**
-   * Adds a font with the given name and weight
-   * @param {String} name
-   * @param {String} weight
-   */
-  addFont (name, weight) {
-    this._fonts.push({ name, weight })
   }
 
   /**
