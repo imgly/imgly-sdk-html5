@@ -11,12 +11,12 @@
 +block(editor)
   +block(modals)
     +element(modal)
-      @include box-shadow(0 2px rgba(white, 0.5) inset)
       @include transform(translateX(-50%) translateY(-50%))
       position: absolute
       z-index: 6
       top: 50%
       left: 50%
+      border-top: 2px solid grey
       border-radius: 5px
       max-width: 90%
       padding: 20px
@@ -24,10 +24,10 @@
       text-align: center
 
       +modifier(error)
-        @include box-shadow(0 2px $redColor inset)
+        border-color: $redColor
 
       +modifier(warning)
-        @include box-shadow(0 2px $yellowColor inset)
+        border-color: $yellowColor
 
     +element(overlay)
       position: absolute

@@ -108,11 +108,20 @@ export default class WebcamComponent extends BaseChildComponent {
    * @private
    */
   _initVideoStream () {
+    const { ui } = this.context
+    const translate = ui.translate.bind(ui)
+
     const video = React.findDOMNode(this.refs.video)
     const getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
       navigator.mozGetUserMedia || navigator.msGetUserMedia
+
     if (!getUserMedia) {
-      throw new Error('Webcam feature not supported! :(')
+      const errorModal = ModalManager.instance.displayError(
+        translate('errors.webcamNotSupported.title'),
+        translate('errors.webcamNotSupported.text')
+      )
+      errorModal.on('close', () => this.props.onBack())
+      return
     }
 
     getUserMedia.call(navigator, { video: true }, (stream) => {
@@ -122,17 +131,13 @@ export default class WebcamComponent extends BaseChildComponent {
     }, (err) => {
       console.error && console.error(err)
 
-      const { ui } = this.context
-      const translate = ui.translate.bind(ui)
       const errorModal = ModalManager.instance.displayError(
         translate('errors.webcamUnavailable.title'),
         translate('errors.webcamUnavailable.text', { error: err.name }),
         true
       )
 
-      errorModal.on('close', () => {
-        this.props.onBack()
-      })
+      errorModal.on('close', () => this.props.onBack())
     })
   }
 
