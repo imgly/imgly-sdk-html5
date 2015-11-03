@@ -61,7 +61,6 @@ export default class ColorPickerComponent extends BaseChildComponent {
    * @private
    */
   _onColorPickerOpen (colorPicker) {
-    console.log(colorPicker)
     if (colorPicker === this) return
     this.setState({ overlayVisible: false })
   }
