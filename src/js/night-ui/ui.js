@@ -86,7 +86,8 @@ export default class NightUI extends EventEmitter {
       showExportButton: false,
       language: 'en',
       maxMegaPixels: 10,
-      export: {}
+      export: {},
+      controlsOptions: {}
     })
 
     this._options.export = SDKUtils.defaults(this._options.export, {
