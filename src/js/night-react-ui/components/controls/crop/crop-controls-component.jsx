@@ -142,6 +142,8 @@ export default class OrientationControlsComponent extends BaseChildComponent {
     // Zoom to auto again
     this._emitEvent(Constants.EVENTS.CANVAS_ZOOM, 'auto')
 
+    this.context.kit.reset()
+
     // Switch back to overview controls
     this.props.onSwitchControls('back')
   }
