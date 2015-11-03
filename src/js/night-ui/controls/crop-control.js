@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-const { Utils, Vector2 } = PhotoEditorSDK
+import { Utils, Vector2 } from '../globals'
 import Control from './control'
 
 class CropControl extends Control {
@@ -17,8 +17,9 @@ class CropControl extends Control {
    * Entry point for this control
    */
   init () {
-    this._availableRatios = {}
-    this._ratios = {}
+    this._options = this._ui.options.controlsOptions.crop || {}
+
+    this._ratios = []
 
     let controlsTemplate = __DOTJS_TEMPLATE('../templates/operations/crop_controls.jst')
     this._controlsTemplate = controlsTemplate
@@ -34,51 +35,29 @@ class CropControl extends Control {
     this._onCenterDrag = this._onCenterDrag.bind(this)
     this._onCenterUp = this._onCenterUp.bind(this)
 
-    this._addDefaultRatios()
-
-    // Select all ratios per default
-    this.selectRatios(null)
-  }
-
-  /**
-   * Selects the ratios
-   * @param {Selector} selector
-   */
-  selectRatios (selector) {
-    this._ratios = {}
-
-    let ratioIdentifiers = Object.keys(this._availableRatios)
-
-    let selectedRatios = Utils.select(ratioIdentifiers, selector)
-    for (let i = 0; i < selectedRatios.length; i++) {
-      let identifier = selectedRatios[i]
-      this._ratios[identifier] = this._availableRatios[identifier]
-    }
-
-    if (this._active) {
-      this._renderControls()
-    }
+    this._initRatios()
   }
 
   /**
    * Adds the default ratios
    * @private
    */
-  _addDefaultRatios () {
-    this.addRatio('custom', '*', true)
-    this.addRatio('square', '1')
-    this.addRatio('4-3', '1.33')
-    this.addRatio('16-9', '1.77')
-  }
+  _initRatios () {
+    const additionalRatios = this._options.ratios || []
+    const replaceRatios = !!this._options.replaceRatios
 
-  /**
-   * Adds a ratio with the given identifier
-   * @param {String} identifier
-   * @param {Number} ratio
-   * @param {Boolean} selected
-   */
-  addRatio (identifier, ratio, selected) {
-    this._availableRatios[identifier] = { ratio, selected }
+    this._ratios = [
+      { identifier: 'custom', ratio: '*', selected: true },
+      { identifier: 'square', ratio: 1 },
+      { identifier: '4-3', ratio: 1.33 },
+      { identifier: '16-9', ratio: 1.77 }
+    ]
+
+    if (replaceRatios) {
+      this._ratios = additionalRatios
+    } else {
+      this._ratios = this._ratios.concat(additionalRatios)
+    }
   }
 
   /**
