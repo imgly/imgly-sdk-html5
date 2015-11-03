@@ -214,12 +214,12 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
     return (<div bem='b:canvasControls e:container m:full' ref='container'>
       <div bem='$b:cropCanvasControls'>
         <div bem='e:row'>
-          <div bem='e:cell m:dark' style={areaStyles.topLeft} />
-          <div bem='e:cell m:dark' style={areaStyles.topCenter} />
+          <div bem='e:cell m:dark' style={areaStyles.topLeft}>&nbsp;</div>
+          <div bem='e:cell m:dark' style={areaStyles.topCenter}>&nbsp;</div>
           <div bem='e:cell m:dark' />
         </div>
         <div bem='e:row'>
-          <div bem='e:cell m:dark' style={areaStyles.centerLeft} />
+          <div bem='e:cell m:dark' style={areaStyles.centerLeft}>&nbsp;</div>
           <DraggableComponent
             onStart={this._onCenterDragStart}
             onDrag={this._onCenterDrag}>
@@ -241,12 +241,12 @@ export default class CropCanvasControlsComponent extends BaseChildComponent {
                 </DraggableComponent>
               </div>
           </DraggableComponent>
-          <div bem='e:cell m:dark' />
+          <div bem='e:cell m:dark'>&nbsp;</div>
         </div>
         <div bem='e:row'>
-          <div bem='e:cell m:dark' />
-          <div bem='e:cell m:dark' />
-          <div bem='e:cell m:dark' />
+          <div bem='e:cell m:dark'>&nbsp;</div>
+          <div bem='e:cell m:dark'>&nbsp;</div>
+          <div bem='e:cell m:dark'>&nbsp;</div>
         </div>
       </div>
     </div>)
