@@ -261,8 +261,6 @@ class WebGLRenderer extends BaseRenderer {
     gl.disable(gl.CULL_FACE)
     gl.enable(gl.BLEND)
 
-    this._maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE)
-
     return gl
   }
 
@@ -792,6 +790,11 @@ class WebGLRenderer extends BaseRenderer {
 
   get maxTextureSize () {
     return this._maxTextureSize
+  }
+
+  getMaxDimensions () {
+    const gl = this.getContext()
+    return gl.getParameter(gl.MAX_TEXTURE_SIZE)
   }
 }
 

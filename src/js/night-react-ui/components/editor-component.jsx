@@ -96,21 +96,37 @@ class EditorComponent extends React.Component {
     }
 
     const maxPixels = this.props.options.maxMegaPixels * 1000000
-    if (image.width * image.height > maxPixels) {
+    const maxDimensions = this.props.kit.getMaxDimensions()
+
+    const megaPixelsExceeded = image.width * image.height > maxPixels
+    const dimensionsExceeded = image.width > maxDimensions || image.height > maxDimensions
+
+    if (megaPixelsExceeded || dimensionsExceeded) {
       const loadingModal = ModalManager.instance.displayLoading(translate('loading.resizing'))
-      const imageResizer = new ImageResizer(image, maxPixels)
+      const imageResizer = new ImageResizer(image, maxPixels, maxDimensions)
 
       imageResizer.resize()
         .then(({ canvas, dimensions }) => {
           loadingModal.close()
-          ModalManager.instance.displayWarning(
-            translate('warnings.imageResized.title'),
-            translate('warnings.imageResized.text', {
-              maxMegaPixels: this.props.options.maxMegaPixels,
-              width: dimensions.x,
-              height: dimensions.y
-            })
-          )
+
+          if (megaPixelsExceeded) {
+            ModalManager.instance.displayWarning(
+              translate('warnings.imageResized_megaPixels.title'),
+              translate('warnings.imageResized_megaPixels.text', {
+                maxMegaPixels: this.props.options.maxMegaPixels,
+                width: dimensions.x,
+                height: dimensions.y
+              })
+            )
+          } else if (dimensionsExceeded) {
+            ModalManager.instance.displayWarning(
+              translate('warnings.imageResized_maxDimensions.title'),
+              translate('warnings.imageResized_maxDimensions.text', {
+                width: dimensions.x,
+                height: dimensions.y
+              })
+            )
+          }
           done(canvas)
         })
     } else {

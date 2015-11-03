@@ -87,9 +87,13 @@
     "loading": "Loading..."
   },
   "warnings": {
-    "imageResized": {
+    "imageResized_megaPixels": {
       "title": "Image resized",
       "text": "Your image exceeds the maximum size of ${maxMegaPixels} megapixels and has therefore been resized to ${width}x${height} pixels."
+    },
+    "imageResized_maxDimensions": {
+      "title": "Image resized",
+      "text": "Due to hardware limitations your image has been resized to ${width}x${height} pixels."
     }
   },
   "errors": {
