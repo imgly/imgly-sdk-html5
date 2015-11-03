@@ -77,7 +77,7 @@ export default {
       const text = state.operation.createText({
         text: 'Text',
         maxWidth: 0.5,
-        maxHeight: renderer.maxTextureSize,
+        maxHeight: renderer.getMaxDimensions(),
         anchor: new Vector2(0.5, 0),
         pivot: new Vector2(0.5, 0)
       })

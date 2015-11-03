@@ -25,7 +25,7 @@ export default class Text extends Configurable {
     this._operation = operation
 
     this._canvas = null
-    this._dirty = true
+    this._dirtiness = {}
   }
 
   /**
@@ -33,7 +33,7 @@ export default class Text extends Configurable {
    * @private
    */
   _onOptionsChange () {
-    this._dirty = true
+    this.setDirty(true)
   }
 
   /**
@@ -77,13 +77,18 @@ export default class Text extends Configurable {
    * @return {Promise}
    */
   render (renderer) {
-    if (!this._dirty) return Promise.resolve(this._canvas)
+    console.log(renderer.id)
+    if (typeof this._dirtiness[renderer.id] === 'undefined') {
+      this._dirtiness[renderer.id] = true
+    }
+    let dirty = this._dirtiness[renderer.id]
+    if (!dirty) return Promise.resolve(this._canvas)
 
     const textOptions = this._calculateFontSizeAndLineHeight(renderer)
     const { boundingBox, lines } = this._calculateText(renderer, textOptions)
     return this._renderText(renderer, boundingBox, lines, textOptions)
       .then(() => {
-        this._dirty = false
+        this._dirtiness[renderer.id] = false
         return this._canvas
       })
   }
@@ -241,7 +246,9 @@ export default class Text extends Configurable {
    * @param {Boolean} dirty = true
    */
   setDirty (dirty) {
-    this._dirty = dirty
+    for (let rendererId in this._dirtiness) {
+      this._dirtiness[rendererId] = dirty
+    }
   }
 }
 
