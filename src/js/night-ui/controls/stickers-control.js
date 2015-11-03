@@ -17,6 +17,8 @@ class StickersControl extends Control {
    * Entry point for this control
    */
   init () {
+    this._options = this._ui.options.controlsOptions.stickers || {}
+
     let controlsTemplate = __DOTJS_TEMPLATE('../templates/operations/stickers_controls.jst')
     this._controlsTemplate = controlsTemplate
 
@@ -27,66 +29,47 @@ class StickersControl extends Control {
      * The registered stickers
      * @type {Object.<string, class>}
      */
-    this._availableStickers = {}
-    this._stickers = {}
-    this._addDefaultStickers()
-    this.selectStickers(null)
+    this._stickers = []
+    this._initStickers()
   }
 
   /**
    * Registers the default stickers
    * @private
    */
-  _addDefaultStickers () {
-    this.addSticker('glasses-nerd', 'stickers/sticker-glasses-nerd.png')
-    this.addSticker('glasses-normal', 'stickers/sticker-glasses-normal.png')
-    this.addSticker('glasses-shutter-green', 'stickers/sticker-glasses-shutter-green.png')
-    this.addSticker('glasses-shutter-yellow', 'stickers/sticker-glasses-shutter-yellow.png')
-    this.addSticker('glasses-sun', 'stickers/sticker-glasses-sun.png')
-    this.addSticker('hat-cap', 'stickers/sticker-hat-cap.png')
-    this.addSticker('hat-cylinder', 'stickers/sticker-hat-cylinder.png')
-    this.addSticker('hat-party', 'stickers/sticker-hat-party.png')
-    this.addSticker('hat-sheriff', 'stickers/sticker-hat-sheriff.png')
-    this.addSticker('heart', 'stickers/sticker-heart.png')
-    this.addSticker('mustache-long', 'stickers/sticker-mustache-long.png')
-    this.addSticker('mustache1', 'stickers/sticker-mustache1.png')
-    this.addSticker('mustache2', 'stickers/sticker-mustache2.png')
-    this.addSticker('mustache3', 'stickers/sticker-mustache3.png')
-    this.addSticker('pipe', 'stickers/sticker-pipe.png')
-    this.addSticker('snowflake', 'stickers/sticker-snowflake.png')
-    this.addSticker('star', 'stickers/sticker-star.png')
-  }
+  _initStickers () {
+    const additionalStickers = this._options.stickers || []
+    const replaceStickers = !!this._options.replaceStickers
 
-  /**
-   * Registers the sticker with the given identifier and path
-   * @private
-   */
-  addSticker (identifier, path) {
-    this._availableStickers[identifier] = path
-    this._stickers[identifier] = this._availableStickers[identifier]
+    const stickers = [
+      'glasses-nerd.png',
+      'glasses-normal.png',
+      'glasses-shutter-green.png',
+      'glasses-shutter-yellow.png',
+      'glasses-sun.png',
+      'hat-cap.png',
+      'hat-cylinder.png',
+      'hat-party.png',
+      'hat-sheriff.png',
+      'heart.png',
+      'mustache-long.png',
+      'mustache1.png',
+      'mustache2.png',
+      'mustache3.png',
+      'pipe.png',
+      'snowflake.png',
+      'star.png'
+    ].map((stickerName) =>
+      [
+        `stickers/small/${stickerName}`,
+        `stickers/large/${stickerName}`
+      ]
+    )
 
-    if (this._active) {
-      this._renderControls()
-    }
-  }
-
-  /**
-   * Selects the stickers
-   * @param {Selector} selector
-   */
-  selectStickers (selector) {
-    this._stickers = {}
-
-    let stickerIdentifiers = Object.keys(this._availableStickers)
-
-    let selectedStickers = SDKUtils.select(stickerIdentifiers, selector)
-    for (let i = 0; i < selectedStickers.length; i++) {
-      let identifier = selectedStickers[i]
-      this._stickers[identifier] = this._availableStickers[identifier]
-    }
-
-    if (this._active) {
-      this._renderControls()
+    if (replaceStickers) {
+      this._stickers = additionalStickers
+    } else {
+      this._stickers = stickers.concat(additionalStickers)
     }
   }
 
@@ -418,16 +401,15 @@ class StickersControl extends Control {
   _onListItemClick (item, manually=true) {
     this._deactivateAllItems()
 
-    const identifier = item.getAttribute('data-identifier')
-    let stickerPath = this._availableStickers[identifier]
-    stickerPath = this._ui.helpers.assetPath(stickerPath)
+    const index = item.getAttribute('data-index')
+    const stickerPaths = this._stickers[index]
+    const stickerPath = this._ui.helpers.assetPath(stickerPaths[1])
 
     try {
       this._stickerImage.attributes.removeNamedItem('style')
     } catch (e) {}
 
     this._sticker.setImage(this._stickerImage)
-    this._sticker._identifier = identifier
     this._stickerImage.src = stickerPath
     this._stickerImage.addEventListener('load', this._onStickerLoad)
 
