@@ -22,6 +22,15 @@ export default class TextWebGLRenderer {
     this.vertexShader = require('raw!../generic/sprite.vert')
   }
 
+  // -------------------------------------------------------------------------- RESET
+
+  /**
+   * Resets all textures
+   */
+  reset () {
+    this._textures = {}
+  }
+
   // -------------------------------------------------------------------------- RENDERING
 
   /**

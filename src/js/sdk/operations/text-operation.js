@@ -52,7 +52,9 @@ class TextOperation extends Operation {
    * @protected
    */
   _onDirty () {
-    this._textures = []
+    for (let id in this._renderers) {
+      this._renderers[id].reset()
+    }
   }
 
   // -------------------------------------------------------------------------- TEXT CREATION
