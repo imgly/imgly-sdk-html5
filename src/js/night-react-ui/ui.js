@@ -11,7 +11,7 @@
 
 import {
   SDKUtils, EventEmitter, Constants, Utils, RenderType, BaseChildComponent,
-  React, ReactBEM, SharedState
+  React, ReactDOM, ReactBEM, SharedState
 } from './globals'
 
 import Helpers from './helpers'
@@ -102,7 +102,7 @@ export default class NightReactUI extends EventEmitter {
     if (this._options.renderReturnsComponent) {
       return component
     } else {
-      React.render(component, this._options.container)
+      ReactDOM.render(component, this._options.container)
     }
   }
 

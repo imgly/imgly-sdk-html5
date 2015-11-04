@@ -59,7 +59,7 @@ export default class TextCanvasControlsComponent extends BaseComponent {
   _onTextClick (text, e) {
     const selectedText = this.getSharedState('selectedText')
     if (text !== selectedText) {
-      this.refs[`textArea-${selectedText.id}`].getDOMNode().blur()
+      this.refs[`textArea-${selectedText.id}`].blur()
       this.setSharedState({ selectedText: text })
       return this.setState({
         editMode: false
@@ -69,7 +69,7 @@ export default class TextCanvasControlsComponent extends BaseComponent {
     if (this.state.editMode) return
 
     this.setState({ editMode: true }, () => {
-      this.refs[`textArea-${selectedText.id}`].getDOMNode().focus()
+      this.refs[`textArea-${selectedText.id}`].focus()
     })
   }
 
@@ -108,7 +108,7 @@ export default class TextCanvasControlsComponent extends BaseComponent {
    */
   _onCanvasClick (e) {
     if (this._dragging) return
-    if (e.target !== this.refs.container.getDOMNode()) return
+    if (e.target !== this.refs.container) return
 
     if (this.state.editMode) {
       this.setState({ editMode: false })

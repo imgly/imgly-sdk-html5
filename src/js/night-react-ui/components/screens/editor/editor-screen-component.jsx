@@ -64,7 +64,7 @@ export default class EditorScreenComponent extends ScreenComponent {
   componentDidMount () {
     super.componentDidMount()
 
-    this._fileLoader = new FileLoader(React.findDOMNode(this.refs.fileInput))
+    this._fileLoader = new FileLoader(this.refs.fileInput)
     this._fileLoader.on('file', this._onNewFile)
 
     const { options } = this.context

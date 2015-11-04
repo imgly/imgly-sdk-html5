@@ -48,7 +48,7 @@ export default class WebcamComponent extends BaseComponent {
       return Promise.reject(new Error('UserMedia stream not ready'))
     }
 
-    const video = React.findDOMNode(this.refs.video)
+    const { video } = this.refs
 
     return new Promise((resolve, reject) => {
       const canvas = document.createElement('canvas')
@@ -73,7 +73,7 @@ export default class WebcamComponent extends BaseComponent {
   componentWillUnmount () {
     super.componentWillUnmount()
 
-    const video = React.findDOMNode(this.refs.video)
+    const { video } = this.refs
     if (this._stream) {
       const track = this._stream.getTracks()[0]
       track && track.stop()
@@ -95,8 +95,7 @@ export default class WebcamComponent extends BaseComponent {
    * @return {[type]} [description]
    */
   _resizeVideo () {
-    const video = React.findDOMNode(this.refs.video)
-    const container = React.findDOMNode(this.refs.container)
+    const { video, container } = this.refs
     const innerDimensions = Utils.getInnerDimensionsForElement(container)
 
     video.width = innerDimensions.x
@@ -111,7 +110,7 @@ export default class WebcamComponent extends BaseComponent {
     const { ui } = this.context
     const translate = ui.translate.bind(ui)
 
-    const video = React.findDOMNode(this.refs.video)
+    const { video } = this.refs
     const getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
       navigator.mozGetUserMedia || navigator.msGetUserMedia
 

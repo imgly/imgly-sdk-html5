@@ -36,7 +36,7 @@ export default class FontPreviewComponent extends BaseComponent {
    * @private
    */
   _renderCanvas () {
-    const canvas = this.refs.canvas.getDOMNode()
+    const { canvas } = this.refs
 
     canvas.width = canvas.offsetWidth
     canvas.height = canvas.offsetHeight

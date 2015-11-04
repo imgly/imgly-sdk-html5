@@ -60,8 +60,8 @@ export default class CanvasComponent extends BaseComponent {
     super.componentDidMount()
 
     const { kit } = this.context
-    this._canvas = React.findDOMNode(this.refs.canvas)
-    kit.setCanvas(this._canvas)
+    const { canvas } = this.refs
+    kit.setCanvas(canvas)
 
     this._updateDimensions()
 
@@ -190,10 +190,9 @@ export default class CanvasComponent extends BaseComponent {
    * @private
    */
   _updateDimensions () {
-    const canvas = this.refs.canvas.getDOMNode()
-    this._canvasDimensions = new Vector2(canvas.offsetWidth, canvas.offsetHeight)
+    const { canvas, canvasCell } = this.refs
 
-    const canvasCell = this.refs.canvasCell.getDOMNode()
+    this._canvasDimensions = new Vector2(canvas.offsetWidth, canvas.offsetHeight)
     this._containerDimensions = new Vector2(canvasCell.offsetWidth, canvasCell.offsetHeight)
   }
 

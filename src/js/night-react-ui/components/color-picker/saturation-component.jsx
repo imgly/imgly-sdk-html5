@@ -69,7 +69,7 @@ export default class SaturationComponent extends BaseComponent {
    * @private
    */
   _onKnobDragStart (position, e) {
-    if (e.target === this.refs.knob.getDOMNode()) {
+    if (e.target === this.refs.knob) {
       this._initialValue = this._hsvColor.v
       this._initialSaturation = this._hsvColor.s
     } else {
@@ -84,7 +84,7 @@ export default class SaturationComponent extends BaseComponent {
    * @private
    */
   _onKnobDrag (offset, e) {
-    const canvas = this.refs.canvas.getDOMNode()
+    const { canvas } = this.refs
     const canvasWidth = canvas.offsetWidth
     const canvasHeight = canvas.offsetHeight
 
@@ -140,7 +140,7 @@ export default class SaturationComponent extends BaseComponent {
    * @private
    */
   _setValuesFromPosition (position) {
-    const canvas = this.refs.canvas.getDOMNode()
+    const { canvas } = this.refs
     this._initialSaturation = position.x / canvas.offsetWidth
     this._initialValue = 1 - (position.y / canvas.offsetHeight)
 
@@ -159,7 +159,7 @@ export default class SaturationComponent extends BaseComponent {
    * @private
    */
   _renderCanvas () {
-    const canvas = this.refs.canvas.getDOMNode()
+    const { canvas } = this.refs
     const context = canvas.getContext('2d')
 
     canvas.width = canvas.offsetWidth

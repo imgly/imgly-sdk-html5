@@ -60,7 +60,7 @@ export default class AlphaComponent extends BaseComponent {
    * @private
    */
   _onKnobDragStart (position, e) {
-    if (e.target === this.refs.knob.getDOMNode()) {
+    if (e.target === this.refs.knob) {
       this._initialAlpha = this._value.a
     } else {
       this._setAlphaFromPosition(position)
@@ -74,7 +74,7 @@ export default class AlphaComponent extends BaseComponent {
    * @private
    */
   _onKnobDrag (offset, e) {
-    const canvas = this.refs.canvas.getDOMNode()
+    const canvas = this.refs.canvas
     const canvasWidth = canvas.offsetWidth
 
     const alphaChange = offset.x / canvasWidth
@@ -115,7 +115,7 @@ export default class AlphaComponent extends BaseComponent {
    * @private
    */
   _setAlphaFromPosition (position) {
-    const canvas = this.refs.canvas.getDOMNode()
+    const canvas = this.refs.canvas
     this._initialAlpha = position.x / canvas.offsetWidth
     this._setAlpha(this._initialAlpha)
   }
@@ -127,7 +127,7 @@ export default class AlphaComponent extends BaseComponent {
    * @private
    */
   _renderCanvas () {
-    const canvas = this.refs.canvas.getDOMNode()
+    const canvas = this.refs.canvas
     const context = canvas.getContext('2d')
 
     canvas.width = canvas.offsetWidth

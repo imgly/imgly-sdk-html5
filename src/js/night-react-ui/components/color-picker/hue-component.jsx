@@ -69,7 +69,7 @@ export default class HueComponent extends BaseComponent {
    * @private
    */
   _onKnobDragStart (position, e) {
-    if (e.target === this.refs.knob.getDOMNode()) {
+    if (e.target === this.refs.knob) {
       this._initialHue = this._hsvColor.h
     } else {
       this._setValueFromPosition(position)
@@ -83,7 +83,7 @@ export default class HueComponent extends BaseComponent {
    * @private
    */
   _onKnobDrag (offset, e) {
-    const canvas = this.refs.canvas.getDOMNode()
+    const { canvas } = this.refs
     const canvasHeight = canvas.offsetHeight
 
     const hueChange = offset.y / canvasHeight
@@ -129,7 +129,7 @@ export default class HueComponent extends BaseComponent {
    * @private
    */
   _setValueFromPosition (position) {
-    const canvas = this.refs.canvas.getDOMNode()
+    const { canvas } = this.refs
     this._initialHue = position.y / canvas.offsetHeight
     this._setHue(this._initialHue)
   }
@@ -141,7 +141,7 @@ export default class HueComponent extends BaseComponent {
    * @private
    */
   _renderCanvas () {
-    const canvas = this.refs.canvas.getDOMNode()
+    const { canvas } = this.refs
     const context = canvas.getContext('2d')
 
     canvas.width = canvas.offsetWidth

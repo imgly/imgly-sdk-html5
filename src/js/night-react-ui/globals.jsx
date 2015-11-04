@@ -9,8 +9,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-// TODO: React license missing in build
 import React from 'react'
+import ReactDOM from 'react-dom'
 // TODO: Classnames license (probably) missing in build
 import Classnames from 'classnames'
 
@@ -32,5 +32,6 @@ const RenderType = PhotoEditorSDK.RenderType
 
 export {
   Log, Promise, Utils, React, BEM, Classnames, BaseComponent, ReactBEM, Vector2,
-  SDKUtils, EventEmitter, Constants, SharedState, Color, Base64, RenderType
+  SDKUtils, EventEmitter, Constants, SharedState, Color, Base64, RenderType,
+  ReactDOM
 }

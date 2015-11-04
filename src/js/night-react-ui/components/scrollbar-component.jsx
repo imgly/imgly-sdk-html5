@@ -40,9 +40,9 @@ export default class ScrollbarComponent extends BaseComponent {
    * Gets called after the component has been mounted
    */
   componentDidMount () {
-    const root = React.findDOMNode(this.refs.root)
+    const { root, list } = this.refs
     this._node = root
-    this._list = React.findDOMNode(this.refs.list)
+    this._list = list
     this._listDefaultHeight = this._list.clientHeight
 
     this._updateButtonWidth(() => {

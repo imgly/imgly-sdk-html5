@@ -101,7 +101,7 @@ export default class ColorPickerComponent extends BaseComponent {
    * @private
    */
   _renderColor () {
-    const canvas = this.refs.canvas.getDOMNode()
+    const canvas = this.refs.canvas
     const context = canvas.getContext('2d')
 
     canvas.width = canvas.offsetWidth
