@@ -656,6 +656,9 @@ class NightUI extends UI {
     const historyItem = { operation, options, existent }
     this._history.push(historyItem)
     this._topControls.updateUndoButton()
+
+    this.emit('history-add', historyItem)
+
     return historyItem
   }
 
@@ -680,6 +683,8 @@ class NightUI extends UI {
     let lastItem = this._history.pop()
     let promise = Promise.resolve()
     if (lastItem) {
+      this.emit('history-undo', lastItem)
+
       let { operation, existent, options } = lastItem
       if (!existent) {
         this.removeOperation(operation.identifier)

@@ -14,6 +14,17 @@ class EventEmitter {
   constructor () {
     this._maxListeners = DEFAULT_MAX_LISTENERS
     this._events = {}
+    this._pipeDestinations = []
+  }
+
+  pipeEvents (destination) {
+    this._pipeDestinations.push(destination)
+  }
+
+  unpipeEvents (destination) {
+    const i = this._pipeDestinations.indexOf(destination)
+    if (i === -1) return
+    this._pipeDestinations.splice(i, 1)
   }
 
   on (type, listener) {
@@ -75,6 +86,10 @@ class EventEmitter {
   }
 
   emit (type, ...args) {
+    this._pipeDestinations.forEach((dest) => {
+      dest.emit(type, ...args)
+    })
+
     let listeners = this._events[type]
     if (!listeners || !listeners.length) {
       return false

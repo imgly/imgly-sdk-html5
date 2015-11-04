@@ -302,12 +302,7 @@ class ImglyKit extends EventEmitter {
      * @type {ImglyKit.UI}
      */
     this.ui = new UI(this, this._options)
-    this.ui.on('error', (e) => {
-      this.emit('error', e)
-    })
-    this.ui.on('resized', (payload) => {
-      this.emit('resized', payload)
-    })
+    this.ui.pipeEvents(this)
   }
 
   /**
