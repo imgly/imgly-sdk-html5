@@ -14,6 +14,7 @@ import Text from './text/text'
 import Promise from '../vendor/promise'
 
 import TextWebGLRenderer from './text/webgl-renderer'
+import TextCanvasRenderer from './text/canvas-renderer'
 
 /**
  * An operation that can draw text on the canvas
@@ -88,79 +89,11 @@ class TextOperation extends Operation {
    * @param  {CanvasRenderer} renderer
    */
   _renderCanvas (renderer) {
-    return new Promise((resolve, reject) => {
-      const texts = this._options.texts
-      texts.forEach((text) => {
-        this._renderTextCanvas(renderer, text)
-      })
-      resolve()
-    })
-  }
+    if (!this._renderers[renderer.id]) {
+      this._renderers[renderer.id] = new TextCanvasRenderer(this, renderer)
+    }
 
-  /**
-   * Renders the given text using canvas2d
-   * @param  {CanvasRenderer} renderer
-   * @param  {String} text
-   * @return {Promise}
-   * @private
-   */
-  _renderTextCanvas (renderer, text) {
-    let canvas = null
-    return text.render(renderer)
-      .then((_canvas) => {
-        canvas = _canvas
-        return this._renderTextToCanvas(renderer, text, canvas)
-      })
-  }
-
-  /**
-   * Renders the given text to the output canvas
-   * @param  {CanvasRenderer} renderer
-   * @param  {String} text
-   * @param  {CanvasElement} canvas
-   * @return {Promise}
-   * @private
-   */
-  _renderTextToCanvas (renderer, text, canvas) {
-    const outputCanvas = renderer.getCanvas()
-    const context = renderer.getContext()
-
-    const canvasDimensions = new Vector2(
-      outputCanvas.width,
-      outputCanvas.height
-    )
-
-    return new Promise((resolve, reject) => {
-      const textPosition = text.getPosition()
-      const textRotation = text.getRotation()
-      const textAnchor = text.getAnchor()
-
-      const textDimensions = new Vector2(
-        canvas.width,
-        canvas.height
-      )
-
-      const absoluteTextPosition = textPosition.clone()
-        .multiply(canvasDimensions)
-      const absoluteTextAnchor = textAnchor.clone()
-        .multiply(textDimensions)
-
-      context.save()
-
-      context.translate(
-        absoluteTextPosition.x,
-        absoluteTextPosition.y
-      )
-      context.rotate(textRotation)
-
-      context.drawImage(canvas,
-        -absoluteTextAnchor.x,
-        -absoluteTextAnchor.y)
-
-      context.restore()
-
-      resolve()
-    })
+    return this._renderers[renderer.id].render()
   }
 
   /**
