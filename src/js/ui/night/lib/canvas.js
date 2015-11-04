@@ -101,6 +101,12 @@ class Canvas extends EventEmitter {
               setTimeout(() => {
                 this._renderer.prepareImage(this._image)
                   .then((image) => {
+
+                    this.emit('resized', {
+                      reason: 'MAX_TEXTURE_SIZE',
+                      dimensions: new Vector2(image.width, image.height)
+                    })
+
                     this._ui.hideLoadingMessage()
                     this._options.image = image
                     this._image = this._options.image

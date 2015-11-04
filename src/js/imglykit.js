@@ -305,6 +305,9 @@ class ImglyKit extends EventEmitter {
     this.ui.on('error', (e) => {
       this.emit('error', e)
     })
+    this.ui.on('resized', (payload) => {
+      this.emit('resized', payload)
+    })
   }
 
   /**

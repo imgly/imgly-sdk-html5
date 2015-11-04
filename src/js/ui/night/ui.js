@@ -317,6 +317,11 @@ class NightUI extends UI {
         Math.sqrt(pixelsCount * ratioVH)
       ).floor()
 
+      this.emit('resized', {
+        reason: 'MAX_MEGA_PIXELS',
+        dimensions: newDimensions.clone()
+      })
+
       this.displayFlashMessage(
         this.translate('generic.warning_headline'),
         this.translate('warnings.image_resized',
@@ -342,6 +347,9 @@ class NightUI extends UI {
     this._canvas.on('error', (e) => {
       this.emit('error', e)
       this.displayErrorMessage(e.code || e.message)
+    })
+    this._canvas.on('resized', (payload) => {
+      this.emit('resized', payload)
     })
   }
 
