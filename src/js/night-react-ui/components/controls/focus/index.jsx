@@ -8,14 +8,14 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import BlurControlsComponent from './blur-controls-component'
+import FocusControlsComponent from './focus-controls-component'
 
 export default {
   canvasControls: null,
-  controls: BlurControlsComponent,
-  identifier: 'blur',
-  icon: 'controls/overview/blur@2x.png',
-  label: 'controls.overview.blur',
+  controls: FocusControlsComponent,
+  identifier: 'focus',
+  icon: 'controls/overview/focus@2x.png',
+  label: 'controls.overview.focus',
   isSelectable: (ui) => {
     return ui.isOperationSelected('radial-blur') ||
       ui.isOperationSelected('tilt-shift')

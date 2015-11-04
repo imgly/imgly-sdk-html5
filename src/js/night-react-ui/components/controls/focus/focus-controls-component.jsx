@@ -20,7 +20,7 @@ const ITEMS = [
   TiltShiftControls
 ]
 
-export default class BlurControlsComponent extends BaseComponent {
+export default class FocusControlsComponent extends BaseComponent {
   constructor (...args) {
     super(...args)
 
