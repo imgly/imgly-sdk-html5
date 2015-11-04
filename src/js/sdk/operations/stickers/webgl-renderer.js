@@ -86,15 +86,19 @@ export default class StickersWebGLRenderer {
    * @private
    */
   _uploadTexture (image) {
+    if (!this._textures[this._renderer.id]) {
+      this._textures[this._renderer.id] = {}
+    }
+
     return new Promise((resolve, reject) => {
       // If the texture has been loaded already, reuse it
-      const cachedTexture = this._textures[image.src]
+      const cachedTexture = this._textures[this._renderer.id][image.src]
       if (cachedTexture) {
         return resolve(cachedTexture)
       }
 
       const texture = this._renderer.createTexture(image)
-      this._textures[image.src] = texture
+      this._textures[this._renderer.id][image.src] = texture
       resolve(texture)
     })
   }
