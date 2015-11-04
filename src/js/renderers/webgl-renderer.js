@@ -9,6 +9,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+const MAX_CONTEXT_LOST_COUNT = 3
+
 import Renderer from './renderer'
 import Vector2 from '../lib/math/vector2'
 import Promise from '../vendor/promise'
@@ -40,10 +42,17 @@ class WebGLRenderer extends Renderer {
     this._canvas.addEventListener('webglcontextlost', (e) => {
       e.preventDefault()
       this._contextLostCount++
-      this.emit('error', 'context_lost')
+
+      let err = new Error('WebGL context has been lost')
+      err.code = 'WEBGL_CONTEXT_LOST'
+      this.emit('error', err)
     })
     this._canvas.addEventListener('webglcontextrestored', () => {
-      if (this._contextLostCount >= 3) return this.emit('error', 'context_lost_limit')
+      if (this._contextLostCount >= MAX_CONTEXT_LOST_COUNT) {
+        let err = new Error('WebGL context has been lost and could not be restored')
+        err.code = 'WEBGL_CONTEXT_LOST_LIMIT'
+        return this.emit('error', err)
+      }
       this.emit('reset')
       this.reset(true, true)
     })

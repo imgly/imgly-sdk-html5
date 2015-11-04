@@ -339,8 +339,9 @@ class NightUI extends UI {
     this._canvas.on('zoom', () => {
       this._topControls.updateZoomLevel()
     })
-    this._canvas.on('error', (key) => {
-      this.displayErrorMessage(key)
+    this._canvas.on('error', (e) => {
+      this.emit('error', e)
+      this.displayErrorMessage(e.code || e.message)
     })
   }
 
@@ -582,6 +583,9 @@ class NightUI extends UI {
   render () {
     if (this._canvas) {
       this._canvas.render()
+        .catch((e) => {
+          console.log(e)
+        })
     }
   }
 

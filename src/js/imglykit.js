@@ -10,6 +10,7 @@
 
 const VERSION = '2.0.3-9'
 
+import EventEmitter from './lib/event-emitter'
 import RenderImage from './lib/render-image'
 import ImageExporter from './lib/image-exporter'
 import VersionChecker from './lib/version-checker'
@@ -34,8 +35,10 @@ import FlipOperation from './operations/flip-operation'
  * @param {String} [options.renderer='webgl'] - The renderer identifier. Can either
  *                                            be 'webgl' or 'canvas'.
  */
-class ImglyKit {
+class ImglyKit extends EventEmitter {
   constructor (options) {
+    super()
+
     // `options` is required
     if (typeof options === 'undefined') {
       throw new Error('No options given.')
@@ -299,6 +302,9 @@ class ImglyKit {
      * @type {ImglyKit.UI}
      */
     this.ui = new UI(this, this._options)
+    this.ui.on('error', (e) => {
+      this.emit('error', e)
+    })
   }
 
   /**

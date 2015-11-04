@@ -45,7 +45,6 @@ class RotationOperation extends Operation {
   /* istanbul ignore next */
   _renderWebGL (renderer) {
     var actualDegrees = this._options.degrees % 360
-    let newDimensions = this.getNewDimensions(renderer)
 
     // Build the rotation matrix
     var radians = actualDegrees * (Math.PI / 180)

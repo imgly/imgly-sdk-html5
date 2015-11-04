@@ -144,9 +144,7 @@ class Canvas extends EventEmitter {
         this._updateCanvasMargins()
         this._applyBoundaries()
       })
-      .catch((e) => {
-        console.log(e)
-      })
+      .catch((e) => {})
   }
 
   /**
@@ -357,8 +355,8 @@ class Canvas extends EventEmitter {
     this._renderer.on('new-canvas', (canvas) => {
       this._setCanvas(canvas)
     })
-    this._renderer.on('error', (...args) => {
-      this.emit('error', ...args)
+    this._renderer.on('error', (e) => {
+      this.emit('error', e)
     })
     this._renderer.on('reset', () => {
       this.resetAllOperations()
