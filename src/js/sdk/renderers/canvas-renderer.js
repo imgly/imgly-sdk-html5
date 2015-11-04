@@ -180,10 +180,6 @@ class CanvasRenderer extends BaseRenderer {
     let size = new Vector2(this._image.width, this._image.height)
     return size
   }
-
-  get maxTextureSize () {
-    return 0
-  }
 }
 
 export default CanvasRenderer
