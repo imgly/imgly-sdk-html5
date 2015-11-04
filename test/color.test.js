@@ -83,7 +83,7 @@ describe("Color", function () {
   describe("#fromHSV", function () {
 
     it("should set the RGB values according to the given HSV values", function () {
-      color.fromHSV(0, 1, 1);
+      color = Color.fromHSV(0, 1, 1);
       color.r.should.equal(1);
       color.g.should.equal(0);
       color.b.should.equal(0);

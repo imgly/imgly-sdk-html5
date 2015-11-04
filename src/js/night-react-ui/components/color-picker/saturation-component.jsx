@@ -127,7 +127,7 @@ export default class SaturationComponent extends BaseComponent {
   _setHSV (h, s, v) {
     s = Math.max(0.01, Math.min(s, 0.99))
     v = Math.max(0.01, Math.min(v, 0.99))
-    this._value.fromHSV(h, s, v)
+    this._value = Color.fromHSV(h, s, v, this._value.a)
     this._hsvColor = { h, s, v }
 
     this.forceUpdate()
@@ -167,12 +167,11 @@ export default class SaturationComponent extends BaseComponent {
 
     let imageData = context.getImageData(0, 0, canvas.width, canvas.height)
 
-    let color = new Color(1, 0, 0, 1)
     for (let y = 0; y < canvas.height; y++) {
       const value = (canvas.height - y) / canvas.height
       for (let x = 0; x < canvas.width; x++) {
         const saturation = x / canvas.width
-        color.fromHSV(this._hsvColor.h, saturation, value)
+        const color = Color.fromHSV(this._hsvColor.h, saturation, value)
         const { r, g, b, a } = color
 
         const index = (y * canvas.width + x) * 4

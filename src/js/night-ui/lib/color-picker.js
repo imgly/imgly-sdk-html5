@@ -232,10 +232,9 @@ class ColorPicker extends EventEmitter {
     let canvas = this._hueCanvas
     let context = canvas.getContext('2d')
 
-    let color = new Color()
     for (let y = 0; y < canvas.height; y++) {
-      let ratio = y / canvas.height
-      color.fromHSV(ratio, 1, 1)
+      const ratio = y / canvas.height
+      const color = Color.fromHSV(ratio, 1, 1)
 
       context.strokeStyle = color.toRGBA()
       context.beginPath()
@@ -255,12 +254,11 @@ class ColorPicker extends EventEmitter {
 
     let imageData = context.getImageData(0, 0, canvas.width, canvas.height)
 
-    let color = new Color(1, 0, 0, 1)
     for (let y = 0; y < canvas.height; y++) {
       let value = (canvas.height - y) / canvas.height
       for (let x = 0; x < canvas.width; x++) {
         let saturation = x / canvas.width
-        color.fromHSV(this._hsvColor.h, saturation, value)
+        const color = Color.fromHSV(this._hsvColor.h, saturation, value)
         let {r, g, b, a} = color
 
         let index = (y * canvas.width + x) * 4
@@ -479,7 +477,7 @@ class ColorPicker extends EventEmitter {
    * @private
    */
   _updateColor () {
-    this._value.fromHSV(this._hsvColor.h, this._hsvColor.s, this._hsvColor.v)
+    this._value = Color.fromHSV(this._hsvColor.h, this._hsvColor.s, this._hsvColor.v, this._value.a)
     this.emit('update', this._value)
     this._render()
   }

@@ -111,9 +111,10 @@ class Color {
    * @param {Number} h
    * @param {Number} s
    * @param {Number} v
+   * @param {Number} a = 1
    */
-  fromHSV (h, s, v) {
-    let {r, g, b} = this
+  static fromHSV (h, s, v, a = 1) {
+    let [r, g, b] = []
 
     let i = Math.floor(h * 6)
     let f = h * 6 - i
@@ -154,9 +155,12 @@ class Color {
         break
     }
 
-    this.r = r
-    this.g = g
-    this.b = b
+    const color = new Color()
+    color.r = r
+    color.g = g
+    color.b = b
+    color.a = a
+    return color
   }
 
   /**
