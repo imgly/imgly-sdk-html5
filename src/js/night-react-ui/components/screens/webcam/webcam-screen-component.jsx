@@ -8,7 +8,7 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-import { Log, ReactBEM } from '../../../globals'
+import { ReactBEM } from '../../../globals'
 import ScreenComponent from '../screen-component'
 import SubHeaderComponent from '../../sub-header-component'
 import WebcamComponent from './webcam-component'
@@ -47,7 +47,7 @@ export default class WebcamScreenComponent extends ScreenComponent {
         this.props.editor.setImage(image)
       })
       .catch((e) => {
-        Log.error(e)
+        console.error && console.error(e)
       })
   }
 
