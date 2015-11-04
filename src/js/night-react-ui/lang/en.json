@@ -5,7 +5,7 @@
       "orientation": "Orientation",
       "adjustments": "Adjust",
       "crop": "Crop",
-      "blur": "Focus",
+      "focus": "Focus",
       "frames": "Frames",
       "stickers": "Stickers",
       "text": "Text"
@@ -38,7 +38,7 @@
       "4-3": "4:3",
       "16-9": "16:9"
     },
-    "blur": {
+    "focus": {
       "radial-blur": "Radial Blur",
       "tilt-shift": "Tilt-Shift",
       "blurRadius": "Blur radius"

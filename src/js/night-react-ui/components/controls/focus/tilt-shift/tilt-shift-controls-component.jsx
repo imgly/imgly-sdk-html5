@@ -12,7 +12,7 @@
 import { ReactBEM, BaseComponent, Constants } from '../../../../globals'
 import SliderComponent from '../../../slider-component'
 
-export default class RadialBlurControlsComponent extends BaseComponent {
+export default class TiltShiftControlsComponent extends BaseComponent {
   constructor (...args) {
     super(...args)
 
@@ -57,7 +57,7 @@ export default class RadialBlurControlsComponent extends BaseComponent {
     // to make sure we re-create the operation for the lifetime
     // of this control
     const { ui } = this.context
-    const newOperation = ui.getOrCreateOperation('radial-blur')
+    const newOperation = ui.getOrCreateOperation('tilt-shift')
     this._operation = newOperation
     this.setSharedState({
       operation: newOperation,
@@ -82,6 +82,7 @@ export default class RadialBlurControlsComponent extends BaseComponent {
     }
 
     this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
+
     this._emitEvent(Constants.EVENTS.CANVAS_UNDO_ZOOM)
     this._emitEvent(Constants.EVENTS.EDITOR_ENABLE_FEATURES, ['zoom', 'drag'])
   }
@@ -140,7 +141,7 @@ export default class RadialBlurControlsComponent extends BaseComponent {
           maxValue={40}
           valueUnit='px'
           middleDot={false}
-          label={this._t('controls.blur.blurRadius')}
+          label={this._t('controls.focus.blurRadius')}
           onChange={this._onSliderValueChange}
           value={this._operation.getBlurRadius()} />
       </div>

@@ -157,7 +157,7 @@ export default class NightReactUI extends EventEmitter {
       orientation: require('./components/controls/orientation/'),
       adjustments: require('./components/controls/adjustments/'),
       crop: require('./components/controls/crop/'),
-      blur: require('./components/controls/blur/'),
+      focus: require('./components/controls/focus/'),
       frames: require('./components/controls/frames/'),
       stickers: require('./components/controls/stickers/'),
       text: require('./components/controls/text/')
@@ -194,7 +194,7 @@ export default class NightReactUI extends EventEmitter {
       assets: {},
       extensions: {},
       controlsOrder: [
-        'filters', 'orientation', 'adjustments', 'crop', 'blur', 'frames', 'stickers', 'text'
+        'filters', 'orientation', 'adjustments', 'crop', 'focus', 'frames', 'stickers', 'text'
       ],
       controlsOptions: {},
       showNewButton: true
