@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { SDKUtils, Utils } from '../globals'
+import { Utils } from '../globals'
 import Control from './control'
 
 class FiltersControl extends Control {

@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { Vector2, Color, Utils } from '../globals'
+import { Vector2, Utils } from '../globals'
 import Control from './control'
 import SimpleSlider from '../lib/simple-slider'
 import ColorPicker from '../lib/color-picker'

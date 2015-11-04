@@ -9,7 +9,6 @@
  */
 
 import Promise from '../vendor/promise'
-import Vector2 from '../lib/math/vector2'
 import Operation from './operation'
 
 /**

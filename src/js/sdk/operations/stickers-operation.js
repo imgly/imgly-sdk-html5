@@ -10,7 +10,6 @@
 
 import Operation from './operation'
 import Vector2 from '../lib/math/vector2'
-import Matrix from '../lib/math/matrix'
 import Sticker from './stickers/sticker'
 
 import StickersWebGLRenderer from './stickers/webgl-renderer'

@@ -216,9 +216,9 @@ class Canvas extends EventEmitter {
     size = size.clone().floor()
 
     if (this._canvas.width === size.x &&
-      this._canvas.height === size.y) {
-        return
-      }
+        this._canvas.height === size.y) {
+      return
+    }
 
     this._canvas.width = size.x
     this._canvas.height = size.y

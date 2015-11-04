@@ -11,7 +11,6 @@
 import Operation from './operation'
 import Vector2 from '../lib/math/vector2'
 import Text from './text/text'
-import Promise from '../vendor/promise'
 
 import TextWebGLRenderer from './text/webgl-renderer'
 import TextCanvasRenderer from './text/canvas-renderer'
