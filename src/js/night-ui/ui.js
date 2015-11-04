@@ -164,15 +164,15 @@ export default class NightUI extends EventEmitter {
 
     this.hideFlashMessage = this.hideFlashMessage.bind(this)
 
-    this._controlsContainer = container.querySelector('.imglykit-controls')
-    this._canvasControlsContainer = container.querySelector('.imglykit-canvas-controls')
-    this._overviewControlsContainer = container.querySelector('.imglykit-controls-overview')
-    this._loadingOverlay = container.querySelector('.imglykit-loadingOverlay')
-    this._loadingSpan = container.querySelector('.imglykit-loadingOverlay span')
-    this._flashOverlay = container.querySelector('.imglykit-flashOverlay')
-    this._flashHeadline = this._flashOverlay.querySelector('.imglykit-flashOverlay-headline')
-    this._flashText = this._flashOverlay.querySelector('.imglykit-flashOverlay-text')
-    this._flashCloseButton = this._flashOverlay.querySelector('.imglykit-flashOverlay-close')
+    this._controlsContainer = container.querySelector('.pesdk-controls')
+    this._canvasControlsContainer = container.querySelector('.pesdk-canvas-controls')
+    this._overviewControlsContainer = container.querySelector('.pesdk-controls-overview')
+    this._loadingOverlay = container.querySelector('.pesdk-loadingOverlay')
+    this._loadingSpan = container.querySelector('.pesdk-loadingOverlay span')
+    this._flashOverlay = container.querySelector('.pesdk-flashOverlay')
+    this._flashHeadline = this._flashOverlay.querySelector('.pesdk-flashOverlay-headline')
+    this._flashText = this._flashOverlay.querySelector('.pesdk-flashOverlay-text')
+    this._flashCloseButton = this._flashOverlay.querySelector('.pesdk-flashOverlay-close')
     this._flashCloseButton.addEventListener('click', this.hideFlashMessage)
 
     this._handleOverview()
@@ -267,7 +267,7 @@ export default class NightUI extends EventEmitter {
    */
   _handleWebcamButton () {
     const { container } = this._options
-    const webcamButton = container.querySelector('.imglykit-splash-row--camera')
+    const webcamButton = container.querySelector('.pesdk-splash-row--camera')
     webcamButton.addEventListener('click', () => {
       this._options.startWithWebcam = true
       this.run()
@@ -635,7 +635,7 @@ export default class NightUI extends EventEmitter {
   _initScrollbar () {
     if (!this.context.renderControls) return
 
-    let container = this._controlsContainer.querySelector('.imglykit-controls-list').parentNode
+    let container = this._controlsContainer.querySelector('.pesdk-controls-list').parentNode
     this._scrollbar = new Scrollbar(container)
   }
 
@@ -645,7 +645,7 @@ export default class NightUI extends EventEmitter {
    * @private
    */
   _handleCloseButton () {
-    let closeButton = this._options.container.querySelector('.imglykit-close-button')
+    let closeButton = this._options.container.querySelector('.pesdk-close-button')
     closeButton.addEventListener('click', (e) => {
       e.preventDefault()
       this.emit('close')
