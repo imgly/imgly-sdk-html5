@@ -13,10 +13,6 @@ import { ReactBEM, BaseComponent } from '../../../globals'
 import ScrollbarComponent from '../../scrollbar-component'
 
 export default class OverviewControlsComponent extends BaseComponent {
-  constructor () {
-    super()
-  }
-
   /**
    * Gets called when an item has been clicked
    * @param  {Event} e

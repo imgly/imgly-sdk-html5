@@ -20,10 +20,6 @@ import Promise from '../vendor/promise'
  * @extends PhotoEditorSDK.Operation
  */
 class CropOperation extends Operation {
-  constructor (...args) {
-    super(...args)
-  }
-
   /**
    * Rotates and crops the image using WebGL
    * @param  {WebGLRenderer} renderer
