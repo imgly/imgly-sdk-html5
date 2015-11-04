@@ -117,7 +117,7 @@ export default class HueComponent extends BaseComponent {
     s = Math.max(0.01, Math.min(s, 0.99))
     v = Math.max(0.01, Math.min(v, 0.99))
 
-    this._value.fromHSV(h, s, v)
+    this._value = Color.fromHSV(h, s, v, this._value.a)
     this._hsvColor = { h, s, v }
     this.forceUpdate()
     this.props.onChange && this.props.onChange(this._value)
@@ -147,10 +147,9 @@ export default class HueComponent extends BaseComponent {
     canvas.width = canvas.offsetWidth
     canvas.height = canvas.offsetHeight
 
-    let color = new Color()
     for (let y = 0; y < canvas.height; y++) {
-      let ratio = y / canvas.height
-      color.fromHSV(ratio, 1, 1)
+      const ratio = y / canvas.height
+      const color = Color.fromHSV(ratio, 1, 1)
 
       context.strokeStyle = color.toRGBA()
       context.beginPath()
