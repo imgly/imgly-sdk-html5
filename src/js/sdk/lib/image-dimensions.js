@@ -13,7 +13,7 @@ import Vector2 from './math/vector2'
 /**
  * Parses the dimensions string and provides calculation functions
  * @class
- * @alias ImglyKit.ImageDimensions
+ * @alias PhotoEditorSDK.ImageDimensions
  * @param {string} dimensions
  * @private
  */

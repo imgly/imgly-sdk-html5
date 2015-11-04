@@ -18,9 +18,9 @@ import Utils from './utils'
 /**
  * Handles the image rendering process
  * @class
- * @alias ImglyKit.RenderImage
+ * @alias PhotoEditorSDK.RenderImage
  * @param {Image} image
- * @param {Array.<ImglyKit.Operation>} operationsStack
+ * @param {Array.<PhotoEditorSDK.Operation>} operationsStack
  * @param {string} dimensions
  * @param {string} preferredRenderer
  * @private
@@ -57,13 +57,13 @@ class RenderImage {
     this._image = image
 
     /**
-     * @type {Array.<ImglyKit.Operation>}
+     * @type {Array.<PhotoEditorSDK.Operation>}
      * @private
      */
     this._stack = operationsStack
 
     /**
-     * @type {ImglyKit.ImageDimensions}
+     * @type {PhotoEditorSDK.ImageDimensions}
      * @private
      */
     this._dimensions = new ImageDimensions(dimensions)

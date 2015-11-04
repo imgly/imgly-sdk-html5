@@ -14,8 +14,8 @@ var path = require("path");
 var fs = require("fs");
 var should = require("should");
 var canvas = require("canvas");
-var ImglyKit = require("../..");
-var ContrastOperation = ImglyKit.Operations.Contrast;
+var PhotoEditorSDK = require("../..");
+var ContrastOperation = PhotoEditorSDK.Operations.Contrast;
 var kit, image, contrastOperation;
 
 beforeEach(function () {
@@ -24,7 +24,7 @@ beforeEach(function () {
   var buffer = fs.readFileSync(imagePath);
   image.src = buffer;
 
-  kit = new ImglyKit.Renderer('canvas', { image: image, ui: { enabled: false } });
+  kit = new PhotoEditorSDK.Renderer('canvas', { image: image, ui: { enabled: false } });
 });
 
 describe("ContrastOperation", function () {

@@ -10,9 +10,9 @@
  */
 
 /**
- * Base class for primitives. Extendable via {@link ImglyKit.Filter.Primitive#extend}
+ * Base class for primitives. Extendable via {@link PhotoEditorSDK.Filter.Primitive#extend}
  * @class
- * @alias ImglyKit.Filter.Primitive
+ * @alias PhotoEditorSDK.Filter.Primitive
  */
 class Primitive {
   constructor (options) {

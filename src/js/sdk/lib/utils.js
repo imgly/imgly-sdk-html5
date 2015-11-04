@@ -14,7 +14,7 @@ import Base64 from './base64'
 /**
  * Provides utility functions for internal use
  * @class
- * @alias ImglyKit.Utils
+ * @alias PhotoEditorSDK.Utils
  * @private
  */
 class Utils {
@@ -31,7 +31,7 @@ class Utils {
   /**
    * Returns the items selected by the given selector
    * @param  {Array} items
-   * @param  {ImglyKit~Selector} selector - The selector
+   * @param  {PhotoEditorSDK~Selector} selector - The selector
    * @return {Array} The selected items
    */
   static select (items, selector=null) {

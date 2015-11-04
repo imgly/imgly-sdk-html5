@@ -14,8 +14,8 @@ var path = require("path");
 var fs = require("fs");
 var should = require("should");
 var canvas = require("canvas");
-var ImglyKit = require("../..");
-var StickersOperation = ImglyKit.Operations.Stickers;
+var PhotoEditorSDK = require("../..");
+var StickersOperation = PhotoEditorSDK.Operations.Stickers;
 var kit, image, stickersOperation;
 
 beforeEach(function () {
@@ -24,7 +24,7 @@ beforeEach(function () {
   var buffer = fs.readFileSync(imagePath);
   image.src = buffer;
 
-  kit = new ImglyKit.Renderer('canvas', { image: image, assetsUrl: "src/assets", ui: { enabled: false } });
+  kit = new PhotoEditorSDK.Renderer('canvas', { image: image, assetsUrl: "src/assets", ui: { enabled: false } });
 });
 
 describe("StickersOperation", function () {
@@ -60,7 +60,7 @@ describe("StickersOperation", function () {
 
         stickersOperation = new StickersOperation(kit, {
           sticker: "foo",
-          position: new ImglyKit.Vector2()
+          position: new PhotoEditorSDK.Vector2()
         });
         kit.operationsStack.push(stickersOperation);
 
@@ -87,7 +87,7 @@ describe("StickersOperation", function () {
             position: null
           });
         };
-        throwable.should.throw("Operation `stickers`: Option `position` has to be an instance of ImglyKit.Vector2.");
+        throwable.should.throw("Operation `stickers`: Option `position` has to be an instance of PhotoEditorSDK.Vector2.");
 
       });
 
@@ -103,7 +103,7 @@ describe("StickersOperation", function () {
             size: null
           });
         };
-        throwable.should.throw("Operation `stickers`: Option `size` has to be an instance of ImglyKit.Vector2.");
+        throwable.should.throw("Operation `stickers`: Option `size` has to be an instance of PhotoEditorSDK.Vector2.");
 
       });
 
@@ -115,7 +115,7 @@ describe("StickersOperation", function () {
 
         stickersOperation = new StickersOperation(kit, {
           sticker: "stickers/sticker-glasses-nerd.png",
-          position: new ImglyKit.Vector2(0, 0)
+          position: new PhotoEditorSDK.Vector2(0, 0)
         });
         kit.operationsStack.push(stickersOperation);
 

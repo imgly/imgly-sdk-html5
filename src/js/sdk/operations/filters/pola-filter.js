@@ -13,8 +13,8 @@ import Filter from './filter'
 /**
  * Pola Filter
  * @class
- * @alias ImglyKit.Filters.PolaFilter
- * @extends {ImglyKit.Filter}
+ * @alias PhotoEditorSDK.Filters.PolaFilter
+ * @extends {PhotoEditorSDK.Filter}
  */
 class PolaFilter extends Filter {
   constructor (...args) {

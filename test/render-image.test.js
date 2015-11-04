@@ -12,7 +12,7 @@
 var sinon = require("sinon");
 var path = require("path");
 var fs = require("fs");
-var ImglyKit = require("..");
+var PhotoEditorSDK = require("..");
 var canvas = require("canvas");
 var image, kit;
 
@@ -26,7 +26,7 @@ describe("RenderImage", function () {
       var buffer = fs.readFileSync(imagePath);
       image.src = buffer;
 
-      kit = new ImglyKit.Renderer('canvas', { image: image, ui: { enabled: false } });
+      kit = new PhotoEditorSDK.Renderer('canvas', { image: image, ui: { enabled: false } });
     });
 
     describe("validations", function () {
@@ -50,10 +50,10 @@ describe("RenderImage", function () {
 
         });
 
-        describe("when set to ImglyKit.RenderType.IMAGE", function () {
+        describe("when set to PhotoEditorSDK.RenderType.IMAGE", function () {
 
           it("should render to an image", function (done) {
-            kit.render(ImglyKit.RenderType.IMAGE)
+            kit.render(PhotoEditorSDK.RenderType.IMAGE)
               .then(function (result) {
                 result.should.be.an.instanceOf(canvas.Image);
                 done();
@@ -62,10 +62,10 @@ describe("RenderImage", function () {
 
         });
 
-        describe("when set to ImglyKit.RenderType.DATA_URL", function () {
+        describe("when set to PhotoEditorSDK.RenderType.DATA_URL", function () {
 
           it("should render to a data url", function (done) {
-            kit.render(ImglyKit.RenderType.DATAURL)
+            kit.render(PhotoEditorSDK.RenderType.DATAURL)
               .then(function (result) {
                 result.should.be.type("string");
                 result.should.startWith("data:");
@@ -75,11 +75,11 @@ describe("RenderImage", function () {
 
         });
 
-        // describe("when set to ImglyKit.RenderType.BUFFER", function () {
+        // describe("when set to PhotoEditorSDK.RenderType.BUFFER", function () {
         //   this.timeout(10000)
 
         //   it("should render to a buffer", function (done) {
-        //     kit.render(ImglyKit.RenderType.BUFFER)
+        //     kit.render(PhotoEditorSDK.RenderType.BUFFER)
         //       .then(function (result) {
         //         result.constructor.name.should.equal("Buffer");
         //         done();
@@ -99,7 +99,7 @@ describe("RenderImage", function () {
         describe("when none is given", function () {
 
           it("should render as PNG", function (done) {
-            kit.render(ImglyKit.RenderType.DATA_URL)
+            kit.render(PhotoEditorSDK.RenderType.DATA_URL)
               .then(function (result) {
                 result.should.be.type("string");
                 result.should.startWith("data:image/png");
@@ -109,10 +109,10 @@ describe("RenderImage", function () {
 
         });
 
-        describe("when set to ImglyKit.ImageFormat.PNG", function () {
+        describe("when set to PhotoEditorSDK.ImageFormat.PNG", function () {
 
           it("should render as PNG", function (done) {
-            kit.render(ImglyKit.RenderType.DATA_URL)
+            kit.render(PhotoEditorSDK.RenderType.DATA_URL)
               .then(function (result) {
                 result.should.be.type("string");
                 result.should.startWith("data:image/png");
@@ -135,7 +135,7 @@ describe("RenderImage", function () {
       describe("dimensions", function () {
 
         it("should resize the result to the requested size", function (done) {
-          kit.render(ImglyKit.RenderType.IMAGE, null, "100x100!")
+          kit.render(PhotoEditorSDK.RenderType.IMAGE, null, "100x100!")
             .then(function (result) {
               result.width.should.equal(100);
               result.height.should.equal(100);
@@ -152,7 +152,7 @@ describe("RenderImage", function () {
 
         it("should call the operation's #render method", function (done) {
           // Create Operation and stub #render
-          var operation = new ImglyKit.Operation(kit);
+          var operation = new PhotoEditorSDK.Operation(kit);
           sinon.stub(operation, "render");
 
           // Make sure the operation is used

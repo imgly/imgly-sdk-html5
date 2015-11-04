@@ -14,8 +14,8 @@ import Primitive from './primitive'
 /**
  * Contrast primitive
  * @class
- * @alias ImglyKit.Filter.Primitives.Contrast
- * @extends {ImglyKit.Filter.Primitive}
+ * @alias PhotoEditorSDK.Filter.Primitives.Contrast
+ * @extends {PhotoEditorSDK.Filter.Primitive}
  */
 class Contrast extends Primitive {
   constructor (...args) {

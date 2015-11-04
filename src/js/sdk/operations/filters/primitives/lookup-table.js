@@ -14,8 +14,8 @@ import Primitive from './primitive'
  * Stores a 256 byte long lookup table in a 2d texture which will be
  * used to look up the corresponding value for each channel.
  * @class
- * @alias ImglyKit.Filter.Primitives.LookupTable
- * @extends {ImglyKit.Filter.Primitive}
+ * @alias PhotoEditorSDK.Filter.Primitives.LookupTable
+ * @extends {PhotoEditorSDK.Filter.Primitive}
  */
 class LookupTable extends Primitive {
   constructor (...args) {

@@ -121,8 +121,8 @@ export default class Renderer extends EventEmitter {
 
   /**
    * Exports the image
-   * @param  {ImglyKit.RenderType} [renderType=ImglyKit.RenderType.DATAURL] - The output type
-   * @param  {ImglyKit.ImageFormat} [imageFormat=ImglyKit.ImageFormat.PNG] - The output image format
+   * @param  {PhotoEditorSDK.RenderType} [renderType=PhotoEditorSDK.RenderType.DATAURL] - The output type
+   * @param  {PhotoEditorSDK.ImageFormat} [imageFormat=PhotoEditorSDK.ImageFormat.PNG] - The output image format
    * @param  {Number} [quality] - The image quality, between 0 and 1
    * @return {Promise}
    */

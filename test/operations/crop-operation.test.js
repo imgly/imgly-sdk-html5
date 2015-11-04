@@ -14,8 +14,8 @@ var path = require("path");
 var fs = require("fs");
 var should = require("should");
 var canvas = require("canvas");
-var ImglyKit = require("../..");
-var CropOperation = ImglyKit.Operations.Crop;
+var PhotoEditorSDK = require("../..");
+var CropOperation = PhotoEditorSDK.Operations.Crop;
 var kit, image, cropOperation;
 
 beforeEach(function () {
@@ -24,7 +24,7 @@ beforeEach(function () {
   var buffer = fs.readFileSync(imagePath);
   image.src = buffer;
 
-  kit = new ImglyKit.Renderer('canvas', { image: image, ui: { enabled: false } });
+  kit = new PhotoEditorSDK.Renderer('canvas', { image: image, ui: { enabled: false } });
 });
 
 describe("CropOperation", function () {
@@ -35,8 +35,8 @@ describe("CropOperation", function () {
 
       it("should succeed", function (done) {
         cropOperation = new CropOperation(kit, {
-          start: new ImglyKit.Vector2(0.1, 0.1),
-          end: new ImglyKit.Vector2(0.9, 0.9)
+          start: new PhotoEditorSDK.Vector2(0.1, 0.1),
+          end: new PhotoEditorSDK.Vector2(0.9, 0.9)
         });
         kit.operationsStack.push(cropOperation);
 
@@ -51,12 +51,12 @@ describe("CropOperation", function () {
 
       it("should correctly resize the canvas", function (done) {
         cropOperation = new CropOperation(kit, {
-          start: new ImglyKit.Vector2(0.1, 0.1),
-          end: new ImglyKit.Vector2(0.9, 0.9)
+          start: new PhotoEditorSDK.Vector2(0.1, 0.1),
+          end: new PhotoEditorSDK.Vector2(0.9, 0.9)
         });
         kit.operationsStack.push(cropOperation);
 
-        kit.render(ImglyKit.RenderType.IMAGE)
+        kit.render(PhotoEditorSDK.RenderType.IMAGE)
           .then(function (result) {
             result.width.should.equal(image.width * 0.8);
             result.height.should.equal(image.height * 0.8);
@@ -74,8 +74,8 @@ describe("CropOperation", function () {
 
       it("should succeed", function (done) {
         cropOperation = new CropOperation(kit, {
-          start: new ImglyKit.Vector2(100, 100),
-          end: new ImglyKit.Vector2(400, 400),
+          start: new PhotoEditorSDK.Vector2(100, 100),
+          end: new PhotoEditorSDK.Vector2(400, 400),
           numberFormat: "absolute"
         });
         kit.operationsStack.push(cropOperation);
@@ -91,13 +91,13 @@ describe("CropOperation", function () {
 
       it("should correctly resize the canvas", function (done) {
         cropOperation = new CropOperation(kit, {
-          start: new ImglyKit.Vector2(100, 100),
-          end: new ImglyKit.Vector2(400, 400),
+          start: new PhotoEditorSDK.Vector2(100, 100),
+          end: new PhotoEditorSDK.Vector2(400, 400),
           numberFormat: "absolute"
         });
         kit.operationsStack.push(cropOperation);
 
-        kit.render(ImglyKit.RenderType.IMAGE)
+        kit.render(PhotoEditorSDK.RenderType.IMAGE)
           .then(function (result) {
             result.width.should.equal(300);
             result.height.should.equal(300);

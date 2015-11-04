@@ -11,7 +11,7 @@
 /**
  * Represents a color
  * @class
- * @alias ImglyKit.Color
+ * @alias PhotoEditorSDK.Color
  * @param {Number} r
  * @param {Number} g
  * @param {Number} b

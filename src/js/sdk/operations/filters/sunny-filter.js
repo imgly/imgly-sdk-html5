@@ -13,8 +13,8 @@ import Filter from './filter'
 /**
  * Sunny Filter
  * @class
- * @alias ImglyKit.Filters.SunnyFilter
- * @extends {ImglyKit.Filter}
+ * @alias PhotoEditorSDK.Filters.SunnyFilter
+ * @extends {PhotoEditorSDK.Filter}
  */
 class SunnyFilter extends Filter {
   constructor (...args) {

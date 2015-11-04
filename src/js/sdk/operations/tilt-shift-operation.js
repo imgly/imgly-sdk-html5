@@ -17,8 +17,8 @@ import Promise from '../vendor/promise'
  * An operation that can crop out a part of the image
  *
  * @class
- * @alias ImglyKit.Operations.TiltShiftOperation
- * @extends ImglyKit.Operation
+ * @alias PhotoEditorSDK.Operations.TiltShiftOperation
+ * @extends PhotoEditorSDK.Operation
  */
 class TiltShiftOperation extends Operation {
   constructor (...args) {

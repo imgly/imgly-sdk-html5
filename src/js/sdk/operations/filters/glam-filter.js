@@ -13,8 +13,8 @@ import Filter from './filter'
 /**
  * Glam Filter
  * @class
- * @alias ImglyKit.Filters.GlamFilter
- * @extends {ImglyKit.Filter}
+ * @alias PhotoEditorSDK.Filters.GlamFilter
+ * @extends {PhotoEditorSDK.Filter}
  */
 class GlamFilter extends Filter {
   constructor (...args) {

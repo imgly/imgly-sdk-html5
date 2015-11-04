@@ -13,8 +13,8 @@ import Primitive from './primitive'
 /**
  * Gobblin primitive
  * @class
- * @alias ImglyKit.Filter.Primitives.Gobblin
- * @extends {ImglyKit.Filter.Primitive}
+ * @alias PhotoEditorSDK.Filter.Primitives.Gobblin
+ * @extends {PhotoEditorSDK.Filter.Primitive}
  */
 class Gobblin extends Primitive {
   constructor (...args) {

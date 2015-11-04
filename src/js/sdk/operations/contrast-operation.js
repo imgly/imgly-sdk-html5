@@ -14,8 +14,8 @@ import ContrastPrimitive from './filters/primitives/contrast'
 
 /**
  * @class
- * @alias ImglyKit.Operations.ContrastOperation
- * @extends ImglyKit.Operation
+ * @alias PhotoEditorSDK.Operations.ContrastOperation
+ * @extends PhotoEditorSDK.Operation
  */
 class ContrastOperation extends Operation {
   constructor (...args) {

@@ -14,8 +14,8 @@ import Color from '../../lib/color'
 /**
  * K2 Filter
  * @class
- * @alias ImglyKit.Filters.K2Filter
- * @extends {ImglyKit.Filter}
+ * @alias PhotoEditorSDK.Filters.K2Filter
+ * @extends {PhotoEditorSDK.Filter}
  */
 class K2Filter extends Filter {
   constructor (...args) {

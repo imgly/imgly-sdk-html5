@@ -15,8 +15,8 @@ import Operation from './operation'
  * An operation that can crop out a part of the image and rotates it
  *
  * @class
- * @alias ImglyKit.Operations.RotationOperation
- * @extends ImglyKit.Operation
+ * @alias PhotoEditorSDK.Operations.RotationOperation
+ * @extends PhotoEditorSDK.Operation
  */
 class RotationOperation extends Operation {
   constructor (...args) {

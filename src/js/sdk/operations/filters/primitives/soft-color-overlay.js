@@ -15,8 +15,8 @@ import Color from '../../../lib/color'
 /**
  * SoftColorOverlay primitive
  * @class
- * @alias ImglyKit.Filter.Primitives.SoftColorOverlay
- * @extends {ImglyKit.Filter.Primitive}
+ * @alias PhotoEditorSDK.Filter.Primitives.SoftColorOverlay
+ * @extends {PhotoEditorSDK.Filter.Primitive}
  */
 class SoftColorOverlay extends Primitive {
   constructor (...args) {

@@ -13,8 +13,8 @@ import Filter from './filter'
 /**
  * Front Filter
  * @class
- * @alias ImglyKit.Filters.FrontFilter
- * @extends {ImglyKit.Filter}
+ * @alias PhotoEditorSDK.Filters.FrontFilter
+ * @extends {PhotoEditorSDK.Filter}
  */
 class FrontFilter extends Filter {
   constructor (...args) {

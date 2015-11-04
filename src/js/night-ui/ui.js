@@ -868,7 +868,7 @@ export default class NightUI extends EventEmitter {
 
   /**
    * Selects the enabled operations
-   * @param {ImglyKit.Selector}
+   * @param {PhotoEditorSDK.Selector}
    */
   selectOperations (selector) {
     const registeredOperations = this._kit.getOperations()

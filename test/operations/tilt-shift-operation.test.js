@@ -13,8 +13,8 @@
 var path = require("path");
 var fs = require("fs");
 var canvas = require("canvas");
-var ImglyKit = require("../..");
-var TiltShiftOperation = ImglyKit.Operations.TiltShift;
+var PhotoEditorSDK = require("../..");
+var TiltShiftOperation = PhotoEditorSDK.Operations.TiltShift;
 var kit, image, tiltShiftOperation;
 
 beforeEach(function () {
@@ -23,7 +23,7 @@ beforeEach(function () {
   var buffer = fs.readFileSync(imagePath);
   image.src = buffer;
 
-  kit = new ImglyKit.Renderer('canvas', { image: image, ui: { enabled: false } });
+  kit = new PhotoEditorSDK.Renderer('canvas', { image: image, ui: { enabled: false } });
 });
 
 describe("TiltShiftOperation", function () {
@@ -40,7 +40,7 @@ describe("TiltShiftOperation", function () {
             start: null
           });
         };
-        throwable.should.throw("Operation `tilt-shift`: Option `start` has to be an instance of ImglyKit.Vector2.");
+        throwable.should.throw("Operation `tilt-shift`: Option `start` has to be an instance of PhotoEditorSDK.Vector2.");
       });
 
     });
@@ -53,7 +53,7 @@ describe("TiltShiftOperation", function () {
             end: null
           });
         };
-        throwable.should.throw("Operation `tilt-shift`: Option `end` has to be an instance of ImglyKit.Vector2.");
+        throwable.should.throw("Operation `tilt-shift`: Option `end` has to be an instance of PhotoEditorSDK.Vector2.");
       });
 
     });
@@ -62,8 +62,8 @@ describe("TiltShiftOperation", function () {
 
       it("should succeed", function (done) {
         tiltShiftOperation = new TiltShiftOperation(kit, {
-          start: new ImglyKit.Vector2(0.5, 0.5),
-          end: new ImglyKit.Vector2(0.5, 0.8)
+          start: new PhotoEditorSDK.Vector2(0.5, 0.5),
+          end: new PhotoEditorSDK.Vector2(0.5, 0.8)
         });
         kit.operationsStack.push(tiltShiftOperation);
 

@@ -17,8 +17,8 @@ import Promise from '../vendor/promise'
  * An operation that can crop out a part of the image
  *
  * @class
- * @alias ImglyKit.Operations.RadialBlurOperation
- * @extends ImglyKit.Operation
+ * @alias PhotoEditorSDK.Operations.RadialBlurOperation
+ * @extends PhotoEditorSDK.Operation
  */
 class RadialBlurOperation extends Operation {
   constructor (...args) {

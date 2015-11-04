@@ -14,7 +14,7 @@ import EventEmitter from '../lib/event-emitter'
 
 /**
  * @class
- * @alias ImglyKit.BaseRenderer
+ * @alias PhotoEditorSDK.BaseRenderer
  * @param {Vector2} imageDimensions
  * @private
  */

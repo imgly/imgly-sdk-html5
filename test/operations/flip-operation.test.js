@@ -13,8 +13,8 @@
 var path = require("path");
 var fs = require("fs");
 var canvas = require("canvas");
-var ImglyKit = require("../..");
-var FlipOperation = ImglyKit.Operations.Flip;
+var PhotoEditorSDK = require("../..");
+var FlipOperation = PhotoEditorSDK.Operations.Flip;
 var kit, image, flipOperation;
 
 beforeEach(function () {
@@ -23,7 +23,7 @@ beforeEach(function () {
   var buffer = fs.readFileSync(imagePath);
   image.src = buffer;
 
-  kit = new ImglyKit.Renderer('canvas', { image: image, ui: { enabled: false } });
+  kit = new PhotoEditorSDK.Renderer('canvas', { image: image, ui: { enabled: false } });
 });
 
 describe("FlipOperation", function () {

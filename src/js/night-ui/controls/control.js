@@ -310,7 +310,7 @@ class Control extends EventEmitter {
 Control.prototype.identifier = null
 
 /**
- * To create an {@link ImglyKit.NightUI.Control} class of your own, call
+ * To create an {@link PhotoEditorSDK.NightUI.Control} class of your own, call
  * this method and provide instance properties and functions.
  * @function
  */

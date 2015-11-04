@@ -87,7 +87,7 @@ class BaseUI extends EventEmitter {
 
   /**
    * Selects the enabled operations
-   * @param {ImglyKit.Selector}
+   * @param {PhotoEditorSDK.Selector}
    */
   selectOperations (selector) {
     let { registeredOperations } = this._renderer
@@ -141,7 +141,7 @@ class BaseUI extends EventEmitter {
 
   /**
    * The selected / active operations
-   * @type {Array.<ImglyKit.Operation>}
+   * @type {Array.<PhotoEditorSDK.Operation>}
    */
   get operations () {
     return this._operations

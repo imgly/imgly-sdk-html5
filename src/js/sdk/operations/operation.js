@@ -15,9 +15,9 @@ import Vector2 from '../lib/math/vector2'
 import Configurable from '../lib/configurable'
 
 /**
- * Base class for Operations. Extendable via {@link ImglyKit.Operation#extend}.
+ * Base class for Operations. Extendable via {@link PhotoEditorSDK.Operation#extend}.
  * @class
- * @alias ImglyKit.Operation
+ * @alias PhotoEditorSDK.Operation
  */
 class Operation extends Configurable {
   constructor (kit, options) {
@@ -146,7 +146,7 @@ class Operation extends Configurable {
 Operation.identifier = null
 
 /**
- * To create an {@link ImglyKit.Operation} class of your own, call this
+ * To create an {@link PhotoEditorSDK.Operation} class of your own, call this
  * method and provide instance properties and functions.
  * @function
  */

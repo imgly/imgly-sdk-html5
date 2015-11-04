@@ -14,8 +14,8 @@ import SaturationPrimitive from './filters/primitives/saturation'
 
 /**
  * @class
- * @alias ImglyKit.Operations.SaturationOperation
- * @extends ImglyKit.Operation
+ * @alias PhotoEditorSDK.Operations.SaturationOperation
+ * @extends PhotoEditorSDK.Operation
  */
 class SaturationOperation extends Operation {
   constructor (...args) {

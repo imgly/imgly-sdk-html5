@@ -13,8 +13,8 @@ import Filter from './filter'
 /**
  * Identity Filter
  * @class
- * @alias ImglyKit.Filters.IdentityFilter
- * @extends {ImglyKit.Filter}
+ * @alias PhotoEditorSDK.Filters.IdentityFilter
+ * @extends {PhotoEditorSDK.Filter}
  */
 class IdentityFilter extends Filter {
   /**

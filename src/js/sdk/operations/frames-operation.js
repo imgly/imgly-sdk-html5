@@ -15,8 +15,8 @@ import Color from '../lib/color'
  * An operation that can frames on the canvas
  *
  * @class
- * @alias ImglyKit.Operations.FramesOperation
- * @extends ImglyKit.Operation
+ * @alias PhotoEditorSDK.Operations.FramesOperation
+ * @extends PhotoEditorSDK.Operation
  */
 class FramesOperation extends Operation {
   constructor (...args) {

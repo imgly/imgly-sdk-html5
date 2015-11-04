@@ -12,7 +12,7 @@
  * Represents a 2-dimensional vector while providing math functions to
  * modify / clone the vector. Fully chainable.
  * @class
- * @alias ImglyKit.Vector2
+ * @alias PhotoEditorSDK.Vector2
  * @param {number} x
  * @param {number} y
  * @private

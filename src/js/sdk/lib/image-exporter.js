@@ -15,7 +15,7 @@ import Exif from './exif'
 
 /**
  * @class
- * @alias ImglyKit.ImageExporter
+ * @alias PhotoEditorSDK.ImageExporter
  * @private
  */
 class ImageExporter {
@@ -55,11 +55,11 @@ class ImageExporter {
 
   /**
    * Exports the image from the given canvas with the given options
-   * @param  {ImglyKit} kit
+   * @param  {PhotoEditorSDK} kit
    * @param  {Image} image
    * @param  {Canvas} canvas
-   * @param  {ImglyKit.RenderType} renderType
-   * @param  {ImglyKit.ImageFormat} imageFormat
+   * @param  {PhotoEditorSDK.RenderType} renderType
+   * @param  {PhotoEditorSDK.ImageFormat} imageFormat
    * @param  {Number} quality = 0.8
    * @return {Promise}
    */

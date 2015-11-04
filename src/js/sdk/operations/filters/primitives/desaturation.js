@@ -14,8 +14,8 @@ import Primitive from './primitive'
 /**
  * Desaturation primitive
  * @class
- * @alias ImglyKit.Filter.Primitives.Desaturation
- * @extends {ImglyKit.Filter.Primitive}
+ * @alias PhotoEditorSDK.Filter.Primitives.Desaturation
+ * @extends {PhotoEditorSDK.Filter.Primitive}
  */
 class Desaturation extends Primitive {
   constructor (...args) {

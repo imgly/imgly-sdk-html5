@@ -15,8 +15,8 @@ import Promise from '../vendor/promise'
 
 /**
  * @class
- * @alias ImglyKit.WebGLRenderer
- * @extends {ImglyKit.BaseRenderer}
+ * @alias PhotoEditorSDK.WebGLRenderer
+ * @extends {PhotoEditorSDK.BaseRenderer}
  * @private
  */
 class WebGLRenderer extends BaseRenderer {

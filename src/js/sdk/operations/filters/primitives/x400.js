@@ -13,8 +13,8 @@ import Primitive from './primitive'
 /**
  * X400 primitive
  * @class
- * @alias ImglyKit.Filter.Primitives.X400
- * @extends {ImglyKit.Filter.Primitive}
+ * @alias PhotoEditorSDK.Filter.Primitives.X400
+ * @extends {PhotoEditorSDK.Filter.Primitive}
  */
 class X400 extends Primitive {
   constructor (...args) {
