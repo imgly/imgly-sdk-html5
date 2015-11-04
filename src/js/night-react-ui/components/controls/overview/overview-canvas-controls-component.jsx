@@ -25,7 +25,7 @@ export default class OverviewCanvasControlsComponent extends BaseComponent {
    * @private
    */
   _onClick (e) {
-    const container = this.refs.container.getDOMNode()
+    const { container } = this.refs
     const containerRect = container.getBoundingClientRect()
     const containerPosition = new Vector2(
       containerRect.left,

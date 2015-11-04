@@ -85,8 +85,8 @@ export default class UploadComponent extends BaseComponent {
    * @private
    */
   _onClick (e) {
-    const input = React.findDOMNode(this.refs.fileInput)
-    input.click()
+    const { fileInput } = this.refs
+    fileInput.click()
   }
 
   /**
@@ -116,8 +116,8 @@ export default class UploadComponent extends BaseComponent {
    * @private
    */
   _onFileChange () {
-    const input = React.findDOMNode(this.refs.fileInput)
-    const file = input.files[0]
+    const { fileInput } = this.refs
+    const file = fileInput.files[0]
     this._handleFile(file)
   }
 

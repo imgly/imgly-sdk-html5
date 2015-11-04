@@ -41,7 +41,7 @@ export default class DraggableComponent extends BaseComponent {
     document.addEventListener('mouseup', this._onDragEnd)
     document.addEventListener('touchend', this._onDragEnd)
 
-    const element = this.refs.element.getDOMNode()
+    const { element } = this.refs
     const boundingRect = element.getBoundingClientRect()
     const elementOffset = new Vector2(
       boundingRect.left,

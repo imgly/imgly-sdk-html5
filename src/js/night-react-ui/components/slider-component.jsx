@@ -78,7 +78,8 @@ export default class SliderComponent extends BaseComponent {
    * @private
    */
   _onKnobDrag (diff) {
-    const barWidth = React.findDOMNode(this.refs.bar).offsetWidth
+    const { bar } = this.refs
+    const barWidth = bar.offsetWidth
 
     let newSliderPosition = this._initialSliderPosition + diff.x
     newSliderPosition = Math.max(0, Math.min(newSliderPosition, barWidth))
@@ -96,7 +97,8 @@ export default class SliderComponent extends BaseComponent {
   _onBarDragStart (position) {
     this._initialPosition = position.clone()
 
-    const barWidth = React.findDOMNode(this.refs.bar).offsetWidth
+    const { bar } = this.refs
+    const barWidth = bar.offsetWidth
     const progress = position.x / barWidth
     const newValue = this.props.minValue + (this.props.maxValue - this.props.minValue) * progress
     this._setValue(newValue)
@@ -111,7 +113,8 @@ export default class SliderComponent extends BaseComponent {
     const position = this._initialPosition.clone()
       .add(diff)
 
-    const barWidth = React.findDOMNode(this.refs.bar).offsetWidth
+    const { bar } = this.refs
+    const barWidth = bar.offsetWidth
     const progress = position.x / barWidth
     const newValue = this.props.minValue + (this.props.maxValue - this.props.minValue) * progress
     this._setValue(newValue)
@@ -162,7 +165,8 @@ export default class SliderComponent extends BaseComponent {
     const progress = (value - minValue) / (maxValue - minValue)
 
     // Calculate slider position
-    const barWidth = React.findDOMNode(this.refs.bar).offsetWidth
+    const { bar } = this.refs
+    const barWidth = bar.offsetWidth
     const sliderPosition = barWidth * progress
 
     // Calculate foreground position and width

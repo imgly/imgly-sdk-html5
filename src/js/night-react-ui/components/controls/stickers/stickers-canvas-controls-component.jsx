@@ -76,7 +76,7 @@ export default class StickerCanvasControlsComponent extends BaseComponent {
    * @private
    */
   _onCanvasClick (e) {
-    if (e.target !== this.refs.container.getDOMNode()) return
+    if (e.target !== this.refs.container) return
     if (!this.getSharedState('selectedSticker')) return
 
     this._emitEvent(Constants.EVENTS.CANVAS_RENDER, undefined, () => {
