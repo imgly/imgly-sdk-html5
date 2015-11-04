@@ -1,12 +1,12 @@
-<div class="imglykit-controls-list-container">
-  <ul class="imglykit-controls-list imgly-controls-list-with-buttons">
+<div class="pesdk-controls-list-container">
+  <ul class="pesdk-controls-list imgly-controls-list-with-buttons">
     {{~it.filters :filter:index}}
       {{ var identifier = filter.identifier; }}
       {{ var name = filter.prototype.name; }}
       {{ var enabled = it.activeFilter.identifier === identifier; }}
-      <li data-index="{{= index}}" class="imglykit-controls-item-with-label{{? enabled}} imglykit-controls-item-active{{?}}">
+      <li data-index="{{= index}}" class="pesdk-controls-item-with-label{{? enabled}} pesdk-controls-item-active{{?}}">
         <img src="{{=it.helpers.assetPath('ui/night/filters/' + identifier + '.png')}}" />
-        <div class="imglykit-controls-item-label">{{= name }}</div>
+        <div class="pesdk-controls-item-label">{{= name }}</div>
       </li>
     {{~}}
   </ul>

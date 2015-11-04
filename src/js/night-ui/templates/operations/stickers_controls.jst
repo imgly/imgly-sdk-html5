@@ -1,9 +1,9 @@
 <div>
-  <ul class="imglykit-controls-list imgly-controls-list-with-buttons">
+  <ul class="pesdk-controls-list imgly-controls-list-with-buttons">
     {{~it.stickers :stickerPaths:index}}
       {{ var enabled = it.activeSticker === stickerPaths[0]; }}
-      <li data-index="{{= index}}"{{? enabled}} class="imglykit-controls-item-active"{{?}}>
-        <canvas class="imglykit-controls-item-canvas" data-image="{{=it.helpers.assetPath(stickerPaths[0])}}"></canvas>
+      <li data-index="{{= index}}"{{? enabled}} class="pesdk-controls-item-active"{{?}}>
+        <canvas class="pesdk-controls-item-canvas" data-image="{{=it.helpers.assetPath(stickerPaths[0])}}"></canvas>
       </li>
     {{~}}
   </ul>

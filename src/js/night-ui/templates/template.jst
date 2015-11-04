@@ -1,27 +1,27 @@
-<div class="imglykit">
-  <div class="imglykit-loadingOverlay">
-    <div class="imglykit-loadingOverlay-content">
+<div class="pesdk">
+  <div class="pesdk-loadingOverlay">
+    <div class="pesdk-loadingOverlay-content">
       <img src="{{= it.helpers.assetPath('ui/night/loading.gif')}}" />
       <span>{{= it.helpers.translate('generic.loading') }}...</span>
     </div>
   </div>
 
-  <div class="imglykit-flashOverlay">
-    <div class="imglykit-flashOverlay-close">
+  <div class="pesdk-flashOverlay">
+    <div class="pesdk-flashOverlay-close">
       <img src="{{= it.helpers.assetPath('ui/night/close.png')}}" />
     </div>
-    <div class="imglykit-flashOverlay-headline"></div>
-    <div class="imglykit-flashOverlay-text"></div>
+    <div class="pesdk-flashOverlay-headline"></div>
+    <div class="pesdk-flashOverlay-text"></div>
   </div>
 
-  <div class="imglykit-container">
+  <div class="pesdk-container">
     {{? !it.options.hideHeader }}
-    <div class="imglykit-header-row">
-      <div class="imglykit-header">
+    <div class="pesdk-header-row">
+      <div class="pesdk-header">
         img.ly Photo Editor SDK
 
         {{? it.options.showCloseButton }}
-        <div class="imglykit-close-button">
+        <div class="pesdk-close-button">
           <img src="{{=it.helpers.assetPath('ui/night/close.png')}}" />
         </div>
         {{?}}
@@ -29,84 +29,84 @@
     </div>
     {{?}}
     {{? it.renderControls }}
-    <div class="imglykit-top-controls-row">
-      <div class="imglykit-top-controls">
-        <div class="imglykit-top-controls-left">
+    <div class="pesdk-top-controls-row">
+      <div class="pesdk-top-controls">
+        <div class="pesdk-top-controls-left">
           {{? it.options.showNewButton }}
-          <div class="imglykit-new">
+          <div class="pesdk-new">
             <img src="{{=it.helpers.assetPath('ui/night/top/new.png')}}" />
             {{= it.helpers.translate('top-controls.new') }}
           </div>
           {{?}}
           {{? it.options.showExportButton }}
-          <div class="imglykit-export">
+          <div class="pesdk-export">
             <img src="{{=it.helpers.assetPath('ui/night/top/export.png')}}" />
             {{= it.helpers.translate('top-controls.export') }}
           </div>
           {{?}}
-          <div class="imglykit-undo">
+          <div class="pesdk-undo">
             <img src="{{=it.helpers.assetPath('ui/night/top/undo.png')}}" />
             {{= it.helpers.translate('top-controls.undo') }}
           </div>
         </div>
-        <div class="imglykit-top-controls-right">
-          <div class="imglykit-zoom-fit"></div>
-          <div class="imglykit-zoom-level">{{= it.helpers.translate('top-controls.zoom') }}: <span class="imglykit-zoom-level-num">100</span>%</div>
-          <div class="imglykit-zoom-in">
+        <div class="pesdk-top-controls-right">
+          <div class="pesdk-zoom-fit"></div>
+          <div class="pesdk-zoom-level">{{= it.helpers.translate('top-controls.zoom') }}: <span class="pesdk-zoom-level-num">100</span>%</div>
+          <div class="pesdk-zoom-in">
             <img src="{{=it.helpers.assetPath('ui/night/top/zoom-in.png')}}" />
           </div>
-          <div class="imglykit-zoom-out">
+          <div class="pesdk-zoom-out">
             <img src="{{=it.helpers.assetPath('ui/night/top/zoom-out.png')}}" />
           </div>
         </div>
       </div>
     </div>
     {{?}}
-    <div class="imglykit-canvas-container-row">
-      <div class="imglykit-canvas-container">
+    <div class="pesdk-canvas-container-row">
+      <div class="pesdk-canvas-container">
         {{? it.renderWebcam }}
-        <div class="imglykit-canvas-inner-container">
-          <video class="imglykit-webcam-video" autoplay></video>
+        <div class="pesdk-canvas-inner-container">
+          <video class="pesdk-webcam-video" autoplay></video>
         </div>
         {{?}}
         {{? !(it.renderSplashScreen || it.renderWebcam) }}
-        <div class="imglykit-canvas-inner-container">
-          <canvas class="imglykit-canvas-draggable"></canvas>
-          <div class="imglykit-canvas-controls imglykit-canvas-controls-disabled"></div>
+        <div class="pesdk-canvas-inner-container">
+          <canvas class="pesdk-canvas-draggable"></canvas>
+          <div class="pesdk-canvas-controls pesdk-canvas-controls-disabled"></div>
         </div>
         {{?}}
         {{? it.renderSplashScreen }}
-        <div class="imglykit-splash-container">
+        <div class="pesdk-splash-container">
           {{? it.options.showUploadButton }}
-          <div class="imglykit-splash-row imglykit-splash-row--upload">
-            <div class="imglykit-splash-cell">
-              <input type="file" class="imglykit-upload-hidden-input" />
+          <div class="pesdk-splash-row pesdk-splash-row--upload">
+            <div class="pesdk-splash-cell">
+              <input type="file" class="pesdk-upload-hidden-input" />
               <img src="{{=it.helpers.assetPath('ui/night/upload.png')}}" />
 
-              <div class="imglykit-splash-content">
-                <div class="imglykit-splash-button">{{= it.helpers.translate('splash.upload.headline') }}</div>
-                <div class="imglykit-splash-text">{{= it.helpers.translate('splash.upload.description') }}</div>
+              <div class="pesdk-splash-content">
+                <div class="pesdk-splash-button">{{= it.helpers.translate('splash.upload.headline') }}</div>
+                <div class="pesdk-splash-text">{{= it.helpers.translate('splash.upload.description') }}</div>
               </div>
             </div>
           </div>
           {{?}}
           {{? it.options.showUploadButton && it.options.showWebcamButton }}
-          <div class="imglykit-splash-row imglykit-splash-row--or">
-            <div class="imglykit-splash-or">
-              <div class="imglykit-splash-or-line"></div>
-              <div class="imglykit-splash-or-word">{{= it.helpers.translate('splash.or') }}</div>
-              <div class="imglykit-splash-or-line"></div>
+          <div class="pesdk-splash-row pesdk-splash-row--or">
+            <div class="pesdk-splash-or">
+              <div class="pesdk-splash-or-line"></div>
+              <div class="pesdk-splash-or-word">{{= it.helpers.translate('splash.or') }}</div>
+              <div class="pesdk-splash-or-line"></div>
             </div>
           </div>
           {{?}}
           {{? it.options.showWebcamButton }}
-          <div class="imglykit-splash-row imglykit-splash-row--camera">
-            <div class="imglykit-splash-cell">
+          <div class="pesdk-splash-row pesdk-splash-row--camera">
+            <div class="pesdk-splash-cell">
               <img src="{{=it.helpers.assetPath('ui/night/shutter.png')}}" />
 
-              <div class="imglykit-splash-content">
-                <div class="imglykit-splash-button">{{= it.helpers.translate('splash.webcam.headline') }}</div>
-                <div class="imglykit-splash-text">{{= it.helpers.translate('splash.webcam.description') }}</div>
+              <div class="pesdk-splash-content">
+                <div class="pesdk-splash-button">{{= it.helpers.translate('splash.webcam.headline') }}</div>
+                <div class="pesdk-splash-text">{{= it.helpers.translate('splash.webcam.description') }}</div>
               </div>
             </div>
           </div>
@@ -117,10 +117,10 @@
     </div>
 
     {{? it.renderWebcam }}
-    <div class="imglykit-controls-row">
-      <div class="imglykit-controls-container">
-        <div class="imglykit-controls">
-          <div class="imglykit-webcam-button">
+    <div class="pesdk-controls-row">
+      <div class="pesdk-controls-container">
+        <div class="pesdk-controls">
+          <div class="pesdk-webcam-button">
             <img src="{{=it.helpers.assetPath('ui/night/shutter-button.png')}}" />
           </div>
         </div>
@@ -128,18 +128,18 @@
     </div>
     {{?}}
     {{? it.renderControls }}
-    <div class="imglykit-controls-row">
-      <div class="imglykit-controls-container">
-        <div class="imglykit-controls">
+    <div class="pesdk-controls-row">
+      <div class="pesdk-controls-container">
+        <div class="pesdk-controls">
 
           <div>
-            <div class="imglykit-controls-overview">
-              <ul class="imglykit-controls-list">
+            <div class="pesdk-controls-overview">
+              <ul class="pesdk-controls-list">
               {{ for (var identifier in it.controls) { }}
                 {{ var control = it.controls[identifier]; }}
-                <li class="imglykit-controls-item--with-label" data-identifier="{{= control.identifier}}"{{? it.controlsDisabled }} data-disabled{{?}}>
+                <li class="pesdk-controls-item--with-label" data-identifier="{{= control.identifier}}"{{? it.controlsDisabled }} data-disabled{{?}}>
                   <img src="{{=it.helpers.assetPath('ui/night/operations/' + control.identifier + '.png') }}" />
-                  <div class="imglykit-controls-label">{{=it.helpers.translate('operations.' + control.identifier)}}</div>
+                  <div class="pesdk-controls-label">{{=it.helpers.translate('operations.' + control.identifier)}}</div>
                 </li>
               {{ } }}
               </ul>
