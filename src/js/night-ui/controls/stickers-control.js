@@ -413,7 +413,7 @@ class StickersControl extends Control {
     this._stickerImage.src = stickerPath
     this._stickerImage.addEventListener('load', this._onStickerLoad)
 
-    Utils.classList(item).add('imglykit-controls-item-active')
+    Utils.classList(item).add('pesdk-controls-item-active')
 
     if (manually) {
       this._highlightDoneButton()
@@ -427,7 +427,7 @@ class StickersControl extends Control {
   _deactivateAllItems () {
     for (let i = 0; i < this._listItems.length; i++) {
       let listItem = this._listItems[i]
-      Utils.classList(listItem).remove('imglykit-controls-item-active')
+      Utils.classList(listItem).remove('pesdk-controls-item-active')
     }
   }
 

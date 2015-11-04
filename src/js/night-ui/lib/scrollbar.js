@@ -242,11 +242,11 @@ class Scrollbar {
    */
   _appendDOM () {
     let background = document.createElement('div')
-    Utils.classList(background).add('imglykit-scrollbar-background')
+    Utils.classList(background).add('pesdk-scrollbar-background')
     background.style.bottom = `${maxScrollbarWidth}px`
 
     let button = document.createElement('div')
-    Utils.classList(button).add('imglykit-scrollbar-button')
+    Utils.classList(button).add('pesdk-scrollbar-button')
 
     background.appendChild(button)
     this._container.appendChild(background)

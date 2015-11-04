@@ -28,12 +28,12 @@ class TextControl extends Control {
 
     this._partialTemplates.fgColorPicker = ColorPicker.template
     this._partialTemplates.fgColorPicker.additionalContext = {
-      id: 'imglykit-text-foreground-color-picker'
+      id: 'pesdk-text-foreground-color-picker'
     }
 
     this._partialTemplates.bgColorPicker = ColorPicker.template
     this._partialTemplates.bgColorPicker.additionalContext = {
-      id: 'imglykit-text-background-color-picker'
+      id: 'pesdk-text-background-color-picker'
     }
 
     this._fonts = []
@@ -166,7 +166,7 @@ class TextControl extends Control {
    * @private
    */
   _initColorPickers () {
-    let foregroundColorPicker = this._controls.querySelector('#imglykit-text-foreground-color-picker')
+    let foregroundColorPicker = this._controls.querySelector('#pesdk-text-foreground-color-picker')
     this._foregroundColorPicker = new ColorPicker(this._ui, foregroundColorPicker)
     this._foregroundColorPicker.setValue(this._text.getColor())
     this._foregroundColorPicker.on('update', this._onForegroundColorUpdate)
@@ -174,7 +174,7 @@ class TextControl extends Control {
       this._backgroundColorPicker.hide()
     })
 
-    let backgroundColorPicker = this._controls.querySelector('#imglykit-text-background-color-picker')
+    let backgroundColorPicker = this._controls.querySelector('#pesdk-text-background-color-picker')
     this._backgroundColorPicker = new ColorPicker(this._ui, backgroundColorPicker)
     this._backgroundColorPicker.setValue(this._text.getBackgroundColor())
     this._backgroundColorPicker.on('update', this._onBackgroundColorUpdate)
@@ -467,7 +467,7 @@ class TextControl extends Control {
 
     this._applySettings()
 
-    Utils.classList(item).add('imglykit-controls-item-active')
+    Utils.classList(item).add('pesdk-controls-item-active')
 
     if (manually) {
       this._highlightDoneButton()
@@ -481,7 +481,7 @@ class TextControl extends Control {
   _deactivateAllItems () {
     for (let i = 0; i < this._listItems.length; i++) {
       let listItem = this._listItems[i]
-      Utils.classList(listItem).remove('imglykit-controls-item-active')
+      Utils.classList(listItem).remove('pesdk-controls-item-active')
     }
   }
 

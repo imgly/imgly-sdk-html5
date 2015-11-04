@@ -93,7 +93,7 @@ class FlipControl extends Control {
    * @private
    */
   _toggleItem (item, active) {
-    let activeClass = 'imglykit-controls-item-active'
+    let activeClass = 'pesdk-controls-item-active'
     if (active) {
       Utils.classList(item).add(activeClass)
     } else {

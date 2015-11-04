@@ -230,12 +230,12 @@ class Control extends EventEmitter {
 
   _enableCanvasControls () {
     if (typeof this._canvasControlsTemplate === 'undefined') { return }
-    Utils.classList(this._canvasControlsContainer).remove('imglykit-canvas-controls-disabled')
+    Utils.classList(this._canvasControlsContainer).remove('pesdk-canvas-controls-disabled')
   }
 
   _disableCanvasControls () {
     if (typeof this._canvasControlsTemplate === 'undefined') { return }
-    Utils.classList(this._canvasControlsContainer).add('imglykit-canvas-controls-disabled')
+    Utils.classList(this._canvasControlsContainer).add('pesdk-canvas-controls-disabled')
   }
 
   // Protected methods

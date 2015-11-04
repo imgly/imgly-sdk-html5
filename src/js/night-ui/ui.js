@@ -450,7 +450,7 @@ export default class NightUI extends EventEmitter {
     this._flashHeadline.textContent = headline
     this._flashOverlay.style.display = 'block'
 
-    this._flashOverlay.className = `imglykit-flashOverlay imglykit-flashOverlay--${type}`
+    this._flashOverlay.className = `pesdk-flashOverlay pesdk-flashOverlay--${type}`
   }
 
   /**
@@ -802,7 +802,7 @@ export default class NightUI extends EventEmitter {
               const url = SDKUtils.createBlobURIFromDataURI(data)
               let link = document.createElement('a')
               const extension = this._options.export.type.split('/').pop()
-              link.download = `imglykit-export.${extension}`
+              link.download = `pesdk-export.${extension}`
               link.href = url
               document.body.appendChild(link)
               link.click()
@@ -810,7 +810,7 @@ export default class NightUI extends EventEmitter {
               document.body.removeChild(link)
               break
             case RenderType.MSBLOB:
-              navigator.msSaveBlob(data, 'imglykit-export.png')
+              navigator.msSaveBlob(data, 'pesdk-export.png')
               break
           }
 
