@@ -10,14 +10,14 @@
  */
 
 const {
-  Promise, Log, Vector2, Color, Utils, EventEmitter, ImageFormat, OperationsStack, RenderType
+  Promise, Vector2, Color, Utils, EventEmitter, ImageFormat, OperationsStack, RenderType
 } = PhotoEditorSDK
 
 import Helpers from './helpers'
 import UIUtils from './utils'
 
 export default {
-  Promise, Log, Vector2, Color, EventEmitter, ImageFormat, OperationsStack,
+  Promise, Vector2, Color, EventEmitter, ImageFormat, OperationsStack,
   Helpers, RenderType,
   SDKUtils: Utils,
   Utils: UIUtils

@@ -22,7 +22,6 @@ import Constants from './lib/constants'
 import SharedState from './lib/shared-state'
 
 const Promise = PhotoEditorSDK.Promise
-const Log = PhotoEditorSDK.Log
 const Color = PhotoEditorSDK.Color
 const Vector2 = PhotoEditorSDK.Vector2
 const SDKUtils = PhotoEditorSDK.Utils
@@ -31,7 +30,7 @@ const Base64 = PhotoEditorSDK.Base64
 const RenderType = PhotoEditorSDK.RenderType
 
 export {
-  Log, Promise, Utils, React, BEM, Classnames, BaseComponent, ReactBEM, Vector2,
+  Promise, Utils, React, BEM, Classnames, BaseComponent, ReactBEM, Vector2,
   SDKUtils, EventEmitter, Constants, SharedState, Color, Base64, RenderType,
   ReactDOM
 }
