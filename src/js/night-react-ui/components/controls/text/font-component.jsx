@@ -13,10 +13,6 @@ import { ReactBEM, BaseComponent } from '../../../globals'
 import FontPreviewComponent from './font-preview-component'
 
 export default class FontComponent extends BaseComponent {
-  constructor (...args) {
-    super(...args)
-  }
-
   // -------------------------------------------------------------------------- EVENTS
 
   /**

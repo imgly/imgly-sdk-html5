@@ -12,10 +12,6 @@
 import { ReactBEM, BaseComponent } from '../../../globals'
 
 export default class FontPreviewComponent extends BaseComponent {
-  constructor (...args) {
-    super(...args)
-  }
-
   // -------------------------------------------------------------------------- LIFECYCLE
 
   /**
