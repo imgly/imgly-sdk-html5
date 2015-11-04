@@ -27,7 +27,7 @@ class RadialBlurControl extends Control {
 
     this._partialTemplates.slider = SimpleSlider.template
     this._partialTemplates.slider.additionalContext = {
-      id: 'imglykit-blur-radius-slider'
+      id: 'pesdk-blur-radius-slider'
     }
   }
 
@@ -54,8 +54,8 @@ class RadialBlurControl extends Control {
     this._onGradientKnobDrag = this._onGradientKnobDrag.bind(this)
     this._onGradientKnobUp = this._onGradientKnobUp.bind(this)
 
-    this._positionKnob = this._canvasControls.querySelector('#imglykit-radial-blur-position')
-    this._gradientKnob = this._canvasControls.querySelector('#imglykit-radial-blur-gradient')
+    this._positionKnob = this._canvasControls.querySelector('#pesdk-radial-blur-position')
+    this._gradientKnob = this._canvasControls.querySelector('#pesdk-radial-blur-gradient')
     this._circle = this._canvasControls.querySelector('.pesdk-canvas-radial-blur-circle')
     this._handleKnobs()
     this._initSliders()
@@ -71,7 +71,7 @@ class RadialBlurControl extends Control {
    * @private
    */
   _initSliders () {
-    let blurRadiusSlider = this._controls.querySelector('#imglykit-blur-radius-slider')
+    let blurRadiusSlider = this._controls.querySelector('#pesdk-blur-radius-slider')
     this._blurRadiusSlider = new SimpleSlider(blurRadiusSlider, {
       minValue: 0,
       maxValue: 40

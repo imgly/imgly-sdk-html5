@@ -25,7 +25,7 @@ class TiltShiftControl extends Control {
     this._canvasControlsTemplate = canvasControlsTemplate
 
     this._partialTemplates.slider = SimpleSlider.template
-    this._partialTemplates.slider.additionalContext = { id: 'imglykit-blur-radius-slider' }
+    this._partialTemplates.slider.additionalContext = { id: 'pesdk-blur-radius-slider' }
     this._currentKnob = null
   }
 
@@ -72,7 +72,7 @@ class TiltShiftControl extends Control {
    * @private
    */
   _initSliders () {
-    let blurRadiusSlider = this._controls.querySelector('#imglykit-blur-radius-slider')
+    let blurRadiusSlider = this._controls.querySelector('#pesdk-blur-radius-slider')
     this._blurRadiusSlider = new SimpleSlider(blurRadiusSlider, {
       minValue: 0,
       maxValue: 40

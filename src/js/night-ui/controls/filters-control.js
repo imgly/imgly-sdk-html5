@@ -97,7 +97,7 @@ class FiltersControl extends Control {
     this._operation.setFilter(this._filters[index])
     this._ui.canvas.render()
 
-    Utils.classList(item).add('imglykit-controls-item-active')
+    Utils.classList(item).add('pesdk-controls-item-active')
 
     let currentFilter = this._operation.getFilter()
     if (currentFilter !== this._initialFilter && !this._historyItem) {
@@ -114,7 +114,7 @@ class FiltersControl extends Control {
   _deactivateAllItems () {
     for (let i = 0; i < this._listItems.length; i++) {
       let listItem = this._listItems[i]
-      Utils.classList(listItem).remove('imglykit-controls-item-active')
+      Utils.classList(listItem).remove('pesdk-controls-item-active')
     }
   }
 

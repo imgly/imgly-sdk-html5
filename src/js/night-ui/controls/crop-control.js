@@ -167,7 +167,7 @@ class CropControl extends Control {
   _unselectAllRatios () {
     for (let i = 0; i < this._ratioItems.length; i++) {
       let item = this._ratioItems[i]
-      Utils.classList(item).remove('imglykit-controls-item-active')
+      Utils.classList(item).remove('pesdk-controls-item-active')
     }
   }
 
@@ -177,7 +177,7 @@ class CropControl extends Control {
    * @private
    */
   _selectRatio (item) {
-    Utils.classList(item).add('imglykit-controls-item-active')
+    Utils.classList(item).add('pesdk-controls-item-active')
     const ratio = item.getAttribute('data-ratio')
     const identifier = item.getAttribute('data-identifier')
     this._setRatio(identifier, ratio)

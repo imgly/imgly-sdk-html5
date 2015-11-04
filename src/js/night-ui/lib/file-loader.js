@@ -79,7 +79,7 @@ class FileLoader extends EventEmitter {
     e.preventDefault()
 
     this._dragCounter++
-    Utils.classList(this._dropArea).add('imglykit-splash-active')
+    Utils.classList(this._dropArea).add('pesdk-splash-active')
   }
 
   /**
@@ -102,7 +102,7 @@ class FileLoader extends EventEmitter {
     this._dragCounter--
 
     if (this._dragCounter === 0) {
-      Utils.classList(this._dropArea).remove('imglykit-splash-active')
+      Utils.classList(this._dropArea).remove('pesdk-splash-active')
     }
   }
 
@@ -116,7 +116,7 @@ class FileLoader extends EventEmitter {
     e.preventDefault()
     e.returnValue = false
 
-    Utils.classList(this._dropArea).remove('imglykit-splash-active')
+    Utils.classList(this._dropArea).remove('pesdk-splash-active')
 
     if (!e.dataTransfer) return
 

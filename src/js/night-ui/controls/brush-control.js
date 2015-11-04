@@ -69,7 +69,7 @@ class BrushControl extends Control {
   _handleThicknessButton () {
     if (this._displayThickness) return
 
-    this._thicknessButton = this._controlsContainer.querySelector('#imglykit-thickness-button')
+    this._thicknessButton = this._controlsContainer.querySelector('#pesdk-thickness-button')
     this._thicknessButton.addEventListener('click', this._onThicknessButtonClick.bind(this))
   }
 
@@ -98,7 +98,7 @@ class BrushControl extends Control {
    * Sets up the cursor
    */
   _setupCursor () {
-    this._cursor = this._canvasControls.querySelector('#imglykit-brush-cursor')
+    this._cursor = this._canvasControls.querySelector('#pesdk-brush-cursor')
     this._setCursorSize(this._currentThickness * this._getLongerSideSize())
     this._setCursorColor(this._currentColor)
   }
