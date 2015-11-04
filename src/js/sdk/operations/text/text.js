@@ -77,11 +77,10 @@ export default class Text extends Configurable {
    * @return {Promise}
    */
   render (renderer) {
-    console.log(renderer.id)
     if (typeof this._dirtiness[renderer.id] === 'undefined') {
       this._dirtiness[renderer.id] = true
     }
-    let dirty = this._dirtiness[renderer.id]
+    const dirty = this._dirtiness[renderer.id]
     if (!dirty) return Promise.resolve(this._canvas)
 
     const textOptions = this._calculateFontSizeAndLineHeight(renderer)
