@@ -1,18 +1,18 @@
 <div>
-  <ul class="imglykit-controls-list imgly-controls-list-with-buttons">
+  <ul class="pesdk-controls-list imgly-controls-list-with-buttons">
     {{~it.fonts :value:index}}
       <li data-name="{{= value.fontFamily}}" data-weight="{{= value.fontWeight}}">
-        <canvas class="imglykit-controls-item-canvas"></canvas>
+        <canvas class="pesdk-controls-item-canvas"></canvas>
       </li>
     {{~}}
   </ul>
 </div>
 
-<div class="imglykit-controls-button">
+<div class="pesdk-controls-button">
   {{= it.partials.fgColorPicker}}
 </div>
 
-<div class="imglykit-controls-button">
+<div class="pesdk-controls-button">
   {{= it.partials.bgColorPicker}}
 </div>
 
