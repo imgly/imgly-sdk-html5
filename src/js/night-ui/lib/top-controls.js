@@ -8,7 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-const { EventEmitter } = PhotoEditorSDK
+import { EventEmitter } from '../globals'
 
 class TopControls extends EventEmitter {
   constructor (kit, ui) {

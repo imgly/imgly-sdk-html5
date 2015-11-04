@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent, Constants } from '../../../globals'
+import { ReactBEM, BaseChildComponent } from '../../../globals'
 import SliderComponent from '../../slider-component'
 
 export default class TextControlsComponent extends BaseChildComponent {

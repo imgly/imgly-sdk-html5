@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-const { EventEmitter, Utils, Vector2 } = PhotoEditorSDK
+import { EventEmitter, Utils, Vector2 } from '../globals'
 
 export default class WebcamHandler extends EventEmitter {
   constructor (kit, ui) {

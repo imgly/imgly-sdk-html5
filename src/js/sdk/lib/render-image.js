@@ -8,7 +8,6 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import EventEmitter from './event-emitter'
 import ImageDimensions from './image-dimensions'
 import Vector2 from './math/vector2'
 import Utils from './utils'

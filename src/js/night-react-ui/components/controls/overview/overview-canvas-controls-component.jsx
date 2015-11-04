@@ -39,7 +39,6 @@ export default class OverviewCanvasControlsComponent extends BaseChildComponent 
 
     // Check if any of the controls responds to a click
     // at the given position
-    let found = false
     for (let identifier in controls) {
       const control = controls[identifier]
       const clickResponse = control.clickAtPosition &&

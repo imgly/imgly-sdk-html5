@@ -8,7 +8,7 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-import { React, ReactBEM, BaseChildComponent, Vector2 } from '../globals'
+import { React, ReactBEM, BaseChildComponent } from '../globals'
 import DraggableComponent from './draggable-component'
 
 export default class SliderComponent extends BaseChildComponent {

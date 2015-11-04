@@ -314,6 +314,6 @@ Control.prototype.identifier = null
  * this method and provide instance properties and functions.
  * @function
  */
-Control.extend = PhotoEditorSDK.extend
+Control.extend = window.PhotoEditorSDK.extend
 
 export default Control

@@ -9,8 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-const { Vector2 } = PhotoEditorSDK
-
+import { Vector2 } from '../globals'
 import Control from './control'
 
 class RotationControl extends Control {
