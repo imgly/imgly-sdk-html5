@@ -14,8 +14,8 @@ import Primitive from './primitive'
 /**
  * Saturation primitive
  * @class
- * @alias ImglyKit.Filter.Primitives.Saturation
- * @extends {ImglyKit.Filter.Primitive}
+ * @alias PhotoEditorSDK.Filter.Primitives.Saturation
+ * @extends {PhotoEditorSDK.Filter.Primitive}
  */
 class Saturation extends Primitive {
   constructor (...args) {

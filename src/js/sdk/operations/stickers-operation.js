@@ -19,8 +19,8 @@ import StickersCanvasRenderer from './stickers/canvas-renderer'
  * An operation that can draw text on the canvas
  *
  * @class
- * @alias ImglyKit.Operations.StickersOperation
- * @extends ImglyKit.Operation
+ * @alias PhotoEditorSDK.Operations.StickersOperation
+ * @extends PhotoEditorSDK.Operation
  */
 class StickersOperation extends Operation {
   constructor (...args) {

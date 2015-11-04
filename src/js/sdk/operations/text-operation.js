@@ -19,8 +19,8 @@ import TextCanvasRenderer from './text/canvas-renderer'
  * An operation that can draw text on the canvas
  *
  * @class
- * @alias ImglyKit.Operations.TextOperation
- * @extends ImglyKit.Operation
+ * @alias PhotoEditorSDK.Operations.TextOperation
+ * @extends PhotoEditorSDK.Operation
  */
 class TextOperation extends Operation {
   constructor (...args) {

@@ -13,8 +13,8 @@ import Filter from './filter'
 /**
  * Orchid Filter
  * @class
- * @alias ImglyKit.Filters.OrchidFilter
- * @extends {ImglyKit.Filter}
+ * @alias PhotoEditorSDK.Filters.OrchidFilter
+ * @extends {PhotoEditorSDK.Filter}
  */
 class OrchidFilter extends Filter {
   constructor (...args) {

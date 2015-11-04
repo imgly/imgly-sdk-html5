@@ -9,36 +9,36 @@
  */
 import { RenderType, ImageFormat } from './constants'
 
-let ImglyKit = {}
+let PhotoEditorSDK = {}
 
-ImglyKit.Renderer = require('./lib/renderer')
+PhotoEditorSDK.Renderer = require('./lib/renderer')
 
 /**
  * The current version of the SDK
- * @name ImglyKit.version
+ * @name PhotoEditorSDK.version
  * @internal Keep in sync with package.json
  */
-ImglyKit.version = require('../../package.json').version
+PhotoEditorSDK.version = require('../../package.json').version
 
 // Exposed classes
-ImglyKit.RenderImage = require('./lib/render-image')
-ImglyKit.Color = require('./lib/color')
-ImglyKit.Filter = require('./operations/filters/filter')
-ImglyKit.Operation = require('./operations/operation')
-ImglyKit.Operations = require('./operations/operations')
-ImglyKit.Filters = require('./operations/filters/filters')
+PhotoEditorSDK.RenderImage = require('./lib/render-image')
+PhotoEditorSDK.Color = require('./lib/color')
+PhotoEditorSDK.Filter = require('./operations/filters/filter')
+PhotoEditorSDK.Operation = require('./operations/operation')
+PhotoEditorSDK.Operations = require('./operations/operations')
+PhotoEditorSDK.Filters = require('./operations/filters/filters')
 
-ImglyKit.UI = {}
-ImglyKit.UI.Night = require('./ui/night/ui')
-ImglyKit.UI.NightReact = require('./ui/night-react/ui')
+PhotoEditorSDK.UI = {}
+PhotoEditorSDK.UI.Night = require('./ui/night/ui')
+PhotoEditorSDK.UI.NightReact = require('./ui/night-react/ui')
 
 // Exposed constants
-ImglyKit.RenderType = RenderType
-ImglyKit.ImageFormat = ImageFormat
-ImglyKit.Vector2 = require('./lib/math/vector2')
+PhotoEditorSDK.RenderType = RenderType
+PhotoEditorSDK.ImageFormat = ImageFormat
+PhotoEditorSDK.Vector2 = require('./lib/math/vector2')
 
 // UI
-ImglyKit.NightUI = require('./ui/night/ui')
-ImglyKit.NightReactUI = require('./ui/night-react/ui')
+PhotoEditorSDK.NightUI = require('./ui/night/ui')
+PhotoEditorSDK.NightReactUI = require('./ui/night-react/ui')
 
-export default ImglyKit
+export default PhotoEditorSDK

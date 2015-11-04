@@ -9,12 +9,12 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var ImglyKit = require("../");
-var kit = new ImglyKit.Renderer('canvas', { image: null, ui: { enabled: false } });
-var testOperation = ImglyKit.Operation.extend({
+var PhotoEditorSDK = require("../");
+var kit = new PhotoEditorSDK.Renderer('canvas', { image: null, ui: { enabled: false } });
+var testOperation = PhotoEditorSDK.Operation.extend({
   availableOptions: {
-    vec: { type: "vector2", default: new ImglyKit.Vector2(100, 200) },
-    col: { type: "color", default: new ImglyKit.Color(0, 0, 0, 1) },
+    vec: { type: "vector2", default: new PhotoEditorSDK.Vector2(100, 200) },
+    col: { type: "color", default: new PhotoEditorSDK.Color(0, 0, 0, 1) },
     str: { type: "string", default: "center", available: ["left", "center", "right"] },
     num: { type: "number", default: 1 },
     bool: { type: "boolean", default: false },
@@ -46,7 +46,7 @@ describe("Operation", function () {
 
         it("should return the default value", function () {
           var value = operation.getVec();
-          value.should.be.an.instanceOf(ImglyKit.Vector2);
+          value.should.be.an.instanceOf(PhotoEditorSDK.Vector2);
           value.x.should.equal(100);
           value.y.should.equal(200);
         });
@@ -58,7 +58,7 @@ describe("Operation", function () {
         describe("with a vector", function () {
 
           it("should set the value", function () {
-            operation.setVec(new ImglyKit.Vector2(200, 100));
+            operation.setVec(new PhotoEditorSDK.Vector2(200, 100));
             var value = operation.getVec();
             value.x.should.equal(200);
             value.y.should.equal(100);
@@ -72,7 +72,7 @@ describe("Operation", function () {
             var throwable = function () {
               operation.setVec("foo?");
             };
-            throwable.should.throw("Operation `null`: Option `vec` has to be an instance of ImglyKit.Vector2.");
+            throwable.should.throw("Operation `null`: Option `vec` has to be an instance of PhotoEditorSDK.Vector2.");
           });
 
         });
@@ -87,7 +87,7 @@ describe("Operation", function () {
 
         it("should return the default value", function () {
           var value = operation.getCol();
-          value.should.be.an.instanceOf(ImglyKit.Color);
+          value.should.be.an.instanceOf(PhotoEditorSDK.Color);
           value.r.should.equal(0);
           value.g.should.equal(0);
           value.b.should.equal(0);
@@ -101,7 +101,7 @@ describe("Operation", function () {
         describe("with a color", function () {
 
           it("should set the value", function () {
-            operation.setCol(new ImglyKit.Color(1, 1, 1, 1));
+            operation.setCol(new PhotoEditorSDK.Color(1, 1, 1, 1));
             var value = operation.getCol();
             value.r.should.equal(1);
             value.g.should.equal(1);
@@ -117,7 +117,7 @@ describe("Operation", function () {
             var throwable = function () {
               operation.setCol("foo?");
             };
-            throwable.should.throw("Operation `null`: Option `col` has to be an instance of ImglyKit.Color.");
+            throwable.should.throw("Operation `null`: Option `col` has to be an instance of PhotoEditorSDK.Color.");
           });
 
         });

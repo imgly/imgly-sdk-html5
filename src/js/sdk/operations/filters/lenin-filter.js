@@ -13,8 +13,8 @@ import Filter from './filter'
 /**
  * Lenin Filter
  * @class
- * @alias ImglyKit.Filters.LeninFilter
- * @extends {ImglyKit.Filter}
+ * @alias PhotoEditorSDK.Filters.LeninFilter
+ * @extends {PhotoEditorSDK.Filter}
  */
 class LeninFilter extends Filter {
   constructor (...args) {

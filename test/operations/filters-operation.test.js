@@ -13,9 +13,9 @@
 var path = require("path");
 var fs = require("fs");
 var canvas = require("canvas");
-var ImglyKit = require("../..");
-var FiltersOperation = ImglyKit.Operations.Filters;
-var dummyFiltersOperation = new FiltersOperation(new ImglyKit.Renderer('canvas', { image: null, ui: { enabled: false } }));
+var PhotoEditorSDK = require("../..");
+var FiltersOperation = PhotoEditorSDK.Operations.Filters;
+var dummyFiltersOperation = new FiltersOperation(new PhotoEditorSDK.Renderer('canvas', { image: null, ui: { enabled: false } }));
 var kit, image, filtersOperation;
 
 beforeEach(function () {
@@ -24,7 +24,7 @@ beforeEach(function () {
   var buffer = fs.readFileSync(imagePath);
   image.src = buffer;
 
-  kit = new ImglyKit.Renderer('canvas', { image: image, ui: { enabled: false } });
+  kit = new PhotoEditorSDK.Renderer('canvas', { image: image, ui: { enabled: false } });
   filtersOperation = dummyFiltersOperation;
   filtersOperation.kit = kit;
   kit.operationsStack.push(filtersOperation);
@@ -62,10 +62,10 @@ describe("FiltersOperation", function () {
 
   describe("#render", function () {
 
-    for (var name in ImglyKit.Filters) {
+    for (var name in PhotoEditorSDK.Filters) {
       (function (name) {
         it("should work with " + name + " filter", function(done) {
-          filtersOperation.setFilter(ImglyKit.Filters[name]);
+          filtersOperation.setFilter(PhotoEditorSDK.Filters[name]);
 
           kit.render()
             .then(function () {

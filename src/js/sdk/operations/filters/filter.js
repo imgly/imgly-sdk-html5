@@ -12,9 +12,9 @@
 import PrimitivesStack from './primitives-stack'
 
 /**
- * Base class for filters. Extendable via {@link ImglyKit.Filter#extend}
+ * Base class for filters. Extendable via {@link PhotoEditorSDK.Filter#extend}
  * @class
- * @alias ImglyKit.Filter
+ * @alias PhotoEditorSDK.Filter
  */
 class Filter {
   constructor (intensity = 1.0) {
@@ -59,7 +59,7 @@ class Filter {
 }
 
 /**
- * To create an {@link ImglyKit.Filter} class of your own, call this
+ * To create an {@link PhotoEditorSDK.Filter} class of your own, call this
  * method and provide instance properties and functions.
  * @function
  */

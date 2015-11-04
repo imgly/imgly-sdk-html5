@@ -11,7 +11,7 @@
 /**
  * The available render types
  * @enum {string}
- * @alias ImglyKit.RenderType
+ * @alias PhotoEditorSDK.RenderType
  */
 export var RenderType = {
   IMAGE: 'image',
@@ -24,7 +24,7 @@ export var RenderType = {
 /**
  * The available output image formats
  * @enum {string}
- * @alias ImglyKit.ImageFormat
+ * @alias PhotoEditorSDK.ImageFormat
  */
 export var ImageFormat = {
   PNG: 'image/png',

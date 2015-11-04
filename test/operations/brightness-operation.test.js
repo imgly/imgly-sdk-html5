@@ -14,8 +14,8 @@ var path = require("path");
 var fs = require("fs");
 var should = require("should");
 var canvas = require("canvas");
-var ImglyKit = require("../..");
-var BrightnessOperation = ImglyKit.Operations.Brightness;
+var PhotoEditorSDK = require("../..");
+var BrightnessOperation = PhotoEditorSDK.Operations.Brightness;
 var kit, image, brightnessOperation;
 
 beforeEach(function () {
@@ -24,7 +24,7 @@ beforeEach(function () {
   var buffer = fs.readFileSync(imagePath);
   image.src = buffer;
 
-  kit = new ImglyKit.Renderer('canvas', { image: image, ui: { enabled: false } });
+  kit = new PhotoEditorSDK.Renderer('canvas', { image: image, ui: { enabled: false } });
 });
 
 describe("BrightnessOperation", function () {

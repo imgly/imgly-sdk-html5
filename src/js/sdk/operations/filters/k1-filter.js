@@ -13,8 +13,8 @@ import Filter from './filter'
 /**
  * K1 Filter
  * @class
- * @alias ImglyKit.Filters.K1Filter
- * @extends {ImglyKit.Filter}
+ * @alias PhotoEditorSDK.Filters.K1Filter
+ * @extends {PhotoEditorSDK.Filter}
  */
 class K1Filter extends Filter {
   constructor (...args) {

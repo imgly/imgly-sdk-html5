@@ -13,8 +13,8 @@
 var path = require("path");
 var fs = require("fs");
 var canvas = require("canvas");
-var ImglyKit = require("../..");
-var RadialBlurOperation = ImglyKit.Operations.RadialBlur;
+var PhotoEditorSDK = require("../..");
+var RadialBlurOperation = PhotoEditorSDK.Operations.RadialBlur;
 var kit, image, radialBlurOperation;
 
 beforeEach(function () {
@@ -23,7 +23,7 @@ beforeEach(function () {
   var buffer = fs.readFileSync(imagePath);
   image.src = buffer;
 
-  kit = new ImglyKit.Renderer('canvas', { image: image, ui: { enabled: false } });
+  kit = new PhotoEditorSDK.Renderer('canvas', { image: image, ui: { enabled: false } });
 });
 
 describe("RadialBlurOperation", function () {
@@ -38,7 +38,7 @@ describe("RadialBlurOperation", function () {
         var throwable = function () {
           new RadialBlurOperation(kit, { position: null });
         };
-        throwable.should.throw("Operation `radial-blur`: Option `position` has to be an instance of ImglyKit.Vector2.");
+        throwable.should.throw("Operation `radial-blur`: Option `position` has to be an instance of PhotoEditorSDK.Vector2.");
       });
 
     });
@@ -47,7 +47,7 @@ describe("RadialBlurOperation", function () {
 
       it("should succeed", function (done) {
         radialBlurOperation = new RadialBlurOperation(kit, {
-          position: new ImglyKit.Vector2(0.5, 0.5)
+          position: new PhotoEditorSDK.Vector2(0.5, 0.5)
         });
         kit.operationsStack.push(radialBlurOperation);
 

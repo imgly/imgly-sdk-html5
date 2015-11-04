@@ -14,8 +14,8 @@ import LookupTable from './lookup-table'
 /**
  * Tone curve primitive
  * @class
- * @alias ImglyKit.Filter.Primitives.ToneCurve
- * @extends {ImglyKit.Filter.Primitives.LookupTable}
+ * @alias PhotoEditorSDK.Filter.Primitives.ToneCurve
+ * @extends {PhotoEditorSDK.Filter.Primitives.LookupTable}
  */
 class ToneCurve extends LookupTable {
   constructor (...args) {

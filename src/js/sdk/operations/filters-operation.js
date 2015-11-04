@@ -17,8 +17,8 @@ import IdentityFilter from './filters/identity-filter'
  * An operation that can apply a selected filter
  *
  * @class
- * @alias ImglyKit.Operations.FiltersOperation
- * @extends ImglyKit.Operation
+ * @alias PhotoEditorSDK.Operations.FiltersOperation
+ * @extends PhotoEditorSDK.Operation
  */
 class FiltersOperation extends Operation {
   constructor (...args) {

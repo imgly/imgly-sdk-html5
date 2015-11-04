@@ -13,8 +13,8 @@ import Primitive from './primitive'
 /**
  * Grayscale primitive
  * @class
- * @alias ImglyKit.Filter.Primitives.Grayscale
- * @extends {ImglyKit.Filter.Primitive}
+ * @alias PhotoEditorSDK.Filter.Primitives.Grayscale
+ * @extends {PhotoEditorSDK.Filter.Primitive}
  */
 class Grayscale extends Primitive {
   constructor (...args) {

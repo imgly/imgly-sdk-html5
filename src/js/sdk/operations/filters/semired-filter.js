@@ -13,8 +13,8 @@ import Filter from './filter'
 /**
  * Semired Filter
  * @class
- * @alias ImglyKit.Filters.SemiredFilter
- * @extends {ImglyKit.Filter}
+ * @alias PhotoEditorSDK.Filters.SemiredFilter
+ * @extends {PhotoEditorSDK.Filter}
  */
 class SemiredFilter extends Filter {
   constructor (...args) {

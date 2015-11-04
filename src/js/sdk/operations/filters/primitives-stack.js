@@ -14,7 +14,7 @@ import Promise from '../../vendor/promise'
  * A helper class that can collect {@link Primitive} instances and render
  * the stack
  * @class
- * @alias ImglyKit.Filter.PrimitivesStack
+ * @alias PhotoEditorSDK.Filter.PrimitivesStack
  */
 class PrimitivesStack {
   constructor (intensity = 1) {
@@ -62,7 +62,7 @@ class PrimitivesStack {
 
   /**
    * Adds the given primitive to the stack
-   * @param {ImglyKit.Filter.Primitive} primitive
+   * @param {PhotoEditorSDK.Filter.Primitive} primitive
    */
   add (primitive) {
     this._stack.push(primitive)

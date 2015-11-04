@@ -13,8 +13,8 @@ import Filter from './filter'
 /**
  * BW Filter
  * @class
- * @alias ImglyKit.Filters.BWFilter
- * @extends {ImglyKit.Filter}
+ * @alias PhotoEditorSDK.Filters.BWFilter
+ * @extends {PhotoEditorSDK.Filter}
  */
 class BWFilter extends Filter {
   constructor (...args) {

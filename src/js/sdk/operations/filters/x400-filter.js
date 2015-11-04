@@ -13,8 +13,8 @@ import Filter from './filter'
 /**
  * X400 Filter
  * @class
- * @alias ImglyKit.Filters.X400Filter
- * @extends {ImglyKit.Filter}
+ * @alias PhotoEditorSDK.Filters.X400Filter
+ * @extends {PhotoEditorSDK.Filter}
  */
 class X400Filter extends Filter {
   constructor (...args) {

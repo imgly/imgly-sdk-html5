@@ -15,8 +15,8 @@ import Color from '../../../lib/color'
 /**
  * Glow primitive
  * @class
- * @alias ImglyKit.Filter.Primitives.Glow
- * @extends {ImglyKit.Filter.Primitive}
+ * @alias PhotoEditorSDK.Filter.Primitives.Glow
+ * @extends {PhotoEditorSDK.Filter.Primitive}
  */
 class Glow extends Primitive {
   constructor (...args) {

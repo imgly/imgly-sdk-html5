@@ -14,8 +14,8 @@ import Primitive from './primitive'
 /**
  * Brightness primitive
  * @class
- * @alias ImglyKit.Filter.Primitives.Brightness
- * @extends {ImglyKit.Filter.Primitive}
+ * @alias PhotoEditorSDK.Filter.Primitives.Brightness
+ * @extends {PhotoEditorSDK.Filter.Primitive}
  */
 class Brightness extends Primitive {
   constructor (...args) {

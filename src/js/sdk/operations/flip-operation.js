@@ -15,8 +15,8 @@ import Promise from '../vendor/promise'
  * An operation that can flip the canvas
  *
  * @class
- * @alias ImglyKit.Operations.FlipOperation
- * @extends ImglyKit.Operation
+ * @alias PhotoEditorSDK.Operations.FlipOperation
+ * @extends PhotoEditorSDK.Operation
  */
 class FlipOperation extends Operation {
   constructor (...args) {

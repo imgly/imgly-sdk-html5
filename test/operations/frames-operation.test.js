@@ -14,8 +14,8 @@ var path = require("path");
 var fs = require("fs");
 var should = require("should");
 var canvas = require("canvas");
-var ImglyKit = require("../..");
-var FramesOperation = ImglyKit.Operations.Frames;
+var PhotoEditorSDK = require("../..");
+var FramesOperation = PhotoEditorSDK.Operations.Frames;
 var kit, image, framesOperation;
 
 beforeEach(function () {
@@ -24,21 +24,21 @@ beforeEach(function () {
   var buffer = fs.readFileSync(imagePath);
   image.src = buffer;
 
-  kit = new ImglyKit.Renderer('canvas', { image: image, assetsUrl: "src/assets", ui: { enabled: false } });
+  kit = new PhotoEditorSDK.Renderer('canvas', { image: image, assetsUrl: "src/assets", ui: { enabled: false } });
 });
 
 describe("FramesOperation", function () {
 
   describe("#render", function () {
 
-    describe("with `color` not being an instance of ImglyKit.Color", function () {
+    describe("with `color` not being an instance of PhotoEditorSDK.Color", function () {
 
       it("should throw an error", function () {
 
         var throwable = function () {
           new FramesOperation(kit, { color: "red" });
         };
-        throwable.should.throw("Operation `frames`: Option `color` has to be an instance of ImglyKit.Color.");
+        throwable.should.throw("Operation `frames`: Option `color` has to be an instance of PhotoEditorSDK.Color.");
 
       });
 
@@ -49,7 +49,7 @@ describe("FramesOperation", function () {
       it("should succeed", function (done) {
 
         framesOperation = new FramesOperation(kit, {
-          color: new ImglyKit.Color(0, 0, 0, 1),
+          color: new PhotoEditorSDK.Color(0, 0, 0, 1),
           thickness: 0.1
         });
         kit.operationsStack.push(framesOperation);

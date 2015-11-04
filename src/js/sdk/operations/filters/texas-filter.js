@@ -13,8 +13,8 @@ import Filter from './filter'
 /**
  * Texas Filter
  * @class
- * @alias ImglyKit.Filters.TexasFilter
- * @extends {ImglyKit.Filter}
+ * @alias PhotoEditorSDK.Filters.TexasFilter
+ * @extends {PhotoEditorSDK.Filter}
  */
 class TexasFilter extends Filter {
   constructor (...args) {

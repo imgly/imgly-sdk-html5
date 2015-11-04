@@ -13,8 +13,8 @@
 var path = require("path");
 var fs = require("fs");
 var canvas = require("canvas");
-var ImglyKit = require("../..");
-var RotationOperation = ImglyKit.Operations.Rotation;
+var PhotoEditorSDK = require("../..");
+var RotationOperation = PhotoEditorSDK.Operations.Rotation;
 var kit, image, rotationOperation;
 
 beforeEach(function () {
@@ -23,7 +23,7 @@ beforeEach(function () {
   var buffer = fs.readFileSync(imagePath);
   image.src = buffer;
 
-  kit = new ImglyKit.Renderer('canvas', { image: image, ui: { enabled: false } });
+  kit = new PhotoEditorSDK.Renderer('canvas', { image: image, ui: { enabled: false } });
 });
 
 describe("RotationOperation", function () {
@@ -62,7 +62,7 @@ describe("RotationOperation", function () {
       });
       kit.operationsStack.push(rotationOperation);
 
-      kit.render(ImglyKit.RenderType.IMAGE)
+      kit.render(PhotoEditorSDK.RenderType.IMAGE)
         .then(function (result) {
           result.width.should.equal(image.height);
           result.height.should.equal(image.width);

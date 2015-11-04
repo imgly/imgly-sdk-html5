@@ -14,8 +14,8 @@ import BrightnessPrimitive from './filters/primitives/brightness'
 
 /**
  * @class
- * @alias ImglyKit.Operations.BrightnessOperation
- * @extends ImglyKit.Operation
+ * @alias PhotoEditorSDK.Operations.BrightnessOperation
+ * @extends PhotoEditorSDK.Operation
  */
 class BrightnessOperation extends Operation {
   constructor (...args) {

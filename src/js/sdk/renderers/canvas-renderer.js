@@ -13,8 +13,8 @@ import Promise from '../vendor/promise'
 
 /**
  * @class
- * @alias ImglyKit.CanvasRenderer
- * @extends {ImglyKit.BaseRenderer}
+ * @alias PhotoEditorSDK.CanvasRenderer
+ * @extends {PhotoEditorSDK.BaseRenderer}
  * @private
  */
 class CanvasRenderer extends BaseRenderer {

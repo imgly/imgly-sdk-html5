@@ -16,8 +16,8 @@ import Promise from '../vendor/promise'
  * An operation that can crop out a part of the image
  *
  * @class
- * @alias ImglyKit.Operations.CropOperation
- * @extends ImglyKit.Operation
+ * @alias PhotoEditorSDK.Operations.CropOperation
+ * @extends PhotoEditorSDK.Operation
  */
 class CropOperation extends Operation {
   constructor (...args) {

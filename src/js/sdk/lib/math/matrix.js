@@ -11,7 +11,7 @@
 /**
  * Represents a 3-dimensional matrix
  * @class
- * @alias ImglyKit.Vector2
+ * @alias PhotoEditorSDK.Vector2
  * @param {number} x
  * @param {number} y
  * @private

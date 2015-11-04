@@ -13,8 +13,8 @@ import Filter from './filter'
 /**
  * Fixie Filter
  * @class
- * @alias ImglyKit.Filters.FixieFilter
- * @extends {ImglyKit.Filter}
+ * @alias PhotoEditorSDK.Filters.FixieFilter
+ * @extends {PhotoEditorSDK.Filter}
  */
 class FixieFilter extends Filter {
   constructor (...args) {

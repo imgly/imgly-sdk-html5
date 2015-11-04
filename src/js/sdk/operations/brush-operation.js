@@ -19,8 +19,8 @@ const DEFAULT_COLOR = new Color(1.0, 0.0, 0.0, 1.0)
  * An operation that can draw brushes on the canvas
  *
  * @class
- * @alias ImglyKit.Operations.BrushOperation
- * @extends ImglyKit.Operation
+ * @alias PhotoEditorSDK.Operations.BrushOperation
+ * @extends PhotoEditorSDK.Operation
  */
 class BrushOperation extends Operation {
   constructor (...args) {

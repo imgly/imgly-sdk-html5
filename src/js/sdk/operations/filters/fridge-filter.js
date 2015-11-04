@@ -13,8 +13,8 @@ import Filter from './filter'
 /**
  * Fridge Filter
  * @class
- * @alias ImglyKit.Filters.FridgeFilter
- * @extends {ImglyKit.Filter}
+ * @alias PhotoEditorSDK.Filters.FridgeFilter
+ * @extends {PhotoEditorSDK.Filter}
  */
 class FridgeFilter extends Filter {
   constructor (...args) {
