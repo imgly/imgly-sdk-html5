@@ -584,6 +584,14 @@ class Canvas extends EventEmitter {
   get size () {
     return this._size
   }
+
+  /**
+   * Returns the renderer
+   * @return {Renderer}
+   */
+  get renderer () {
+    return this._renderer
+  }
 }
 
 export default Canvas
