@@ -9,11 +9,11 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { React, ReactBEM, BaseChildComponent, Utils, Vector2 } from '../globals'
+import { React, ReactBEM, BaseComponent, Utils, Vector2 } from '../globals'
 import DraggableComponent from './draggable-component'
 const NATIVE_SCROLLBAR_HEIGHT = 25
 
-export default class ScrollbarComponent extends BaseChildComponent {
+export default class ScrollbarComponent extends BaseComponent {
   constructor () {
     super()
 

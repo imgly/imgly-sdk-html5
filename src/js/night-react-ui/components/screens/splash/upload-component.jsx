@@ -9,10 +9,10 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { BaseChildComponent, React, ReactBEM } from '../../../globals'
+import { BaseComponent, React, ReactBEM } from '../../../globals'
 import ButtonComponent from '../../button-component'
 
-export default class UploadComponent extends BaseChildComponent {
+export default class UploadComponent extends BaseComponent {
   constructor () {
     super()
     this._bindAll('_onClick', '_onFileChange')

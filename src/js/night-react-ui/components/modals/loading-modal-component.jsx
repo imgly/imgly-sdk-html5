@@ -9,9 +9,9 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { React, ReactBEM, BaseChildComponent } from '../../globals'
+import { React, ReactBEM, BaseComponent } from '../../globals'
 
-export default class LoadingModalComponent extends BaseChildComponent {
+export default class LoadingModalComponent extends BaseComponent {
   renderWithBEM () {
     const modal = this.props.modal
     return (

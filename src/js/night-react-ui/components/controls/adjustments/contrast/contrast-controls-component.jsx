@@ -9,10 +9,10 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent, Constants } from '../../../../globals'
+import { ReactBEM, BaseComponent, Constants } from '../../../../globals'
 import SliderComponent from '../../../slider-component.jsx'
 
-export default class ContrastControlsComponent extends BaseChildComponent {
+export default class ContrastControlsComponent extends BaseComponent {
   constructor (...args) {
     super(...args)
 

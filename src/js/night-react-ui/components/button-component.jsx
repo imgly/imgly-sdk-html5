@@ -9,9 +9,9 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { React, ReactBEM, BaseChildComponent } from '../globals'
+import { React, ReactBEM, BaseComponent } from '../globals'
 
-export default class ButtonComponent extends BaseChildComponent {
+export default class ButtonComponent extends BaseComponent {
   /**
    * Renders this component
    * @return {ReactBEM.Element}

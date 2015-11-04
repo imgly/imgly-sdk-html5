@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent } from '../../../globals'
+import { ReactBEM, BaseComponent } from '../../../globals'
 import ScrollbarComponent from '../../scrollbar-component'
 
 import RadialBlurControls from './radial-blur/'
@@ -20,7 +20,7 @@ const ITEMS = [
   TiltShiftControls
 ]
 
-export default class BlurControlsComponent extends BaseChildComponent {
+export default class BlurControlsComponent extends BaseComponent {
   constructor (...args) {
     super(...args)
 

@@ -9,12 +9,12 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent } from '../globals'
+import { ReactBEM, BaseComponent } from '../globals'
 import LoadingModalComponent from './modals/loading-modal-component'
 import WarningModalComponent from './modals/warning-modal-component'
 import ErrorModalComponent from './modals/error-modal-component'
 
-export default class ModalContainerComponent extends BaseChildComponent {
+export default class ModalContainerComponent extends BaseComponent {
   constructor (...args) {
     super(...args)
 

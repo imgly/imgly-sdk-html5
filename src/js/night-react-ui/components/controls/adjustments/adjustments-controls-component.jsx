@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent } from '../../../globals'
+import { ReactBEM, BaseComponent } from '../../../globals'
 import ScrollbarComponent from '../../scrollbar-component'
 
 import BrightnessControls from './brightness/'
@@ -22,7 +22,7 @@ const ITEMS = [
   ContrastControls
 ]
 
-export default class AdjustmentsControlsComponent extends BaseChildComponent {
+export default class AdjustmentsControlsComponent extends BaseComponent {
   constructor (...args) {
     super(...args)
 

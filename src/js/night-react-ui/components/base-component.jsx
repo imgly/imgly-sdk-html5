@@ -11,7 +11,7 @@
 import React from 'react'
 import ReactBEM from '../lib/react-bem'
 
-export default class BaseChildComponent extends React.Component {
+export default class BaseComponent extends React.Component {
   constructor (...args) {
     super(...args)
     this._events = {}
@@ -170,7 +170,7 @@ export default class BaseChildComponent extends React.Component {
   }
 }
 
-BaseChildComponent.contextTypes = {
+BaseComponent.contextTypes = {
   ui: React.PropTypes.object,
   kit: React.PropTypes.object,
   options: React.PropTypes.object,

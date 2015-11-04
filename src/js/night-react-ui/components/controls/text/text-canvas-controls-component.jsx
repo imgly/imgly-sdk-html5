@@ -9,10 +9,10 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent, Constants } from '../../../globals'
+import { ReactBEM, BaseComponent, Constants } from '../../../globals'
 import DraggableComponent from '../../draggable-component.jsx'
 
-export default class TextCanvasControlsComponent extends BaseChildComponent {
+export default class TextCanvasControlsComponent extends BaseComponent {
   constructor (...args) {
     super(...args)
 

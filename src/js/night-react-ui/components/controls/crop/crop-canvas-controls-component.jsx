@@ -9,12 +9,12 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent, Vector2 } from '../../../globals'
+import { ReactBEM, BaseComponent, Vector2 } from '../../../globals'
 import DraggableComponent from '../../draggable-component.jsx'
 
 const MIN_DIMENSIONS = new Vector2(50, 50)
 
-export default class CropCanvasControlsComponent extends BaseChildComponent {
+export default class CropCanvasControlsComponent extends BaseComponent {
   constructor (...args) {
     super(...args)
 

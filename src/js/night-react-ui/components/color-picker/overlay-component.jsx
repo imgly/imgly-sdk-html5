@@ -9,12 +9,12 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent } from '../../globals'
+import { ReactBEM, BaseComponent } from '../../globals'
 import AlphaComponent from './alpha-component'
 import SaturationComponent from './saturation-component'
 import HueComponent from './hue-component'
 
-export default class ColorPickerOverlayComponent extends BaseChildComponent {
+export default class ColorPickerOverlayComponent extends BaseComponent {
   constructor (...args) {
     super(...args)
 

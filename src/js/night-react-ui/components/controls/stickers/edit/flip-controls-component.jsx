@@ -8,10 +8,10 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-import { ReactBEM, BaseChildComponent, Constants } from '../../../../globals'
+import { ReactBEM, BaseComponent, Constants } from '../../../../globals'
 import ScrollbarComponent from '../../../scrollbar-component'
 
-export default class StickersFlipControlsComponent extends BaseChildComponent {
+export default class StickersFlipControlsComponent extends BaseComponent {
   constructor (...args) {
     super(...args)
 
