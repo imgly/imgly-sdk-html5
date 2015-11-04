@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent } from '../../../../globals'
+import { ReactBEM, BaseComponent } from '../../../../globals'
 import ScrollbarComponent from '../../../scrollbar-component'
 
 import BrightnessControls from './adjustments/brightness-controls-component'
@@ -26,7 +26,7 @@ const CONTROLS = [
   FlipControls
 ]
 
-export default class StickersEditControlsComponent extends BaseChildComponent {
+export default class StickersEditControlsComponent extends BaseComponent {
   constructor (...args) {
     super(...args)
 

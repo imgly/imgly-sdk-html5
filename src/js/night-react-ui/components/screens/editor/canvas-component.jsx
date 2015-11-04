@@ -10,11 +10,11 @@
  */
 
 import {
-  Utils, SDKUtils, React, ReactBEM, Vector2, BaseChildComponent, Constants, EventEmitter
+  Utils, SDKUtils, React, ReactBEM, Vector2, BaseComponent, Constants, EventEmitter
 } from '../../../globals'
 import ModalManager from '../../../lib/modal-manager'
 
-export default class CanvasComponent extends BaseChildComponent {
+export default class CanvasComponent extends BaseComponent {
   constructor (...args) {
     super(...args)
 

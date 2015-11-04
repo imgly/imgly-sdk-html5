@@ -9,9 +9,9 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent } from '../../../globals'
+import { ReactBEM, BaseComponent } from '../../../globals'
 
-export default class FontPreviewComponent extends BaseChildComponent {
+export default class FontPreviewComponent extends BaseComponent {
   constructor (...args) {
     super(...args)
   }

@@ -8,9 +8,9 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-import { ReactBEM, BaseChildComponent } from '../globals'
+import { ReactBEM, BaseComponent } from '../globals'
 
-export default class SplashScreenComponent extends BaseChildComponent {
+export default class SplashScreenComponent extends BaseComponent {
   /**
    * Renders this component
    * @return {ReactBEM.Element}

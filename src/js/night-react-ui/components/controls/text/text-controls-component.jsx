@@ -15,14 +15,14 @@ const ALIGNMENTS = [
   'right'
 ]
 
-import { ReactBEM, BaseChildComponent, Constants } from '../../../globals'
+import { ReactBEM, BaseComponent, Constants } from '../../../globals'
 import ScrollbarComponent from '../../scrollbar-component'
 import ColorPickerComponent from '../../color-picker/color-picker-component'
 import FontSizeSliderComponent from './font-size-slider-component'
 import FontPreviewComponent from './font-preview-component'
 import FontComponent from './font-component'
 
-export default class TextControlsComponent extends BaseChildComponent {
+export default class TextControlsComponent extends BaseComponent {
   constructor (...args) {
     super(...args)
 

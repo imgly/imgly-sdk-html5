@@ -9,10 +9,10 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent, Color } from '../../globals'
+import { ReactBEM, BaseComponent, Color } from '../../globals'
 import DraggableComponent from '../draggable-component'
 
-export default class HueComponent extends BaseChildComponent {
+export default class HueComponent extends BaseComponent {
 
   constructor (...args) {
     super(...args)

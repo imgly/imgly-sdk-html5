@@ -9,11 +9,11 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent, Constants, Vector2 } from '../../../globals'
+import { ReactBEM, BaseComponent, Constants, Vector2 } from '../../../globals'
 import ScrollbarComponent from '../../scrollbar-component'
 import ModalManager from '../../../lib/modal-manager'
 
-export default class StickersOverviewControlsComponent extends BaseChildComponent {
+export default class StickersOverviewControlsComponent extends BaseComponent {
   constructor (...args) {
     super(...args)
 

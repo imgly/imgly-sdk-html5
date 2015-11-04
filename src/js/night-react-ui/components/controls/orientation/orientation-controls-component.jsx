@@ -11,13 +11,13 @@
 
 import {
   ReactBEM,
-  BaseChildComponent,
+  BaseComponent,
   Constants,
   Vector2
 } from '../../../globals'
 import ScrollbarComponent from '../../scrollbar-component'
 
-export default class OrientationControlsComponent extends BaseChildComponent {
+export default class OrientationControlsComponent extends BaseComponent {
   constructor (...args) {
     super(...args)
 

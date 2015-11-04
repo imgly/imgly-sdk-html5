@@ -9,10 +9,10 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { Promise, Utils, React, ReactBEM, BaseChildComponent } from '../../../globals'
+import { Promise, Utils, React, ReactBEM, BaseComponent } from '../../../globals'
 import ModalManager from '../../../lib/modal-manager'
 
-export default class WebcamComponent extends BaseChildComponent {
+export default class WebcamComponent extends BaseComponent {
   constructor () {
     super()
     this._bindAll('_onWebcamReady')

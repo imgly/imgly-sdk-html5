@@ -9,10 +9,10 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent, Constants } from '../../../../globals'
+import { ReactBEM, BaseComponent, Constants } from '../../../../globals'
 import SliderComponent from '../../../slider-component'
 
-export default class StickersBlurControlsComponent extends BaseChildComponent {
+export default class StickersBlurControlsComponent extends BaseComponent {
   constructor (...args) {
     super(...args)
 

@@ -8,9 +8,9 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-import { React, BaseChildComponent, Utils, Vector2 } from '../globals'
+import { React, BaseComponent, Utils, Vector2 } from '../globals'
 
-export default class DraggableComponent extends BaseChildComponent {
+export default class DraggableComponent extends BaseComponent {
   constructor (...args) {
     super(...args)
 

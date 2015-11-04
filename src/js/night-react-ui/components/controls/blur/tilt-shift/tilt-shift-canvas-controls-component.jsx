@@ -9,10 +9,10 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent, Vector2, Constants } from '../../../../globals'
+import { ReactBEM, BaseComponent, Vector2, Constants } from '../../../../globals'
 import DraggableComponent from '../../../draggable-component.jsx'
 
-export default class TiltShiftCanvasControlsComponent extends BaseChildComponent {
+export default class TiltShiftCanvasControlsComponent extends BaseComponent {
   constructor (...args) {
     super(...args)
 

@@ -9,9 +9,9 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent } from '../globals'
+import { ReactBEM, BaseComponent } from '../globals'
 
-export default class SubHeaderButtonComponent extends BaseChildComponent {
+export default class SubHeaderButtonComponent extends BaseComponent {
   // -------------------------------------------------------------------------- RENDERING
 
   /**

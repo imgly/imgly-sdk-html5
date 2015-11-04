@@ -9,10 +9,10 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, React, BaseChildComponent } from '../../../globals'
+import { ReactBEM, React, BaseComponent } from '../../../globals'
 import ButtonComponent from '../../button-component'
 
-export default class WebcamComponent extends BaseChildComponent {
+export default class WebcamComponent extends BaseComponent {
   renderWithBEM () {
     return (<bem specifier='b:splashScreen'>
       <div bem='e:row m:withContent m:webcam'>

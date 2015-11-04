@@ -9,10 +9,10 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent } from '../../../globals'
+import { ReactBEM, BaseComponent } from '../../../globals'
 import ScrollbarComponent from '../../scrollbar-component'
 
-export default class OverviewControlsComponent extends BaseChildComponent {
+export default class OverviewControlsComponent extends BaseComponent {
   constructor () {
     super()
   }

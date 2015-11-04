@@ -9,14 +9,14 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent, Constants, Vector2 } from '../../../globals'
+import { ReactBEM, BaseComponent, Constants, Vector2 } from '../../../globals'
 import ScrollbarComponent from '../../scrollbar-component'
 
 // Specifies the default distance to the border
 // when selecting a ratio
 const PADDING = 0.1
 
-export default class OrientationControlsComponent extends BaseChildComponent {
+export default class OrientationControlsComponent extends BaseComponent {
   constructor (...args) {
     super(...args)
 

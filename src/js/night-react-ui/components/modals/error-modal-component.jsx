@@ -9,9 +9,9 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { React, ReactBEM, BaseChildComponent } from '../../globals'
+import { React, ReactBEM, BaseComponent } from '../../globals'
 
-export default class ErrorModalComponent extends BaseChildComponent {
+export default class ErrorModalComponent extends BaseComponent {
   constructor (...args) {
     super(...args)
     this._bindAll('_onClose')

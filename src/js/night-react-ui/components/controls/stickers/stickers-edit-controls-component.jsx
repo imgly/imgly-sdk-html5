@@ -9,10 +9,10 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseChildComponent } from '../../../globals'
+import { ReactBEM, BaseComponent } from '../../../globals'
 import StickersOverviewControlsComponent from './edit/overview-component-component'
 
-export default class StickersEditControlsComponent extends BaseChildComponent {
+export default class StickersEditControlsComponent extends BaseComponent {
   constructor (...args) {
     super(...args)
 
