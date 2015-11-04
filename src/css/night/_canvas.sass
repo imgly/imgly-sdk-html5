@@ -7,29 +7,29 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-.imglykit-container
-  .imglykit-canvas-container-row
+.pesdk-container
+  .pesdk-canvas-container-row
     display: table-row
 
-  .imglykit-canvas-container
+  .pesdk-canvas-container
     position: relative
     +border-radius(5px)
 
     display: table-cell
     overflow: hidden
 
-  .imglykit-canvas-inner-container
+  .pesdk-canvas-inner-container
     position: absolute
 
     canvas
       cursor: move
 
-    .imglykit-canvas-controls
+    .pesdk-canvas-controls
       position: absolute
       top: 0
       left: 0
       width: 100%
       height: 100%
 
-      &.imglykit-canvas-controls-disabled
+      &.pesdk-canvas-controls-disabled
         display: none

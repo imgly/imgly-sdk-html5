@@ -7,11 +7,11 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-.imglykit-container
-  .imglykit-top-controls-row
+.pesdk-container
+  .pesdk-top-controls-row
     display: table-row
 
-  .imglykit-top-controls
+  .pesdk-top-controls
     @include user-select(none)
     display: table-cell
     width: 100%
@@ -28,20 +28,20 @@
     &, *
       line-height: $topControlsInnerHeight
 
-    &.imglykit-header-padding
+    &.pesdk-header-padding
       top: $headerHeight
 
-  .imglykit-top-controls-left, .imglykit-top-controls-right
+  .pesdk-top-controls-left, .pesdk-top-controls-right
     padding-top: 5px
 
-  .imglykit-top-controls-left
+  .pesdk-top-controls-left
     float: left
 
-  .imglykit-top-controls-right
+  .pesdk-top-controls-right
     float: right
     display: none
 
-    .imglykit-zoom-in, .imglykit-zoom-out
+    .pesdk-zoom-in, .pesdk-zoom-out
       padding: 0 15px
       cursor: pointer
       border-left: 1px solid $borderColor
@@ -52,14 +52,14 @@
       &:hover img
         @include opacity(1)
 
-    .imglykit-zoom-out
+    .pesdk-zoom-out
       padding-right: 0
 
-    .imglykit-zoom-level
+    .pesdk-zoom-level
       @include opacity(0.4)
       padding: 0 10px
 
-  .imglykit-undo
+  .pesdk-undo
     cursor: pointer
     border-right: 1px solid $borderColor
     color: rgba(white, 0.4)
@@ -70,7 +70,7 @@
       margin-right: 5px
       vertical-align: middle
 
-  .imglykit-export
+  .pesdk-export
     cursor: pointer
     border-right: 1px solid $borderColor
     color: rgba(white, 0.4)
@@ -81,7 +81,7 @@
       margin-right: 5px
       vertical-align: middle
 
-  .imglykit-new
+  .pesdk-new
     cursor: pointer
     border-right: 1px solid $borderColor
     color: rgba(white, 0.4)

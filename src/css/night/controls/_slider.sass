@@ -7,7 +7,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-.imglykit-container .imglykit-slider
+.pesdk-container .pesdk-slider
   display: table
   table-layout: fixed
   width: 100%
@@ -16,24 +16,24 @@
   > *
     display: table-cell
 
-  .imglykit-slider-content
+  .pesdk-slider-content
     position: absolute
     top: 38px
     width: 100%
 
-  .imglykit-slider-minus, .imglykit-slider-plus
+  .pesdk-slider-minus, .pesdk-slider-plus
     @include opacity(0.2)
     color: white
     font-size: 12px
     width: 40px
     text-align: center
 
-  .imglykit-slider-slider
+  .pesdk-slider-slider
     width: auto
     position: relative
     z-index: 1
 
-    .imglykit-slider-background, .imglykit-slider-fill
+    .pesdk-slider-background, .pesdk-slider-fill
       @include border-radius(6px)
       background: $darkColor
       height: 12px
@@ -41,11 +41,11 @@
       margin-top: -8px
       cursor: pointer
 
-    .imglykit-slider-fill
+    .pesdk-slider-fill
       position: absolute
       background: $primaryColor
 
-    .imglykit-slider-center-dot
+    .pesdk-slider-center-dot
       @include border-radius(50%)
       width: 24px
       height: 24px
@@ -57,7 +57,7 @@
 
       margin: -14px 0 0 -12px
 
-    .imglykit-slider-dot
+    .pesdk-slider-dot
       @include border-radius(50%)
       @include box-shadow(0 2px 4px 0 rgba(black, 0.5))
       width: 30px
