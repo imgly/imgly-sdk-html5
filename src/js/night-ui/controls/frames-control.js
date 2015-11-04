@@ -46,7 +46,7 @@ class FramesControl extends Control {
     this._ui.canvas.render()
 
     // Init slider
-    let sliderElement = this._controls.querySelector('.imglykit-slider')
+    let sliderElement = this._controls.querySelector('.pesdk-slider')
     this._slider = new SimpleSlider(sliderElement, {
       minValue: 0.0,
       maxValue: 0.5
@@ -55,7 +55,7 @@ class FramesControl extends Control {
     this._slider.setValue(this._initialOptions.thickness)
 
     // Init colorpicker
-    let colorPickerElement = this._controls.querySelector('.imglykit-color-picker')
+    let colorPickerElement = this._controls.querySelector('.pesdk-color-picker')
     this._colorPicker = new ColorPicker(this._ui, colorPickerElement)
     this._colorPicker.on('update', this._onColorUpdate.bind(this))
     this._colorPicker.setValue(this._initialOptions.color)

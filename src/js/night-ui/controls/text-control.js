@@ -126,12 +126,12 @@ class TextControl extends Control {
     // Remember zoom level and zoom to fit the canvas
     this._initialZoomLevel = this._ui.canvas.zoomLevel
 
-    this._container = this._canvasControls.querySelector('.imglykit-canvas-text')
+    this._container = this._canvasControls.querySelector('.pesdk-canvas-text')
     this._textarea = this._canvasControls.querySelector('textarea')
     this._textarea.focus()
 
-    this._moveKnob = this._canvasControls.querySelector('.imglykit-crosshair')
-    this._resizeKnob = this._canvasControls.querySelector('.imglykit-knob')
+    this._moveKnob = this._canvasControls.querySelector('.pesdk-crosshair')
+    this._resizeKnob = this._canvasControls.querySelector('.pesdk-knob')
 
     this._onTextareaKeyUp = this._onTextareaKeyUp.bind(this)
     this._onResizeKnobDown = this._onResizeKnobDown.bind(this)

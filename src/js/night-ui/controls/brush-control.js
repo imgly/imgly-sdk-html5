@@ -135,7 +135,7 @@ class BrushControl extends Control {
    * Sets up the container, adds events, etc
    */
   _setupContainer () {
-    this._container = this._canvasControls.querySelector('.imglykit-canvas-brush-container')
+    this._container = this._canvasControls.querySelector('.pesdk-canvas-brush-container')
     this._container.addEventListener('mousedown', this._onMouseDown)
     this._container.addEventListener('touchstart', this._onMouseDown)
     this._container.addEventListener('mouseup', this._onMouseUp)
@@ -161,7 +161,7 @@ class BrushControl extends Control {
   _setupSlider () {
     if (!this._displayThickness) return
 
-    let sliderElement = this._controls.querySelector('.imglykit-slider')
+    let sliderElement = this._controls.querySelector('.pesdk-slider')
     this._slider = new SimpleSlider(sliderElement, {
       minValue: 0.01,
       maxValue: 0.2
@@ -177,7 +177,7 @@ class BrushControl extends Control {
   _setupColorPicker () {
     if (this._displayThickness) return
 
-    let colorPickerElement = this._controls.querySelector('.imglykit-color-picker')
+    let colorPickerElement = this._controls.querySelector('.pesdk-color-picker')
     this._colorPicker = new ColorPicker(this._ui, colorPickerElement)
     this._colorPicker.on('update', this._onColorUpdate.bind(this))
     this._colorPicker.setValue(this._currentColor)

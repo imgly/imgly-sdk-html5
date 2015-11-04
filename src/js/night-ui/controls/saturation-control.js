@@ -35,7 +35,7 @@ class SaturationControl extends Control {
     let saturation = this._operation.getSaturation()
     this._initialSaturation = saturation
 
-    let sliderElement = this._controls.querySelector('.imglykit-slider')
+    let sliderElement = this._controls.querySelector('.pesdk-slider')
     this._slider = new Slider(sliderElement, {
       minValue: 0,
       maxValue: 2,

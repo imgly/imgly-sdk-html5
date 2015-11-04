@@ -37,7 +37,7 @@ class BrightnessControl extends Control {
     const brightness = this._operation.getBrightness()
     this._initialBrightness = brightness
 
-    const sliderElement = this._controls.querySelector('.imglykit-slider')
+    const sliderElement = this._controls.querySelector('.pesdk-slider')
     this._slider = new Slider(sliderElement, {
       minValue: -1,
       maxValue: 1,

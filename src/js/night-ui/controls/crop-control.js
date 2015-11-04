@@ -86,7 +86,7 @@ class CropControl extends Control {
     this._initialZoomLevel = this._ui.canvas.zoomLevel
     this._ui.canvas.zoomToFit(false)
 
-    let prefix = '.imglykit-canvas-crop'
+    let prefix = '.pesdk-canvas-crop'
     let container = this._canvasControls
     let knobsContainer = container.querySelector(`${prefix}-knobs`)
 
@@ -112,7 +112,7 @@ class CropControl extends Control {
       centerCenter: this._canvasControls.querySelector(`${prefix}-center-center`)
     }
 
-    this._knobsContainer = this._canvasControls.querySelector(`.imglykit-canvas-crop-knobs`)
+    this._knobsContainer = this._canvasControls.querySelector(`.pesdk-canvas-crop-knobs`)
 
     this._handleControls()
     this._handleKnobs()

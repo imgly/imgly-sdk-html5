@@ -119,9 +119,9 @@ class StickersControl extends Control {
     this._ui.canvas.zoomToFit()
 
     // Find DOM elements
-    this._container = this._canvasControls.querySelector('.imglykit-canvas-stickers')
+    this._container = this._canvasControls.querySelector('.pesdk-canvas-stickers')
     this._stickerImage = this._canvasControls.querySelector('img')
-    this._knob = this._canvasControls.querySelector('div.imglykit-knob')
+    this._knob = this._canvasControls.querySelector('div.pesdk-knob')
 
     // Mouse event callbacks bound to the class context
     this._onImageDown = this._onImageDown.bind(this)
