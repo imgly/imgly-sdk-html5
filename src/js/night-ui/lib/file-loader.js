@@ -20,7 +20,7 @@ class FileLoader extends EventEmitter {
     // http://stackoverflow.com/questions/7110353/html5-dragleave-fired-when-hovering-a-child-element
     this._dragCounter = 0
 
-    this._container = this._ui.container.querySelector('.imglykit-splash-container')
+    this._container = this._ui.container.querySelector('.pesdk-splash-container')
 
     this._onDropAreaDragEnter = this._onDropAreaDragEnter.bind(this)
     this._onDropAreaDragOver = this._onDropAreaDragOver.bind(this)
@@ -29,7 +29,7 @@ class FileLoader extends EventEmitter {
     this._onDropAreaClick = this._onDropAreaClick.bind(this)
     this._onFileInputChange = this._onFileInputChange.bind(this)
 
-    this._hiddenInputField = this._ui.container.querySelector('.imglykit-upload-hidden-input')
+    this._hiddenInputField = this._ui.container.querySelector('.pesdk-upload-hidden-input')
     this._hiddenInputField.addEventListener('change', this._onFileInputChange)
 
     this._handleDropArea()
@@ -50,7 +50,7 @@ class FileLoader extends EventEmitter {
    * @private
    */
   _handleDropArea () {
-    this._dropArea = this._container.querySelector('.imglykit-splash-row--upload')
+    this._dropArea = this._container.querySelector('.pesdk-splash-row--upload')
     this._dropArea.addEventListener('dragenter', this._onDropAreaDragEnter)
     this._dropArea.addEventListener('dragover', this._onDropAreaDragOver)
     this._dropArea.addEventListener('dragleave', this._onDropAreaDragLeave)

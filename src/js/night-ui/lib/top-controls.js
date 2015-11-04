@@ -32,15 +32,15 @@ class TopControls extends EventEmitter {
   run () {
     let { container } = this._ui
 
-    this._rightControls = container.querySelector('.imglykit-top-controls-right')
-    this._leftControls = container.querySelector('.imglykit-top-controls-left')
+    this._rightControls = container.querySelector('.pesdk-top-controls-right')
+    this._leftControls = container.querySelector('.pesdk-top-controls-left')
 
-    this._undoButton = container.querySelector('.imglykit-undo')
-    this._zoomIn = container.querySelector('.imglykit-zoom-in')
-    this._zoomOut = container.querySelector('.imglykit-zoom-out')
-    this._zoomLevel = container.querySelector('.imglykit-zoom-level-num')
-    this._newButton = container.querySelector('.imglykit-new')
-    this._exportButton = container.querySelector('.imglykit-export')
+    this._undoButton = container.querySelector('.pesdk-undo')
+    this._zoomIn = container.querySelector('.pesdk-zoom-in')
+    this._zoomOut = container.querySelector('.pesdk-zoom-out')
+    this._zoomLevel = container.querySelector('.pesdk-zoom-level-num')
+    this._newButton = container.querySelector('.pesdk-new')
+    this._exportButton = container.querySelector('.pesdk-export')
     this._handleZoom()
     this._handleUndo()
     this._handleNew()

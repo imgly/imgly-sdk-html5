@@ -20,17 +20,17 @@ class ColorPicker extends EventEmitter {
     this._visible = false
     this._loaded = false
 
-    this._overlay = this._element.querySelector('.imglykit-color-picker-overlay')
-    this._currentColorCanvas = this._element.querySelector('.imglykit-color-picker-color')
+    this._overlay = this._element.querySelector('.pesdk-color-picker-overlay')
+    this._currentColorCanvas = this._element.querySelector('.pesdk-color-picker-color')
 
-    this._alphaCanvas = this._element.querySelector('canvas.imglykit-color-picker-alpha')
-    this._alphaKnob = this._element.querySelector('.imglykit-color-picker-alpha-container .imglykit-transparent-knob')
+    this._alphaCanvas = this._element.querySelector('canvas.pesdk-color-picker-alpha')
+    this._alphaKnob = this._element.querySelector('.pesdk-color-picker-alpha-container .pesdk-transparent-knob')
 
-    this._hueCanvas = this._element.querySelector('canvas.imglykit-color-picker-hue')
-    this._hueKnob = this._element.querySelector('.imglykit-color-picker-hue-container .imglykit-transparent-knob')
+    this._hueCanvas = this._element.querySelector('canvas.pesdk-color-picker-hue')
+    this._hueKnob = this._element.querySelector('.pesdk-color-picker-hue-container .pesdk-transparent-knob')
 
-    this._saturationCanvas = this._element.querySelector('canvas.imglykit-color-picker-saturation')
-    this._saturationKnob = this._element.querySelector('.imglykit-color-picker-saturation-container .imglykit-transparent-knob')
+    this._saturationCanvas = this._element.querySelector('canvas.pesdk-color-picker-saturation')
+    this._saturationKnob = this._element.querySelector('.pesdk-color-picker-saturation-container .pesdk-transparent-knob')
 
     this._transparencyImage = new Image()
     this._transparencyImage.src = ui.helpers.assetPath('ui/night/transparency.png')

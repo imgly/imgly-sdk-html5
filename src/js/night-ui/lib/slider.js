@@ -23,11 +23,11 @@ class Slider extends EventEmitter {
 
     this._value = this._options.defaultValue
 
-    this._sliderElement = this._element.querySelector('.imglykit-slider-slider')
-    this._dotElement = this._element.querySelector('.imglykit-slider-dot')
-    this._centerDotElement = this._element.querySelector('.imglykit-slider-center-dot')
-    this._fillElement = this._element.querySelector('.imglykit-slider-fill')
-    this._backgroundElement = this._element.querySelector('.imglykit-slider-background')
+    this._sliderElement = this._element.querySelector('.pesdk-slider-slider')
+    this._dotElement = this._element.querySelector('.pesdk-slider-dot')
+    this._centerDotElement = this._element.querySelector('.pesdk-slider-center-dot')
+    this._fillElement = this._element.querySelector('.pesdk-slider-fill')
+    this._backgroundElement = this._element.querySelector('.pesdk-slider-background')
 
     // Mouse event callbacks bound to class context
     this._onMouseDown = this._onMouseDown.bind(this)

@@ -18,10 +18,10 @@ export default class WebcamHandler extends EventEmitter {
     this._ui = ui
 
     const { container } = this._ui
-    this._canvasContainer = container.querySelector('.imglykit-canvas-container')
+    this._canvasContainer = container.querySelector('.pesdk-canvas-container')
 
-    this._video = container.querySelector('.imglykit-webcam-video')
-    this._webcamButton = container.querySelector('.imglykit-webcam-button')
+    this._video = container.querySelector('.pesdk-webcam-video')
+    this._webcamButton = container.querySelector('.pesdk-webcam-button')
     this._webcamButton.addEventListener('click', this._onWebcamButtonClick.bind(this))
     this._initVideoStream()
   }

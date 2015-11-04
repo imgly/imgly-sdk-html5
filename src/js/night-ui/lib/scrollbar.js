@@ -255,7 +255,7 @@ class Scrollbar {
     this._container.style.position = 'relative'
 
     // Find the list
-    this._list = this._container.querySelector('.imglykit-controls-list')
+    this._list = this._container.querySelector('.pesdk-controls-list')
     this._dom = { background, button }
 
     // Resize the list and the container

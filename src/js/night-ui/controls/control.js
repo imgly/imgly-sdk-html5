@@ -134,7 +134,7 @@ class Control extends EventEmitter {
    * @private
    */
   _initScrollbar () {
-    let list = this._controls.querySelector('.imglykit-controls-list')
+    let list = this._controls.querySelector('.pesdk-controls-list')
     if (list) {
       this._scrollbar = new Scrollbar(list.parentNode)
     }
@@ -159,13 +159,13 @@ class Control extends EventEmitter {
    */
   _handleBackAndDoneButtons () {
     // Back button
-    this._backButton = this._controls.querySelector('.imglykit-controls-back')
+    this._backButton = this._controls.querySelector('.pesdk-controls-back')
     if (this._backButton) {
       this._backButton.addEventListener('click', this._onBackButtonClick.bind(this))
     }
 
     // Done button
-    this._doneButton = this._controls.querySelector('.imglykit-controls-done')
+    this._doneButton = this._controls.querySelector('.pesdk-controls-done')
     if (this._doneButton) {
       this._doneButton.addEventListener('click', this._onDoneButtonClick.bind(this))
     }

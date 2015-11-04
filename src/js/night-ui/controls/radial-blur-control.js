@@ -56,7 +56,7 @@ class RadialBlurControl extends Control {
 
     this._positionKnob = this._canvasControls.querySelector('#imglykit-radial-blur-position')
     this._gradientKnob = this._canvasControls.querySelector('#imglykit-radial-blur-gradient')
-    this._circle = this._canvasControls.querySelector('.imglykit-canvas-radial-blur-circle')
+    this._circle = this._canvasControls.querySelector('.pesdk-canvas-radial-blur-circle')
     this._handleKnobs()
     this._initSliders()
 

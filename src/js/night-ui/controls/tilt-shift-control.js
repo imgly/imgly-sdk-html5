@@ -53,10 +53,10 @@ class TiltShiftControl extends Control {
     this._onGradientKnobUp = this._onGradientKnobUp.bind(this)
 
     // Find DOM elements
-    let selector = '.imglykit-canvas-tilt-shift-dot'
+    let selector = '.pesdk-canvas-tilt-shift-dot'
     this._positionKnob = this._canvasControls.querySelector(`${selector}[data-option='position']`)
     this._gradientKnob = this._canvasControls.querySelector(`${selector}[data-option='gradient']`)
-    this._rect = this._canvasControls.querySelector('.imglykit-canvas-tilt-shift-rect')
+    this._rect = this._canvasControls.querySelector('.pesdk-canvas-tilt-shift-rect')
 
     // Initialization
     this._initSliders()

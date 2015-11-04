@@ -21,8 +21,8 @@ class Canvas extends EventEmitter {
     this._options = options
 
     let { container } = this._ui
-    this._canvasContainer = container.querySelector('.imglykit-canvas-container')
-    this._canvasInnerContainer = container.querySelector('.imglykit-canvas-inner-container')
+    this._canvasContainer = container.querySelector('.pesdk-canvas-container')
+    this._canvasInnerContainer = container.querySelector('.pesdk-canvas-inner-container')
     this._canvas = this._canvasContainer.querySelector('canvas')
     this._image = this._options.image
     this._roundZoomBy = 0.1
