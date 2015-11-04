@@ -7,31 +7,31 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-.imglykit-container
-  .imglykit-color-picker
+.pesdk-container
+  .pesdk-color-picker
     position: relative
     border-left: 1px solid $borderColor
     height: $controlsHeight
 
-    .imglykit-color-picker-color
+    .pesdk-color-picker-color
       @include border-radius(3px)
       background: black
       margin-top: 15px
 
-    .imglykit-controls-item-label
+    .pesdk-controls-item-label
       position: absolute
       line-height: 11px
       width: 100%
       bottom: 10px
       left: 0
 
-    .imglykit-transparent-knob
+    .pesdk-transparent-knob
       pointer-events: none
 
     canvas
       cursor: pointer
 
-  .imglykit-color-picker-overlay
+  .pesdk-color-picker-overlay
     position: absolute
     cursor: default
     background: $lightBackgroundColor
@@ -45,10 +45,10 @@
 
     @include arrow-lazy($direction: down, $size: 15px, $color: $lightBackgroundColor, $center: 50%, $margin: -1px, $pseudo: before)
     display: none
-    &.imglykit-visible
+    &.pesdk-visible
       display: block
 
-    .imglykit-color-picker-alpha-container
+    .pesdk-color-picker-alpha-container
       width: 200px
       height: 30px
       position: relative
@@ -59,10 +59,10 @@
         left: 0
         top: 0
 
-      .imglykit-transparent-knob
+      .pesdk-transparent-knob
         top: 50%
 
-    .imglykit-color-picker-hue-container
+    .pesdk-color-picker-hue-container
       width: 30px
       height: 160px
       position: relative
@@ -73,10 +73,10 @@
         top: 0
         left: 0
 
-      .imglykit-transparent-knob
+      .pesdk-transparent-knob
         left: 50%
 
-    .imglykit-color-picker-saturation-container
+    .pesdk-color-picker-saturation-container
       width: 160px
       height: 160px
       position: relative
