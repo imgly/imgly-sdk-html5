@@ -16,7 +16,8 @@ import canvas from 'canvas'
 
 let image, kit
 
-describe.only('PhotoEditorSDK', function () {
+describe('PhotoEditorSDK', function () {
+  this.timeout(10000)
 
   describe('#export', function () {
 
@@ -50,7 +51,7 @@ describe.only('PhotoEditorSDK', function () {
     }) // validations
 
     describe('without any operations on the stack', function () {
-      it('should return a promise', function () {
+      it('should return a promise', function (done) {
         return kit.export().should.be.fulfilled
       })
     })
