@@ -12,7 +12,6 @@
 
 var path = require("path");
 var fs = require("fs");
-var should = require("should");
 var canvas = require("canvas");
 var BrightnessOperation = PhotoEditorSDK.Operations.Brightness;
 var kit, image, brightnessOperation;
