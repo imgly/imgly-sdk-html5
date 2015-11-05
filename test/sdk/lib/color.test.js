@@ -1,4 +1,4 @@
-/* global describe, it, beforeEach */
+/* global PhotoEditorSDK, describe, it, beforeEach */
 "use strict";
 /*
  * Copyright (c) 2013-2015 9elements GmbH
@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var Color = require("../src/js/sdk/lib/color");
+const { Color } = PhotoEditorSDK
 var color;
 
 describe("Color", function () {

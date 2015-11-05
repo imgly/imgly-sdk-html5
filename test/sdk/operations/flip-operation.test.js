@@ -1,4 +1,4 @@
-/* global describe, it, beforeEach */
+/* global PhotoEditorSDK, describe, it, beforeEach */
 /*jshint -W083 */
 "use strict";
 /*
@@ -13,7 +13,6 @@
 var path = require("path");
 var fs = require("fs");
 var canvas = require("canvas");
-var PhotoEditorSDK = require("../..");
 var FlipOperation = PhotoEditorSDK.Operations.Flip;
 var kit, image, flipOperation;
 

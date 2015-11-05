@@ -1,4 +1,4 @@
-/* global describe, it */
+/* global PhotoEditorSDK, describe, it */
 "use strict";
 /*
  * Copyright (c) 2013-2015 9elements GmbH
@@ -9,7 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var Vector2 = require("../src/js/sdk/lib/math/vector2");
+const { Vector2 } = PhotoEditorSDK
 
 describe("Vector2", function () {
 

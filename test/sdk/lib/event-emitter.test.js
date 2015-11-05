@@ -1,4 +1,4 @@
-/* global describe, it, beforeEach */
+/* global PhotoEditorSDK, describe, it, beforeEach */
 "use strict";
 /*
  * Copyright (c) 2013-2015 9elements GmbH
@@ -9,8 +9,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
+const { EventEmitter } = PhotoEditorSDK
 var should = require("should");
-var EventEmitter = require("../src/js/sdk/lib/event-emitter");
 var ee;
 
 describe("EventEmitter", function () {

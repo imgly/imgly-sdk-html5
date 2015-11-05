@@ -1,4 +1,4 @@
-/* global __DOTJS_TEMPLATE */
+/* global PhotoEditorSDK, __DOTJS_TEMPLATE */
 /*
  * Photo Editor SDK - photoeditorsdk.com
  * Copyright (c) 2013-2015 9elements GmbH
@@ -314,6 +314,6 @@ Control.prototype.identifier = null
  * this method and provide instance properties and functions.
  * @function
  */
-Control.extend = window.PhotoEditorSDK.extend
+Control.extend = PhotoEditorSDK.extend
 
 export default Control

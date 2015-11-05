@@ -1,4 +1,4 @@
-/* global describe, it */
+/* global PhotoEditorSDK, describe, it */
 "use strict";
 /*
  * Copyright (c) 2013-2015 9elements GmbH
@@ -9,8 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var ImageDimensions = require("../src/js/sdk/lib/image-dimensions");
-var Vector2 = require("../src/js/sdk/lib/math/vector2");
+const { ImageDimensions, Vector2 } = PhotoEditorSDK
 var initialDimensions = new Vector2(800, 600);
 var dimensions, calculatedDimensions;
 
