@@ -24,6 +24,14 @@ export default class OperationsStack extends EventEmitter {
   }
 
   /**
+   * Clears this operations stack
+   */
+  clear () {
+    this.forEach(operation =>
+      this.remove(operation))
+  }
+
+  /**
    * Gets called when an operation is about to be updated
    * @param  {Operation} operation
    * @param  {Object} options
