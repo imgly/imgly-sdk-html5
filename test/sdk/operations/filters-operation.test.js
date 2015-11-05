@@ -1,6 +1,4 @@
-/* global PhotoEditorSDK, describe, it, beforeEach */
-/*jshint -W083 */
-"use strict";
+/* global PhotoEditorSDK, SpecHelpers, describe, it, beforeEach */
 /*
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -10,73 +8,40 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var path = require("path");
-var fs = require("fs");
-var canvas = require("canvas");
-var FiltersOperation = PhotoEditorSDK.Operations.Filters;
-var dummyFiltersOperation = new FiltersOperation(new PhotoEditorSDK.Renderer('canvas', { image: null, ui: { enabled: false } }));
-var kit, image, filtersOperation;
+let kit
 
 beforeEach(function () {
-  image = new canvas.Image();
-  var imagePath = path.resolve(__dirname, "../assets/test.png");
-  var buffer = fs.readFileSync(imagePath);
-  image.src = buffer;
+  kit = SpecHelpers.initRenderer()
+})
 
-  kit = new PhotoEditorSDK.Renderer('canvas', { image: image, ui: { enabled: false } });
-  filtersOperation = dummyFiltersOperation;
-  filtersOperation.kit = kit;
-  kit.operationsStack.push(filtersOperation);
-});
+describe.only('FiltersOperation', function () {
 
-describe("FiltersOperation", function () {
+  describe('with no selected filter', function () {
 
-  describe("with no selected filter", function () {
+    it('rendering should pass (default filter is identity)', function () {
+      return kit.render()
+        .should.be.fulfilled
+    })
 
-    it("rendering should pass (default filter is identity)", function (done) {
+  })
 
-      kit.render()
-        .then(function () {
-          done();
-        });
-
-    });
-
-  });
-
-  describe("#setFilter", function () {
-
-    describe("with an unknown identifier", function () {
-
-      it("should throw an error", function () {
-        var throwable = function () {
-          filtersOperation.setFilter("foobarbaz");
-        };
-        throwable.should.throw();
-      });
-
-    });
-
-  });
-
-  describe("#render", function () {
+  describe('#render', function () {
 
     for (var name in PhotoEditorSDK.Filters) {
       (function (name) {
-        it("should work with " + name + " filter", function(done) {
-          filtersOperation.setFilter(PhotoEditorSDK.Filters[name]);
+        it(`should work with ${name} filter`, function () {
+          kit.operationsStack.clear()
+          const operation = kit.createOperation('filters', {
+            filter: PhotoEditorSDK.Filters[name]
+          })
+          kit.operationsStack.push(operation)
 
-          kit.render()
-            .then(function () {
-              done();
-            })
-            .catch(function (err) {
-              throw err;
-            });
-        });
-      })(name);
+          return kit.render()
+            .should.be.fulfilled
+        })
+      })(name)
     }
 
-  });
+  })
 
-});
+})
