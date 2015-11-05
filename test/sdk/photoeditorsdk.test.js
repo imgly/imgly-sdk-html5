@@ -17,17 +17,17 @@ import canvas from 'canvas'
 let image, kit
 
 describe('PhotoEditorSDK', function () {
-  this.timeout(10000)
-
   describe('#export', function () {
 
     beforeEach(function () {
       image = new canvas.Image()
-      var imagePath = path.resolve(__dirname, 'assets/test.png')
-      var buffer = fs.readFileSync(imagePath)
+      let imagePath = path.resolve(__dirname, 'assets/test.png')
+      let buffer = fs.readFileSync(imagePath)
       image.src = buffer
 
-      kit = new PhotoEditorSDK.Renderer('canvas', { image: image })
+      kit = new PhotoEditorSDK.Renderer('canvas', {
+        image: image
+      })
     })
 
     describe('validations', function () {
@@ -36,8 +36,7 @@ describe('PhotoEditorSDK', function () {
 
         it('should throw an error', function () {
           return kit.export('invalid')
-            .should.be
-            .rejectedWith(null, 'Invalid render type')
+            .should.be.rejectedWith(null, 'Invalid render type')
         })
 
       })
@@ -46,8 +45,7 @@ describe('PhotoEditorSDK', function () {
 
         it('should throw an error', function () {
           return kit.export(null, 'invalid')
-            .should.be
-            .rejectedWith(null, 'Invalid image format')
+            .should.be.rejectedWith(null, 'Invalid image format')
         })
 
       })
@@ -55,10 +53,9 @@ describe('PhotoEditorSDK', function () {
     }) // validations
 
     describe('without any operations on the stack', function () {
-      it('should return a promise', function (done) {
+      it('should return a promise', function () {
         return kit.export()
-          .should.be
-          .fulfilled
+          .should.be.fulfilled
       })
     })
 
