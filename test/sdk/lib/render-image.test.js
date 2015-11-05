@@ -1,4 +1,4 @@
-/* global describe, it, beforeEach */
+/* global PhotoEditorSDK, describe, it, beforeEach */
 "use strict";
 /*
  * Copyright (c) 2013-2015 9elements GmbH
@@ -12,7 +12,6 @@
 var sinon = require("sinon");
 var path = require("path");
 var fs = require("fs");
-var PhotoEditorSDK = require("..");
 var canvas = require("canvas");
 var image, kit;
 

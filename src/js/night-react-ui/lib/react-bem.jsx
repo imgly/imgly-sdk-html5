@@ -9,6 +9,7 @@
  */
 
 import React from 'react'
+import ReactDOM from 'react-dom'
 import Classnames from 'classnames'
 import BEM from './bem'
 
@@ -83,7 +84,7 @@ export default {
   },
 
   /**
-   * Used in React.Component's `render` method
+   * Used in ReactDOM.Component's `render` method
    *
    * @param  {String} type
    * @param  {Object} props
@@ -106,7 +107,7 @@ export default {
    * @private
    */
   _isNodeBEMable (node) {
-    return node !== null && typeof node === 'object' && !React.isValidElement(node)
+    return node !== null && typeof node === 'object' && !ReactDOM.isValidElement(node)
   },
 
   /**
@@ -202,13 +203,13 @@ export default {
       return this._transformToReact(child)
     })
 
-    return React.createElement(node.type, node.props, ...node.children)
+    return ReactDOM.createElement(node.type, node.props, ...node.children)
   },
 
   /**
    * Transforms the given ReactBEM object and its children
    * @param  {Object} root
-   * @return {React.Element}
+   * @return {ReactDOM.Element}
    */
   transform (root) {
     root = this._applyBEMClasses(root)
