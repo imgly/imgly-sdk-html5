@@ -1,6 +1,4 @@
-/* global PhotoEditorSDK, describe, it, beforeEach */
-/*jshint -W083 */
-"use strict";
+/* global SpecHelpers, describe, it, beforeEach */
 /*
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -10,63 +8,26 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var path = require("path");
-var fs = require("fs");
-var canvas = require("canvas");
-var ContrastOperation = PhotoEditorSDK.Operations.Contrast;
-var kit, image, contrastOperation;
+let kit
 
 beforeEach(function () {
-  image = new canvas.Image();
-  var imagePath = path.resolve(__dirname, "../assets/test.png");
-  var buffer = fs.readFileSync(imagePath);
-  image.src = buffer;
+  kit = SpecHelpers.initRenderer()
+})
 
-  kit = new PhotoEditorSDK.Renderer('canvas', { image: image, ui: { enabled: false } });
-});
+describe('ContrastOperation', function () {
 
-describe("ContrastOperation", function () {
+  describe('#render', function () {
 
-  describe("#render", function () {
+    it('should succeed', function () {
+      const operation = kit.createOperation('contrast')
+      kit.operationsStack.push(operation)
 
-    describe("without contrast set", function () {
+      return kit.render()
+        .should.be
+        .fulfilled
+    })
 
-      it("should fail", function (done) {
-        contrastOperation = new ContrastOperation(kit);
-        kit.operationsStack.push(contrastOperation);
+  })
 
-        kit.render()
-          .then(function (result) {
-            should.not.exist(result);
-            done();
-          })
-          .catch(function (err) {
-            err.should.be.instanceOf(Error);
-            done();
-          });
-      });
+})
 
-    });
-
-    describe("with contrast set", function () {
-
-      it("should succeed", function (done) {
-        contrastOperation = new ContrastOperation(kit, {
-          contrast: 1.1
-        });
-        kit.operationsStack.push(contrastOperation);
-
-        kit.render()
-          .then(function () {
-            done();
-          })
-          .catch(function (err) {
-            throw err;
-          });
-      });
-
-    });
-
-  });
-
-});
