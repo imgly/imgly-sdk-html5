@@ -84,7 +84,7 @@ export default {
   },
 
   /**
-   * Used in ReactDOM.Component's `render` method
+   * Used in React.Component's `render` method
    *
    * @param  {String} type
    * @param  {Object} props
@@ -107,7 +107,7 @@ export default {
    * @private
    */
   _isNodeBEMable (node) {
-    return node !== null && typeof node === 'object' && !ReactDOM.isValidElement(node)
+    return node !== null && typeof node === 'object' && !React.isValidElement(node)
   },
 
   /**
