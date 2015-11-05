@@ -1,6 +1,4 @@
-/* global PhotoEditorSDK, describe, it, beforeEach */
-/*jshint -W083 */
-"use strict";
+/* global PhotoEditorSDK, SpecHelpers, describe, it, beforeEach */
 /*
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -10,105 +8,64 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var path = require("path");
-var fs = require("fs");
-var canvas = require("canvas");
-var CropOperation = PhotoEditorSDK.Operations.Crop;
-var kit, image, cropOperation;
+let kit, image
 
 beforeEach(function () {
-  image = new canvas.Image();
-  var imagePath = path.resolve(__dirname, "../assets/test.png");
-  var buffer = fs.readFileSync(imagePath);
-  image.src = buffer;
+  kit = SpecHelpers.initRenderer()
+  image = kit.getImage()
+})
 
-  kit = new PhotoEditorSDK.Renderer('canvas', { image: image, ui: { enabled: false } });
-});
+describe('CropOperation', function () {
 
-describe("CropOperation", function () {
+  describe('#render', function () {
 
-  describe("#render", function () {
+    describe('with both start and end set', function () {
 
-    describe("with both start and end set", function () {
-
-      it("should succeed", function (done) {
-        cropOperation = new CropOperation(kit, {
+      it('should correctly resize the canvas', function (done) {
+        const operation = kit.createOperation('crop', {
           start: new PhotoEditorSDK.Vector2(0.1, 0.1),
           end: new PhotoEditorSDK.Vector2(0.9, 0.9)
-        });
-        kit.operationsStack.push(cropOperation);
+        })
+        kit.operationsStack.push(operation)
 
-        kit.render()
-          .then(function () {
-            done();
-          })
-          .catch(function (err) {
-            throw err;
-          });
-      });
-
-      it("should correctly resize the canvas", function (done) {
-        cropOperation = new CropOperation(kit, {
-          start: new PhotoEditorSDK.Vector2(0.1, 0.1),
-          end: new PhotoEditorSDK.Vector2(0.9, 0.9)
-        });
-        kit.operationsStack.push(cropOperation);
-
-        kit.render(PhotoEditorSDK.RenderType.IMAGE)
+        kit.export(PhotoEditorSDK.RenderType.IMAGE)
           .then(function (result) {
-            result.width.should.equal(image.width * 0.8);
-            result.height.should.equal(image.height * 0.8);
+            result.width.should.equal(image.width * 0.8)
+            result.height.should.equal(image.height * 0.8)
 
-            done();
+            done()
           })
           .catch(function (err) {
-            throw err;
-          });
-      });
+            done(err)
+          })
+      })
 
-    });
+    })
 
-    describe("with `numberFormat` set to `absolute`", function () {
+    describe('with `numberFormat` set to `absolute`', function () {
 
-      it("should succeed", function (done) {
-        cropOperation = new CropOperation(kit, {
+      it('should correctly resize the canvas', function (done) {
+        const operation = kit.createOperation('crop', {
           start: new PhotoEditorSDK.Vector2(100, 100),
           end: new PhotoEditorSDK.Vector2(400, 400),
-          numberFormat: "absolute"
-        });
-        kit.operationsStack.push(cropOperation);
+          numberFormat: 'absolute'
+        })
+        kit.operationsStack.push(operation)
 
-        kit.render()
-          .then(function () {
-            done();
-          })
-          .catch(function (err) {
-            throw err;
-          });
-      });
-
-      it("should correctly resize the canvas", function (done) {
-        cropOperation = new CropOperation(kit, {
-          start: new PhotoEditorSDK.Vector2(100, 100),
-          end: new PhotoEditorSDK.Vector2(400, 400),
-          numberFormat: "absolute"
-        });
-        kit.operationsStack.push(cropOperation);
-
-        kit.render(PhotoEditorSDK.RenderType.IMAGE)
+        kit.export(PhotoEditorSDK.RenderType.IMAGE)
           .then(function (result) {
-            result.width.should.equal(300);
-            result.height.should.equal(300);
+            result.width.should.equal(300)
+            result.height.should.equal(300)
 
-            done();
+            done()
           })
           .catch(function (err) {
-            throw err;
-          });
-      });
+            throw err
+          })
+      })
 
-    });
+    })
 
-  });
+  })
 
-});
+})
