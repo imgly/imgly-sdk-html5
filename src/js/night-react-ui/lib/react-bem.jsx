@@ -9,7 +9,6 @@
  */
 
 import React from 'react'
-import ReactDOM from 'react-dom'
 import Classnames from 'classnames'
 import BEM from './bem'
 
@@ -203,13 +202,13 @@ export default {
       return this._transformToReact(child)
     })
 
-    return ReactDOM.createElement(node.type, node.props, ...node.children)
+    return React.createElement(node.type, node.props, ...node.children)
   },
 
   /**
    * Transforms the given ReactBEM object and its children
    * @param  {Object} root
-   * @return {ReactDOM.Element}
+   * @return {React.Element}
    */
   transform (root) {
     root = this._applyBEMClasses(root)
