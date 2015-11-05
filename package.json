@@ -7,7 +7,7 @@
   "license": "BSD",
   "scripts": {
     "build": "ENV=production node_modules/.bin/gulp release",
-    "test": "NODE_ENV=test node_modules/.bin/mocha test/**/*.js",
+    "test": "node_modules/.bin/mocha",
     "coveralls": "npm run coverage && cat ./coverage/lcov.info | node_modules/.bin/coveralls && rm -rf ./coverage",
     "coverage": "NODE_ENV=test node_modules/.bin/istanbul cover node_modules/.bin/_mocha -x **/ui/** -x **webgl** -- test/**/*.test.js"
   },
@@ -44,7 +44,7 @@
     "istanbul": "^0.3.2",
     "jaguarjs-jsdoc": "0.0.1",
     "jshint-stylish": "^1.0.1",
-    "mocha": "^2.0.1",
+    "mocha": "^2.3.3",
     "mocha-lcov-reporter": "0.0.1",
     "node-libs-browser": "^0.5.2",
     "raw-loader": "^0.5.1",

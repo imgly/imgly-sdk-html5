@@ -12,7 +12,6 @@
 
 var path = require("path");
 var fs = require("fs");
-var should = require("should");
 var canvas = require("canvas");
 var ContrastOperation = PhotoEditorSDK.Operations.Contrast;
 var kit, image, contrastOperation;

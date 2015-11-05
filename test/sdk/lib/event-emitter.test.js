@@ -10,7 +10,6 @@
  */
 
 const { EventEmitter } = PhotoEditorSDK
-var should = require("should");
 var ee;
 
 describe("EventEmitter", function () {
