@@ -35,7 +35,9 @@ describe('PhotoEditorSDK', function () {
       describe('when an invalid render type is given', function () {
 
         it('should throw an error', function () {
-          return kit.export('invalid').should.be.rejectedWith(null, 'Invalid render type')
+          return kit.export('invalid')
+            .should.be
+            .rejectedWith(null, 'Invalid render type')
         })
 
       })
@@ -43,7 +45,9 @@ describe('PhotoEditorSDK', function () {
       describe('when an invalid image format is given', function () {
 
         it('should throw an error', function () {
-          return kit.export(null, 'invalid').should.be.rejectedWith(null, 'Invalid image format')
+          return kit.export(null, 'invalid')
+            .should.be
+            .rejectedWith(null, 'Invalid image format')
         })
 
       })
@@ -52,7 +56,9 @@ describe('PhotoEditorSDK', function () {
 
     describe('without any operations on the stack', function () {
       it('should return a promise', function (done) {
-        return kit.export().should.be.fulfilled
+        return kit.export()
+          .should.be
+          .fulfilled
       })
     })
 
