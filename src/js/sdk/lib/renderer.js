@@ -22,6 +22,7 @@ import OperationsStack from './operations-stack'
 import WebGLRenderer from '../renderers/webgl-renderer'
 import CanvasRenderer from '../renderers/canvas-renderer'
 import Helpers from '../ui/base/helpers'
+import { RenderType, ImageFormat } from '../constants'
 
 /**
  * @class
@@ -123,10 +124,10 @@ export default class Renderer extends EventEmitter {
    * Exports the image
    * @param  {PhotoEditorSDK.RenderType} [renderType=PhotoEditorSDK.RenderType.DATAURL] - The output type
    * @param  {PhotoEditorSDK.ImageFormat} [imageFormat=PhotoEditorSDK.ImageFormat.PNG] - The output image format
-   * @param  {Number} [quality] - The image quality, between 0 and 1
+   * @param  {Number} [quality=0.8] - The image quality, between 0 and 1
    * @return {Promise}
    */
-  export (renderType, imageFormat, quality = 0.8) {
+  export (renderType = RenderType.DATAURL, imageFormat = ImageFormat.PNG, quality = 0.8) {
     return ImageExporter.validateSettings(renderType, imageFormat)
       .then(() => {
         return this.render()
