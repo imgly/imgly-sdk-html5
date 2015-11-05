@@ -10,7 +10,7 @@
  */
 
 import {
-  SDKUtils, EventEmitter, Constants, Utils, RenderType, BaseChildComponent,
+  SDKUtils, EventEmitter, Constants, Utils, RenderType, BaseComponent,
   React, ReactDOM, ReactBEM, SharedState
 } from './globals'
 
@@ -395,7 +395,7 @@ export default class NightReactUI extends EventEmitter {
 NightReactUI.prototype.identifier = 'night-react'
 
 // Export extendable stuff
-NightReactUI.BaseChildComponent = BaseChildComponent
+NightReactUI.BaseComponent = BaseComponent
 NightReactUI.React = React
 NightReactUI.ReactBEM = ReactBEM
 NightReactUI.SharedState = SharedState
