@@ -10,7 +10,8 @@ var env = process.env.ENV || 'development'
 var aliases
 if (env === 'production') {
   aliases = {
-    'react': path.resolve(__dirname, 'node_modules/react/dist/react.min')
+    'react': path.resolve(__dirname, 'node_modules/react/dist/react.min'),
+    'react-dom': path.resolve(__dirname, 'node_modules/react-dom/dist/react-dom.min')
   }
 }
 
