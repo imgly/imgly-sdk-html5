@@ -1,5 +1,5 @@
+/* eslint-disable no-new */
 /* global PhotoEditorSDK, describe, it */
-"use strict";
 /*
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -9,121 +9,123 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-const { ImageDimensions, Vector2 } = PhotoEditorSDK
-var initialDimensions = new Vector2(800, 600);
-var dimensions, calculatedDimensions;
+const { Vector2 } = PhotoEditorSDK
+import ImageDimensions from '../../../src/js/sdk/lib/image-dimensions'
 
-describe("ImageDimensions", function () {
+var initialDimensions = new Vector2(800, 600)
+var dimensions, calculatedDimensions
 
-  describe("#constructor", function () {
+describe('ImageDimensions', function () {
 
-    describe("with an unparseable dimensions string", function () {
+  describe('#constructor', function () {
 
-      it("should throw an error", function () {
+    describe('with an unparseable dimensions string', function () {
+
+      it('should throw an error', function () {
         var throwable = function () {
-          new ImageDimensions("foo?");
-        };
-        throwable.should.throw();
-      });
+          new ImageDimensions('foo?')
+        }
+        throwable.should.throw()
+      })
 
-    });
+    })
 
-    describe("when fixed modifier (!) is set but x or y are not set", function () {
+    describe('when fixed modifier (!) is set but x or y are not set', function () {
 
-      it("should throw an error", function () {
+      it('should throw an error', function () {
         var throwable = function () {
-          new ImageDimensions("100x!");
-        };
-        throwable.should.throw();
-      });
+          new ImageDimensions('100x!')
+        }
+        throwable.should.throw()
+      })
 
-    });
+    })
 
-    describe("when x and y are both not set", function () {
+    describe('when x and y are both not set', function () {
 
-      it("should throw an error", function () {
+      it('should throw an error', function () {
         var throwable = function () {
-          new ImageDimensions("x");
-        };
-        throwable.should.throw();
-      });
+          new ImageDimensions('x')
+        }
+        throwable.should.throw()
+      })
 
-    });
+    })
 
-  }); // #constructor
+  })
 
-  describe("#calculateFinalDimensions", function () {
+  describe('#calculateFinalDimensions', function () {
 
-    describe("without any rules", function () {
+    describe('without any rules', function () {
 
-      it("should return the initial dimensions", function () {
+      it('should return the initial dimensions', function () {
 
-        dimensions = new ImageDimensions();
-        calculatedDimensions = dimensions.calculateFinalDimensions(initialDimensions);
-        calculatedDimensions.x.should.equal(initialDimensions.x);
-        calculatedDimensions.y.should.equal(initialDimensions.y);
+        dimensions = new ImageDimensions()
+        calculatedDimensions = dimensions.calculateFinalDimensions(initialDimensions)
+        calculatedDimensions.x.should.equal(initialDimensions.x)
+        calculatedDimensions.y.should.equal(initialDimensions.y)
 
-      });
+      })
 
-    });
+    })
 
-    describe("with a fixed size like \"100x200!\"", function () {
+    describe('with a fixed size like \'100x200!\'', function () {
 
-      it("should return the fixed dimensions", function () {
+      it('should return the fixed dimensions', function () {
 
-        dimensions = new ImageDimensions("100x200!");
-        calculatedDimensions = dimensions.calculateFinalDimensions(initialDimensions);
-        calculatedDimensions.x.should.equal(100);
-        calculatedDimensions.y.should.equal(200);
+        dimensions = new ImageDimensions('100x200!')
+        calculatedDimensions = dimensions.calculateFinalDimensions(initialDimensions)
+        calculatedDimensions.x.should.equal(100)
+        calculatedDimensions.y.should.equal(200)
 
-      });
+      })
 
-    });
+    })
 
-    describe("with a maximum size like \"100x200\"", function () {
+    describe('with a maximum size like \'100x200\'', function () {
 
-      it("should return the new dimensions while taking account of the ratio", function () {
+      it('should return the new dimensions while taking account of the ratio', function () {
 
-        dimensions = new ImageDimensions("100x200");
-        calculatedDimensions = dimensions.calculateFinalDimensions(initialDimensions);
-        calculatedDimensions.x.should.equal(100);
-        calculatedDimensions.y.should.equal(75);
+        dimensions = new ImageDimensions('100x200')
+        calculatedDimensions = dimensions.calculateFinalDimensions(initialDimensions)
+        calculatedDimensions.x.should.equal(100)
+        calculatedDimensions.y.should.equal(75)
 
-        dimensions = new ImageDimensions("400x150");
-        calculatedDimensions = dimensions.calculateFinalDimensions(initialDimensions);
-        calculatedDimensions.x.should.equal(200);
-        calculatedDimensions.y.should.equal(150);
+        dimensions = new ImageDimensions('400x150')
+        calculatedDimensions = dimensions.calculateFinalDimensions(initialDimensions)
+        calculatedDimensions.x.should.equal(200)
+        calculatedDimensions.y.should.equal(150)
 
-      });
+      })
 
-    });
+    })
 
-    describe("with a maximum width like \"100x\"", function () {
+    describe('with a maximum width like \'100x\'', function () {
 
-      it("should return the new dimensions while taking account of the ratio", function () {
+      it('should return the new dimensions while taking account of the ratio', function () {
 
-        dimensions = new ImageDimensions("100x");
-        calculatedDimensions = dimensions.calculateFinalDimensions(initialDimensions);
-        calculatedDimensions.x.should.equal(100);
-        calculatedDimensions.y.should.equal(75);
+        dimensions = new ImageDimensions('100x')
+        calculatedDimensions = dimensions.calculateFinalDimensions(initialDimensions)
+        calculatedDimensions.x.should.equal(100)
+        calculatedDimensions.y.should.equal(75)
 
-      });
+      })
 
-    });
+    })
 
-    describe("with a maximum height like \"x200\"", function () {
+    describe('with a maximum height like \'x200\'', function () {
 
-      it("should return the new dimensions while taking account of the ratio", function () {
+      it('should return the new dimensions while taking account of the ratio', function () {
 
-        dimensions = new ImageDimensions("x150");
-        calculatedDimensions = dimensions.calculateFinalDimensions(initialDimensions);
-        calculatedDimensions.x.should.equal(200);
-        calculatedDimensions.y.should.equal(150);
+        dimensions = new ImageDimensions('x150')
+        calculatedDimensions = dimensions.calculateFinalDimensions(initialDimensions)
+        calculatedDimensions.x.should.equal(200)
+        calculatedDimensions.y.should.equal(150)
 
-      });
+      })
 
-    });
+    })
 
-  }); // #calculateFinalDimensions
+  })
 
-});
+})
