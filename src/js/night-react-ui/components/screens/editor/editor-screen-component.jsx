@@ -457,9 +457,10 @@ export default class EditorScreenComponent extends ScreenComponent {
 
     let exportButton
     if (this.context.options.export.showButton !== false) {
+      const exportLabel = this.context.options.export.label || this._t('editor.export')
       exportButton = (<SubHeaderButtonComponent
         style='blue'
-        label={this._t('editor.export')}
+        label={exportLabel}
         icon='editor/export@2x.png'
         onClick={this._onExportClick} />)
     }
