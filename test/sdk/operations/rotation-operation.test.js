@@ -1,6 +1,4 @@
-/* global PhotoEditorSDK, describe, it, beforeEach */
-/*jshint -W083 */
-"use strict";
+/* global SpecHelpers, PhotoEditorSDK, describe, it, beforeEach */
 /*
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -10,69 +8,56 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var path = require("path");
-var fs = require("fs");
-var canvas = require("canvas");
-var RotationOperation = PhotoEditorSDK.Operations.Rotation;
-var kit, image, rotationOperation;
-
+let kit, image
 beforeEach(function () {
-  image = new canvas.Image();
-  var imagePath = path.resolve(__dirname, "../assets/test.png");
-  var buffer = fs.readFileSync(imagePath);
-  image.src = buffer;
+  kit = SpecHelpers.initRenderer()
+  image = kit.getImage()
+})
 
-  kit = new PhotoEditorSDK.Renderer('canvas', { image: image, ui: { enabled: false } });
-});
+describe('RotationOperation', function () {
 
-describe("RotationOperation", function () {
+  describe('with a rotation that\'s not divisible by 90', function () {
 
-  describe("#render", function () {
-
-    describe("with a rotation that's not divisible by 90", function () {
-
-      it("should fail", function () {
-        var throwable = function () {
-          new RotationOperation(kit, { degrees: 45 });
-        }
-        throwable.should.throw("RotationOperation: `rotation` has to be a multiple of 90.");
-      });
-
-    });
-
-    it("should succeed", function (done) {
-      rotationOperation = new RotationOperation(kit, {
-        degrees: 90
-      });
-      kit.operationsStack.push(rotationOperation);
-
-      kit.render()
-        .then(function () {
-          done();
+    it('should fail', function () {
+      const throwable = () => {
+        kit.createOperation('rotation', {
+          degrees: 45
         })
-        .catch(function (err) {
-          throw err;
-        });
-    });
+      }
+      throwable.should.throw('RotationOperation: `rotation` has to be a multiple of 90.')
+    })
 
-    it("should correctly resize the canvas", function (done) {
-      rotationOperation = new RotationOperation(kit, {
+  })
+
+  describe('#render', function () {
+
+    it('should succeed', function () {
+      const operation = kit.createOperation('rotation', {
         degrees: 90
-      });
-      kit.operationsStack.push(rotationOperation);
+      })
+      kit.operationsStack.push(operation)
 
-      kit.render(PhotoEditorSDK.RenderType.IMAGE)
+      return kit.render()
+        .should.be.fulfilled
+    })
+
+    it('should correctly resize the canvas', function (done) {
+      const operation = kit.createOperation('rotation', {
+        degrees: 90
+      })
+      kit.operationsStack.push(operation)
+
+      kit.export(PhotoEditorSDK.RenderType.IMAGE)
         .then(function (result) {
-          result.width.should.equal(image.height);
-          result.height.should.equal(image.width);
-
-          done();
+          result.width.should.equal(image.height)
+          result.height.should.equal(image.width)
+          done()
         })
         .catch(function (err) {
-          throw err;
-        });
-    });
+          done(err)
+        })
+    })
 
-  });
+  })
 
-});
+})

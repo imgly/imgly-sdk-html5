@@ -1,6 +1,4 @@
-/* global PhotoEditorSDK, describe, it, beforeEach */
-/*jshint -W083 */
-"use strict";
+/* global SpecHelpers, PhotoEditorSDK, describe, it, beforeEach */
 /*
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -10,54 +8,28 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var path = require("path");
-var fs = require("fs");
-var canvas = require("canvas");
-var RadialBlurOperation = PhotoEditorSDK.Operations.RadialBlur;
-var kit, image, radialBlurOperation;
-
+let kit
 beforeEach(function () {
-  image = new canvas.Image();
-  var imagePath = path.resolve(__dirname, "../assets/test.png");
-  var buffer = fs.readFileSync(imagePath);
-  image.src = buffer;
+  kit = SpecHelpers.initRenderer()
+})
 
-  kit = new PhotoEditorSDK.Renderer('canvas', { image: image, ui: { enabled: false } });
-});
+describe('RadialBlurOperation', function () {
 
-describe("RadialBlurOperation", function () {
+  // This operation takes some time on canvas...
+  this.timeout(10000)
 
-  this.timeout(10000);
+  describe('#render', function () {
 
-  describe("#render", function () {
+    it('should succeed', function () {
+      const operation = kit.createOperation('radial-blur', {
+        position: new PhotoEditorSDK.Vector2(0.5, 0.5)
+      })
+      kit.operationsStack.push(operation)
 
-    describe("if `position` is not a Vector2", function () {
+      return kit.render()
+        .should.be.fulfilled
+    })
 
-      it("should fail", function () {
-        var throwable = function () {
-          new RadialBlurOperation(kit, { position: null });
-        };
-        throwable.should.throw("Operation `radial-blur`: Option `position` has to be an instance of PhotoEditorSDK.Vector2.");
-      });
+  })
 
-    });
-
-    describe("if `position` is valid", function () {
-
-      it("should succeed", function (done) {
-        radialBlurOperation = new RadialBlurOperation(kit, {
-          position: new PhotoEditorSDK.Vector2(0.5, 0.5)
-        });
-        kit.operationsStack.push(radialBlurOperation);
-
-        kit.render()
-          .then(function () {
-            done();
-          });
-      });
-
-    });
-
-  });
-
-});
+})

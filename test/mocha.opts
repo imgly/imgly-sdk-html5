@@ -1,4 +1,4 @@
 --compilers js:babel/register
---reporter spec
+--reporter dot
 --require test/support/node
 --recursive

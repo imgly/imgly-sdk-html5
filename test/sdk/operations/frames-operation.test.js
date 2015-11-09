@@ -1,6 +1,4 @@
-/* global PhotoEditorSDK, describe, it, beforeEach */
-/*jshint -W083 */
-"use strict";
+/* global SpecHelpers, PhotoEditorSDK, describe, it, beforeEach */
 /*
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -10,60 +8,25 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var path = require("path");
-var fs = require("fs");
-var canvas = require("canvas");
-var FramesOperation = PhotoEditorSDK.Operations.Frames;
-var kit, image, framesOperation;
-
+let kit
 beforeEach(function () {
-  image = new canvas.Image();
-  var imagePath = path.resolve(__dirname, "../assets/test.png");
-  var buffer = fs.readFileSync(imagePath);
-  image.src = buffer;
+  kit = SpecHelpers.initRenderer()
+})
 
-  kit = new PhotoEditorSDK.Renderer('canvas', { image: image, assetsUrl: "src/assets", ui: { enabled: false } });
-});
+describe('FramesOperation', function () {
 
-describe("FramesOperation", function () {
+  describe('#render', function () {
 
-  describe("#render", function () {
+    it('should succeed', function () {
+      const operation = kit.createOperation('frames', {
+        color: new PhotoEditorSDK.Color(0, 0, 0, 1)
+      })
+      kit.operationsStack.push(operation)
 
-    describe("with `color` not being an instance of PhotoEditorSDK.Color", function () {
+      return kit.render()
+        .should.be.fulfilled
+    })
 
-      it("should throw an error", function () {
+  })
 
-        var throwable = function () {
-          new FramesOperation(kit, { color: "red" });
-        };
-        throwable.should.throw("Operation `frames`: Option `color` has to be an instance of PhotoEditorSDK.Color.");
-
-      });
-
-    });
-
-    describe("with valid options", function () {
-
-      it("should succeed", function (done) {
-
-        framesOperation = new FramesOperation(kit, {
-          color: new PhotoEditorSDK.Color(0, 0, 0, 1),
-          thickness: 0.1
-        });
-        kit.operationsStack.push(framesOperation);
-
-        kit.render()
-          .then(function () {
-            done();
-          })
-          .catch(function (err) {
-            should.not.exist(err);
-          });
-
-      });
-
-    });
-
-  });
-
-});
+})
