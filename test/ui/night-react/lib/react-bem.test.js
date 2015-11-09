@@ -1,5 +1,5 @@
 /** @jsx ReactBEM.createElement **/
-/* global PhotoEditorSDK, describe, it */
+/* global describe, it */
 /*
  * Photo Editor SDK - photoeditorsdk.com
  * Copyright (c) 2013-2015 9elements GmbH
@@ -9,16 +9,15 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-'use strict'
 
-const { ReactBEM } = PhotoEditorSDK
+import ReactBEM from '../../../../src/js/night-react-ui/lib/react-bem'
 import React from 'react'
-import ReactDOM from 'react-dom'
+import ReactDOMServer from 'react-dom/server'
 
 class SpecComponent extends React.Component {
-  constructor (content) {
+  constructor (props) {
     super()
-    this._content = content
+    this._content = props.content
   }
 
   render () {
@@ -27,7 +26,7 @@ class SpecComponent extends React.Component {
 }
 const componentFactory = React.createFactory(SpecComponent)
 const render = (content) => {
-  return ReactDOM.renderToStaticMarkup(componentFactory(content))
+  return ReactDOMServer.renderToStaticMarkup(componentFactory({ content }))
 }
 
 describe('ReactBEM', () => {
