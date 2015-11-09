@@ -23,6 +23,21 @@ export default class Configurable extends EventEmitter {
   }
 
   /**
+   * Builds an error message from the given string
+   * @param  {String} message
+   * @return {Error}
+   * @private
+   */
+  _buildConfigError (message) {
+    let errorMessage = ''
+    if (this.constructor.name) {
+      errorMessage = `${this.constructor.name}: `
+    }
+    errorMessage += message
+    return new Error(errorMessage)
+  }
+
+  /**
    * Gets called when options have been changed
    * @private
    */
@@ -40,7 +55,9 @@ export default class Configurable extends EventEmitter {
       for (let optionName in this.availableOptions) {
         let optionConfig = this.availableOptions[optionName]
         if (optionConfig.required && typeof this._options[optionName] === 'undefined') {
-          return reject(new Error(`${this.constructor.name}: Option \`${optionName}\` is required.`))
+          return reject(
+            this._buildConfigError(`Option \`${optionName}\` is required.`)
+          )
         }
       }
 
@@ -266,13 +283,13 @@ export default class Configurable extends EventEmitter {
       // String options
       case 'string':
         if (typeof value !== 'string') {
-          throw new Error(`${this.constructor.name}: Option \`${optionName}\` has to be a string.`)
+          throw this._buildConfigError(`Option \`${optionName}\` has to be a string.`)
         }
 
         // String value restrictions
         var available = optionConfig.available
         if (typeof available !== 'undefined' && available.indexOf(value) === -1) {
-          throw new Error(`${this.constructor.name}: Invalid value for \`${optionName}\` (valid values are: ${optionConfig.available.join(', ')}`)
+          throw this._buildConfigError(`Invalid value for \`${optionName}\` (valid values are: ${optionConfig.available.join(', ')})`)
         }
 
         this._options[optionName] = value
@@ -281,7 +298,7 @@ export default class Configurable extends EventEmitter {
       // Number options
       case 'number':
         if (typeof value !== 'number') {
-          throw new Error(`${this.constructor.name}: Option \`${optionName}\` has to be a number.`)
+          throw this._buildConfigError(`Option \`${optionName}\` has to be a number.`)
         }
 
         this._options[optionName] = value
@@ -290,7 +307,7 @@ export default class Configurable extends EventEmitter {
       // Boolean options
       case 'boolean':
         if (typeof value !== 'boolean') {
-          throw new Error(`${this.constructor.name}: Option \`${optionName}\` has to be a boolean.`)
+          throw this._buildConfigError(`Option \`${optionName}\` has to be a boolean.`)
         }
 
         this._options[optionName] = value
@@ -299,7 +316,7 @@ export default class Configurable extends EventEmitter {
       // Vector2 options
       case 'vector2':
         if (!(value instanceof Vector2)) {
-          throw new Error(`${this.constructor.name}: Option \`${optionName}\` has to be an instance of Vector2.`)
+          throw this._buildConfigError(`Option \`${optionName}\` has to be an instance of Vector2.`)
         }
 
         this._options[optionName] = value.clone()
@@ -309,7 +326,7 @@ export default class Configurable extends EventEmitter {
       // Color options
       case 'color':
         if (!(value instanceof Color)) {
-          throw new Error(`${this.constructor.name}:  Option \`${optionName}\` has to be an instance of Color.`)
+          throw this._buildConfigError(`Option \`${optionName}\` has to be an instance of Color.`)
         }
 
         this._options[optionName] = value
@@ -329,7 +346,7 @@ export default class Configurable extends EventEmitter {
       // Array options
       case 'array':
         if (!(value instanceof Array)) {
-          throw new Error(`${this.constructor.name}:  Option \`${optionName}\` has to be an Array.`)
+          throw this._buildConfigError(`Option \`${optionName}\` has to be an Array.`)
         }
         this._options[optionName] = value.slice(0)
         break
