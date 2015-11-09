@@ -1,6 +1,4 @@
-/* global PhotoEditorSDK, describe, it, beforeEach */
-/*jshint -W083 */
-"use strict";
+/* global SpecHelpers, describe, it, beforeEach */
 /*
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -10,70 +8,23 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-var path = require("path");
-var fs = require("fs");
-var canvas = require("canvas");
-var TiltShiftOperation = PhotoEditorSDK.Operations.TiltShift;
-var kit, image, tiltShiftOperation;
-
+let kit
 beforeEach(function () {
-  image = new canvas.Image();
-  var imagePath = path.resolve(__dirname, "../assets/test.png");
-  var buffer = fs.readFileSync(imagePath);
-  image.src = buffer;
+  kit = SpecHelpers.initRenderer()
+})
 
-  kit = new PhotoEditorSDK.Renderer('canvas', { image: image, ui: { enabled: false } });
-});
+describe('TiltShiftOperation', function () {
 
-describe("TiltShiftOperation", function () {
+  describe('#render', function () {
 
-  this.timeout(10000);
+    it('should succeed', function () {
+      const operation = kit.createOperation('tilt-shift')
+      kit.operationsStack.push(operation)
 
-  describe("#render", function () {
+      return kit.export()
+        .should.be.fulfilled
+    })
 
-    describe("if `start` is not a Vector2", function () {
+  })
 
-      it("should throw an error", function () {
-        var throwable = function () {
-          new TiltShiftOperation(kit, {
-            start: null
-          });
-        };
-        throwable.should.throw("Operation `tilt-shift`: Option `start` has to be an instance of PhotoEditorSDK.Vector2.");
-      });
-
-    });
-
-    describe("if `end` is not a Vector2", function () {
-
-      it("should throw an error", function () {
-        var throwable = function () {
-          new TiltShiftOperation(kit, {
-            end: null
-          });
-        };
-        throwable.should.throw("Operation `tilt-shift`: Option `end` has to be an instance of PhotoEditorSDK.Vector2.");
-      });
-
-    });
-
-    describe("if both `start` and `end` are given", function () {
-
-      it("should succeed", function (done) {
-        tiltShiftOperation = new TiltShiftOperation(kit, {
-          start: new PhotoEditorSDK.Vector2(0.5, 0.5),
-          end: new PhotoEditorSDK.Vector2(0.5, 0.8)
-        });
-        kit.operationsStack.push(tiltShiftOperation);
-
-        kit.render()
-          .then(function () {
-            done();
-          });
-      });
-
-    });
-
-  });
-
-});
+})

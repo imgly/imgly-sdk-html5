@@ -22,7 +22,7 @@ beforeEach(function () {
   stickerImage.src = stickerImageBuffer
 })
 
-describe.only('StickersOperation', function () {
+describe('StickersOperation', function () {
 
   describe('#render', function () {
 
