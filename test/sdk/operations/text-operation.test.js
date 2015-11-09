@@ -1,4 +1,4 @@
-/* global SpecHelpers, PhotoEditorSDK, describe, it, beforeEach */
+/* global SpecHelpers, describe, it, beforeEach */
 /*
  * Copyright (c) 2013-2015 9elements GmbH
  *
@@ -17,56 +17,15 @@ describe('TextOperation', function () {
 
   describe('#render', function () {
 
-    describe('with `position` not being an instance of Vector2', function () {
-
-      it('should throw an error', function () {
-
-        var throwable = function () {
-          new TextOperation(kit, {
-            position: null,
-            fontSize: 12,
-            fontFamily: 'Impact',
-            fontWeight: 'bold',
-            color: new PhotoEditorSDK.Color(1.0, 1.0, 1.0, 0.5),
-            text: 'foo'
-          })
-        }
-        throwable.should.throw('Operation `text`: Option `position` has to be an instance of PhotoEditorSDK.Vector2.')
-
+    it('should succeed', function () {
+      const operation = kit.createOperation('text')
+      operation.createText({
+        text: 'Foobar'
       })
+      kit.operationsStack.push(operation)
 
-    })
-
-    describe('with `alignment` being invalid', function () {
-
-      it('should throw an error', function () {
-
-        var throwable = function () {
-          new TextOperation(kit, {
-            alignment: 'somewhere?',
-            text: 'foo'
-          })
-        }
-        throwable.should.throw('Operation `text`: Invalid value for `alignment` (valid values are: left, center, right)')
-
-      })
-
-    })
-
-    describe('with `verticalAlignment` being invalid', function () {
-
-      it('should throw an error', function () {
-
-        var throwable = function () {
-          new TextOperation(kit, {
-            verticalAlignment: 'somewhere?',
-            text: 'foo'
-          })
-        }
-        throwable.should.throw('Operation `text`: Invalid value for `verticalAlignment` (valid values are: top, center, bottom)')
-
-      })
-
+      return kit.export()
+        .should.be.fulfilled
     })
 
   })
