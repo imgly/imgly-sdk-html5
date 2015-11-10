@@ -89,6 +89,19 @@
         width: 36px
         vertical-align: middle
 
+      +element(canvas)
+        @include opacity(0.8)
+        width: 36px
+        height: 36px
+        vertical-align: middle
+
+        &:hover
+          @include opacity(1.0)
+
+        +modifier(large)
+          width: $controlsButtonWidth
+          height: $controlsButtonHeight
+
       +element(label)
         @include opacity(0.8)
         @include font-regular

@@ -25,6 +25,64 @@ export default class StickersOverviewControlsComponent extends BaseComponent {
     this._initStickers()
   }
 
+  // -------------------------------------------------------------------------- LIFECYCLE
+
+  /**
+   * Gets called when this component is mounted
+   */
+  componentDidMount () {
+    super.componentDidMount()
+    this._renderStickers()
+  }
+
+  // -------------------------------------------------------------------------- STICKER RENDERING
+
+  /**
+   * Renders the stickers on the canvas preview elements
+   * @private
+   */
+  _renderStickers () {
+    const stickers = this._availableStickers
+    for (let i = 0; i < stickers.length; i++) {
+      const stickerPaths = stickers[i]
+      this._renderSticker(i, stickerPaths)
+    }
+  }
+
+  /**
+   * Renders the given sticker on the canvas with the given index
+   * @param  {Number} index
+   * @param  {Array.<String>} stickerPaths
+   * @private
+   */
+  _renderSticker (index, stickerPaths) {
+    const { ui } = this.context
+    const resolvedStickerPath = ui.getAssetPath(stickerPaths[0])
+    const canvas = this.refs[`canvas-${index}`]
+
+    canvas.width = canvas.offsetWidth
+    canvas.height = canvas.offsetHeight
+
+    const context = canvas.getContext('2d')
+
+    const image = new window.Image()
+    image.addEventListener('load', () => {
+      const scale = Math.min(canvas.width / image.width, canvas.height / image.height)
+      const drawSize = new Vector2(image.width, image.height)
+        .multiply(scale)
+      const drawPosition = new Vector2(canvas.width, canvas.height)
+        .divide(2)
+        .subtract(drawSize.clone().divide(2))
+
+      context.drawImage(image,
+        0, 0,
+        image.width, image.height,
+        drawPosition.x, drawPosition.y,
+        drawSize.x, drawSize.y)
+    })
+    image.src = resolvedStickerPath
+  }
+
   // -------------------------------------------------------------------------- STICKERS
 
   /**
@@ -147,7 +205,7 @@ export default class StickersOverviewControlsComponent extends BaseComponent {
   renderWithBEM () {
     const ui = this.context.ui
 
-    const listItems = this._availableStickers.map((paths) => {
+    const listItems = this._availableStickers.map((paths, i) => {
       const smallPath = paths[0]
       const largePath = paths[1]
       return (<li
@@ -156,7 +214,7 @@ export default class StickersOverviewControlsComponent extends BaseComponent {
         onClick={this._onStickerClick.bind(this, [smallPath, largePath])}>
         <bem specifier='$b:controls'>
           <div bem='$e:button m:withLabel'>
-            <img bem='e:icon' src={ui.getHelpers().assetPath(smallPath)} />
+            <canvas bem='e:canvas m:large' ref={`canvas-${i}`} />
           </div>
         </bem>
       </li>)
