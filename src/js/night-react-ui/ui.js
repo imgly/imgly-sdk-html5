@@ -49,7 +49,8 @@ export default class NightReactUI extends EventEmitter {
       'tilt-shift',
       'frames',
       'stickers',
-      'text'
+      'text',
+      'watermark'
     ]
 
     this._handleRendererErrors()
@@ -72,6 +73,12 @@ export default class NightReactUI extends EventEmitter {
     this._options.container.style.position = 'relative'
 
     this._render()
+
+    if (this._options.watermark) {
+      this.getOrCreateOperation('watermark', {
+        image: this._options.watermark
+      })
+    }
   }
 
   /**
