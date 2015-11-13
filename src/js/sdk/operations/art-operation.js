@@ -10,7 +10,7 @@
 
 import Utils from '../lib/utils'
 import Operation from './operation'
-import Filters from './filters/'
+import Filters from './art/'
 import IdentityFilter from './filters/identity-filter'
 
 /**
