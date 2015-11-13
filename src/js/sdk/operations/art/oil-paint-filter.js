@@ -88,6 +88,19 @@ class OilPaintFilter extends Filter {
     const outputContext = canvas.getContext('2d')
     outputContext.putImageData(imageData, 0, 0)
   }
+
+  /**
+   * Renders the stack of primitives on the renderer
+   * @param  {Renderer} renderer
+   */
+  render (renderer) {
+    if (renderer.identifier === 'webgl') {
+      return this.renderWebGL(renderer)
+    } else {
+      return this.renderCanvas(renderer)
+    }
+  }
+
   /**
    * A unique string that identifies this operation. Can be used to select
    * the active filter.
