@@ -38,6 +38,9 @@ export default class NightReactUI extends EventEmitter {
       'crop',
       'flip',
 
+      // Then art operations
+      'art',
+
       // Then color operations (first filters, then fine-tuning)
       'filters',
       'contrast',
@@ -167,7 +170,8 @@ export default class NightReactUI extends EventEmitter {
       focus: require('./components/controls/focus/'),
       frames: require('./components/controls/frames/'),
       stickers: require('./components/controls/stickers/'),
-      text: require('./components/controls/text/')
+      text: require('./components/controls/text/'),
+      art: require('./components/controls/art/')
     }, this._options.additionalControls)
 
     this._selectedControls = []
