@@ -19,7 +19,7 @@ import Filter from '../filters/filter'
 class OilPaintFilter extends Filter {
   constructor (...args) {
     super(...args)
-
+    this._glslPrograms = {}
     this._options = Utils.defaults(this._options, {
       contrast: 1.0
     })
