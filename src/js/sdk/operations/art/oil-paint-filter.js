@@ -51,6 +51,7 @@ class OilPaintFilter extends Filter {
    */
   /* istanbul ignore next */
   renderWebGL (renderer, inputTexture, outputFBO, outputTexture) {
+    console.log(this._glslPrograms)
     if (!this._glslPrograms[renderer.id]) {
       this._glslPrograms[renderer.id] = renderer.setupGLSLProgram(
         null,
