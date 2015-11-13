@@ -9,4 +9,4 @@
  */
 
 exports.IdentityFilter = require('../filters/identity-filter')
-exports.OilFilter = require('./oil-paint-filter')
+exports.OilPaintFilter = require('./oil-paint-filter')
