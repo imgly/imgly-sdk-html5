@@ -42,13 +42,7 @@ window.onload = function () {
       language: 'en',
       operations: 'all',
       controlsOptions: {
-        stickers: {
-          stickers: [
-            'foo',
-            'bar',
-            'baz'
-          ]
-        }
+
       },
       additionalControls: [
         // {
