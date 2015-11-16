@@ -5,7 +5,7 @@ window.onload = function () {
     /*
      * Initialize Renderer
      */
-    var renderer = new PhotoEditorSDK.Renderer('canvas', {
+    var renderer = new PhotoEditorSDK.Renderer('webgl', {
       image: myImage,
       additionalOperations: {
         // noise: NoiseOperation
