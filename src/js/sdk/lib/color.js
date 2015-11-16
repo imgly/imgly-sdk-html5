@@ -202,6 +202,57 @@ class Color {
     return `Color(${this.r}, ${this.g}, ${this.b}, ${this.a})`
   }
 
+  /**
+   * Adds the given color / scalar to this color
+   * @param {(sclar|Color)} addend
+   */
+  add (addend) {
+    if (addend instanceof Color) {
+      this.r += addend.r
+      this.g += addend.g
+      this.b += addend.b
+    } else {
+      this.r += addend
+      this.g += addend
+      this.b += addend
+    }
+    return this
+  }
+
+  /**
+   * Multiplies the given color / scalar to this color
+   * @param {(sclar|Color)} addend
+   */
+  multiply (factor) {
+    if (factor instanceof Color) {
+      this.r *= factor.r
+      this.g *= factor.g
+      this.b *= factor.b
+    } else {
+      this.r *= factor
+      this.g *= factor
+      this.b *= factor
+    }
+    return this
+  }
+
+  /**
+   * Divides the given color / scalar to this color
+   * @param {(sclar|Color)} addend
+   */
+  divide (divisor) {
+    if (divisor instanceof Color) {
+      this.r /= divisor.r
+      this.g /= divisor.g
+      this.b /= divisor.b
+    } else {
+      this.r /= divisor
+      this.g /= divisor
+      this.b /= divisor
+    }
+    return this
+  }
+
   static get TRANSPARENT () { return new Color(0, 0, 0, 0) }
   static get WHITE () { return new Color(1, 1, 1, 1) }
 }
