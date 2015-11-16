@@ -47,6 +47,7 @@ class OilPaintFilter extends Filter {
     this._fragmentShader = `
     varying highp vec2 v_texCoord;
     uniform sampler2D inputImageTexture;
+    uniform highp float intensity;
 
     precision highp float;
 
@@ -269,10 +270,12 @@ class OilPaintFilter extends Filter {
      m0 /= n;
      s0 = abs(s0 / n - m0 * m0);
 
+     vec4 finalColor = vec4(0);
+
      float sigma2 = s0.r + s0.g + s0.b;
      if (sigma2 < min_sigma2) {
        min_sigma2 = sigma2;
-       gl_FragColor = vec4(m0, 1.0);
+       finalColor = vec4(m0, 1.0);
      }
 
      m1 /= n;
@@ -281,7 +284,7 @@ class OilPaintFilter extends Filter {
      sigma2 = s1.r + s1.g + s1.b;
      if (sigma2 < min_sigma2) {
        min_sigma2 = sigma2;
-       gl_FragColor = vec4(m1, 1.0);
+       finalColor = vec4(m1, 1.0);
      }
 
      m2 /= n;
@@ -290,7 +293,7 @@ class OilPaintFilter extends Filter {
      sigma2 = s2.r + s2.g + s2.b;
      if (sigma2 < min_sigma2) {
        min_sigma2 = sigma2;
-       gl_FragColor = vec4(m2, 1.0);
+       finalColor = vec4(m2, 1.0);
      }
 
      m3 /= n;
@@ -299,8 +302,9 @@ class OilPaintFilter extends Filter {
      sigma2 = s3.r + s3.g + s3.b;
      if (sigma2 < min_sigma2) {
        min_sigma2 = sigma2;
-       gl_FragColor = vec4(m3, 1.0);
+       finalColor = vec4(m3, 1.0);
      }
+     gl_FragColor = mix(texture2D(inputImageTexture, uv), finalColor, intensity);
     }
     `
   }
@@ -331,7 +335,8 @@ class OilPaintFilter extends Filter {
         outputTexture,
         switchBuffer: true,
         uniforms: {
-          src_size: { type: '2f', value: [ 1.0 / canvas.width, 1.0 / canvas.height ] }
+          src_size: { type: '2f', value: [ 1.0 / canvas.width, 1.0 / canvas.height ] },
+          intensity: { type: 'f', value: this._intensity }
         }
       })
       resolve()
@@ -356,6 +361,7 @@ class OilPaintFilter extends Filter {
       var l = 0
       var i = 0
       var j = 0
+      var original = [0, 0, 0]
       for (var y = 0; y < canvas.height; y++) {
         for (var x = 0; x < canvas.width; x++) {
           var m0 = new Color(0.0, 0.0, 0.0, 1)
@@ -367,6 +373,10 @@ class OilPaintFilter extends Filter {
           var s2 = new Color(0.0, 0.0, 0.0, 1)
           var s3 = new Color(0.0, 0.0, 0.0, 1)
           var c = new Color(0.0, 0.0, 0.0, 1)
+          index = (y * canvas.width + x) * 4
+          original[0] = pixels[index]
+          original[1] = pixels[index + 1]
+          original[2] = pixels[index + 2]
           for (j = -radius; j <= 0; ++j) {
             for (i = -radius; i <= 0; ++i) {
               k = x + i
@@ -469,6 +479,9 @@ class OilPaintFilter extends Filter {
             pixels[index + 1] = m3.g * 255.0
             pixels[index + 2] = m3.b * 255.0
           }
+          pixels[index] = (1 - this._intensity) * original[0] + this._intensity * pixels[index]
+          pixels[index + 1] = (1 - this._intensity) * original[1] + this._intensity * pixels[index + 1]
+          pixels[index + 2] = (1 - this._intensity) * original[2] + this._intensity * pixels[index + 2]
         }
       }
       context.putImageData(imageData, 0, 0)

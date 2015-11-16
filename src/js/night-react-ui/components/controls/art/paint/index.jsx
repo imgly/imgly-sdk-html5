@@ -9,9 +9,10 @@
  */
 
 import PaintControlsComponent from './paint-controls-component'
+import PaintCanvasControlsComponent from './paint-canvas-controls-component'
 
 export default {
-  canvasControls: null,
+  canvasControls: PaintCanvasControlsComponent,
   controls: PaintControlsComponent,
   largeCanvasControls: true,
   identifier: 'paint',
