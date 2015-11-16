@@ -10,7 +10,9 @@
 import Utils from '../../lib/utils'
 import Color from '../../lib/color'
 import Filter from '../filters/filter'
-import FramesOperation from '../frames-operation'
+import GaussianBlurFilter from '../blur/gaussian-blur-filter'
+import NormalMapFilter from './normal-map-filter'
+import BwFilter from '../filters/bw-filter'
 
 /**
  * Oil Paint Filter
@@ -308,9 +310,16 @@ class WaterColorFilter extends Filter {
      gl_FragColor = mix(texture2D(inputImageTexture, uv), finalColor, intensity);
     }
     `
-    this._framesOperation = new FramesOperation()
+    this._gaussianBlurOperation = new GaussianBlurFilter()
+    this._normalMapFilter = new NormalMapFilter()
+    this._bwFilter = new BwFilter()
   }
-
+/*
+  composer3.addPass(grayEffect);
+  composer3.addPass(blurEffect);
+  composer3.addPass(blurEffect);
+  composer3.addPass(blurEffect);
+  composer3.addPass(normalEffect);*/
   /**
    * Renders the primitive (WebGL)
    * @param  {WebGLRenderer} renderer
@@ -321,7 +330,19 @@ class WaterColorFilter extends Filter {
    */
   /* istanbul ignore next */
   renderWebGL (renderer, inputTexture, outputFBO, outputTexture) {
-    return new Promise((resolve, reject) => {
+    return this._bwFilter.render(renderer).then(() => {
+      this._gaussianBlurOperation.setDirty(true)
+      return this._gaussianBlurOperation.render(renderer)
+    }).then(() => {
+      this._gaussianBlurOperation.setDirty(true)
+      return this._gaussianBlurOperation.render(renderer)
+    }).then(() => {
+      this._gaussianBlurOperation.setDirty(true)
+      return this._gaussianBlurOperation.render(renderer)
+    }).then(() => {
+      this._normalMapFilter.setDirty(true)
+      return this._normalMapFilter.render(renderer)
+    }).then(new Promise((resolve, reject) => {
       if (!this._glslPrograms[renderer.id]) {
         this._glslPrograms[renderer.id] = renderer.setupGLSLProgram(
           null,
@@ -342,10 +363,7 @@ class WaterColorFilter extends Filter {
         }
       })
       resolve()
-    }).then(() => {
-      this._framesOperation.setDirty(true)
-      return this._framesOperation.render(renderer)
-    })
+    }))
   }
 
   /**
