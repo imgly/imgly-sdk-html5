@@ -10,4 +10,4 @@
 
 exports.IdentityFilter = require('../filters/identity-filter')
 exports.OilPaintFilter = require('./oil-paint-filter')
-exports.WaterColorFilter = require('./water-color-filter')
+exports.WaterColorFilter = require('./normal-map-filter')
