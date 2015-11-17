@@ -28,6 +28,26 @@ class WaterColorFilter extends Filter {
       contrast: 1.0
     })
 
+    this._textures = []
+    this._framebuffers = []
+    this._fbosAvailable = false
+    this._bufferIndex = 0
+    this._dirty = true
+
+    this._blendFragmentShader = `
+      precision mediump float;
+      varying vec2 v_texCoord;
+      uniform sampler2D u_image;
+      uniform sampler2D u_filteredImage;
+      uniform float intensity;
+
+      void main() {
+        vec4 color0 = texture2D(u_image, v_texCoord);
+        vec4 color1 = texture2D(u_filteredImage, v_texCoord);
+        gl_FragColor = mix(color0, color1, intensity);
+      }
+    `
+
     /**
      * The fragment shader for this primitive
      * @return {String}
@@ -314,23 +334,15 @@ class WaterColorFilter extends Filter {
     this._normalMapFilter = new NormalMapFilter()
     this._bwFilter = new BwFilter()
   }
-/*
-  composer3.addPass(grayEffect);
-  composer3.addPass(blurEffect);
-  composer3.addPass(blurEffect);
-  composer3.addPass(blurEffect);
-  composer3.addPass(normalEffect);*/
+
   /**
-   * Renders the primitive (WebGL)
+   * Renders the filter (WebGL)
    * @param  {WebGLRenderer} renderer
-   * @param  {WebGLTexture} inputTexture
-   * @param  {WebGLFramebuffer} outputFBO
-   * @param  {WebGLTexture} outputTexture
    * @return {Promise}
    */
   /* istanbul ignore next */
-  renderWebGL (renderer, inputTexture, outputFBO, outputTexture) {
-    return this._bwFilter.render(renderer).then(() => {
+  renderWebGL (renderer) {
+/*    return this._bwFilter.render(renderer).then(() => {
       this._gaussianBlurOperation.setDirty(true)
       return this._gaussianBlurOperation.render(renderer)
     }).then(() => {
@@ -342,28 +354,102 @@ class WaterColorFilter extends Filter {
     }).then(() => {
       this._normalMapFilter.setDirty(true)
       return this._normalMapFilter.render(renderer)
-    }).then(new Promise((resolve, reject) => {
+    }).then(*/
+    return new Promise((resolve, reject) => {
+      this._renderReliefMap(renderer)
+      console.log("1")
+      const gl = renderer.getContext()
+      gl.activeTexture(gl.TEXTURE1)
+      gl.bindTexture(gl.TEXTURE_2D, this._lastTexture)
+      gl.activeTexture(gl.TEXTURE0)
+
       if (!this._glslPrograms[renderer.id]) {
         this._glslPrograms[renderer.id] = renderer.setupGLSLProgram(
           null,
-          this._fragmentShader
+          this._blendFragmentShader
         )
       }
 
       var canvas = renderer.getCanvas()
-
       renderer.runProgram(this._glslPrograms[renderer.id], {
-        inputTexture,
-        outputFBO,
-        outputTexture,
-        switchBuffer: true,
         uniforms: {
           src_size: { type: '2f', value: [ 1.0 / canvas.width, 1.0 / canvas.height ] },
-          intensity: { type: 'f', value: this._intensity }
+          intensity: { type: 'f', value: this._intensity },
+          u_filteredImage: { type: 'i', value: 1 }
         }
       })
       resolve()
-    }))
+    })
+  }
+
+  /**
+   * Creates two textures and framebuffers that are used for the reliefmap creation
+   * rendering
+   * @param {WebGLRenderer} renderer
+   * @private
+   */
+  /* istanbul ignore next */
+  _createFramebuffers (renderer) {
+    for (var i = 0; i < 2; i++) {
+      let { fbo, texture } = renderer.createFramebuffer()
+      this._textures.push(texture)
+      this._framebuffers.push(fbo)
+    }
+    this._fbosAvailable = true
+  }
+
+  /**
+   * Resizes all used textures
+   * @param {WebGLRenderer} renderer
+   * @private
+   */
+  /* istanbul ignore next */
+  _resizeAllTextures (renderer) {
+    this._textures.forEach((texture) => {
+      renderer.resizeTexture(texture)
+    })
+  }
+
+  /**
+   * Renders the reliefmap (WebGL)
+   * @param  {WebGLRenderer} renderer
+   * @return {Promise}
+   */
+  /* istanbul ignore next */
+  _renderReliefMap (renderer) {
+    console.log("2")
+    if (!this._fbosAvailable) this._createFramebuffers(renderer)
+
+    if (this._dirty) {
+      console.log("kjsdbfds")
+      this._resizeAllTextures(renderer)
+      let inputTexture = renderer.getLastTexture()
+      // inputTexture = this._renderIndermidiate(this._bwFilter, renderer, inputTexture)
+      inputTexture = this._renderIndermidiate(this._gaussianBlurOperation, renderer, inputTexture)
+      inputTexture = this._renderIndermidiate(this._gaussianBlurOperation, renderer, inputTexture)
+      inputTexture = this._renderIndermidiate(this._gaussianBlurOperation, renderer, inputTexture)
+
+      this._dirty = false
+    }
+  }
+
+  _renderIndermidiate (operation, renderer, inputTexture) {
+    let texture = this._getCurrentTexture()
+    let fbo = this._getCurrentFramebuffer()
+
+    operation.renderWebGL(renderer, inputTexture, fbo, texture)
+    inputTexture = texture
+    this._lastTexture = texture
+    this._bufferIndex++
+    return inputTexture
+  }
+
+  _getCurrentTexture () {
+    return this._textures[this._bufferIndex % this._textures.length]
+  }
+
+  _getCurrentFramebuffer () {
+    return this._framebuffers[this._bufferIndex % this._framebuffers.length]
   }
 
   /**
