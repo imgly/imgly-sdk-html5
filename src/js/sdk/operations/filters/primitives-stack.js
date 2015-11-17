@@ -68,12 +68,24 @@ class PrimitivesStack {
     this._stack.push(primitive)
   }
 
+  /**
+   * Resizes all used textures
+   * @param {WebGLRenderer} renderer
+   * @private
+   */
+  /* istanbul ignore next */
   _resizeAllTextures (renderer) {
     this._textures.forEach((texture) => {
       renderer.resizeTexture(texture)
     })
   }
 
+  /**
+   * Renders the primitive stack (WebGL)
+   * @param  {WebGLRenderer} renderer
+   * @return {Promise}
+   */
+  /* istanbul ignore next */
   renderWebGL (renderer) {
     if (!this._fbosAvailable) this._createFramebuffers(renderer)
 
