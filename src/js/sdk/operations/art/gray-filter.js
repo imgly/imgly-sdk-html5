@@ -10,43 +10,20 @@
 import Utils from '../../lib/utils'
 import Color from '../../lib/color'
 import Filter from '../filters/filter'
-import GaussianBlurFilter from '../blur/gaussian-blur-filter'
-import NormalMapFilter from './normal-map-filter'
-import GrayFilter from './gray-filter'
 
 /**
- * Oil Paint Filter
+ * Normal Map Filter
  * @class
- * @alias PhotoEditorSDK.Filters.OilPaintFilter
+ * @alias PhotoEditorSDK.Filters.NormalMapFilter
  * @extends {PhotoEditorSDK.Filter}
  */
-class WaterColorFilter extends Filter {
+class GrayFilter extends Filter {
   constructor (...args) {
     super(...args)
     this._glslPrograms = {}
     this._options = Utils.defaults(this._options, {
       contrast: 1.0
     })
-
-    this._textures = []
-    this._framebuffers = []
-    this._fbosAvailable = false
-    this._bufferIndex = 0
-    this._dirty = true
-
-    this._blendFragmentShader = `
-      precision mediump float;
-      varying vec2 v_texCoord;
-      uniform sampler2D u_image;
-      uniform sampler2D u_filteredImage;
-      uniform float intensity;
-
-      void main() {
-        vec4 color0 = texture2D(u_image, v_texCoord);
-        vec4 color1 = texture2D(u_filteredImage, v_texCoord);
-        gl_FragColor = mix(color0, color1, intensity);
-      }
-    `
 
     /**
      * The fragment shader for this primitive
@@ -69,77 +46,28 @@ class WaterColorFilter extends Filter {
      */
     this._fragmentShader = `
     varying highp vec2 v_texCoord;
-    uniform highp float intensity;
-
+    uniform sampler2D inputImageTexture;
     precision highp float;
 
-    uniform vec2 src_size;
-
-    uniform sampler2D u_image;
-    uniform sampler2D u_filteredImage;
-
-    void main(){
-
-        float rate =  1.0;
-
-        float distance = distance(v_texCoord, vec2(0.5, 0.5));
-        vec4 newFrame = texture2D(u_image, v_texCoord);
-            vec4 color = vec4(0., 0., 0., 0.);
-            vec2 norm = ( texture2D(u_filteredImage, v_texCoord).rg - vec2(0.5) ) * 2.0;
-            float inc = (abs(norm.x) + abs(norm.y)) * 0.5;
-
-            vec2 offset[12];
-            float fTotal = 12.0;
-
-            float pi = 3.14159265358979323846;
-            float step = (pi*2.0)/fTotal;
-            float angle = 0.0;
-            for (int i = 0; i < 12; i++) {
-               offset[i].x = cos(angle) / src_size.x;
-               offset[i].y = sin(angle) / src_size.y;
-               angle += step;
-            }
-
-            float sources = 0.0;
-
-            for(int i = 0; i < 12; i++){
-                vec4 goingTo = (texture2D( u_filteredImage, v_texCoord + offset[i] ) - vec4(0.5)) * 2.0;
-
-                if ( dot( goingTo.xy ,offset[i]) < 0.0/12.0 ){
-                   sources += 1.0;
-                   color += texture2D(u_image, v_texCoord + offset[i]);
-                }
-            }
-
-            if(sources > 0.){
-                color = color / sources;
-            }else{
-                color = newFrame;
-             }
-
-            gl_FragColor =  color*(1.0 - inc) + newFrame * inc;
-
+    void main() {
+      vec4 texel = texture2D( inputImageTexture, v_texCoord );
+      float luminance = dot( vec3 (0.2125, 0.7154, 0.0721), vec3(texel));
+      gl_FragColor = vec4(luminance, luminance, luminance, texel.a);
     }
     `
-    this._gaussianBlurOperation = new GaussianBlurFilter()
-    this._normalMapFilter = new NormalMapFilter()
-    this._grayFilter = new GrayFilter()
   }
 
   /**
-   * Renders the filter (WebGL)
+   * Renders the primitive (WebGL)
    * @param  {WebGLRenderer} renderer
+   * @param  {WebGLTexture} inputTexture
+   * @param  {WebGLFramebuffer} outputFBO
+   * @param  {WebGLTexture} outputTexture
    * @return {Promise}
    */
   /* istanbul ignore next */
-  renderWebGL (renderer) {
+  renderWebGL (renderer, inputTexture, outputFBO, outputTexture) {
     return new Promise((resolve, reject) => {
-      this._renderReliefMap(renderer)
-      const gl = renderer.getContext()
-      gl.activeTexture(gl.TEXTURE1)
-      gl.bindTexture(gl.TEXTURE_2D, this._lastTexture)
-      gl.activeTexture(gl.TEXTURE0)
-
       if (!this._glslPrograms[renderer.id]) {
         this._glslPrograms[renderer.id] = renderer.setupGLSLProgram(
           null,
@@ -148,84 +76,19 @@ class WaterColorFilter extends Filter {
       }
 
       var canvas = renderer.getCanvas()
+
       renderer.runProgram(this._glslPrograms[renderer.id], {
+        inputTexture,
+        outputFBO,
+        outputTexture,
+        switchBuffer: true,
         uniforms: {
           src_size: { type: '2f', value: [ 1.0 / canvas.width, 1.0 / canvas.height ] },
-          intensity: { type: 'f', value: this._intensity },
-          u_filteredImage: { type: 'i', value: 1 }
+          intensity: { type: 'f', value: this._intensity }
         }
       })
       resolve()
     })
-  }
-
-  /**
-   * Creates two textures and framebuffers that are used for the reliefmap creation
-   * rendering
-   * @param {WebGLRenderer} renderer
-   * @private
-   */
-  /* istanbul ignore next */
-  _createFramebuffers (renderer) {
-    for (var i = 0; i < 2; i++) {
-      let { fbo, texture } = renderer.createFramebuffer()
-      this._textures.push(texture)
-      this._framebuffers.push(fbo)
-    }
-    this._fbosAvailable = true
-  }
-
-  /**
-   * Resizes all used textures
-   * @param {WebGLRenderer} renderer
-   * @private
-   */
-  /* istanbul ignore next */
-  _resizeAllTextures (renderer) {
-    this._textures.forEach((texture) => {
-      renderer.resizeTexture(texture)
-    })
-  }
-
-  /**
-   * Renders the reliefmap (WebGL)
-   * @param  {WebGLRenderer} renderer
-   * @return {Promise}
-   */
-  /* istanbul ignore next */
-  _renderReliefMap (renderer) {
-    if (!this._fbosAvailable) this._createFramebuffers(renderer)
-
-    if (this._dirty) {
-      this._resizeAllTextures(renderer)
-      let inputTexture = renderer.getLastTexture()
-      inputTexture = this._renderIndermidiate(this._grayFilter, renderer, inputTexture)
-      inputTexture = this._renderIndermidiate(this._gaussianBlurOperation, renderer, inputTexture)
-      inputTexture = this._renderIndermidiate(this._gaussianBlurOperation, renderer, inputTexture)
-      inputTexture = this._renderIndermidiate(this._gaussianBlurOperation, renderer, inputTexture)
-      inputTexture = this._renderIndermidiate(this._normalMapFilter, renderer, inputTexture)
-
-      this._dirty = false
-    }
-  }
-
-  _renderIndermidiate (operation, renderer, inputTexture) {
-    let texture = this._getCurrentTexture()
-    let fbo = this._getCurrentFramebuffer()
-
-    operation.renderWebGL(renderer, inputTexture, fbo, texture)
-    inputTexture = texture
-    this._lastTexture = texture
-    this._bufferIndex++
-    return inputTexture
-  }
-
-  _getCurrentTexture () {
-    return this._textures[this._bufferIndex % this._textures.length]
-  }
-
-  _getCurrentFramebuffer () {
-    return this._framebuffers[this._bufferIndex % this._framebuffers.length]
   }
 
   /**
@@ -392,7 +255,7 @@ class WaterColorFilter extends Filter {
    * @type {String}
    */
   static get identifier () {
-    return 'water-color'
+    return 'normal-map'
   }
 
   /**
@@ -400,8 +263,8 @@ class WaterColorFilter extends Filter {
    * @type {String}
    */
   get name () {
-    return 'Watercolor'
+    return 'Normal map'
   }
 }
 
-export default WaterColorFilter
+export default GrayFilter
