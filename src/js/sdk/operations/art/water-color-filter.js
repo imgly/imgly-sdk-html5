@@ -79,46 +79,41 @@ class WaterColorFilter extends Filter {
     uniform sampler2D u_filteredImage;
 
     void main(){
+      vec4 newFrame = texture2D(u_image, v_texCoord);
+      vec4 color = vec4(0., 0., 0., 0.);
+      vec2 norm = ( texture2D(u_filteredImage, v_texCoord).rg - vec2(0.5) ) * 2.0;
+      float inc = (abs(norm.x) + abs(norm.y)) * 0.5;
 
-        float rate =  1.0;
+      vec2 offset[12];
+      float fTotal = 12.0;
 
-        float distance = distance(v_texCoord, vec2(0.5, 0.5));
-        vec4 newFrame = texture2D(u_image, v_texCoord);
-            vec4 color = vec4(0., 0., 0., 0.);
-            vec2 norm = ( texture2D(u_filteredImage, v_texCoord).rg - vec2(0.5) ) * 2.0;
-            float inc = (abs(norm.x) + abs(norm.y)) * 0.5;
+      float pi = 3.14159265358979323846;
+      float step = (pi*2.0)/fTotal;
+      float angle = 0.0;
+      for (int i = 0; i < 12; i++) {
+         offset[i].x = cos(angle) * src_size.x;
+         offset[i].y = sin(angle) * src_size.y;
+         angle += step;
+      }
 
-            vec2 offset[12];
-            float fTotal = 12.0;
+      float sources = 0.0;
 
-            float pi = 3.14159265358979323846;
-            float step = (pi*2.0)/fTotal;
-            float angle = 0.0;
-            for (int i = 0; i < 12; i++) {
-               offset[i].x = cos(angle) / src_size.x;
-               offset[i].y = sin(angle) / src_size.y;
-               angle += step;
-            }
+      for (int i = 0; i < 12; i++) {
+          vec4 goingTo = (texture2D( u_filteredImage, v_texCoord + offset[i] ) - vec4(0.5)) * 2.0;
 
-            float sources = 0.0;
+          if (dot( goingTo.xy ,offset[i]) < 0.0/12.0) {
+             sources += 1.0;
+             color += texture2D(u_image, v_texCoord + offset[i]);
+          }
+      }
 
-            for(int i = 0; i < 12; i++){
-                vec4 goingTo = (texture2D( u_filteredImage, v_texCoord + offset[i] ) - vec4(0.5)) * 2.0;
+      if (sources > 0.) {
+          color = color / sources;
+      } else {
+        color = newFrame;
+      }
 
-                if ( dot( goingTo.xy ,offset[i]) < 0.0/12.0 ){
-                   sources += 1.0;
-                   color += texture2D(u_image, v_texCoord + offset[i]);
-                }
-            }
-
-            if(sources > 0.){
-                color = color / sources;
-            }else{
-                color = newFrame;
-             }
-
-            gl_FragColor =  color*(1.0 - inc) + newFrame * inc;
-
+      gl_FragColor =  color*(1.0 - inc) + newFrame * inc;
     }
     `
     this._gaussianBlurOperation = new GaussianBlurFilter()
@@ -134,7 +129,7 @@ class WaterColorFilter extends Filter {
   /* istanbul ignore next */
   renderWebGL (renderer) {
     return new Promise((resolve, reject) => {
-      var repetitions = Math.round(this._intensity * 50)
+      var repetitions = Math.round(this._intensity * 40)
       for (var i = 0; i < repetitions; i++) {
         this._renderReliefMap(renderer)
         const gl = renderer.getContext()
@@ -152,7 +147,7 @@ class WaterColorFilter extends Filter {
         var canvas = renderer.getCanvas()
         renderer.runProgram(this._glslPrograms[renderer.id], {
           uniforms: {
-            src_size: { type: '2f', value: [ canvas.width, canvas.height ] },
+            src_size: { type: '2f', value: [ 1.0 / canvas.width, 1.0 / canvas.height ] },
             intensity: { type: 'f', value: this._intensity },
             u_filteredImage: { type: 'i', value: 1 }
           }
