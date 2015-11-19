@@ -15,15 +15,16 @@
       throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
     }
 
-    subClass.prototype = Object.create(superClass && superClass.prototype, {
-      constructor: {
-        value: subClass,
-        enumerable: false,
-        writable: true,
-        configurable: true
-      }
-    });
-    if (superClass) subClass.__proto__ = superClass;
+    for (var key in superClass) {
+      if ({}.hasOwnProperty.call(superClass, key)) subClass[key] = superClass[key];
+    }
+
+    function ctor() {
+      this.constructor = subClass;
+    }
+    ctor.prototype = superClass.prototype;
+    subClass.prototype = new ctor();
+    subClass.__super__ = superClass.prototype;
   };
 
   babelHelpers.createClass = (function () {
