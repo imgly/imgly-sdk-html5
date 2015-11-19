@@ -14,7 +14,7 @@ import Filter from '../filters/filter'
 /**
  * Normal Map Filter
  * @class
- * @alias PhotoEditorSDK.Filters.NormalMapFilter
+ * @alias PhotoEditorSDK.Art.NormalMapFilter
  * @extends {PhotoEditorSDK.Filter}
  */
 class NormalMapFilter extends Filter {

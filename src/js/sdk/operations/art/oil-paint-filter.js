@@ -10,12 +10,11 @@
 import Utils from '../../lib/utils'
 import Color from '../../lib/color'
 import Filter from '../filters/filter'
-import Watercolor from './water-color-filter'
 
 /**
  * Oil Paint Filter
  * @class
- * @alias PhotoEditorSDK.Filters.OilPaintFilter
+ * @alias PhotoEditorSDK.Art.OilPaintFilter
  * @extends {PhotoEditorSDK.Filter}
  */
 class OilPaintFilter extends Filter {
@@ -25,8 +24,6 @@ class OilPaintFilter extends Filter {
     this._options = Utils.defaults(this._options, {
       contrast: 1.0
     })
-
-    this._waterColorFilter = new Watercolor()
 
     /**
      * The fragment shader for this primitive
