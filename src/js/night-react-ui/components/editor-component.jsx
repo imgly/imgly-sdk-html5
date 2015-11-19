@@ -99,7 +99,7 @@ class EditorComponent extends React.Component {
     const maxDimensions = this.props.kit.getMaxDimensions()
 
     const megaPixelsExceeded = image.width * image.height > maxPixels
-    const dimensionsExceeded = image.width > maxDimensions || image.height > maxDimensions
+    const dimensionsExceeded = maxDimensions && (image.width > maxDimensions || image.height > maxDimensions)
 
     if (megaPixelsExceeded || dimensionsExceeded) {
       const loadingModal = ModalManager.instance.displayLoading(translate('loading.resizing'))
