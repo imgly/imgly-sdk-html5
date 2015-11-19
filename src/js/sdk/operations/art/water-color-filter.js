@@ -134,27 +134,30 @@ class WaterColorFilter extends Filter {
   /* istanbul ignore next */
   renderWebGL (renderer) {
     return new Promise((resolve, reject) => {
-      this._renderReliefMap(renderer)
-      const gl = renderer.getContext()
-      gl.activeTexture(gl.TEXTURE1)
-      gl.bindTexture(gl.TEXTURE_2D, this._lastTexture)
-      gl.activeTexture(gl.TEXTURE0)
+      var repetitions = Math.round(this._intensity * 50)
+      for (var i = 0; i < repetitions; i++) {
+        this._renderReliefMap(renderer)
+        const gl = renderer.getContext()
+        gl.activeTexture(gl.TEXTURE1)
+        gl.bindTexture(gl.TEXTURE_2D, this._lastTexture)
+        gl.activeTexture(gl.TEXTURE0)
 
-      if (!this._glslPrograms[renderer.id]) {
-        this._glslPrograms[renderer.id] = renderer.setupGLSLProgram(
-          null,
-          this._fragmentShader
-        )
-      }
-
-      var canvas = renderer.getCanvas()
-      renderer.runProgram(this._glslPrograms[renderer.id], {
-        uniforms: {
-          src_size: { type: '2f', value: [ 1.0 / canvas.width, 1.0 / canvas.height ] },
-          intensity: { type: 'f', value: this._intensity },
-          u_filteredImage: { type: 'i', value: 1 }
+        if (!this._glslPrograms[renderer.id]) {
+          this._glslPrograms[renderer.id] = renderer.setupGLSLProgram(
+            null,
+            this._fragmentShader
+          )
         }
-      })
+
+        var canvas = renderer.getCanvas()
+        renderer.runProgram(this._glslPrograms[renderer.id], {
+          uniforms: {
+            src_size: { type: '2f', value: [ canvas.width, canvas.height ] },
+            intensity: { type: 'f', value: this._intensity },
+            u_filteredImage: { type: 'i', value: 1 }
+          }
+        })
+      }
       resolve()
     })
   }
