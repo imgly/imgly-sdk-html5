@@ -45,8 +45,7 @@ export default class EditorScreenComponent extends ScreenComponent {
       zoom: null,
       controls: OverviewControls,
       zoomEnabled: true,
-      dragEnabled: true,
-      containerHeight: 0
+      dragEnabled: true
     }
 
     this._events = {
@@ -67,11 +66,6 @@ export default class EditorScreenComponent extends ScreenComponent {
 
     this._fileLoader = new FileLoader(this.refs.fileInput)
     this._fileLoader.on('file', this._onNewFile)
-
-    // Since IE < 10 is too stupid to calculate the height of nested
-    // tables, we do this ourselves... oh boy...
-    const parentNode = this.refs.root.parentNode
-    this.setState({ containerHeight: parentNode.offsetHeight })
 
     const { options } = this.context
     if (options.responsive) {
@@ -471,9 +465,7 @@ export default class EditorScreenComponent extends ScreenComponent {
         onClick={this._onExportClick} />)
     }
 
-    return (<div bem='b:screen $b:editorScreen'
-      ref='root'
-      style={{ height: this.state.containerHeight }}>
+    return (<div bem='b:screen $b:editorScreen'>
       <SubHeaderComponent
         label={this._t('webcam.headline')}>
         <bem specifier='$b:subHeader'>
