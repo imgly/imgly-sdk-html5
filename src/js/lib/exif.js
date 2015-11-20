@@ -292,6 +292,7 @@ export default class Exif {
     }
     return false
   }
+
   /**
    * Slices the array into segments
    * @param  {Array.<Number>} buf
@@ -320,5 +321,11 @@ export default class Exif {
     this._stream.setHead(0)
 
     return segments
+  }
+
+  dispose () {
+    this._buf = []
+    this._exifBuffer = []
+    this._segments = []
   }
 }
