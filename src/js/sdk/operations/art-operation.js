@@ -94,7 +94,7 @@ ArtOperation.identifier = 'art'
 ArtOperation.prototype.availableOptions = {
   intensity: {
     type: 'number',
-    default: 1,
+    default: 0.5,
     setter: function (intensity) {
       this._selectedFilter &&
         this._selectedFilter.setIntensity(intensity)
