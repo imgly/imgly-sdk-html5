@@ -156,19 +156,12 @@ class EditorComponent extends React.Component {
     const Screen = this.state.screen
     if (!Screen) { return ReactBEM.transform(<div />) }
 
-    return ReactBEM.transform(<div bem='$b:editor'>
+    return ReactBEM.transform(<div bem='b:editor'>
       <ModalContainerComponent
         modalManager={ModalManager.instance}
         onUpdate={this._onModalManagerUpdate} />
 
-      <div bem='e:table'>
-        <HeaderComponent />
-        <div bem='e:row m:screen'>
-          <div bem='e:cell m:screen'>
-            <Screen editor={this} {...this._props} ref='screen' />
-          </div>
-        </div>
-      </div>
+      <Screen editor={this} {...this._props} ref='screen' />
     </div>)
   }
 }
@@ -185,6 +178,7 @@ EditorComponent.propTypes = {
   ui: React.PropTypes.object.isRequired,
   kit: React.PropTypes.object.isRequired,
   operationsStack: React.PropTypes.object.isRequired,
+  mediator: React.PropTypes.object.isRequired,
   options: React.PropTypes.object.isRequired
 }
 

@@ -8,12 +8,12 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-+block(screen)
-  @include border-radius(5px)
-  display: table
++block(editor)
+  +block(screen)
+    @include border-radius(5px)
 
-  width: 100%
-  height: 100%
+    padding-top: $headerBarHeight
 
-  table-layout: fixed
-  background: $secondaryBackgroundColor
+    width: 100%
+    height: 100%
+    background: $secondaryBackgroundColor

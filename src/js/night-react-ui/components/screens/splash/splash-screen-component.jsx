@@ -9,6 +9,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 import { ReactBEM } from '../../../globals'
+import HeaderComponent from '../../header-component'
 import ScreenComponent from '../screen-component'
 import SplashScreenUploadComponent from './upload-component'
 import SplashScreenWebcamComponent from './webcam-component'
@@ -44,12 +45,17 @@ export default class SplashScreenComponent extends ScreenComponent {
   renderWithBEM () {
     let webcamComponent
     if (this.context.options.webcam !== false) {
-      webcamComponent = <SplashScreenWebcamComponent onClick={this._onWebcamClick} />
+      webcamComponent = <SplashScreenWebcamComponent
+        halfHeight
+        onClick={this._onWebcamClick} />
     }
 
-    return (<div bem='b:screen b:splashScreen'>
+    return (<div bem='b:screen'>
+      <HeaderComponent />
       {webcamComponent}
-      <SplashScreenUploadComponent onImage={this._onImage} />
+      <SplashScreenUploadComponent
+        halfHeight={this.context.options.webcam !== false}
+        onImage={this._onImage} />
     </div>)
   }
 }

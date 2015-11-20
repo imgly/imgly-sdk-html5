@@ -16,10 +16,8 @@ export default class SplashScreenComponent extends BaseComponent {
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
-    return (<div bem='$b:header e:row'>
-      <div bem='e:cell'>
-        <div bem='e:label'>{this.context.options.title}</div>
-      </div>
+    return (<div bem='$b:header'>
+      <div bem='e:label'>{this.context.options.title}</div>
     </div>)
   }
 }

@@ -12,13 +12,15 @@ $headerBarHeight: 30px
 
 +block(editor)
   +block(header)
-    +element(row)
-      display: table-row
-      height: $headerBarHeight
+    position: absolute
+    top: 0
+    left: 0
 
-    +element(cell)
-      display: table-cell
-      text-align: center
+    width: 100%
+    height: $headerBarHeight
+
+    text-align: center
+    background: $backgroundColor
 
     +element(label)
       @include font-regular

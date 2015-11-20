@@ -11,6 +11,7 @@
 import { React, ReactBEM, Constants, SDKUtils, SharedState } from '../../../globals'
 import FileLoader from '../../../lib/file-loader'
 import ScreenComponent from '../screen-component'
+import HeaderComponent from '../../header-component'
 import SubHeaderComponent from '../../sub-header-component'
 import SubHeaderButtonComponent from '../../sub-header-button-component'
 import CanvasComponent from './canvas-component'
@@ -466,6 +467,7 @@ export default class EditorScreenComponent extends ScreenComponent {
     }
 
     return (<div bem='b:screen $b:editorScreen'>
+      <HeaderComponent />
       <SubHeaderComponent
         label={this._t('webcam.headline')}>
         <bem specifier='$b:subHeader'>

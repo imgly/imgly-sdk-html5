@@ -10,19 +10,17 @@
 
 +block(editor)
   +block(splashScreen)
-    border-spacing: 20px
-
-    +element(row)
-      display: table-row
-
-      +modifier(withContent)
-        height: 45%
-
     +element(cell)
       @include border-radius(5px)
-      display: table-cell
+      position: relative
       vertical-align: middle
       text-align: center
+      border: 20px solid transparent
+
+      width: 100%
+      height: 100%
+      +modifier(halfHeight)
+        height: 50%
 
       +element(image)
         display: block
@@ -39,12 +37,29 @@
         font-size: 13px
         color: $lightGreyColor
 
-      +modifier(withBorder)
-        border: 1px dashed $lightGreyColor
+      +element(contentWrapper)
+        position: absolute
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+        width: 100%
+        height: 100%
+        display: table
+        table-layout: fixed
+
+      +element(contentRow)
+        display: table-row
+
+      +element(contentCell)
+        @include border-radius(5px)
+        display: table-cell
+        vertical-align: middle
+
+        +modifier(withBorder)
+          border: 1px dashed $lightGreyColor
 
       +modifier(upload)
-        position: relative
-
         +flag(hovered)
           border-color: $lighterGreyColor
 

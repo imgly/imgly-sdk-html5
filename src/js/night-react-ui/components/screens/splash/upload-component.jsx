@@ -137,28 +137,39 @@ export default class UploadComponent extends BaseComponent {
       cellProps.className = 'is-hovered'
     }
 
-    let cellBEM = '$e:cell m:upload'
+    let cellBEM = '$e:cell'
     let orNode = null
     if (this.context.options.webcam !== false) {
-      cellBEM += ' m:withBorder'
       orNode = <div bem='e:or'>{this._t('splash.or')}</div>
+    }
+    if (this.props.halfHeight) {
+      cellBEM += ' m:halfHeight'
+    }
+
+    let contentCellBEM = 'e:contentCell'
+    if (this.context.options.webcam !== false) {
+      contentCellBEM += ' m:withBorder'
     }
 
     return (<bem specifier='b:splashScreen'>
-      <div bem='e:row m:withContent m:upload'>
-        <div bem={cellBEM} {...cellProps}>
-          <bem specifier='m:upload'>
-            <input type='file' bem='b:hiddenFileInput' ref='fileInput' onChange={this._onFileChange} />
-            {orNode}
-          </bem>
-          <img bem='e:image'
-            src={this._getAssetPath('splash/add-photo@2x.png', true)} />
-          <ButtonComponent bem='e:button'
-            onClick={this._onClick}>
-              {this._t('splash.upload.button')}
-          </ButtonComponent>
-          <div bem='e:description'>
-            {this._t('splash.upload.description')}
+      <div bem={cellBEM} {...cellProps}>
+        <div bem='e:contentWrapper'>
+          <div bem='e:contentRow'>
+            <div bem={contentCellBEM}>
+              <bem specifier='m:upload'>
+                <input type='file' bem='b:hiddenFileInput' ref='fileInput' onChange={this._onFileChange} />
+                {orNode}
+              </bem>
+              <img bem='e:image'
+                src={this._getAssetPath('splash/add-photo@2x.png', true)} />
+              <ButtonComponent bem='e:button'
+                onClick={this._onClick}>
+                  {this._t('splash.upload.button')}
+              </ButtonComponent>
+              <div bem='e:description'>
+                {this._t('splash.upload.description')}
+              </div>
+            </div>
           </div>
         </div>
       </div>

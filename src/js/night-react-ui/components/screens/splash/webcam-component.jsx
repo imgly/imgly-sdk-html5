@@ -14,17 +14,26 @@ import ButtonComponent from '../../button-component'
 
 export default class WebcamComponent extends BaseComponent {
   renderWithBEM () {
+    let cellBEM = '$e:cell'
+    if (this.props.halfHeight) {
+      cellBEM += ' m:halfHeight'
+    }
+
     return (<bem specifier='b:splashScreen'>
-      <div bem='e:row m:withContent m:webcam'>
-        <div bem='$e:cell m:webcam'>
-          <img bem='e:image'
-            src={this._getAssetPath('splash/shutter@2x.png', true)} />
-          <ButtonComponent bem='e:button'
-            onClick={this.props.onClick}>
-              {this._t('splash.webcam.button')}
-          </ButtonComponent>
-          <div bem='e:description'>
-            {this._t('splash.webcam.description')}
+      <div bem={cellBEM}>
+        <div bem='e:contentWrapper'>
+          <div bem='e:contentRow'>
+            <div bem='e:contentCell'>
+              <img bem='e:image'
+                src={this._getAssetPath('splash/shutter@2x.png', true)} />
+              <ButtonComponent bem='e:button'
+                onClick={this.props.onClick}>
+                  {this._t('splash.webcam.button')}
+              </ButtonComponent>
+              <div bem='e:description'>
+                {this._t('splash.webcam.description')}
+              </div>
+            </div>
           </div>
         </div>
       </div>
