@@ -71,7 +71,6 @@ export default class FiltersControlsComponent extends BaseComponent {
    */
   _onItemClick (filter, e) {
     this._operation.setFilter(filter)
-    this._operation.setIntensity(1)
     this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
   }
 

@@ -75,17 +75,11 @@ class GrayFilter extends Filter {
         )
       }
 
-      var canvas = renderer.getCanvas()
-
       renderer.runProgram(this._glslPrograms[renderer.id], {
         inputTexture,
         outputFBO,
         outputTexture,
-        switchBuffer: true,
-        uniforms: {
-          src_size: { type: '2f', value: [ 1.0 / canvas.width, 1.0 / canvas.height ] },
-          intensity: { type: 'f', value: this._intensity }
-        }
+        switchBuffer: false
       })
       resolve()
     })

@@ -9,7 +9,7 @@
  */
 
 import Utils from '../../lib/utils'
-import Filter from '../filters/filter'
+import Operation from '../operation'
 import GaussianBlurFilter from '../blur/gaussian-blur-filter'
 import NormalMapFilter from './normal-map-filter'
 import GrayFilter from './gray-filter'
@@ -20,9 +20,10 @@ import GrayFilter from './gray-filter'
  * @alias PhotoEditorSDK.Art.WaterColorFilter
  * @extends {PhotoEditorSDK.Filter}
  */
-class WaterColorFilter extends Filter {
+class WaterColorFilter extends Operation {
   constructor (...args) {
     super(...args)
+
     this._glslPrograms = {}
     this._options = Utils.defaults(this._options, {
       contrast: 1.0
@@ -102,6 +103,7 @@ class WaterColorFilter extends Filter {
       gl_FragColor =  color*(1.0 - inc) + newFrame * inc;
     }
     `
+
     this._gaussianBlurOperation = new GaussianBlurFilter()
     this._normalMapFilter = new NormalMapFilter()
     this._grayFilter = new GrayFilter()
@@ -114,33 +116,32 @@ class WaterColorFilter extends Filter {
    */
   /* istanbul ignore next */
   renderWebGL (renderer) {
-    return new Promise((resolve, reject) => {
-      var repetitions = Math.round(this._intensity * 20)
-      for (var i = 0; i < repetitions; i++) {
-        this._renderReliefMap(renderer)
+    return this._renderReliefMap(renderer)
+      .then(() => {
         const gl = renderer.getContext()
-        gl.activeTexture(gl.TEXTURE1)
-        gl.bindTexture(gl.TEXTURE_2D, this._lastTexture)
-        gl.activeTexture(gl.TEXTURE0)
+        const repititions = Math.round(this.getIntensity() * 40)
+        for (let i = 0; i < repititions; i++) {
+          gl.activeTexture(gl.TEXTURE1)
+          gl.bindTexture(gl.TEXTURE_2D, this._lastTexture)
+          gl.activeTexture(gl.TEXTURE0)
 
-        if (!this._glslPrograms[renderer.id]) {
-          this._glslPrograms[renderer.id] = renderer.setupGLSLProgram(
-            null,
-            this._fragmentShader
-          )
-        }
-
-        var canvas = renderer.getCanvas()
-        renderer.runProgram(this._glslPrograms[renderer.id], {
-          uniforms: {
-            src_size: { type: '2f', value: [ 1.0 / canvas.width, 1.0 / canvas.height ] },
-            intensity: { type: 'f', value: this._intensity },
-            u_filteredImage: { type: 'i', value: 1 }
+          if (!this._glslPrograms[renderer.id]) {
+            this._glslPrograms[renderer.id] = renderer.setupGLSLProgram(
+              null,
+              this._fragmentShader
+            )
           }
-        })
-      }
-      resolve()
-    })
+
+          var canvas = renderer.getCanvas()
+          renderer.runProgram(this._glslPrograms[renderer.id], {
+
+            uniforms: {
+              src_size: { type: '2f', value: [ 1.0 / canvas.width, 1.0 / canvas.height ] },
+              u_filteredImage: { type: 'i', value: 1 }
+            }
+          })
+        }
+      })
   }
 
   /**
@@ -180,17 +181,32 @@ class WaterColorFilter extends Filter {
   _renderReliefMap (renderer) {
     if (!this._fbosAvailable) this._createFramebuffers(renderer)
 
+    let responsePromise = Promise.resolve()
     if (this._dirty) {
       this._resizeAllTextures(renderer)
       let inputTexture = renderer.getLastTexture()
-      inputTexture = this._renderIntermediate(this._grayFilter, renderer, inputTexture)
-      inputTexture = this._renderIntermediate(this._gaussianBlurOperation, renderer, inputTexture)
-      inputTexture = this._renderIntermediate(this._gaussianBlurOperation, renderer, inputTexture)
-      inputTexture = this._renderIntermediate(this._gaussianBlurOperation, renderer, inputTexture)
-      inputTexture = this._renderIntermediate(this._normalMapFilter, renderer, inputTexture)
+
+      const operations = [
+        this._grayFilter,
+        this._gaussianBlurOperation,
+        this._gaussianBlurOperation,
+        this._gaussianBlurOperation,
+        this._normalMapFilter
+      ]
+
+      const promise = Promise.resolve(inputTexture)
+      operations.forEach((operation) => {
+        promise
+          .then((currentTexture) => {
+            return this._renderIntermediate(operation, renderer, currentTexture)
+          })
+      })
+
+      responsePromise = promise
 
       this._dirty = false
     }
+    return responsePromise
   }
 
   /**
@@ -272,6 +288,17 @@ class WaterColorFilter extends Filter {
    */
   get name () {
     return 'Watercolor'
+  }
+}
+
+/**
+ * Specifies the available options for this operation
+ * @type {Object}
+ */
+WaterColorFilter.prototype.availableOptions = {
+  intensity: {
+    type: 'number',
+    default: 0.5
   }
 }
 
