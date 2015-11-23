@@ -466,43 +466,45 @@ export default class EditorScreenComponent extends ScreenComponent {
         onClick={this._onExportClick} />)
     }
 
-    return (<div bem='b:screen $b:editorScreen'>
+    return (<div bem='b:screen'>
       <HeaderComponent />
-      <SubHeaderComponent
-        label={this._t('webcam.headline')}>
-        <bem specifier='$b:subHeader'>
-          <input type='file' bem='b:hiddenFileInput' ref='fileInput' />
-          <div bem='e:left'>
-            {newButton}
+      <div bem='$b:editorScreen'>
+        <SubHeaderComponent
+          label={this._t('webcam.headline')}>
+          <bem specifier='$b:subHeader'>
+            <input type='file' bem='b:hiddenFileInput' ref='fileInput' />
+            <div bem='e:left'>
+              {newButton}
+            </div>
+
+            <div bem='e:right'>
+              {undoButton}
+              {exportButton}
+            </div>
+
+            <ZoomComponent
+              zoom={this.state.zoom}
+              onZoomIn={this._onZoomIn}
+              onZoomOut={this._onZoomOut}
+              zoomEnabled={this.state.zoomEnabled} />
+          </bem>
+        </SubHeaderComponent>
+
+        <CanvasComponent
+          ref='canvas'
+          onFirstRender={this._onFirstCanvasRender}
+          zoom={this.state.zoom}
+          dragEnabled={this.state.dragEnabled}
+          largeControls={this.state.controls.largeCanvasControls}>
+          {canvasControls}
+        </CanvasComponent>
+
+        <div bem='$b:controls $e:container e:row'>
+          <div bem='e:cell'>
+            {controls}
           </div>
-
-          <div bem='e:right'>
-            {undoButton}
-            {exportButton}
-          </div>
-
-          <ZoomComponent
-            zoom={this.state.zoom}
-            onZoomIn={this._onZoomIn}
-            onZoomOut={this._onZoomOut}
-            zoomEnabled={this.state.zoomEnabled} />
-        </bem>
-      </SubHeaderComponent>
-
-      <CanvasComponent
-        ref='canvas'
-        onFirstRender={this._onFirstCanvasRender}
-        zoom={this.state.zoom}
-        dragEnabled={this.state.dragEnabled}
-        largeControls={this.state.controls.largeCanvasControls}>
-        {canvasControls}
-      </CanvasComponent>
-
-      <div bem='$b:controls $e:container e:row'>
-        <div bem='e:cell'>
-          {controls}
         </div>
-      </div>
+      </div>™
     </div>)
   }
 }
