@@ -56,8 +56,6 @@ export default class PaintCanvasControlsComponent extends BaseComponent {
     const currentFilter = this._operation.getFilter()
     if (currentFilter.isIdentity) return null
 
-    console.log(this._operation.getIntensity())
-
     return (<div bem='$b:canvasControls e:container m:bottom m:dark'>
       <SliderComponent
         minValue={0}

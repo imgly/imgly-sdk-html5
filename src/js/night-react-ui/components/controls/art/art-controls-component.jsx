@@ -12,10 +12,12 @@
 import { ReactBEM, BaseComponent } from '../../../globals'
 import ScrollbarComponent from '../../scrollbar-component'
 
-import PaintControls from './paint/'
+import TableauControls from './tableau/'
+import StreetControls from './street/'
 
 const ITEMS = [
-  PaintControls
+  TableauControls,
+  StreetControls
 ]
 
 export default class ArtControlsComponent extends BaseComponent {

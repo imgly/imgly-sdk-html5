@@ -40,7 +40,8 @@ export default class NightReactUI extends EventEmitter {
       'filter',
 
       // Then art operations
-      'art',
+      'tableau',
+      'street',
 
       'contrast',
       'brightness',

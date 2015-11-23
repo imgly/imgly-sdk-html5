@@ -24,37 +24,8 @@ class GrayFilter extends Filter {
     this._options = Utils.defaults(this._options, {
       contrast: 1.0
     })
-
-    /**
-     * The fragment shader for this primitive
-     * @return {String}
-     * @private
-     */
-    this._vertexShader = `
-    attribute vec2 a_position;
-    attribute vec2 a_texCoord;
-    varying vec2 v_texCoord;
-
-    void main() {
-     gl_Position = vec4(a_position, 0, 1);
-     v_texCoord = a_texCoord;
-    }
-    `
-
-     /**
-     * The fragment shader used for this operation
-     */
-    this._fragmentShader = `
-    varying highp vec2 v_texCoord;
-    uniform sampler2D inputImageTexture;
-    precision highp float;
-
-    void main() {
-      vec4 texel = texture2D( inputImageTexture, v_texCoord );
-      float luminance = dot( vec3 (0.2125, 0.7154, 0.0721), vec3(texel));
-      gl_FragColor = vec4(luminance, luminance, luminance, texel.a);
-    }
-    `
+    this._vertexShader = require('raw!../generic/default.vert')
+    this._fragmentShader = this._blurShader = require('raw!./gray.frag')
   }
 
   /**

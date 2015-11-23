@@ -10,17 +10,17 @@
 
 import Utils from '../lib/utils'
 import Operation from './operation'
-import Filters from './art/'
+import Filters from './tableau/'
 import IdentityFilter from './filters/identity-filter'
 
 /**
  * An operation that can apply a selected filter
  *
  * @class
- * @alias PhotoEditorSDK.Operations.ArtOperation
+ * @alias PhotoEditorSDK.Operations.TableauOperation
  * @extends PhotoEditorSDK.Operation
  */
-class ArtOperation extends Operation {
+class TableauOperation extends Operation {
   constructor (...args) {
     super(...args)
 
@@ -85,13 +85,13 @@ class ArtOperation extends Operation {
  * operations.
  * @type {String}
  */
-ArtOperation.identifier = 'art'
+TableauOperation.identifier = 'tableau'
 
 /**
  * Specifies the available options for this operation
  * @type {Object}
  */
-ArtOperation.prototype.availableOptions = {
+TableauOperation.prototype.availableOptions = {
   intensity: {
     type: 'number',
     default: 0.5,
@@ -109,4 +109,4 @@ ArtOperation.prototype.availableOptions = {
   }
 }
 
-export default ArtOperation
+export default TableauOperation

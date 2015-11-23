@@ -108,7 +108,7 @@ class GaussianBlurFilter extends Filter {
         inputTexture,
         outputFBO,
         outputTexture,
-        switchBuffer: false,
+        switchBuffer: true,
         uniforms: {
           src_size: { type: '2f', value: [ 1.0 / canvas.width, 1.0 / canvas.height ] },
           intensity: { type: 'f', value: this._intensity }
