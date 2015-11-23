@@ -10,6 +10,7 @@
  */
 import { ReactBEM } from '../../../globals'
 import ScreenComponent from '../screen-component'
+import HeaderComponent from '../../header-component'
 import SubHeaderComponent from '../../sub-header-component'
 import WebcamComponent from './webcam-component'
 
@@ -57,38 +58,41 @@ export default class WebcamScreenComponent extends ScreenComponent {
    */
   renderWithBEM () {
     const { ui } = this.context
-    return (<div bem='b:screen $b:webcamScreen'>
-      <SubHeaderComponent
-        label={this._t('webcam.headline')}>
-        <bem specifier='$b:subHeader'>
-          <div bem='e:cancelButton' onClick={this._onCancel}>
-            {this._t('generic.cancel')}
-          </div>
-          <div bem='e:label'>
-            {this._t('webcam.headline')}
-          </div>
-        </bem>
-      </SubHeaderComponent>
-
-      <div bem='$b:canvas e:container e:row'>
-        <div bem='e:container e:cell'>
-          <WebcamComponent
-            ref='webcam'
-            onReady={this._onWebcamReady}
-            onBack={this._onCancel} />
-        </div>
-      </div>
-
-      <div bem='$b:controls $e:container e:row'>
-        <div bem='e:cell'>
-          <bem specifier='b:webcamScreen'>
-            <div
-              bem='$e:shutterButton'
-              onClick={this._onShutterClicked}
-              className={this.state.webcamReady ? 'is-active' : false}>
-              <img bem='e:icon' src={ui.getHelpers().assetPath('controls/webcam/shutter@2x.png', true)} />
+    return (<div bem='b:screen'>
+      <HeaderComponent />
+      <div bem='$b:webcamScreen'>
+        <SubHeaderComponent
+          label={this._t('webcam.headline')}>
+          <bem specifier='$b:subHeader'>
+            <div bem='e:cancelButton' onClick={this._onCancel}>
+              {this._t('generic.cancel')}
+            </div>
+            <div bem='e:label'>
+              {this._t('webcam.headline')}
             </div>
           </bem>
+        </SubHeaderComponent>
+
+        <div bem='$b:canvas e:container e:row'>
+          <div bem='e:container e:cell'>
+            <WebcamComponent
+              ref='webcam'
+              onReady={this._onWebcamReady}
+              onBack={this._onCancel} />
+          </div>
+        </div>
+
+        <div bem='$b:controls $e:container e:row'>
+          <div bem='e:cell'>
+            <bem specifier='b:webcamScreen'>
+              <div
+                bem='$e:shutterButton'
+                onClick={this._onShutterClicked}
+                className={this.state.webcamReady ? 'is-active' : false}>
+                <img bem='e:icon' src={ui.getHelpers().assetPath('controls/webcam/shutter@2x.png', true)} />
+              </div>
+            </bem>
+          </div>
         </div>
       </div>
     </div>)
