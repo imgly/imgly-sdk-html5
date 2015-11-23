@@ -22,7 +22,8 @@ import Configurable from '../lib/configurable'
 class Operation extends Configurable {
   constructor (kit, options) {
     super(options, {
-      numberFormat: { type: 'string', default: 'relative', available: ['absolute', 'relative'] }
+      numberFormat: { type: 'string', default: 'relative', available: ['absolute', 'relative'] },
+      enabled: { type: 'boolean', default: true }
     })
 
     this._kit = kit
@@ -49,6 +50,10 @@ class Operation extends Configurable {
    * @abstract
    */
   render (renderer) {
+    if (!this.getEnabled()) {
+      return Promise.resolve()
+    }
+
     let renderFn
     if (renderer.identifier === 'webgl') {
       /* istanbul ignore next */
