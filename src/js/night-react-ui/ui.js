@@ -119,11 +119,22 @@ export default class NightReactUI extends EventEmitter {
    * @return {Promise}
    */
   export (download = false) {
+    let watermarkOperation
+    if (this.operationExists('watermark')) {
+      watermarkOperation = this.getOperation('watermark')
+      watermarkOperation.setEnabled(false)
+    }
+
     const options = this._options.export
     const exporter = new Exporter(this._kit, options, download)
     return exporter.export()
       .then((output) => {
         this.emit('export', output)
+
+        if (watermarkOperation) {
+          watermarkOperation.setEnabled(true)
+        }
+
         return output
       })
   }
