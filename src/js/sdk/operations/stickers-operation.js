@@ -225,7 +225,6 @@ class StickersOperation extends Operation {
             y < 0.5 * stickerDimensions.y) {
           intersectingSticker = sticker
         }
-
       })
     return intersectingSticker
   }

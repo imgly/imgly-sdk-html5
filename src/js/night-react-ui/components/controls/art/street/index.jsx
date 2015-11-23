@@ -8,19 +8,22 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import PaintControlsComponent from './paint-controls-component'
-import PaintCanvasControlsComponent from './paint-canvas-controls-component'
+import StreetControlsComponent from './street-controls-component'
+import StreetCanvasControlsComponent from './street-canvas-controls-component'
 
 export default {
-  canvasControls: PaintCanvasControlsComponent,
-  controls: PaintControlsComponent,
+  canvasControls: StreetCanvasControlsComponent,
+  controls: StreetControlsComponent,
   largeCanvasControls: true,
-  identifier: 'paint',
+  identifier: 'street',
   icon: 'controls/overview/filters@2x.png',
   label: 'controls.overview.filters',
   getInitialSharedState: (context) => {
-    const operationExistedBefore = context.ui.operationExists('art')
-    const operation = context.ui.getOrCreateOperation('art')
+    const operationExistedBefore = context.ui.operationExists('street')
+    const operation = context.ui.getOrCreateOperation('street')
+
+    console.log(context.kit.operationsStack._stack.length)
+
     const initialOptions = {
       filter: operation.getFilter(),
       intensity: operation.getIntensity()

@@ -228,7 +228,6 @@ export default class Renderer extends EventEmitter {
    */
   _registerOperations () {
     this._operations = {}
-
     for (let operationName in Operations) {
       const operation = Operations[operationName]
       this._operations[operation.identifier] = operation
