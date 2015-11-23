@@ -47,8 +47,6 @@ class WatermarkOperation extends Operation {
         size.x, size.y
       )
 
-      console.log(position.toString(), size.toString())
-
       resolve()
     })
   }
