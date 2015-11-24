@@ -39,6 +39,27 @@ class BrushMarkFilter extends Filter {
   /* istanbul ignore next */
   renderWebGL (renderer, inputTexture, outputFBO, outputTexture) {
     return this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture)
+    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
+    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
+    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
+    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
+    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
+    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
+    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
+    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
+    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
+    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
+    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
+    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
+    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
+    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
+    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
+    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
+    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
+    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
+    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
+    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
+      .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
       .then(() => this._uploadTexture(renderer))
       .then((texture) => {
         if (!this._glslPrograms[renderer.id]) {
@@ -82,7 +103,7 @@ class BrushMarkFilter extends Filter {
       })
 
       image.crossOrigin = 'Anonymous'
-      image.src = '/build/assets/art/brush2.jpg'
+      image.src = '/build/assets/art/Test_04.jpg'
     })
   }
 
