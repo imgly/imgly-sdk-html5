@@ -93,6 +93,36 @@ class StreetArtFilter extends Filter {
   */
   renderCanvas (renderer) {
     return new Promise((resolve, reject) => {
+      var canvas = renderer.getCanvas()
+      var context = renderer.getContext()
+      var imageData = context.getImageData(0, 0, canvas.width, canvas.height)
+      var pixels = imageData.data
+      var artPixels = null // TODO use hand over assert
+      var index = 0
+      var normedArtColor = [0, 0, 0]
+      var newColor = [0, 0, 0]
+      for (var y = 0; y < canvas.height; y++) {
+        for (var x = 0; x < canvas.width; x++) {
+          index = (y * canvas.width + x) * 4
+          var blend = 0
+          var gray = pixels[index] / 255.0 * 0.2125 + pixels[index + 1] / 255.0 * 0.7154 + pixels[index + 2] / 255.0 * 0.0721
+          if(gray > (1.0 - this._intensity)) {
+            blend = 1
+          }
+          normedArtColor[0] = artPixels[index] / 255
+          normedArtColor[1] = artPixels[index + 1] / 255
+          normedArtColor[2] = artPixels[index + 2] / 255
+          if (blend < 0.5) {
+            newColor[0] = 1.0 - 2.0 * (1.0 - normedArtColor[0])
+            newColor[1] = 1.0 - 2.0 * (1.0 - normedArtColor[1])
+            newColor[2] = 1.0 - 2.0 * (1.0 - normedArtColor[2])
+          } else {
+            newColor[0] = 2.0 * normedArtColor[0]
+            newColor[1] = 2.0 * normedArtColor[1]
+            newColor[2] = 2.0 * normedArtColor[2]
+          }
+        }
+      }
       resolve()
     })
   }
