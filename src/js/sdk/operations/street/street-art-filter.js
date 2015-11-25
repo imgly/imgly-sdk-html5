@@ -106,7 +106,7 @@ class StreetArtFilter extends Filter {
           index = (y * canvas.width + x) * 4
           var blend = 0
           var gray = pixels[index] / 255.0 * 0.2125 + pixels[index + 1] / 255.0 * 0.7154 + pixels[index + 2] / 255.0 * 0.0721
-          if(gray > (1.0 - this._intensity)) {
+          if (gray > (1.0 - this._intensity)) {
             blend = 1
           }
           normedArtColor[0] = artPixels[index] / 255
@@ -121,6 +121,9 @@ class StreetArtFilter extends Filter {
             newColor[1] = 2.0 * normedArtColor[1]
             newColor[2] = 2.0 * normedArtColor[2]
           }
+          pixels[index] = newColor[0]
+          pixels[index + 1] = newColor[1]
+          pixels[index + 2] = newColor[2]
         }
       }
       resolve()
