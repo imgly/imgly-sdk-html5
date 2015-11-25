@@ -38,28 +38,11 @@ class BrushMarkFilter extends Filter {
    */
   /* istanbul ignore next */
   renderWebGL (renderer, inputTexture, outputFBO, outputTexture) {
-    return this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture)
-    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
-    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
-    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
-    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
-    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
-    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
-    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
-    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
-    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
-    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
-    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
-    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
-    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
-    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
-    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
-    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
-    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
-    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
-    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
-    .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
-      .then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
+    let promise = Promise.resolve()
+    for (var i = 0; i < 20; i++) {
+      promise = promise.then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
+    }
+    return promise
       .then(() => this._uploadTexture(renderer))
       .then((texture) => {
         if (!this._glslPrograms[renderer.id]) {
@@ -80,8 +63,7 @@ class BrushMarkFilter extends Filter {
           }
         })
       })
-  }
-
+    }
   /**
    * Uploads the given image to a texture
    * @param  {WebGLRenderer} renderer
