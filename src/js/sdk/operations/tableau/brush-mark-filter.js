@@ -39,7 +39,7 @@ class BrushMarkFilter extends Filter {
   /* istanbul ignore next */
   renderWebGL (renderer, inputTexture, outputFBO, outputTexture) {
     let promise = Promise.resolve()
-    for (var i = 0; i < 20; i++) {
+    for (var i = 0; i < 15; i++) {
       promise = promise.then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
     }
     return promise
@@ -105,7 +105,6 @@ class BrushMarkFilter extends Filter {
    * @param  {Renderer} renderer
    */
   render (renderer) {
-    console.log(renderer.identifier)
     if (renderer.identifier === 'webgl') {
       return this.renderWebGL(renderer)
     } else {
