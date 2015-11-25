@@ -8,7 +8,6 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 import Utils from '../../lib/utils'
-import Color from '../../lib/color'
 import Filter from '../filters/filter'
 
 /**
@@ -76,36 +75,58 @@ class NormalMapFilter extends Filter {
       var pixels = imageData.data
       var originalPixels = context.getImageData(0, 0, canvas.width, canvas.height).data
       var index
+
       for (var y = 0; y < canvas.height; y++) {
         for (var x = 0; x < canvas.width; x++) {
-          var center = new Color(0.0, 0.0, 0.0, 1)
-          var topLeft = new Color(0.0, 0.0, 0.0, 1)
-          var left = new Color(0.0, 0.0, 0.0, 1)
-          var bottomLeft = new Color(0.0, 0.0, 0.0, 1)
-          var top = new Color(0.0, 0.0, 0.0, 1)
-          var bottom = new Color(0.0, 0.0, 0.0, 1)
-          var topRight = new Color(0.0, 0.0, 0.0, 1)
-          var right = new Color(0.0, 0.0, 0.0, 1)
-          var bottomRight = new Color(0.0, 0.0, 0.0, 1)
+          index = ((y - 1) * canvas.width + x) * 4
+          var top = originalPixels[index]
+
+          index = ((y + 1) * canvas.width + x) * 4
+          var bottom = originalPixels[index]
+
+          index = ((y - 1) * canvas.width + (x - 1)) * 4
+          var topLeft = originalPixels[index]
+
+          index = (y * canvas.width + (x - 1)) * 4
+          var left = originalPixels[index]
+
+          index = ((y + 1) * canvas.width + (x - 1)) * 4
+          var bottomLeft = originalPixels[index]
+
+          index = ((y - 1) * canvas.width + (x + 1)) * 4
+          var topRight = originalPixels[index]
+
+          index = (y * canvas.width + (x + 1)) * 4
+          var right = originalPixels[index]
+
+          index = ((y + 1) * canvas.width + (x + 1)) * 4
+          var bottomRight = originalPixels[index]
+
+          var dX = topRight + 2.0 * right + bottomRight - topLeft - 2.0 * left - bottomLeft
+          var dY = bottomLeft + 2.0 * bottom + bottomRight - topLeft - 2.0 * top - topRight
+
+          var N = this._finalize_normal(dX, dY, 0.01)
           index = (y * canvas.width + x) * 4
-          center[0] = originalPixels[index]
-          center[1] = originalPixels[index + 1]
-          center[2] = originalPixels[index + 2]
-
-          index = ((y - 1) * canvas.width + (x - 1)) * 4
-          topLeft[0] = originalPixels[index]
-          topLeft[1] = originalPixels[index + 1]
-          topLeft[2] = originalPixels[index + 2]
-
-          index = ((y - 1) * canvas.width + (x - 1)) * 4
-          topLeft[0] = originalPixels[index]
-          topLeft[1] = originalPixels[index + 1]
-          topLeft[2] = originalPixels[index + 2]
+          pixels[index] = N[0] * 255
+          pixels[index + 1] = N[1] * 255
+          pixels[index + 2] = N[2] * 255
         }
       }
       context.putImageData(imageData, 0, 0)
       resolve()
     })
+  }
+
+  _finalize_normal (x, y, z) {
+    var vec = [x, y, z]
+    var length = Math.sqrt(x * x + y * y + z * z)
+    vec[0] /= length
+    vec[1] /= length
+    vec[2] /= length
+    vec[0] = vec[0] * 0.5 + 0.5
+    vec[1] = vec[1] * 0.5 + 0.5
+    vec[2] = vec[2] * 0.5 + 0.5
+    return vec
   }
 
   /**
