@@ -147,10 +147,15 @@ class ImglyKit extends EventEmitter {
   /**
    * Sets the image and parses the exif data
    * @param {Image} image
+   * @param {Exif} exif = null
    */
-  setImage (image) {
+  setImage (image, exif = null) {
     this._options.image = image
-    this._parseExif(image)
+    if (!exif) {
+      this._parseExif(image)
+    } else {
+      this._exif = exif
+    }
   }
 
   /**
