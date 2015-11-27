@@ -32,6 +32,11 @@ export default class NightReactUI extends EventEmitter {
     this._operationsMap = {}
     this._operationsStack = this._kit.operationsStack
 
+    this._kit.on('reset', () => {
+      this._operationsMap = {}
+      this._initWatermarkOperation()
+    })
+
     this._preferredOperationOrder = [
       // First, all operations that affect the image dimensions
       'rotation',
@@ -59,6 +64,9 @@ export default class NightReactUI extends EventEmitter {
     this._initOperations()
     this._initControls()
 
+    // TODO: Find a nicer way to handle default operations
+    this._initWatermarkOperation()
+
     this.run()
   }
 
@@ -71,11 +79,16 @@ export default class NightReactUI extends EventEmitter {
 
     // Container has to be position: relative
     this._options.container.style.position = 'relative'
-
     this._render()
+  }
 
+  /**
+   * Creates the watermark operation if it doesn't exist yet
+   * @private
+   */
+  _initWatermarkOperation () {
     if (this._options.watermark) {
-      this.getOrCreateOperation('watermark', {
+      this._watermarkOperation = this.getOrCreateOperation('watermark', {
         image: this._options.watermark
       })
     }
@@ -119,10 +132,9 @@ export default class NightReactUI extends EventEmitter {
    * @return {Promise}
    */
   export (download = false) {
-    let watermarkOperation
-    if (this.operationExists('watermark')) {
-      watermarkOperation = this.getOperation('watermark')
-      watermarkOperation.setEnabled(false)
+    if (this._watermarkOperation) {
+      this._watermarkOperation = this.getOperation('watermark')
+      this._watermarkOperation.setEnabled(false)
     }
 
     const options = this._options.export
@@ -131,8 +143,8 @@ export default class NightReactUI extends EventEmitter {
       .then((output) => {
         this.emit('export', output)
 
-        if (watermarkOperation) {
-          watermarkOperation.setEnabled(true)
+        if (this._watermarkOperation) {
+          this._watermarkOperation.setEnabled(true)
         }
 
         return output
