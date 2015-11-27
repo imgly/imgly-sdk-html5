@@ -219,7 +219,12 @@ export default class Renderer extends EventEmitter {
     }
 
     this._renderer = null
-    this.setAllOperationsToDirty()
+    this.operationsStack.clear()
+
+    // TODO: We only need this event so that our React UI can re-create
+    // the watermark operation once the renderer has been reset. Find a
+    // better way to do this, this is really really dirty
+    this.emit('reset')
   }
 
   /**
@@ -236,19 +241,6 @@ export default class Renderer extends EventEmitter {
 
     this._operations = Utils.extend(this._operations,
       this._options.additionalOperations)
-  }
-
-  /**
-   * Returns the Operation instance with the given identifier,
-   * if it exists
-   * @param {String} identifier
-   * @returns {Operation}
-   */
-  getOperationFromStack (identifier) {
-    let operation = this.operationsStack.filter((operation) => {
-      return operation.identifier === identifier
-    })[0]
-    return operation
   }
 
   /**
