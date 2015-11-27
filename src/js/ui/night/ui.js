@@ -332,6 +332,14 @@ class NightUI extends UI {
       )
       this._imageResized = true
       this._options.image = ImageResizer.resize(this._options.image, newDimensions)
+
+      // Flag as jpeg image so that the resulting image will
+      // also include exif data
+      this._options.image.src = 'data:image/jpeg;base64,'
+
+      // Copy already parsed exif data, since the one we just
+      // created does not have any
+      this._kit.setImage(this._options.image, this._kit.exif)
     }
   }
 
