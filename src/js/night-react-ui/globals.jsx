@@ -11,7 +11,6 @@
 
 import React from 'react'
 import ReactDOM from 'react-dom'
-// TODO: Classnames license (probably) missing in build
 import Classnames from 'classnames'
 
 import BEM from './lib/bem'
