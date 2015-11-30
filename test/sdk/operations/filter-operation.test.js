@@ -31,7 +31,7 @@ describe('FilterOperation', function () {
       (function (name) {
         it(`should work with ${name} filter`, function () {
           kit.operationsStack.clear()
-          const operation = kit.createOperation('filters', {
+          const operation = kit.createOperation('filter', {
             filter: PhotoEditorSDK.Filters[name]
           })
           kit.operationsStack.push(operation)
