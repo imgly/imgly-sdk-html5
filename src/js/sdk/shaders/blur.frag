@@ -1,3 +1,9 @@
+/*!
+ * Based on glfx.js
+ * https://github.com/evanw/glfx.js
+ * Copyright (C) 2011 by Evan Wallace
+ */
+
 precision mediump float;
 uniform sampler2D u_image;
 uniform vec2 delta;
@@ -23,5 +29,4 @@ void main() {
   }
 
   gl_FragColor = color / total;
-  // gl_FragColor.rgb /= gl_FragColor.a + 0.00001;
 }

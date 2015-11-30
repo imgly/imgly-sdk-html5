@@ -19,7 +19,7 @@ export default class TextWebGLRenderer {
     this._programs = {}
     this._textures = {}
 
-    this.vertexShader = require('raw!../generic/sprite.vert')
+    this.vertexShader = require('raw!../../shaders/sprite.vert')
   }
 
   // -------------------------------------------------------------------------- RESET

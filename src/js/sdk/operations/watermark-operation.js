@@ -17,7 +17,7 @@ class WatermarkOperation extends Operation {
   constructor (...args) {
     super(...args)
 
-    this._vertexShader = require('raw!./generic/sprite.vert')
+    this._vertexShader = require('raw!../shaders/sprite.vert')
     this._textures = {}
   }
 

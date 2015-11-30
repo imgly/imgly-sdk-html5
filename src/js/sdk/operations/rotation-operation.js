@@ -25,17 +25,7 @@ class RotationOperation extends Operation {
     /**
      * The fragment shader used for this operation
      */
-    this.vertexShader = `
-      attribute vec2 a_position;
-      attribute vec2 a_texCoord;
-      varying vec2 v_texCoord;
-      uniform mat3 u_matrix;
-
-      void main() {
-        gl_Position = vec4((u_matrix * vec3(a_position, 1)).xy, 0, 1);
-        v_texCoord = a_texCoord;
-      }
-    `
+    this.vertexShader = require('raw!../shaders/sprite.vert')
   }
 
   /**

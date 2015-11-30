@@ -23,9 +23,9 @@ export default class StickersWebGLRenderer {
     this._programs = {}
     this._textures = {}
 
-    this._vertexShader = require('raw!../generic/sprite.vert')
-    this._adjustmentsShader = require('raw!./adjustments.frag')
-    this._blurShader = require('raw!../blur/blur.frag')
+    this._vertexShader = require('raw!../../shaders/sprite.vert')
+    this._adjustmentsShader = require('raw!../../shaders/adjustments.frag')
+    this._blurShader = require('raw!../../shaders/blur.frag')
   }
 
   /**
