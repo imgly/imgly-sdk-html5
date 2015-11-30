@@ -69,7 +69,7 @@ export default class NightUI extends EventEmitter {
       // Then post-processing
       'radial-blur',
       'tilt-shift',
-      'frames',
+      'frame',
       'stickers',
       'text',
       'brush'
@@ -515,7 +515,7 @@ export default class NightUI extends EventEmitter {
     this.registerControl('crop', 'crop', require('./controls/crop-control'))
     this.registerControl('radial-blur', 'radial-blur', require('./controls/radial-blur-control'))
     this.registerControl('tilt-shift', 'tilt-shift', require('./controls/tilt-shift-control'))
-    this.registerControl('frames', 'frames', require('./controls/frames-control'))
+    this.registerControl('frame', 'frame', require('./controls/frame-control'))
     this.registerControl('stickers', 'stickers', require('./controls/stickers-control'))
     this.registerControl('text', 'text', require('./controls/text-control'))
     this.registerControl('brush', 'brush', require('./controls/brush-control'))

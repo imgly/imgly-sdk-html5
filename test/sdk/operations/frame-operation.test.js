@@ -13,12 +13,12 @@ beforeEach(function () {
   kit = SpecHelpers.initRenderer()
 })
 
-describe('FramesOperation', function () {
+describe('FrameOperation', function () {
 
   describe('#render', function () {
 
     it('should succeed', function () {
-      const operation = kit.createOperation('frames', {
+      const operation = kit.createOperation('frame', {
         color: new PhotoEditorSDK.Color(0, 0, 0, 1)
       })
       kit.operationsStack.push(operation)

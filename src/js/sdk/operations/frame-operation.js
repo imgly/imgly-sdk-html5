@@ -12,13 +12,13 @@ import Operation from './operation'
 import Color from '../lib/color'
 
 /**
- * An operation that can frames on the canvas
+ * An operation that can draw a frame on the canvas
  *
  * @class
- * @alias PhotoEditorSDK.Operations.FramesOperation
+ * @alias PhotoEditorSDK.Operations.FrameOperation
  * @extends PhotoEditorSDK.Operation
  */
-class FramesOperation extends Operation {
+class FrameOperation extends Operation {
   constructor (...args) {
     super(...args)
 
@@ -116,15 +116,15 @@ class FramesOperation extends Operation {
  * operations.
  * @type {String}
  */
-FramesOperation.identifier = 'frames'
+FrameOperation.identifier = 'frame'
 
 /**
  * Specifies the available options for this operation
  * @type {Object}
  */
-FramesOperation.prototype.availableOptions = {
+FrameOperation.prototype.availableOptions = {
   color: { type: 'color', default: new Color(0, 0, 0, 1) },
   thickness: { type: 'number', default: 0.05 }
 }
 
-export default FramesOperation
+export default FrameOperation

@@ -13,7 +13,7 @@ import { ReactBEM, BaseComponent, Constants } from '../../../globals'
 import SliderComponent from '../../slider-component'
 import ColorPickerComponent from '../../color-picker/color-picker-component'
 
-export default class FramesControlsComponent extends BaseComponent {
+export default class FrameControlsComponent extends BaseComponent {
   constructor (...args) {
     super(...args)
 
@@ -139,7 +139,7 @@ export default class FramesControlsComponent extends BaseComponent {
           maxValue={maxThickness}
           valueUnit='px'
           middleDot={false}
-          label={this._t('controls.frames.thickness')}
+          label={this._t('controls.frame.thickness')}
           onChange={this._onThicknessUpdate}
           value={currentWidth} />
       </div>

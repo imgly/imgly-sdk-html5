@@ -6,11 +6,11 @@
       "adjustments": "Adjust",
       "crop": "Crop",
       "focus": "Focus",
-      "frames": "Frames",
+      "frame": "Frame",
       "stickers": "Stickers",
       "text": "Text"
     },
-    "frames": {
+    "frame": {
       "color": "Color",
       "thickness": "Thickness"
     },

@@ -4,7 +4,7 @@
     "contrast": "Contrast",
     "filters": "Filters",
     "flip": "Flip",
-    "frames": "Frames",
+    "frame": "Frame",
     "radial-blur": "Radial Blur",
     "rotation": "Rotation",
     "saturation": "Saturation",
@@ -40,7 +40,7 @@
     "warning_headline": "Warning!"
   },
   "controls": {
-    "frames": {
+    "frame": {
       "color": "Color"
     },
     "brush": {

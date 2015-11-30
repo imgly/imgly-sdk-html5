@@ -6,11 +6,11 @@
       "adjustments": "Korrekturen",
       "crop": "Zuschneiden",
       "blur": "Weichzeichnen",
-      "frames": "Rahmen",
+      "frame": "Rahmen",
       "stickers": "Sticker",
       "text": "Text"
     },
-    "frames": {
+    "frame": {
       "color": "Farbe",
       "thickness": "Dicke"
     },

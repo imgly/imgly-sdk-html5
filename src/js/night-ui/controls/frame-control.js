@@ -13,19 +13,19 @@ import Control from './control'
 import SimpleSlider from '../lib/simple-slider'
 import ColorPicker from '../lib/color-picker'
 
-class FramesControl extends Control {
+class FrameControl extends Control {
   /**
    * Entry point for this control
    */
   init () {
-    let controlsTemplate = __DOTJS_TEMPLATE('../templates/operations/frames_controls.jst')
+    let controlsTemplate = __DOTJS_TEMPLATE('../templates/operations/frame_controls.jst')
     this._controlsTemplate = controlsTemplate
     this._partialTemplates.slider = SimpleSlider.template
     this._partialTemplates.colorPicker = ColorPicker.template
   }
 
   _renderControls () {
-    this._partialTemplates.colorPicker.additionalContext = { label: this._ui.translate('controls.frames.color') }
+    this._partialTemplates.colorPicker.additionalContext = { label: this._ui.translate('controls.frame.color') }
 
     super._renderControls()
   }
@@ -35,8 +35,8 @@ class FramesControl extends Control {
    * @override
    */
   _onEnter () {
-    this._operationExistedBefore = !!this._ui.operations.frames
-    this._operation = this._ui.getOrCreateOperation('frames')
+    this._operationExistedBefore = !!this._ui.operations.frame
+    this._operation = this._ui.getOrCreateOperation('frame')
 
     this._initialOptions = {
       thickness: this._operation.getThickness(),
@@ -69,7 +69,7 @@ class FramesControl extends Control {
     if (this._operationExistedBefore) {
       this._operation.set(this._initialOptions)
     } else {
-      this._ui.removeOperation('frames')
+      this._ui.removeOperation('frame')
     }
     this._ui.canvas.render()
   }
@@ -110,6 +110,6 @@ class FramesControl extends Control {
  * A unique string that identifies this control.
  * @type {String}
  */
-FramesControl.prototype.identifier = 'frames'
+FrameControl.prototype.identifier = 'frame'
 
-export default FramesControl
+export default FrameControl

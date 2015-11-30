@@ -8,18 +8,18 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import FramesControlsComponent from './frames-controls-component'
+import FrameControlsComponent from './frame-controls-component'
 
 export default {
   canvasControls: null,
-  controls: FramesControlsComponent,
-  identifier: 'frames',
-  icon: 'controls/overview/frames@2x.png',
-  label: 'controls.overview.frames',
+  controls: FrameControlsComponent,
+  identifier: 'frame',
+  icon: 'controls/overview/frame@2x.png',
+  label: 'controls.overview.frame',
   getInitialSharedState: (context) => {
     const { ui } = context
-    const operationExistedBefore = ui.operationExists('frames')
-    const operation = ui.getOrCreateOperation('frames')
+    const operationExistedBefore = ui.operationExists('frame')
+    const operation = ui.getOrCreateOperation('frame')
     const initialOptions = {
       color: operation.getColor().clone(),
       thickness: operation.getThickness()
@@ -29,6 +29,6 @@ export default {
     }
   },
   isSelectable: (ui) => {
-    return ui.isOperationEnabled('frames')
+    return ui.isOperationEnabled('frame')
   }
 }
