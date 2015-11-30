@@ -51,8 +51,6 @@ export default class StickersContrastControlsComponent extends BaseComponent {
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
-    const ui = this.context.ui
-
     const adjustments = this._selectedSticker.getAdjustments()
     const contrast = adjustments.getContrast()
 

@@ -204,8 +204,6 @@ export default class StickersOverviewControlsComponent extends BaseComponent {
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
-    const ui = this.context.ui
-
     const listItems = this._availableStickers.map((paths, i) => {
       const smallPath = paths[0]
       const largePath = paths[1]

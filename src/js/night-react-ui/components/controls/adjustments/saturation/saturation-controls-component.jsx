@@ -114,8 +114,6 @@ export default class SaturationControlsComponent extends BaseComponent {
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
-    const ui = this.context.ui
-
     return (<div bem='$b:controls e:table'>
       <BackButtonComponent onClick={this._onBackClick} />
       <div bem='e:cell m:slider'>

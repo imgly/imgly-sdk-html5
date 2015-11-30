@@ -330,8 +330,6 @@ export default class TextControlsComponent extends BaseComponent {
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
-    const { ui } = this.context
-
     const listItems = [
       this._renderSizeItem(),
       this._renderFontItem(),
