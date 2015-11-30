@@ -29,6 +29,6 @@ export default {
     }
   },
   isSelectable: (ui) => {
-    return ui.isOperationSelected('saturation')
+    return ui.isOperationEnabled('saturation')
   }
 }

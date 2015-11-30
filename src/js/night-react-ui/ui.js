@@ -154,12 +154,12 @@ export default class NightReactUI extends EventEmitter {
   // -------------------------------------------------------------------------- INITIALIZATION
 
   /**
-   * Initializes the available and selected controls
+   * Initializes the available and enabled controls
    * @private
    */
   _initOperations () {
     this._availableOperations = this._kit.getOperations()
-    this._selectedOperations = []
+    this._enabledOperations = []
 
     let operationIdentifiers = this._options.operations
     if (!(operationIdentifiers instanceof Array)) {
@@ -171,13 +171,13 @@ export default class NightReactUI extends EventEmitter {
     for (let identifier in this._availableOperations) {
       if (this._options.operations === 'all' ||
           operationIdentifiers.indexOf(identifier) !== -1) {
-        this._selectedOperations.push(identifier)
+        this._enabledOperations.push(identifier)
       }
     }
   }
 
   /**
-   * Initializes the available and selected controls
+   * Initializes the available and enabled controls
    * @private
    */
   _initControls () {
@@ -193,18 +193,18 @@ export default class NightReactUI extends EventEmitter {
       text: require('./components/controls/text/')
     }, this._options.additionalControls)
 
-    this._selectedControls = []
+    this._enabledControls = []
     for (let identifier in this._availableControls) {
       const controls = this._availableControls[identifier]
       if (!controls.isSelectable || controls.isSelectable(this)) {
-        this._selectedControls.push(controls)
+        this._enabledControls.push(controls)
       }
     }
-    this._selectedControls.sort((a, b) => {
+    this._enabledControls.sort((a, b) => {
       let sortA = this._options.controlsOrder.indexOf(a.identifier)
       let sortB = this._options.controlsOrder.indexOf(b.identifier)
-      if (sortA === -1) sortA = this._selectedControls.length
-      if (sortB === -1) sortB = this._selectedControls.length
+      if (sortA === -1) sortA = this._enabledControls.length
+      if (sortB === -1) sortB = this._enabledControls.length
       return sortB < sortA ? 1 : -1
     })
   }
@@ -384,16 +384,16 @@ export default class NightReactUI extends EventEmitter {
   }
 
   /**
-   * Checks whether the operation with the given identifier is selected
+   * Checks whether the operation with the given identifier is enabled
    * @param  {String}  name
    * @return {Boolean}
    */
-  isOperationSelected (name) {
-    return this._selectedOperations.indexOf(name) !== -1
+  isOperationEnabled (name) {
+    return this._enabledOperations.indexOf(name) !== -1
   }
 
-  getSelectedOperations () { return this._selectedOperations }
-  getSelectedControls () { return this._selectedControls }
+  getEnabledOperations () { return this._enabledOperations }
+  getEnabledControls () { return this._enabledControls }
   getAvailableControls () { return this._availableControls }
   getHelpers () { return this._helpers }
 

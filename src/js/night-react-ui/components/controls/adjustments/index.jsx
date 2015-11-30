@@ -17,8 +17,8 @@ export default {
   icon: 'controls/overview/adjustments@2x.png',
   label: 'controls.overview.adjustments',
   isSelectable: (ui) => {
-    return ui.isOperationSelected('brightness') ||
-      ui.isOperationSelected('contrast') ||
-      ui.isOperationSelected('saturation')
+    return ui.isOperationEnabled('brightness') ||
+      ui.isOperationEnabled('contrast') ||
+      ui.isOperationEnabled('saturation')
   }
 }

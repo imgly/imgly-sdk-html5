@@ -29,6 +29,6 @@ export default {
     }
   },
   isSelectable: (ui) => {
-    return ui.isOperationSelected('contrast')
+    return ui.isOperationEnabled('contrast')
   }
 }

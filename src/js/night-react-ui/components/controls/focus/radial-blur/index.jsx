@@ -31,6 +31,6 @@ export default {
     }
   },
   isSelectable: (ui) => {
-    return ui.isOperationSelected('radial-blur')
+    return ui.isOperationEnabled('radial-blur')
   }
 }

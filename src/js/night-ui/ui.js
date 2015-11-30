@@ -610,7 +610,7 @@ export default class NightUI extends EventEmitter {
    * @param {Control} ControlClass
    */
   registerControl (identifier, operationIdentifier, ControlClass) {
-    if (!this.isOperationSelected(operationIdentifier)) return
+    if (!this.isOperationEnabled(operationIdentifier)) return
 
     let instance = new ControlClass(this._kit, this)
     this._registeredControls[identifier] = instance
@@ -855,11 +855,11 @@ export default class NightUI extends EventEmitter {
   }
 
   /**
-   * Checks whether the operation with the given identifier is selected
+   * Checks whether the operation with the given identifier is enabled
    * @param {String} identifier
    * @returns {Boolean}
    */
-  isOperationSelected (identifier) {
+  isOperationEnabled (identifier) {
     let operationIdentifiers = this._operations.map((operation) => {
       return operation.identifier
     })

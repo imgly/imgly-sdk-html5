@@ -36,6 +36,6 @@ export default {
     }
   },
   isSelectable: (ui) => {
-    return ui.isOperationSelected('tilt-shift')
+    return ui.isOperationEnabled('tilt-shift')
   }
 }

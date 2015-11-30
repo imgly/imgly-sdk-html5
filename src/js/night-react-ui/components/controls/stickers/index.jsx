@@ -74,6 +74,6 @@ export default {
   },
 
   isSelectable: (ui) => {
-    return ui.isOperationSelected('stickers')
+    return ui.isOperationEnabled('stickers')
   }
 }

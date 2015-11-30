@@ -29,6 +29,6 @@ export default {
     }
   },
   isSelectable: (ui) => {
-    return ui.isOperationSelected('frames')
+    return ui.isOperationEnabled('frames')
   }
 }

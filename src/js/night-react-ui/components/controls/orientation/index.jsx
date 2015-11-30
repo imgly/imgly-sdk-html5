@@ -25,7 +25,7 @@ export default {
     }
   },
   isSelectable: (ui) => {
-    return ui.isOperationSelected('rotation') ||
-      ui.isOperationSelected('flip')
+    return ui.isOperationEnabled('rotation') ||
+      ui.isOperationEnabled('flip')
   }
 }

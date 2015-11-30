@@ -90,6 +90,6 @@ export default {
     return SDKUtils.extend({}, state, additionalState)
   },
   isSelectable: (ui) => {
-    return ui.isOperationSelected('text')
+    return ui.isOperationEnabled('text')
   }
 }

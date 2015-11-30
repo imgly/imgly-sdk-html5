@@ -32,6 +32,6 @@ export default {
     }
   },
   isSelectable: (ui) => {
-    return ui.isOperationSelected('filters')
+    return ui.isOperationEnabled('filters')
   }
 }

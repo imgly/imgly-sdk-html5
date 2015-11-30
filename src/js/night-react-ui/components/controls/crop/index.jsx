@@ -31,6 +31,6 @@ export default {
     }
   },
   isSelectable: (ui) => {
-    return ui.isOperationSelected('crop')
+    return ui.isOperationEnabled('crop')
   }
 }

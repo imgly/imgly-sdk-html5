@@ -28,7 +28,7 @@ export default class OverviewControlsComponent extends BaseComponent {
    */
   renderWithBEM () {
     const { ui } = this.context
-    const listItems = ui.getSelectedControls()
+    const listItems = ui.getEnabledControls()
       .map((control) => {
         return (<li
           bem='e:item'

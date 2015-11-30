@@ -108,11 +108,11 @@ class BaseUI extends EventEmitter {
   }
 
   /**
-   * Checks whether the operation with the given identifier is selected
+   * Checks whether the operation with the given identifier is enabled
    * @param {String} identifier
    * @returns {Boolean}
    */
-  isOperationSelected (identifier) {
+  isOperationEnabled (identifier) {
     let operationIdentifiers = this._operations.map((operation) => {
       return operation.identifier
     })
