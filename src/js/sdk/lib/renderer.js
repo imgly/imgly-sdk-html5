@@ -115,7 +115,6 @@ export default class Renderer extends EventEmitter {
         return this._renderer.renderFinal()
       })
       .then(() => {
-        // TODO: Resize if necessary
         this._rendering = false
       })
   }
