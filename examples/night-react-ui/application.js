@@ -9,21 +9,6 @@ window.onload = function () {
       image: myImage,
       additionalOperations: {
         // noise: NoiseOperation
-      },
-      assets: {
-        baseUrl: '/build/assets'
-      }
-    }, {
-      filters: {
-        additionalFilters: {
-          // night: NightFilter
-        }
-      },
-      stickers: {
-        additionalStickers: {
-          // foo: 'foo.png',
-          // bar: 'bar.png'
-        }
       }
     })
 
@@ -49,7 +34,8 @@ window.onload = function () {
         //   canvasControls: NoiseCanvasControls,
         //   controls: NoiseControl
         // }
-      ]
+      ],
+      webcam: false
     })
     window.editorComponent = editor.run()
     window.editor = editor
