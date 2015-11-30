@@ -25,7 +25,7 @@ class Gobblin extends Primitive {
      * @return {String}
      * @private
      */
-    this._fragmentShader = require('raw!../../../shaders/gobblin.frag')
+    this._fragmentShader = require('raw!../../../shaders/primitives/gobblin.frag')
   }
 
   /**

@@ -25,7 +25,7 @@ class X400 extends Primitive {
      * @return {String}
      * @private
      */
-    this._fragmentShader = require('raw!../../../shaders/x400.frag')
+    this._fragmentShader = require('raw!../../../shaders/primitives/x400.frag')
   }
 
   /**

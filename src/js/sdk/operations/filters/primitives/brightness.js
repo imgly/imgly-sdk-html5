@@ -30,7 +30,7 @@ class Brightness extends Primitive {
      * @return {String}
      * @private
      */
-    this._fragmentShader = require('raw!../../../shaders/brightness.frag')
+    this._fragmentShader = require('raw!../../../shaders/primitives/brightness.frag')
   }
 
   /**

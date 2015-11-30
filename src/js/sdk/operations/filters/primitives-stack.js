@@ -29,7 +29,7 @@ class PrimitivesStack {
     this._framebuffers = []
     this._fbosAvailable = false
 
-    this._blendFragmentShader = require('raw!../../shaders/blend.frag')
+    this._blendFragmentShader = require('raw!../../shaders/generic/blend.frag')
   }
 
   /**

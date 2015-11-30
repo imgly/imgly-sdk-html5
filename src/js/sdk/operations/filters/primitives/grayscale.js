@@ -25,7 +25,7 @@ class Grayscale extends Primitive {
      * @return {String}
      * @private
      */
-    this._fragmentShader = require('raw!../../../shaders/grayscale.frag')
+    this._fragmentShader = require('raw!../../../shaders/primitives/grayscale.frag')
   }
 
   /**

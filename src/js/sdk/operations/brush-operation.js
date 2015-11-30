@@ -31,7 +31,7 @@ class BrushOperation extends Operation {
     /**
      * The fragment shader used for this operation
      */
-    this._fragmentShader = require('raw!../shaders/sprite_legacy.frag')
+    this._fragmentShader = require('raw!../shaders/generic/sprite_legacy.frag')
 
     this._brushCanvas = document.createElement('canvas')
   }

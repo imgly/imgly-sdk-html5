@@ -30,7 +30,7 @@ class Contrast extends Primitive {
      * @return {String}
      * @private
      */
-    this._fragmentShader = require('raw!../../../shaders/contrast.frag')
+    this._fragmentShader = require('raw!../../../shaders/primitives/contrast.frag')
   }
 
   /**

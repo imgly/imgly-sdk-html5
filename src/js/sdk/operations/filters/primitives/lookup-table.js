@@ -28,7 +28,7 @@ class LookupTable extends Primitive {
      * @return {String}
      * @private
      */
-    this._fragmentShader = require('raw!../../../shaders/lookup-table.frag')
+    this._fragmentShader = require('raw!../../../shaders/primitives/lookup-table.frag')
   }
 
   /**

@@ -30,7 +30,7 @@ class Saturation extends Primitive {
      * @return {String}
      * @private
      */
-    this._fragmentShader = require('raw!../../../shaders/saturation.frag')
+    this._fragmentShader = require('raw!../../../shaders/primitives/saturation.frag')
   }
 
   /**

@@ -24,7 +24,7 @@ class TiltShiftOperation extends Operation {
   constructor (...args) {
     super(...args)
 
-    this._fragmentShader = require('raw!../shaders/tilt-shift.frag')
+    this._fragmentShader = require('raw!../shaders/focus/tilt-shift.frag')
 
     this._cachedBlurredCanvas = null
     this._lastBlurRadius = this._options.blurRadius

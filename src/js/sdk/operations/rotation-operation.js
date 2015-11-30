@@ -25,7 +25,7 @@ class RotationOperation extends Operation {
     /**
      * The fragment shader used for this operation
      */
-    this.vertexShader = require('raw!../shaders/sprite.vert')
+    this.vertexShader = require('raw!../shaders/generic/sprite.vert')
   }
 
   /**

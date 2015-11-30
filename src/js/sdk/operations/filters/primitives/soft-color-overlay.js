@@ -31,7 +31,7 @@ class SoftColorOverlay extends Primitive {
      * @return {String}
      * @private
      */
-    this._fragmentShader = require('raw!../../../shaders/soft-color-overlay.frag')
+    this._fragmentShader = require('raw!../../../shaders/primitives/soft-color-overlay.frag')
   }
 
   /**

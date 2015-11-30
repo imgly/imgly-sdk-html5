@@ -32,7 +32,7 @@ class FrameOperation extends Operation {
     /**
      * The fragment shader used for this operation
      */
-    this._fragmentShader = require('raw!../shaders/frame.frag')
+    this._fragmentShader = require('raw!../shaders/operations/frame.frag')
   }
 
   /**

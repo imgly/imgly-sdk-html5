@@ -31,7 +31,7 @@ class Glow extends Primitive {
      * @return {String}
      * @private
      */
-    this._fragmentShader = require('raw!../../../shaders/glow.frag')
+    this._fragmentShader = require('raw!../../../shaders/primitives/glow.frag')
   }
 
   /**

@@ -25,7 +25,7 @@ class FlipOperation extends Operation {
     /**
      * The fragment shader used for this operation
      */
-    this.fragmentShader = require('raw!../shaders/flip.frag')
+    this.fragmentShader = require('raw!../shaders/operations/flip.frag')
   }
 
   /**

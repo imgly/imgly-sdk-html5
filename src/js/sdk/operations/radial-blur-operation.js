@@ -24,7 +24,7 @@ class RadialBlurOperation extends Operation {
   constructor (...args) {
     super(...args)
 
-    this._fragmentShader = require('raw!../shaders/radial-blur.frag')
+    this._fragmentShader = require('raw!../shaders/focus/radial-blur.frag')
 
     this._cachedBlurredCanvas = null
     this._lastBlurRadius = this._options.blurRadius
