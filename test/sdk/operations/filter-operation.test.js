@@ -15,18 +15,14 @@ beforeEach(function () {
 })
 
 describe('FilterOperation', function () {
-
   describe('with no selected filter', function () {
-
     it('rendering should pass (default filter is identity)', function () {
       return kit.render()
         .should.be.fulfilled
     })
-
   })
 
   describe('#render', function () {
-
     for (var name in PhotoEditorSDK.Filters) {
       (function (name) {
         it(`should work with ${name} filter`, function () {
@@ -41,7 +37,5 @@ describe('FilterOperation', function () {
         })
       })(name)
     }
-
   })
-
 })

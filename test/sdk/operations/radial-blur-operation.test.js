@@ -14,12 +14,10 @@ beforeEach(function () {
 })
 
 describe('RadialBlurOperation', function () {
-
   // This operation takes some time on canvas...
   this.timeout(10000)
 
   describe('#render', function () {
-
     it('should succeed', function () {
       const operation = kit.createOperation('radial-blur', {
         position: new PhotoEditorSDK.Vector2(0.5, 0.5)
@@ -29,7 +27,5 @@ describe('RadialBlurOperation', function () {
       return kit.render()
         .should.be.fulfilled
     })
-
   })
-
 })

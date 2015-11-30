@@ -23,9 +23,7 @@ beforeEach(function () {
 })
 
 describe('StickersOperation', function () {
-
   describe('#render', function () {
-
     it('should succeed', function () {
       const operation = kit.createOperation('stickers', {
         stickers: [
@@ -36,9 +34,6 @@ describe('StickersOperation', function () {
 
       return kit.render()
         .should.be.fulfilled
-
     })
-
   })
-
 })

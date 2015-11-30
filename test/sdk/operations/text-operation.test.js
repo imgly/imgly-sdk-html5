@@ -14,9 +14,7 @@ beforeEach(function () {
 })
 
 describe('TextOperation', function () {
-
   describe('#render', function () {
-
     it('should succeed', function () {
       const operation = kit.createOperation('text')
       operation.createText({
@@ -27,7 +25,5 @@ describe('TextOperation', function () {
       return kit.export()
         .should.be.fulfilled
     })
-
   })
-
 })

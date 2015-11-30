@@ -14,9 +14,7 @@ beforeEach(function () {
 })
 
 describe('FlipOperation', function () {
-
   describe('#render', function () {
-
     it('should succeed', function () {
       const operation = kit.createOperation('flip', {
         horizontal: true,
@@ -27,7 +25,5 @@ describe('FlipOperation', function () {
       return kit.render()
         .should.be.fulfilled
     })
-
   })
-
 })

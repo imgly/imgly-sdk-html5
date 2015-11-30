@@ -15,9 +15,7 @@ beforeEach(function () {
 })
 
 describe('RotationOperation', function () {
-
   describe('with a rotation that\'s not divisible by 90', function () {
-
     it('should fail', function () {
       const throwable = () => {
         kit.createOperation('rotation', {
@@ -26,11 +24,9 @@ describe('RotationOperation', function () {
       }
       throwable.should.throw('RotationOperation: `rotation` has to be a multiple of 90.')
     })
-
   })
 
   describe('#render', function () {
-
     it('should succeed', function () {
       const operation = kit.createOperation('rotation', {
         degrees: 90
@@ -57,7 +53,5 @@ describe('RotationOperation', function () {
           done(err)
         })
     })
-
   })
-
 })

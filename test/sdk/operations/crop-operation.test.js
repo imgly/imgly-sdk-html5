@@ -16,11 +16,8 @@ beforeEach(function () {
 })
 
 describe('CropOperation', function () {
-
   describe('#render', function () {
-
     describe('with both start and end set', function () {
-
       it('should correctly resize the canvas', function (done) {
         const operation = kit.createOperation('crop', {
           start: new PhotoEditorSDK.Vector2(0.1, 0.1),
@@ -39,11 +36,9 @@ describe('CropOperation', function () {
             done(err)
           })
       })
-
     })
 
     describe('with `numberFormat` set to `absolute`', function () {
-
       it('should correctly resize the canvas', function (done) {
         const operation = kit.createOperation('crop', {
           start: new PhotoEditorSDK.Vector2(100, 100),
@@ -63,9 +58,6 @@ describe('CropOperation', function () {
             throw err
           })
       })
-
     })
-
   })
-
 })

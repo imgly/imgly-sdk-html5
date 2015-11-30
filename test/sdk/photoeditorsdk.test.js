@@ -18,7 +18,6 @@ let image, kit
 
 describe('PhotoEditorSDK', function () {
   describe('#export', function () {
-
     beforeEach(function () {
       image = new canvas.Image()
       let imagePath = path.resolve(__dirname, 'assets/test.png')
@@ -31,25 +30,19 @@ describe('PhotoEditorSDK', function () {
     })
 
     describe('validations', function () {
-
       describe('when an invalid render type is given', function () {
-
         it('should throw an error', function () {
           return kit.export('invalid')
             .should.be.rejectedWith(null, 'Invalid render type')
         })
-
       })
 
       describe('when an invalid image format is given', function () {
-
         it('should throw an error', function () {
           return kit.export(null, 'invalid')
             .should.be.rejectedWith(null, 'Invalid image format')
         })
-
       })
-
     }) // validations
 
     describe('without any operations on the stack', function () {
@@ -58,7 +51,5 @@ describe('PhotoEditorSDK', function () {
           .should.be.fulfilled
       })
     })
-
   }) // #render
-
 })

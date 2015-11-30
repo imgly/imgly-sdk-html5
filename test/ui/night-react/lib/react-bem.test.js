@@ -24,6 +24,10 @@ class SpecComponent extends React.Component {
     return ReactBEM.transform(this._content)
   }
 }
+SpecComponent.propTypes = {
+  content: React.PropTypes.node.isRequired
+}
+
 const componentFactory = React.createFactory(SpecComponent)
 const render = (content) => {
   return ReactDOMServer.renderToStaticMarkup(componentFactory({ content }))
@@ -211,6 +215,9 @@ describe('ReactBEM', () => {
             )
           }
         }
+        MyComponent.propTypes = {
+          children: React.PropTypes.node.isRequired
+        }
 
         const content = (
           <MyComponent>
@@ -232,6 +239,9 @@ describe('ReactBEM', () => {
               </div>
             )
           }
+        }
+        MyComponent.propTypes = {
+          children: React.PropTypes.arrayOf(React.PropTypes.node).isRequired
         }
 
         const content = (
@@ -255,6 +265,9 @@ describe('ReactBEM', () => {
               </div>
             )
           }
+        }
+        MyComponent.propTypes = {
+          children: React.PropTypes.node.isRequired
         }
 
         const content = (

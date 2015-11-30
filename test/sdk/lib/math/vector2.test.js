@@ -11,44 +11,34 @@
 const { Vector2 } = PhotoEditorSDK
 
 describe('Vector2', function () {
-
   describe('#constructor', function () {
-
     describe('when no arguments are given', function () {
-
       it('should set x and y to 0', function () {
         var vec = new Vector2()
         vec.x.should.equal(0)
         vec.y.should.equal(0)
       })
-
     })
 
     describe('when x and y are given', function () {
-
       it('should set x and y', function () {
         var vec = new Vector2(100, 200)
         vec.x.should.equal(100)
         vec.y.should.equal(200)
       })
-
     })
-
   })
 
   describe('#set', function () {
-
     it('should set the given values', function () {
       var vec = new Vector2()
       vec.set(100, 200)
       vec.x.should.equal(100)
       vec.y.should.equal(200)
     })
-
   })
 
   describe('#clone', function () {
-
     it('should return a clone of the vector', function () {
       var vec = new Vector2(100, 200)
       var vec2 = vec.clone()
@@ -56,24 +46,19 @@ describe('Vector2', function () {
       vec2.y.should.equal(200)
       vec.should.not.equal(vec2)
     })
-
   })
 
   describe('#copy', function () {
-
     it('should copy the values of the given vector', function () {
       var vec = new Vector2(100, 200)
       var vec2 = new Vector2()
       vec2.copy(vec)
-
       vec2.x.should.equal(100)
       vec2.y.should.equal(200)
     })
-
   })
 
   describe('#clamp', function () {
-
     it('should clamp the values to the given minimum and maximum', function () {
       var vec = new Vector2(100, 100)
       vec.clamp(200, 500)
@@ -83,11 +68,9 @@ describe('Vector2', function () {
       vec.x.should.equal(100)
       vec.y.should.equal(100)
     })
-
   })
 
   describe('#divide', function () {
-
     it('should divide the x and y values by the given values', function () {
       var vec = new Vector2(100, 100)
       vec.divide(2, 5)
@@ -96,31 +79,25 @@ describe('Vector2', function () {
     })
 
     describe('when a vector is given', function () {
-
       it('should divide by the vector\'s values', function () {
         var vec = new Vector2(100, 100)
         vec.divide(new Vector2(2, 5))
         vec.x.should.equal(50)
         vec.y.should.equal(20)
       })
-
     })
 
     describe('when y is not given', function () {
-
       it('should divide x and y by the given single value', function () {
         var vec = new Vector2(100, 100)
         vec.divide(2)
         vec.x.should.equal(50)
         vec.y.should.equal(50)
       })
-
     })
-
   })
 
   describe('#multiply', function () {
-
     it('should multiply the x and y values with the given values', function () {
       var vec = new Vector2(100, 100)
       vec.multiply(2, 5)
@@ -129,31 +106,25 @@ describe('Vector2', function () {
     })
 
     describe('when a vector is given', function () {
-
       it('should multiply with the vector\'s values', function () {
         var vec = new Vector2(100, 100)
         vec.multiply(new Vector2(2, 5))
         vec.x.should.equal(200)
         vec.y.should.equal(500)
       })
-
     })
 
     describe('when y is not given', function () {
-
       it('should multiply x and y with the given single value', function () {
         var vec = new Vector2(100, 100)
         vec.multiply(2)
         vec.x.should.equal(200)
         vec.y.should.equal(200)
       })
-
     })
-
   })
 
   describe('#subtract', function () {
-
     it('should subtract the given values', function () {
       var vec = new Vector2(100, 100)
       vec.subtract(50, 30)
@@ -162,31 +133,25 @@ describe('Vector2', function () {
     })
 
     describe('when a vector is given', function () {
-
       it('should subtract the vector\'s values', function () {
         var vec = new Vector2(100, 100)
         vec.subtract(new Vector2(50, 30))
         vec.x.should.equal(50)
         vec.y.should.equal(70)
       })
-
     })
 
     describe('when y is not given', function () {
-
       it('should subtract the single given value from both x and y', function () {
         var vec = new Vector2(100, 100)
         vec.subtract(50)
         vec.x.should.equal(50)
         vec.y.should.equal(50)
       })
-
     })
-
   })
 
   describe('#add', function () {
-
     it('should add the given values', function () {
       var vec = new Vector2(100, 100)
       vec.add(50, 30)
@@ -195,33 +160,26 @@ describe('Vector2', function () {
     })
 
     describe('when a vector is given', function () {
-
       it('should add the vector\'s values', function () {
         var vec = new Vector2(100, 100)
         vec.add(new Vector2(50, 30))
         vec.x.should.equal(150)
         vec.y.should.equal(130)
       })
-
     })
 
     describe('when y is not given', function () {
-
       it('should add the single given value to both x and y', function () {
         var vec = new Vector2(100, 100)
         vec.add(50)
         vec.x.should.equal(150)
         vec.y.should.equal(150)
       })
-
     })
-
   })
 
   describe('#equals', function () {
-
     describe('when a vector is given', function () {
-
       describe('if the values are equal', function () {
         it('should return true', function () {
           var vec1 = new Vector2(100, 100)
@@ -237,36 +195,28 @@ describe('Vector2', function () {
           vec2.equals(vec1).should.equal(false)
         })
       })
-
     })
 
     describe('when two numbers are given', function () {
-
       describe('if the values are equal', function () {
         it('should return true', function () {
           var vec1 = new Vector2(100, 100)
           vec1.equals(100, 100).should.equal(true)
         })
       })
-
       describe('if the values are not equal', function () {
         it('should return false', function () {
           var vec1 = new Vector2(100, 100)
           vec1.equals(20, 20).should.equal(false)
         })
       })
-
     })
-
   })
 
   describe('#toString', function () {
-
     it('should return a string representation of the vector', function () {
       var vec = new Vector2(100, 100)
       vec.toString().should.equal('Vector2({ x: 100, y: 100 })')
     })
-
   })
-
 })

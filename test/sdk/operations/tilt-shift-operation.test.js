@@ -14,9 +14,7 @@ beforeEach(function () {
 })
 
 describe('TiltShiftOperation', function () {
-
   describe('#render', function () {
-
     it('should succeed', function () {
       const operation = kit.createOperation('tilt-shift')
       kit.operationsStack.push(operation)
@@ -24,7 +22,5 @@ describe('TiltShiftOperation', function () {
       return kit.export()
         .should.be.fulfilled
     })
-
   })
-
 })

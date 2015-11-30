@@ -14,9 +14,7 @@ beforeEach(function () {
 })
 
 describe('FrameOperation', function () {
-
   describe('#render', function () {
-
     it('should succeed', function () {
       const operation = kit.createOperation('frame', {
         color: new PhotoEditorSDK.Color(0, 0, 0, 1)
@@ -26,7 +24,5 @@ describe('FrameOperation', function () {
       return kit.render()
         .should.be.fulfilled
     })
-
   })
-
 })

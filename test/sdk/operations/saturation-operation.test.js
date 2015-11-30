@@ -14,9 +14,7 @@ beforeEach(function () {
 })
 
 describe('SaturationOperation', function () {
-
   describe('#render', function () {
-
     it('should succeed', function () {
       const operation = kit.createOperation('saturation', {
         saturation: 1.1
@@ -26,7 +24,5 @@ describe('SaturationOperation', function () {
       return kit.render()
         .should.be.fulfilled
     })
-
   })
-
 })

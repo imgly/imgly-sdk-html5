@@ -15,9 +15,7 @@ beforeEach(function () {
 })
 
 describe('BrightnessOperation', function () {
-
   describe('#render', function () {
-
     it('should succeed', function () {
       const operation = kit.createOperation('brightness')
       kit.operationsStack.push(operation)
@@ -26,8 +24,6 @@ describe('BrightnessOperation', function () {
         .should.be
         .fulfilled
     })
-
   })
-
 })
 

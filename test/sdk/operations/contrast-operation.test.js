@@ -15,9 +15,7 @@ beforeEach(function () {
 })
 
 describe('ContrastOperation', function () {
-
   describe('#render', function () {
-
     it('should succeed', function () {
       const operation = kit.createOperation('contrast')
       kit.operationsStack.push(operation)
@@ -26,8 +24,6 @@ describe('ContrastOperation', function () {
         .should.be
         .fulfilled
     })
-
   })
-
 })
 
