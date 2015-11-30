@@ -200,12 +200,15 @@ export default class NightReactUI extends EventEmitter {
         this._enabledControls.push(controls)
       }
     }
+
     this._enabledControls.sort((a, b) => {
       let sortA = this._options.controlsOrder.indexOf(a.identifier)
       let sortB = this._options.controlsOrder.indexOf(b.identifier)
-      if (sortA === -1) sortA = this._enabledControls.length
-      if (sortB === -1) sortB = this._enabledControls.length
-      return sortB < sortA ? 1 : -1
+      if (sortA === -1) return 1
+      if (sortB === -1) return -1
+      if (sortA < sortB) return -1
+      if (sortA > sortB) return 1
+      return 0
     })
   }
 
