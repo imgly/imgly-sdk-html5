@@ -29,3 +29,26 @@ global.SpecHelpers = {
     })
   }
 }
+
+/**
+ * Since node.js does not know about webpack's loader syntax
+ * (loaderName!./path/to/module), we need to do some monkey patching...
+ */
+var Module = require('module')
+var originalResolve = Module._resolveFilename
+Module._resolveFilename = function (filename, parent) {
+  if (filename.indexOf('raw!') === 0) {
+    filename = filename.slice(4)
+  }
+  return originalResolve.call(this, filename, parent)
+}
+
+/*
+ * Load GLSL shaders as strings
+ */
+var EXTENSIONS = ['.frag', '.vert']
+EXTENSIONS.forEach(function (extension) {
+  require.extensions[extension] = function (_module, filename) {
+    return fs.readFileSync(filename)
+  }
+})
