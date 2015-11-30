@@ -12,6 +12,7 @@
 import { ReactBEM, BaseComponent, Constants } from '../../../../globals'
 import SliderComponent from '../../../slider-component'
 import BackButtonComponent from '../../../back-button-component'
+import DoneButtonComponent from '../../../done-button-component'
 
 export default class TiltShiftControlsComponent extends BaseComponent {
   constructor (...args) {
@@ -142,11 +143,7 @@ export default class TiltShiftControlsComponent extends BaseComponent {
           onChange={this._onSliderValueChange}
           value={this._operation.getBlurRadius()} />
       </div>
-      <div bem='e:cell m:button m:withBorderLeft m:narrow'>
-        <div bem='$e:button m:narrow' onClick={this._onDoneClick}>
-          <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/tick@2x.png`, true)} />
-        </div>
-      </div>
+      <DoneButtonComponent onClick={this._onDoneClick} />
     </div>)
   }
 }

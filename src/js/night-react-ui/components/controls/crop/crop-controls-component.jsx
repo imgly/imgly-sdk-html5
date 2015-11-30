@@ -12,6 +12,7 @@
 import { ReactBEM, BaseComponent, Constants, Vector2 } from '../../../globals'
 import ScrollbarComponent from '../../scrollbar-component'
 import BackButtonComponent from '../../back-button-component'
+import DoneButtonComponent from '../../done-button-component'
 
 // Specifies the default distance to the border
 // when selecting a ratio
@@ -237,11 +238,7 @@ export default class OrientationControlsComponent extends BaseComponent {
           </ul>
         </ScrollbarComponent>
       </div>
-      <div bem='e:cell m:button m:withBorderLeft m:narrow'>
-        <div bem='$e:button m:narrow' onClick={this._onDoneClick}>
-          <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/tick@2x.png`, true)} />
-        </div>
-      </div>
+      <DoneButtonComponent onClick={this._onDoneClick} />
     </div>)
   }
 }

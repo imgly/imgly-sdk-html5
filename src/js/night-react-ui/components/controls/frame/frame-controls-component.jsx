@@ -13,6 +13,7 @@ import { ReactBEM, BaseComponent, Constants } from '../../../globals'
 import SliderComponent from '../../slider-component'
 import ColorPickerComponent from '../../color-picker/color-picker-component'
 import BackButtonComponent from '../../back-button-component'
+import DoneButtonComponent from '../../done-button-component'
 
 export default class FrameControlsComponent extends BaseComponent {
   constructor (...args) {
@@ -117,8 +118,6 @@ export default class FrameControlsComponent extends BaseComponent {
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
-    const ui = this.context.ui
-
     const { editor } = this.props
     const canvasDimensions = editor.getInitialDimensions()
 
@@ -145,11 +144,7 @@ export default class FrameControlsComponent extends BaseComponent {
           initialValue={this._operation.getColor().clone()}
           onChange={this._onColorUpdate} />
       </div>
-      <div bem='e:cell m:button m:withBorderLeft m:narrow'>
-        <div bem='$e:button m:narrow' onClick={this._onDoneClick}>
-          <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/tick@2x.png`, true)} />
-        </div>
-      </div>
+      <DoneButtonComponent onClick={this._onDoneClick} />
     </div>)
   }
 }
