@@ -21,7 +21,6 @@ import FlipOperation from '../operations/flip-operation'
 import OperationsStack from './operations-stack'
 import WebGLRenderer from '../renderers/webgl-renderer'
 import CanvasRenderer from '../renderers/canvas-renderer'
-import Helpers from '../ui/base/helpers'
 import { RenderType, ImageFormat } from '../constants'
 
 /**
@@ -47,7 +46,6 @@ export default class Renderer extends EventEmitter {
       canvas: null
     })
 
-    this._helpers = new Helpers(this, this._options)
     this._dimensions = this._options.dimensions && new ImageDimensions(this._options.dimensions)
 
     this._image = this._options.image
