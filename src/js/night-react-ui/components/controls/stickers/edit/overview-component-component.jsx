@@ -11,6 +11,7 @@
 
 import { ReactBEM, BaseComponent } from '../../../../globals'
 import ScrollbarComponent from '../../../scrollbar-component'
+import BackButtonComponent from '../../../back-button-component'
 
 import BrightnessControls from './adjustments/brightness-controls-component'
 import SaturationControls from './adjustments/saturation-controls-component'
@@ -63,13 +64,14 @@ export default class StickersEditControlsComponent extends BaseComponent {
     const { ui } = this.context
     const listItems = CONTROLS
       .map((control, i) => {
+        const iconName = control.iconName || control.identifier
         return (<li
           bem='e:item'
           key={i}
           onClick={this._onItemClick.bind(this, control)}>
             <bem specifier='$b:controls'>
               <div bem='$e:button m:withLabel'>
-                <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/overview/${control.identifier}@2x.png`, true)} />
+                <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/overview/${iconName}@2x.png`, true)} />
                 <div bem='e:label'>{this._t(`controls.stickers.${control.identifier}`)}</div>
               </div>
             </bem>
@@ -77,11 +79,7 @@ export default class StickersEditControlsComponent extends BaseComponent {
       })
 
     return (<div bem='$b:controls e:table'>
-      <div bem='e:cell m:button m:withBorderRight m:narrow'>
-        <div bem='$e:button m:narrow' onClick={this._onBackClick}>
-          <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/back@2x.png`, true)} />
-        </div>
-      </div>
+      <BackButtonComponent onClick={this._onBackClick} />
       <div bem='e:cell m:list'>
         <ScrollbarComponent>
           <ul bem='$e:list'>

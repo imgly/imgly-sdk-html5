@@ -12,6 +12,7 @@
 import { ReactBEM, BaseComponent, Constants } from '../../../globals'
 import SliderComponent from '../../slider-component'
 import ColorPickerComponent from '../../color-picker/color-picker-component'
+import BackButtonComponent from '../../back-button-component'
 
 export default class FrameControlsComponent extends BaseComponent {
   constructor (...args) {
@@ -127,11 +128,7 @@ export default class FrameControlsComponent extends BaseComponent {
     const currentWidth = this._operation.getThickness() * shorterSide
 
     return (<div bem='$b:controls e:table'>
-      <div bem='e:cell m:button m:withBorderRight m:narrow'>
-        <div bem='$e:button m:narrow' onClick={this._onBackClick}>
-          <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/back@2x.png`, true)} />
-        </div>
-      </div>
+      <BackButtonComponent onClick={this._onBackClick} />
       <div bem='e:cell m:slider'>
         <SliderComponent
           style='large'

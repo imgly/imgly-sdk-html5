@@ -11,6 +11,7 @@
 
 import { ReactBEM, BaseComponent } from '../../../globals'
 import ScrollbarComponent from '../../scrollbar-component'
+import BackButtonComponent from '../../back-button-component'
 
 import BrightnessControls from './brightness/'
 import SaturationControls from './saturation/'
@@ -28,6 +29,8 @@ export default class AdjustmentsControlsComponent extends BaseComponent {
 
     this._bindAll('_onBackClick')
   }
+
+  // -------------------------------------------------------------------------- EVENTS
 
   /**
    * Gets called when the user clicks the back button
@@ -48,14 +51,16 @@ export default class AdjustmentsControlsComponent extends BaseComponent {
     this.props.editor.switchToControls(controlsItem)
   }
 
-  /**
-   * Renders this component
-   * @return {ReactBEM.Element}
-   */
-  renderWithBEM () {
-    const ui = this.context.ui
+  // -------------------------------------------------------------------------- RENDERING
 
-    const listItems = ITEMS
+  /**
+   * Renders the list items
+   * @return {Array.<ReactBEM.Element>}
+   * @private
+   */
+  _renderListItems () {
+    const { ui } = this.context
+    return ITEMS
       .filter((item) => item.isSelectable(this.context.ui))
       .map((item) => {
         return (<li
@@ -69,13 +74,17 @@ export default class AdjustmentsControlsComponent extends BaseComponent {
           </bem>
         </li>)
       })
+  }
+
+  /**
+   * Renders this component
+   * @return {ReactBEM.Element}
+   */
+  renderWithBEM () {
+    const listItems = this._renderListItems()
 
     return (<div bem='$b:controls e:table'>
-      <div bem='e:cell m:button m:withBorderRight m:narrow'>
-        <div bem='$e:button m:narrow' onClick={this._onBackClick}>
-          <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/back@2x.png`, true)} />
-        </div>
-      </div>
+      <BackButtonComponent onClick={this._onBackClick} />
       <div bem='e:cell m:list'>
         <ScrollbarComponent>
           <ul bem='$e:list'>

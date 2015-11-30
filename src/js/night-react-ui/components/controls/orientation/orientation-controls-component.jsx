@@ -16,6 +16,7 @@ import {
   Vector2
 } from '../../../globals'
 import ScrollbarComponent from '../../scrollbar-component'
+import BackButtonComponent from '../../back-button-component'
 
 export default class OrientationControlsComponent extends BaseComponent {
   constructor (...args) {
@@ -221,11 +222,7 @@ export default class OrientationControlsComponent extends BaseComponent {
     })
 
     return (<div bem='$b:controls e:table'>
-      <div bem='e:cell m:button m:withBorderRight m:narrow'>
-        <div bem='$e:button m:narrow' onClick={this._onBackClick}>
-          <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/back@2x.png`, true)} />
-        </div>
-      </div>
+      <BackButtonComponent onClick={this._onBackClick} />
       <div bem='e:cell m:list'>
         <ScrollbarComponent>
           <ul bem='$e:list'>

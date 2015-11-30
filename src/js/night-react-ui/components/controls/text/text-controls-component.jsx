@@ -17,6 +17,7 @@ const ALIGNMENTS = [
 
 import { ReactBEM, BaseComponent, Constants } from '../../../globals'
 import ScrollbarComponent from '../../scrollbar-component'
+import BackButtonComponent from '../../back-button-component'
 import ColorPickerComponent from '../../color-picker/color-picker-component'
 import FontSizeSliderComponent from './font-size-slider-component'
 import FontPreviewComponent from './font-preview-component'
@@ -347,11 +348,7 @@ export default class TextControlsComponent extends BaseComponent {
     return (<div bem='$b:controls'>
       {overlayControl}
       <div bem='e:table'>
-        <div bem='e:cell m:button m:withBorderRight m:narrow'>
-          <div bem='$e:button m:narrow' onClick={this._onBackClick}>
-            <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/back@2x.png`, true)} />
-          </div>
-        </div>
+        <BackButtonComponent onClick={this._onBackClick} />
         <div bem='e:cell m:list'>
           <ScrollbarComponent ref='scrollbar'>
             <ul bem='$e:list'>

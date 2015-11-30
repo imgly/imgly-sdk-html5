@@ -11,6 +11,7 @@
 
 import { ReactBEM, BaseComponent, Constants } from '../../../../globals'
 import SliderComponent from '../../../slider-component.jsx'
+import BackButtonComponent from '../../../back-button-component'
 
 export default class ContrastControlsComponent extends BaseComponent {
   constructor (...args) {
@@ -113,14 +114,8 @@ export default class ContrastControlsComponent extends BaseComponent {
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
-    const ui = this.context.ui
-
     return (<div bem='$b:controls e:table'>
-      <div bem='e:cell m:button m:withBorderRight m:narrow'>
-        <div bem='$e:button m:narrow' onClick={this._onBackClick}>
-          <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/back@2x.png`, true)} />
-        </div>
-      </div>
+      <BackButtonComponent onClick={this._onBackClick} />
       <div bem='e:cell m:slider'>
         <SliderComponent
           style='large'
