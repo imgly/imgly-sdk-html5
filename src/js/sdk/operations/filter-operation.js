@@ -8,9 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Utils from '../lib/utils'
 import Operation from './operation'
-import Filters from './filters/'
 import IdentityFilter from './filters/identity-filter'
 
 /**
@@ -21,27 +19,6 @@ import IdentityFilter from './filters/identity-filter'
  * @extends PhotoEditorSDK.Operation
  */
 class FilterOperation extends Operation {
-  constructor (...args) {
-    super(...args)
-
-    this._registerFilters()
-  }
-
-  /**
-   * Registers the available filters
-   * @private
-   */
-  _registerFilters () {
-    this._filters = {}
-    this._filters.identity = Filters.IdentityFilter
-    for (let name in Filters) {
-      const filter = Filters[name]
-      this._filters[filter.identifier] = filter
-    }
-
-    this._filters = Utils.extend(this._filters, this._options.additionalFilters)
-  }
-
   /**
    * Renders the filter using WebGL
    * @param  {WebGLRenderer} renderer
@@ -70,8 +47,10 @@ class FilterOperation extends Operation {
     return this._selectedFilter.render(renderer)
   }
 
-  getFilters () { return this._filters }
-
+  /**
+   * Sets this operation to dirty, so that it will re-render next time
+   * @param {Boolean} dirty
+   */
   setDirty (dirty) {
     super.setDirty(dirty)
     if (dirty) {

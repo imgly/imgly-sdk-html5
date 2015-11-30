@@ -1,4 +1,5 @@
 /** @jsx ReactBEM.createElement **/
+/* global PhotoEditorSDK */
 /*
  * Photo Editor SDK - photoeditorsdk.com
  * Copyright (c) 2013-2015 9elements GmbH
@@ -41,7 +42,7 @@ export default class FiltersControlsComponent extends BaseComponent {
    * @private
    */
   _initFilters () {
-    const filtersMap = this._operation.getFilters()
+    const filtersMap = PhotoEditorSDK.Filters
     const filters = []
     for (let key in filtersMap) {
       filters.push(filtersMap[key])

@@ -125,7 +125,7 @@ class Operation extends Configurable {
 
   /**
    * Sets this operation to dirty, so that it will re-render next time
-   * @param {Boolean} dirty = true
+   * @param {Boolean} dirty
    */
   setDirty (dirty) {
     this._dirty = dirty
