@@ -17,7 +17,7 @@
  * @return {Object}
  */
 module.exports = function (prototypeProperties, classProperties) {
-  /*jshint validthis:true*/
+  /* jshint validthis:true */
   var parent = this
   var child
 

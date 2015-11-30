@@ -210,7 +210,8 @@ export default class StickersCanvasRenderer {
       outputContext.save()
       outputContext.translate(stickerPosition.x, stickerPosition.y)
 
-      let scaleX = 1, scaleY = 1
+      let scaleX = 1
+      let scaleY = 1
       if (sticker.getFlipHorizontally()) {
         scaleX = -1
       }

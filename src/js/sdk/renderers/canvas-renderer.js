@@ -127,7 +127,7 @@ class CanvasRenderer extends BaseRenderer {
    * @param {Boolean} resetCache = false
    * @override
    */
-  reset (resetCache=false) {
+  reset (resetCache = false) {
     if (resetCache) {
       this._cache = []
     }

@@ -63,7 +63,7 @@ class ImageExporter {
    * @param  {Number} quality = 0.8
    * @return {Promise}
    */
-  static export (kit, image, canvas, renderType, imageFormat, quality=0.8) {
+  static export (kit, image, canvas, renderType, imageFormat, quality = 0.8) {
     return new Promise((resolve, reject) => {
       let result
       if (renderType === RenderType.IMAGE ||

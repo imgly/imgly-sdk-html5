@@ -215,7 +215,7 @@ export default class BaseRenderer extends EventEmitter {
    * Resets the renderer
    * @param {Boolean} resetCache = false
    */
-  reset (resetCache=false) {
+  reset (resetCache = false) {
 
   }
 

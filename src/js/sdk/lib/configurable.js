@@ -261,10 +261,10 @@ export default class Configurable extends EventEmitter {
    * Sets the value for the given option, validates it
    * @param {String} optionName
    * @param {*} value
-   * @param {Boolean} update
+   * @param {Boolean} update = true
    * @private
    */
-  setOption (optionName, value, update=true) {
+  setOption (optionName, value, update = true) {
     if (update) {
       this.emit('update', this, { [optionName]: value })
     }

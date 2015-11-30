@@ -13,6 +13,8 @@ import BaseRenderer from './base-renderer'
 import Vector2 from '../lib/math/vector2'
 import Promise from '../vendor/promise'
 
+const MAX_CONTEXT_LOST_COUNT = 3
+
 /**
  * @class
  * @alias PhotoEditorSDK.WebGLRenderer

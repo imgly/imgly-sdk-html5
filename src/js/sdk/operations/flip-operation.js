@@ -54,8 +54,10 @@ class FlipOperation extends Operation {
       const canvas = renderer.getCanvas()
       const context = renderer.getContext()
 
-      let scaleX = 1, scaleY = 1
-      let translateX = 0, translateY = 0
+      let scaleX = 1
+      let scaleY = 1
+      let translateX = 0
+      let translateY = 0
 
       if (this._options.horizontal) {
         scaleX = -1

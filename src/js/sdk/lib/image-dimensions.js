@@ -98,7 +98,8 @@ class ImageDimensions {
    * @return {Vector2}
    */
   calculateFinalDimensions (initialDimensions) {
-    var dimensions = initialDimensions.clone(), ratio
+    let dimensions = initialDimensions.clone()
+    let ratio
 
     if (this._rules === null) return dimensions
 

@@ -396,9 +396,11 @@ class StickersControl extends Control {
 
   /**
    * Gets called when the user clicked a list item
+   * @param {Element} item
+   * @param {Boolean} manually = true
    * @private
    */
-  _onListItemClick (item, manually=true) {
+  _onListItemClick (item, manually = true) {
     this._deactivateAllItems()
 
     const index = item.getAttribute('data-index')

@@ -134,7 +134,6 @@ class TextOperation extends Operation {
             y < textDimensions.y) {
           intersectingText = text
         }
-
       })
     return intersectingText
   }

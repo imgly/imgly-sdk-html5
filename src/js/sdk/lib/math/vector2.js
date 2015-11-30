@@ -224,46 +224,6 @@ class Vector2 {
   }
 
   /**
-   * Rounds the x and y values of this vector
-   * @returns {Vector2} [description]
-   */
-  round () {
-    this.x = Math.round(this.x)
-    this.y = Math.round(this.y)
-    return this
-  }
-
-  /**
-   * Floors the x and y values of this vector
-   * @returns {Vector2} [description]
-   */
-  floor () {
-    this.x = Math.floor(this.x)
-    this.y = Math.floor(this.y)
-    return this
-  }
-
-  /**
-   * Ceils the x and y values of this vector
-   * @returns {Vector2} [description]
-   */
-  ceil () {
-    this.x = Math.ceil(this.x)
-    this.y = Math.ceil(this.y)
-    return this
-  }
-
-  /**
-   * Sets the x and y values of this vector to their absolute values
-   * @returns {Vector2} [description]
-   */
-  abs () {
-    this.x = Math.abs(this.x)
-    this.y = Math.abs(this.y)
-    return this
-  }
-
-  /**
    * Returns the euclidean length of this vector
    * @return {Number}
    */

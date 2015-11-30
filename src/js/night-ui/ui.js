@@ -485,7 +485,6 @@ export default class NightUI extends EventEmitter {
     } else {
       return this._operationsMap[identifier]
     }
-
   }
 
   /**
@@ -710,7 +709,7 @@ export default class NightUI extends EventEmitter {
    * Resumes the UI and re-renders the canvas
    * @param {Boolean} rerender = true
    */
-  resume (rerender=true) {
+  resume (rerender = true) {
     this._paused = false
     if (rerender) {
       this.render()

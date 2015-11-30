@@ -7,10 +7,10 @@ const KEY_STR = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+
 
 export default {
   encode (input) {
-    let output = '',
-        chr1, chr2, chr3 = '',
-        enc1, enc2, enc3, enc4 = '',
-        i = 0
+    let output = ''
+    let chr1, chr2, chr3
+    let enc1, enc2, enc3, enc4
+    let i = 0
 
     do {
       chr1 = input[i++]
@@ -41,10 +41,10 @@ export default {
   },
 
   decode (input) {
-    let chr1, chr2, chr3 = '',
-      enc1, enc2, enc3, enc4 = '',
-      i = 0,
-      buf = []
+    let chr1, chr2, chr3
+    let enc1, enc2, enc3, enc4
+    let i = 0
+    let buf = []
 
     // remove all characters that are not A-Z, a-z, 0-9, +, /, or =
     var base64test = /[^A-Za-z0-9\+\/\=]/g
@@ -76,7 +76,6 @@ export default {
 
       chr1 = chr2 = chr3 = ''
       enc1 = enc2 = enc3 = enc4 = ''
-
     } while (i < input.length)
 
     return buf

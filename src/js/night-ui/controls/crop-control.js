@@ -187,10 +187,10 @@ class CropControl extends Control {
    * Sets the given ratio
    * @param {String} identifier
    * @param {String} ratio
-   * @param {Boolean} resize
+   * @param {Boolean} resize = true
    * @private
    */
-  _setRatio (identifier, ratio, resize=true) {
+  _setRatio (identifier, ratio, resize = true) {
     let canvasSize = this._ui.canvas.size
     this._selectedRatio = identifier
 

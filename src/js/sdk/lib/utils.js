@@ -31,10 +31,10 @@ class Utils {
   /**
    * Returns the items selected by the given selector
    * @param  {Array} items
-   * @param  {PhotoEditorSDK~Selector} selector - The selector
+   * @param  {PhotoEditorSDK~Selector} selector = null - The selector
    * @return {Array} The selected items
    */
-  static select (items, selector=null) {
+  static select (items, selector = null) {
     if (selector === null) {
       return items
     }
@@ -99,8 +99,8 @@ class Utils {
   /* istanbul ignore next */
   static isDOMElement (o) {
     return (
-      typeof HTMLElement === 'object' ? o instanceof HTMLElement :
-      o && typeof o === 'object' && o !== null && o.nodeType === 1 && typeof o.nodeName === 'string'
+      typeof HTMLElement === 'object' ? o instanceof HTMLElement
+      : o && typeof o === 'object' && o !== null && o.nodeType === 1 && typeof o.nodeName === 'string'
     )
   }
 
