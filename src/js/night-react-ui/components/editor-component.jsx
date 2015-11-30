@@ -11,7 +11,6 @@
 
 import { React, ReactBEM } from '../globals'
 import ImageResizer from '../lib/image-resizer'
-import HeaderComponent from './header-component'
 import SplashScreenComponent from './screens/splash/splash-screen-component'
 import WebcamScreenComponent from './screens/webcam/webcam-screen-component'
 import EditorScreenComponent from './screens/editor/editor-screen-component'

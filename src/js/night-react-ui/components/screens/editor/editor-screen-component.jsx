@@ -8,7 +8,7 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-import { React, ReactBEM, Constants, SDKUtils, SharedState } from '../../../globals'
+import { ReactBEM, Constants, SDKUtils, SharedState } from '../../../globals'
 import FileLoader from '../../../lib/file-loader'
 import ScreenComponent from '../screen-component'
 import HeaderComponent from '../../header-component'

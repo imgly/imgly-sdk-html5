@@ -443,11 +443,10 @@ export default class StickerCanvasControlsComponent extends BaseComponent {
             <img bem='e:icon' src={ui.getHelpers().assetPath('controls/knobs/resize-diagonal-up@2x.png', true)} />
           </div>
         </DraggableComponent>),
-        (
-          <div bem='e:knob $b:knob' style={this._getRemoveKnobStyle()} onClick={this._onRemoveClick}>
-            <img bem='e:icon' src={ui.getHelpers().assetPath('controls/knobs/remove@2x.png', true)} />
-          </div>
-        )]
+        (<div bem='e:knob $b:knob' style={this._getRemoveKnobStyle()} onClick={this._onRemoveClick}>
+          <img bem='e:icon' src={ui.getHelpers().assetPath('controls/knobs/remove@2x.png', true)} />
+        </div>)
+      ]
     }
 
     return (<div

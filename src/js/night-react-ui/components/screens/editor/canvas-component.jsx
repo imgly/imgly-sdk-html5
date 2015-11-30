@@ -10,7 +10,7 @@
  */
 
 import {
-  Utils, SDKUtils, React, ReactBEM, Vector2, BaseComponent, Constants, EventEmitter
+  Utils, SDKUtils, ReactBEM, Vector2, BaseComponent, Constants, EventEmitter
 } from '../../../globals'
 import ModalManager from '../../../lib/modal-manager'
 

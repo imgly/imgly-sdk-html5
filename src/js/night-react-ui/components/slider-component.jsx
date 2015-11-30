@@ -8,7 +8,7 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-import { React, ReactBEM, BaseComponent } from '../globals'
+import { ReactBEM, BaseComponent } from '../globals'
 import DraggableComponent from './draggable-component'
 
 export default class SliderComponent extends BaseComponent {
@@ -174,9 +174,9 @@ export default class SliderComponent extends BaseComponent {
     let foregroundLeft = 0
     if (this._displayMiddleDot()) {
       foregroundWidth = Math.abs(progress - 0.5) * barWidth
-      foregroundLeft = progress < 0.5 ?
-        (barWidth * 0.5 - foregroundWidth) :
-        '50%'
+      foregroundLeft = progress < 0.5
+        ? (barWidth * 0.5 - foregroundWidth)
+        : '50%'
     }
 
     this.setState({ value, sliderPosition, foregroundWidth, foregroundLeft })

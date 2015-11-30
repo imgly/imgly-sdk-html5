@@ -55,7 +55,7 @@ export default class TextControlsComponent extends BaseComponent {
     const fonts = [
       { fontFamily: 'Helvetica', fontWeight: 'normal' },
       { fontFamily: 'Verdana', fontWeight: 'normal' },
-      { fontFamily: 'Times New Roman', fontWeight: 'normal'},
+      { fontFamily: 'Times New Roman', fontWeight: 'normal' },
       { fontFamily: 'Impact', fontWeight: 'normal' }
     ]
 

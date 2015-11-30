@@ -177,3 +177,7 @@ BaseComponent.contextTypes = {
   operationsStack: React.PropTypes.object,
   mediator: React.PropTypes.object
 }
+
+BaseComponent.propTypes = {
+  sharedState: React.PropTypes.any
+}

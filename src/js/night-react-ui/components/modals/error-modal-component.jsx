@@ -30,9 +30,9 @@ export default class ErrorModalComponent extends BaseComponent {
       <div bem='e:button b:button m:inline' onClick={this._onClose}>OK</div>
     </div>)
 
-    const content = modal.overlay ?
-      (<div bem='e:overlay'>{modalElement}</div>) :
-      modalElement
+    const content = modal.overlay
+      ? (<div bem='e:overlay'>{modalElement}</div>)
+      : modalElement
 
     return (
       <bem specifier='$b:modals'>
