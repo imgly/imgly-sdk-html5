@@ -9,23 +9,17 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import {
-  ReactBEM,
-  BaseComponent,
-  Constants,
-  Vector2
-} from '../../../globals'
+import { ReactBEM, Constants, Vector2 } from '../../../globals'
+import ControlsComponent from '../controls-component'
 import ScrollbarComponent from '../../scrollbar-component'
-import BackButtonComponent from '../../back-button-component'
 
-export default class OrientationControlsComponent extends BaseComponent {
+export default class OrientationControlsComponent extends ControlsComponent {
   constructor (...args) {
     super(...args)
 
     this._bindAll(
       '_onRotateClick',
       '_onFlipClick',
-      '_onBackClick',
       '_onOperationUpdated'
     )
 
@@ -48,15 +42,6 @@ export default class OrientationControlsComponent extends BaseComponent {
         operation === this._flipOperation) {
       this.forceUpdate()
     }
-  }
-
-  /**
-   * Gets called when the user clicks the back button
-   * @param {Event} e
-   * @private
-   */
-  _onBackClick (e) {
-    this.props.onSwitchControls('back')
   }
 
   /**
@@ -178,33 +163,22 @@ export default class OrientationControlsComponent extends BaseComponent {
   // -------------------------------------------------------------------------- RENDERING
 
   /**
-   * Renders this component
-   * @return {ReactBEM.Element}
+   * Renders the list items for this control
+   * @return {Array.<ReactBEM.Element>}
+   * @private
    */
-  renderWithBEM () {
-    const ui = this.context.ui
+  _renderListItems () {
+    const { ui } = this.context
 
     const itemsMap = [
-      {
-        identifier: 'rotate-l',
-        onClick: this._onRotateClick.bind(this, 'left')
-      },
-      {
-        identifier: 'rotate-r',
-        onClick: this._onRotateClick.bind(this, 'right')
-      },
+      { identifier: 'rotate-l', onClick: this._onRotateClick.bind(this, 'left') },
+      { identifier: 'rotate-r', onClick: this._onRotateClick.bind(this, 'right') },
       null, // gap
-      {
-        identifier: 'flip-h',
-        onClick: this._onFlipClick.bind(this, 'horizontal')
-      },
-      {
-        identifier: 'flip-v',
-        onClick: this._onFlipClick.bind(this, 'vertical')
-      }
+      { identifier: 'flip-h', onClick: this._onFlipClick.bind(this, 'horizontal') },
+      { identifier: 'flip-v', onClick: this._onFlipClick.bind(this, 'vertical') }
     ]
 
-    const listItems = itemsMap.map((item) => {
+    return itemsMap.map((item) => {
       if (item === null) {
         return (<li bem='e:item m:gap' key='gap' />)
       }
@@ -220,16 +194,21 @@ export default class OrientationControlsComponent extends BaseComponent {
         </bem>
       </li>)
     })
+  }
 
-    return (<div bem='$b:controls e:table'>
-      <BackButtonComponent onClick={this._onBackClick} />
-      <div bem='e:cell m:list'>
-        <ScrollbarComponent>
-          <ul bem='$e:list'>
-            {listItems}
-          </ul>
-        </ScrollbarComponent>
-      </div>
+  /**
+   * Renders the controls of this component
+   * @return {ReactBEM.Element}
+   */
+  renderControls () {
+    const listItems = this._renderListItems()
+
+    return (<div bem='e:cell m:list'>
+      <ScrollbarComponent>
+        <ul bem='$e:list'>
+          {listItems}
+        </ul>
+      </ScrollbarComponent>
     </div>)
   }
 }

@@ -9,15 +9,15 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseComponent, Constants } from '../../../../globals'
+import { ReactBEM, Constants } from '../../../../globals'
+import ControlsComponent from '../../controls-component'
 import SliderComponent from '../../../slider-component'
-import BackButtonComponent from '../../../back-button-component'
-import DoneButtonComponent from '../../../done-button-component'
 
-export default class TiltShiftControlsComponent extends BaseComponent {
+export default class TiltShiftControlsComponent extends ControlsComponent {
   constructor (...args) {
     super(...args)
 
+    this._hasDoneButton = true
     this._operation = this.getSharedState('operation')
     this._bindAll(
       '_onBackClick',
@@ -74,7 +74,7 @@ export default class TiltShiftControlsComponent extends BaseComponent {
    * @private
    */
   _onBackClick (e) {
-    this.props.onSwitchControls('back')
+    super._onBackClick(e)
 
     const { ui } = this.context
     if (!this.getSharedState('operationExistedBefore')) {
@@ -108,7 +108,7 @@ export default class TiltShiftControlsComponent extends BaseComponent {
 
     this._emitEvent(Constants.EVENTS.CANVAS_UNDO_ZOOM)
     this._emitEvent(Constants.EVENTS.EDITOR_ENABLE_FEATURES, ['zoom', 'drag'])
-    this.props.onSwitchControls('back')
+    super._onDoneClick(e)
   }
 
   /**
@@ -124,24 +124,20 @@ export default class TiltShiftControlsComponent extends BaseComponent {
   // -------------------------------------------------------------------------- RENDERING
 
   /**
-   * Renders this component
+   * Renders the controls of this component
    * @return {ReactBEM.Element}
    */
-  renderWithBEM () {
-    return (<div bem='$b:controls e:table'>
-      <BackButtonComponent onClick={this._onBackClick} />
-      <div bem='e:cell m:slider'>
-        <SliderComponent
-          style='large'
-          minValue={0}
-          maxValue={40}
-          valueUnit='px'
-          middleDot={false}
-          label={this._t('controls.focus.blurRadius')}
-          onChange={this._onSliderValueChange}
-          value={this._operation.getBlurRadius()} />
-      </div>
-      <DoneButtonComponent onClick={this._onDoneClick} />
+  renderControls () {
+    return (<div bem='e:cell m:slider'>
+      <SliderComponent
+        style='large'
+        minValue={0}
+        maxValue={40}
+        valueUnit='px'
+        middleDot={false}
+        label={this._t('controls.focus.blurRadius')}
+        onChange={this._onSliderValueChange}
+        value={this._operation.getBlurRadius()} />
     </div>)
   }
 }

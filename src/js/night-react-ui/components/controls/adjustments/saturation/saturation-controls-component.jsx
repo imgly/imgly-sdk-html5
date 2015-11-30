@@ -9,16 +9,15 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseComponent, Constants } from '../../../../globals'
+import { ReactBEM, Constants } from '../../../../globals'
+import ControlsComponent from '../../controls-component'
 import SliderComponent from '../../../slider-component.jsx'
-import BackButtonComponent from '../../../back-button-component'
 
-export default class SaturationControlsComponent extends BaseComponent {
+export default class SaturationControlsComponent extends ControlsComponent {
   constructor (...args) {
     super(...args)
 
     this._bindAll(
-      '_onBackClick',
       '_onSliderValueChange',
       '_onOperationUpdated',
       '_onOperationRemoved'
@@ -79,7 +78,7 @@ export default class SaturationControlsComponent extends BaseComponent {
    * @private
    */
   _onBackClick (e) {
-    this.props.onSwitchControls('back')
+    super._onBackClick(e)
 
     if (this._operation.getSaturation() === this._operation.getOptionDefault('saturation')) {
       const { ui } = this.context
@@ -110,23 +109,20 @@ export default class SaturationControlsComponent extends BaseComponent {
   }
 
   /**
-   * Renders this component
+   * Renders the controls of this component
    * @return {ReactBEM.Element}
    */
-  renderWithBEM () {
-    return (<div bem='$b:controls e:table'>
-      <BackButtonComponent onClick={this._onBackClick} />
-      <div bem='e:cell m:slider'>
-        <SliderComponent
-          style='large'
-          minValue={-100}
-          maxValue={100}
-          valueUnit='%'
-          positiveValuePrefix='+'
-          label={this._t('controls.adjustments.saturation')}
-          onChange={this._onSliderValueChange}
-          value={this.state.value * 100 - 100} />
-      </div>
+  renderControls () {
+    return (<div bem='e:cell m:slider'>
+      <SliderComponent
+        style='large'
+        minValue={-100}
+        maxValue={100}
+        valueUnit='%'
+        positiveValuePrefix='+'
+        label={this._t('controls.adjustments.saturation')}
+        onChange={this._onSliderValueChange}
+        value={this.state.value * 100 - 100} />
     </div>)
   }
 }

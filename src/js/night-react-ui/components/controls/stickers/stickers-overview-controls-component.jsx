@@ -9,16 +9,15 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseComponent, Constants, Vector2 } from '../../../globals'
+import { ReactBEM, Constants, Vector2 } from '../../../globals'
+import ControlsComponent from '../controls-component'
 import ScrollbarComponent from '../../scrollbar-component'
-import BackButtonComponent from '../../back-button-component'
 import ModalManager from '../../../lib/modal-manager'
 
-export default class StickersOverviewControlsComponent extends BaseComponent {
+export default class StickersOverviewControlsComponent extends ControlsComponent {
   constructor (...args) {
     super(...args)
 
-    this._bindAll('_onBackClick')
     this._operation = this.getSharedState('operation')
     this._stickers = this.getSharedState('stickers')
 
@@ -200,11 +199,12 @@ export default class StickersOverviewControlsComponent extends BaseComponent {
   // -------------------------------------------------------------------------- RENDERING
 
   /**
-   * Renders this component
-   * @return {ReactBEM.Element}
+   * Renders the list items for this control
+   * @return {Array.<ReactBEM.Element>}
+   * @private
    */
-  renderWithBEM () {
-    const listItems = this._availableStickers.map((paths, i) => {
+  _renderListItems () {
+    return this._availableStickers.map((paths, i) => {
       const smallPath = paths[0]
       const largePath = paths[1]
       return (<li
@@ -218,16 +218,21 @@ export default class StickersOverviewControlsComponent extends BaseComponent {
         </bem>
       </li>)
     })
+  }
 
-    return (<div bem='$b:controls e:table'>
-      <BackButtonComponent onClick={this._onBackClick} />
-      <div bem='e:cell m:list'>
-        <ScrollbarComponent>
-          <ul bem='$e:list'>
-            {listItems}
-          </ul>
-        </ScrollbarComponent>
-      </div>
+  /**
+   * Renders the controls of this component
+   * @return {ReactBEM.Element}
+   */
+  renderControls () {
+    const listItems = this._renderListItems()
+
+    return (<div bem='e:cell m:list'>
+      <ScrollbarComponent>
+        <ul bem='$e:list'>
+          {listItems}
+        </ul>
+      </ScrollbarComponent>
     </div>)
   }
 }

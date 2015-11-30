@@ -9,20 +9,18 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseComponent, Constants } from '../../../globals'
+import { ReactBEM, Constants } from '../../../globals'
+import ControlsComponent from '../controls-component'
 import SliderComponent from '../../slider-component'
 import ColorPickerComponent from '../../color-picker/color-picker-component'
-import BackButtonComponent from '../../back-button-component'
-import DoneButtonComponent from '../../done-button-component'
 
-export default class FrameControlsComponent extends BaseComponent {
+export default class FrameControlsComponent extends ControlsComponent {
   constructor (...args) {
     super(...args)
 
+    this._hasDoneButton = true
     this._operation = this.getSharedState('operation')
     this._bindAll(
-      '_onBackClick',
-      '_onDoneClick',
       '_onThicknessUpdate',
       '_onColorUpdate'
     )
@@ -66,7 +64,7 @@ export default class FrameControlsComponent extends BaseComponent {
    * @private
    */
   _onBackClick (e) {
-    this.props.onSwitchControls('back')
+    super._onBackClick(e)
 
     const { ui } = this.context
     if (!this.getSharedState('operationExistedBefore')) {
@@ -97,7 +95,7 @@ export default class FrameControlsComponent extends BaseComponent {
         this.getSharedState('operationExistedBefore'))
     }
 
-    this.props.onSwitchControls('back')
+    super._onDoneClick(e)
   }
 
   /**
@@ -114,10 +112,10 @@ export default class FrameControlsComponent extends BaseComponent {
   // -------------------------------------------------------------------------- RENDERING
 
   /**
-   * Renders this component
+   * Renders the controls of this component
    * @return {ReactBEM.Element}
    */
-  renderWithBEM () {
+  renderControls () {
     const { editor } = this.props
     const canvasDimensions = editor.getInitialDimensions()
 
@@ -126,25 +124,21 @@ export default class FrameControlsComponent extends BaseComponent {
     const maxThickness = Math.round(shorterSide / 2)
     const currentWidth = this._operation.getThickness() * shorterSide
 
-    return (<div bem='$b:controls e:table'>
-      <BackButtonComponent onClick={this._onBackClick} />
-      <div bem='e:cell m:slider'>
-        <SliderComponent
-          style='large'
-          minValue={minThickness}
-          maxValue={maxThickness}
-          valueUnit='px'
-          middleDot={false}
-          label={this._t('controls.frame.thickness')}
-          onChange={this._onThicknessUpdate}
-          value={currentWidth} />
-      </div>
-      <div bem='e:cell m:colorPicker'>
-        <ColorPickerComponent
-          initialValue={this._operation.getColor().clone()}
-          onChange={this._onColorUpdate} />
-      </div>
-      <DoneButtonComponent onClick={this._onDoneClick} />
-    </div>)
+    return [(<div bem='e:cell m:slider'>
+      <SliderComponent
+        style='large'
+        minValue={minThickness}
+        maxValue={maxThickness}
+        valueUnit='px'
+        middleDot={false}
+        label={this._t('controls.frame.thickness')}
+        onChange={this._onThicknessUpdate}
+        value={currentWidth} />
+    </div>),
+    (<div bem='e:cell m:colorPicker'>
+      <ColorPickerComponent
+        initialValue={this._operation.getColor().clone()}
+        onChange={this._onColorUpdate} />
+    </div>)]
   }
 }

@@ -9,30 +9,22 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseComponent, Constants } from '../../../../../globals'
+import { ReactBEM, Constants } from '../../../../../globals'
+import ControlsComponent from '../../../controls-component'
 import SliderComponent from '../../../../slider-component'
-import BackButtonComponent from '../../../../back-button-component'
 
-export default class StickersBrightnessControlsComponent extends BaseComponent {
+export default class StickersBrightnessControlsComponent extends ControlsComponent {
   constructor (...args) {
     super(...args)
 
     this._bindAll(
-      '_onBackClick',
       '_onSliderValueChange'
     )
     this._selectedSticker = this.getSharedState('selectedSticker')
     this._operation = this.getSharedState('operation')
   }
 
-  /**
-   * Gets called when the user clicks the back button
-   * @param {Event} e
-   * @private
-   */
-  _onBackClick (e) {
-    this.props.onSwitchControls('back')
-  }
+  // -------------------------------------------------------------------------- EVENTS
 
   /**
    * Gets called when the slider value has changed
@@ -46,27 +38,26 @@ export default class StickersBrightnessControlsComponent extends BaseComponent {
     this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
   }
 
+  // -------------------------------------------------------------------------- RENDERING
+
   /**
-   * Renders this component
+   * Renders the controls of this component
    * @return {ReactBEM.Element}
    */
-  renderWithBEM () {
+  renderControls () {
     const adjustments = this._selectedSticker.getAdjustments()
     const brightness = adjustments.getBrightness()
 
-    return (<div bem='$b:controls e:table'>
-      <BackButtonComponent onClick={this._onBackClick} />
-      <div bem='e:cell m:slider'>
-        <SliderComponent
-          style='large'
-          minValue={-100}
-          maxValue={100}
-          valueUnit='%'
-          positiveValuePrefix='+'
-          label={this._t('controls.adjustments.brightness')}
-          onChange={this._onSliderValueChange}
-          value={brightness * 100} />
-      </div>
+    return (<div bem='e:cell m:slider'>
+      <SliderComponent
+        style='large'
+        minValue={-100}
+        maxValue={100}
+        valueUnit='%'
+        positiveValuePrefix='+'
+        label={this._t('controls.adjustments.brightness')}
+        onChange={this._onSliderValueChange}
+        value={brightness * 100} />
     </div>)
   }
 }

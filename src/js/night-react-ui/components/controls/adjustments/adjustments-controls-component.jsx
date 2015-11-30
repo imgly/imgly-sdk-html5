@@ -9,9 +9,9 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseComponent } from '../../../globals'
+import { ReactBEM } from '../../../globals'
+import ControlsComponent from '../controls-component'
 import ScrollbarComponent from '../../scrollbar-component'
-import BackButtonComponent from '../../back-button-component'
 
 import BrightnessControls from './brightness/'
 import SaturationControls from './saturation/'
@@ -23,23 +23,8 @@ const ITEMS = [
   ContrastControls
 ]
 
-export default class AdjustmentsControlsComponent extends BaseComponent {
-  constructor (...args) {
-    super(...args)
-
-    this._bindAll('_onBackClick')
-  }
-
+export default class AdjustmentsControlsComponent extends ControlsComponent {
   // -------------------------------------------------------------------------- EVENTS
-
-  /**
-   * Gets called when the user clicks the back button
-   * @param {Event} e
-   * @private
-   */
-  _onBackClick (e) {
-    this.props.onSwitchControls('back')
-  }
 
   /**
    * Gets called when the user clicks one of the three buttons
@@ -77,21 +62,18 @@ export default class AdjustmentsControlsComponent extends BaseComponent {
   }
 
   /**
-   * Renders this component
+   * Renders the controls of this component
    * @return {ReactBEM.Element}
    */
-  renderWithBEM () {
+  renderControls () {
     const listItems = this._renderListItems()
 
-    return (<div bem='$b:controls e:table'>
-      <BackButtonComponent onClick={this._onBackClick} />
-      <div bem='e:cell m:list'>
-        <ScrollbarComponent>
-          <ul bem='$e:list'>
-            {listItems}
-          </ul>
-        </ScrollbarComponent>
-      </div>
+    return (<div bem='e:cell m:list'>
+      <ScrollbarComponent>
+        <ul bem='$e:list'>
+          {listItems}
+        </ul>
+      </ScrollbarComponent>
     </div>)
   }
 }

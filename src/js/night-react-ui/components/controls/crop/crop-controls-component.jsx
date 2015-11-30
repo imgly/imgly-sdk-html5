@@ -9,22 +9,20 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseComponent, Constants, Vector2 } from '../../../globals'
+import { ReactBEM, Constants, Vector2 } from '../../../globals'
+import ControlsComponent from '../controls-component'
 import ScrollbarComponent from '../../scrollbar-component'
-import BackButtonComponent from '../../back-button-component'
-import DoneButtonComponent from '../../done-button-component'
 
 // Specifies the default distance to the border
 // when selecting a ratio
 const PADDING = 0.1
 
-export default class OrientationControlsComponent extends BaseComponent {
+export default class OrientationControlsComponent extends ControlsComponent {
   constructor (...args) {
     super(...args)
 
+    this._hasDoneButton = true
     this._bindAll(
-      '_onBackClick',
-      '_onDoneClick',
       '_selectRatio'
     )
 
@@ -100,7 +98,7 @@ export default class OrientationControlsComponent extends BaseComponent {
    * @private
    */
   _onBackClick (e) {
-    this.props.onSwitchControls('back')
+    super._onBackClick(e)
 
     if (this.getSharedState('operationExistedBefore')) {
       this._operation.set(this._initialOptions)
@@ -146,8 +144,7 @@ export default class OrientationControlsComponent extends BaseComponent {
 
     this.context.kit.reset()
 
-    // Switch back to overview controls
-    this.props.onSwitchControls('back')
+    super._onDoneClick(e)
   }
 
   // -------------------------------------------------------------------------- RATIO HANDLING
@@ -208,11 +205,11 @@ export default class OrientationControlsComponent extends BaseComponent {
   // -------------------------------------------------------------------------- RENDERING
 
   /**
-   * Renders this component
+   * Renders the controls of this component
    * @return {ReactBEM.Element}
    */
-  renderWithBEM () {
-    const ui = this.context.ui
+  renderControls () {
+    const { ui } = this.context
 
     const listItems = this._ratios.map((ratio) => {
       return (<li
@@ -229,8 +226,7 @@ export default class OrientationControlsComponent extends BaseComponent {
       </li>)
     })
 
-    return (<div bem='$b:controls e:table'>
-      <BackButtonComponent onClick={this._onBackClick} />
+    return (
       <div bem='e:cell m:list'>
         <ScrollbarComponent>
           <ul bem='$e:list'>
@@ -238,7 +234,6 @@ export default class OrientationControlsComponent extends BaseComponent {
           </ul>
         </ScrollbarComponent>
       </div>
-      <DoneButtonComponent onClick={this._onDoneClick} />
-    </div>)
+    )
   }
 }

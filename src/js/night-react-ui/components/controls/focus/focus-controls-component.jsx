@@ -9,9 +9,9 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseComponent } from '../../../globals'
+import { ReactBEM } from '../../../globals'
+import ControlsComponent from '../controls-component'
 import ScrollbarComponent from '../../scrollbar-component'
-import BackButtonComponent from '../../back-button-component'
 
 import RadialBlurControls from './radial-blur/'
 import TiltShiftControls from './tilt-shift/'
@@ -21,21 +21,8 @@ const ITEMS = [
   TiltShiftControls
 ]
 
-export default class FocusControlsComponent extends BaseComponent {
-  constructor (...args) {
-    super(...args)
-
-    this._bindAll('_onBackClick')
-  }
-
-  /**
-   * Gets called when the user clicks the back button
-   * @param {Event} e
-   * @private
-   */
-  _onBackClick (e) {
-    this.props.onSwitchControls('back')
-  }
+export default class FocusControlsComponent extends ControlsComponent {
+  // -------------------------------------------------------------------------- EVENTS
 
   /**
    * Gets called when the user clicks one of the three buttons
@@ -47,14 +34,17 @@ export default class FocusControlsComponent extends BaseComponent {
     this.props.editor.switchToControls(controlsItem)
   }
 
+  // -------------------------------------------------------------------------- RENDERING
+
   /**
-   * Renders this component
-   * @return {ReactBEM.Element}
+   * Renders the list items for this control
+   * @return {Array.<ReactBEM.Element>}
+   * @private
    */
-  renderWithBEM () {
+  _renderListItems () {
     const ui = this.context.ui
 
-    const listItems = ITEMS
+    return ITEMS
       .filter((item) => item.isSelectable(this.context.ui))
       .map((item) => {
         return (<li
@@ -68,16 +58,21 @@ export default class FocusControlsComponent extends BaseComponent {
           </bem>
         </li>)
       })
+  }
 
-    return (<div bem='$b:controls e:table'>
-      <BackButtonComponent onClick={this._onBackClick} />
-      <div bem='e:cell m:list'>
-        <ScrollbarComponent>
-          <ul bem='$e:list'>
-            {listItems}
-          </ul>
-        </ScrollbarComponent>
-      </div>
+  /**
+   * Renders the controls of this component
+   * @return {ReactBEM.Element}
+   */
+  renderControls () {
+    const listItems = this._renderListItems()
+
+    return (<div bem='e:cell m:list'>
+      <ScrollbarComponent>
+        <ul bem='$e:list'>
+          {listItems}
+        </ul>
+      </ScrollbarComponent>
     </div>)
   }
 }

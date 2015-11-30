@@ -15,20 +15,20 @@ const ALIGNMENTS = [
   'right'
 ]
 
-import { ReactBEM, BaseComponent, Constants } from '../../../globals'
-import ScrollbarComponent from '../../scrollbar-component'
+import { ReactBEM, Constants } from '../../../globals'
+import ControlsComponent from '../controls-component'
 import BackButtonComponent from '../../back-button-component'
+import ScrollbarComponent from '../../scrollbar-component'
 import ColorPickerComponent from '../../color-picker/color-picker-component'
 import FontSizeSliderComponent from './font-size-slider-component'
 import FontPreviewComponent from './font-preview-component'
 import FontComponent from './font-component'
 
-export default class TextControlsComponent extends BaseComponent {
+export default class TextControlsComponent extends ControlsComponent {
   constructor (...args) {
     super(...args)
 
     this._bindAll(
-      '_onBackClick',
       '_onFontSizeChange',
       '_onFontChange',
       '_onAlignmentClick',
@@ -91,8 +91,8 @@ export default class TextControlsComponent extends BaseComponent {
    */
   _onBackClick (e) {
     this._operation.setTexts(this._texts)
-    this.props.onSwitchControls('back')
     this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
+    super._onBackClick()
   }
 
   /**

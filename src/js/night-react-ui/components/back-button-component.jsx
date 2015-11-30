@@ -12,8 +12,6 @@
 import { ReactBEM, BaseComponent } from '../globals'
 
 export default class BackButtonComponent extends BaseComponent {
-  // -------------------------------------------------------------------------- RENDERING
-
   /**
    * Renders this component
    * @return {ReactBEM.Element}
