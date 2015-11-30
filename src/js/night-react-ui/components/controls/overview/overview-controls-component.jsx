@@ -9,10 +9,18 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseComponent } from '../../../globals'
+import { ReactBEM } from '../../../globals'
+import ControlsComponent from '../controls-component'
 import ScrollbarComponent from '../../scrollbar-component'
 
-export default class OverviewControlsComponent extends BaseComponent {
+export default class OverviewControlsComponent extends ControlsComponent {
+  constructor (...args) {
+    super(...args)
+    this._hasBackButton = false
+  }
+
+  // -------------------------------------------------------------------------- EVENTS
+
   /**
    * Gets called when an item has been clicked
    * @param  {Event} e
@@ -22,13 +30,16 @@ export default class OverviewControlsComponent extends BaseComponent {
     this.props.onSwitchControls(controls)
   }
 
+  // -------------------------------------------------------------------------- RENDERING
+
   /**
-   * Renders this component
-   * @return {ReactBEM.Element}
+   * Renders the list items for this control
+   * @return {Array.<ReactBEM.Element>}
+   * @private
    */
-  renderWithBEM () {
+  _renderListItems () {
     const { ui } = this.context
-    const listItems = ui.getEnabledControls()
+    return ui.getEnabledControls()
       .map((control) => {
         return (<li
           bem='e:item'
@@ -42,15 +53,21 @@ export default class OverviewControlsComponent extends BaseComponent {
             </bem>
         </li>)
       })
+  }
 
-    return (<div bem='$b:controls e:table'>
-      <div bem='e:cell m:list'>
-        <ScrollbarComponent>
-          <ul bem='$e:list'>
-            {listItems}
-          </ul>
-        </ScrollbarComponent>
-      </div>
+  /**
+   * Renders this component
+   * @return {ReactBEM.Element}
+   */
+  renderControls () {
+    const listItems = this._renderListItems()
+
+    return (<div bem='e:cell m:list'>
+      <ScrollbarComponent>
+        <ul bem='$e:list'>
+          {listItems}
+        </ul>
+      </ScrollbarComponent>
     </div>)
   }
 }
