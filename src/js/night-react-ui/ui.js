@@ -43,8 +43,8 @@ export default class NightReactUI extends EventEmitter {
       'crop',
       'flip',
 
-      // Then color operations (first filters, then fine-tuning)
-      'filters',
+      // Then color operations (first filter, then fine-tuning)
+      'filter',
       'contrast',
       'brightness',
       'saturation',

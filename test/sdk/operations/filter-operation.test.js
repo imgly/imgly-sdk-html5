@@ -14,7 +14,7 @@ beforeEach(function () {
   kit = SpecHelpers.initRenderer()
 })
 
-describe('FiltersOperation', function () {
+describe('FilterOperation', function () {
 
   describe('with no selected filter', function () {
 

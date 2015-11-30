@@ -8,7 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-exports.Filters = require('./filters-operation')
+exports.Filter = require('./filter-operation')
 exports.Crop = require('./crop-operation')
 exports.Rotation = require('./rotation-operation')
 exports.Saturation = require('./saturation-operation')

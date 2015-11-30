@@ -19,8 +19,8 @@ export default {
   icon: 'controls/overview/filters@2x.png',
   label: 'controls.overview.filters',
   getInitialSharedState: (context) => {
-    const operationExistedBefore = context.ui.operationExists('filters')
-    const operation = context.ui.getOrCreateOperation('filters')
+    const operationExistedBefore = context.ui.operationExists('filter')
+    const operation = context.ui.getOrCreateOperation('filter')
     const initialOptions = {
       filter: operation.getFilter(),
       intensity: operation.getIntensity()
@@ -32,6 +32,6 @@ export default {
     }
   },
   isSelectable: (ui) => {
-    return ui.isOperationEnabled('filters')
+    return ui.isOperationEnabled('filter')
   }
 }

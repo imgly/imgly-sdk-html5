@@ -17,10 +17,10 @@ import IdentityFilter from './filters/identity-filter'
  * An operation that can apply a selected filter
  *
  * @class
- * @alias PhotoEditorSDK.Operations.FiltersOperation
+ * @alias PhotoEditorSDK.Operations.FilterOperation
  * @extends PhotoEditorSDK.Operation
  */
-class FiltersOperation extends Operation {
+class FilterOperation extends Operation {
   constructor (...args) {
     super(...args)
 
@@ -85,13 +85,13 @@ class FiltersOperation extends Operation {
  * operations.
  * @type {String}
  */
-FiltersOperation.identifier = 'filters'
+FilterOperation.identifier = 'filter'
 
 /**
  * Specifies the available options for this operation
  * @type {Object}
  */
-FiltersOperation.prototype.availableOptions = {
+FilterOperation.prototype.availableOptions = {
   intensity: {
     type: 'number',
     default: 1,
@@ -109,4 +109,4 @@ FiltersOperation.prototype.availableOptions = {
   }
 }
 
-export default FiltersOperation
+export default FilterOperation
