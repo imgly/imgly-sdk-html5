@@ -86,7 +86,6 @@ class BrushMarkFilter extends Filter {
       })
 
       image.crossOrigin = 'Anonymous'
-      console.log(this._imageURL)
       image.src = this._imageURL
     })
   }

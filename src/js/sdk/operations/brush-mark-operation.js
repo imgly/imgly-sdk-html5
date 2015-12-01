@@ -21,7 +21,6 @@ import BrushMarkFilter from './tableau/brush-mark-filter'
 class BrushMarkOperation extends Operation {
   constructor (...args) {
     super(...args)
-    console.log('up and running')
     this._registerFilters()
   }
 
