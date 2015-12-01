@@ -70,8 +70,16 @@ class StreetOperation extends Operation {
     return this._selectedFilter.render(renderer)
   }
 
+  /**
+   * returns the array of filters
+   * @return {Array} the array of filters
+   */
   getFilters () { return this._filters }
 
+  /**
+   * Sets this operation to dirty, so that it will re-render next time
+   * @param {Boolean} dirty = true
+   */
   setDirty (dirty) {
     super.setDirty(dirty)
     if (dirty) {
