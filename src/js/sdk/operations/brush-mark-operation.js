@@ -61,6 +61,10 @@ class BrushMarkOperation extends Operation {
     return this._filter.render(renderer)
   }
 
+  /**
+   * Sets this operation to dirty, so that it will re-render next time
+   * @param {Boolean} dirty = true
+   */
   setDirty (dirty) {
     super.setDirty(dirty)
     if (dirty) {

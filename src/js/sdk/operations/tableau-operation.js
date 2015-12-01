@@ -69,8 +69,16 @@ class TableauOperation extends Operation {
     return this._selectedFilter.render(renderer)
   }
 
+  /**
+   * returns the filters
+   * @return {Array} an array containing the filters
+   */
   getFilters () { return this._filters }
 
+  /**
+   * Sets this operation to dirty, so that it will re-render next time
+   * @param {Boolean} dirty = true
+   */
   setDirty (dirty) {
     super.setDirty(dirty)
     if (dirty) {
