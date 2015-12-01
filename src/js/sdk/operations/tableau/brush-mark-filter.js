@@ -63,7 +63,7 @@ class BrushMarkFilter extends Filter {
           }
         })
       })
-    }
+  }
   /**
    * Uploads the given image to a texture
    * @param  {WebGLRenderer} renderer
