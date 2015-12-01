@@ -17,7 +17,7 @@ import {
 import ScrollbarComponent from '../../../scrollbar-component'
 
 const ITEMS = [
-  { identifier: 'tableau', i18nKey: 'identity', options: { } },
+  { identifier: 'tableau', i18nKey: 'identity', options: { filter: 'identity' } },
   { identifier: 'tableau', i18nKey: 'watercolor', options: { filter: 'water-color' } },
   { identifier: 'tableau', i18nKey: 'oil', options: { filter: 'oil' } },
   { identifier: 'brush-mark', i18nKey: 'brush1', options: { imageURL: 'art/Test_04.jpg' } }
@@ -26,7 +26,7 @@ const ITEMS = [
 export default class PaintControlsComponent extends BaseComponent {
   constructor (...args) {
     super(...args)
-
+    this._selectedKey = 'identity'
     this._bindAll(
       '_onBackClick',
       '_onItemClick',
@@ -59,12 +59,12 @@ export default class PaintControlsComponent extends BaseComponent {
    * @private
    */
   _onItemClick (object, e) {
+    this._selectedKey = object.i18nKey
     const ui = this.context.ui
     if (this._operation) {
       ui.removeOperation(this._operation)
     }
     this._operation = ui.getOrCreateOperation(object.identifier)
-    console.log(this._operation)
     if (object.options.filter) {
       this._operation.setFilter(object.options.filter)
     } else if (object.options.imageURL) {
@@ -81,7 +81,6 @@ export default class PaintControlsComponent extends BaseComponent {
    */
   _onBackClick (e) {
     this.props.onSwitchControls('back')
-
     const initialOptions = this.getSharedState('initialOptions')
     const filter = this._operation.getFilter()
     const intensity = this._operation.getIntensity()
@@ -108,7 +107,6 @@ export default class PaintControlsComponent extends BaseComponent {
   renderWithBEM () {
     const ui = this.context.ui
     const listItems = ITEMS.map((item) => {
-      const identifier = item.identifier
       const i18nKey = item.i18nKey
       return (<li
         bem='e:item'
@@ -117,8 +115,8 @@ export default class PaintControlsComponent extends BaseComponent {
           <bem specifier='$b:controls'>
             <div
               bem='$e:button m:withInlineLabel'
-              className={null}>
-              <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/filters/${identifier}.png`, true)} />
+              className={i18nKey === this._selectedKey ? 'is-active' : null}>
+              <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/filters/${i18nKey}.png`, true)} />
               <div bem='e:label'>{this._t(`controls.tableau.${i18nKey}`)}</div>
             </div>
           </bem>
