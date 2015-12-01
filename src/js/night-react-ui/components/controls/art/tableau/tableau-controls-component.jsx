@@ -20,7 +20,7 @@ const ITEMS = [
   { identifier: 'tableau', i18nKey: 'identity', options: { } },
   { identifier: 'tableau', i18nKey: 'watercolor', options: { filter: 'water-color' } },
   { identifier: 'tableau', i18nKey: 'oil', options: { filter: 'oil' } },
-  { identifier: 'brush-mark', i18nKey: 'brush1', options: { image: '/build/assets/art/Test_04.jpg' } }
+  { identifier: 'brush-mark', i18nKey: 'brush1', options: { imageURL: 'art/Test_04.jpg' } }
 ]
 
 export default class PaintControlsComponent extends BaseComponent {
@@ -38,8 +38,6 @@ export default class PaintControlsComponent extends BaseComponent {
       [Constants.EVENTS.OPERATION_UPDATED]: this._onOperationUpdated
     }
   }
-
-  // -------------------------------------------------------------------------- INITIALIZATION
 
   // -------------------------------------------------------------------------- EVENTS
 
@@ -65,10 +63,13 @@ export default class PaintControlsComponent extends BaseComponent {
     if (this._operation) {
       ui.removeOperation(this._operation)
     }
-    console.log(object.identifier)
     this._operation = ui.getOrCreateOperation(object.identifier)
+    console.log(this._operation)
     if (object.options.filter) {
       this._operation.setFilter(object.options.filter)
+    } else if (object.options.imageURL) {
+      const absoluteImageURL = `${ui.getAssetPath(object.options.imageURL)}`
+      this._operation.setImageURL(absoluteImageURL)
     }
     this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
   }

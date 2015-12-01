@@ -23,6 +23,7 @@ class BrushMarkFilter extends Filter {
     super(...args)
     this._glslPrograms = {}
     this._textures = {}
+    this._imageURL = {}
     this._gaussianBlurOperation = new GaussianBlurFilter()
     this._vertexShader = require('raw!../generic/default.vert')
     this._fragmentShader = this._blurShader = require('raw!./brush-mark.frag')
@@ -85,7 +86,7 @@ class BrushMarkFilter extends Filter {
       })
 
       image.crossOrigin = 'Anonymous'
-      image.src = '/build/assets/art/Test_04.jpg'
+      image.src = this._imageURL
     })
   }
 
@@ -127,6 +128,14 @@ class BrushMarkFilter extends Filter {
    */
   get name () {
     return 'Brush Mark'
+  }
+
+  setImageURL (url) {
+    this._imageURL = url
+  }
+
+  get imageURL () {
+    return this._imageURL
   }
 }
 
