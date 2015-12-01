@@ -9,21 +9,22 @@
  */
 
 import Promise from '../vendor/promise'
+import Matrix from '../lib/math/matrix'
 import Operation from './operation'
 
 /**
- * An operation that can crop out a part of the image and rotates it
+ * An operation that can rotate and flip an image
  *
  * @class
- * @alias PhotoEditorSDK.Operations.RotationOperation
+ * @alias PhotoEditorSDK.Operations.OrientationOperation
  * @extends PhotoEditorSDK.Operation
  */
-class RotationOperation extends Operation {
+class OrientationOperation extends Operation {
   constructor (...args) {
     super(...args)
 
     /**
-     * The fragment shader used for this operation
+     * The vertex shader used for this operation
      */
     this.vertexShader = require('raw!../shaders/generic/sprite.vert')
   }
@@ -35,23 +36,30 @@ class RotationOperation extends Operation {
   /* istanbul ignore next */
   _renderWebGL (renderer) {
     return new Promise((resolve, reject) => {
-      var actualDegrees = this._options.degrees % 360
+      const actualDegrees = this._options.rotation % 360
+      const radians = actualDegrees * (Math.PI / 180)
 
-      // Build the rotation matrix
-      var radians = actualDegrees * (Math.PI / 180)
-      var c = Math.cos(radians)
-      var s = Math.sin(radians)
-      var rotationMatrix = [
-        c, -s, 0,
-        s, c, 0,
-        0, 0, 1
-      ]
+      // Apply rotation
+      const c = Math.cos(radians)
+      const s = Math.sin(radians)
+      let rotationMatrix = new Matrix()
+      rotationMatrix.a = c
+      rotationMatrix.b = -s
+      rotationMatrix.c = s
+      rotationMatrix.d = c
+
+      // Apply flip
+      let flipMatrix = new Matrix()
+      flipMatrix.a = this._options.flipHorizontally ? -1 : 1
+      flipMatrix.d = this._options.flipVertically ? -1 : 1
+
+      const matrix = flipMatrix.multiply(rotationMatrix)
 
       // Run the shader
       renderer.setTextureDimensions(this.getNewDimensions(renderer, renderer.getTextureDimensions()))
       renderer.runShader(this.vertexShader, null, {
         uniforms: {
-          u_projMatrix: { type: 'mat3fv', value: rotationMatrix }
+          u_projMatrix: { type: 'mat3fv', value: matrix.toArray() }
         }
       })
       resolve()
@@ -68,7 +76,7 @@ class RotationOperation extends Operation {
     return new Promise((resolve, reject) => {
       const canvas = renderer.getCanvas()
       const context = renderer.getContext()
-      const actualDegrees = this._options.degrees % 360
+      const actualDegrees = this._options.rotation % 360
       const radians = actualDegrees * Math.PI / 180
       const newDimensions = this.getNewDimensions(renderer)
 
@@ -95,7 +103,7 @@ class RotationOperation extends Operation {
   getNewDimensions (renderer, dimensions) {
     dimensions = dimensions || renderer.getSize()
 
-    let actualDegrees = this._options.degrees % 360
+    let actualDegrees = this._options.rotation % 360
     if (actualDegrees % 180 !== 0) {
       dimensions.flip()
     }
@@ -109,18 +117,20 @@ class RotationOperation extends Operation {
  * operations.
  * @type {String}
  */
-RotationOperation.identifier = 'rotation'
+OrientationOperation.identifier = 'orientation'
 
 /**
  * Specifies the available options for this operation
  * @type {Object}
  */
-RotationOperation.prototype.availableOptions = {
-  degrees: { type: 'number', default: 0, validation: function (value) {
+OrientationOperation.prototype.availableOptions = {
+  rotation: { type: 'number', default: 0, validation: function (value) {
     if (value % 90 !== 0) {
-      throw new Error('RotationOperation: `rotation` has to be a multiple of 90.')
+      throw new Error('OrientationOperation: `rotation` has to be a multiple of 90.')
     }
-  }}
+  }},
+  flipVertically: { type: 'boolean', default: false },
+  flipHorizontally: { type: 'boolean', default: false }
 }
 
-export default RotationOperation
+export default OrientationOperation

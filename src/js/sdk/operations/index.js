@@ -10,11 +10,10 @@
 
 exports.Filter = require('./filter-operation')
 exports.Crop = require('./crop-operation')
-exports.Rotation = require('./rotation-operation')
+exports.Orientation = require('./orientation-operation')
 exports.Saturation = require('./saturation-operation')
 exports.Contrast = require('./contrast-operation')
 exports.Brightness = require('./brightness-operation')
-exports.Flip = require('./flip-operation')
 exports.TiltShift = require('./tilt-shift-operation')
 exports.RadialBlur = require('./radial-blur-operation')
 exports.Text = require('./text-operation')

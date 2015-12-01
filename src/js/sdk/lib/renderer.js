@@ -16,8 +16,6 @@ import Utils from './utils'
 import Vector2 from './math/vector2'
 import Operations from '../operations/'
 import Exif from './exif'
-import RotationOperation from '../operations/rotation-operation'
-import FlipOperation from '../operations/flip-operation'
 import OperationsStack from './operations-stack'
 import WebGLRenderer from '../renderers/webgl-renderer'
 import CanvasRenderer from '../renderers/canvas-renderer'
@@ -180,7 +178,16 @@ export default class Renderer extends EventEmitter {
       let exifTags = this._exif.getTags()
 
       if (exifTags && exifTags.Orientation) {
-        if (exifTags.Orientation !== 1 && exifTags.Orientation !== 2) {
+        const rotationNeedsChange = exifTags.Orientation !== 1 &&
+          exifTags.Orientation !== 2
+        const flipNeedsChange = [2, 4, 5, 7].indexOf(exifTags.Orientation) !== -1
+
+        let orientationOperation
+        if (rotationNeedsChange || flipNeedsChange) {
+          orientationOperation = this.createOperation('orientation')
+        }
+
+        if (rotationNeedsChange) {
           // We need to rotate
           let degrees = 0
           switch (exifTags.Orientation) {
@@ -198,13 +205,11 @@ export default class Renderer extends EventEmitter {
               break
           }
 
-          const rotationOperation = new RotationOperation(this, { degrees: degrees })
-          this.operationsStack.push(rotationOperation)
+          orientationOperation.setRotation(degrees)
         }
 
-        if ([2, 4, 5, 7].indexOf(exifTags.Orientation) !== -1) {
-          const flipOperation = new FlipOperation(this, { horizontal: true })
-          this.operationsStack.push(flipOperation)
+        if (flipNeedsChange) {
+          orientationOperation.setFlipHorizontally(true)
         }
 
         this._exif.setOrientation(1)

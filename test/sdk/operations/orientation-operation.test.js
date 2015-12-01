@@ -14,22 +14,22 @@ beforeEach(function () {
   image = kit.getImage()
 })
 
-describe('RotationOperation', function () {
+describe('OrientationOperation', function () {
   describe('with a rotation that\'s not divisible by 90', function () {
     it('should fail', function () {
       const throwable = () => {
-        kit.createOperation('rotation', {
-          degrees: 45
+        kit.createOperation('orientation', {
+          rotation: 45
         })
       }
-      throwable.should.throw('RotationOperation: `rotation` has to be a multiple of 90.')
+      throwable.should.throw('OrientationOperation: `rotation` has to be a multiple of 90.')
     })
   })
 
   describe('#render', function () {
     it('should succeed', function () {
-      const operation = kit.createOperation('rotation', {
-        degrees: 90
+      const operation = kit.createOperation('orientation', {
+        rotation: 90
       })
       kit.operationsStack.push(operation)
 
@@ -38,8 +38,8 @@ describe('RotationOperation', function () {
     })
 
     it('should correctly resize the canvas', function (done) {
-      const operation = kit.createOperation('rotation', {
-        degrees: 90
+      const operation = kit.createOperation('orientation', {
+        rotation: 90
       })
       kit.operationsStack.push(operation)
 
