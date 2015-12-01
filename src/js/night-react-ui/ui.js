@@ -18,6 +18,7 @@ import Helpers from './helpers'
 import EditorComponent from './components/editor-component'
 import OverviewControlsComponent from './components/controls/overview/overview-controls-component'
 import ScrollbarComponent from './components/scrollbar-component'
+import ControlsComponent from './components/controls/controls-component'
 import Exporter from './lib/exporter'
 import ModalManager from './lib/modal-manager'
 
@@ -429,6 +430,7 @@ NightReactUI.prototype.identifier = 'night-react'
 
 // Export extendable stuff
 NightReactUI.BaseComponent = BaseComponent
+NightReactUI.ControlsComponent = ControlsComponent
 NightReactUI.React = React
 NightReactUI.ReactBEM = ReactBEM
 NightReactUI.SharedState = SharedState
