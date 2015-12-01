@@ -31,6 +31,7 @@ class BrushMarkOperation extends Operation {
    */
   _registerFilters () {
     this._filter = new BrushMarkFilter()
+    this._filter.setImageURL(this._imageURL)
   }
 
   /**
@@ -40,7 +41,6 @@ class BrushMarkOperation extends Operation {
    */
   /* istanbul ignore next */
   _renderWebGL (renderer) {
-    debugger
     return this._render(renderer)
   }
 
@@ -59,7 +59,6 @@ class BrushMarkOperation extends Operation {
    * @private
    */
   _render (renderer) {
-    debugger
     return this._filter.render(renderer)
   }
 
@@ -94,7 +93,11 @@ BrushMarkOperation.prototype.availableOptions = {
   },
   imageURL: {
     type: 'string',
-    default: ''
+    default: '',
+    setter: function (url) {
+      this._filter && this._filter.setImageURL(url)
+      return url
+    }
   }
 }
 
