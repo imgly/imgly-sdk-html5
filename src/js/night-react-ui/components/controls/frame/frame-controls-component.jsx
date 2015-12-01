@@ -75,6 +75,7 @@ export default class FrameControlsComponent extends ControlsComponent {
 
     this._emitEvent(Constants.EVENTS.CANVAS_UNDO_ZOOM)
     this._emitEvent(Constants.EVENTS.EDITOR_ENABLE_FEATURES, ['zoom', 'drag'])
+    this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
   }
 
   /**
