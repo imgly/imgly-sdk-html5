@@ -49,6 +49,7 @@ class Operation extends Configurable {
    * @abstract
    */
   render (renderer) {
+    debugger
     let renderFn
     if (renderer.identifier === 'webgl') {
       /* istanbul ignore next */
