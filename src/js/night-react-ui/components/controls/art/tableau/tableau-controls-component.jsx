@@ -17,8 +17,8 @@ import {
 import ScrollbarComponent from '../../../scrollbar-component'
 
 const ITEMS = [
-  { identifier: 'identity', i18nKey: 'identity', options: { filter: 'watercolor' } },
-  { identifier: 'tableau', i18nKey: 'watercolor', options: { filter: 'watercolor' } },
+  { identifier: 'tableau', i18nKey: 'identity', options: { } },
+  { identifier: 'tableau', i18nKey: 'watercolor', options: { filter: 'water-color' } },
   { identifier: 'tableau', i18nKey: 'oil', options: { filter: 'oil' } },
   { identifier: 'brush-mark', i18nKey: 'brush1', options: { image: '/build/assets/art/Test_04.jpg' } }
 ]
@@ -37,28 +37,9 @@ export default class PaintControlsComponent extends BaseComponent {
     this._events = {
       [Constants.EVENTS.OPERATION_UPDATED]: this._onOperationUpdated
     }
-
-    this._initOperations()
   }
 
   // -------------------------------------------------------------------------- INITIALIZATION
-
-  /**
-   * Initializes the available filters
-   * @private
-   */
-  _initOperations () {
-    for (let item in ITEMS) {
-
-    }
-/*    const filtersMap = this._operation.getFilters()
-    const filters = []
-    for (let key in filtersMap) {
-      filters.push(filtersMap[key])
-    }
-    const additionalFilters = this.props.options.filters || []
-    this._filters = filters.concat(additionalFilters)*/
-  }
 
   // -------------------------------------------------------------------------- EVENTS
 
@@ -79,13 +60,17 @@ export default class PaintControlsComponent extends BaseComponent {
    * @param {Event} e
    * @private
    */
-  _onItemClick (filter, e) {
-/* this._operation.setFilter(filter)
-    this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
+  _onItemClick (object, e) {
+    const ui = this.context.ui
     if (this._operation) {
       ui.removeOperation(this._operation)
     }
-    this._operation = ui.getOrCreateOperation(objekt.identifier)*/
+    console.log(object.identifier)
+    this._operation = ui.getOrCreateOperation(object.identifier)
+    if (object.options.filter) {
+      this._operation.setFilter(object.options.filter)
+    }
+    this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
   }
 
   /**
@@ -124,8 +109,6 @@ export default class PaintControlsComponent extends BaseComponent {
     const listItems = ITEMS.map((item) => {
       const identifier = item.identifier
       const i18nKey = item.i18nKey
-      //console.log(i18nKey)
-      //console.log(this._t(`controls.tableau.${i18nKey}`))
       return (<li
         bem='e:item'
         key={i18nKey}
