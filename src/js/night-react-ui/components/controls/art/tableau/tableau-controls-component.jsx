@@ -17,9 +17,10 @@ import {
 import ScrollbarComponent from '../../../scrollbar-component'
 
 const ITEMS = [
-  { identifier: 'tableau', options: { filter: 'watercolor' } },
-  { identifier: 'tableau', options: { filter: 'oil' } },
-  { identifier: 'brush-mark', options: { image: '/build/assets/art/Test_04.jpg' } }
+  { identifier: 'identity', i18nKey: 'identity', options: { filter: 'watercolor' } },
+  { identifier: 'tableau', i18nKey: 'watercolor', options: { filter: 'watercolor' } },
+  { identifier: 'tableau', i18nKey: 'oil', options: { filter: 'oil' } },
+  { identifier: 'brush-mark', i18nKey: 'brush1', options: { image: '/build/assets/art/Test_04.jpg' } }
 ]
 
 export default class PaintControlsComponent extends BaseComponent {
@@ -37,7 +38,7 @@ export default class PaintControlsComponent extends BaseComponent {
       [Constants.EVENTS.OPERATION_UPDATED]: this._onOperationUpdated
     }
 
-    this._initFilters()
+    this._initOperations()
   }
 
   // -------------------------------------------------------------------------- INITIALIZATION
@@ -46,14 +47,17 @@ export default class PaintControlsComponent extends BaseComponent {
    * Initializes the available filters
    * @private
    */
-  _initFilters () {
-    const filtersMap = this._operation.getFilters()
+  _initOperations () {
+    for (let item in ITEMS) {
+
+    }
+/*    const filtersMap = this._operation.getFilters()
     const filters = []
     for (let key in filtersMap) {
       filters.push(filtersMap[key])
     }
     const additionalFilters = this.props.options.filters || []
-    this._filters = filters.concat(additionalFilters)
+    this._filters = filters.concat(additionalFilters)*/
   }
 
   // -------------------------------------------------------------------------- EVENTS
@@ -76,12 +80,12 @@ export default class PaintControlsComponent extends BaseComponent {
    * @private
    */
   _onItemClick (filter, e) {
-    this._operation.setFilter(filter)
+/* this._operation.setFilter(filter)
     this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
     if (this._operation) {
       ui.removeOperation(this._operation)
     }
-    this._operation = ui.getOrCreateOperation(objekt.identifier)
+    this._operation = ui.getOrCreateOperation(objekt.identifier)*/
   }
 
   /**
@@ -117,29 +121,25 @@ export default class PaintControlsComponent extends BaseComponent {
    */
   renderWithBEM () {
     const ui = this.context.ui
-    const currentFilter = this._operation.getFilter()
-
-    // const listItems = this._filters.map((filter) => {
-    //   const identifier = filter.identifier
-    //   return (<li
-    //     bem='e:item'
-    //     key={identifier}
-    //     onClick={this._onItemClick.bind(this, filter)}>
-    //     <bem specifier='$b:controls'>
-    //       <div
-    //         bem='$e:button m:withInlineLabel'
-    //         className={filter === currentFilter ? 'is-active' : null}>
-    //         <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/filters/${identifier}.png`, true)} />
-    //         <div bem='e:label'>{filter.prototype.name}</div>
-    //       </div>
-    //     </bem>
-    //   </li>)
-    // })
-    //
-    const listItems = ITEMS.forEach((item) => {
-      return (<li></li>)
+    const listItems = ITEMS.map((item) => {
+      const identifier = item.identifier
+      const i18nKey = item.i18nKey
+      //console.log(i18nKey)
+      //console.log(this._t(`controls.tableau.${i18nKey}`))
+      return (<li
+        bem='e:item'
+        key={i18nKey}
+        onClick={this._onItemClick.bind(this, item)}>
+          <bem specifier='$b:controls'>
+            <div
+              bem='$e:button m:withInlineLabel'
+              className={null}>
+              <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/filters/${identifier}.png`, true)} />
+              <div bem='e:label'>{this._t(`controls.tableau.${i18nKey}`)}</div>
+            </div>
+          </bem>
+        </li>)
     })
-
     return (<div bem='$b:controls e:table'>
       <div bem='e:cell m:button m:withBorderRight m:narrow'>
         <div bem='$e:button m:narrow' onClick={this._onBackClick}>

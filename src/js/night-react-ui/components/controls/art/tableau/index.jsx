@@ -9,10 +9,10 @@
  */
 
 import TableauControlsComponent from './tableau-controls-component'
-import TableauCanvasControlsComponent from './tableau-canvas-controls-component'
+// import TableauCanvasControlsComponent from './tableau-canvas-controls-component'
 
 export default {
-  canvasControls: TableauCanvasControlsComponent,
+  canvasControls: null,  // TableauCanvasControlsComponent,
   controls: TableauControlsComponent,
   largeCanvasControls: true,
   identifier: 'tableau',
