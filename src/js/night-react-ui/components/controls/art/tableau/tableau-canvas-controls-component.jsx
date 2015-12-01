@@ -53,7 +53,7 @@ export default class PaintCanvasControlsComponent extends BaseComponent {
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
-    const currentFilter = this._operation.getFilter()
+  /*  const currentFilter = this._operation.getFilter()
     if (currentFilter.isIdentity) return null
 
     return (<div bem='$b:canvasControls e:container m:bottom m:dark'>
@@ -65,6 +65,6 @@ export default class PaintCanvasControlsComponent extends BaseComponent {
         label={this._t('controls.filters.intensity')}
         onChange={this._onSliderValueChange}
         value={this._operation.getIntensity() * 100} />
-    </div>)
+    </div>)*/
   }
 }

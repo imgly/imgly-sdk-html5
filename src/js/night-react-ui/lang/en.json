@@ -10,6 +10,12 @@
       "stickers": "Stickers",
       "text": "Text"
     },
+    "tableau": {
+      "identity": "None",
+      "watercolor": "Watercolor",
+      "oil": "Oil",
+      "brush1": "Brush 1"
+    },
     "frames": {
       "color": "Color",
       "thickness": "Thickness"
