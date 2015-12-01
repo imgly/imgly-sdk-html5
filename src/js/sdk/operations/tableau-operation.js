@@ -101,9 +101,14 @@ TableauOperation.prototype.availableOptions = {
       return intensity
     }
   },
-  filter: { type: 'object', default: IdentityFilter,
+  filter: { type: 'string', default: 'identity',
     setter: function (Filter) {
-      this._selectedFilter = new Filter(this._options.intensity)
+      if (Filter === 'identity') {
+        this._selectedFilter = new Filters.IdentityFilter()
+      } else {
+        let FilterClass = this._filters[Filter]
+        this._selectedFilter = new FilterClass(this._options.intensity)
+      }
       return Filter
     }
   }
