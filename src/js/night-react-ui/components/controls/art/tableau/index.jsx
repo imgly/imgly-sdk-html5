@@ -18,19 +18,6 @@ export default {
   identifier: 'tableau',
   icon: 'controls/overview/filters@2x.png',
   label: 'controls.overview.filters',
-  getInitialSharedState: (context) => {
-    const operationExistedBefore = context.ui.operationExists('tableau')
-    const operation = context.ui.getOrCreateOperation('tableau')
-    const initialOptions = {
-      filter: operation.getFilter(),
-      intensity: operation.getIntensity()
-    }
-    return {
-      operationExistedBefore,
-      operation,
-      initialOptions
-    }
-  },
   isSelectable: (ui) => {
     return true // return ui.isOperationSelected('filters')
   }

@@ -107,24 +107,21 @@ export default class StreetControlsComponent extends BaseComponent {
    */
   renderWithBEM () {
     const ui = this.context.ui
-    const currentFilter = this._operation.getFilter()
-
-    const listItems = this._filters.map((filter) => {
-      const identifier = filter.identifier
-      return (<li
-        bem='e:item'
-        key={identifier}
-        onClick={this._onItemClick.bind(this, filter)}>
-        <bem specifier='$b:controls'>
-          <div
-            bem='$e:button m:withInlineLabel'
-            className={filter === currentFilter ? 'is-active' : null}>
-            <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/filters/${identifier}.png`, true)} />
-            <div bem='e:label'>{filter.prototype.name}</div>
-          </div>
-        </bem>
-      </li>)
-    })
+//    const currentFilter = this._operation.getFilter()
+    const listItems = ui.getSelectedControls()
+      .map((control) => {
+        return (<li
+          bem='e:item'
+          key={control.identifier}
+          onClick={this._onItemClick.bind(this, control)}>
+            <bem specifier='$b:controls'>
+              <div bem='$e:button m:withLabel'>
+                <img bem='e:icon' src={ui.getHelpers().assetPath(control.icon, true)} />
+                <div bem='e:label'>{this._t(control.label)}</div>
+              </div>
+            </bem>
+        </li>)
+      })
 
     return (<div bem='$b:controls e:table'>
       <div bem='e:cell m:button m:withBorderRight m:narrow'>

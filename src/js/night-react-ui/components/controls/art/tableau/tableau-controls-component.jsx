@@ -16,6 +16,12 @@ import {
 } from '../../../../globals'
 import ScrollbarComponent from '../../../scrollbar-component'
 
+const ITEMS = [
+  { identifier: 'tableau', options: { filter: 'watercolor' } },
+  { identifier: 'tableau', options: { filter: 'oil' } },
+  { identifier: 'brush-mark', options: { image: '/build/assets/art/Test_04.jpg' } }
+]
+
 export default class PaintControlsComponent extends BaseComponent {
   constructor (...args) {
     super(...args)
@@ -72,6 +78,10 @@ export default class PaintControlsComponent extends BaseComponent {
   _onItemClick (filter, e) {
     this._operation.setFilter(filter)
     this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
+    if (this._operation) {
+      ui.removeOperation(this._operation)
+    }
+    this._operation = ui.getOrCreateOperation(objekt.identifier)
   }
 
   /**
@@ -109,21 +119,25 @@ export default class PaintControlsComponent extends BaseComponent {
     const ui = this.context.ui
     const currentFilter = this._operation.getFilter()
 
-    const listItems = this._filters.map((filter) => {
-      const identifier = filter.identifier
-      return (<li
-        bem='e:item'
-        key={identifier}
-        onClick={this._onItemClick.bind(this, filter)}>
-        <bem specifier='$b:controls'>
-          <div
-            bem='$e:button m:withInlineLabel'
-            className={filter === currentFilter ? 'is-active' : null}>
-            <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/filters/${identifier}.png`, true)} />
-            <div bem='e:label'>{filter.prototype.name}</div>
-          </div>
-        </bem>
-      </li>)
+    // const listItems = this._filters.map((filter) => {
+    //   const identifier = filter.identifier
+    //   return (<li
+    //     bem='e:item'
+    //     key={identifier}
+    //     onClick={this._onItemClick.bind(this, filter)}>
+    //     <bem specifier='$b:controls'>
+    //       <div
+    //         bem='$e:button m:withInlineLabel'
+    //         className={filter === currentFilter ? 'is-active' : null}>
+    //         <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/filters/${identifier}.png`, true)} />
+    //         <div bem='e:label'>{filter.prototype.name}</div>
+    //       </div>
+    //     </bem>
+    //   </li>)
+    // })
+    //
+    const listItems = ITEMS.forEach((item) => {
+      return (<li></li>)
     })
 
     return (<div bem='$b:controls e:table'>
