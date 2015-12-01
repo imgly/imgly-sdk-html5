@@ -53,7 +53,8 @@ export default class NightReactUI extends EventEmitter {
       'frame',
       'sticker',
       'text',
-      'watermark'
+      'watermark',
+      'brush-mark'
     ]
 
     this._handleRendererErrors()

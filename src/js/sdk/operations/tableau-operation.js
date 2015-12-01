@@ -48,7 +48,6 @@ class TableauOperation extends Operation {
    */
   /* istanbul ignore next */
   _renderWebGL (renderer) {
-    debugger
     return this._render(renderer)
   }
 
