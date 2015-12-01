@@ -1,0 +1,61 @@
+/*
+ * Photo Editor SDK - photoeditorsdk.com
+ * Copyright (c) 2013-2015 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+
+@mixin arrow($direction: top, $size: 10px, $color: #ccc, $center: 50%, $margin: -1px, $pseudo: before)
+  position: absolute
+  border-color: $color
+
+  &:#{$pseudo}
+    position: absolute
+    border-color: $color
+    width: 0
+    height: 0
+    content: ""
+
+    @if $direction == "right"
+      top: $center
+      left: 100%
+      margin-top: $size * -1
+      margin-left: $margin
+      border-top: $size solid transparent
+      border-bottom: $size solid transparent
+      border-left: $size solid $color
+      border-left-color: inherit
+
+    @else if $direction == "down"
+      top: 100%
+      left: $center
+      margin-top: $margin
+      margin-left: $size * -1
+      border-top: $size solid $color
+      border-right: $size solid transparent
+      border-left: $size solid transparent
+      border-top-color: inherit
+
+    @else if $direction == "left"
+      top: $center
+      right: 100%
+      margin-top: $size * -1
+      margin-right: $margin
+      border-top: $size solid transparent
+      border-right: $size solid $color
+      border-bottom: $size solid transparent
+
+      border-right-color: inherit
+
+    @else
+      bottom: 100%
+      left: $center
+      margin-bottom: $margin
+      margin-left: $size * -1
+      border-right: $size solid transparent
+      border-bottom: $size solid $color
+      border-left: $size solid transparent
+      border-bottom-color: inherit

@@ -18,11 +18,18 @@ export default class StickersOverviewControlsComponent extends ControlsComponent
   constructor (...args) {
     super(...args)
 
+    this._bindAll(
+      '_onStickerMouseLeave',
+      '_renderTooltipCanvas'
+    )
+
     this._operation = this.getSharedState('operation')
     this._stickers = this.getSharedState('stickers')
 
     this._availableStickers = []
     this._initStickers()
+
+    this.state = {}
   }
 
   // -------------------------------------------------------------------------- LIFECYCLE
@@ -47,6 +54,43 @@ export default class StickersOverviewControlsComponent extends ControlsComponent
       const stickerPaths = stickers[i]
       this._renderSticker(i, stickerPaths)
     }
+  }
+
+  /**
+   * Renders the sticker on the tooltip canvas
+   * @private
+   */
+  _renderTooltipCanvas () {
+    const { hoveredSticker } = this.state
+    const image = new window.Image()
+    image.addEventListener('load', () => {
+      if (!this.state.tooltipVisible ||
+          this.state.hoveredSticker !== hoveredSticker) {
+        return
+      }
+
+      const canvas = this.refs.tooltipCanvas
+      canvas.width = canvas.offsetWidth
+      canvas.height = canvas.offsetHeight
+
+      const context = canvas.getContext('2d')
+      const scale = Math.min(canvas.width / image.width, canvas.height / image.height)
+      const drawSize = new Vector2(image.width, image.height)
+        .multiply(scale)
+      const drawPosition = new Vector2(canvas.width, canvas.height)
+        .divide(2)
+        .subtract(drawSize.clone().divide(2))
+
+      context.drawImage(image,
+        0, 0,
+        image.width, image.height,
+        drawPosition.x, drawPosition.y,
+        drawSize.x, drawSize.y)
+    })
+
+    const { ui } = this.context
+    const resolvedStickerPath = ui.getAssetPath(hoveredSticker)
+    image.src = resolvedStickerPath
   }
 
   /**
@@ -196,6 +240,53 @@ export default class StickersOverviewControlsComponent extends ControlsComponent
     image.src = resolvedStickerPath
   }
 
+  /**
+   * Gets called when the user starts hovering a sticker
+   * @param  {String} stickerPath
+   * @param  {Event} e
+   * @private
+   */
+  _onStickerMouseEnter (stickerPath, e) {
+    this.setState({
+      tooltipVisible: true,
+      hoveredSticker: stickerPath,
+      hoveredStickerElement: e.currentTarget
+    }, () => {
+      this._renderTooltipCanvas()
+      this._updateTooltipPosition()
+    })
+  }
+
+  /**
+   * Updates the tooltip position to match the currently hovered
+   * sticker's position
+   * @private
+   */
+  _updateTooltipPosition () {
+    const el = this.state.hoveredStickerElement
+    const parent = el.parentNode
+    const boundingRect = el.getBoundingClientRect()
+    const parentBoundingRect = parent.getBoundingClientRect()
+
+    this.setState({
+      tooltipPosition:
+        boundingRect.left -
+        parentBoundingRect.left +
+        boundingRect.width * 0.5
+    })
+  }
+
+  /**
+   * Gets called when the user does no longer hover a sticker
+   * @private
+   */
+  _onStickerMouseLeave () {
+    this.setState({
+      tooltipVisible: false,
+      hoveredSticker: null
+    })
+  }
+
   // -------------------------------------------------------------------------- RENDERING
 
   /**
@@ -207,10 +298,20 @@ export default class StickersOverviewControlsComponent extends ControlsComponent
     return this._availableStickers.map((paths, i) => {
       const smallPath = paths[0]
       const largePath = paths[1]
+      const { options } = this.props
+
+      const itemEvents = options.tooltips
+        ? {
+          onMouseEnter: this._onStickerMouseEnter.bind(this, smallPath),
+          onMouseLeave: this._onStickerMouseLeave
+        }
+        : null
+
       return (<li
         bem='e:item'
         key={largePath}
-        onClick={this._onStickerClick.bind(this, [smallPath, largePath])}>
+        onClick={this._onStickerClick.bind(this, [smallPath, largePath])}
+        {...itemEvents}>
         <bem specifier='$b:controls'>
           <div bem='$e:button m:withLabel'>
             <canvas bem='e:canvas m:large' ref={`canvas-${i}`} />
@@ -221,18 +322,43 @@ export default class StickersOverviewControlsComponent extends ControlsComponent
   }
 
   /**
+   * Renders the tooltip (if present)
+   * @return {ReactBEM.Element}
+   * @private
+   */
+  _renderTooltip () {
+    const tooltipVisible = this.props.options.tooltips &&
+      this.state.tooltipVisible
+
+    const style = {
+      left: this.state.tooltipPosition
+    }
+
+    return tooltipVisible
+      ? (<div bem='e:cell m:empty'>
+        <div bem='$b:stickersControls $e:tooltip'
+          visible={this.state.tooltipVisible}
+          style={style}>
+          <canvas bem='e:canvas' ref='tooltipCanvas' />
+        </div>
+      </div>)
+      : null
+  }
+
+  /**
    * Renders the controls of this component
    * @return {ReactBEM.Element}
    */
   renderControls () {
     const listItems = this._renderListItems()
+    const tooltip = this._renderTooltip()
 
-    return (<div bem='e:cell m:list'>
+    return [tooltip, (<div bem='e:cell m:list'>
       <ScrollbarComponent>
         <ul bem='$e:list'>
           {listItems}
         </ul>
       </ScrollbarComponent>
-    </div>)
+    </div>)]
   }
 }
