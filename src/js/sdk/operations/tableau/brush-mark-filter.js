@@ -56,7 +56,6 @@ class BrushMarkFilter extends Filter {
         gl.activeTexture(gl.TEXTURE1)
         gl.bindTexture(gl.TEXTURE_2D, texture)
         gl.activeTexture(gl.TEXTURE0)
-
         renderer.runProgram(this._glslPrograms[renderer.id], {
           uniforms: {
             intensity: { type: 'f', value: this._intensity / 100 },

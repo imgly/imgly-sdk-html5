@@ -54,7 +54,7 @@ export default class PaintCanvasControlsComponent extends BaseComponent {
   renderWithBEM () {
     const currentFilter = this.getSharedState('operation').getFilter()
     if (currentFilter && (currentFilter === 'identity')) return null
-
+    console.log(this.getSharedState('operation').getIntensity())
     return (<div bem='$b:canvasControls e:container m:bottom m:dark'>
       <SliderComponent
         minValue={0}

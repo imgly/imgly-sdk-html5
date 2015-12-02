@@ -31,6 +31,7 @@ class BrushMarkOperation extends Operation {
   _registerFilters () {
     this._filter = new BrushMarkFilter()
     this._filter.setImageURL(this._imageURL)
+    this._filter.setIntensity(this.getIntensity())
   }
 
   /**
@@ -75,10 +76,6 @@ class BrushMarkOperation extends Operation {
   getFilter () {
     return this._filter
   }
-
-  getIntensity () {
-    return this._filter.getIntensity()
-  }
 }
 
 /**
@@ -100,6 +97,9 @@ BrushMarkOperation.prototype.availableOptions = {
       this._filter &&
         this._filter.setIntensity(intensity)
       return intensity
+    },
+    getter: function () {
+      return this._filter.getIntensity()
     }
   },
   imageURL: {
