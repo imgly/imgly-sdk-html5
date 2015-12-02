@@ -43,10 +43,8 @@ export default class OrientationControlsComponent extends ControlsComponent {
   _onBackClick (e) {
     super._onBackClick(e)
 
-    const { rotation, flipHorizontally, flipVertically } = this.getSharedState('initialOptions')
-    if (this._operation.getRotation() === rotation &&
-        this._operation.getFlipHorizontally() === flipHorizontally &&
-        this._operation.getFlipVertically() === flipVertically) {
+    const initialOptions = this.getSharedState('initialOptions')
+    if (this._operation.optionsEqual(initialOptions)) {
       const { ui } = this.context
       ui.removeOperation(this._operation)
     }
