@@ -85,6 +85,10 @@ class TableauOperation extends Operation {
       this._selectedFilter.setDirty(dirty)
     }
   }
+
+  get isIdentity () {
+    return this.getFilter() === 'identity'
+  }
 }
 
 /**

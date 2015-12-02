@@ -71,6 +71,11 @@ export default class PaintControlsComponent extends BaseComponent {
       const absoluteImageURL = `${ui.getAssetPath(object.options.imageURL)}`
       this._operation.setImageURL(absoluteImageURL)
     }
+    this.setSharedState({
+      operation: this._operation,
+      operationExistedBefore: false,
+      initialOptions: {}
+    })
     this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
   }
 

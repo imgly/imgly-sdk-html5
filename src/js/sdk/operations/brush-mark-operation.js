@@ -71,6 +71,14 @@ class BrushMarkOperation extends Operation {
       this._filter.setDirty(dirty)
     }
   }
+
+  getFilter () {
+    return this._filter
+  }
+
+  getIntensity () {
+    return this._filter.getIntensity()
+  }
 }
 
 /**
@@ -90,7 +98,7 @@ BrushMarkOperation.prototype.availableOptions = {
     default: 0.5,
     setter: function (intensity) {
       this._filter &&
-        this._flter.setIntensity(intensity)
+        this._filter.setIntensity(intensity)
       return intensity
     }
   },
