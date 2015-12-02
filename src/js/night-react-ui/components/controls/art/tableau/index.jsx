@@ -9,16 +9,28 @@
  */
 
 import TableauControlsComponent from './tableau-controls-component'
-// import TableauCanvasControlsComponent from './tableau-canvas-controls-component'
+import TableauCanvasControlsComponent from './tableau-canvas-controls-component'
 
 export default {
-  canvasControls: null,  // TableauCanvasControlsComponent,
+  canvasControls: TableauCanvasControlsComponent,
   controls: TableauControlsComponent,
   largeCanvasControls: true,
   identifier: 'tableau',
   icon: 'controls/overview/filters@2x.png',
   label: 'controls.overview.filters',
+  getInitialSharedState: (context) => {
+    const operationExistedBefore = context.ui.operationExists('tableau')
+    const operation = context.ui.getOrCreateOperation('tableau')
+    const initialOptions = {
+      intensity: operation.getIntensity()
+    }
+    return {
+      operationExistedBefore,
+      operation,
+      initialOptions
+    }
+  },
   isSelectable: (ui) => {
-    return true // return ui.isOperationSelected('filters')
+    return true
   }
 }
