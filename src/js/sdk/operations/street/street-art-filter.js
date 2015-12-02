@@ -135,7 +135,6 @@ class StreetArtFilter extends Filter {
    * @param  {Renderer} renderer
    */
   render (renderer) {
-    console.log(renderer.identifier)
     if (renderer.identifier === 'webgl') {
       return this.renderWebGL(renderer)
     } else {

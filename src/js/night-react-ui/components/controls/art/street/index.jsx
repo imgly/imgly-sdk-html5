@@ -21,9 +21,6 @@ export default {
   getInitialSharedState: (context) => {
     const operationExistedBefore = context.ui.operationExists('street')
     const operation = context.ui.getOrCreateOperation('street')
-
-    console.log(context.kit.operationsStack._stack.length)
-
     const initialOptions = {
       filter: operation.getFilter(),
       intensity: operation.getIntensity()
