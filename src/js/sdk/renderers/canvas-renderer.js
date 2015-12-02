@@ -95,8 +95,12 @@ class CanvasRenderer extends BaseRenderer {
       return
     }
 
-    this._canvas.width = dimensions.x
-    this._canvas.height = dimensions.y
+    this._canvas.style.width = `${dimensions.x}px`
+    this._canvas.style.height = `${dimensions.y}px`
+
+    const pixelRatio = window.devicePixelRatio || 1
+    this._canvas.width = dimensions.x * pixelRatio
+    this._canvas.height = dimensions.y * pixelRatio
 
     this._outputSize = dimensions.clone()
   }
@@ -155,8 +159,12 @@ class CanvasRenderer extends BaseRenderer {
       return
     }
 
-    this._canvas.width = dimensions.x
-    this._canvas.height = dimensions.y
+    this._canvas.style.width = `${dimensions.x}px`
+    this._canvas.style.height = `${dimensions.y}px`
+
+    const pixelRatio = window.devicePixelRatio || 1
+    this._canvas.width = dimensions.x * pixelRatio
+    this._canvas.height = dimensions.y * pixelRatio
     this._size.copy(dimensions)
   }
 
