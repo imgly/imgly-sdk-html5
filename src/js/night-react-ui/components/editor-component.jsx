@@ -86,8 +86,7 @@ class EditorComponent extends React.Component {
     const translate = this.props.ui.translate.bind(this.props.ui)
 
     const done = (image) => {
-      this.props.kit.setImage(image)
-      this.props.kit.reset()
+      this.props.ui.setImage(image)
 
       // Forces reinitialization
       this.setState({ screen: null })

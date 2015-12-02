@@ -33,11 +33,6 @@ export default class NightReactUI extends EventEmitter {
     this._operationsMap = {}
     this._operationsStack = this._kit.operationsStack
 
-    this._kit.on('reset', () => {
-      this._operationsMap = {}
-      this._initWatermarkOperation()
-    })
-
     this._preferredOperationOrder = [
       // First, all operations that affect the image dimensions
       'orientation',
@@ -68,6 +63,20 @@ export default class NightReactUI extends EventEmitter {
     this._initWatermarkOperation()
 
     this.run()
+  }
+
+  /**
+   * Sets the given image
+   * @param {Image} image
+   */
+  setImage (image) {
+    this._kit.reset()
+    this._kit.operationsStack.clear()
+    this._operationsMap = {}
+    this._kit.setImage(image)
+
+    this.fixOperationsStack()
+    this._initWatermarkOperation()
   }
 
   /**
@@ -104,6 +113,18 @@ export default class NightReactUI extends EventEmitter {
         this.translate(`errors.${e}.title`),
         this.translate(`errors.${e}.text`)
       )
+    })
+  }
+
+  /**
+   * Fixes the operation stack by moving the existing operations to
+   * the preferred index
+   */
+  fixOperationsStack () {
+    const stack = this._operationsStack.clone()
+    this._operationsStack.clear()
+    stack.forEach((operation) => {
+      this.addOperation(operation)
     })
   }
 
@@ -325,14 +346,23 @@ export default class NightReactUI extends EventEmitter {
     } else {
       const Operation = this._availableOperations[identifier]
       const operation = new Operation(this._kit, options)
-      operation.on('updated', () => {
-        this._mediator.emit(Constants.EVENTS.OPERATION_UPDATED, operation)
-      })
-      const index = this._preferredOperationOrder.indexOf(identifier)
-      this._operationsStack.set(index, operation)
-      this._operationsMap[identifier] = operation
+      this.addOperation(operation)
       return operation
     }
+  }
+
+  /**
+   * Adds the given operation to the stack
+   * @param {Operation} operation
+   */
+  addOperation (operation) {
+    const identifier = operation.constructor.identifier
+    operation.on('updated', () => {
+      this._mediator.emit(Constants.EVENTS.OPERATION_UPDATED, operation)
+    })
+    const index = this._preferredOperationOrder.indexOf(identifier)
+    this._operationsStack.set(index, operation)
+    this._operationsMap[identifier] = operation
   }
 
   /**
