@@ -40,9 +40,8 @@ export default class NightReactUI extends EventEmitter {
 
     this._preferredOperationOrder = [
       // First, all operations that affect the image dimensions
-      'rotation',
+      'orientation',
       'crop',
-      'flip',
 
       // Then color operations (first filter, then fine-tuning)
       'filter',
@@ -341,27 +340,22 @@ export default class NightReactUI extends EventEmitter {
    * @param  {Operation} operation
    */
   removeOperation (operation) {
-    let removedOperationIndex = null
     const identifier = operation.constructor.identifier
     const stack = this._operationsStack.getStack()
 
-    if (this._operationsMap[identifier]) {
-      for (let i = 0; i < stack.length; i++) {
-        const operation = stack[i]
-        if (operation &&
-            operation.constructor.identifier === identifier) {
-          this._operationsStack.removeAt(i)
-          delete this._operationsMap[identifier]
-          removedOperationIndex = i
-          break
-        }
-      }
+    // Remove operation from map
+    if (this._operationsMap[identifier] === operation) {
+      delete this._operationsMap[identifier]
     }
 
-    // Set all following operations to dirty, since they might
-    // have cached stuff drawn by the removed operation
-    if (removedOperationIndex !== null) {
-      for (let i = removedOperationIndex + 1; i < stack.length; i++) {
+    // Remove operation from stack
+    const index = stack.indexOf(operation)
+    if (index !== -1) {
+      this._operationsStack.removeAt(index)
+
+      // Set all following operations to dirty, since they might
+      // have cached stuff drawn by the removed operation
+      for (let i = index + 1; i < stack.length; i++) {
         const operation = stack[i]
         if (!operation) continue
         operation.setDirty(true)

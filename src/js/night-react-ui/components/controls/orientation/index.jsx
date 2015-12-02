@@ -17,15 +17,19 @@ export default {
   icon: 'controls/overview/orientation@2x.png',
   label: 'controls.overview.orientation',
   getInitialSharedState: (context) => {
-    const flipExistedBefore = context.ui.operationExists('flip')
-    const rotationExistedBefore = context.ui.operationExists('rotation')
+    const { ui } = context
+
+    const operationExistedBefore = ui.operationExists('orientation')
+    const operation = ui.getOrCreateOperation('orientation')
+    const initialOptions = operation.serializeOptions()
+
     return {
-      flipExistedBefore,
-      rotationExistedBefore
+      operationExistedBefore,
+      operation,
+      initialOptions
     }
   },
   isSelectable: (ui) => {
-    return ui.isOperationEnabled('rotation') ||
-      ui.isOperationEnabled('flip')
+    return ui.isOperationEnabled('orientation')
   }
 }

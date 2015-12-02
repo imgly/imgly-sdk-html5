@@ -20,17 +20,37 @@ export default class OrientationControlsComponent extends ControlsComponent {
     this._bindAll(
       '_onRotateClick',
       '_onFlipClick',
-      '_onOperationUpdated'
+      '_onOperationUpdated',
+      '_onOperationRemoved'
     )
-
+    this._operation = this.getSharedState('operation')
     this._cropOperation = this.context.ui.getOperation('crop')
+    this._operationExistedBefore = this.getSharedState('operationExistedBefore')
 
     this._events = {
-      [Constants.EVENTS.OPERATION_UPDATED]: this._onOperationUpdated
+      [Constants.EVENTS.OPERATION_UPDATED]: this._onOperationUpdated,
+      [Constants.EVENTS.OPERATION_REMOVED]: this._onOperationRemoved
     }
   }
 
   // -------------------------------------------------------------------------- EVENTS
+
+  /**
+   * Gets called when the user clicks the back button
+   * @param {Event} e
+   * @private
+   */
+  _onBackClick (e) {
+    super._onBackClick(e)
+
+    const { rotation, flipHorizontally, flipVertically } = this.getSharedState('initialOptions')
+    if (this._operation.getRotation() === rotation &&
+        this._operation.getFlipHorizontally() === flipHorizontally &&
+        this._operation.getFlipVertically() === flipVertically) {
+      const { ui } = this.context
+      ui.removeOperation(this._operation)
+    }
+  }
 
   /**
    * Gets called when an operation has been updated
@@ -38,10 +58,31 @@ export default class OrientationControlsComponent extends ControlsComponent {
    * @private
    */
   _onOperationUpdated (operation) {
-    if (operation === this._rotationOperation ||
-        operation === this._flipOperation) {
+    if (operation === this._operation) {
       this.forceUpdate()
     }
+  }
+
+  /**
+   * Gets called when an operation is removed
+   * @param  {Operation} operation
+   * @private
+   */
+  _onOperationRemoved (operation) {
+    if (operation !== this._operation) return
+
+    // Operation can be removed by the undo button. We need
+    // to make sure we re-create the operation for the lifetime
+    // of this control
+    const { ui } = this.context
+    const newOperation = ui.getOrCreateOperation('orientation')
+    this._operation = newOperation
+    this._historyItem = null
+    this.setSharedState({
+      operation: newOperation,
+      operationExistedBefore: false,
+      initialOptions: this._operation.serializeOptions()
+    })
   }
 
   /**
@@ -50,23 +91,20 @@ export default class OrientationControlsComponent extends ControlsComponent {
    * @private
    */
   _onRotateClick (direction) {
-    const { ui } = this.context
-    const operationExistedBefore = ui.operationExists('rotation')
-    const rotationOperation = this._getRotationOperation()
-    const previousOptions = {
-      degrees: rotationOperation.getDegrees()
-    }
+    const previousOptions = this._operation.serializeOptions()
 
-    const degrees = rotationOperation.getDegrees()
+    const degrees = this._operation.getRotation()
     const additionalDegrees = 90 * (direction === 'left' ? -1 : 1)
     const newDegrees = (degrees + additionalDegrees) % 360
-    rotationOperation.setDegrees(newDegrees)
+    this._operation.setRotation(newDegrees)
     this._rotateCrop(additionalDegrees)
 
     const { editor } = this.props
-    editor.addHistory(rotationOperation,
+    editor.addHistory(this._operation,
       previousOptions,
-      operationExistedBefore)
+      this._operationExistedBefore)
+
+    this._operationExistedBefore = true
 
     if (editor.isDefaultZoom()) {
       this._emitEvent(Constants.EVENTS.CANVAS_ZOOM, 'auto')
@@ -81,29 +119,23 @@ export default class OrientationControlsComponent extends ControlsComponent {
    * @private
    */
   _onFlipClick (direction) {
-    const { ui } = this.context
-    const operationExistedBefore = ui.operationExists('flip')
-    const flipOperation = this._getFlipOperation()
-    const previousOptions = {
-      horizontal: flipOperation.getHorizontal(),
-      vertical: flipOperation.getVertical()
-    }
+    const previousOptions = this._operation.serializeOptions()
 
     switch (direction) {
       case 'horizontal':
-        const horizontal = flipOperation.getHorizontal()
-        flipOperation.setHorizontal(!horizontal)
+        const horizontal = this._operation.getFlipHorizontally()
+        this._operation.setFlipHorizontally(!horizontal)
         break
       case 'vertical':
-        const vertical = flipOperation.getVertical()
-        flipOperation.setVertical(!vertical)
+        const vertical = this._operation.getFlipVertically()
+        this._operation.setFlipVertically(!vertical)
         break
     }
 
     const { editor } = this.props
-    editor.addHistory(flipOperation,
+    editor.addHistory(this._operation,
       previousOptions,
-      operationExistedBefore)
+      this._operationExistedBefore)
 
     this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
   }
