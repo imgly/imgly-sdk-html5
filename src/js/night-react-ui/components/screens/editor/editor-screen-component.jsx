@@ -131,9 +131,8 @@ export default class EditorScreenComponent extends ScreenComponent {
    */
   _onExportClick () {
     const { ui, options } = this.context
-    const translate = ui.translate.bind(ui)
     const exportOptions = options.export
-    const loadingModal = ModalManager.instance.displayLoading(translate('loading.exporting'))
+    const loadingModal = ModalManager.instance.displayLoading(this._t('loading.exporting'))
 
     // Give it some time to display the loading modal
     setTimeout(() => {

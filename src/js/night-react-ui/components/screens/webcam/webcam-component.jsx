@@ -107,17 +107,14 @@ export default class WebcamComponent extends BaseComponent {
    * @private
    */
   _initVideoStream () {
-    const { ui } = this.context
-    const translate = ui.translate.bind(ui)
-
     const { video } = this.refs
     const getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
       navigator.mozGetUserMedia || navigator.msGetUserMedia
 
     if (!getUserMedia) {
       const errorModal = ModalManager.instance.displayError(
-        translate('errors.webcamNotSupported.title'),
-        translate('errors.webcamNotSupported.text')
+        this._t('errors.webcamNotSupported.title'),
+        this._t('errors.webcamNotSupported.text')
       )
       errorModal.on('close', () => this.props.onBack())
       return
@@ -131,8 +128,8 @@ export default class WebcamComponent extends BaseComponent {
       console.error && console.error(err)
 
       const errorModal = ModalManager.instance.displayError(
-        translate('errors.webcamUnavailable.title'),
-        translate('errors.webcamUnavailable.text', { error: err.name }),
+        this._t('errors.webcamUnavailable.title'),
+        this._t('errors.webcamUnavailable.text', { error: err.name }),
         true
       )
 

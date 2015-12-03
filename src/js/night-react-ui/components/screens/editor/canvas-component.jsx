@@ -223,11 +223,9 @@ export default class CanvasComponent extends BaseComponent {
         callback && callback()
       })
       .catch((e) => {
-        const { ui } = this.context
-        const translate = ui.translate.bind(ui)
         ModalManager.instance.displayError(
-          translate('errors.renderingError.title'),
-          translate('errors.renderingError.text', { error: e.message })
+          this._t('errors.renderingError.title'),
+          this._t('errors.renderingError.text', { error: e.message })
         )
         console && console.error && console.error(e)
       })
