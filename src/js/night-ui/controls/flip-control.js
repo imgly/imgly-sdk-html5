@@ -26,11 +26,12 @@ class FlipControl extends Control {
    */
   _onEnter () {
     this._historyItem = null
-    this._operationExistedBefore = !!this._ui.operations.flip
-    this._operation = this._ui.getOrCreateOperation('flip')
+    this._operationExistedBefore = !!this._ui.operations.orientation
+    this._operation = this._ui.getOrCreateOperation('orientation')
 
-    this._initialHorizontal = this._operation.getHorizontal()
-    this._initialVertical = this._operation.getVertical()
+    this._initialOptions = this._operation.serializeOptions()
+    this._initialHorizontal = this._operation.getFlipHorizontally()
+    this._initialVertical = this._operation.getFlipVertically()
 
     let listItems = this._controls.querySelectorAll('li')
     this._listItems = Array.prototype.slice.call(listItems)
@@ -43,9 +44,9 @@ class FlipControl extends Control {
       })
 
       const direction = listItem.getAttribute('data-direction')
-      if (direction === 'horizontal' && this._operation.getHorizontal()) {
+      if (direction === 'horizontal' && this._operation.getFlipHorizontally()) {
         this._toggleItem(listItem, true)
-      } else if (direction === 'vertical' && this._operation.getVertical()) {
+      } else if (direction === 'vertical' && this._operation.getFlipVertically()) {
         this._toggleItem(listItem, true)
       }
     }
@@ -59,16 +60,16 @@ class FlipControl extends Control {
     const direction = item.getAttribute('data-direction')
     let active = false
 
-    let currentHorizontal = this._operation.getHorizontal()
-    let currentVertical = this._operation.getVertical()
+    let currentHorizontal = this._operation.getFlipHorizontally()
+    let currentVertical = this._operation.getFlipVertically()
 
     if (direction === 'horizontal') {
-      this._operation.setHorizontal(!currentHorizontal)
+      this._operation.setFlipHorizontally(!currentHorizontal)
       currentHorizontal = !currentHorizontal
       this._ui.canvas.render()
       active = !currentHorizontal
     } else if (direction === 'vertical') {
-      this._operation.setVertical(!currentVertical)
+      this._operation.setFlipVertically(!currentVertical)
       currentVertical = !currentVertical
       this._ui.canvas.render()
       active = !currentVertical
@@ -78,8 +79,8 @@ class FlipControl extends Control {
       this._initialHorizontal !== currentHorizontal) &&
       !this._historyItem) {
       this._historyItem = this._ui.addHistory(this._operation, {
-        vertical: this._initialVertical,
-        horizontal: this._initialHorizontal
+        flipVertically: this._initialVertical,
+        flipHorizontally: this._initialHorizontal
       }, this._operationExistedBefore)
     }
 
@@ -106,11 +107,8 @@ class FlipControl extends Control {
    * @override
    */
   _onBack () {
-    let currentVertical = this._operation.getVertical()
-    let currentHorizontal = this._operation.getHorizontal()
-
-    if (!currentVertical && !currentHorizontal) {
-      this._ui.removeOperation('flip')
+    if (this._operation.optionsEqual(this._initialOptions)) {
+      this._ui.removeOperation('orientation')
     }
 
     this._ui.canvas.render()
