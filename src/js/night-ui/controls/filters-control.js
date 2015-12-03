@@ -47,8 +47,8 @@ class FiltersControl extends Control {
    *           rendering, which is why we have to override this function
    */
   _renderAllControls (...args) {
-    this._operationExistedBefore = !!this._ui.operations.filters
-    this._operation = this._ui.getOrCreateOperation('filters')
+    this._operationExistedBefore = !!this._ui.operations.filter
+    this._operation = this._ui.getOrCreateOperation('filter')
 
     super._renderAllControls(...args)
   }
@@ -81,7 +81,7 @@ class FiltersControl extends Control {
   _onBack () {
     let currentFilter = this._operation.getFilter()
     if (currentFilter === this._defaultFilter) {
-      this._ui.removeOperation('filters')
+      this._ui.removeOperation('filter')
     }
     this._ui.canvas.render()
   }

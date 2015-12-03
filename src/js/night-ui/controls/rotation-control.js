@@ -27,12 +27,13 @@ class RotationControl extends Control {
   _onEnter () {
     this._historyItem = null
 
-    this._operationExistedBefore = !!this._ui.operations.rotation
-    this._operation = this._ui.getOrCreateOperation('rotation')
+    this._operationExistedBefore = !!this._ui.operations.orientation
+    this._operation = this._ui.getOrCreateOperation('orientation')
     this._operation.dirty = true
     this._cropOperation = this._ui.operations.crop
 
-    this._initialDegrees = this._operation.getDegrees()
+    this._initialOptions = this._operation.serializeOptions()
+    this._initialDegrees = this._operation.getRotation()
 
     let listItems = this._controls.querySelectorAll('li')
     if (this._cropOperation) {
@@ -62,16 +63,16 @@ class RotationControl extends Control {
     let degrees = item.getAttribute('data-degrees')
     degrees = parseInt(degrees, 10)
 
-    let currentDegrees = this._operation.getDegrees()
+    let currentDegrees = this._operation.getRotation()
 
     if (!this._historyItem) {
       this._historyItem = this._ui.addHistory(this._operation, {
-        degrees: this._initialDegrees
+        rotation: this._initialDegrees
       }, this._operationExistedBefore)
     }
 
     this._rotateCrop(degrees)
-    this._operation.setDegrees(currentDegrees + degrees)
+    this._operation.setRotation(currentDegrees + degrees)
     this._ui.canvas.zoomToFit()
   }
 
@@ -106,9 +107,8 @@ class RotationControl extends Control {
    * @override
    */
   _onBack () {
-    let currentDegrees = this._operation.getDegrees()
-    if (currentDegrees === 0) {
-      this._ui.removeOperation('rotation')
+    if (this._operation.optionsEqual(this._initialOptions)) {
+      this._ui.removeOperation('orientation')
     }
   }
 }
