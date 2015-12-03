@@ -10,19 +10,19 @@
 
 import Operation from './operation'
 import Vector2 from '../lib/math/vector2'
-import Sticker from './stickers/sticker'
+import Sticker from './sticker/sticker'
 
-import StickersWebGLRenderer from './stickers/webgl-renderer'
-import StickersCanvasRenderer from './stickers/canvas-renderer'
+import StickerWebGLRenderer from './sticker/webgl-renderer'
+import StickerCanvasRenderer from './sticker/canvas-renderer'
 
 /**
  * An operation that can draw text on the canvas
  *
  * @class
- * @alias PhotoEditorSDK.Operations.StickersOperation
+ * @alias PhotoEditorSDK.Operations.StickerOperation
  * @extends PhotoEditorSDK.Operation
  */
-class StickersOperation extends Operation {
+class StickerOperation extends Operation {
   constructor (...args) {
     super(...args)
 
@@ -155,7 +155,7 @@ class StickersOperation extends Operation {
   /* istanbul ignore next */
   _renderWebGL (renderer) {
     if (!this._renderers[renderer.id]) {
-      this._renderers[renderer.id] = new StickersWebGLRenderer(this, renderer)
+      this._renderers[renderer.id] = new StickerWebGLRenderer(this, renderer)
     }
 
     return this._renderers[renderer.id].render()
@@ -169,7 +169,7 @@ class StickersOperation extends Operation {
    */
   _renderCanvas (renderer, image) {
     if (!this._renderers[renderer.id]) {
-      this._renderers[renderer.id] = new StickersCanvasRenderer(this, renderer)
+      this._renderers[renderer.id] = new StickerCanvasRenderer(this, renderer)
     }
 
     return this._renderers[renderer.id].render()
@@ -235,13 +235,13 @@ class StickersOperation extends Operation {
  * operations.
  * @type {String}
  */
-StickersOperation.identifier = 'stickers'
+StickerOperation.identifier = 'sticker'
 
 /**
  * Specifies the available options for this operation
  * @type {Object}
  */
-StickersOperation.prototype.availableOptions = {
+StickerOperation.prototype.availableOptions = {
   stickers: {
     type: 'array', default: [],
     setter: function (stickers) {
@@ -261,4 +261,4 @@ StickersOperation.prototype.availableOptions = {
   }
 }
 
-export default StickersOperation
+export default StickerOperation

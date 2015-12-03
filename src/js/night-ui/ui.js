@@ -70,7 +70,7 @@ export default class NightUI extends EventEmitter {
       'radial-blur',
       'tilt-shift',
       'frame',
-      'stickers',
+      'sticker',
       'text',
       'brush'
     ]

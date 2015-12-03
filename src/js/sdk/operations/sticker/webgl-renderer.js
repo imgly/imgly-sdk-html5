@@ -11,7 +11,7 @@
 import Vector2 from '../../lib/math/vector2'
 import Matrix from '../../lib/math/matrix'
 
-export default class StickersWebGLRenderer {
+export default class StickerWebGLRenderer {
   constructor (operation, renderer) {
     this._operation = operation
     this._renderer = renderer

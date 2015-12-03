@@ -11,7 +11,7 @@
 import Vector2 from '../../lib/math/vector2'
 import StackBlur from '../../vendor/stack-blur'
 
-export default class StickersCanvasRenderer {
+export default class StickerCanvasRenderer {
   constructor (operation, renderer) {
     this._operation = operation
     this._renderer = renderer

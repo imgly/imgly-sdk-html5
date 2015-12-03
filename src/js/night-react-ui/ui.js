@@ -48,7 +48,7 @@ export default class NightReactUI extends EventEmitter {
       'radial-blur',
       'tilt-shift',
       'frame',
-      'stickers',
+      'sticker',
       'text',
       'watermark'
     ]
@@ -248,7 +248,7 @@ export default class NightReactUI extends EventEmitter {
       assets: {},
       extensions: {},
       controlsOrder: [
-        'filters', 'orientation', 'adjustments', 'crop', 'focus', 'frame', 'stickers', 'text'
+        'filters', 'orientation', 'adjustments', 'crop', 'focus', 'frame', 'sticker', 'text'
       ],
       controlsOptions: {},
       showNewButton: true

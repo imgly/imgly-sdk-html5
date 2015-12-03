@@ -43,9 +43,9 @@ export default {
    * @return {*}
    */
   clickAtPosition: (position, context) => {
-    if (!context.ui.operationExists('stickers')) return false
+    if (!context.ui.operationExists('sticker')) return false
     const renderer = context.kit.getRenderer()
-    const operation = context.ui.getOrCreateOperation('stickers')
+    const operation = context.ui.getOrCreateOperation('sticker')
     const sticker = operation.getStickerAtPosition(renderer, position)
     if (!sticker) {
       return false
@@ -61,8 +61,8 @@ export default {
    * @return {Object}
    */
   getInitialSharedState: (context, additionalState = {}) => {
-    const operationExistedBefore = context.ui.operationExists('stickers')
-    const operation = context.ui.getOrCreateOperation('stickers')
+    const operationExistedBefore = context.ui.operationExists('sticker')
+    const operation = context.ui.getOrCreateOperation('sticker')
     const stickers = operation.getStickers()
     const initialOptions = operation.serializeOptions()
 
@@ -74,6 +74,6 @@ export default {
   },
 
   isSelectable: (ui) => {
-    return ui.isOperationEnabled('stickers')
+    return ui.isOperationEnabled('sticker')
   }
 }

@@ -78,12 +78,12 @@ class StickersControl extends Control {
    * @override
    */
   _onEnter () {
-    this._operationExistedBefore = !!this._ui.operations.stickers
-    this._operation = this._ui.getOrCreateOperation('stickers')
+    this._operationExistedBefore = !!this._ui.operations.sticker
+    this._operation = this._ui.getOrCreateOperation('sticker')
     this._initialOptions = this._operation.serializeOptions()
 
     // Don't render initially
-    this._ui.removeOperation('stickers')
+    this._ui.removeOperation('sticker')
 
     this._onStickerLoad = this._onStickerLoad.bind(this)
 
@@ -218,10 +218,10 @@ class StickersControl extends Control {
    */
   _onBack () {
     if (this._operationExistedBefore) {
-      this._operation = this._ui.getOrCreateOperation('stickers')
+      this._operation = this._ui.getOrCreateOperation('sticker')
       this._operation.set(this._initialSettings)
     } else {
-      this._ui.removeOperation('stickers')
+      this._ui.removeOperation('sticker')
     }
     this._ui.canvas.setZoomLevel(this._initialZoomLevel)
   }
@@ -241,7 +241,7 @@ class StickersControl extends Control {
     this._ui.canvas.setZoomLevel(this._initialZoomLevel, false)
 
     // Create a new operation and render it
-    this._operation = this._ui.getOrCreateOperation('stickers')
+    this._operation = this._ui.getOrCreateOperation('sticker')
     this._operation.setStickers([this._sticker])
     this._sticker.set({
       image: this._stickerImage,
