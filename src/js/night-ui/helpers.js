@@ -9,8 +9,8 @@
  */
 
 class Helpers {
-  constructor (renderer, ui, options) {
-    this._renderer = renderer
+  constructor (kit, ui, options) {
+    this._kit = kit
     this._ui = ui
     this._options = options
   }
