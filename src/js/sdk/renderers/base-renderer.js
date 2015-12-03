@@ -93,10 +93,12 @@ export default class BaseRenderer extends EventEmitter {
       canvas = new Canvas()
     }
 
-    canvas.style.width = `${width}px`
-    canvas.style.height = `${height}px`
+    if (canvas.style) {
+      canvas.style.width = `${width}px`
+      canvas.style.height = `${height}px`
+    }
 
-    const pixelRatio = window.devicePixelRatio || 1
+    const pixelRatio = (typeof window !== 'undefined' && window.devicePixelRatio) || 1
 
     // Apply width
     if (typeof width !== 'undefined') {

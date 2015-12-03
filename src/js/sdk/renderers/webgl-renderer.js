@@ -698,10 +698,12 @@ class WebGLRenderer extends BaseRenderer {
       this.reset()
     }
 
-    this._canvas.style.width = `${dimensions.x}px`
-    this._canvas.style.height = `${dimensions.y}px`
+    if (this._canvas.style) {
+      this._canvas.style.width = `${dimensions.x}px`
+      this._canvas.style.height = `${dimensions.y}px`
+    }
 
-    const pixelRatio = window.devicePixelRatio || 1
+    const pixelRatio = (typeof window !== 'undefined' && window.devicePixelRatio) || 1
     this._canvas.width = dimensions.x * pixelRatio
     this._canvas.height = dimensions.y * pixelRatio
   }
