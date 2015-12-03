@@ -16,6 +16,10 @@ import {
 } from '../../../../globals'
 import ScrollbarComponent from '../../../scrollbar-component'
 
+const ITEMS = [
+  { identifier: 'street-art', i18nKey: 'grunge1', options: { imageURL: 'art/gtunge1.jpg' } }
+]
+
 export default class StreetControlsComponent extends BaseComponent {
   constructor (...args) {
     super(...args)
