@@ -18,6 +18,5 @@ export default class ScreenComponent extends BaseComponent {
 }
 
 ScreenComponent.propTypes = {
-  // TODO: Why does .element not work?
   editor: React.PropTypes.any
 }

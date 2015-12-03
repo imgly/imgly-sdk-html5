@@ -687,7 +687,6 @@ class WebGLRenderer extends BaseRenderer {
   /**
    * Resizes the current canvas picture to the given dimensions
    * @param  {Vector2} dimensions
-   * @todo Use a downsampling shader for smoother image resizing
    */
   /* istanbul ignore next */
   resizeTo (dimensions) {

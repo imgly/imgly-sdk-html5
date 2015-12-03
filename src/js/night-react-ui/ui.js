@@ -59,7 +59,6 @@ export default class NightReactUI extends EventEmitter {
     this._initOperations()
     this._initControls()
 
-    // TODO: Find a nicer way to handle default operations
     this._initWatermarkOperation()
 
     this.run()

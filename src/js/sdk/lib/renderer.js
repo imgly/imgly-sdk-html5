@@ -225,11 +225,6 @@ export default class Renderer extends EventEmitter {
       this._renderer.off('error', this._onRendererError)
     }
     this._renderer = null
-
-    // TODO: We only need this event so that our React UI can re-create
-    // the watermark operation once the renderer has been reset. Find a
-    // better way to do this, this is really really dirty
-    this.emit('reset')
   }
 
   /**
