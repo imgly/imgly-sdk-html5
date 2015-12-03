@@ -503,7 +503,7 @@ export default class EditorScreenComponent extends ScreenComponent {
             {controls}
           </div>
         </div>
-      </div>™
+      </div>
     </div>)
   }
 }
