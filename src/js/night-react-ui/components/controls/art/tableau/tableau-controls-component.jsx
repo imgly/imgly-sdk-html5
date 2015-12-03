@@ -59,32 +59,63 @@ export default class PaintControlsComponent extends BaseComponent {
    * @private
    */
   _onItemClick (object, e) {
+    this._createOperation(object)
+    if (object.options.filter) {
+      this._handleTableuOperation(object)
+    } else if (object.options.imageURL) {
+      this._handleBrushMarkOperation(object)
+    }
+  }
+
+  /**
+   * When the user chooses an effect that is realized via
+   * tableu-operation this code gets called. I will setup the
+   * operation with the information given by the object
+   * @param  {object} object
+   * @private
+   */
+  _handleTableuOperation (object) {
+    this._operation.setFilter(object.options.filter)
+    this.setSharedState({
+      operation: this._operation,
+      operationExistedBefore: false,
+      initialOptions: {}
+    })
+    this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
+  }
+
+  /**
+   * When the user chooses an effect that is realized via
+   * brush-mark-operation this code gets called. I will setup the
+   * operation with the information given by the object
+   * @param  {object} object
+   * @private
+   */
+   _handleBrushMarkOperation (object) {
+     const ui = this.context.ui
+     const absoluteImageURL = `${ui.getAssetPath(object.options.imageURL)}`
+     this._uploadImage(absoluteImageURL).then((image) => {
+       this._operation.setImage(image)
+       this._operation._imageURL = object.options.imageURL
+       this.setSharedState({
+         operation: this._operation,
+         operationExistedBefore: false,
+         initialOptions: {}
+       })
+       this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
+     })
+   }
+
+  /**
+   * Creates an operation based on the type defined by the object.
+   * @private
+   */
+  _createOperation (object) {
     const ui = this.context.ui
     if (this._operation) {
       ui.removeOperation(this._operation)
     }
     this._operation = ui.getOrCreateOperation(object.identifier)
-    if (object.options.filter) {
-      this._operation.setFilter(object.options.filter)
-      this.setSharedState({
-        operation: this._operation,
-        operationExistedBefore: false,
-        initialOptions: {}
-      })
-      this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
-    } else if (object.options.imageURL) {
-      const absoluteImageURL = `${ui.getAssetPath(object.options.imageURL)}`
-      this._uploadImage(absoluteImageURL).then((image) => {
-        this._operation.setImage(image)
-        this._operation._imageURL = object.options.imageURL
-        this.setSharedState({
-          operation: this._operation,
-          operationExistedBefore: false,
-          initialOptions: {}
-        })
-        this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
-      })
-    }
   }
 
   /**
