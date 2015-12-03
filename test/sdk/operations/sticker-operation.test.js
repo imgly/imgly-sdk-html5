@@ -22,10 +22,10 @@ beforeEach(function () {
   stickerImage.src = stickerImageBuffer
 })
 
-describe('StickersOperation', function () {
+describe('StickerOperation', function () {
   describe('#render', function () {
     it('should succeed', function () {
-      const operation = kit.createOperation('stickers', {
+      const operation = kit.createOperation('sticker', {
         stickers: [
           { image: stickerImage }
         ]
