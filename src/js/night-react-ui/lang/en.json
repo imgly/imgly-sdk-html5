@@ -14,7 +14,8 @@
       "identity": "None",
       "watercolor": "Watercolor",
       "oil": "Oil",
-      "brush1": "Brush 1"
+      "brush1": "Brush 1",
+      "brush2": "Brush 2"
     },
     "frames": {
       "color": "Color",

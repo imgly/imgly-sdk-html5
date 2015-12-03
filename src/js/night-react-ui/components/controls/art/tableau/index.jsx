@@ -19,14 +19,25 @@ export default {
   icon: 'controls/overview/filters@2x.png',
   label: 'controls.overview.filters',
   getInitialSharedState: (context) => {
-    const operationExistedBefore = context.ui.operationExists('tableau')
-    const operation = context.ui.getOrCreateOperation('tableau')
-    const initialOptions = {
-      intensity: operation.getIntensity()
+    const { ui } = context
+    const tableauOperationExists = ui.operationExists('tableau')
+    const brushMarkOperationExists = ui.operationExists('brush-mark')
+
+    let initialOperation = tableauOperationExists
+      ? ui.getOperation('tableau')
+      : ui.getOperation('brush-mark')
+
+    if (!initialOperation) {
+      initialOperation = ui.getOrCreateOperation('tableau')
     }
+
+    const initialOptions = initialOperation
+      ? initialOperation.serializeOptions()
+      : {}
+
     return {
-      operationExistedBefore,
-      operation,
+      initialOperation,
+      operation: initialOperation,
       initialOptions
     }
   },
