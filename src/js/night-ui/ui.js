@@ -505,9 +505,9 @@ export default class NightUI extends EventEmitter {
    * @private
    */
   _registerControls () {
-    this.registerControl('filters', 'filters', require('./controls/filters-control'))
-    this.registerControl('rotation', 'rotation', require('./controls/rotation-control'))
-    this.registerControl('flip', 'flip', require('./controls/flip-control'))
+    this.registerControl('filters', 'filter', require('./controls/filters-control'))
+    this.registerControl('rotation', 'orientation', require('./controls/rotation-control'))
+    this.registerControl('flip', 'orientation', require('./controls/flip-control'))
     this.registerControl('brightness', 'brightness', require('./controls/brightness-control'))
     this.registerControl('contrast', 'contrast', require('./controls/contrast-control'))
     this.registerControl('saturation', 'saturation', require('./controls/saturation-control'))
@@ -515,7 +515,7 @@ export default class NightUI extends EventEmitter {
     this.registerControl('radial-blur', 'radial-blur', require('./controls/radial-blur-control'))
     this.registerControl('tilt-shift', 'tilt-shift', require('./controls/tilt-shift-control'))
     this.registerControl('frame', 'frame', require('./controls/frame-control'))
-    this.registerControl('stickers', 'stickers', require('./controls/stickers-control'))
+    this.registerControl('stickers', 'sticker', require('./controls/stickers-control'))
     this.registerControl('text', 'text', require('./controls/text-control'))
     this.registerControl('brush', 'brush', require('./controls/brush-control'))
   }
