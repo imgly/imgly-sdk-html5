@@ -30,7 +30,7 @@ class BrushMarkOperation extends Operation {
    */
   _registerFilters () {
     this._filter = new BrushMarkFilter()
-    this._filter.setImageURL(this._imageURL)
+    this._filter.setImage(this._image)
     this._filter.setIntensity(this.getIntensity())
   }
 
@@ -102,12 +102,12 @@ BrushMarkOperation.prototype.availableOptions = {
       return this._filter.getIntensity()
     }
   },
-  imageURL: {
-    type: 'string',
+  image: {
+    type: 'object',
     default: '',
-    setter: function (url) {
-      this._filter && this._filter.setImageURL(url)
-      return url
+    setter: function (image) {
+      this._filter && this._filter.setImage(image)
+      return image
     }
   }
 }

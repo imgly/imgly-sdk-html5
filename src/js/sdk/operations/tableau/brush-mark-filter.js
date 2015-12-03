@@ -23,7 +23,7 @@ class BrushMarkFilter extends Filter {
     super(...args)
     this._glslPrograms = {}
     this._textures = {}
-    this._imageURL = {}
+    this._image = {}
     this._gaussianBlurOperation = new GaussianBlurFilter()
     this._vertexShader = require('raw!../generic/default.vert')
     this._fragmentShader = this._blurShader = require('raw!./brush-mark.frag')
@@ -44,7 +44,7 @@ class BrushMarkFilter extends Filter {
       promise = promise.then(() => this._gaussianBlurOperation.renderWebGL(renderer, inputTexture, outputFBO, outputTexture))
     }
     return promise
-      .then(() => this._uploadTexture(renderer))
+      .then(() => this._createTexture(renderer))
       .then((texture) => {
         if (!this._glslPrograms[renderer.id]) {
           this._glslPrograms[renderer.id] = renderer.setupGLSLProgram(
@@ -70,22 +70,13 @@ class BrushMarkFilter extends Filter {
    * @return {Promise}
    * @private
    */
-  _uploadTexture (renderer) {
+  _createTexture (renderer) {
     return new Promise((resolve, reject) => {
-      // Use cached texture
-      if (this._textures[renderer.id]) {
-        return resolve(this._textures[renderer.id])
-      }
-
-      const image = new window.Image()
-      image.addEventListener('load', () => {
-        const texture = renderer.createTexture(image)
+      if (!this._textures[renderer.id]) {
+        const texture = renderer.createTexture(this._image)
         this._textures[renderer.id] = texture
-        resolve(texture)
-      })
-
-      image.crossOrigin = 'Anonymous'
-      image.src = this._imageURL
+      }
+      return resolve(this._textures[renderer.id])
     })
   }
 
@@ -129,12 +120,12 @@ class BrushMarkFilter extends Filter {
     return 'Brush Mark'
   }
 
-  setImageURL (url) {
-    this._imageURL = url
+  setImage (image) {
+    this._image = image
   }
 
-  get imageURL () {
-    return this._imageURL
+  get image () {
+    return this._image
   }
 }
 
