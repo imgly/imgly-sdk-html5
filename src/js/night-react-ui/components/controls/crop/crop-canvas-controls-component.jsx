@@ -93,7 +93,7 @@ export default class CropCanvasControlsComponent extends BaseComponent {
   _onKnobDrag (optionName, offset) {
     const { kit } = this.context
     const canvasDimensions = kit.getOutputDimensions()
-    const ratio = this._operation.getRatio()
+    const ratio = this._operation._ratio || '*'
 
     const newSize = this._initialValues.end.clone()
       .subtract(this._initialValues.start)
