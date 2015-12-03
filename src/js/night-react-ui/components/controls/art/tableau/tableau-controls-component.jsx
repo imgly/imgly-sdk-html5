@@ -27,7 +27,6 @@ const ITEMS = [
 export default class PaintControlsComponent extends BaseComponent {
   constructor (...args) {
     super(...args)
-    this._selectedKey = 'identity'
     this._bindAll(
       '_onBackClick',
       '_onItemClick',
@@ -60,7 +59,6 @@ export default class PaintControlsComponent extends BaseComponent {
    * @private
    */
   _onItemClick (object, e) {
-    this._selectedKey = object.i18nKey
     const ui = this.context.ui
     if (this._operation) {
       ui.removeOperation(this._operation)
@@ -68,16 +66,25 @@ export default class PaintControlsComponent extends BaseComponent {
     this._operation = ui.getOrCreateOperation(object.identifier)
     if (object.options.filter) {
       this._operation.setFilter(object.options.filter)
+      this.setSharedState({
+        operation: this._operation,
+        operationExistedBefore: false,
+        initialOptions: {}
+      })
+      this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
     } else if (object.options.imageURL) {
       const absoluteImageURL = `${ui.getAssetPath(object.options.imageURL)}`
-      this._operation.setImageURL(absoluteImageURL)
+      this._uploadImage(absoluteImageURL).then((image) => {
+        this._operation.setImage(image)
+        this._operation._imageURL = object.options.imageURL
+        this.setSharedState({
+          operation: this._operation,
+          operationExistedBefore: false,
+          initialOptions: {}
+        })
+        this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
+      })
     }
-    this.setSharedState({
-      operation: this._operation,
-      operationExistedBefore: false,
-      initialOptions: {}
-    })
-    this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
   }
 
   /**
@@ -104,6 +111,23 @@ export default class PaintControlsComponent extends BaseComponent {
     }
   }
 
+  /**
+   * Uploads the given image
+   * @return {Promise}
+   * @private
+   */
+  _uploadImage (imageURL) {
+    return new Promise((resolve, reject) => {
+      const image = new window.Image()
+      image.addEventListener('load', () => {
+        resolve(image)
+      })
+
+      image.crossOrigin = 'Anonymous'
+      image.src = imageURL
+    })
+  }
+
   // -------------------------------------------------------------------------- RENDERING
 
   /**
@@ -114,15 +138,15 @@ export default class PaintControlsComponent extends BaseComponent {
     const ui = this.context.ui
     const listItems = ITEMS.map((item) => {
       const i18nKey = item.i18nKey
-
       const currentOperation = this.getSharedState('operation')
       const isCurrentOperation = currentOperation.constructor.identifier === item.identifier
-      const optionsMatch = currentOperation.optionsEqual(item.options)
+
+      let optionsMatch = currentOperation.optionsEqual(item.options)
+      if (item.options.imageURL) {
+        optionsMatch = currentOperation._imageURL === item.options.imageURL
+      }
+
       const isActive = isCurrentOperation && optionsMatch
-
-      console.log(currentOperation, isCurrentOperation, optionsMatch, isActive)
-      console.log(currentOperation.serializeOptions(), item.options)
-
       return (<li
         bem='e:item'
         key={i18nKey}
