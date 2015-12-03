@@ -175,7 +175,10 @@ export default class Configurable extends EventEmitter {
    * @private
    */
   _optionEquals (optionName, value) {
-    const optionType = this.availableOptions[optionName].type
+    const optionConfig = this.availableOptions[optionName]
+    if (typeof optionConfig === 'undefined') return false
+    
+    const optionType = optionConfig.type
     const currentValue = this._options[optionName]
     switch (optionType) {
       case 'string':

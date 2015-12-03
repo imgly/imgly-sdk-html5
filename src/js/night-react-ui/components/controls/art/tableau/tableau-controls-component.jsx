@@ -20,7 +20,8 @@ const ITEMS = [
   { identifier: 'tableau', i18nKey: 'identity', options: { filter: 'identity' } },
   { identifier: 'tableau', i18nKey: 'watercolor', options: { filter: 'water-color' } },
   { identifier: 'tableau', i18nKey: 'oil', options: { filter: 'oil' } },
-  { identifier: 'brush-mark', i18nKey: 'brush1', options: { imageURL: 'art/Test_04.jpg' } }
+  { identifier: 'brush-mark', i18nKey: 'brush1', options: { imageURL: 'art/Test_04.jpg' } },
+  { identifier: 'brush-mark', i18nKey: 'brush2', options: { imageURL: 'art/Test_03.jpg' } }
 ]
 
 export default class PaintControlsComponent extends BaseComponent {
@@ -113,6 +114,15 @@ export default class PaintControlsComponent extends BaseComponent {
     const ui = this.context.ui
     const listItems = ITEMS.map((item) => {
       const i18nKey = item.i18nKey
+
+      const currentOperation = this.getSharedState('operation')
+      const isCurrentOperation = currentOperation.constructor.identifier === item.identifier
+      const optionsMatch = currentOperation.optionsEqual(item.options)
+      const isActive = isCurrentOperation && optionsMatch
+
+      console.log(currentOperation, isCurrentOperation, optionsMatch, isActive)
+      console.log(currentOperation.serializeOptions(), item.options)
+
       return (<li
         bem='e:item'
         key={i18nKey}
@@ -120,7 +130,7 @@ export default class PaintControlsComponent extends BaseComponent {
           <bem specifier='$b:controls'>
             <div
               bem='$e:button m:withInlineLabel'
-              className={i18nKey === this._selectedKey ? 'is-active' : null}>
+              className={isActive ? 'is-active' : null}>
               <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/filters/${i18nKey}.png`, true)} />
               <div bem='e:label'>{this._t(`controls.tableau.${i18nKey}`)}</div>
             </div>
