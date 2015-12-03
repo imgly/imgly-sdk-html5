@@ -50,17 +50,6 @@ class Canvas extends EventEmitter {
     this._handleDrag()
   }
 
-  getProcessedDimensions () {
-    const stack = this.sanitizedStack
-
-    let size = new Vector2(this._image.width, this._image.height)
-    stack.forEach((operation) => {
-      size = operation.getNewDimensions(this._renderer, size)
-    })
-
-    return size
-  }
-
   /**
    * Renders the current operations stack
    */
