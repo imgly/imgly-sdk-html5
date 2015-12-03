@@ -209,8 +209,6 @@ export default class OrientationControlsComponent extends ControlsComponent {
    * @return {ReactBEM.Element}
    */
   renderControls () {
-    const { ui } = this.context
-
     const listItems = this._ratios.map((ratio) => {
       return (<li
         bem='e:item'
@@ -219,7 +217,7 @@ export default class OrientationControlsComponent extends ControlsComponent {
           <div bem='$e:button m:withLabel'
             className={this.state.ratio === ratio ? 'is-active' : null}
             onClick={this._selectRatio.bind(this, ratio)}>
-              <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/crop/${ratio.identifier}@2x.png`, true)} />
+              <img bem='e:icon' src={this._getAssetPath(`controls/crop/${ratio.identifier}@2x.png`, true)} />
               <div bem='e:label'>{this._t(`controls.crop.${ratio.identifier}`)}</div>
           </div>
         </bem>

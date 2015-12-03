@@ -198,8 +198,6 @@ export default class OrientationControlsComponent extends ControlsComponent {
    * @private
    */
   _renderListItems () {
-    const { ui } = this.context
-
     const itemsMap = [
       { identifier: 'rotate-l', onClick: this._onRotateClick.bind(this, 'left') },
       { identifier: 'rotate-r', onClick: this._onRotateClick.bind(this, 'right') },
@@ -218,7 +216,7 @@ export default class OrientationControlsComponent extends ControlsComponent {
         key={item.identifier}>
         <bem specifier='$b:controls'>
           <div bem='$e:button m:withLabel' onClick={item.onClick}>
-            <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/orientation/${item.identifier}@2x.png`, true)} />
+            <img bem='e:icon' src={this._getAssetPath(`controls/orientation/${item.identifier}@2x.png`, true)} />
             <div bem='e:label'>{this._t(`controls.orientation.${item.identifier}`)}</div>
           </div>
         </bem>

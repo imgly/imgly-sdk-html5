@@ -22,7 +22,7 @@ export default class BackButtonComponent extends BaseComponent {
     return (<bem specifier='$b:controls'>
       <div bem='e:cell m:button m:withBorderRight m:narrow'>
         <div bem='$e:button m:narrow' onClick={this.props.onClick}>
-          <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/back@2x.png`, true)} />
+          <img bem='e:icon' src={this._getAssetPath(`controls/back@2x.png`, true)} />
         </div>
       </div>
     </bem>)

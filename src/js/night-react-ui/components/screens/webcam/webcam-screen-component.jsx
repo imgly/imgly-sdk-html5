@@ -57,7 +57,6 @@ export default class WebcamScreenComponent extends ScreenComponent {
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
-    const { ui } = this.context
     return (<div bem='b:screen'>
       <HeaderComponent />
       <div bem='$b:webcamScreen'>
@@ -89,7 +88,7 @@ export default class WebcamScreenComponent extends ScreenComponent {
                 bem='$e:shutterButton'
                 onClick={this._onShutterClicked}
                 className={this.state.webcamReady ? 'is-active' : false}>
-                <img bem='e:icon' src={ui.getHelpers().assetPath('controls/webcam/shutter@2x.png', true)} />
+                <img bem='e:icon' src={this._getAssetPath('controls/webcam/shutter@2x.png', true)} />
               </div>
             </bem>
           </div>

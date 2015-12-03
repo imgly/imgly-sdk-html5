@@ -42,8 +42,6 @@ export default class FocusControlsComponent extends ControlsComponent {
    * @private
    */
   _renderListItems () {
-    const ui = this.context.ui
-
     return ITEMS
       .filter((item) => item.isSelectable(this.context.ui))
       .map((item) => {
@@ -52,7 +50,7 @@ export default class FocusControlsComponent extends ControlsComponent {
           key={item.identifier}>
           <bem specifier='$b:controls'>
             <div bem='$e:button m:withLabel' onClick={this._onButtonClick.bind(this, item)}>
-              <img bem='e:icon' src={ui.getHelpers().assetPath(item.icon, true)} />
+              <img bem='e:icon' src={this._getAssetPath(item.icon, true)} />
               <div bem='e:label'>{this._t(item.label)}</div>
             </div>
           </bem>

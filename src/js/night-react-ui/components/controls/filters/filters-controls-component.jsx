@@ -105,7 +105,6 @@ export default class FiltersControlsComponent extends ControlsComponent {
    * @private
    */
   _renderListItems () {
-    const { ui } = this.context
     const currentFilter = this._operation.getFilter()
 
     return this._filters.map((filter) => {
@@ -118,7 +117,7 @@ export default class FiltersControlsComponent extends ControlsComponent {
           <div
             bem='$e:button m:withInlineLabel'
             className={filter === currentFilter ? 'is-active' : null}>
-            <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/filters/${identifier}.png`, true)} />
+            <img bem='e:icon' src={this._getAssetPath(`controls/filters/${identifier}.png`, true)} />
             <div bem='e:label'>{filter.prototype.name}</div>
           </div>
         </bem>

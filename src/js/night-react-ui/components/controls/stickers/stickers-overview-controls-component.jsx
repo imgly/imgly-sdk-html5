@@ -88,8 +88,7 @@ export default class StickersOverviewControlsComponent extends ControlsComponent
         drawSize.x, drawSize.y)
     })
 
-    const { ui } = this.context
-    const resolvedStickerPath = ui.getAssetPath(hoveredSticker)
+    const resolvedStickerPath = this._getAssetPath(hoveredSticker)
     image.src = resolvedStickerPath
   }
 
@@ -100,8 +99,7 @@ export default class StickersOverviewControlsComponent extends ControlsComponent
    * @private
    */
   _renderSticker (index, stickerPaths) {
-    const { ui } = this.context
-    const resolvedStickerPath = ui.getAssetPath(stickerPaths[0])
+    const resolvedStickerPath = this._getAssetPath(stickerPaths[0])
     const canvas = this.refs[`canvas-${index}`]
 
     canvas.width = canvas.offsetWidth
@@ -188,14 +186,12 @@ export default class StickersOverviewControlsComponent extends ControlsComponent
   _onStickerClick (stickerPaths) {
     const largePath = stickerPaths[1]
 
-    const { ui } = this.context
-    const translate = ui.translate.bind(ui)
-    const resolvedStickerPath = ui.getAssetPath(largePath)
+    const resolvedStickerPath = this._getAssetPath(largePath)
     const image = new window.Image()
 
     let loadingModal
     let loadTimeout = setTimeout(() => {
-      loadingModal = ModalManager.instance.displayLoading(translate('loading.loading'))
+      loadingModal = ModalManager.instance.displayLoading(this._t('loading.loading'))
     }, 100)
 
     image.addEventListener('load', () => {
@@ -231,8 +227,8 @@ export default class StickersOverviewControlsComponent extends ControlsComponent
       }
 
       ModalManager.instance.displayError(
-        translate('errors.imageLoadFail.title'),
-        translate('errors.imageLoadFail.text', { path: image.src })
+        this._t('errors.imageLoadFail.title'),
+        this._t('errors.imageLoadFail.text', { path: image.src })
       )
     })
 

@@ -207,7 +207,6 @@ export default class CropCanvasControlsComponent extends BaseComponent {
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
-    const { ui } = this.context
     const areaStyles = this._getAreaStyles()
     const dimensions = this._calculateDimensions()
 
@@ -228,7 +227,7 @@ export default class CropCanvasControlsComponent extends BaseComponent {
                   onStart={this._onKnobDragStart.bind(this, 'start')}
                   onDrag={this._onKnobDrag.bind(this, 'start')}>
                     <div bem='e:knob m:topLeft $b:knob'>
-                      <img bem='e:icon' src={ui.getHelpers().assetPath('controls/knobs/resize-diagonal-down@2x.png', true)} />
+                      <img bem='e:icon' src={this._getAssetPath('controls/knobs/resize-diagonal-down@2x.png', true)} />
                     </div>
                 </DraggableComponent>
                 <div bem='e:dimensions'>{dimensions.x} x {dimensions.y}</div>
@@ -236,7 +235,7 @@ export default class CropCanvasControlsComponent extends BaseComponent {
                   onStart={this._onKnobDragStart.bind(this, 'end')}
                   onDrag={this._onKnobDrag.bind(this, 'end')}>
                     <div bem='e:knob m:bottomRight $b:knob'>
-                      <img bem='e:icon' src={ui.getHelpers().assetPath('controls/knobs/resize-diagonal-down@2x.png', true)} />
+                      <img bem='e:icon' src={this._getAssetPath('controls/knobs/resize-diagonal-down@2x.png', true)} />
                     </div>
                 </DraggableComponent>
               </div>

@@ -304,8 +304,6 @@ export default class TextControlsComponent extends ControlsComponent {
    * @private
    */
   _renderAlignmentItem () {
-    const { ui } = this.context
-
     const selectedText = this.getSharedState('selectedText')
     if (!selectedText) return
 
@@ -318,7 +316,7 @@ export default class TextControlsComponent extends ControlsComponent {
         <div
           bem='$e:button m:withLabel'
           onClick={this._onAlignmentClick}>
-            <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/text/align_${alignment}@2x.png`, true)} />
+            <img bem='e:icon' src={this._getAssetPath(`controls/text/align_${alignment}@2x.png`, true)} />
             <div bem='e:label'>{this._t(`controls.text.alignment`)}</div>
         </div>
       </bem>

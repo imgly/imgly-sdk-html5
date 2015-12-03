@@ -52,7 +52,7 @@ export default class BaseComponent extends React.Component {
    * @protected
    */
   _getAssetPath (...args) {
-    return this.context.ui.getHelpers().assetPath(...args)
+    return this.context.ui.getAssetPath(...args)
   }
 
   /**

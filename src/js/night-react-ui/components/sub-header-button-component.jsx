@@ -19,8 +19,6 @@ export default class SubHeaderButtonComponent extends BaseComponent {
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
-    const { ui } = this.context
-
     // Build BEM specifier
     let bem = '$e:button'
     if (this.props.style) {
@@ -35,7 +33,7 @@ export default class SubHeaderButtonComponent extends BaseComponent {
     if (this.props.icon) {
       icon = (<img
         bem='e:icon'
-        src={ui.getHelpers().assetPath(this.props.icon, true)} />)
+        src={this._getAssetPath(this.props.icon, true)} />)
     }
 
     return (<bem specifier='$b:subHeader'>

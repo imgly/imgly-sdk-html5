@@ -419,7 +419,6 @@ export default class TextCanvasControlsComponent extends BaseComponent {
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
-    const { ui } = this.context
     const selectedText = this.getSharedState('selectedText')
     const stickerItems = this._renderTextItems()
 
@@ -431,7 +430,7 @@ export default class TextCanvasControlsComponent extends BaseComponent {
           onDrag={this._onRotationKnobDrag}
           onStop={this._onRotationKnobDragStop}>
           <div bem='e:knob m:rotate $b:knob' style={this._getRotationKnobStyle()}>
-            <img bem='e:icon m:larger' src={ui.getHelpers().assetPath('controls/knobs/rotate@2x.png', true)} />
+            <img bem='e:icon m:larger' src={this._getAssetPath('controls/knobs/rotate@2x.png', true)} />
           </div>
         </DraggableComponent>),
         (<DraggableComponent
@@ -439,11 +438,11 @@ export default class TextCanvasControlsComponent extends BaseComponent {
           onDrag={this._onResizeKnobDrag}
           onStop={this._onResizeKnobDragStop}>
           <div bem='e:knob m:resize $b:knob' style={this._getResizeKnobStyle()}>
-            <img bem='e:icon' src={ui.getHelpers().assetPath('controls/knobs/resize-diagonal-up@2x.png', true)} />
+            <img bem='e:icon' src={this._getAssetPath('controls/knobs/resize-diagonal-up@2x.png', true)} />
           </div>
         </DraggableComponent>),
         (<div bem='e:knob $b:knob' style={this._getRemoveKnobStyle()} onClick={this._onRemoveClick}>
-          <img bem='e:icon' src={ui.getHelpers().assetPath('controls/knobs/remove@2x.png', true)} />
+          <img bem='e:icon' src={this._getAssetPath('controls/knobs/remove@2x.png', true)} />
         </div>)
       ]
     }

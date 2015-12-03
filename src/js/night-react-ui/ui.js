@@ -14,7 +14,6 @@ import {
   React, ReactDOM, ReactBEM, SharedState
 } from './globals'
 
-import Helpers from './helpers'
 import EditorComponent from './components/editor-component'
 import OverviewControlsComponent from './components/controls/overview/overview-controls-component'
 import ScrollbarComponent from './components/scrollbar-component'
@@ -29,7 +28,6 @@ export default class NightReactUI extends EventEmitter {
     this._mediator = new EventEmitter()
     this._kit = kit
     this._options = options
-    this._helpers = new Helpers(this._kit, this._options)
     this._operationsMap = {}
     this._operationsStack = this._kit.operationsStack
 
@@ -279,8 +277,8 @@ export default class NightReactUI extends EventEmitter {
    * @private
    */
   _registerWebFonts () {
-    const regularFontPath = this._helpers.assetPath('fonts/montserrat-regular.woff', true)
-    const lightFontPath = this._helpers.assetPath('fonts/montserrat-light.woff', true)
+    const regularFontPath = this.getAssetPath('fonts/montserrat-regular.woff', true)
+    const lightFontPath = this.getAssetPath('fonts/montserrat-light.woff', true)
 
     const css = `
       // Injected by PhotoEditorSDK
@@ -422,7 +420,6 @@ export default class NightReactUI extends EventEmitter {
   getEnabledOperations () { return this._enabledOperations }
   getEnabledControls () { return this._enabledControls }
   getAvailableControls () { return this._availableControls }
-  getHelpers () { return this._helpers }
 
   /**
    * Checks whether the kit has an image
@@ -433,14 +430,21 @@ export default class NightReactUI extends EventEmitter {
   /**
    * Returns the resolved asset path for the given asset name
    * @param  {String} asset
+   * @param  {Boolean} uiAsset = false
    * @return {String}
    */
-  getAssetPath (asset) {
+  getAssetPath (asset, uiAsset = false) {
     const { baseUrl, resolver } = this._options.assets
     let path = `${baseUrl}/${asset}`
+
+    if (uiAsset) {
+      path = `${baseUrl}/ui/night-react/${asset}`
+    }
+
     if (typeof resolver !== 'undefined' && resolver !== null) {
       path = resolver(path)
     }
+
     return path
   }
 }

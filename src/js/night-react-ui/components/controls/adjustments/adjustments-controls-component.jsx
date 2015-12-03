@@ -44,7 +44,6 @@ export default class AdjustmentsControlsComponent extends ControlsComponent {
    * @private
    */
   _renderListItems () {
-    const { ui } = this.context
     return ITEMS
       .filter((item) => item.isSelectable(this.context.ui))
       .map((item) => {
@@ -53,7 +52,7 @@ export default class AdjustmentsControlsComponent extends ControlsComponent {
           key={item.identifier}>
           <bem specifier='$b:controls'>
             <div bem='$e:button m:withLabel' onClick={this._onButtonClick.bind(this, item)}>
-              <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/adjustments/${item.identifier}@2x.png`, true)} />
+              <img bem='e:icon' src={this._getAssetPath(`controls/adjustments/${item.identifier}@2x.png`, true)} />
               <div bem='e:label'>{this._t(`controls.adjustments.${item.identifier}`)}</div>
             </div>
           </bem>

@@ -47,7 +47,6 @@ export default class StickersEditControlsComponent extends ControlsComponent {
    * @private
    */
   _renderListItems () {
-    const { ui } = this.context
     return CONTROLS
       .map((control, i) => {
         const iconName = control.iconName || control.identifier
@@ -57,7 +56,7 @@ export default class StickersEditControlsComponent extends ControlsComponent {
           onClick={this._onItemClick.bind(this, control)}>
             <bem specifier='$b:controls'>
               <div bem='$e:button m:withLabel'>
-                <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/overview/${iconName}@2x.png`, true)} />
+                <img bem='e:icon' src={this._getAssetPath(`controls/overview/${iconName}@2x.png`, true)} />
                 <div bem='e:label'>{this._t(`controls.stickers.${control.identifier}`)}</div>
               </div>
             </bem>

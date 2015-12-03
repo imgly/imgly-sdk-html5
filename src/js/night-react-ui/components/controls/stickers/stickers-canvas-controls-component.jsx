@@ -422,7 +422,6 @@ export default class StickerCanvasControlsComponent extends BaseComponent {
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
-    const { ui } = this.context
     const selectedSticker = this.getSharedState('selectedSticker')
     const stickerItems = this._renderStickerItems()
 
@@ -433,18 +432,18 @@ export default class StickerCanvasControlsComponent extends BaseComponent {
           onStart={this._onKnobDragStart.bind(this, 'bottom')}
           onDrag={this._onKnobDrag.bind(this, 'bottom')}>
           <div bem='e:knob $b:knob' style={this._getBottomDragKnobStyle()}>
-            <img bem='e:icon' src={ui.getHelpers().assetPath('controls/knobs/resize-diagonal-down@2x.png', true)} />
+            <img bem='e:icon' src={this._getAssetPath('controls/knobs/resize-diagonal-down@2x.png', true)} />
           </div>
         </DraggableComponent>),
         (<DraggableComponent
           onStart={this._onKnobDragStart.bind(this, 'top')}
           onDrag={this._onKnobDrag.bind(this, 'top')}>
           <div bem='e:knob $b:knob' style={this._getTopDragKnobStyle()}>
-            <img bem='e:icon' src={ui.getHelpers().assetPath('controls/knobs/resize-diagonal-up@2x.png', true)} />
+            <img bem='e:icon' src={this._getAssetPath('controls/knobs/resize-diagonal-up@2x.png', true)} />
           </div>
         </DraggableComponent>),
         (<div bem='e:knob $b:knob' style={this._getRemoveKnobStyle()} onClick={this._onRemoveClick}>
-          <img bem='e:icon' src={ui.getHelpers().assetPath('controls/knobs/remove@2x.png', true)} />
+          <img bem='e:icon' src={this._getAssetPath('controls/knobs/remove@2x.png', true)} />
         </div>)
       ]
     }
