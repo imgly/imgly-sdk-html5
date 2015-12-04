@@ -12,7 +12,7 @@
 import { ReactBEM, BaseComponent, Constants } from '../../../../globals'
 import SliderComponent from '../../../slider-component'
 
-export default class PaintCanvasControlsComponent extends BaseComponent {
+export default class TableuCanvasControlsComponent extends BaseComponent {
   constructor (...args) {
     super(...args)
 

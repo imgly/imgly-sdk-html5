@@ -12,7 +12,7 @@ import StreetControlsComponent from './street-controls-component'
 import StreetCanvasControlsComponent from './street-canvas-controls-component'
 
 export default {
-  canvasControls: null,
+  canvasControls: StreetCanvasControlsComponent,
   controls: StreetControlsComponent,
   largeCanvasControls: true,
   identifier: 'street',

@@ -73,6 +73,10 @@ class StreetOperation extends Operation {
        this._filter.setDirty(dirty)
      }
    }
+
+   getFilter () {
+     return this._filter
+   }
 }
 
 /**
