@@ -12,7 +12,7 @@
 import { ReactBEM, BaseComponent, Constants } from '../../../../globals'
 import SliderComponent from '../../../slider-component'
 
-export default class PaintCanvasControlsComponent extends BaseComponent {
+export default class StreetCanvasControlsComponent extends BaseComponent {
   constructor (...args) {
     super(...args)
 
@@ -20,7 +20,6 @@ export default class PaintCanvasControlsComponent extends BaseComponent {
       '_onSliderValueChange',
       '_onOperationUpdated'
     )
-    this._operation = this.getSharedState('operation')
 
     this._events = {
       [Constants.EVENTS.OPERATION_UPDATED]: this._onOperationUpdated
@@ -33,7 +32,7 @@ export default class PaintCanvasControlsComponent extends BaseComponent {
    * @private
    */
   _onOperationUpdated (operation) {
-    if (operation === this._operation) {
+    if (operation === this.getSharedState('operation')) {
       this.forceUpdate()
     }
   }
@@ -44,7 +43,7 @@ export default class PaintCanvasControlsComponent extends BaseComponent {
    * @private
    */
   _onSliderValueChange (value) {
-    this._operation.setIntensity(value / 100)
+    this.getSharedState('operation').setIntensity(value / 100)
     this._emitEvent(Constants.EVENTS.CANVAS_RENDER)
   }
 
@@ -53,9 +52,8 @@ export default class PaintCanvasControlsComponent extends BaseComponent {
    * @return {ReactBEM.Element}
    */
   renderWithBEM () {
-    const currentFilter = this._operation.getFilter()
-    if (currentFilter.isIdentity) return null
-
+    const currentFilter = this.getSharedState('operation').getFilter()
+    if (currentFilter && (currentFilter === 'identity')) return null
     return (<div bem='$b:canvasControls e:container m:bottom m:dark'>
       <SliderComponent
         minValue={0}
@@ -64,7 +62,7 @@ export default class PaintCanvasControlsComponent extends BaseComponent {
         valueUnit='%'
         label={this._t('controls.filters.intensity')}
         onChange={this._onSliderValueChange}
-        value={this._operation.getIntensity() * 100} />
+        value={this.getSharedState('operation').getIntensity() * 100} />
     </div>)
   }
 }

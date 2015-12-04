@@ -108,7 +108,6 @@ export default class BaseArtControlsComponent extends BaseComponent {
       ui.removeOperation(this._operation)
     }
     this._operation = ui.getOrCreateOperation(object.identifier)
-    console.log(this._operation)
   }
 
   /**
