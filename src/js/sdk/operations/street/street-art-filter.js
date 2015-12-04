@@ -24,7 +24,7 @@ class StreetArtFilter extends Filter {
     this._textures = {}
     this._framebuffer = null
     this._fbosAvailable = false
-
+    this._image = {}
     this._vertexShader = require('raw!../generic/default.vert')
     this._fragmentShader = this._blurShader = require('raw!./street-art.frag')
   }
@@ -39,7 +39,7 @@ class StreetArtFilter extends Filter {
    */
   /* istanbul ignore next */
   renderWebGL (renderer, inputTexture, outputFBO, outputTexture) {
-    return this._uploadTexture(renderer)
+    return this._createTexture(renderer)
       .then((texture) => {
         if (!this._glslPrograms[renderer.id]) {
           this._glslPrograms[renderer.id] = renderer.setupGLSLProgram(
@@ -67,22 +67,13 @@ class StreetArtFilter extends Filter {
    * @return {Promise}
    * @private
    */
-  _uploadTexture (renderer) {
+  _createTexture (renderer) {
     return new Promise((resolve, reject) => {
-      // Use cached texture
-      if (this._textures[renderer.id]) {
-        return resolve(this._textures[renderer.id])
-      }
-
-      const image = new window.Image()
-      image.addEventListener('load', () => {
-        const texture = renderer.createTexture(image)
+      if (!this._textures[renderer.id]) {
+        const texture = renderer.createTexture(this._image)
         this._textures[renderer.id] = texture
-        resolve(texture)
-      })
-
-      image.crossOrigin = 'Anonymous'
-      image.src = '/build/assets/art/grunge1.jpg'
+      }
+      return resolve(this._textures[renderer.id])
     })
   }
 
@@ -158,6 +149,15 @@ class StreetArtFilter extends Filter {
   get name () {
     return 'StreetArt'
   }
+
+  setImage (image) {
+    this._image = image
+  }
+
+  get image () {
+    return this._image
+  }
+
 }
 
 export default StreetArtFilter

@@ -8,18 +8,14 @@
  *
  * For commercial use, please contact us at contact@9elements.com
  */
-
 import BaseArtControlsComponent from '../base-art-controls-component'
 
 const ITEMS = [
   { identifier: 'tableau', i18nKey: 'identity', options: { filter: 'identity' } },
-  { identifier: 'tableau', i18nKey: 'watercolor', options: { filter: 'water-color' } },
-  { identifier: 'tableau', i18nKey: 'oil', options: { filter: 'oil' } },
-  { identifier: 'brush-mark', i18nKey: 'brush1', options: { imageURL: 'art/Test_04.jpg' } },
-  { identifier: 'brush-mark', i18nKey: 'brush2', options: { imageURL: 'art/Test_03.jpg' } }
+  { identifier: 'street', i18nKey: 'grunge1', options: { imageURL: 'art/grunge1.jpg' } }
 ]
 
-export default class PaintControlsComponent extends BaseArtControlsComponent {
+export default class StreetArtControlComponents extends BaseArtControlsComponent {
   constructor (...args) {
     super(...args)
     this._items = ITEMS

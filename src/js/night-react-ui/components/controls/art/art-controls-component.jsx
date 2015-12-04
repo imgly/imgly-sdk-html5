@@ -23,7 +23,6 @@ const ITEMS = [
 export default class ArtControlsComponent extends BaseComponent {
   constructor (...args) {
     super(...args)
-
     this._bindAll('_onBackClick')
   }
 
