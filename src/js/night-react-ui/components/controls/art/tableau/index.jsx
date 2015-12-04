@@ -21,7 +21,6 @@ export default {
   getInitialSharedState: (context) => {
     const { ui } = context
     const tableauOperationExists = ui.operationExists('tableau')
-    const brushMarkOperationExists = ui.operationExists('brush-mark')
 
     let initialOperation = tableauOperationExists
       ? ui.getOperation('tableau')

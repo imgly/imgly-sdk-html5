@@ -12,22 +12,31 @@ import StreetControlsComponent from './street-controls-component'
 import StreetCanvasControlsComponent from './street-canvas-controls-component'
 
 export default {
-  canvasControls: StreetCanvasControlsComponent,
+  canvasControls: null,
   controls: StreetControlsComponent,
   largeCanvasControls: true,
   identifier: 'street',
   icon: 'controls/overview/filters@2x.png',
   label: 'controls.overview.filters',
   getInitialSharedState: (context) => {
-    const operationExistedBefore = context.ui.operationExists('street')
-    const operation = context.ui.getOrCreateOperation('street')
-    const initialOptions = {
-      filter: operation.getFilter(),
-      intensity: operation.getIntensity()
+    const { ui } = context
+    const tableauOperationExists = ui.operationExists('tableau')
+
+    let initialOperation = tableauOperationExists
+      ? ui.getOperation('tableau')
+      : ui.getOperation('street')
+
+    if (!initialOperation) {
+      initialOperation = ui.getOrCreateOperation('tableau')
     }
+
+    const initialOptions = initialOperation
+      ? initialOperation.serializeOptions()
+      : {}
+
     return {
-      operationExistedBefore,
-      operation,
+      initialOperation,
+      operation: initialOperation,
       initialOptions
     }
   },

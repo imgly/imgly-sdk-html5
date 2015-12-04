@@ -8,10 +8,8 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import Utils from '../lib/utils'
 import Operation from './operation'
-import Filters from './street/'
-import IdentityFilter from './filters/identity-filter'
+import StreetFilter from './street/street-art-filter'
 
 /**
  * An operation that can apply a selected filter
@@ -32,14 +30,9 @@ class StreetOperation extends Operation {
    * @private
    */
   _registerFilters () {
-    this._filters = {}
-    this._filters.identity = Filters.IdentityFilter
-    for (let name in Filters) {
-      const filter = Filters[name]
-      this._filters[filter.identifier] = filter
-    }
-
-    this._filters = Utils.extend(this._filters, this._options.additionalFilters)
+    this._filter = new StreetFilter()
+    this._filter.setImage(this._image)
+    this._filter.setIntensity(this.getIntensity())
   }
 
   /**
@@ -67,25 +60,19 @@ class StreetOperation extends Operation {
    * @private
    */
   _render (renderer) {
-    return this._selectedFilter.render(renderer)
+    return this._filter.render(renderer)
   }
-
-  /**
-   * returns the array of filters
-   * @return {Array} the array of filters
-   */
-  getFilters () { return this._filters }
 
   /**
    * Sets this operation to dirty, so that it will re-render next time
    * @param {Boolean} dirty = true
    */
-  setDirty (dirty) {
-    super.setDirty(dirty)
-    if (dirty) {
-      this._selectedFilter.setDirty(dirty)
-    }
-  }
+   setDirty (dirty) {
+     super.setDirty(dirty)
+     if (dirty) {
+       this._filter.setDirty(dirty)
+     }
+   }
 }
 
 /**
@@ -104,15 +91,20 @@ StreetOperation.prototype.availableOptions = {
     type: 'number',
     default: 0.5,
     setter: function (intensity) {
-      this._selectedFilter &&
-        this._selectedFilter.setIntensity(intensity)
+      this._filter &&
+        this._filter.setIntensity(intensity)
       return intensity
+    },
+    getter: function () {
+      return this._filter.getIntensity()
     }
   },
-  filter: { type: 'object', default: IdentityFilter,
-    setter: function (Filter) {
-      this._selectedFilter = new Filter(this._options.intensity)
-      return Filter
+  image: {
+    type: 'object',
+    default: '',
+    setter: function (image) {
+      this._filter && this._filter.setImage(image)
+      return image
     }
   }
 }
