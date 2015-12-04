@@ -9,10 +9,10 @@
  */
 
 import StreetControlsComponent from './street-controls-component'
-import StreetCanvasControlsComponent from './street-canvas-controls-component'
+import ArtCanvasControlsComponent from '../art-canvas-controls-component'
 
 export default {
-  canvasControls: StreetCanvasControlsComponent,
+  canvasControls: ArtCanvasControlsComponent,
   controls: StreetControlsComponent,
   largeCanvasControls: true,
   identifier: 'street',

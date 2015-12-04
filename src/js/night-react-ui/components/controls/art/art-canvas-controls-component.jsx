@@ -9,10 +9,10 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-import { ReactBEM, BaseComponent, Constants } from '../../../../globals'
-import SliderComponent from '../../../slider-component'
+import { ReactBEM, BaseComponent, Constants } from '../../../globals'
+import SliderComponent from '../../slider-component'
 
-export default class TableuCanvasControlsComponent extends BaseComponent {
+export default class ArtCanvasControlsComponent extends BaseComponent {
   constructor (...args) {
     super(...args)
 
