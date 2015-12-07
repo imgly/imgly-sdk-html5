@@ -10,6 +10,7 @@
 
 // import Utils from '../../lib/utils'
 import Filter from '../filters/filter'
+import Vector2 from '../../lib/math/vector2'
 
 /**
  * Gray Filter
@@ -27,6 +28,7 @@ class StreetArtFilter extends Filter {
     this._image = {}
     this._vertexShader = require('raw!../generic/default.vert')
     this._fragmentShader = this._blurShader = require('raw!./street-art.frag')
+    this._imageCanvas = null
   }
 
   /**
@@ -77,18 +79,42 @@ class StreetArtFilter extends Filter {
     })
   }
 
+  _createImageCanvas (renderer) {
+    return new Promise((resolve, reject) => {
+      if (!this._imageCanvas) {
+        console.log(this._image)
+        const renderCanvas = renderer.getCanvas()
+        this._imageCanvas = renderer.createCanvas()
+        this._imageCanvas.width = renderCanvas.width
+        this._imageCanvas.height = renderCanvas.height
+        const scale = new Vector2(this._imageCanvas.width / this._image.width, this._imageCanvas.height / this._image.height)
+        const drawSize = new Vector2(this._image.width, this._image.height)
+          .multiply(scale)
+        console.log(renderCanvas, drawSize)
+        this._imageCanvas.getContext('2d').drawImage(this._image,
+          0, 0,
+          this._image.width, this._image.height,
+          0, 0,
+          drawSize.x, drawSize.y)
+      }
+      return resolve(this._imageCanvas)
+    })
+  }
+
   /**
   * Renders the gray operation to a canvas
   * @param  {CanvasRenderer} renderer
   * @private
   */
   renderCanvas (renderer) {
-    return new Promise((resolve, reject) => {
+    return this._createImageCanvas(renderer)
+    .then((imageCanvas) => {
       var canvas = renderer.getCanvas()
       var context = renderer.getContext()
       var imageData = context.getImageData(0, 0, canvas.width, canvas.height)
       var pixels = imageData.data
-      var artPixels = null // TODO use hand over assert
+
+      var artPixels = imageCanvas.getContext('2d').getImageData(0, 0, imageCanvas.width, imageCanvas.height).data
       var index = 0
       var normedArtColor = [0, 0, 0]
       var newColor = [0, 0, 0]
@@ -112,12 +138,12 @@ class StreetArtFilter extends Filter {
             newColor[1] = 2.0 * normedArtColor[1]
             newColor[2] = 2.0 * normedArtColor[2]
           }
-          pixels[index] = newColor[0]
-          pixels[index + 1] = newColor[1]
-          pixels[index + 2] = newColor[2]
+          pixels[index] = newColor[0] * 127 + artPixels[index] * 0.5
+          pixels[index + 1] = newColor[1] * 127 + artPixels[index + 1] * 0.5
+          pixels[index + 2] = newColor[2] * 127 + artPixels[index + 2] * 0.5
         }
       }
-      resolve()
+      context.putImageData(imageData, 0, 0)
     })
   }
 
