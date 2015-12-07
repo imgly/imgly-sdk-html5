@@ -186,7 +186,7 @@ export default class BaseArtControlsComponent extends BaseComponent {
             <div
               bem='$e:button m:withInlineLabel'
               className={isActive ? 'is-active' : null}>
-              <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/filters/${i18nKey}.png`, true)} />
+              <img bem='e:icon' src={ui.getAssetPath(`controls/filters/${i18nKey}.png`, true)} />
               <div bem='e:label'>{this._t(`controls.tableau.${i18nKey}`)}</div>
             </div>
           </bem>
@@ -195,7 +195,7 @@ export default class BaseArtControlsComponent extends BaseComponent {
     return (<div bem='$b:controls e:table'>
       <div bem='e:cell m:button m:withBorderRight m:narrow'>
         <div bem='$e:button m:narrow' onClick={this._onBackClick}>
-          <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/back@2x.png`, true)} />
+          <img bem='e:icon' src={ui.getAssetPath(`controls/back@2x.png`, true)} />
         </div>
       </div>
       <div bem='e:cell m:list'>

@@ -60,7 +60,7 @@ export default class ArtControlsComponent extends BaseComponent {
           key={item.identifier}>
           <bem specifier='$b:controls'>
             <div bem='$e:button m:withLabel' onClick={this._onButtonClick.bind(this, item)}>
-              <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/art/${item.identifier}@2x.png`, true)} />
+              <img bem='e:icon' src={ui.getAssetPath(`controls/art/${item.identifier}@2x.png`, true)} />
               <div bem='e:label'>{this._t(`controls.art.${item.identifier}`)}</div>
             </div>
           </bem>
@@ -70,7 +70,7 @@ export default class ArtControlsComponent extends BaseComponent {
     return (<div bem='$b:controls e:table'>
       <div bem='e:cell m:button m:withBorderRight m:narrow'>
         <div bem='$e:button m:narrow' onClick={this._onBackClick}>
-          <img bem='e:icon' src={ui.getHelpers().assetPath(`controls/back@2x.png`, true)} />
+          <img bem='e:icon' src={ui.getAssetPath(`controls/back@2x.png`, true)} />
         </div>
       </div>
       <div bem='e:cell m:list'>
