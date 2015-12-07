@@ -43,7 +43,18 @@ export default class WebcamHandler extends EventEmitter {
     const context = canvas.getContext('2d')
     context.drawImage(this._video, 0, 0)
 
-    this._stream.stop()
+    // Deprecated MediaStream API
+    if (this._stream.stop) {
+      this._stream.stop()
+    }
+
+    // New MediaStreamTrack API, stopping all tracks
+    if (this._tracks) {
+      this._tracks.forEach((track) => {
+        track.stop()
+      })
+    }
+
     this._video.pause()
 
     delete this._stream
@@ -69,6 +80,9 @@ export default class WebcamHandler extends EventEmitter {
 
     getUserMedia.call(navigator, { video: true }, (stream) => {
       this._stream = stream
+      if (stream.getTracks) {
+        this._tracks = stream.getTracks()
+      }
       this._video.onloadedmetadata = this._onVideoReady.bind(this)
       this._video.src = window.URL.createObjectURL(stream)
     }, (err) => {
