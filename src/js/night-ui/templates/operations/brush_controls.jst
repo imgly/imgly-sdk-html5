@@ -1,0 +1,17 @@
+{{? it.displayThickness}}
+  <div>
+    {{= it.partials.slider}}
+  </div>
+{{??}}
+  <div>
+    <ul class="pesdk-controls-list pesdk-controls-list-overflow">
+      <li class="pesdk-controls-item--with-label" id="pesdk-thickness-button">
+        <img src="{{=it.helpers.assetPath('ui/night/brush/thickness@2x.png') }}" />
+        <div class="pesdk-controls-label">Thickness</div>
+      </li>
+      <li>
+        {{= it.partials.colorPicker}}
+      </li>
+    </ul>
+  </div>
+{{?}}

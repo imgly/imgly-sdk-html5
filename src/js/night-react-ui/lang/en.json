@@ -1,0 +1,132 @@
+{
+  "controls": {
+    "overview": {
+      "filters": "Filters",
+      "orientation": "Orientation",
+      "adjustments": "Adjust",
+      "crop": "Crop",
+      "focus": "Focus",
+      "frames": "Frames",
+      "stickers": "Stickers",
+      "text": "Text"
+    },
+    "tableau": {
+      "identity": "None",
+      "watercolor": "Watercolor",
+      "oil": "Oil",
+      "brush1": "Brush 1",
+      "brush2": "Brush 2"
+    },
+    "frames": {
+      "color": "Color",
+      "thickness": "Thickness"
+    },
+    "text": {
+      "foreground": "Foreground",
+      "background": "Background",
+      "size": "Size",
+      "font": "Font",
+      "alignment": "Alignment"
+    },
+    "orientation": {
+      "rotate-l": "Rotate -90°",
+      "rotate-r": "Rotate +90°",
+      "flip-h": "Flip (H)",
+      "flip-v": "Flip (V)"
+    },
+    "adjustments": {
+      "brightness": "Brightness",
+      "contrast": "Contrast",
+      "saturation": "Saturation"
+    },
+    "crop": {
+      "custom": "Custom",
+      "square": "Square",
+      "4-3": "4:3",
+      "16-9": "16:9"
+    },
+    "focus": {
+      "radial-blur": "Radial Blur",
+      "tilt-shift": "Tilt-Shift",
+      "blurRadius": "Blur radius"
+    },
+    "filters": {
+      "intensity": "Intensity"
+    },
+    "stickers": {
+      "brightness": "Brightness",
+      "contrast": "Contrast",
+      "saturation": "Saturation",
+      "blur": "Blur",
+      "flip": "Flip",
+      "flip-v": "Flip (V)",
+      "flip-h": "Flip (H)"
+    }
+  },
+  "webcam": {
+    "headline": "Take a photo!"
+  },
+  "editor": {
+    "headline": "Edit Photo",
+    "new": "New",
+    "undo": "Undo",
+    "export": "Export"
+  },
+  "splash": {
+    "upload": {
+      "button": "Upload a picture",
+      "description": "Click here to upload a picture from your library or just drag and drop"
+    },
+    "or": "or",
+    "webcam": {
+      "button": "Take a picture",
+      "description": "Click here to take a picture with your webcam or phone"
+    }
+  },
+  "generic": {
+    "back": "Back",
+    "cancel": "Cancel",
+    "color": "Color"
+  },
+  "loading": {
+    "resizing": "Resizing...",
+    "exporting": "Exporting...",
+    "loading": "Loading..."
+  },
+  "warnings": {
+    "imageResized_megaPixels": {
+      "title": "Image resized",
+      "text": "Your image exceeds the maximum size of ${maxMegaPixels} megapixels and has therefore been resized to ${width}x${height} pixels."
+    },
+    "imageResized_maxDimensions": {
+      "title": "Image resized",
+      "text": "Due to hardware limitations your image has been resized to ${width}x${height} pixels."
+    }
+  },
+  "errors": {
+    "imageLoadFail": {
+      "title": "Failed to load image",
+      "text": "Failed to load the image at ${path}"
+    },
+    "webcamUnavailable": {
+      "title": "Webcam unavailable",
+      "text": "Unable to display webcam image (Error: ${error})"
+    },
+    "webcamNotSupported": {
+      "title": "Webcam not supported",
+      "text": "The webcam feature is not supported by your browser."
+    },
+    "renderingError": {
+      "title": "Error while rendering",
+      "text": "An error has occurred while rendering the image."
+    },
+    "context_lost": {
+      "title": "An error has occurred",
+      "text": "Your browser took too long to render the image. Please try applying less operations."
+    },
+    "context_lost_limit": {
+      "title": "An error has occurred",
+      "text": "Your browser failed multiple times while rendering the image."
+    }
+  }
+}

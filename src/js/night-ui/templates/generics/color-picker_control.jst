@@ -1,0 +1,21 @@
+<div class="pesdk-color-picker" id="{{=(typeof it.id === "undefined"?'':it.id)}}">
+  <canvas class="pesdk-color-picker-color" width="34" height="34"></canvas>
+  <div class="pesdk-controls-item-label">{{=(typeof it.label === "undefined"?'':it.label)}}</div>
+
+  <div class="pesdk-color-picker-overlay">
+    <div class="pesdk-color-picker-alpha-container">
+      <canvas class="pesdk-color-picker-alpha" width="200" height="30"></canvas>
+      <div class="pesdk-transparent-knob"></div>
+    </div>
+
+    <div class="pesdk-color-picker-saturation-container">
+      <canvas class="pesdk-color-picker-saturation" width="160" height="160"></canvas>
+      <div class="pesdk-transparent-knob"></div>
+    </div>
+
+    <div class="pesdk-color-picker-hue-container">
+      <canvas class="pesdk-color-picker-hue" width="30" height="160"></canvas>
+      <div class="pesdk-transparent-knob"></div>
+    </div>
+  </div>
+</div>

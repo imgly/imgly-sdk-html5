@@ -1,0 +1,154 @@
+<div class="pesdk">
+  <div class="pesdk-loadingOverlay">
+    <div class="pesdk-loadingOverlay-content">
+      <img src="{{= it.helpers.assetPath('ui/night/loading.gif')}}" />
+      <span>{{= it.helpers.translate('generic.loading') }}...</span>
+    </div>
+  </div>
+
+  <div class="pesdk-flashOverlay">
+    <div class="pesdk-flashOverlay-close">
+      <img src="{{= it.helpers.assetPath('ui/night/close.png')}}" />
+    </div>
+    <div class="pesdk-flashOverlay-headline"></div>
+    <div class="pesdk-flashOverlay-text"></div>
+  </div>
+
+  <div class="pesdk-container">
+    {{? !it.options.hideHeader }}
+    <div class="pesdk-header-row">
+      <div class="pesdk-header">
+        PhotoEditor SDK
+
+        {{? it.options.showCloseButton }}
+        <div class="pesdk-close-button">
+          <img src="{{=it.helpers.assetPath('ui/night/close.png')}}" />
+        </div>
+        {{?}}
+      </div>
+    </div>
+    {{?}}
+    {{? it.renderControls }}
+    <div class="pesdk-top-controls-row">
+      <div class="pesdk-top-controls">
+        <div class="pesdk-top-controls-left">
+          {{? it.options.showNewButton }}
+          <div class="pesdk-new">
+            <img src="{{=it.helpers.assetPath('ui/night/top/new.png')}}" />
+            {{= it.helpers.translate('top-controls.new') }}
+          </div>
+          {{?}}
+          {{? it.options.showExportButton }}
+          <div class="pesdk-export">
+            <img src="{{=it.helpers.assetPath('ui/night/top/export.png')}}" />
+            {{= it.helpers.translate('top-controls.export') }}
+          </div>
+          {{?}}
+          <div class="pesdk-undo">
+            <img src="{{=it.helpers.assetPath('ui/night/top/undo.png')}}" />
+            {{= it.helpers.translate('top-controls.undo') }}
+          </div>
+        </div>
+        <div class="pesdk-top-controls-right">
+          <div class="pesdk-zoom-fit"></div>
+          <div class="pesdk-zoom-level">{{= it.helpers.translate('top-controls.zoom') }}: <span class="pesdk-zoom-level-num">100</span>%</div>
+          <div class="pesdk-zoom-in">
+            <img src="{{=it.helpers.assetPath('ui/night/top/zoom-in.png')}}" />
+          </div>
+          <div class="pesdk-zoom-out">
+            <img src="{{=it.helpers.assetPath('ui/night/top/zoom-out.png')}}" />
+          </div>
+        </div>
+      </div>
+    </div>
+    {{?}}
+    <div class="pesdk-canvas-container-row">
+      <div class="pesdk-canvas-container">
+        {{? it.renderWebcam }}
+        <div class="pesdk-canvas-inner-container">
+          <video class="pesdk-webcam-video" autoplay></video>
+        </div>
+        {{?}}
+        {{? !(it.renderSplashScreen || it.renderWebcam) }}
+        <div class="pesdk-canvas-inner-container">
+          <canvas class="pesdk-canvas-draggable"></canvas>
+          <div class="pesdk-canvas-controls pesdk-canvas-controls-disabled"></div>
+        </div>
+        {{?}}
+        {{? it.renderSplashScreen }}
+        <div class="pesdk-splash-container">
+          {{? it.options.showUploadButton }}
+          <div class="pesdk-splash-row pesdk-splash-row--upload">
+            <div class="pesdk-splash-cell">
+              <input type="file" class="pesdk-upload-hidden-input" />
+              <img src="{{=it.helpers.assetPath('ui/night/upload.png')}}" />
+
+              <div class="pesdk-splash-content">
+                <div class="pesdk-splash-button">{{= it.helpers.translate('splash.upload.headline') }}</div>
+                <div class="pesdk-splash-text">{{= it.helpers.translate('splash.upload.description') }}</div>
+              </div>
+            </div>
+          </div>
+          {{?}}
+          {{? it.options.showUploadButton && it.options.showWebcamButton }}
+          <div class="pesdk-splash-row pesdk-splash-row--or">
+            <div class="pesdk-splash-or">
+              <div class="pesdk-splash-or-line"></div>
+              <div class="pesdk-splash-or-word">{{= it.helpers.translate('splash.or') }}</div>
+              <div class="pesdk-splash-or-line"></div>
+            </div>
+          </div>
+          {{?}}
+          {{? it.options.showWebcamButton }}
+          <div class="pesdk-splash-row pesdk-splash-row--camera">
+            <div class="pesdk-splash-cell">
+              <img src="{{=it.helpers.assetPath('ui/night/shutter.png')}}" />
+
+              <div class="pesdk-splash-content">
+                <div class="pesdk-splash-button">{{= it.helpers.translate('splash.webcam.headline') }}</div>
+                <div class="pesdk-splash-text">{{= it.helpers.translate('splash.webcam.description') }}</div>
+              </div>
+            </div>
+          </div>
+          {{?}}
+        </div>
+        {{?}}
+      </div>
+    </div>
+
+    {{? it.renderWebcam }}
+    <div class="pesdk-controls-row">
+      <div class="pesdk-controls-container">
+        <div class="pesdk-controls">
+          <div class="pesdk-webcam-button">
+            <img src="{{=it.helpers.assetPath('ui/night/shutter-button.png')}}" />
+          </div>
+        </div>
+      </div>
+    </div>
+    {{?}}
+    {{? it.renderControls }}
+    <div class="pesdk-controls-row">
+      <div class="pesdk-controls-container">
+        <div class="pesdk-controls">
+
+          <div>
+            <div class="pesdk-controls-overview">
+              <ul class="pesdk-controls-list">
+              {{ for (var identifier in it.controls) { }}
+                {{ var control = it.controls[identifier]; }}
+                <li class="pesdk-controls-item--with-label" data-identifier="{{= control.identifier}}"{{? it.controlsDisabled }} data-disabled{{?}}>
+                  <img src="{{=it.helpers.assetPath('ui/night/operations/' + control.identifier + '.png') }}" />
+                  <div class="pesdk-controls-label">{{=it.helpers.translate('operations.' + control.identifier)}}</div>
+                </li>
+              {{ } }}
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    {{?}}
+  </div>
+</div>

@@ -6,7 +6,6 @@ PIXMAN="http://www.cairographics.org/releases/pixman-0.32.4.tar.gz"
 CAIRO="http://cairographics.org/releases/cairo-1.12.16.tar.xz"
 FREETYPE="http://download.savannah.gnu.org/releases/freetype/freetype-2.4.10.tar.gz"
 LIBPNG="http://downloads.sourceforge.net/project/libpng/libpng16/1.6.18/libpng-1.6.18.tar.gz"
-GIF_LIB="https://downloads.sourceforge.net/project/giflib/giflib-4.x/giflib-4.1.6/giflib-4.1.6.tar.gz"
 
 require() {
   echo "... checking for $1"
@@ -74,7 +73,6 @@ require tar
 test `which pkg-config` || fetch $PKG_CONFIG
 require 'pkg-config'
 fetch $LIBPNG
-fetch $GIF_LIB
 fetch $FREETYPE
 fetch $PIXMAN
 fetch_xz $CAIRO

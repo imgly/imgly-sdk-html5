@@ -13,8 +13,8 @@
   </a>
 </p>
 
-## img.ly Photo Editor SDK for HTML5.
-The img.ly HTML5 SDK is a **fully customisable** photo editor which you can integrate into your HTML5 app within minutes.
+## Photo Editor SDK for HTML5.
+The PhotoEditor SDK for HTML5 is a **fully customisable** photo editor which you can integrate into your HTML5 app within minutes.
 It contains the most important photo editing tools;
 Auto-Enhance, Crop, Rotate, Focus, Brightness, Contrast, Saturation, and more.
 It also features state-of-the-art photo filters, designed and calibrated with a lot of love.
@@ -29,7 +29,7 @@ Visit [our website](https://www.photoeditorsdk.com/documentation/html5/getting-s
 </p>
 
 ## Examples
-See the examples folder for implementation examples or play with the [demo on our website](http://sdk.img.ly/).
+See the examples folder for implementation examples or play with the [demo on our website](https://www.photoeditorsdk.com/).
 
 ## Setting up the development environment
 
@@ -50,7 +50,7 @@ $ npm test
 $ gulp jsdocs
 ```
 
-The documentation will be in the `doc` directory. **Notice:** Since the img.ly SDK is written in ES6 and JSDoc currently does not support ES6, documentation is not 100% complete.
+The documentation will be in the `doc` directory. **Notice:** Since the PhotoEditor SDK is written in ES6 and JSDoc currently does not support ES6, documentation is not 100% complete.
 
 ### License
 Please see [LICENSE](https://github.com/imgly/imgly-sdk-html5/blob/master/LICENSE.md) for licensing details.

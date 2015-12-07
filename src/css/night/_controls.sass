@@ -7,13 +7,13 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-.imglykit-container
+.pesdk-container
 
-  .imglykit-controls-row
+  .pesdk-controls-row
     display: table-row
 
   // Outter controls container
-  .imglykit-controls-container
+  .pesdk-controls-container
     @include user-select(none)
     display: table-cell
 
@@ -23,11 +23,11 @@
     background: $controlsBackgroundColor
 
   // Controls list (centered)
-  .imglykit-controls
+  .pesdk-controls
     width: 100%
     text-align: center
     height: $controlsHeight
-    > div:not(.imglykit-scrollbar-background) > *
+    > div:not(.pesdk-scrollbar-background) > *
       width: 100%
       display: table
       table-layout: fixed
@@ -35,11 +35,11 @@
         display: table-cell
         vertical-align: top
 
-    .imglykit-controls-list-container
+    .pesdk-controls-list-container
       overflow: hidden
       height: $controlsHeight
 
-    .imglykit-controls-list
+    .pesdk-controls-list
       position: absolute
       width: 100%
       overflow: hidden
@@ -66,7 +66,7 @@
       &:last-child
         border-right: 1px solid $borderColor
 
-      &.imglykit-controls-item--with-label
+      &.pesdk-controls-item--with-label
         &:hover img
           margin-bottom: 20px
 
@@ -75,10 +75,10 @@
         width: 40px
         vertical-align: middle
 
-      &.imglykit-controls-item-active
+      &.pesdk-controls-item-active
         background: rgba(black, 0.3)
 
-      .imglykit-controls-label
+      .pesdk-controls-label
         @include transition(all 0.2s ease-out)
         @include opacity(0)
         position: absolute
@@ -88,18 +88,18 @@
         font: bold 10px Helvetica, Arial, sans-serif
         text-align: center
 
-      &:hover .imglykit-controls-label
+      &:hover .pesdk-controls-label
         @include opacity(1)
         bottom: 13px
 
-    .imglykit-controls-item-label
+    .pesdk-controls-item-label
       color: white
       font-size: 10px
       font-family: Helvetica, Arial, sans-serif
       font-weight: bold
       margin-top: 10px
 
-    .imglykit-controls-icon
+    .pesdk-controls-icon
       width: $controlsWidth
       height: $controlsHeight
       line-height: $controlsHeight
@@ -108,7 +108,7 @@
       img
         vertical-align: middle
 
-    .imglykit-controls-item-canvas
+    .pesdk-controls-item-canvas
       display: inline-block
       width: $controlsIconWidth
       height: $controlsIconHeight
@@ -117,14 +117,14 @@
     li[data-disabled]
       @include opacity(0.2)
 
-    li:hover:not([data-disabled]), .imglykit-controls-button:hover:not([data-disabled])
+    li:hover:not([data-disabled]), .pesdk-controls-button:hover:not([data-disabled])
       @include box-shadow(0 -3px 0 0 $primaryColor inset)
       background-color: rgba(black, 0.3)
 
       img
         @include transform(scale(1.1))
 
-    .imglykit-controls-button
+    .pesdk-controls-button
       @include transition(background-color 0.2s ease-out)
 
       width: $controlsWidth
@@ -144,8 +144,8 @@
         width: 40px
         @include transition(all 0.2s ease-out)
 
-    .imglykit-controls-done
-      .imglykit-controls-done-highlighted
+    .pesdk-controls-done
+      .pesdk-controls-done-highlighted
         display: none
         position: absolute
         top: 0
@@ -157,5 +157,5 @@
       &.highlighted
         > img
           display: none
-        .imglykit-controls-done-highlighted
+        .pesdk-controls-done-highlighted
           display: block

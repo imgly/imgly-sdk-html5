@@ -1,0 +1,164 @@
+/*
+ * Photo Editor SDK - photoeditorsdk.com
+ * Copyright (c) 2013-2015 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+
++block(editor)
+  +block(controls)
+    position: relative
+
+    +element(container)
+      +element(row)
+        display: table-row
+        height: $controlsHeight
+        background: $secondaryBackgroundColor
+
+      +element(cell)
+        display: table-cell
+        height: $controlsHeight
+        text-align: center
+
+    +element(table)
+      position: absolute
+      display: table
+      width: 100%
+      height: $controlsHeight
+      table-layout: fixed
+
+    +element(overlay)
+      position: absolute
+      z-index: 3
+      bottom: 100%
+      left: 0
+      width: 100%
+
+      +modifier(large)
+        padding: 15px 0 10px 0
+
+      +modifier(dark)
+        background: rgba($secondaryBackgroundColor, 0.7)
+
+    +element(cell)
+      position: relative
+      display: table-cell
+      vertical-align: top
+      padding: 12px 0
+
+      +modifiers(button, colorPicker)
+        width: $controlsButtonWidth + 10px
+
+      +modifier(narrow)
+        width: $controlsNarrowButtonWidth
+
+      +modifier(slider)
+        padding-top: 30px
+        padding-right: 10px
+        padding-left: 10px
+
+      +modifier(withBorderRight)
+        border-right: 2px solid $backgroundColor
+
+      +modifier(withBorderLeft)
+        border-left: 2px solid $backgroundColor
+
+    +element(button)
+      @include border-radius(4px)
+      position: relative
+      display: inline-block
+      width: $controlsButtonWidth
+      height: $controlsButtonHeight
+      cursor: pointer
+      line-height: $controlsButtonHeight
+
+      &.is-active
+        background: $primaryColor
+
+      *
+        line-height: 1
+
+      +modifier(narrow)
+        width: $controlsNarrowButtonWidth
+
+      +element(icon)
+        @include opacity(0.8)
+        width: 36px
+        vertical-align: middle
+
+      +element(canvas)
+        @include opacity(0.8)
+        width: 36px
+        height: 36px
+        vertical-align: middle
+
+        &:hover
+          @include opacity(1.0)
+
+        +modifier(large)
+          width: $controlsButtonWidth
+          height: $controlsButtonHeight
+
+      +element(label)
+        @include opacity(0.8)
+        @include font-regular
+        @include transform(translateX(-50%))
+        position: absolute
+        bottom: 7px
+        left: 50%
+        font-size: 10px
+        color: white
+
+    +element(list)
+      overflow-x: auto
+      overflow-y: hidden
+      white-space: nowrap
+
+      +element(item)
+        position: relative
+        display: inline-block
+        vertical-align: middle
+        padding: 0 5px
+
+        +modifier(gap)
+          width: 20px
+
++block(controls)
+  +element(button)
+    // Thanks Sass! >:(
+    &#{$modifierSeparator}withLabel &#{$elementSeparator}icon
+      margin-top: -20px
+
+    $baseSelector: &
+    &:hover
+      +elementsWithBaseSelector($baseSelector, icon, label)
+        @include opacity(1.0)
+
++block(controls)
+  +element(button)
+    &#{$modifierSeparator}withInlineLabel &#{$elementSeparator}icon
+      @include border-radius(4px)
+      position: absolute
+      top: 0
+      bottom: 0
+      left: 0
+      right: 0
+      width: $controlsButtonWidth
+      height: $controlsButtonHeight
+
+    &#{$modifierSeparator}withInlineLabel &#{$elementSeparator}label
+      @include border-bottom-radius(4px)
+      position: absolute
+      bottom: 0
+      left: 0
+      transform: none
+      width: 100%
+      background: $backgroundColor
+      line-height: 20px
+      text-align: center
+
+    &#{$modifierSeparator}withInlineLabel.is-active &#{$elementSeparator}label
+      background: $primaryColor

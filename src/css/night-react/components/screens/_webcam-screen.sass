@@ -1,0 +1,36 @@
+/*
+ * Photo Editor SDK - photoeditorsdk.com
+ * Copyright (c) 2013-2015 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+
++block(editor)
+  +block(webcamScreen)
+    +element(row)
+      display: table-row
+
+    +element(cell)
+      position: relative
+      display: table-cell
+
+    +element(shutterButton)
+      @include border-radius(26px)
+      display: inline-block
+      vertical-align: middle
+      margin: 15px auto auto auto
+      width: 115px
+      height: 53px
+      background: grayscale($primaryColor)
+      cursor: pointer
+
+      +flag(active)
+        background: $primaryColor
+
+      +element(icon)
+        width: 39px
+        height: 39px
+        margin-top: 8px

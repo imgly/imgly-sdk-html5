@@ -1,2 +1,2 @@
-import ImglyKit from './src/js/imglykit'
-module.exports = ImglyKit
+import PhotoEditorSDK from './src/js/sdk/photoeditorsdk'
+module.exports = PhotoEditorSDK

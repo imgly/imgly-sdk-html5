@@ -1,0 +1,55 @@
+/*
+ * Photo Editor SDK - photoeditorsdk.com
+ * Copyright (c) 2013-2015 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+
++block(editor)
+  +block(modals)
+    +element(modal)
+      @include transform(translateX(-50%) translateY(-50%))
+      position: absolute
+      z-index: 6
+      top: 50%
+      left: 50%
+      border-top: 2px solid grey
+      border-radius: 5px
+      max-width: 90%
+      padding: 20px
+      background: rgba($secondaryBackgroundColor, 0.9)
+      text-align: center
+
+      +modifier(error)
+        border-color: $redColor
+
+      +modifier(warning)
+        border-color: $yellowColor
+
+    +element(overlay)
+      position: absolute
+      z-index: 5
+      top: 0
+      left: 0
+      width: 100%
+      height: 100%
+      background: rgba($backgroundColor, 0.8)
+
+    +element(button)
+      margin-top: 0.5em
+
+    +elements(title, text)
+      @include font-regular
+      display: block
+      font-size: 15px
+      color: white
+
+    +element(title)
+      margin-bottom: 0.5em
+
+    +element(text)
+      font-size: 13px
+      color: rgba(white, 0.5)

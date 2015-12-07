@@ -1,0 +1,28 @@
+/*
+ * Photo Editor SDK - photoeditorsdk.com
+ * Copyright (c) 2013-2015 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+
+$headerBarHeight: 30px
+
++block(editor)
+  +block(header)
+    +element(row)
+      display: table-row
+      height: $headerBarHeight
+
+    +element(cell)
+      display: table-cell
+      text-align: center
+
+    +element(label)
+      @include font-regular
+      @include opacity(0.5)
+      font-size: 11px
+      line-height: $headerBarHeight
+      color: white

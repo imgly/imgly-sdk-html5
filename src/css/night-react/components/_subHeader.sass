@@ -1,0 +1,91 @@
+/*
+ * Photo Editor SDK - photoeditorsdk.com
+ * Copyright (c) 2013-2015 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+
+$subHeaderHeight: 50px
+$subHeaderHorizontalPadding: 20px
+
++block(editor)
+  +block(subHeader)
+    +element(row)
+      display: table-row
+      height: $subHeaderHeight
+      background: $secondaryBackgroundColor
+      text-align: center
+
+    +element(cell)
+      position: relative
+      display: table-cell
+      padding: 0 $subHeaderHorizontalPadding
+
+    +element(label)
+      @include font-regular
+      font-size: 15px
+      line-height: $subHeaderHeight
+      color: white
+
+    +elements(left, right)
+      position: absolute
+      top: 10px
+
+    +element(left)
+      left: 15px
+
+    +element(right)
+      right: 15px
+
+    +element(cancelButton)
+      @include font-regular
+      @include opacity(0.5)
+      // Not floating because we want the label to stay centered
+      position: absolute
+      left: $subHeaderHorizontalPadding
+      cursor: pointer
+      font-size: 15px
+      line-height: $subHeaderHeight
+      color: white
+
+      &:hover
+        @include opacity(1.0)
+
+    +element(button)
+      @include border-radius(4px)
+      position: relative
+      display: inline-block
+      margin: 0 5px
+      height: 30px
+      padding: 0 6px 0 9px
+      background: $backgroundColor
+      cursor: pointer
+
+      @include screen-min-small
+        padding-right: 12px
+
+      +modifier(blue)
+        background: $primaryColor
+
+      +modifier(withIcon)
+        padding-left: 18px + 14px
+
+      +element(label)
+        @include font-regular
+        display: none
+        font-size: 12px
+        line-height: 30px
+        color: white
+
+        @include screen-min-small
+          display: inline-block
+
+      +element(icon)
+        position: absolute
+        top: 9px
+        left: 11px
+        width: 14px
+

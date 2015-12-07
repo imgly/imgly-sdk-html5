@@ -1,0 +1,12 @@
+<div>
+  <ul class="pesdk-controls-list imgly-controls-list-with-buttons">
+    {{~it.ratios :ratio:index}}
+      {{ var enabled = ratio.selected; }}
+      <li data-identifier="{{= ratio.identifier}}" data-ratio="{{= ratio.ratio}}"{{? enabled}} data-selected{{?}}>
+        <img src="{{=it.helpers.assetPath('ui/night/crop/' + ratio.identifier + '.png')}}" />
+      </li>
+    {{~}}
+  </ul>
+</div>
+
+{{=it.partials.doneButton}}

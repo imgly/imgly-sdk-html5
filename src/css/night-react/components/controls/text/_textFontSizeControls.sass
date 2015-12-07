@@ -1,0 +1,55 @@
+/*
+ * Photo Editor SDK - photoeditorsdk.com
+ * Copyright (c) 2013-2015 9elements GmbH
+ *
+ * Released under Attribution-NonCommercial 3.0 Unported
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ *
+ * For commercial use, please contact us at contact@9elements.com
+ */
+
++block(editor)
+  +block(textFontSizeControls)
+    display: inline-block
+    width: 110px
+    height: $controlsButtonHeight
+    +element(buttons)
+      float: left
+      margin: 9px 0 0 15px
+      +element(button)
+        @include opacity(0.2)
+        width: 20px
+        height: 20px
+        background: white
+        cursor: pointer
+        line-height: 20px
+
+        &:hover
+          @include opacity(0.5)
+
+        +modifier(plus)
+          @include border-top-radius(2px)
+          margin-bottom: 1px
+
+        +modifier(minus)
+          @include border-bottom-radius(2px)
+
+        +element(icon)
+          width: 10px
+          vertical-align: middle
+
+    +element(right)
+      float: right
+      margin-top: 7px
+      width: 60px
+      text-align: left
+
+      +element(size)
+        @include font-regular
+        font-size: 24px
+        color: white
+
+      +element(label)
+        @include font-regular
+        font-size: 10px
+        color: white
