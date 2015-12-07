@@ -18,5 +18,5 @@ void main() {
   } else {
     color = 2.0 * blend * artColor;
   }
-  gl_FragColor = color * 0.5 + 0.5 * artColor;
+  gl_FragColor = color * 0.6 + 0.4 * artColor;
 }

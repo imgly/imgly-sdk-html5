@@ -187,7 +187,7 @@ export default class BaseArtControlsComponent extends BaseComponent {
               bem='$e:button m:withInlineLabel'
               className={isActive ? 'is-active' : null}>
               <img bem='e:icon' src={ui.getAssetPath(`controls/filters/${i18nKey}.png`, true)} />
-              <div bem='e:label'>{this._t(`controls.tableau.${i18nKey}`)}</div>
+              <div bem='e:label'>{this._t(`controls.art.${i18nKey}`)}</div>
             </div>
           </bem>
         </li>)
