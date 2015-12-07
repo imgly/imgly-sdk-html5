@@ -176,14 +176,21 @@ class StreetArtFilter extends Filter {
     return 'StreetArt'
   }
 
+  /**
+   * Sets the image for this filter
+   * @param {Image}
+   */
   setImage (image) {
     this._image = image
   }
 
+  /**
+   * Gets the image of this filter
+   * @return {Image}
+   */
   get image () {
     return this._image
   }
-
 }
 
 export default StreetArtFilter
