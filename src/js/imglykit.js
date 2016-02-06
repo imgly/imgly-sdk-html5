@@ -339,8 +339,10 @@ class ImglyKit extends EventEmitter {
   }
 
   dispose () {
-    this._exif.dispose()
-    this._exif = null
+    if (this._exif) {
+      this._exif.dispose()
+      this._exif = null
+    }
   }
 }
 
