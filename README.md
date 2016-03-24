@@ -1,3 +1,7 @@
+> :warning: **Warning:** This version of PhotoEditorSDK is no longer being updated. We will fix bugs, but new features will only be added to our [new version](https://static.photoeditorsdk.com/demo). Visit [https://www.photoeditorsdk.com](https://www.photoeditorsdk.com) for more information on the new SDK. :warning:
+
+---
+
 <p align="center">
   <img src="https://camo.githubusercontent.com/4c4c8d90e242619972a11baa3c33acaaeb9bad00/687474703a2f2f692e696d6775722e636f6d2f666748314852742e706e67" />
 </p>
