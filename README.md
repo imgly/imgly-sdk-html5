@@ -1,4 +1,4 @@
-> :warning: **Warning:** This version of PhotoEditorSDK is no longer being updated. We will fix bugs, but new features will only be added to our [new version](https://static.photoeditorsdk.com/demo). Visit [https://www.photoeditorsdk.com](https://www.photoeditorsdk.com) for more information on the new SDK. :warning:
+> :warning: **Warning:** There's a [new version](https://static.photoeditorsdk.com/demo) available which is not developed publicly. Visit [https://www.photoeditorsdk.com](https://www.photoeditorsdk.com) for more information on the new SDK. :warning:
 
 ---
 
