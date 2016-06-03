@@ -8,7 +8,7 @@
  * For commercial use, please contact us at contact@9elements.com
  */
 
-const VERSION = '2.0.3-13'
+const VERSION = '2.0.3-14'
 
 import EventEmitter from './lib/event-emitter'
 import RenderImage from './lib/render-image'
