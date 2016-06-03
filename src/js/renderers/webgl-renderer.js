@@ -66,7 +66,8 @@ class WebGLRenderer extends Renderer {
   get _contextOptions () {
     return {
       alpha: true,
-      premultipliedAlpha: true
+      premultipliedAlpha: true,
+      preserveDrawingBuffer: true
     }
   }
 
