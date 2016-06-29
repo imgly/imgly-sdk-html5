@@ -62,7 +62,7 @@ class TiltShiftControl extends Control {
     // Initialization
     this._initSliders()
 
-    this._ui.canvas.render().then(() => {
+    this._ui.canvas.render(() => {
       this._handleKnobs()
       this._updateDOM()
     })

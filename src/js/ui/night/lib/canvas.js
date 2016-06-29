@@ -14,6 +14,7 @@ import Vector2 from '../../../lib/math/vector2'
 import Utils from '../../../lib/utils'
 import EventEmitter from '../../../lib/event-emitter'
 import Promise from '../../../vendor/promise'
+import { requestAnimationFrame, cancelAnimationFrame } from '../../../lib/animation-frame'
 
 class Canvas extends EventEmitter {
   constructor (kit, ui, options) {
@@ -30,16 +31,19 @@ class Canvas extends EventEmitter {
     this._image = this._options.image
     this._roundZoomBy = 0.1
     this._isFirstRender = true
+    this._renderRequested = true
+    this._renderCallbacks = []
 
     // Mouse event callbacks bound to the class context
+    this._tick = this._tick.bind(this)
     this._dragOnMousedown = this._dragOnMousedown.bind(this)
     this._dragOnMousemove = this._dragOnMousemove.bind(this)
     this._dragOnMouseup = this._dragOnMouseup.bind(this)
   }
 
   /**
-   * Initializes the renderer, sets the zoom level and initially
-   * renders the operations stack
+   * Initializes the renderer, sets the zoom level and starts the render
+   * loop
    */
   run () {
     this._initRenderer()
@@ -48,9 +52,16 @@ class Canvas extends EventEmitter {
     this._zoomLevel = this._getInitialZoomLevel()
     this._size = null
 
-    this.render()
+    this._animationFrameRequest = requestAnimationFrame(this._tick)
     this._centerCanvas()
     this._handleDrag()
+  }
+
+  stop () {
+    if (this._animationFrameRequest) {
+      cancelAnimationFrame(this._animationFrameRequest)
+      this._renderCallbacks = []
+    }
   }
 
   getProcessedDimensions () {
@@ -64,10 +75,7 @@ class Canvas extends EventEmitter {
     return size
   }
 
-  /**
-   * Renders the current operations stack
-   */
-  render () {
+  _render () {
     // Calculate the initial size
     const initialSize = this._renderer
       .getInitialDimensionsForStack(this.sanitizedStack)
@@ -153,6 +161,33 @@ class Canvas extends EventEmitter {
       .catch((e) => {
         this.emit('error', e)
       })
+  }
+
+  _tick () {
+    if (this._renderRequested) {
+      const callbacks = this._renderCallbacks.slice(0)
+      this._renderCallbacks = []
+
+      this._render()
+        .then(() => {
+          callbacks.forEach((r) => r())
+          this._animationFrameRequest = requestAnimationFrame(this._tick)
+        })
+      this._renderRequested = false
+    } else {
+      this._animationFrameRequest = requestAnimationFrame(this._tick)
+    }
+  }
+
+  /**
+   * Renders the current operations stack
+   * @param {Function} [callback]
+   */
+  render (callback) {
+    this._renderRequested = true
+    if (callback) {
+      this._renderCallbacks.push(callback)
+    }
   }
 
   /**
