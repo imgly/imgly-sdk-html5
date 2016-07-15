@@ -185,9 +185,14 @@ class Canvas extends EventEmitter {
    */
   render (callback) {
     this._renderRequested = true
-    if (callback) {
-      this._renderCallbacks.push(callback)
-    }
+    return new Promise((resolve, reject) => {
+      this._renderCallbacks.push(() => {
+        if (callback) {
+          callback()
+        }
+        resolve()
+      })
+    })
   }
 
   /**

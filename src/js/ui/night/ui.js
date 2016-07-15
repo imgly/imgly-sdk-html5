@@ -598,9 +598,10 @@ class NightUI extends UI {
    */
   render () {
     if (this._canvas) {
-      this._canvas.render((err) => {
-        console.log(err)
-      })
+      this._canvas.render()
+        .catch((err) => {
+          console.log(err)
+        })
     }
   }
 
