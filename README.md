@@ -1,4 +1,4 @@
-> :warning: **Warning:** There's a [new version](https://static.photoeditorsdk.com/demo) available which is not developed publicly. Visit [https://www.photoeditorsdk.com](https://www.photoeditorsdk.com) for more information on the new SDK. :warning:
+> :warning: **Warning:** There's a [new version](https://static.photoeditorsdk.com/demo) available which is not developed publicly. Visit [https://www.photoeditorsdk.com](https://www.photoeditorsdk.com/?utm_source=Github&utm_medium=PESDK&utm_term=HTML5) for more information on the new SDK. :warning:
 
 ---
 
@@ -17,7 +17,7 @@
   </a>
 </p>
 
-## img.ly Photo Editor SDK for HTML5.
+## img.ly PhotoEditor SDK for HTML5.
 The img.ly HTML5 SDK is a **fully customisable** photo editor which you can integrate into your HTML5 app within minutes.
 It contains the most important photo editing tools;
 Auto-Enhance, Crop, Rotate, Focus, Brightness, Contrast, Saturation, and more.
