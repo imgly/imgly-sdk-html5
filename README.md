@@ -1,4 +1,4 @@
-> :warning: **Warning:** There's a [new version](https://static.photoeditorsdk.com/demo) available which is not developed publicly. Visit [https://www.photoeditorsdk.com](https://www.photoeditorsdk.com/?utm_source=Github&utm_medium=PESDK&utm_term=HTML5) for more information on the new SDK. :warning:
+> :warning: **Warning:** There's a [new version](https://static.photoeditorsdk.com/demo) available which is not developed publicly. Visit [https://www.photoeditorsdk.com](https://www.photoeditorsdk.com/?utm_campaign=Projects&utm_source=Github&utm_medium=PESDK&utm_term=HTML5) for more information on the new SDK. :warning:
 
 ---
 
@@ -24,7 +24,7 @@ Auto-Enhance, Crop, Rotate, Focus, Brightness, Contrast, Saturation, and more.
 It also features state-of-the-art photo filters, designed and calibrated with a lot of love.
 A Text editor with an elegant and simple to use interface allows adding text instantly to the picture.
 
-Visit [our website](https://www.photoeditorsdk.com/documentation/html5/getting-started) for tutorials on how to integrate and customize the editor.
+Visit [our website](https://www.photoeditorsdk.com/documentation/html5/getting-started?utm_campaign=Projects&utm_source=Github&utm_medium=PESDK&utm_term=HTML5) for tutorials on how to integrate and customize the editor.
 
 ## Preview
 
@@ -33,7 +33,7 @@ Visit [our website](https://www.photoeditorsdk.com/documentation/html5/getting-s
 </p>
 
 ## Examples
-See the examples folder for implementation examples or play with the [demo on our website](http://sdk.img.ly/).
+See the examples folder for implementation examples or play with the [demo on our website](https://www.photoeditorsdk.com/?utm_campaign=Projects&utm_source=Github&utm_medium=PESDK&utm_term=HTML5).
 
 ## Setting up the development environment
 
