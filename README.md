@@ -12,9 +12,6 @@
   <a href="https://coveralls.io/r/imgly/imgly-sdk-html5?branch=master">
     <img src="http://img.shields.io/coveralls/imgly/imgly-sdk-html5/master.svg?cb=2" alt="Coverage Status" />
   </a>
-  <a href="https://pesdk-slack.herokuapp.com/">
-    <img src="https://pesdk-slack.herokuapp.com/badge.svg" alt="Slack Status" />
-  </a>
 </p>
 
 ## img.ly PhotoEditor SDK for HTML5.
