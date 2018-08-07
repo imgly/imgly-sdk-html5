@@ -60,4 +60,4 @@ Please see [LICENSE](https://github.com/imgly/imgly-sdk-html5/blob/master/LICENS
 Made 2013-2015 by @9elements: Sascha Gehlich ([@saschagehlich](https://github.com/saschagehlich)), Johannes Emerich ([@knuton](https://github.com/knuton)), Carsten Przyluczky ([@K4stor](https://github.com/K4stor)), Sebastian Deutsch ([@sebastiandeutsch](https://github.com/sebastiandeutsch))
 
 ### Support or Contact
-Use our service desk (Hyperlink to: https://support.photoeditorsdk.com) for bug reports or support requests. To request a commercial license, please use the license request form (Hyperlink to: https://www.photoeditorsdk.com/pricing) on our website.
+Use our [service desk](http://support.photoeditorsdk.com) for bug reports or support requests. To request a commercial license, please use the [license request form](https://www.photoeditorsdk.com/pricing) on our website.
